@@ -30,6 +30,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             play: false
         },
         components: {
+            tts: {
+                type: "fluid.textToSpeech"
+            },
             controller: {
                 type: "fluid.orator.controller",
                 options: {
@@ -49,12 +52,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 container: "{that}.dom.content",
                 options: {
                     listeners: {
-                        "{tts}.events.utteranceOnEnd": [{
+                        "utteranceOnEnd.domReaderStop": [{
                             changePath: "{orator}.model.play",
                             value: false,
-                            source: "domReader.tts.utteranceOnEnd",
-                            priority: "after:removeHighlight",
-                            namespace: "domReader.stop"
+                            source: "domReader.utteranceOnEnd",
+                            priority: "after:removeHighlight"
                         }]
                     },
                     modelListeners: {
@@ -201,9 +203,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             highlight: "<mark class=\"flc-orator-highlight fl-orator-highlight\"></mark>"
         },
         events: {
-            onReadFromDOM: null
+            onReadFromDOM: null,
+            utteranceOnEnd: null,
+            utteranceOnBoundary: null,
+            utteranceOnError: null,
+            utteranceOnMark: null,
+            utteranceOnPause: null,
+            utteranceOnResume: null,
+            utteranceOnStart: null
         },
-        model: "{tts}.model",
+        utteranceEventMap: {
+            onboundary: "utteranceOnBoundary",
+            onend: "utteranceOnEnd",
+            onerror: "utteranceOnError",
+            onmark:"utteranceOnMark",
+            onpause: "utteranceOnPause",
+            onresume: "utteranceOnResume",
+            onstart: "utteranceOnStart"
+        },
+        model: {
+            paused: false,
+            speaking: false
+        },
         members: {
             parseQueue: [],
             parseIndex: 0,
@@ -211,25 +232,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 expander: {
                     this: "document",
                     method: "createRange"
-                }
-            }
-        },
-        components: {
-            tts: {
-                type: "fluid.textToSpeech",
-                options: {
-                    invokers: {
-                        queueSpeech: {
-                            funcName: "fluid.orator.domReader.queueSpeech",
-                            args: [
-                                "{that}",
-                                "fluid.textToSpeech.queueSpeech",
-                                "{arguments}.0",
-                                "{arguments}.1",
-                                "{arguments}.2"
-                            ]
-                        }
-                    }
                 }
             }
         },
@@ -252,22 +254,54 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             play: {
                 funcName: "fluid.orator.domReader.speak",
-                args: ["{that}"]
+                args: ["{that}", "{fluid.textToSpeech}.resume"]
             },
             pause: {
                 funcName: "fluid.orator.domReader.pause",
-                args: ["{that}"]
+                args: ["{that}", "{fluid.textToSpeech}.pause"]
+            },
+            queueSpeech: {
+                funcName: "fluid.orator.domReader.queueSpeech",
+                args: ["{that}", "{fluid.textToSpeech}.queueSpeech", "{arguments}.0", true, "{arguments}.1"]
             }
         },
         listeners: {
-            "{tts}.events.utteranceOnEnd": [{
-                listener: "{that}.resetParseQueue",
-                namespace: "resetParseQueue"
-            }, {
+            "utteranceOnEnd.resetParseQueue": {
+                listener: "{that}.resetParseQueue"
+            },
+            "utteranceOnEnd.removeHighlight": {
                 listener: "{that}.removeHighlight",
-                namespace: "removeHighlight"
-            }],
-            "{tts}.events.utteranceOnBoundary": {
+                priority: "after:resetParseQueue"
+            },
+            "utteranceOnEnd.updateModel": {
+                changePath: "",
+                value: {
+                    speaking: false,
+                    paused: false
+                }
+            },
+            "utteranceOnStart.updateModel": {
+                changePath: "",
+                value: {
+                    speaking: true,
+                    paused: false
+                }
+            },
+            "utteranceOnPause.updateModel": {
+                changePath: "",
+                value: {
+                    speaking: true,
+                    paused: true
+                }
+            },
+            "utteranceOnResume.updateModel": {
+                changePath: "",
+                value: {
+                    speaking: true,
+                    paused: false
+                }
+            },
+            "utteranceOnBoundary": {
                 listener: "{that}.highlight",
                 args: ["{arguments}.0.charIndex"],
                 namespace: "highlightUtteranceText"
@@ -279,18 +313,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.orator.domReader.speak = function (that) {
+    fluid.orator.domReader.speak = function (that, resumeFn) {
         if (that.model.paused) {
-            that.tts.resume();
+            resumeFn();
         } else if (!that.model.speaking) {
             that.readFromDOM();
         }
     };
 
-    fluid.orator.domReader.pause = function (that) {
+    fluid.orator.domReader.pause = function (that, pauseFn) {
         if (that.model.speaking && !that.model.paused) {
-            that.tts.pause();
+            pauseFn();
         }
+    };
+
+    fluid.orator.domReader.mapUtteranceEvents = function (that, utterance, utteranceEventMap) {
+        fluid.each(utteranceEventMap, function (compEventName, utteranceEvent) {
+            var compEvent = that.events[compEventName];
+            utterance[utteranceEvent] = compEvent.fire;
+        });
     };
 
     // Accepts a speechFn (either a function or function name), which will be used to perform the
@@ -303,11 +344,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         str = str.trim();
         str.replace(/\s{2,}/gi, " ");
 
+        // map events
+        options = options || {};
+        fluid.orator.domReader.mapUtteranceEvents(that, options, that.options.utteranceEventMap);
+
         if (str) {
             if (typeof(speechFn) === "string") {
-                fluid.invokeGlobalFunction(speechFn, [that, str, interrupt, options]);
+                fluid.invokeGlobalFunction(speechFn, [str, interrupt, options]);
             } else {
-                speechFn(that, str, interrupt, options);
+                speechFn(str, interrupt, options);
             }
         }
     };
@@ -501,7 +546,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var parsedFromElm = fluid.orator.domReader.parse(elm[0]);
             that.parseQueue = parsedFromElm;
             that.events.onReadFromDOM.fire(parsedFromElm);
-            that.tts.queueSpeech(fluid.orator.domReader.parsedToString(parsedFromElm));
+            that.queueSpeech(fluid.orator.domReader.parsedToString(parsedFromElm));
         }
     };
 
@@ -606,7 +651,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             pointer: 2.5
         },
         events: {
-            onSelectionChanged: null
+            onSelectionChanged: null,
+            utteranceOnEnd: null
         },
         listeners: {
             "onCreate.bindEvents": {
@@ -620,6 +666,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         func: "{that}.getSelectedText"
                     }
                 }
+            },
+            "utteranceOnEnd.stop": {
+                changePath: "play",
+                value: false,
+                source: "stopMethod"
             }
         },
         modelListeners: {
@@ -631,9 +682,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "text": {
                 func: "{that}.stop",
                 namespace: "stopPlayingWhenTextChanges"
+            },
+            "play": {
+                func: "fluid.orator.selectionReader.queueSpeech",
+                args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
+                namespace: "queueSpeech"
             }
         },
-        modelRelay: {
+        modelRelay: [{
             source: "text",
             target: "showUI",
             backward: "never",
@@ -641,7 +697,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             singleTransform: {
                 type: "fluid.transforms.stringToBoolean"
             }
-        },
+        }],
         invokers: {
             getSelectedText: "fluid.orator.selectionReader.getSelectedText",
             play: {
@@ -650,12 +706,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "playMethod"
             },
             stop: {
-                changePath: "play",
-                value: false,
-                source: "stopMethod"
+                funcName: "fluid.orator.selectionReader.stopSpeech",
+                args: ["{that}.model.play", "{fluid.textToSpeech}.cancel"]
             }
         }
     });
+
+    fluid.orator.selectionReader.stopSpeech = function (state, cancelFn) {
+        if (state) {
+            cancelFn();
+        }
+    };
+
+    fluid.orator.selectionReader.queueSpeech = function (that, state, speechFn) {
+        if (state) {
+            speechFn(that.model.text, true, {onend: that.events.utteranceOnEnd.fire});
+        }
+    };
 
     fluid.orator.selectionReader.bindSelectionEvents = function (that) {
         $(document).on("selectionchange", that.events.onSelectionChanged.fire);

@@ -19,9 +19,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.registerNamespace("fluid.textToSpeech");
 
-    /******************************************************************************************* *
+    /*********************************************************************************************
      * fluid.textToSpeech provides a wrapper around the SpeechSynthesis Interface                *
-     * from the Web Speech API ( https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html ) *
+     * from the Web Speech API ( https://w3c.github.io/speech-api/speechapi.html#tts-section )   *
      *********************************************************************************************/
 
     fluid.textToSpeech.isSupported = function () {
@@ -66,7 +66,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 
     fluid.defaults("fluid.textToSpeech", {
-        gradeNames: ["fluid.modelComponent"],
+        gradeNames: ["fluid.modelComponent", "fluid.resolveRootSingle"],
+        singleRootType: "fluid.textToSpeech",
         events: {
             onStart: null,
             onStop: null,
@@ -83,24 +84,47 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         members: {
             queue: []
         },
+        dynamicComponents: {
+            utternace: {
+                type: "fluid.textToSpeech.utterance",
+                createOnEvent: "onSpeechQueued",
+                options: {
+                    listeners: {
+                        "onBoundary.relay": "{textToSpeech}.events.utteranceOnBoundary.fire",
+                        "onEnd.relay": "{textToSpeech}.events.utteranceOnEnd.fire",
+                        "onError.relay": "{textToSpeech}.events.utteranceOnError.fire",
+                        "onMark.relay": "{textToSpeech}.events.utteranceOnMark.fire",
+                        "onPause.relay": "{textToSpeech}.events.utteranceOnPause.fire",
+                        "onResume.relay": "{textToSpeech}.events.utteranceOnResume.fire",
+                        "onStart.relay": "{textToSpeech}.events.utteranceOnStart.fire",
+                        "onCreate.queue": {
+                            "this": "{fluid.textToSpeech}.queue",
+                            method: "push",
+                            args: ["{that}"]
+                        }
+                    },
+                    utterance: "{arguments}.0"
+                }
+            }
+        },
         // Model paths: speaking, pending, paused, utteranceOpts, pauseRequested, resumeRequested
         model: {
-            // Changes to the utteranceOpts will only text that is queued after the change.
-            // All of these options can be overriden in the queueSpeech method by passing in
+            // Changes to the utteranceOpts will only affect text that is queued after the change.
+            // All of these options can be overridden in the queueSpeech method by passing in
             // options directly there. It is useful in cases where a single instance needs to be
             // spoken with different options (e.g. single text in a different language.)
             utteranceOpts: {
-                // text: "", // text to synthesize. avoid as it will override any other text passed in
+                // text: "", // text to synthesize. Avoid using, it will be overwritten by text passed in directly to a queueSpeech
                 // lang: "", // the language of the synthesized text
                 // voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
-                // volume: 1, // a value between 0 and 1
-                // rate: 1, // a value from 0.1 to 10 although different synthesizers may have a smaller range
-                // pitch: 1, // a value from 0 to 2
+                // volume: 1, // a Floating point number between 0 and 1
+                // rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
+                // pitch: 1, // a Floating point number from 0 to 2
             }
         },
         modelListeners: {
             "speaking": {
-                listener: "fluid.textToSpeech.speak",
+                listener: "fluid.textToSpeech.toggleSpeak",
                 args: ["{that}", "{change}.value"]
             },
             "pauseRequested": {
@@ -134,10 +158,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             getVoices: {
                 funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
                 args: ["getVoices"]
+            },
+            speak: {
+                funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
+                args: ["speak", "{that}.queue.0.utterance"]
             }
         },
         listeners: {
-            "utteranceOnStart.speak": {
+            "onSpeechQueued.speak": {
+                func: "{that}.speak",
+                priority: "last"
+            },
+            "utteranceOnStart.speaking": {
                 changePath: "speaking",
                 value: true,
                 source: "utteranceOnStart"
@@ -181,7 +213,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         speechSynthesis[control].apply(speechSynthesis, args);
     };
 
-    fluid.textToSpeech.speak = function (that, speaking) {
+    fluid.textToSpeech.toggleSpeak = function (that, speaking) {
         that.events[speaking ? "onStart" : "onStop"].fire();
     };
 
@@ -217,33 +249,85 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.cancel();
         }
 
-        var toSpeak = new SpeechSynthesisUtterance(text);
-
-
-        var eventBinding = {
-            onboundary: that.events.utteranceOnBoundary.fire,
-            onend: that.events.utteranceOnEnd.fire,
-            onerror: that.events.utteranceOnError.fire,
-            onmark:that.events.utteranceOnMark.fire,
-            onpause: that.events.utteranceOnPause.fire,
-            onresume: that.events.utteranceOnResume.fire,
-            onstart: that.events.utteranceOnStart.fire
-        };
-        $.extend(toSpeak, that.model.utteranceOpts, options, eventBinding);
-
-        // Store toSpeak additionally on the queue to help deal
-        // with premature garbage collection described at https://bugs.chromium.org/p/chromium/issues/detail?id=509488#c11
-        // this makes the speech synthesis behave much better in Safari in
-        // particular
-        that.queue.push({text: text, utterance: toSpeak});
-
-        that.events.onSpeechQueued.fire(text);
-        fluid.textToSpeech.invokeSpeechSynthesisFunc("speak", toSpeak);
+        var utteranceOpts = $.extend({}, that.model.utteranceOpts, options, {text: text});
+        that.events.onSpeechQueued.fire(utteranceOpts);
     };
 
     fluid.textToSpeech.cancel = function (that) {
         that.queue = [];
         fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
+        // clear any paused state.
+        fluid.textToSpeech.invokeSpeechSynthesisFunc("resume");
     };
+
+    /*
+     *
+     *
+     */
+    fluid.defaults("fluid.textToSpeech.utterance", {
+        gradeNames: ["fluid.modelComponent"],
+        members: {
+            utterance: {
+                expander: {
+                    funcName: "fluid.textToSpeech.utterance.construct",
+                    args: ["{that}", "{that}.options.utteranceEventMap", "{that}.options.utterance"]
+                }
+            }
+        },
+        model: {
+            boundary: 0
+        },
+        utterance: {
+            // text: "", // text to synthesize. avoid as it will override any other text passed in
+            // lang: "", // the language of the synthesized text
+            // voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
+            // volume: 1, // a Floating point number between 0 and 1
+            // rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
+            // pitch: 1, // a Floating point number from 0 to 2
+        },
+        utteranceEventMap: {
+            onboundary: "onBoundary",
+            onend: "onEnd",
+            onerror: "onError",
+            onmark:"onMark",
+            onpause: "onPause",
+            onresume: "onResume",
+            onstart: "onStart"
+        },
+        events: {
+            onBoundary: null,
+            onEnd: null,
+            onError: null,
+            onMark: null,
+            onPause: null,
+            onResume: null,
+            onStart: null
+        },
+        listeners: {
+            "onBoundary.updateModel": {
+                changePath: "boundary",
+                value: "{arguments}.0.charIndex"
+            }
+        }
+    });
+
+    fluid.textToSpeech.utterance.construct = function (that, utteranceEventMap, utteranceOpts) {
+        var utterance = new SpeechSynthesisUtterance();
+        $.extend(utterance, utteranceOpts);
+
+        fluid.each(utteranceEventMap, function (compEventName, utteranceEvent) {
+            var compEvent = that.events[compEventName];
+            var origHandler = utteranceOpts[utteranceEvent];
+
+            utterance[utteranceEvent] = compEvent.fire;
+
+            if (origHandler) {
+                compEvent.addListener(origHandler, "external");
+            }
+        });
+
+        return utterance;
+    };
+
 
 })(jQuery, fluid_3_0_0);
