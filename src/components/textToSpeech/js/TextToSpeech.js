@@ -64,6 +64,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
+    /*********************************************************************************************
+     * fluid.textToSpeech component
+     *********************************************************************************************/
 
     fluid.defaults("fluid.textToSpeech", {
         gradeNames: ["fluid.modelComponent", "fluid.resolveRootSingle"],
@@ -101,6 +104,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             "this": "{fluid.textToSpeech}.queue",
                             method: "push",
                             args: ["{that}"]
+                        },
+                        "onEnd.destroy": {
+                            func: "{that}.destroy",
+                            priority: "last"
                         }
                     },
                     utterance: "{arguments}.0"
@@ -208,9 +215,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    fluid.textToSpeech.invokeSpeechSynthesisFunc = function (control, args) {
+    /**
+     * Wraps the SpeechSynthesis API
+     *
+     * @param {String} method - a SpeechSynthesis method name
+     * @param {Array} args - arguments to call the method with. If args isn't an array, it will be added as the first
+     *                       element of one.
+     */
+    fluid.textToSpeech.invokeSpeechSynthesisFunc = function (method, args) {
         args = fluid.makeArray(args);
-        speechSynthesis[control].apply(speechSynthesis, args);
+        speechSynthesis[method].apply(speechSynthesis, args);
     };
 
     fluid.textToSpeech.toggleSpeak = function (that, speaking) {
@@ -226,8 +240,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /*
+     * After an utterance has finished, the utterance is removed from the queue and the model is updated as needed.
+     */
     fluid.textToSpeech.handleEnd = function (that) {
-
         that.queue.shift();
 
         var resetValues = {
@@ -244,6 +260,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /**
+     * Assembles the utterance options and fires onSpeechQueued which will kick off the creation of an utterance
+     * component. If "iterrupt" is true, this utterance will replace any existing ones.
+     *
+     * @param {Component} that - the component
+     * @param {String} text - the text to be synthesized
+     * @param {Boolean} interrupt - used to indicate if this text should be queued or replace existing utterances
+     * @param {Object} options - options to configure the SpeechSynthesis utterance with. It is merged on top of the
+     *                           utteranceOpts from the component's model.
+     *                           {
+     *                               lang: "", // the language of the synthesized text
+     *                               voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
+     *                               volume: 1, // a Floating point number between 0 and 1
+     *                               rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
+     *                               pitch: 1, // a Floating point number from 0 to 2
+     *                           }
+     *
+     */
     fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
         if (interrupt) {
             that.cancel();
@@ -260,10 +294,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.textToSpeech.invokeSpeechSynthesisFunc("resume");
     };
 
-    /*
-     *
-     *
-     */
+    /*********************************************************************************************
+     * fluid.textToSpeech.utterance component
+     *********************************************************************************************/
+
     fluid.defaults("fluid.textToSpeech.utterance", {
         gradeNames: ["fluid.modelComponent"],
         members: {
@@ -289,7 +323,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             onboundary: "onBoundary",
             onend: "onEnd",
             onerror: "onError",
-            onmark:"onMark",
+            onmark: "onMark",
             onpause: "onPause",
             onresume: "onResume",
             onstart: "onStart"
@@ -311,6 +345,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    /**
+     * Creates a SpeechSynthesisUtterance instance and configures it with the utteranceOpts and utteranceMap. For any
+     * event provided in the utteranceEventMap, any corresponding event binding passed in directly through the
+     * utteranceOpts will be rebound as component event listeners with the "external" namespace.
+     *
+     * @param {Component} that - the component
+     * @param {Object} utterenaceEventMap - a mapping from SpeechSynthesisUtterance events to component events.
+     * @param {Object} utteranceOpts - options to configure the SpeechSynthesis utterance with.
+     *                                 {
+     *                                     text: "", // the text to Synthesize
+     *                                     lang: "", // the language of the synthesized text
+     *                                     voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
+     *                                     volume: 1, // a Floating point number between 0 and 1
+     *                                     rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
+     *                                     pitch: 1, // a Floating point number from 0 to 2
+     *                                 }
+     */
     fluid.textToSpeech.utterance.construct = function (that, utteranceEventMap, utteranceOpts) {
         var utterance = new SpeechSynthesisUtterance();
         $.extend(utterance, utteranceOpts);

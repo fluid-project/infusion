@@ -18,6 +18,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
+    /*********************************************************************************************
+     * fluid.textToSpeech tests
+     *********************************************************************************************/
+
     fluid.defaults("fluid.tests.textToSpeech", {
         gradeNames: ["fluid.textToSpeech"],
         model: {
@@ -67,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [
             {
-                name: "Initialization",
+                name: "fluid.textToSpeech",
                 tests: [{
                     expect: 4,
                     name: "Test initialization",
@@ -82,7 +86,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Start and Stop Events",
                 tests: [{
-                    expect: 13,
+                    expect: 14,
                     name: "Test Start and Stop Events",
                     sequence:
                     [{
@@ -105,92 +109,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [
             {
-                name: "Test Including Pause and Resume Events",
+                name: "fluid.textToSpeech",
                 tests: [{
-                    expect: 13,
+                    expect: 14,
                     name: "Test Including Pause and Resume Events",
-                    sequence:
-                    [
-                        {
-                            func: "{tts}.queueSpeech",
-                            args: "Testing pause and resume events"
-                        },
+                    sequence: [{
+                        func: "{tts}.queueSpeech",
+                        args: "Testing pause and resume events"
+                    }, {
                         // This is necessary or {tts}.pause can be called
                         // before the speech event has actually started,
                         // which messes up the sequencing
-                        {
-                            listener: "{tts}.pause",
-                            event: "{tts}.events.onStart"
-                        },
+                        listener: "{tts}.pause",
+                        event: "{tts}.events.onStart"
+                    }, {
                         // Tests on pause / resume requests issued close together
                         // the queueing behaviour needs to handle these gracefully
-                        {
-                            listener: "fluid.tests.textToSpeech.testPause",
-                            args: ["{tts}"],
-                            changeEvent: "{tts}.applier.modelChanged",
-                            path: "paused"
-                        },
-                        {
-                            func: "{tts}.resume"
-                        }, {
-                            listener: "fluid.tests.textToSpeech.testResume",
-                            args: ["{tts}"],
-                            changeEvent: "{tts}.applier.modelChanged",
-                            path: "paused"
-                        },
-                        // Issue rapid back and forth resume/pause commands,
-                        // including doubles
-                        // the throttling behaviour shouuld make this safe and
-                        // prevent potential race conditions
-                        {
-                            func: "{tts}.resume"
-                        },{
-                            func: "{tts}.resume"
-                        },{
-                            func: "{tts}.pause"
-                        },
-                        {
-                            func: "{tts}.resume"
-                        },
-                        {
-                            func: "{tts}.pause"
-                        },
-                        {
-                            func: "{tts}.resume"
-                        },{
-                            func: "{tts}.pause"
-                        },
-                        {
-                            func: "{tts}.resume"
-                        },
-                        {
-                            func: "{tts}.pause"
-                        },
-                        {
-                            func: "{tts}.pause"
-                        },
-                        {
-                            func: "{tts}.resume"
-                        },{
-                            func: "{tts}.pause"
-                        },
-                        {
-                            func: "{tts}.resume"
-                        },
-                        {
-                            func: "{tts}.pause"
-                        },
-                        {
-                            func: "{tts}.resume"
-                        },
-                        // Test on stop to make sure the speech
-                        // completes despite the rapid resume/pause
-                        {
-                            listener: "fluid.tests.textToSpeech.testStop",
-                            args: ["{tts}"],
-                            event: "{tts}.events.onStop"
-                        }
-                    ]
+                        listener: "fluid.tests.textToSpeech.testPause",
+                        args: ["{tts}"],
+                        changeEvent: "{tts}.applier.modelChanged",
+                        path: "paused"
+                    }, {
+                        func: "{tts}.resume"
+                    }, {
+                        listener: "fluid.tests.textToSpeech.testResume",
+                        args: ["{tts}"],
+                        changeEvent: "{tts}.applier.modelChanged",
+                        path: "paused"
+                    }, {
+                        func: "{tts}.resume"
+                    }, {
+                        listener: "fluid.tests.textToSpeech.testStop",
+                        args: ["{tts}"],
+                        priority: "last:testing",
+                        event: "{tts}.events.onStop"
+                    }]
                 }]
             }]
     });
@@ -210,7 +163,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
         jqUnit.assertEquals("The queue should contain one item", 1, that.queue.length);
-        jqUnit.assertTrue("A text is present in the queue's first item", that.queue[0].text);
+        jqUnit.assertTrue("An utterance component is present as the queue's first item", fluid.hasGrade(that.queue[0].options, "fluid.textToSpeech.utterance"));
         jqUnit.assertTrue("An utterance is present in the queue's first item", that.queue[0].utterance);
         jqUnit.assertTrue("The utterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", that.queue[0].utterance.constructor.name);
 
@@ -223,7 +176,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
         jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
-        // jqUnit.assertFalse("No currentUtterance is present in the queue", that.queue.currentUtterance);
+        jqUnit.assertUndefined("The utterance should not be attached", that.utterance);
         that.cancel();
     };
 
@@ -272,6 +225,125 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return !fluid.tests.textToSpeech.isChromeOnWindows() && !fluid.test.conditionalTestUtils.isBrowserOnLinux();
     };
 
+    /*********************************************************************************************
+     * fluid.textToSpeech.utterance tests
+     *********************************************************************************************/
+
+    fluid.defaults("fluid.tests.textToSpeech.utterance", {
+        gradeNames: ["fluid.textToSpeech.utterance"],
+        utterance: {
+            text: "Hello World!",
+            lang: "en",
+            volume: 0.8,
+            rate: 2,
+            pitch: 1.1
+        }
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.utteranceTests", {
+        gradeNames: "fluid.test.testEnvironment",
+        components: {
+            utterance: {
+                type: "fluid.tests.textToSpeech.utterance"
+            },
+            utteranceTester: {
+                type: "fluid.tests.textToSpeech.utteranceTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.utteranceTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.textToSpeech.utterance",
+            tests: [{
+                expect: 12,
+                name: "Test initialization",
+                sequence:
+                [{
+                    func: "fluid.tests.textToSpeech.utteranceTester.verifyUtterance",
+                    args: ["{utterance}.utterance", "{utterance}.options.utterance"]
+                }, {
+                    funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{utterance}.utterance", "start"]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The onStart event fired"],
+                    priority: "last:testing",
+                    event: "{utterance}.events.onStart"
+                }, {
+                    funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{utterance}.utterance", "boundary"]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The onStart event fired"],
+                    priority: "last:testing",
+                    event: "{utterance}.events.onBoundary"
+                }, {
+                    funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{utterance}.utterance", "mark"]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The onStart event fired"],
+                    priority: "last:testing",
+                    event: "{utterance}.events.onMark"
+                }, {
+                    funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{utterance}.utterance", "pause"]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The onStart event fired"],
+                    priority: "last:testing",
+                    event: "{utterance}.events.onPause"
+                }, {
+                    funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{utterance}.utterance", "resume"]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The onStart event fired"],
+                    priority: "last:testing",
+                    event: "{utterance}.events.onResume"
+                }, {
+                    funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{utterance}.utterance", "error"]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The onStart event fired"],
+                    priority: "last:testing",
+                    event: "{utterance}.events.onError"
+                }, {
+                    funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{utterance}.utterance", "end"]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The onStart event fired"],
+                    priority: "last:testing",
+                    event: "{utterance}.events.onEnd"
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.textToSpeech.utteranceTester.dispatchEvent = function (utterance, type) {
+        var newEvent = new Event(type);
+        utterance.dispatchEvent(newEvent);
+    };
+
+    fluid.tests.textToSpeech.utteranceTester.verifyUtterance = function (utterance, expectedProps) {
+        fluid.each(expectedProps, function (value, propName) {
+            var expectedValue = utterance[propName];
+            if (typeof(expectedValue) === "number") {
+                expectedValue = fluid.roundToDecimal(expectedValue, 1);
+            }
+
+            jqUnit.assertEquals("The utterance '" + propName + "' property should have been set correctly.", value, expectedValue);
+        });
+    };
+
+    /*********************************************************************************************
+     * Test Runner
+     *********************************************************************************************/
+
     // Makes check Chrome on Windows due to TTS pause/resume bug
     fluid.contextAware.makeChecks({
         "fluid.tests.textToSpeech.supportsPauseResume": "fluid.tests.textToSpeech.isPauseResumeSupporting"
@@ -291,7 +363,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         tests: {
-            base: "fluid.tests.textToSpeech.baseTests"
+            base: "fluid.tests.textToSpeech.baseTests",
+            utterance: "fluid.tests.textToSpeech.utteranceTests"
         }
     });
 
