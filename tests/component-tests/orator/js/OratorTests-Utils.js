@@ -20,21 +20,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * DOM Reader MockTTS Grade
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.orator.domReaderMockTTS", {
+    fluid.defaults("fluid.tests.orator.mockTTS", {
         components: {
             tts: {
-                type: "fluid.mock.textToSpeech",
+                type: "fluid.textToSpeech",
                 options: {
-                    invokers: {
-                        // put back the orator's own queueSpeech method, but pass in the
-                        // mock queueSpeech function as the speechFn
-                        queueSpeech: {
-                            funcName: "fluid.orator.domReader.queueSpeech",
-                            args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                        },
-                        mockQueueSpeech: {
-                            funcName: "fluid.mock.textToSpeech.queueSpeech",
-                            args: ["{arguments}.0", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
+                    gradeNames: ["fluid.mock.textToSpeech"],
+                    listeners: {
+                        "{mockTTS}.events.onDestroy": {
+                            listener: "{that}.destroy",
+                            namespace: "destroy"
                         }
                     }
                 }

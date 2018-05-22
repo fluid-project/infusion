@@ -88,7 +88,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             queue: []
         },
         dynamicComponents: {
-            utternace: {
+            utterance: {
                 type: "fluid.textToSpeech.utterance",
                 createOnEvent: "onSpeechQueued",
                 options: {
@@ -163,13 +163,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "resume"
             },
             getVoices: {
-                funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
+                func: "{that}.invokeSpeechSynthesisFunc",
                 args: ["getVoices"]
             },
             speak: {
-                funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
+                func: "{that}.invokeSpeechSynthesisFunc",
                 args: ["speak", "{that}.queue.0.utterance"]
-            }
+            },
+            invokeSpeechSynthesisFunc: "fluid.textToSpeech.invokeSpeechSynthesisFunc"
         },
         listeners: {
             "onSpeechQueued.speak": {
@@ -197,10 +198,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "utteranceOnResume"
             },
             "onCreate.unloadCleanup": {
-                funcName: "fluid.textToSpeech.cleanupOnUnload"
+                funcName: "fluid.textToSpeech.cleanupOnUnload",
+                args: ["{that}"]
             },
             "onDestroy.cleanup": {
-                funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
+                func: "{that}.invokeSpeechSynthesisFunc",
                 args: ["cancel"]
             }
         }
@@ -209,9 +211,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Cancel all synthesis when a page is unloaded.
     // This is necessary so that the speech synthesis stops when navigating to a new page and so that paused
     // speaking doesn't prevent new self voicing after a page reload.
-    fluid.textToSpeech.cleanupOnUnload = function () {
+    fluid.textToSpeech.cleanupOnUnload = function (that) {
         window.onbeforeunload = function () {
-            fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
+            that.invokeSpeechSynthesisFunc("cancel");
         };
     };
 
@@ -236,7 +238,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // execute it
         if (change.value) {
             that.applier.change(change.path, false, "ADD", "requestControl");
-            fluid.textToSpeech.invokeSpeechSynthesisFunc(control);
+            that.invokeSpeechSynthesisFunc(control);
         }
     };
 
@@ -284,14 +286,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         var utteranceOpts = $.extend({}, that.model.utteranceOpts, options, {text: text});
-        that.events.onSpeechQueued.fire(utteranceOpts);
+        that.events.onSpeechQueued.fire(utteranceOpts, interrupt);
     };
 
     fluid.textToSpeech.cancel = function (that) {
         that.queue = [];
-        fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
+        that.invokeSpeechSynthesisFunc("cancel");
         // clear any paused state.
-        fluid.textToSpeech.invokeSpeechSynthesisFunc("resume");
+        that.invokeSpeechSynthesisFunc("resume");
     };
 
     /*********************************************************************************************
