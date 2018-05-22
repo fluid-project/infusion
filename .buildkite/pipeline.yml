@@ -37,6 +37,8 @@ steps:
     continue_on_failure: true
 
   - name: "Cleanup"
-    command: "vagrant destroy -f"
+    command:
+      - "vagrant destroy -f"
+      - "rm -rf ./reports ./coverage" # FLUID-6277
     timeout_in_minutes: 5
     <<: *agent_queue
