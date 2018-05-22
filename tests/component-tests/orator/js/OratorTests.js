@@ -386,7 +386,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // fluid.orator.domReader.parsedToString tests
     fluid.tests.orator.domReader.str = "Reading text from DOM\n        ";
 
-    jqUnit.test("fluid.orator.domReader.parsedToString", function () {
+    jqUnit.test("Test fluid.orator.domReader.parsedToString", function () {
         var str = fluid.orator.domReader.parsedToString(fluid.tests.orator.domReader.parsed);
         jqUnit.assertEquals("The parsed text should have been combined to a string", fluid.tests.orator.domReader.str, str);
     });
@@ -434,7 +434,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: undefined
     }];
 
-    jqUnit.test("fluid.orator.domReader.getClosestIndex", function () {
+    jqUnit.test("Test fluid.orator.domReader.getClosestIndex", function () {
         fluid.each(fluid.tests.orator.domReader.closestIndexTestCases, function (testCase) {
             var closest = fluid.orator.domReader.getClosestIndex(fluid.tests.orator.domReader.parsed, testCase.currentIndex, testCase.boundary);
             jqUnit.assertEquals("Closest index for boundary \"" + testCase.boundary + "\" should be: " + testCase.expected, testCase.expected, closest);
@@ -712,7 +712,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.orator.selectionReader");
 
-    jqUnit.test("fluid.orator.selectionReader.getSelectedText", function () {
+    jqUnit.test("Test fluid.orator.selectionReader.stopSpeech", function () {
+        jqUnit.expect(1);
+        fluid.orator.selectionReader.stopSpeech (true, function () {
+            jqUnit.assert("The cancel callback function should have been triggered");
+        });
+        fluid.orator.selectionReader.stopSpeech (false, function () {
+            jqUnit.assert("The cancel callback function should not have been triggered");
+        });
+    });
+
+    jqUnit.test("Test fluid.orator.selectionReader.getSelectedText", function () {
         var elm = $(".flc-orator-selectionReader-test-selection");
         fluid.tests.orator.selection.selectNode(elm);
 
@@ -790,7 +800,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     };
 
-    jqUnit.test("fluid.orator.selectionReader.calculatePosition", function () {
+    jqUnit.test("Test fluid.orator.selectionReader.calculatePosition", function () {
         var sandbox = fluid.tests.orator.createSandbox({});
         fluid.each(fluid.tests.orator.selectionReader.positionTests.testCases, function (testCase) {
             sandbox.stub(document.documentElement, "clientWidth")
