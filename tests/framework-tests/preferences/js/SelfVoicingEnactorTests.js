@@ -22,12 +22,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
         gradeNames: ["fluid.prefs.enactor.selfVoicing"],
+        selectors: {
+            node: ".flc-selfVoicing-selection"
+        },
         model: {
             enabled: false
         },
         orator: {
+            gradeNames: ["fluid.tests.orator.mockTTS"],
             domReader: {
-                gradeNames: ["fluid.tests.orator.domReaderStubs", "fluid.tests.orator.domReaderMockTTS"]
+                gradeNames: ["fluid.tests.orator.domReaderStubs"]
             }
         },
         invokers: {
@@ -57,14 +61,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             expectedText: [
-                {text: "{selfVoicing}.options.strings.welcomeMsg", interrupt: true},
-                {text: "Reading text from DOM", interrupt: false}
+                {text: "Reading text from DOM", interrupt: true}
             ]
         },
         modules: [{
             name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
-                expect: 22,
+                expect: 26,
                 name: "Init",
                 sequence: [{
                     func: "fluid.tests.selfVoicingTester.verifySubComponnetNotInitted",
@@ -108,6 +111,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{selfVoicing}.orator", "Pause", false],
                     spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{selfVoicing}.orator.applier.modelChanged"
+                }, {
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selfVoicing}.dom.node"]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selfVoicing}.orator.selectionReader", "Selection", {
+                        showUI: true,
+                        play: false,
+                        text: "text"
+                    }],
+                    spec: {priority: "last:testing", path: "text"},
+                    changeEvent: "{selfVoicing}.orator.selectionReader.applier.modelChanged"
+                }, {
+                    func: "{selfVoicing}.toggle",
+                    args: [false]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selfVoicing}.orator.selectionReader", "Remove Selection UI", {
+                        showUI: false,
+                        play: false,
+                        text: ""
+                    }],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selfVoicing}.orator.selectionReader.applier.modelChanged"
                 }]
             }]
         }]

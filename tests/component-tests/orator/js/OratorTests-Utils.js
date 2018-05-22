@@ -128,13 +128,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The aria-label should be set correctly", controller.options.strings[expectedLabel], toggleButton.attr("aria-label"));
     };
 
-    fluid.tests.orator.verifySelectionState = function (that, prefix, expectedModel) {
-        jqUnit.assertDeepEq(prefix + ": The model should be set correctly.", expectedModel, that.model);
+    fluid.tests.orator.verifySelectionState = function (that, testPrefix, expectedModel) {
+        jqUnit.assertDeepEq(testPrefix + ": The model should be set correctly.", expectedModel, that.model);
 
         if (expectedModel.showUI) {
-            jqUnit.assertNodeExists(prefix + ": The selection play button should be present", that.options.selectors.play);
+            jqUnit.assertNodeExists(testPrefix + ": The selection play button should be present", that.options.selectors.play);
         } else {
-            jqUnit.assertNodeNotExists(prefix + ": The selection play button should not be present", that.options.selectors.play);
+            jqUnit.assertNodeNotExists(testPrefix + ": The selection play button should not be present", that.options.selectors.play);
         }
     };
 

@@ -954,12 +954,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator", {
-        gradeNames: ["fluid.orator"],
+        gradeNames: ["fluid.orator", "fluid.tests.orator.mockTTS"],
         model: {
             play: false
         },
         domReader: {
-            gradeNames: ["fluid.tests.orator.domReaderStubs", "fluid.tests.orator.domReaderMockTTS"]
+            gradeNames: ["fluid.tests.orator.domReaderStubs"]
         }
     });
 
