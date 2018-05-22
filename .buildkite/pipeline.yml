@@ -1,10 +1,19 @@
 # A block step is introduced in all pull request branches before any of the steps listed below. It 
 # is configured using the Buildkite web UI and has a "Run this CI job" label. It is not included 
 # in this YAML configuration to prevent it from being accidentally removed as part of a PR change.
+
+agent_queue: &agent_queue
+  agents:
+    env: dev
+    type: physical
+    hypervisor: virtualbox
+    vagrant: true
+
 steps:
   - name: "Build"
     command: "DISPLAY=:0 vagrant up --provider virtualbox"
     timeout_in_minutes: 20
+    <<: *agent_queue
 
   # Wait and make sure the VM was successfully created before proceeding. Otherwise the remaining steps will not run.
   - wait
@@ -12,14 +21,17 @@ steps:
   - name: "Code Linter"
     command: "vagrant ssh -c 'cd /home/vagrant/sync/; $(npm bin)/grunt lint'"
     timeout_in_minutes: 2
+    <<: *agent_queue
 
   - name: "Browser Tests"
     command: "npm run test:vagrantBrowser"
     timeout_in_minutes: 15
+    <<: *agent_queue
 
   - name: "Node Tests"
     command: "npm run test:vagrantNode"
     timeout_in_minutes: 5
+    <<: *agent_queue
 
   - wait: ~
     continue_on_failure: true
@@ -27,3 +39,4 @@ steps:
   - name: "Cleanup"
     command: "vagrant destroy -f"
     timeout_in_minutes: 5
+    <<: *agent_queue
