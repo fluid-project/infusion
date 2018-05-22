@@ -70,6 +70,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         distributeOptions: [{
+            source: "{that}.options.tts",
+            target: "{that tts}.options",
+            removeSource: true,
+            namespace: "ttsOpts"
+        }, {
             source: "{that}.options.controller",
             target: "{that controller}.options",
             removeSource: true,
@@ -79,6 +84,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             target: "{that domReader}.options",
             removeSource: true,
             namespace: "domReaderOpts"
+        }, {
+            source: "{that}.options.selectionReader",
+            target: "{that selectionReader}.options",
+            removeSource: true,
+            namespace: "selectionReaderOpts"
         }]
     });
 
