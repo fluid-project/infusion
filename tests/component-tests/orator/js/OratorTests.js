@@ -813,8 +813,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * IoC unit tests for fluid.orator.selectionReader
      *******************************************************************************/
 
+    // Due to FLUID-6281 added the "fluid.tests.orator.mockTTS" grade to "fluid.tests.orator.selectionReaderTests"
+    // instead of in this grade.
     fluid.defaults("fluid.tests.orator.selectionReader", {
-        gradeNames: ["fluid.orator.selectionReader", "fluid.tests.orator.mockTTS"],
+        gradeNames: ["fluid.orator.selectionReader"],
+        // gradeNames: ["fluid.orator.selectionReader", "fluid.tests.orator.mockTTS"],
         model: {
             showUI: false,
             play: false,
@@ -827,7 +830,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.orator.selectionReaderTests", {
-        gradeNames: ["fluid.test.testEnvironment"],
+        // Due to FLUID-6281 adding the "fluid.tests.orator.mockTTS" grade here instead of on "fluid.orator.selectionReader"
+        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.orator.mockTTS"],
         markupFixture: ".flc-orator-selectionReader-test",
         components: {
             selectionReader: {
@@ -877,59 +881,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{selectionReader}", "Init", "{that}.options.testOpts.expected.noSelection"],
                     spec: {priority: "last:testing"},
                     event: "{selectionReaderTests selectionReader}.events.onCreate"
-                // }, {
-                //     // Make a selection
-                //     func: "fluid.tests.orator.selection.selectNode",
-                //     args: ["{selectionReader}.dom.text"]
-                // }, {
-                //     listener: "fluid.tests.orator.verifySelectionState",
-                //     args: ["{selectionReader}", "Selection", "{that}.options.testOpts.expected.textSelected"],
-                //     spec: {priority: "last:testing", path: "showUI"},
-                //     changeEvent: "{selectionReader}.applier.modelChanged"
-                // }, {
-                //     // play
-                //     func: "{selectionReader}.play",
-                //     args: ["play", true]
-                // }, {
-                //     listener: "fluid.tests.orator.verifySelectionState",
-                //     args: ["{selectionReader}", "Play", "{that}.options.testOpts.expected.textPlay"],
-                //     spec: {priority: "last:testing", path: "play"},
-                //     changeEvent: "{selectionReader}.applier.modelChanged"
-                // }, {
-                //     // stop
-                //     func: "{selectionReader}.stop",
-                //     args: ["play", true]
-                // }, {
-                //     listener: "fluid.tests.orator.verifySelectionState",
-                //     args: ["{selectionReader}", "Stop", "{that}.options.testOpts.expected.textSelected"],
-                //     spec: {priority: "last:testing", path: "play"},
-                //     changeEvent: "{selectionReader}.applier.modelChanged"
-                // }, {
-                //     // click play
-                //     jQueryTrigger: "click",
-                //     element: "{selectionReader}.dom.play"
-                // }, {
-                //     listener: "fluid.tests.orator.verifySelectionState",
-                //     args: ["{selectionReader}", "Replay", "{that}.options.testOpts.expected.textPlay"],
-                //     spec: {priority: "last:testing", path: "play"},
-                //     changeEvent: "{selectionReader}.applier.modelChanged"
-                // }, {
-                //     // Change selection
-                //     func: "fluid.tests.orator.selection.selectNode",
-                //     args: ["{selectionReader}.dom.otherText"]
-                // }, {
-                //     listener: "fluid.tests.orator.verifySelectionState",
-                //     args: ["{selectionReader}", "New Selection", "{that}.options.testOpts.expected.text2Selected"],
-                //     spec: {priority: "last:testing", path: "text"},
-                //     changeEvent: "{selectionReader}.applier.modelChanged"
-                // }, {
-                //     // Collapse selection
-                //     func: "fluid.tests.orator.selection.collapse"
-                // }, {
-                //     listener: "fluid.tests.orator.verifySelectionState",
-                //     args: ["{selectionReader}", "Selection Collapsed", "{that}.options.testOpts.expected.noSelection"],
-                //     spec: {priority: "last:testing", path: "showUI"},
-                //     changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // Make a selection
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selectionReader}.dom.text"]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Selection", "{that}.options.testOpts.expected.textSelected"],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // play
+                    func: "{selectionReader}.play",
+                    args: ["play", true]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Play", "{that}.options.testOpts.expected.textPlay"],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // stop
+                    func: "{selectionReader}.stop",
+                    args: ["play", true]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Stop", "{that}.options.testOpts.expected.textSelected"],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // click play
+                    jQueryTrigger: "click",
+                    element: "{selectionReader}.dom.play"
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Replay", "{that}.options.testOpts.expected.textPlay"],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // Change selection
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selectionReader}.dom.otherText"]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "New Selection", "{that}.options.testOpts.expected.text2Selected"],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // Collapse selection
+                    func: "fluid.tests.orator.selection.collapse"
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Selection Collapsed", "{that}.options.testOpts.expected.noSelection"],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
                 }]
             }]
         }]
@@ -1018,7 +1022,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.orator.controllerTests",
             "fluid.tests.orator.domReaderTests",
             "fluid.tests.orator.selectionReaderTests",
-            // "fluid.tests.oratorTests"
+            "fluid.tests.oratorTests"
         ]);
     });
 
