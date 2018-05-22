@@ -353,7 +353,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * utteranceOpts will be rebound as component event listeners with the "external" namespace.
      *
      * @param {Component} that - the component
-     * @param {Object} utterenaceEventMap - a mapping from SpeechSynthesisUtterance events to component events.
+     * @param {Object} utteranceEventMap - a mapping from SpeechSynthesisUtterance events to component events.
      * @param {Object} utteranceOpts - options to configure the SpeechSynthesis utterance with.
      *                                 {
      *                                     text: "", // the text to Synthesize
@@ -363,6 +363,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                                     rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
      *                                     pitch: 1, // a Floating point number from 0 to 2
      *                                 }
+     *
+     * @return {SpeechSynthesisUtterance} - returns the created SpeechSynthesisUtterance object
      */
     fluid.textToSpeech.utterance.construct = function (that, utteranceEventMap, utteranceOpts) {
         var utterance = new SpeechSynthesisUtterance();

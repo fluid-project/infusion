@@ -728,6 +728,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         $(document).on("selectionchange", that.events.onSelectionChanged.fire);
     };
 
+    /**
+     * Retrieves the text from the current selection
+     *
+     * @return {String} - the text from the current selection
+     */
     fluid.orator.selectionReader.getSelectedText = function () {
         return window.getSelection().toString();
     };
