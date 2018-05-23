@@ -234,13 +234,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * fluid.textToSpeech.utterance tests
      *********************************************************************************************/
 
+    fluid.tests.textToSpeech.supportsPitch = function () {
+        var newPitch = 1.2;
+        if (fluid.textToSpeech.isSupported) {
+            var utterance = new SpeechSynthesisUtterance("test");
+            utterance.pitch = newPitch;
+            return fluid.roundToDecimal(utterance.pitch, 1) === newPitch;
+        } else {
+            return false;
+        }
+    };
+
+    fluid.contextAware.makeChecks({
+        "fluid.tts.utterance.supportsPitch": {
+            funcName: "fluid.tests.textToSpeech.supportsPitch"
+        }
+    });
+
     fluid.defaults("fluid.tests.textToSpeech.utterance", {
-        gradeNames: ["fluid.textToSpeech.utterance"],
+        gradeNames: ["fluid.textToSpeech.utterance", "fluid.contextAware"],
+        // MS Edge doesn't support pitch.
+        contextAwareness: {
+            supportPitch: {
+                checks: {
+                    supportsPitch: {
+                        contextValue: "{fluid.tts.utterance.supportsPitch}",
+                        equals: true,
+                        gradeNames: ["fluid.tests.textToSpeech.utterance.pitch"]
+                    }
+                }
+            }
+        },
         utterance: {
             text: "Hello World!",
             lang: "en",
             volume: 0.8,
-            rate: 2,
+            rate: 2
+        }
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.utterance.pitch", {
+        utterance: {
             pitch: 1.1
         }
     });
@@ -262,7 +296,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.textToSpeech.utterance",
             tests: [{
-                expect: 12,
+                expect: 7,
                 name: "Test initialization",
                 sequence:
                 [{
@@ -335,6 +369,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.textToSpeech.utteranceTester.verifyUtterance = function (utterance, expectedProps) {
+        jqUnit.expect(fluid.values(expectedProps).length);
         fluid.each(expectedProps, function (value, propName) {
             var expectedValue = utterance[propName];
             if (typeof(expectedValue) === "number") {
