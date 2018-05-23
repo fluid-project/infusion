@@ -69,131 +69,136 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.textToSpeech.ttsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
-        modules: [
-            {
-                name: "fluid.textToSpeech",
-                tests: [{
-                    expect: 4,
-                    name: "Test initialization",
-                    sequence:
-                    [{
-                        func: "fluid.tests.textToSpeech.testInitialization",
-                        args: ["{tts}"]
-                    }]
-                }]
-
-            },
-            {
-                name: "Start and Stop Events",
-                tests: [{
-                    expect: 14,
-                    name: "Test Start and Stop Events",
-                    sequence:
-                    [{
-                        func: "{tts}.queueSpeech",
-                        args: "Testing start and end events"
-                    }, {
-                        listener: "fluid.tests.textToSpeech.testStart",
-                        args: ["{tts}"],
-                        event: "{tts}.events.onStart"
-                    }, {
-                        listener: "fluid.tests.textToSpeech.testStop",
-                        args: ["{tts}"],
-                        event: "{tts}.events.onStop"
-                    }]
+        modules: [{
+            name: "fluid.textToSpeech",
+            tests: [{
+                expect: 4,
+                name: "Test initialization",
+                sequence:
+                [{
+                    func: "fluid.tests.textToSpeech.testInitialization",
+                    args: ["{tts}"]
                 }]
             }]
+
+        }, {
+            name: "Start and Stop Events",
+            tests: [{
+                expect: 14,
+                name: "Test Start and Stop Events",
+                sequence:
+                [{
+                    func: "{tts}.queueSpeech",
+                    args: "Testing start and end events"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testStart",
+                    args: ["{tts}"],
+                    event: "{tts}.events.onStart"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testStop",
+                    args: ["{tts}"],
+                    event: "{tts}.events.onStop"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testUtteranceUnattached",
+                    args: ["The utterance should not be attached", "{tts}"],
+                    priority: "last:testing",
+                    event: "{tts}.utterance.events.afterDestroy"
+                }]
+            }]
+        }]
     });
 
     fluid.defaults("fluid.tests.textToSpeech.ttsTesterPauseResume", {
         gradeNames: ["fluid.test.testCaseHolder"],
-        modules: [
-            {
-                name: "fluid.textToSpeech",
-                tests: [{
-                    expect: 14,
-                    name: "Test Including Pause and Resume Events",
-                    sequence: [{
-                        func: "{tts}.queueSpeech",
-                        args: "Testing pause and resume events"
-                    }, {
-                        // This is necessary or {tts}.pause can be called
-                        // before the speech event has actually started,
-                        // which messes up the sequencing
-                        listener: "{tts}.pause",
-                        event: "{tts}.events.onStart"
-                    }, {
-                        // Tests on pause / resume requests issued close together
-                        // the queueing behaviour needs to handle these gracefully
-                        listener: "fluid.tests.textToSpeech.testPause",
-                        args: ["{tts}"],
-                        changeEvent: "{tts}.applier.modelChanged",
-                        path: "paused"
-                    }, {
-                        func: "{tts}.resume"
-                    }, {
-                        listener: "fluid.tests.textToSpeech.testResume",
-                        args: ["{tts}"],
-                        changeEvent: "{tts}.applier.modelChanged",
-                        path: "paused"
-                    }, {
-                        func: "{tts}.resume"
-                    }, {
-                        listener: "fluid.tests.textToSpeech.testStop",
-                        args: ["{tts}"],
-                        priority: "last:testing",
-                        event: "{tts}.events.onStop"
-                    }]
+        modules: [{
+            name: "fluid.textToSpeech",
+            tests: [{
+                expect: 14,
+                name: "Test Including Pause and Resume Events",
+                sequence: [{
+                    func: "{tts}.queueSpeech",
+                    args: "Testing pause and resume events"
+                }, {
+                    // This is necessary or {tts}.pause can be called
+                    // before the speech event has actually started,
+                    // which messes up the sequencing
+                    listener: "{tts}.pause",
+                    event: "{tts}.events.onStart"
+                }, {
+                    // Tests on pause / resume requests issued close together
+                    // the queueing behaviour needs to handle these gracefully
+                    listener: "fluid.tests.textToSpeech.testPause",
+                    args: ["{tts}"],
+                    changeEvent: "{tts}.applier.modelChanged",
+                    path: "paused"
+                }, {
+                    func: "{tts}.resume"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testResume",
+                    args: ["{tts}"],
+                    changeEvent: "{tts}.applier.modelChanged",
+                    path: "paused"
+                }, {
+                    func: "{tts}.resume"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testStop",
+                    args: ["{tts}"],
+                    priority: "last:testing",
+                    event: "{tts}.events.onStop"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testUtteranceUnattached",
+                    args: ["The utterance should not be attached", "{tts}"],
+                    priority: "last:testing",
+                    event: "{tts}.utterance.events.afterDestroy"
                 }]
             }]
+        }]
     });
 
     fluid.tests.textToSpeech.testInitialization = function (tts) {
-        var that = tts;
-        jqUnit.assertTrue("The Text to Speech component should have initialized", that);
-        jqUnit.assertFalse("Nothing should be speaking", that.model.speaking);
-        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+        jqUnit.assertTrue("The Text to Speech component should have initialized", tts);
+        jqUnit.assertFalse("Nothing should be speaking", tts.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", tts.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", tts.model.paused);
     };
 
     fluid.tests.textToSpeech.testStart = function (tts) {
-        var that = tts;
         jqUnit.assert("The onStart event should have fired");
-        jqUnit.assertTrue("Should be speaking", that.model.speaking);
-        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.assertEquals("The queue should contain one item", 1, that.queue.length);
-        jqUnit.assertTrue("An utterance component is present as the queue's first item", fluid.hasGrade(that.queue[0].options, "fluid.textToSpeech.utterance"));
-        jqUnit.assertTrue("An utterance is present in the queue's first item", that.queue[0].utterance);
-        jqUnit.assertTrue("The utterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", that.queue[0].utterance.constructor.name);
+        jqUnit.assertTrue("Should be speaking", tts.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", tts.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", tts.model.paused);
+        jqUnit.assertEquals("The queue should contain one item", 1, tts.queue.length);
+        jqUnit.assertTrue("An utterance component is present as the queue's first item", fluid.hasGrade(tts.queue[0].options, "fluid.textToSpeech.utterance"));
+        jqUnit.assertTrue("An utterance is present in the queue's first item", tts.queue[0].utterance);
+        jqUnit.assertTrue("The utterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", tts.queue[0].utterance.constructor.name);
 
     };
 
     fluid.tests.textToSpeech.testStop = function (tts) {
-        var that = tts;
         jqUnit.assert("The onStop event should have fired");
-        jqUnit.assertFalse("Should not be speaking", that.model.speaking);
-        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
-        jqUnit.assertUndefined("The utterance should not be attached", that.utterance);
-        that.cancel();
+        jqUnit.assertFalse("Should not be speaking", tts.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", tts.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", tts.model.paused);
+        jqUnit.assertDeepEq("The queue should be empty", [], tts.queue);
+        tts.cancel();
+    };
+
+    fluid.tests.textToSpeech.testUtteranceUnattached = function (tts) {
+        jqUnit.assertUndefined("The utterance should not be attached", tts.utterance);
     };
 
     fluid.tests.textToSpeech.testPause = function (tts) {
-        var that = tts;
         jqUnit.assert("The pause event should have fired");
-        jqUnit.assertTrue("Should be speaking", that.model.speaking);
-        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-        jqUnit.assertTrue("Should be paused", that.model.paused);
+        jqUnit.assertTrue("Should be speaking", tts.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", tts.model.pending);
+        jqUnit.assertTrue("Should be paused", tts.model.paused);
     };
 
     fluid.tests.textToSpeech.testResume = function (tts) {
-        var that = tts;
         jqUnit.assert("The resume event should have fired");
-        jqUnit.assertTrue("Should be speaking", that.model.speaking);
-        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+        jqUnit.assertTrue("Should be speaking", tts.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", tts.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", tts.model.paused);
     };
 
     fluid.tests.textToSpeech.baseTests = function () {
