@@ -149,7 +149,7 @@
 
 /* Font Icons */
 .fl-icon-orator {
-    font-family: 'Orator-Icons';
+    font-family: 'Orator-Icons' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
