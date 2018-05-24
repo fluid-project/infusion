@@ -59,7 +59,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             };
             fluid.textToSpeech.invokeSpeechSynthesisFunc("speak", toSpeak);
         } else {
-            setTimeout(promise.reject, 0);
+            fluid.invokeLater(promise.reject);
         }
         return promise;
     };
