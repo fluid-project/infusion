@@ -27,6 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             content: ".flc-orator-content"
         },
         model: {
+            enabled: true,
             play: false
         },
         components: {
@@ -39,18 +40,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     container: "{orator}.dom.controller",
                     scope: "{orator}.container",
                     model: {
-                        playing: "{orator}.model.play"
+                        playing: "{orator}.model.play",
+                        enabled: "{orator}.model.enabled"
                     }
                 }
             },
             selectionReader: {
                 type: "fluid.orator.selectionReader",
-                container: "{that}.container"
+                container: "{that}.container",
+                options: {
+                    model: {
+                        enabled: "{orator}.model.enabled"
+                    }
+                }
             },
             domReader: {
                 type: "fluid.orator.domReader",
                 container: "{that}.dom.content",
                 options: {
+                    model: {
+                        enabled: "{orator}.model.enabled"
+                    },
                     listeners: {
                         "utteranceOnEnd.domReaderStop": [{
                             changePath: "{orator}.model.play",
@@ -67,6 +77,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     }
                 }
+            }
+        },
+        modelListeners: {
+            "enabled": {
+                listener: "{tts}.cancel",
+                namespace: "orator.clearSpeech"
             }
         },
         distributeOptions: [{
@@ -121,7 +137,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         container: "",
         scope: "",
         model: {
-            playing: false
+            playing: false,
+            enabled: true
         },
         members: {
             container: "@expand:fluid.orator.controller.container({that}.options.container, {that}.options.markup.defaultContainer, {that}.options.scope)"
@@ -164,6 +181,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "playing": {
                 listener: "fluid.orator.controller.setToggleView",
                 args: ["{that}", "{change}.value"]
+            },
+            "enabled": {
+                "this": "{that}.container",
+                method: "toggle",
+                args: ["{change}.value"],
+                namespace: "toggleView"
             }
         }
     });
@@ -233,7 +256,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         model: {
             paused: false,
-            speaking: false
+            speaking: false,
+            enabled: true
         },
         members: {
             parseQueue: [],
@@ -324,10 +348,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.orator.domReader.speak = function (that, resumeFn) {
-        if (that.model.paused) {
-            resumeFn();
-        } else if (!that.model.speaking) {
-            that.readFromDOM();
+        if (that.model.enabled) {
+            if (that.model.paused) {
+                resumeFn();
+            } else if (!that.model.speaking) {
+                that.readFromDOM();
+            }
         }
     };
 
@@ -651,6 +677,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             playButton: "<button class=\"flc-orator-selectionReader-play fl-orator-selectionReader-play\"><span class=\"fl-icon-orator\"></span><span>%playButton</span></button>"
         },
         model: {
+            enabled: true,
             showUI: false,
             play: false,
             text: ""
@@ -669,14 +696,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
                 args: ["{that}"]
             },
-            "onSelectionChanged.updateText": {
-                changePath: "text",
-                value: {
-                    expander: {
-                        func: "{that}.getSelectedText"
-                    }
-                }
-            },
+            "onSelectionChanged.updateText": "{that}.getSelectedText",
             "utteranceOnEnd.stop": {
                 changePath: "play",
                 value: false,
@@ -697,6 +717,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 func: "fluid.orator.selectionReader.queueSpeech",
                 args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
                 namespace: "queueSpeech"
+            },
+            "enabled": {
+                funcName: "fluid.orator.selectionReader.updateText",
+                args: ["{that}", "{change}.value"],
+                namespace: "updateText"
             }
         },
         modelRelay: [{
@@ -709,7 +734,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }],
         invokers: {
-            getSelectedText: "fluid.orator.selectionReader.getSelectedText",
+            getSelectedText: {
+                changePath: "text",
+                value: {
+                    expander: {
+                        funcName: "fluid.orator.selectionReader.getSelectedText"
+                    }
+                },
+                source: "getSelectedText"
+            },
             play: {
                 changePath: "play",
                 value: true,
@@ -735,7 +768,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.orator.selectionReader.bindSelectionEvents = function (that) {
-        $(document).on("selectionchange", that.events.onSelectionChanged.fire);
+        $(document).on("selectionchange", function (e) {
+            if (that.model.enabled) {
+                that.events.onSelectionChanged.fire(e);
+            }
+        });
+    };
+
+    fluid.orator.selectionReader.updateText = function (that, state) {
+        if (state) {
+            that.getSelectedText();
+        } else {
+            that.applier.change("text", "", "ADD", "updateText");
+        }
     };
 
     /**

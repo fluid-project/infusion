@@ -53,6 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.orator.controller", {
         gradeNames: ["fluid.orator.controller"],
         model: {
+            enabled: true,
             playing: false
         }
     });
@@ -77,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.controller",
             tests: [{
-                expect: 21,
+                expect: 23,
                 name: "Controller UI",
                 sequence: [{
                     listener: "fluid.tests.orator.controllerTester.verifyState",
@@ -129,6 +130,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{oratorController}", false],
                     spec: {path: "playing", priority: "last:testing"},
                     changeEvent: "{oratorController}.applier.modelChanged"
+                }, {
+                    // Disable
+                    func: "{oratorController}.applier.change",
+                    args: ["enabled", false]
+                }, {
+                    funcName: "jqUnit.notVisible",
+                    args: ["The controller should not be visible when it is disabled", "{oratorController}.container"]
+                }, {
+                    // Enable
+                    func: "{oratorController}.applier.change",
+                    args: ["enabled", true]
+                }, {
+                    funcName: "jqUnit.isVisible",
+                    args: ["The controller should be visible when it is enabled", "{oratorController}.container"]
                 }]
             }]
         }]
@@ -446,7 +461,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator.domReader", {
-        gradeNames: ["fluid.orator.domReader", "fluid.tests.orator.mockTTS"]
+        gradeNames: ["fluid.orator.domReader", "fluid.tests.orator.mockTTS"],
+        model: {
+            paused: false,
+            speaking: false,
+            enabled: true
+        }
     });
 
     fluid.defaults("fluid.tests.orator.domReaderTests", {
@@ -473,15 +493,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             stoppedModel: {
                 speaking: false,
-                paused: false
+                paused: false,
+                enabled: true
             },
             speakingModel: {
                 speaking: true,
-                paused: false
+                paused: false,
+                enabled: true
             },
             pausedModel: {
                 speaking: false,
-                paused: true
+                paused: true,
+                enabled: true
+            },
+            disabledModel: {
+                speaking: false,
+                paused: false,
+                enabled: false
             },
             expectedSpeechRecord: [{
                 "interrupt": true,
@@ -522,7 +550,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 31,
+                expect: 33,
                 name: "Dom Reading",
                 sequence: [{
                     func: "{domReader}.play"
@@ -674,6 +702,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     funcName: "fluid.tests.orator.restoreStubs",
                     args: ["{that}.stubs", "readFromDOM"]
+                }, {
+                    // speak when disabled
+                    funcName: "fluid.set",
+                    args: ["{domReader}", "model", "{that}.options.testOptions.disabledModel"]
+                }, {
+                    funcName: "fluid.tests.orator.addStub",
+                    args: ["{that}.stubs", "{domReader}", "readFromDOM"]
+                }, {
+                    funcName: "fluid.tests.orator.addStub",
+                    args: ["{that}.stubs", "{domReader}.tts", "resume"]
+                }, {
+                    func: "{domReader}.play"
+                }, {
+                    funcName: "jqUnit.assertFalse",
+                    args: ["The readFromDOM method should not be called when the component state is disabled", "{that}.stubs.readFromDOM.called"]
+                }, {
+                    funcName: "jqUnit.assertFalse",
+                    args: ["The resume method should not be called when the component state is disabled", "{that}.stubs.resume.called"]
+                }, {
+                    funcName: "fluid.tests.orator.restoreStubs",
+                    args: ["{that}.stubs", ["readFromDOM", "resume"]]
                 }]
             }]
         }]
@@ -831,7 +880,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             showUI: false,
             play: false,
-            text: ""
+            text: "",
+            enabled: true
         },
         selectors: {
             text: ".flc-orator-selectionReader-test-selection",
@@ -862,29 +912,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 noSelection: {
                     showUI: false,
                     play: false,
-                    text: ""
+                    text: "",
+                    enabled: true
                 },
                 textSelected: {
                     showUI: true,
                     play: false,
-                    text: "Selection Test"
+                    text: "Selection Test",
+                    enabled: true
                 },
                 textPlay: {
                     showUI: true,
                     play: true,
-                    text: "Selection Test"
+                    text: "Selection Test",
+                    enabled: true
                 },
                 text2Selected: {
                     showUI: true,
                     play: false,
-                    text: "Other Text"
+                    text: "Other Text",
+                    enabled: true
+                },
+                disabled: {
+                    showUI: false,
+                    play: false,
+                    text: "",
+                    enabled: false
                 }
             }
         },
         modules: [{
             name: "fluid.orator.selectionReader",
             tests: [{
-                expect: 14,
+                expect: 22,
                 name: "fluid.orator.selectionReader",
                 sequence: [{
                     listener: "fluid.tests.orator.verifySelectionState",
@@ -944,6 +1004,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{selectionReader}", "Selection Collapsed", "{that}.options.testOpts.expected.noSelection"],
                     spec: {priority: "last:testing", path: "showUI"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // Disable after selection
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selectionReader}.dom.otherText"]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Selection before disabled", "{that}.options.testOpts.expected.text2Selected"],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    func: "{selectionReader}.applier.change",
+                    args: ["enabled", false]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Disabled", "{that}.options.testOpts.expected.disabled"],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // Selection while disabled
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selectionReader}.dom.otherText"]
+                }, {
+                    funcName: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Selection while disabled", "{that}.options.testOpts.expected.disabled"]
+                }, {
+                    // Enable after selection
+                    func: "{selectionReader}.applier.change",
+                    args: ["enabled", true]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Enabled after selection", "{that}.options.testOpts.expected.text2Selected"],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
                 }]
             }]
         }]
@@ -956,7 +1049,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.orator", {
         gradeNames: ["fluid.orator", "fluid.tests.orator.mockTTS"],
         model: {
-            play: false
+            play: false,
+            enabled: true
         },
         domReader: {
             gradeNames: ["fluid.tests.orator.domReaderStubs"]
@@ -983,7 +1077,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator",
             tests: [{
-                expect: 30,
+                expect: 35,
                 name: "Integration",
                 sequence: [{
                     listener: "fluid.tests.orator.verifyState",
@@ -1022,10 +1116,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{orator}", "Pause", false],
                     spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{orator}.applier.modelChanged"
+                }, {
+                    // disable
+                    func: "{orator}.applier.change",
+                    args: ["enabled", false]
+                }, {
+                    funcName: "fluid.tests.oratorTester.verifyDisabled",
+                    args: ["{orator}"]
                 }]
             }]
         }]
     });
+
+    fluid.tests.oratorTester.verifyDisabled = function (that) {
+        jqUnit.assertFalse("The controller should be disabled", that.controller.model.enabled);
+        jqUnit.notVisible("The controller should not be visible when it is disabled", that.controller.container);
+        jqUnit.assertFalse("The domReader should be disabled", that.domReader.model.enabled);
+        fluid.tests.orator.verifySelectionState(that.selectionReader, "selectionReader disabled by orator", {
+            showUI: false,
+            play: false,
+            text: "",
+            enabled: false
+        });
+    };
 
     $(document).ready(function () {
         fluid.test.runTests([

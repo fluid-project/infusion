@@ -46,32 +46,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 createOnEvent: "onInitOrator",
                 container: "{fluid.prefs.enactor.selfVoicing}.container",
                 options: {
-                    modelListeners: {
-                        "{fluid.prefs.enactor.selfVoicing}.model.enabled": {
-                            func: "{tts}.cancel",
-                            namespace: "selfVoicing.orator.stopSpeech"
-                        }
+                    model: {
+                        enabled: "{selfVoicing}.model.enabled"
                     },
                     controller: {
-                        scope: "{fluid.prefs.enactor.selfVoicing}.dom.controllerScope",
-                        modelListeners: {
-                            "{fluid.prefs.enactor.selfVoicing}.model.enabled": {
-                                "this": "{that}.container",
-                                method: "toggle",
-                                args: ["{fluid.prefs.enactor.selfVoicing}.model.enabled"],
-                                namespace: "orator.controller.toggleView"
-                            }
-                        }
-                    },
-                    selectionReader: {
-                        modelListeners: {
-                            "{fluid.prefs.enactor.selfVoicing}.model.enabled": {
-                                changePath: "text",
-                                value: "",
-                                source: "selfVoicingEnabled",
-                                namespace: "selfVoicing.orator.clearSelectedText"
-                            }
-                        }
+                        scope: "{fluid.prefs.enactor.selfVoicing}.dom.controllerScope"
                     }
                 }
             }
