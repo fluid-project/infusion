@@ -1,0 +1,10 @@
+{
+  "contrast-default": "پیش فرض ",
+  "contrast-bw": "متن سیاه روی زمینه سفید",
+  "contrast-wb": "متن سفید روی زمینه سیاه",
+  "contrast-by": "متن سیاه روی زمینه زرد",
+  "contrast-yb": "متن زرد روی زمینه سیاه",
+  "contrast-lgdg": "تضاد کم",
+  "label": "رنگ و تضاد",
+  "description": "تغییر رنگ متن و زمینه"
+}

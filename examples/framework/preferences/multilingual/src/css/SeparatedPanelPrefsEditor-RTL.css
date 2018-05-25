@@ -1,0 +1,8 @@
+/* Styles for the elements of UIO outside the IFRAME (the tab / toggle button) */
+
+/* float open/close buttons to other side */
+@media screen and (min-width: 40em) {
+    html[dir="rtl"] .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-buttons {
+        float: left;
+    }
+}

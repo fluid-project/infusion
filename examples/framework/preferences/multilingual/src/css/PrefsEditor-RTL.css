@@ -1,0 +1,12 @@
+/* Styles for the elements of UIO rendered inside the IFRAME */
+
+/* Flip the non-symmetrical icons */
+
+body[dir=rtl] .fl-icon-line-space, body[dir=rtl] .fl-icon-toc {
+    transform: rotate(180deg);
+}
+
+/* revese icon L-R margins */
+body[dir=rtl] .fl-prefsEditor .fl-icon-right, body[dir=rtl] .fl-prefsEditor .fl-icon-left, body[dir=rtl] .fl-prefsEditor .fl-icon-indicator, body[dir=rtl] .fl-prefsEditor .fl-icon-crossout, body[dir=rtl] .fl-prefsEditor .fl-icon-big-a, body[dir=rtl] .fl-prefsEditor .fl-icon-small-a, body[dir=rtl] .fl-prefsEditor .fl-icon-line-space-expanded, body[dir=rtl] .fl-prefsEditor .fl-icon-line-space-condensed, body[dir=rtl] .fl-prefsEditor .fl-icon-contrast, body[dir=rtl] .fl-prefsEditor .fl-icon-undo, body[dir=rtl] .fl-prefsEditor .fl-icon-line-space, body[dir=rtl] .fl-prefsEditor .fl-icon-inputs, body[dir=rtl] .fl-prefsEditor .fl-icon-simplify, body[dir=rtl] .fl-prefsEditor .fl-icon-font, body[dir=rtl] .fl-prefsEditor .fl-icon-size, body[dir=rtl] .fl-prefsEditor .fl-icon-text-to-speech, body[dir=rtl] .fl-prefsEditor .fl-icon-toc {
+    margin: .2em 0 0 .3em;
+}

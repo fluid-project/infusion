@@ -1,0 +1,13 @@
+/* Language-specific styling */
+body:lang(fa) .fl-prefsEditor .fl-icon-small-a:before {
+    content: "چ";
+}
+
+body:lang(fa) .fl-prefsEditor .fl-icon-big-a:before {
+    content: "چ";
+    font-size: 200%;
+}
+
+body:lang(fa) .fl-prefsEditor .fl-choices .fl-choice .fl-preview-A:before {
+    content: "چ";
+}
