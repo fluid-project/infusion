@@ -67,11 +67,4 @@ Vagrant.configure(2) do |config|
     sudo PYTHONUNBUFFERED=1 ANSIBLE_STDOUT_CALLBACK=debug ansible-playbook /home/vagrant/sync/provisioning/playbook.yml --tags="install,configure" --inventory="localhost ansible_connection=local,"
   SHELL
 
-  # Using config.vm.hostname to set the hostname on Fedora VMs seems to remove the string
-  # "localhost" from the first line of /etc/hosts. This script reinserts it if it's missing.
-  # https://github.com/mitchellh/vagrant/pull/6203
-  config.vm.provision "shell",
-    inline: "/usr/local/bin/edit-hosts.sh",
-    run: "always"
-
 end
