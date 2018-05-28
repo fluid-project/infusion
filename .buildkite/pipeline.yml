@@ -8,7 +8,9 @@ agent_tags: &agent_tags
 
 steps:
   - name: "Build"
-    command: "DISPLAY=:0 vagrant up --provider virtualbox"
+    command:
+      - "DISPLAY=:0 vagrant up --provider virtualbox"
+      - "vagrant ssh -c 'cd /home/vagrant/sync/; npm run pretest'"
     timeout_in_minutes: 20
     <<: *agent_tags
 
