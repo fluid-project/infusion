@@ -24,7 +24,7 @@ ram = ENV["VM_RAM"] || 2048
 
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "inclusivedesign/fedora27"
+  config.vm.box = "inclusivedesign/fedora28"
 
   # Your working directory will be synced to /home/vagrant/sync in the VM.
   config.vm.synced_folder ".", "#{app_directory}"
@@ -66,12 +66,5 @@ Vagrant.configure(2) do |config|
     sudo ansible-galaxy install -fr /home/vagrant/sync/provisioning/requirements.yml
     sudo PYTHONUNBUFFERED=1 ANSIBLE_STDOUT_CALLBACK=debug ansible-playbook /home/vagrant/sync/provisioning/playbook.yml --tags="install,configure" --inventory="localhost ansible_connection=local,"
   SHELL
-
-  # Using config.vm.hostname to set the hostname on Fedora VMs seems to remove the string
-  # "localhost" from the first line of /etc/hosts. This script reinserts it if it's missing.
-  # https://github.com/mitchellh/vagrant/pull/6203
-  config.vm.provision "shell",
-    inline: "/usr/local/bin/edit-hosts.sh",
-    run: "always"
 
 end
