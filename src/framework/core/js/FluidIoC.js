@@ -863,6 +863,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fetcher;
     };
 
+    // TODO: Hoist all calls to this to a single expander per shadow
     fluid.makeStackResolverOptions = function (parentThat, localRecord, fast) {
         return $.extend(fluid.copy(fluid.rawDefaults("fluid.makeExpandOptions")), {
             localRecord: localRecord || {},
@@ -1421,12 +1422,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return value;
     };
 
-    /** Perform a "light merge" of a set of options records in order to immediately discover the type name if they designate
+    /** Perform a "light merge" of a set of options records in order to immediately discover the type name if they designate a
      * concrete component or whether they designate an injected component.
      * @param {ComponentOptions[]} records - Array of component options records as held in {Potentia}.records
      * @return {LightMergeRecords} A structure holding
      *     {Boolean} isInjected - whether these designate an injected component
      *     {String} type - the component's type if it is concrete
+     *     {String} createOnEvent - the component's "createOnEvent" if any record set it
      *     {ComponentOptions[]} toMerge - Array of component options to be merged
      */
     fluid.lightMergeRecords = function (records) {
@@ -1440,6 +1442,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 togo.isInjected = true;
             } else {
                 togo.type = togo.type || record.type;
+                togo.createOnEvent = togo.createOnEvent || record.createOnEvent;
                 if (togo.isInjected) {
                     togo.toMerge = [record];
                 } else {
@@ -1516,17 +1519,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
-    fluid.registerConcreteSubPotentia = function (subcomponentRecord, key, potentia, parentShell, localRecord) {
+    fluid.registerConcreteSubPotentia = function (lightMerge, key, potentia, parentShell, localRecord) {
+        // "componentDepth" is currently unused but will be incorporated in mergeBlocks sort for refined versions of FLUID-5614
         var componentDepth = potentia.componentDepth || 0;
         var newSegs = potentia.segs.concat([key]);
-        var record = $.extend({
-            componentDepth: componentDepth + 1,
-            sourceComponentId: parentShell.id,
-            recordType: "subcomponentRecord"
-        }, fluid.isInjectedComponentRecord(subcomponentRecord) ? {
-            injected: subcomponentRecord
-        } : subcomponentRecord);
-        record.type = fluid.expandImmediate(record.type, parentShell, localRecord);
+        var records = fluid.transform(lightMerge.toMerge, function (toMerge) {
+            var record = $.extend({
+                componentDepth: componentDepth + 1,
+                sourceComponentId: parentShell.id,
+                recordType: "subcomponentRecord",
+            }, toMerge);
+            record.type = fluid.expandImmediate(record.type, parentShell, localRecord);
+            return record;
+        });
+        
         var subPotentia = {
             type: "create",
             segs: newSegs,
@@ -1537,6 +1543,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         fluid.registerPotentia(subPotentia, null, false);
     };
+    
+    fluid.lightMergeComponentRecord = function (shadow, shadowKey, key, mergingArray) {
+        var lightMerge = fluid.lightMergeRecords(mergingArray);
+        fluid.set(shadow, [shadowKey, key], lightMerge);
+        return lightMerge;
+    };
 
     fluid.processComponentShell = function (potentia, shell) {
         var instantiator = fluid.globalInstantiator;
@@ -1546,8 +1558,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var mergeOptions = shadow.mergeOptions;
 
         var components = fluid.driveStrategy(shell.options, "components", mergeOptions.strategy);
+        // TODO: We are here - either here, or even a bit earlier, this needs to become a "lightMerge" structure, and we probably
+        // want to replace the "records" structure in a create potentia with this. Then push this all the way down to operateCreatePotentia
+        // which is where lightMergeRecords is currently called. Where to put this? If we call lightMerge here, how do we avoid calling it
+        // again given there are other routes into operateCreatePotentia, e.g. fluid.construct. I guess we need to split up the assembly and the merge operations,
+        // bringing it one step closer to the full merging workflow.
         fluid.each(components, function (subcomponentRecord, key) {
+            var lightMerge = fluid.lightMergeComponentRecord(shadow, "lightMergeComponents", key, subcomponentRecord);
             fluid.checkComponentRecord(subcomponentRecord, fluid.componentRecordExpected);
+            // Note that this check is not really timely - what if an overriding record from further up in the tree has added
+            // a createOnEvent annotation where we did not have one ourselves? This logic really needs to be shifted out
+            // into initComponentShell, especially when createOnEvent becomes a plain option, and we allow for async creation.
             if (!subcomponentRecord.createOnEvent) {
                 fluid.registerConcreteSubPotentia(subcomponentRecord, key, potentia, shell, potentia.localRecord);
             }

@@ -2611,7 +2611,7 @@ var fluid = fluid || fluid_3_0_0;
     fluid.mergingArray.prototype = [];
 
     // Defer all evaluation of all nested members to resolve FLUID-5668
-    fluid.membersMergePolicy = function (target, source) {
+    fluid.deferringMergePolicy = function (target, source) {
         target = target || {};
         fluid.each(source, function (oneSource, key) {
             if (!target[key]) {
@@ -2659,11 +2659,19 @@ var fluid = fluid || fluid_3_0_0;
         distributeOptions: fluid.distributeOptionsPolicy,
         members: {
             noexpand: true,
-            func: fluid.membersMergePolicy
+            func: fluid.deferringMergePolicy
         },
         invokers: {
             noexpand: true,
             func: fluid.invokersMergePolicy
+        },
+        components: {
+            noexpand: true,
+            func: fluid.deferringMergePolicy
+        },
+        dynamicComponents: {
+            noexpand: true,
+            func: fluid.deferringMergePolicy
         },
         transformOptions: "replace",
         listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)

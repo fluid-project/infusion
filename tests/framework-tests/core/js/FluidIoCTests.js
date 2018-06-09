@@ -4970,6 +4970,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /** Merging of "double deep trees" **/
+    
+    fluid.tests.push = function (array, value) {
+        array.push(value);
+    };
+    
+    fluid.defaults("fluid.tests.FLUID5614root1", {
+        gradeNames: "fluid.component",
+        components: {
+            sub: {
+                type: "fluid.component",
+                options: {
+                    members: {
+                        firings: []
+                    },
+                    listeners: {
+                        onCreate: {
+                            funcName: "fluid.tests.push",
+                            args: ["{that}.firings", true]
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.FLUID5614root2", fluid.defaults("fluid.tests.FLUID5614root1"));
+    
+    jqUnit.test("FLUID-5614: Failure to merge \"double deep trees\" correctly", function () {
+        var that = fluid.tests.FLUID5614root1({
+            gradeNames: "fluid.tests.FLUID5614root2"
+        });
+        jqUnit.assertDeepEq("Should have fired two onCreate listeners through merged definitions",
+            [true, true], that.sub.firings);
+    });
+
     /** FLUID-6126 failure to construct child of root which has been advised **/
 
     fluid.defaults("fluid.tests.FLUID6126root", {
