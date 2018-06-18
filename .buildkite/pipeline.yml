@@ -2,31 +2,49 @@
 # is configured using the Buildkite web UI and has a "Run this CI job" label. It is not included 
 # in this YAML configuration to prevent it from being accidentally removed as part of a PR change.
 
+env:
+  DOCKER_IMAGE: "fluidprojectorg/infusion-build-results:${BUILDKITE_COMMIT}"
+  TMP_ID: "infusion-build-results-${BUILDKITE_BUILD_ID}" # Used to identify temporary containers, volumes and images
+
 agent_tags: &agent_tags
   agents:
     name: "${BUILDKITE_AGENT_META_DATA_NAME?}"
 
 steps:
   - name: "Build"
-    command: "DISPLAY=:0 vagrant up --provider virtualbox"
-    timeout_in_minutes: 20
-    <<: *agent_tags
-
-  # Wait and make sure the VM was successfully created before proceeding. Otherwise the remaining steps will not run.
-  - wait
-
-  - name: "Code Linter"
-    command: "vagrant ssh -c 'cd /home/vagrant/sync/; $(npm bin)/grunt lint'"
-    timeout_in_minutes: 2
-    <<: *agent_tags
-
-  - name: "Browser Tests"
-    command: "npm run test:vagrantBrowser"
+    command:
+      # Build temporary image and copy results to Docker volume
+      - "docker build -t ${TMP_ID} ."
+      - "docker run --rm -ti -v ${TMP_ID}:/app ${TMP_ID} true"
     timeout_in_minutes: 15
     <<: *agent_tags
 
+  - wait
+
+  - name: "Code Linter"
+    command:
+      - "docker run --rm -ti -v ${TMP_ID}:/app -w /app inclusivedesign/node-browsers grunt lint"
+    timeout_in_minutes: 1
+    <<: *agent_tags
+
   - name: "Node Tests"
-    command: "npm run test:vagrantNode"
+    command:
+      - "docker run --rm -ti -v ${TMP_ID}:/app -w /app inclusivedesign/node-browsers npm run test:node"
+    timeout_in_minutes: 5
+    <<: *agent_tags
+
+  - name: "Browser Tests"
+    command:
+      - "docker run --rm -ti --cap-add=SYS_ADMIN -e HEADLESS=1 -v ${TMP_ID}:/app -w /app inclusivedesign/node-browsers npm run test:browser"
+    timeout_in_minutes: 15
+    <<: *agent_tags
+
+  - name: "Push"
+    command:
+      # Copy results from volume into container and publish as an image
+      - "docker run --name ${TMP_ID} -v ${TMP_ID}:/app busybox sh -c 'cp -R /app /build'"
+      - "docker commit ${TMP_ID} ${DOCKER_IMAGE}"
+      - "docker push ${DOCKER_IMAGE}"
     timeout_in_minutes: 5
     <<: *agent_tags
 
@@ -34,6 +52,10 @@ steps:
     continue_on_failure: true
 
   - name: "Cleanup"
-    command: "vagrant destroy -f"
+    command:
+      - "docker container rm ${TMP_ID}"
+      - "docker volume rm ${TMP_ID}"
+      - "docker image rm ${TMP_ID}"
+      - "docker image rm ${DOCKER_IMAGE}"
     timeout_in_minutes: 5
     <<: *agent_tags
