@@ -53,9 +53,9 @@ steps:
 
   - name: "Cleanup"
     command:
-      - "docker container rm ${TMP_ID}"
+      - "docker container rm -f ${TMP_ID}"
       - "docker volume rm ${TMP_ID}"
-      - "docker image rm ${TMP_ID}"
-      - "docker image rm ${DOCKER_IMAGE}"
+      - "docker image rm -f ${TMP_ID}"
+      - "docker image rm -f ${DOCKER_IMAGE}"
     timeout_in_minutes: 5
     <<: *agent_tags
