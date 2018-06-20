@@ -1,7 +1,7 @@
 FROM node:10-alpine
 
 # Add OS-level dependencies
-RUN apk add --no-cache --virtual build-dependencies python make nginx git g++ && \
+RUN apk add --no-cache python make nginx git g++ && \
     npm install -g grunt-cli
 
 # Switch to regular user
