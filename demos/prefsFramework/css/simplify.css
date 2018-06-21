@@ -1,0 +1,15 @@
+.demo-content-simplified {
+    background-image: none;
+}
+
+.demo-content-simplified aside,
+.demo-content-simplified nav,
+.demo-content-simplified header,
+.demo-content-simplified footer,
+.demo-content-simplified article .icon {
+    display: none;
+}
+
+.demo-content-simplified article #article_image {
+    float: none;
+}

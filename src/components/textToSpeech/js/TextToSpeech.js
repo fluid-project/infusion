@@ -8,11 +8,6 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
-Includes code from Underscore.js 1.8.3
-http://underscorejs.org
-(c) 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-Underscore may be freely distributed under the MIT license.
-
 */
 
 /* global speechSynthesis, SpeechSynthesisUtterance*/
@@ -54,15 +49,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             toSpeak.volume = 0; // mutes the Speech Synthesizer
             // Same timeout as the timeout in the IoC testing framework
             var timeout = setTimeout(function () {
-                fluid.textToSpeech.deferredSpeechSynthesisControl("cancel");
+                fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
                 promise.reject();
             }, delay || 5000);
             toSpeak.onend = function () {
                 clearTimeout(timeout);
-                fluid.textToSpeech.deferredSpeechSynthesisControl("cancel");
+                fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
                 promise.resolve();
             };
-            fluid.textToSpeech.deferredSpeechSynthesisControl("speak", toSpeak);
+            fluid.textToSpeech.invokeSpeechSynthesisFunc("speak", toSpeak);
         } else {
             setTimeout(promise.reject, 0);
         }
@@ -76,7 +71,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             onStart: null,
             onStop: null,
             onError: null,
-            onSpeechQueued: null
+            onSpeechQueued: null,
+            utteranceOnBoundary: null,
+            utteranceOnEnd: null,
+            utteranceOnError: null,
+            utteranceOnMark: null,
+            utteranceOnPause: null,
+            utteranceOnResume: null,
+            utteranceOnStart: null
         },
         members: {
             queue: []
@@ -121,102 +123,63 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             pause: {
                 changePath: "pauseRequested",
-                value: true
+                value: true,
+                source: "pause"
             },
             resume: {
                 changePath: "resumeRequested",
-                value: true
+                value: true,
+                source: "resume"
             },
             getVoices: {
-                "this": "speechSynthesis",
-                "method": "getVoices"
-            },
-            handleStart: {
+                funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
+                args: ["getVoices"]
+            }
+        },
+        listeners: {
+            "utteranceOnStart.speak": {
                 changePath: "speaking",
-                value: true
+                value: true,
+                source: "utteranceOnStart"
             },
-            // The handleEnd method is assumed to be triggered asynchronously
-            // as it is processed/triggered by the mechanism voicing the utterance.
-            handleEnd: {
+            "utteranceOnEnd.stop": {
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]
             },
-            handleError: "{that}.events.onError.fire",
-            handlePause: {
+            "utteranceOnError.forward": "{that}.events.onError",
+            "utteranceOnPause.pause": {
                 changePath: "paused",
-                value: true
+                value: true,
+                source: "utteranceOnPause"
             },
-            handleResume: {
+            "utteranceOnResume.resume": {
                 changePath: "paused",
-                value: false
+                value: false,
+                source: "utteranceOnResume"
+            },
+            "onCreate.unloadCleanup": {
+                funcName: "fluid.textToSpeech.cleanupOnUnload"
+            },
+            "onDestroy.cleanup": {
+                funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
+                args: ["cancel"]
             }
         }
     });
 
-    // Issue commands to the speechSynthesis interface with deferral (1 ms timeout);
-    // this makes the wrapper behave better when issuing commands, especially
-    // play and pause
-    fluid.textToSpeech.deferredSpeechSynthesisControl = function (control, args) {
-        setTimeout(function () {
-            speechSynthesis[control](args);
-        }, 1);
+    // Cancel all synthesis when a page is unloaded.
+    // This is necessary so that the speech synthesis stops when navigating to a new page and so that paused
+    // speaking doesn't prevent new self voicing after a page reload.
+    fluid.textToSpeech.cleanupOnUnload = function () {
+        window.onbeforeunload = function () {
+            fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
+        };
     };
 
-    // Throttle implementation adapted from underscore.js 1.8.3; see
-    // file header for license details
-    // Returns a version of a function that will only be called max once
-    // every "wait" MS
-    fluid.textToSpeech.throttle = function (func, wait, options) {
-        var timeout, context, args, result;
-        var previous = 0;
-        if (!options) {
-            options = {};
-        }
-
-        var later = function () {
-            previous = options.leading === false ? 0 : new Date().getTime();
-            timeout = null;
-            result = func.apply(context, args);
-            if (!timeout) {
-                context = args = null;
-            }
-        };
-
-        var throttled = function () {
-            var now = new Date().getTime();
-            if (!previous && options.leading === false) {
-                previous = now;
-            }
-            var remaining = wait - (now - previous);
-            context = this;
-            args = arguments;
-            if (remaining <= 0 || remaining > wait) {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                }
-                previous = now;
-
-                result = func.apply(context, args);
-                if (!timeout) {
-                    context = args = null;
-                }
-            } else if (!timeout && options.trailing !== false) {
-                timeout = setTimeout(later, remaining);
-            }
-            return result;
-        };
-
-        throttled.cancel = function () {
-            clearTimeout(timeout);
-            previous = 0;
-            timeout = context = args = null;
-        };
-        return throttled;
+    fluid.textToSpeech.invokeSpeechSynthesisFunc = function (control, args) {
+        args = fluid.makeArray(args);
+        speechSynthesis[control].apply(speechSynthesis, args);
     };
-
-    // Throttled version of deferred speech synthesis control
-    fluid.textToSpeech.throttleControl = fluid.textToSpeech.throttle(fluid.textToSpeech.deferredSpeechSynthesisControl, 100, {leading: false});
 
     fluid.textToSpeech.speak = function (that, speaking) {
         that.events[speaking ? "onStart" : "onStop"].fire();
@@ -226,8 +189,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // If there's a control request (value change to true), clear and
         // execute it
         if (change.value) {
-            that.applier.change(change.path, false);
-            fluid.textToSpeech.throttleControl(control);
+            that.applier.change(change.path, false, "ADD", "requestControl");
+            fluid.textToSpeech.invokeSpeechSynthesisFunc(control);
         }
     };
 
@@ -242,10 +205,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
 
         if (that.queue.length) {
-            that.applier.change("pending", true);
+            that.applier.change("pending", true, "ADD", "handleEnd.pending");
         } else if (!that.queue.length) {
             var newModel = $.extend({}, that.model, resetValues);
-            that.applier.change("", newModel);
+            that.applier.change("", newModel, "ADD", "handleEnd.reset");
         }
     };
 
@@ -254,19 +217,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.cancel();
         }
 
-        var errorFn = function () {
-            that.handleError(text);
-        };
-
         var toSpeak = new SpeechSynthesisUtterance(text);
 
 
         var eventBinding = {
-            onstart: that.handleStart,
-            onend: that.handleEnd,
-            onerror: errorFn,
-            onpause: that.handlePause,
-            onresume: that.handleResume
+            onboundary: that.events.utteranceOnBoundary.fire,
+            onend: that.events.utteranceOnEnd.fire,
+            onerror: that.events.utteranceOnError.fire,
+            onmark:that.events.utteranceOnMark.fire,
+            onpause: that.events.utteranceOnPause.fire,
+            onresume: that.events.utteranceOnResume.fire,
+            onstart: that.events.utteranceOnStart.fire
         };
         $.extend(toSpeak, that.model.utteranceOpts, options, eventBinding);
 
@@ -277,12 +238,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.queue.push({text: text, utterance: toSpeak});
 
         that.events.onSpeechQueued.fire(text);
-        fluid.textToSpeech.deferredSpeechSynthesisControl("speak", toSpeak);
+        fluid.textToSpeech.invokeSpeechSynthesisFunc("speak", toSpeak);
     };
 
     fluid.textToSpeech.cancel = function (that) {
         that.queue = [];
-        fluid.textToSpeech.deferredSpeechSynthesisControl("cancel");
+        fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
     };
 
 })(jQuery, fluid_3_0_0);
