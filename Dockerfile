@@ -1,8 +1,7 @@
-FROM node:10-alpine
+FROM node:10-alpine AS builder
 
 # Add OS-level dependencies
-RUN apk add --no-cache python make nginx git g++ && \
-    npm install -g grunt-cli
+RUN apk add --no-cache python make git g++
 
 # Switch to regular user
 USER node
@@ -14,10 +13,13 @@ RUN npm install
 
 # Build
 COPY --chown=node . /app
-RUN grunt
+RUN $(npm bin)/grunt
 
 # Annotate directory as a Docker volume (used by host, if desired) 
 VOLUME ["/app"]
 
-# Serve static assets
-CMD ["nginx", "-g", "daemon off;"]
+# Build final image to serve static assets
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+COPY --from=builder /app/products/*.zip .
+RUN unzip -o -d . infusion-*.zip
