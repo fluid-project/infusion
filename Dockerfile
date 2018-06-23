@@ -18,7 +18,7 @@ RUN $(npm bin)/grunt
 # Annotate directory as a Docker volume (used by host, if desired) 
 VOLUME ["/app"]
 
-# Build final image to serve static assets
+# Build final image to serve static assets (path: //infusion)
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/products/*.zip .
