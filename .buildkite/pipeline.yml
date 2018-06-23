@@ -41,7 +41,7 @@ steps:
   - name: "Upload Reports"
     command:
       - "docker run --rm --name ${TMP_ID} -v ${TMP_ID}:/app -v ${PWD}:/artifacts busybox cp -R /app/reports /app/products /artifacts"
-    artifact_path:
+    artifact_paths:
       - "artifacts/**/*"
     timeout_in_minutes: 5
     <<: *agent_tags
