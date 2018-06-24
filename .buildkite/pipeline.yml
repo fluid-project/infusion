@@ -52,6 +52,7 @@ steps:
 
   - name: "Cleanup"
     command:
+      - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${PWD}:/app busybox rm -rf /app/out" # Need root privileges to deleted /out
       - "docker volume rm ${TMP_ID}"
       - "docker image rm -f ${TMP_ID}"
     timeout_in_minutes: 5
