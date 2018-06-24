@@ -41,6 +41,7 @@ steps:
 
   - name: "Upload Reports"
     command:
+      - "mkdir /out"
       - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${TMP_ID}:/app -v ${PWD}/out:/out busybox cp -R /app/reports /app/products /out"
     artifact_paths:
       - "out/**/*"
@@ -52,7 +53,6 @@ steps:
 
   - name: "Cleanup"
     command:
-      - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${PWD}:/app busybox rm -rf /app/out" # Need root privileges to deleted /out
       - "docker volume rm ${TMP_ID}"
       - "docker image rm -f ${TMP_ID}"
     timeout_in_minutes: 5
