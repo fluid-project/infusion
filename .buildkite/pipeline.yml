@@ -41,7 +41,7 @@ steps:
 
   - name: "Upload Reports"
     command:
-      - "mkdir /out"
+      - "mkdir out"
       - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${TMP_ID}:/app -v ${PWD}/out:/out busybox cp -R /app/reports /app/products /out"
     artifact_paths:
       - "out/**/*"
