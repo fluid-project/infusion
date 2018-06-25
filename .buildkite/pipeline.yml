@@ -15,7 +15,8 @@ steps:
   - name: "Build"
     command:
       - "docker build -t ${TMP_ID} --target builder ."
-      - "docker run --rm ${DOCKER_LIMITS} -v ${TMP_ID}:/app ${TMP_ID} true"
+      - "docker run --rm -ti ${DOCKER_LIMITS} -v ${TMP_ID}:/app ${TMP_ID} true"
+      - "docker run --rm -ti ${DOCKER_LIMITS} -v ${TMP_ID}:/app ${TMP_ID} sh -c 'node node_modules/rimraf/bin.js reports/* coverage/*'"
     timeout_in_minutes: 15
     <<: *agent_tags
 
@@ -42,6 +43,7 @@ steps:
   - name: "Upload Reports"
     command:
       - "mkdir -p out"
+      - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${TMP_ID}:/app node node_modules/nyc/bin/nyc.js report -r text-summary -r html --report-dir reports --temp-directory coverage"
       - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${TMP_ID}:/app -v ${PWD}/out:/out busybox cp -R /app/reports /app/products /out"
       - "buildkite-agent artifact upload 'out/**/*'"
       - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v $(pwd)/out:/out busybox sh -c 'rm -rf /out/*'"
