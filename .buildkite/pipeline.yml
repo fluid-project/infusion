@@ -43,8 +43,9 @@ steps:
     command:
       - "mkdir out"
       - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${TMP_ID}:/app -v ${PWD}/out:/out busybox cp -R /app/reports /app/products /out"
-    artifact_paths:
-      - "out/**/*"
+      - "buildkite-agent artifact upload 'out/**/*'"
+      - "docker run --rm ${DOCKER_LIMITS} --name ${TMP_ID} -v ${TMP_ID}:/app -v ${PWD}/out:/out busybox rm -rf /out/*"
+      - "rm -rf out"
     timeout_in_minutes: 5
     <<: *agent_tags
 
