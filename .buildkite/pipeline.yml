@@ -4,7 +4,7 @@
 
 env:
   TMP_ID: "infusion-${BUILDKITE_BUILD_ID}" # Used to identify temporary containers, volumes and images
-  DOCKER_NODE_BROWSERS_IMAGE: "inclusivedesign/node-browsers@sha256:268540faab7274d29bbbf106573ec345eea49039088d696f1edcc4db9d7e09b6"
+  DOCKER_NODE_BROWSERS_IMAGE: "inclusivedesign/node-browsers@sha256:6ca7d333a361482a4fc4cb6d727d85094fa22d5ae01beb614ecb080c74b5ed32"
 
 # https://github.com/buildkite/feedback/issues/173
 agent_tags: &agent_tags
