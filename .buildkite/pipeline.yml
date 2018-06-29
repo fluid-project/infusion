@@ -15,7 +15,7 @@ steps:
   - name: "Build"
     command:
       - "docker build -t ${TMP_ID} --target builder ."
-      - "docker run --rm -ti -v ${TMP_ID}:/app ${TMP_ID} true"
+      - "docker run --rm -ti -v ${TMP_ID}:/app ${TMP_ID} true" # Copy folder contents into volume
     timeout_in_minutes: 15
     <<: *agent_tags
 
