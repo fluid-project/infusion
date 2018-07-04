@@ -17,12 +17,43 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.registerNamespace("fluid.textToSpeech");
+    /*********************************************************************************************
+     * fluid.window is a singleton component to be used for registering event bindings to        *
+     * events fired by the window object                                                         *
+     *********************************************************************************************/
+
+    fluid.defaults("fluid.window", {
+        gradeNames: ["fluid.component", "fluid.resolveRootSingle"],
+        singleRootType: "fluid.window",
+        members: {
+            window: window
+        },
+        invokers: {
+            "onCreate.bindEvents": {
+                funcName: "fluid.window.bindEvents",
+                args: ["{that}"]
+            }
+        }
+    });
+
+    /**
+    * Adds a lister to a window event for each event defined on the component.
+    * The name must match a valid window event.
+    *
+    * @param {Component} that - the component itself
+    */
+    fluid.window.bindEvents = function (that) {
+        fluid.each(that.options.events, function (type, eventName) {
+            window.addEventListener(eventName, that.events[eventName].fire);
+        });
+    };
 
     /*********************************************************************************************
      * fluid.textToSpeech provides a wrapper around the SpeechSynthesis Interface                *
      * from the Web Speech API ( https://w3c.github.io/speech-api/speechapi.html#tts-section )   *
      *********************************************************************************************/
+
+    fluid.registerNamespace("fluid.textToSpeech");
 
     fluid.textToSpeech.isSupported = function () {
         return !!(window && window.speechSynthesis);
@@ -86,6 +117,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         members: {
             queue: []
+        },
+        components: {
+            wndw: {
+                type: "fluid.window",
+                options: {
+                    events: {
+                        beforeunload: null
+                    }
+                }
+            }
         },
         dynamicComponents: {
             utterance: {
@@ -197,25 +238,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 value: false,
                 source: "utteranceOnResume"
             },
-            "onCreate.unloadCleanup": {
-                funcName: "fluid.textToSpeech.cleanupOnUnload",
-                args: ["{that}"]
-            },
             "onDestroy.cleanup": {
                 func: "{that}.invokeSpeechSynthesisFunc",
                 args: ["cancel"]
+            },
+            "{wndw}.events.beforeunload": {
+                funcName: "{that}.invokeSpeechSynthesisFunc",
+                args: ["cancel"],
+                namespace: "cancelSpeechSynthesisOnUnload"
             }
         }
     });
-
-    // Cancel all synthesis when a page is unloaded.
-    // This is necessary so that the speech synthesis stops when navigating to a new page and so that paused
-    // speaking doesn't prevent new self voicing after a page reload.
-    fluid.textToSpeech.cleanupOnUnload = function (that) {
-        window.onbeforeunload = function () {
-            that.invokeSpeechSynthesisFunc("cancel");
-        };
-    };
 
     /**
      * Wraps the SpeechSynthesis API
