@@ -236,7 +236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textToSpeech.supportsPitch = function () {
         var newPitch = 1.2;
-        if (fluid.textToSpeech.isSupported) {
+        if (fluid.textToSpeech.isSupported()) {
             var utterance = new SpeechSynthesisUtterance("test");
             utterance.pitch = newPitch;
             return fluid.roundToDecimal(utterance.pitch, 1) === newPitch;
