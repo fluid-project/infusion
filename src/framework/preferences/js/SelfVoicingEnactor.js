@@ -28,7 +28,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
-            controllerScope: ".flc-prefs-selfVoicingWidget"
+            controller: ".flc-prefs-selfVoicingWidget"
         },
         events: {
             onInitOrator: null
@@ -50,7 +50,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         enabled: "{selfVoicing}.model.enabled"
                     },
                     controller: {
-                        scope: "{fluid.prefs.enactor.selfVoicing}.dom.controllerScope"
+                        parentContainer: "{fluid.prefs.enactor.selfVoicing}.dom.controller"
                     }
                 }
             }

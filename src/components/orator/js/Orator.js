@@ -37,8 +37,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             controller: {
                 type: "fluid.orator.controller",
                 options: {
-                    container: "{orator}.dom.controller",
-                    scope: "{orator}.container",
+                    parentContainer: "{orator}.container",
                     model: {
                         playing: "{orator}.model.play",
                         enabled: "{orator}.model.enabled"
@@ -123,7 +122,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      **********************************************/
 
     fluid.defaults("fluid.orator.controller", {
-        gradeNames: ["fluid.newViewComponent"],
+        gradeNames: ["fluid.containerRenderingView"],
         selectors: {
             playToggle: ".flc-orator-controller-playToggle"
         },
@@ -134,18 +133,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             play: "play",
             pause: "pause"
         },
-        container: "",
-        scope: "",
         model: {
             playing: false,
             enabled: true
         },
-        members: {
-            container: "@expand:fluid.orator.controller.container({that}.options.container, {that}.options.markup.defaultContainer, {that}.options.scope)"
-        },
-        // TODO: Investigate fetching this from a template
         markup: {
-            defaultContainer: "<div class=\"flc-orator-controller fl-orator-controller\">" +
+            container: "<div class=\"flc-orator-controller fl-orator-controller\">" +
                 "<div class=\"fl-icon-orator\" aria-hidden=\"true\"></div>" +
                 "<button class=\"flc-orator-controller-playToggle\">" +
                     "<span class=\"fl-orator-controller-playToggle fl-icon-orator-playToggle\" aria-hidden=\"true\"></span>" +
@@ -168,6 +161,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // when called through the jQuery click event the event object
                 // is passed in.
                 args: ["{that}", "playing"]
+            },
+            // overriding the addToParent to "prepend" the container to the parentContainer
+            addToParent: {
+                args: ["{that}.options.parentContainer", "{arguments}.0", "prepend"]
             }
         },
         listeners: {
@@ -203,21 +200,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         playToggle.attr({
             "aria-label": that.options.strings[state ? "pause" : "play"]
         });
-    };
-
-    fluid.orator.controller.container = function (containerSpec, defaultContainer, scope) {
-        var container = fluid.container(containerSpec, true);
-
-        if (container) {
-            return container;
-        }
-        var newContainer = $(defaultContainer);
-
-        // Unwrap to ensure that any jQuery element passed in actually has an element
-        // and if it does, we only want to use the first one.
-        scope = $(scope)[0] || "body";
-        $(scope).prepend(newContainer);
-        return fluid.container(newContainer);
     };
 
 
