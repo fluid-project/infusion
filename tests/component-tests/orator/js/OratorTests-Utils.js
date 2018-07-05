@@ -55,11 +55,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "fluid.tests.orator.addStubs",
                 priority: "first",
                 args: ["{that}.stubs", "{that}", "{that}.options.methods"]
-            },
-            "onDestroy.restore": {
-                funcName: "fluid.tests.orator.restoreStubs",
-                priority: "last",
-                args: ["{that}.stubs", "{that}.options.methods"]
             }
         }
     });
