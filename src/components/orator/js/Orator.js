@@ -218,6 +218,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             highlight: "<mark class=\"flc-orator-highlight fl-orator-highlight\"></mark>"
         },
         events: {
+            onQueueSpeech: null,
             onReadFromDOM: null,
             utteranceOnEnd: null,
             utteranceOnBoundary: null,
@@ -278,10 +279,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             queueSpeech: {
                 funcName: "fluid.orator.domReader.queueSpeech",
-                args: ["{that}", "{fluid.textToSpeech}.queueSpeech", "{arguments}.0", true, "{arguments}.1"]
+                args: ["{that}", "{arguments}.0", true, "{arguments}.1"]
             }
         },
         listeners: {
+            "onQueueSpeech.removeExtraWhiteSpace": "fluid.orator.domReader.removeExtraWhiteSpace",
+            "onQueueSpeech.queueSpeech": {
+                func: "{fluid.textToSpeech}.queueSpeech",
+                args: ["{arguments}.0", "{arguments}.1.interrupt", "{arguments}.1"],
+                priority: "after:removeExtraWhiteSpace"
+            },
             "utteranceOnEnd.resetParseQueue": {
                 listener: "{that}.resetParseQueue"
             },
@@ -352,27 +359,46 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    // Accepts a speechFn (either a function or function name), which will be used to perform the
-    // underlying queuing of the speech. This allows the SpeechSynthesis to be replaced (e.g. for testing)
-    fluid.orator.domReader.queueSpeech = function (that, speechFn, text, interrupt, options) {
+    fluid.orator.domReader.removeExtraWhiteSpace = function (text) {
+
+        var promise = fluid.promise();
         // force a string value
         var str = text.toString();
 
-        // remove extra whitespace
+        // trim whitespace
         str = str.trim();
-        str.replace(/\s{2,}/gi, " ");
-
-        // map events
-        options = options || {};
-        fluid.orator.domReader.mapUtteranceEvents(that, options, that.options.utteranceEventMap);
 
         if (str) {
-            if (typeof(speechFn) === "string") {
-                fluid.invokeGlobalFunction(speechFn, [str, interrupt, options]);
-            } else {
-                speechFn(str, interrupt, options);
-            }
+            promise.resolve(str);
+        } else {
+            promise.reject("The text is empty");
         }
+
+        return promise;
+    };
+
+    /**
+     * Operates the core "transforming promise workflow" for queuing an utterance. The initial listener is provided the
+     * initial text; which then proceeds through the transform chain to arrive at the final text.
+     * To change the speech function (e.g for testing) the onQueueSpeech.queueSpeech listener can be overridden.
+     *
+     * @param {Component} that - The component
+     * @param {String} text - The text to be synthesized
+     * @param {Boolean} interrupt - Used to indicate if this text should be queued or replace existing utterances.
+     *                              This will be passed along to the listeners in the options; `options.interrupt`.
+     * @param {Object} options - (optional) options to configure the utterance with. This will also be interpolated with
+     *                           the interrupt parameter and event mappings. See: fluid.textToSpeech.queueSpeech in
+     *                           TextToSpeech.js for an example of utterance options for that speech function.
+     *
+     * @return {Promise} - A promise for the final resolved text
+     */
+    fluid.orator.domReader.queueSpeech = function (that, text, interrupt, options) {
+        options = options || {};
+        options.interrupt = interrupt || options.interrupt;
+        // map events
+        fluid.orator.domReader.mapUtteranceEvents(that, options, that.options.utteranceEventMap);
+
+        return fluid.promise.fireTransformEvent(that.events.onQueueSpeech, text, options);
     };
 
     /**

@@ -136,32 +136,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.orator.domReader");
 
-    fluid.tests.orator.domReader.speechFnArgs = ["text", false, {}];
-
-    fluid.tests.orator.domReader.verifyQueueSpeech = function (/* that, str, interrupt, options */) {
-        var calledWith = [].slice.call(arguments);
-        jqUnit.assertDeepEq("The arguments should have been passed to the speechFn correctly", fluid.tests.orator.domReader.speechFnArgs, calledWith);
+    fluid.tests.orator.domReader.removeExtraWhiteSpaceTestCases = {
+        resolve: [{
+            name: "leading space",
+            text: " leading",
+            expected: "leading"
+        }, {
+            name: "leading tab",
+            text: "\tleading",
+            expected: "leading"
+        }, {
+            name: "leading new line",
+            text: "\nleading",
+            expected: "leading"
+        }, {
+            name: "multiple leading whitespaces",
+            text: "\n\t leading",
+            expected: "leading"
+        }, {
+            name: "trailing space",
+            text: "trailing ",
+            expected: "trailing"
+        }, {
+            name: "trailing tab",
+            text: "trailing\t",
+            expected: "trailing"
+        }, {
+            name: "trailing new line",
+            text: "trailing\n",
+            expected: "trailing"
+        }, {
+            name: "multiple trailing whitespaces",
+            text: "trailing \n\t",
+            expected: "trailing"
+        }, {
+            name: "extra whitespaces",
+            text: "\n\t whitespace around \n\t",
+            expected: "whitespace around"
+        }],
+        reject: [{
+            name: "empty",
+            text: ""
+        }, {
+            name: "only whitespace",
+            text: " \t\n"
+        }]
     };
 
-    fluid.orator.domReader.queueSpeechTestCases = [{
-        name: "Test fluid.orator.domReader.queueSpeech - function",
-        speechFn: fluid.tests.orator.domReader.verifyQueueSpeech
-    }, {
-        name: "Test fluid.orator.domReader.queueSpeech - function name",
-        speechFn: "fluid.tests.orator.domReader.verifyQueueSpeech"
-    }];
+    jqUnit.test("Test fluid.orator.domReader.removeExtraWhiteSpace", function () {
+        // resolved cases
+        fluid.each(fluid.tests.orator.domReader.removeExtraWhiteSpaceTestCases.resolve, function (testCase) {
+            var promise = fluid.orator.domReader.removeExtraWhiteSpace(testCase.text);
+            promise.then(function (text) {
+                jqUnit.assertEquals(testCase.name + " - The extra whitespace should have been removed properly.", testCase.expected, text);
+            }, function (error) {
+                jqUnit.fail(testCase.name + " - fluid.orator.domReader.removeExtraWhiteSpace should not have been rejected; error msg: " + error);
+            });
+        });
 
-    // fluid.orator.domReader.queueSpeech tests
-    fluid.each(fluid.orator.domReader.queueSpeechTestCases, function (testCase) {
-        jqUnit.test(testCase.name, function () {
-            jqUnit.expect(1);
-            fluid.orator.domReader.queueSpeech(
-                {options: {}},
-                testCase.speechFn,
-                fluid.tests.orator.domReader.speechFnArgs[0],
-                fluid.tests.orator.domReader.speechFnArgs[1],
-                fluid.tests.orator.domReader.speechFnArgs[2]
-            );
+        // rejected cases
+        fluid.each(fluid.tests.orator.domReader.removeExtraWhiteSpaceTestCases.reject, function (testCase) {
+            var promise = fluid.orator.domReader.removeExtraWhiteSpace(testCase.text);
+            promise.then(function (text) {
+                jqUnit.fail(testCase.name + " - fluid.orator.domReader.removeExtraWhiteSpace should not have been resolved; resolve test: " + text);
+            }, function (error) {
+                jqUnit.assert(testCase.name + " - The whitespace removal should have been rejected; error msg: " + error);
+            });
         });
     });
 
@@ -433,7 +473,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator.domReader", {
-        gradeNames: ["fluid.orator.domReader", "fluid.tests.orator.mockTTS"],
+        // gradeNames: ["fluid.orator.domReader", "fluid.tests.orator.mockTTS"],
+        gradeNames: ["fluid.orator.domReader"],
         model: {
             paused: false,
             speaking: false,
@@ -442,12 +483,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.orator.domReaderTests", {
-        gradeNames: ["fluid.test.testEnvironment"],
+        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.orator.mockTTS"],
         markupFixture: ".flc-orator-domReader-test",
         components: {
             domReader: {
                 type: "fluid.tests.orator.domReader",
-                container: ".flc-orator-domReader-test"
+                container: ".flc-orator-domReader-test",
+                options: {
+                    members: {
+                        tts: "{tts}"
+                    }
+                }
             },
             domReaderTester: {
                 type: "fluid.tests.orator.domReaderTester"

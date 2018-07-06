@@ -17,10 +17,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.orator");
 
     /*******************************************************************************
-     * DOM Reader MockTTS Grade
+     * Grade to add the MockTTS
+     *
+     * Currently this needs to be added to the environment instead of the DOM Reader.
+     * After FLUID-6148 ( https://issues.fluidproject.org/browse/FLUID-6148 )
+     * has been addressed it should be possible to place this back as a grade of the
+     * DOM Reader under test and to remove the `ttsID` member that is used to force
+     * its evaluation.
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator.mockTTS", {
+        members: {
+            // this is just to force the evaluation of the tts subcomponent.
+            ttsID: "{tts}.id"
+        },
         components: {
             tts: {
                 type: "fluid.textToSpeech",

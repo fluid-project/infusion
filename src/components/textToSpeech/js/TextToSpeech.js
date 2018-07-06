@@ -297,7 +297,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Assembles the utterance options and fires onSpeechQueued which will kick off the creation of an utterance
-     * component. If "iterrupt" is true, this utterance will replace any existing ones.
+     * component. If "interrupt" is true, this utterance will replace any existing ones.
      *
      * @param {Component} that - the component
      * @param {String} text - the text to be synthesized
@@ -312,8 +312,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                               pitch: 1, // a Floating point number from 0 to 2
      *                           }
      *
+     * @return {Promise} - returns a promise that is resolved after the onSpeechQueued event has fired.
      */
     fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
+        var promise = fluid.promise();
         if (interrupt) {
             that.cancel();
         }
@@ -324,7 +326,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // Without this the synthesizer gets confused and may play multiple utterances at once.
         setTimeout(function () {
             that.events.onSpeechQueued.fire(utteranceOpts, interrupt);
+            promise.resolve(text);
         }, 100);
+        return promise;
     };
 
     fluid.textToSpeech.cancel = function (that) {
