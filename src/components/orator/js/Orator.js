@@ -252,6 +252,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
+        components: {
+            parser: {
+                type: "fluid.orator.domReader.parser"
+            }
+        },
         invokers: {
             readFromDOM: {
                 funcName: "fluid.orator.domReader.readFromDOM",
@@ -429,137 +434,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.parseIndex = 0;
     };
 
-    // Constants representing DOM node types.
-    fluid.orator.domReader.nodeType = {
-        ELEMENT_NODE: 1,
-        TEXT_NODE: 3
-    };
-
-    /**
-     * Tests if a string is a word, that is it has a value and is not only whitespace.
-     * inspired by https://stackoverflow.com/a/2031143
-     *
-     * @param {String} str - the String to test
-     *
-     * @return {Boolean} - `true` if a word, `false` otherwise.
-     */
-    fluid.orator.domReader.isWord = function (str) {
-        return fluid.isValue(str) && /\S/.test(str);
-    };
-
-    /**
-     * Determines if there is text in an element that should be read.
-     * Will return false in the following conditions:
-     * - elm is falsey (undefined, null, etc.)
-     * - elm's offsetHeight is 0 (e.g. display none set on itself or its parent)
-     * - elm has no text or only whitespace
-     * - elm or its parent has `aria-hidden="true"` set.
-     *
-     * NOTE: Text added by pseudo elements (e.g. :before, :after) are not considered.
-     * NOTE: This method is not supported in IE 11 because innerText returns the text for some hidden elements
-     *       that is inconsistent with modern browsers.
-     *
-     * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
-     *
-     * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
-     *                     (See rules above)
-     */
-    fluid.orator.domReader.hasTextToRead = function (elm) {
-        elm = fluid.unwrap(elm);
-
-        return elm &&
-               !!elm.offsetHeight &&
-               fluid.orator.domReader.isWord(elm.innerText) &&
-               !$(elm).closest("[aria-hidden=\"true\"]").length;
-    };
-
-    /**
-     * Adds a data point to an array of parsed DOM elements.
-     * Structure of each data point is as follows:
-     *  {
-     *      blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
-     *      startOffset: {Integer}, // the start offset of the current `word` relative to the closest
-     *                             // enclosing DOM element
-     *      endOffset: {Integer}, // the start offset of the current `word` relative to the closest
-     *                           // enclosing DOM element
-     *      node: {DomNode}, // the current child node being parsed
-     *      childIndex: {Integer}, // the index of the child node being parsed relative to its parent
-     *      parentNode: {DomElement}, // the parent DOM node
-     *      word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
-     *   }
-     * @param {ParseQueue[]} parsed - An array of data points for the Parsed DOM
-     * @param {String} word - The word, parsed from the node, to be added
-     * @param {DomNode} childNode - The current textnode being operated on
-     * @param {Integer} blockIndex - The index into the entire block of text being parsed from the DOM
-     * @param {Integer} charIndex - The index into the current node being operated on, that is the start index of the
-     *                              word in the string representing the text of the node.
-     * @param {Integer} childIndex - The index of the node in the list of its parent's child nodes.
-     */
-    fluid.orator.domReader.addParsedData = function (parsed, word, childNode, blockIndex, charIndex, childIndex) {
-        parsed.push({
-            blockIndex: blockIndex,
-            startOffset: charIndex,
-            endOffset: charIndex + word.length,
-            node: childNode,
-            childIndex: childIndex,
-            parentNode: childNode.parentNode,
-            word: word
-        });
-    };
-
-    /**
-     * Recursively parses a DOM element and it's sub elements to construct an array of data points representing the
-     * words and space between the words. This data structure provides the means for locating text to highlight as the
-     * self voicing engine runs.
-     * NOTE: consecutive whitespace is collapsed to the first whitespace character.
-     * NOTE: hidden text is skipped.
-     *
-     * @param {jQuery|DomElement} elm - the DOM node to parse
-     * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
-     *                              It defaults to 0 and is primarily used internally for recursive calls.
-     *
-     * @return {ParseQueue[]} - An array of data points for the Parsed DOM
-     *                          See fluid.orator.domReader.addParsedData for details on the structure.
-     */
-    fluid.orator.domReader.parse = function (elm, blockIndex) {
-        var parsed = [];
-        elm = fluid.unwrap(elm);
-        blockIndex = blockIndex || 0;
-
-        if (fluid.orator.domReader.hasTextToRead(elm)) {
-            var childNodes = elm.childNodes;
-
-            $.each(childNodes, function (childIndex, childNode) {
-                if (childNode.nodeType === fluid.orator.domReader.nodeType.TEXT_NODE) {
-                    var words = childNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
-                    // charIndex is the start index of the word in the nested block of text
-                    var charIndex = 0;
-
-                    fluid.each(words, function (word) {
-                        if (fluid.orator.domReader.isWord(word)) {
-                            fluid.orator.domReader.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
-                            blockIndex += word.length;
-                        // if the current `word` is not an empty string and the last parsed `word` is not whitespace
-                        } else if (word && fluid.orator.domReader.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
-                            fluid.orator.domReader.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
-                            blockIndex += word.length;
-                        }
-                        charIndex += word.length;
-                    });
-                } else if (childNode.nodeType === fluid.orator.domReader.nodeType.ELEMENT_NODE &&
-                    fluid.orator.domReader.hasTextToRead(childNode)) {
-                    parsed = parsed.concat(fluid.orator.domReader.parse(childNode, blockIndex));
-                    if (parsed.length) {
-                        var lastParsed = parsed[parsed.length - 1];
-                        blockIndex = lastParsed.blockIndex + lastParsed.word.length;
-                    }
-                }
-            });
-        }
-
-        return parsed;
-    };
-
     /**
      * Combines the parsed text into a String.
      *
@@ -587,7 +461,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         // only execute if there are nodes to read from
         if (elm.length) {
-            var parsedFromElm = fluid.orator.domReader.parse(elm[0]);
+            var parsedFromElm = that.parser.parse(elm[0]);
             that.parseQueue = parsedFromElm;
             that.events.onReadFromDOM.fire(parsedFromElm);
             that.queueSpeech(fluid.orator.domReader.parsedToString(parsedFromElm));
@@ -659,6 +533,158 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 that.range.surroundContents($(that.options.markup.highlight)[0]);
             }
         }
+    };
+
+    /*******************************************************************************
+     * fluid.orator.domReader.parser
+     *
+     * Parses the text from the DOM into a format that is suitable for reading back
+     * by the fluid.orator.domReader
+     *******************************************************************************/
+
+    fluid.defaults("fluid.orator.domReader.parser", {
+        gradeNames: ["fluid.component"],
+        invokers: {
+            parse: {
+                funcName: "fluid.orator.domReader.parser.parse",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            },
+            hasTextToRead: "fluid.orator.domReader.parser.hasTextToRead",
+            isWord: "fluid.orator.domReader.parser.isWord",
+            addParsedData: "fluid.orator.domReader.parser.addParsedData"
+        }
+    });
+
+    // Constants representing DOM node types.
+    fluid.orator.domReader.parser.nodeType = {
+        ELEMENT_NODE: 1,
+        TEXT_NODE: 3
+    };
+
+    /**
+     * Tests if a string is a word, that is it has a value and is not only whitespace.
+     * inspired by https://stackoverflow.com/a/2031143
+     *
+     * @param {String} str - the String to test
+     *
+     * @return {Boolean} - `true` if a word, `false` otherwise.
+     */
+    fluid.orator.domReader.parser.isWord = function (str) {
+        return fluid.isValue(str) && /\S/.test(str);
+    };
+
+    /**
+     * Determines if there is text in an element that should be read.
+     * Will return false in the following conditions:
+     * - elm is falsey (undefined, null, etc.)
+     * - elm's offsetHeight is 0 (e.g. display none set on itself or its parent)
+     * - elm has no text or only whitespace
+     * - elm or its parent has `aria-hidden="true"` set.
+     *
+     * NOTE: Text added by pseudo elements (e.g. :before, :after) are not considered.
+     * NOTE: This method is not supported in IE 11 because innerText returns the text for some hidden elements
+     *       that is inconsistent with modern browsers.
+     *
+     * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
+     *
+     * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
+     *                     (See rules above)
+     */
+    fluid.orator.domReader.parser.hasTextToRead = function (elm) {
+        elm = fluid.unwrap(elm);
+
+        return elm &&
+               !!elm.offsetHeight &&
+               fluid.orator.domReader.parser.isWord(elm.innerText) &&
+               !$(elm).closest("[aria-hidden=\"true\"]").length;
+    };
+
+    /**
+     * Adds a data point to an array of parsed DOM elements.
+     * Structure of each data point is as follows:
+     *  {
+     *      blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
+     *      startOffset: {Integer}, // the start offset of the current `word` relative to the closest
+     *                             // enclosing DOM element
+     *      endOffset: {Integer}, // the start offset of the current `word` relative to the closest
+     *                           // enclosing DOM element
+     *      node: {DomNode}, // the current child node being parsed
+     *      childIndex: {Integer}, // the index of the child node being parsed relative to its parent
+     *      parentNode: {DomElement}, // the parent DOM node
+     *      word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
+     *   }
+     * @param {ParseQueue[]} parsed - An array of data points for the Parsed DOM
+     * @param {String} word - The word, parsed from the node, to be added
+     * @param {DomNode} childNode - The current textnode being operated on
+     * @param {Integer} blockIndex - The index into the entire block of text being parsed from the DOM
+     * @param {Integer} charIndex - The index into the current node being operated on, that is the start index of the
+     *                              word in the string representing the text of the node.
+     * @param {Integer} childIndex - The index of the node in the list of its parent's child nodes.
+     */
+    fluid.orator.domReader.parser.addParsedData = function (parsed, word, childNode, blockIndex, charIndex, childIndex) {
+        parsed.push({
+            blockIndex: blockIndex,
+            startOffset: charIndex,
+            endOffset: charIndex + word.length,
+            node: childNode,
+            childIndex: childIndex,
+            parentNode: childNode.parentNode,
+            word: word
+        });
+    };
+
+    /**
+     * Recursively parses a DOM element and it's sub elements to construct an array of data points representing the
+     * words and space between the words. This data structure provides the means for locating text to highlight as the
+     * self voicing engine runs.
+     * NOTE: consecutive whitespace is collapsed to the first whitespace character.
+     * NOTE: hidden text is skipped.
+     *
+     * @param {Component} that - the component
+     * @param {jQuery|DomElement} elm - the DOM node to parse
+     * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
+     *                              It defaults to 0 and is primarily used internally for recursive calls.
+     *
+     * @return {ParseQueue[]} - An array of data points for the Parsed DOM
+     *                          See fluid.orator.domReader.parser.addParsedData for details on the structure.
+     */
+    fluid.orator.domReader.parser.parse = function (that, elm, blockIndex) {
+        var parsed = [];
+        elm = fluid.unwrap(elm);
+        blockIndex = blockIndex || 0;
+
+        if (that.hasTextToRead(elm)) {
+            var childNodes = elm.childNodes;
+
+            $.each(childNodes, function (childIndex, childNode) {
+                if (childNode.nodeType === fluid.orator.domReader.parser.nodeType.TEXT_NODE) {
+                    var words = childNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
+                    // charIndex is the start index of the word in the nested block of text
+                    var charIndex = 0;
+
+                    fluid.each(words, function (word) {
+                        if (that.isWord(word)) {
+                            that.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
+                            blockIndex += word.length;
+                        // if the current `word` is not an empty string and the last parsed `word` is not whitespace
+                        } else if (word && that.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
+                            that.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
+                            blockIndex += word.length;
+                        }
+                        charIndex += word.length;
+                    });
+                } else if (childNode.nodeType === fluid.orator.domReader.parser.nodeType.ELEMENT_NODE &&
+                    that.hasTextToRead(childNode)) {
+                    parsed = parsed.concat(fluid.orator.domReader.parser.parse(that, childNode, blockIndex));
+                    if (parsed.length) {
+                        var lastParsed = parsed[parsed.length - 1];
+                        blockIndex = lastParsed.blockIndex + lastParsed.word.length;
+                    }
+                }
+            });
+        }
+
+        return parsed;
     };
 
 

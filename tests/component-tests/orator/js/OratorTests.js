@@ -130,11 +130,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The aria-label should be set correctly", that.options.strings[expectedLabel], toggleButton.attr("aria-label"));
     };
 
-    /*******************************************************************************
-     * Unit tests for fluid.orator.domReader functions
-     *******************************************************************************/
+    /************************************************************************************
+     * Unit tests for fluid.orator.domReader and fluid.orator.domReader.parser functions
+     ************************************************************************************/
 
-    fluid.registerNamespace("fluid.tests.orator.domReader");
+    fluid.registerNamespace("fluid.tests.orator.domReader.parser");
 
     fluid.tests.orator.domReader.removeExtraWhiteSpaceTestCases = {
         resolve: [{
@@ -217,26 +217,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assert("Unwrapping a second time should not cause an error");
     });
 
-    // fluid.orator.domReader.isWord tests
-    fluid.tests.orator.domReader.isWordTestCases = {
+
+    // fluid.orator.domReader.parsrer.isWord tests
+    fluid.tests.orator.domReader.parser.isWordTestCases = {
         "trueCase": ["a", "hello", "test string"],
         "falseCase": ["", " ", "\t", "\n", undefined, null]
     };
 
     jqUnit.test("Test fluid.orator.domReader.isWord", function () {
         // test trueCase
-        fluid.each(fluid.tests.orator.domReader.isWordTestCases.trueCase, function (str) {
-            jqUnit.assertTrue("\"" + str + "\" is considered a word.", fluid.orator.domReader.isWord(str));
+        fluid.each(fluid.tests.orator.domReader.parser.isWordTestCases.trueCase, function (str) {
+            jqUnit.assertTrue("\"" + str + "\" is considered a word.", fluid.orator.domReader.parser.isWord(str));
         });
 
         // test falseCase
-        fluid.each(fluid.tests.orator.domReader.isWordTestCases.falseCase, function (str) {
-            jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.orator.domReader.isWord(str));
+        fluid.each(fluid.tests.orator.domReader.parser.isWordTestCases.falseCase, function (str) {
+            jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.orator.domReader.parser.isWord(str));
         });
     });
 
-    // fluid.orator.domReader.hasTextToRead tests
-    fluid.tests.orator.domReader.hasTextToReadTestCases = {
+    // fluid.orator.domReader.parser.hasTextToRead tests
+    fluid.tests.orator.domReader.parser.hasTextToReadTestCases = {
         "trueCase": [
             ".flc-orator-domReader-test-checkDOMText",
             ".flc-orator-domReader-test-checkDOMText-ariaHiddenFalse",
@@ -269,20 +270,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assert("Tests were not run because innerText works differently on IE 11 and is used for a feature not supported in IE");
         } else {
             // test trueCase
-            fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.trueCase, function (selector) {
-                jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
+            fluid.each(fluid.tests.orator.domReader.parser.hasTextToReadTestCases.trueCase, function (selector) {
+                jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.domReader.parser.hasTextToRead($(selector)));
             });
 
             // test falseCase
-            fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.falseCase, function (selector) {
-                jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
+            fluid.each(fluid.tests.orator.domReader.parser.hasTextToReadTestCases.falseCase, function (selector) {
+                jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.parser.hasTextToRead($(selector)));
             });
         }
     });
 
-    // fluid.orator.domReader.addParsedData tests
-
-    fluid.tests.orator.domReader.expectedParsedAdditions = {
+    // fluid.orator.domReader.parser.addParsedData tests
+    fluid.tests.orator.domReader.parser.expectedParsedAdditions = {
         fromEmpty: [{
             blockIndex: 1,
             startOffset: 1,
@@ -319,12 +319,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Test fluid.orator.domReader.addParsedData", function () {
         var emptyParsed = [];
-        fluid.orator.domReader.addParsedData(emptyParsed, "word", {parentNode: {}}, 1, 1, 0);
-        jqUnit.assertDeepEq("The data point should be added to the previously empty parsed array", fluid.tests.orator.domReader.expectedParsedAdditions.fromEmpty, emptyParsed);
+        fluid.orator.domReader.parser.addParsedData(emptyParsed, "word", {parentNode: {}}, 1, 1, 0);
+        jqUnit.assertDeepEq("The data point should be added to the previously empty parsed array", fluid.tests.orator.domReader.parser.expectedParsedAdditions.fromEmpty, emptyParsed);
 
-        var parsed = [fluid.copy(fluid.tests.orator.domReader.expectedParsedAdditions.additional[0])];
-        fluid.orator.domReader.addParsedData(parsed, "new", {parentNode: {test: "value"}}, 6, 6, 2);
-        jqUnit.assertDeepEq("The data point should be added to the parsed array", fluid.tests.orator.domReader.expectedParsedAdditions.additional, parsed);
+        var parsed = [fluid.copy(fluid.tests.orator.domReader.parser.expectedParsedAdditions.additional[0])];
+        fluid.orator.domReader.parser.addParsedData(parsed, "new", {parentNode: {test: "value"}}, 6, 6, 2);
+        jqUnit.assertDeepEq("The data point should be added to the parsed array", fluid.tests.orator.domReader.parser.expectedParsedAdditions.additional, parsed);
     });
 
 
@@ -404,9 +404,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "word": "\n        "
     }];
 
-    jqUnit.test("Test fluid.orator.domReader.parse", function () {
+    jqUnit.test("Test fluid.orator.domReader.parser", function () {
+        var that = fluid.orator.domReader.parser();
         var elm = $(".flc-orator-domReader-test")[0];
-        var parsed = fluid.orator.domReader.parse(elm);
+
+        var parsed = that.parse(elm);
         jqUnit.assertDeepEq("The DOM element should have been parsed correctly", fluid.tests.orator.domReader.parsed, parsed);
     });
 
