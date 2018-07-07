@@ -435,9 +435,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * Positional information about a word parsed from the text in a {DomElement}. This can be used for mappings between
+     * a synthesizer's speech boundary and the word's location within the DOM.
+     * The structure of each data point is as follows:
+     *  {
+     *      blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
+     *      startOffset: {Integer}, // the start offset of the current `word` relative to the closest
+     *                             // enclosing DOM element
+     *      endOffset: {Integer}, // the end offset of the current `word` relative to the closest
+     *                           // enclosing DOM element
+     *      node: {DomNode}, // the current child node being parsed
+     *      childIndex: {Integer}, // the index of the child node being parsed relative to its parent
+     *      parentNode: {DomElement}, // the parent DOM node
+     *      word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
+     *   }
+     *
+     * @typedef {Object} DomWordMap
+     */
+
+    /**
+     * An array of {DomWordMap} objects detailing the words parsed from the a {DomElement}. This information can be used
+     * to map the synthesized speech to the location of each word in the DOM; which is useful for highlighting words as
+     * they are being read.
+     *
+     * @typedef {Array} DomWordMappings
+     */
+
+    /**
      * Combines the parsed text into a String.
      *
-     * @param {Array} parsed - An array of parsed data points
+     * @param {DomWordMappings} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
+     *                                   {DomElement}.
      *
      * @return {String} - The parsed text combined into a String.
      */
@@ -471,7 +499,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns the index of the closest data point from the parseQueue based on the boundary provided.
      *
-     * @param {Array} parseQueue - An array data points generated from parsing a DOM structure
+     * @param {DomWordMappings} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
+     *                                   {DomElement}.
      * @param {Integer} currentIndex - The index into the paraseQueue to start searching from. The currentIndex will be
      *                                constrained to the bounds of the parseQueue.
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
@@ -600,20 +629,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Adds a data point to an array of parsed DOM elements.
-     * Structure of each data point is as follows:
-     *  {
-     *      blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
-     *      startOffset: {Integer}, // the start offset of the current `word` relative to the closest
-     *                             // enclosing DOM element
-     *      endOffset: {Integer}, // the start offset of the current `word` relative to the closest
-     *                           // enclosing DOM element
-     *      node: {DomNode}, // the current child node being parsed
-     *      childIndex: {Integer}, // the index of the child node being parsed relative to its parent
-     *      parentNode: {DomElement}, // the parent DOM node
-     *      word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
-     *   }
-     * @param {ParseQueue[]} parsed - An array of data points for the Parsed DOM
+     * Adds a {DomWordMap} to the 'parsed' {DomWordMappings} array, containing the position mappings for the parsed DOM
+     * elements.
+     *
+     * See: DomWordMap TypeDef for a detailed description of its structure.
+     *
+     * @param {DomWordMappings} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
+     *                                   {DomElement}.
      * @param {String} word - The word, parsed from the node, to be added
      * @param {DomNode} childNode - The current textnode being operated on
      * @param {Integer} blockIndex - The index into the entire block of text being parsed from the DOM
@@ -645,8 +667,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
-     * @return {ParseQueue[]} - An array of data points for the Parsed DOM
-     *                          See fluid.orator.domReader.parser.addParsedData for details on the structure.
+     * @return {DomWordMappings} - An array of {DomWordMap} objects containing the position mappings parsed from `elm`.
      */
     fluid.orator.domReader.parser.parse = function (that, elm, blockIndex) {
         var parsed = [];
