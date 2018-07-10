@@ -422,50 +422,51 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // fluid.orator.domReader.getClosestIndex tests
     fluid.tests.orator.domReader.closestIndexTestCases = [{
-        currentIndex: 0,
+        parseIndex: 0,
         boundary: -1,
         expected: undefined
     }, {
-        currentIndex: 0,
+        parseIndex: 0,
         boundary: 0,
         expected: 0
     }, {
-        currentIndex: 0,
+        parseIndex: 0,
         boundary: 6,
         expected: 0
     }, {
-        currentIndex: 0,
+        parseIndex: 0,
         boundary: 7,
         expected: 1
     }, {
-        currentIndex: 2,
+        parseIndex: 2,
         boundary: 27,
         expected: 7
     }, {
-        currentIndex: 5,
+        parseIndex: 5,
         boundary: 2,
         expected: 0
     }, {
-        currentIndex: 7,
+        parseIndex: 7,
         boundary: 18,
         expected: 6
     }, {
-        currentIndex: 7,
+        parseIndex: 7,
         boundary: 29,
         expected: 7
     }, {
-        currentIndex: 7,
+        parseIndex: 7,
         boundary: 30,
         expected: 7
     }, {
-        currentIndex: 7,
+        parseIndex: 7,
         boundary: 35,
         expected: undefined
     }];
 
     jqUnit.test("Test fluid.orator.domReader.getClosestIndex", function () {
         fluid.each(fluid.tests.orator.domReader.closestIndexTestCases, function (testCase) {
-            var closest = fluid.orator.domReader.getClosestIndex({parseQueue: fluid.tests.orator.domReader.parsed}, testCase.currentIndex, testCase.boundary);
+            var mockThat = {parseQueue: fluid.tests.orator.domReader.parsed, model: {parseIndex: testCase.parseIndex}};
+            var closest = fluid.orator.domReader.getClosestIndex(mockThat, testCase.boundary);
             jqUnit.assertEquals("Closest index for boundary \"" + testCase.boundary + "\" should be: " + testCase.expected, testCase.expected, closest);
         });
     });

@@ -256,7 +256,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             singleTransform: {
                 type: "fluid.transforms.free",
                 func: "fluid.orator.domReader.getClosestIndex",
-                args: ["{that}", "{that}.parseIndex", "{that}.model.ttsBoundary"]
+                args: ["{that}", "{that}.model.ttsBoundary"]
             }
         }],
         members: {
@@ -531,43 +531,46 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Returns the index of the closest data point from the parseQueue based on the boundary provided.
      *
      * @param {Component} that - The component
-     * @param {Integer} currentIndex - The index into the paraseQueue to start searching from. The currentIndex will be
-     *                                constrained to the bounds of the parseQueue.
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *
      * @return {Integer|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
-    fluid.orator.domReader.getClosestIndex = function (that, currentIndex, boundary) {
+    fluid.orator.domReader.getClosestIndex = function (that, boundary) {
         var parseQueue = that.parseQueue;
-        if (parseQueue.length) {
-            currentIndex = currentIndex || 0;
-            var maxIdx  = Math.max(parseQueue.length - 1, 0);
-            currentIndex = Math.max(Math.min(currentIndex, maxIdx), 0);
 
-            var nextIdx = currentIndex + 1;
-            var prevIdx = currentIndex - 1;
+        if (!parseQueue.length || !fluid.isValue(boundary) && boundary <= 0) {
+            return undefined;
+        };
 
-            var currentBlockIndex = parseQueue[currentIndex].blockIndex;
-            var maxBoundary = parseQueue[maxIdx].blockIndex + parseQueue[maxIdx].word.length;
+        var maxIndex  = Math.max(parseQueue.length - 1, 0);
+        var index = Math.max(Math.min(that.model.parseIndex || 0, maxIndex), 0);
+        var maxBoundary = parseQueue[maxIndex].blockIndex + parseQueue[maxIndex].word.length;
 
+        if (boundary > maxBoundary || boundary < 0) {
+            return undefined;
+        }
 
-            if (!fluid.isValue(boundary) || boundary < 0 || boundary > maxBoundary ) {
-                return undefined;
+        while (index >= 0) {
+            var nextIndex = index + 1;
+            var prevIndex = index - 1;
+            var currentBlockIndex = parseQueue[index].blockIndex;
+            var nextBlockIndex = index < maxIndex ? parseQueue[nextIndex].blockIndex : (maxBoundary + 1);
+
+            // Break if the boundary lies within the current block
+            if (boundary >= currentBlockIndex && boundary < nextBlockIndex) {
+                break;
             }
 
             if (currentBlockIndex > boundary) {
-                return fluid.orator.domReader.getClosestIndex(that, prevIdx, boundary);
+                index = prevIndex;
+            } else {
+                index = nextIndex;
             }
-
-            var isInNextBound = parseQueue[nextIdx] ? boundary < parseQueue[nextIdx].blockIndex : boundary <= maxBoundary;
-
-            if (currentBlockIndex === boundary || (currentIndex <= maxIdx && isInNextBound)) {
-                return currentIndex;
-            }
-
-            return fluid.orator.domReader.getClosestIndex(that, nextIdx, boundary);
         }
+
+        return index;
+
     };
 
     /**
