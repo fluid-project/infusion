@@ -58,7 +58,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 container: "{that}.dom.content",
                 options: {
                     model: {
-                        enabled: "{orator}.model.enabled"
+                        tts: {
+                            enabled: "{orator}.model.enabled"
+                        }
                     },
                     listeners: {
                         "utteranceOnEnd.domReaderStop": [{
@@ -238,13 +240,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             onstart: "utteranceOnStart"
         },
         model: {
-            paused: false,
-            speaking: false,
-            enabled: true
+            tts: {
+                paused: false,
+                speaking: false,
+                enabled: true
+            },
+            parseQueuelength: 0,
+            parseIndex: null,
+            ttsBoundary: null
         },
+        modelRelay: [{
+            target: "parseIndex",
+            backward: "never",
+            namespace: "getClosestIndex",
+            singleTransform: {
+                type: "fluid.transforms.free",
+                func: "fluid.orator.domReader.getClosestIndex",
+                args: ["{that}", "{that}.parseIndex", "{that}.model.ttsBoundary"]
+            }
+        }],
         members: {
             parseQueue: [],
-            parseIndex: 0,
             range: {
                 expander: {
                     this: "document",
@@ -266,8 +282,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.domReader.unWrap",
                 args: ["{that}.dom.highlight"]
             },
+            setParseQueue: {
+                funcName: "fluid.orator.domReader.setParseQueue",
+                args: ["{that}", "{arguments}.0"]
+            },
             resetParseQueue: {
-                funcName: "fluid.orator.domReader.resetParseQueue",
+                funcName: "fluid.orator.domReader.setParseQueue",
                 args: ["{that}"]
             },
             highlight: {
@@ -287,6 +307,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{arguments}.0", true, "{arguments}.1"]
             }
         },
+        modelListeners: {
+            "parseIndex": {
+                listener: "{that}.highlight",
+                namespace: "highlight"
+            }
+        },
         listeners: {
             "onQueueSpeech.removeExtraWhiteSpace": "fluid.orator.domReader.removeExtraWhiteSpace",
             "onQueueSpeech.queueSpeech": {
@@ -301,38 +327,38 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 listener: "{that}.removeHighlight",
                 priority: "after:resetParseQueue"
             },
-            "utteranceOnEnd.updateModel": {
-                changePath: "",
+            "utteranceOnEnd.updateTTSModel": {
+                changePath: "tts",
                 value: {
                     speaking: false,
                     paused: false
                 }
             },
-            "utteranceOnStart.updateModel": {
-                changePath: "",
+            "utteranceOnStart.updateTTSModel": {
+                changePath: "tts",
                 value: {
                     speaking: true,
                     paused: false
                 }
             },
-            "utteranceOnPause.updateModel": {
-                changePath: "",
+            "utteranceOnPause.updateTTSModel": {
+                changePath: "tts",
                 value: {
                     speaking: true,
                     paused: true
                 }
             },
-            "utteranceOnResume.updateModel": {
-                changePath: "",
+            "utteranceOnResume.updateTTSModel": {
+                changePath: "tts",
                 value: {
                     speaking: true,
                     paused: false
                 }
             },
-            "utteranceOnBoundary": {
-                listener: "{that}.highlight",
-                args: ["{arguments}.0.charIndex"],
-                namespace: "highlightUtteranceText"
+            "utteranceOnBoundary.setCurrentBoundary": {
+                changePath: "ttsBoundary",
+                value: "{arguments}.0.charIndex",
+                source: "utteranceOnBoundary"
             },
             "onDestroy.detachRange": {
                 "this": "{that}.range",
@@ -342,17 +368,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.orator.domReader.speak = function (that, resumeFn) {
-        if (that.model.enabled) {
-            if (that.model.paused) {
+        if (that.model.tts.enabled) {
+            if (that.model.tts.paused) {
                 resumeFn();
-            } else if (!that.model.speaking) {
+            } else if (!that.model.tts.speaking) {
                 that.readFromDOM();
             }
         }
     };
 
     fluid.orator.domReader.pause = function (that, pauseFn) {
-        if (that.model.speaking && !that.model.paused) {
+        if (that.model.tts.speaking && !that.model.tts.paused) {
             pauseFn();
         }
     };
@@ -425,13 +451,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Resets the parseQueue and parseIndex
+     * Sets the parseQueue and related model values
      *
      * @param {Component} that - the component
+     * @param {DomWordMappings} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
+     *                                   {DomElement}.
      */
-    fluid.orator.domReader.resetParseQueue = function (that) {
-        that.parseQueue = [];
-        that.parseIndex = 0;
+    fluid.orator.domReader.setParseQueue = function (that, parseQueue) {
+        that.parseQueue = parseQueue || [];
+        that.applier.change("", {
+            parseQueuelength: that.parseQueue.length,
+            parseIndex: null,
+            ttsBoundary: null
+        }, "ADD", "resetParseQueue");
     };
 
     /**
@@ -490,8 +522,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // only execute if there are nodes to read from
         if (elm.length) {
             var parsedFromElm = that.parser.parse(elm[0]);
-            that.parseQueue = parsedFromElm;
-            that.events.onReadFromDOM.fire(parsedFromElm);
+            that.setParseQueue(parsedFromElm);
             that.queueSpeech(fluid.orator.domReader.parsedToString(parsedFromElm));
         }
     };
@@ -499,8 +530,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns the index of the closest data point from the parseQueue based on the boundary provided.
      *
-     * @param {DomWordMappings} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
-     *                                   {DomElement}.
+     * @param {Component} that - The component
      * @param {Integer} currentIndex - The index into the paraseQueue to start searching from. The currentIndex will be
      *                                constrained to the bounds of the parseQueue.
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
@@ -508,32 +538,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Integer|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
-    fluid.orator.domReader.getClosestIndex = function (parseQueue, currentIndex, boundary) {
-        var maxIdx  = Math.max(parseQueue.length - 1, 0);
-        currentIndex = Math.max(Math.min(currentIndex, maxIdx), 0);
+    fluid.orator.domReader.getClosestIndex = function (that, currentIndex, boundary) {
+        var parseQueue = that.parseQueue;
+        if (parseQueue.length) {
+            currentIndex = currentIndex || 0;
+            var maxIdx  = Math.max(parseQueue.length - 1, 0);
+            currentIndex = Math.max(Math.min(currentIndex, maxIdx), 0);
 
-        var nextIdx = currentIndex + 1;
-        var prevIdx = currentIndex - 1;
+            var nextIdx = currentIndex + 1;
+            var prevIdx = currentIndex - 1;
 
-        var currentBlockIndex = parseQueue[currentIndex].blockIndex;
-        var maxBoundary = parseQueue[maxIdx].blockIndex + parseQueue[maxIdx].word.length;
+            var currentBlockIndex = parseQueue[currentIndex].blockIndex;
+            var maxBoundary = parseQueue[maxIdx].blockIndex + parseQueue[maxIdx].word.length;
 
 
-        if (!fluid.isValue(boundary) || boundary < 0 || boundary > maxBoundary ) {
-            return undefined;
+            if (!fluid.isValue(boundary) || boundary < 0 || boundary > maxBoundary ) {
+                return undefined;
+            }
+
+            if (currentBlockIndex > boundary) {
+                return fluid.orator.domReader.getClosestIndex(that, prevIdx, boundary);
+            }
+
+            var isInNextBound = parseQueue[nextIdx] ? boundary < parseQueue[nextIdx].blockIndex : boundary <= maxBoundary;
+
+            if (currentBlockIndex === boundary || (currentIndex <= maxIdx && isInNextBound)) {
+                return currentIndex;
+            }
+
+            return fluid.orator.domReader.getClosestIndex(that, nextIdx, boundary);
         }
-
-        if (currentBlockIndex > boundary) {
-            return fluid.orator.domReader.getClosestIndex(parseQueue, prevIdx, boundary);
-        }
-
-        var isInNextBound = parseQueue[nextIdx] ? boundary < parseQueue[nextIdx].blockIndex : boundary <= maxBoundary;
-
-        if (currentBlockIndex === boundary || (currentIndex <= maxIdx && isInNextBound)) {
-            return currentIndex;
-        }
-
-        return fluid.orator.domReader.getClosestIndex(parseQueue, nextIdx, boundary);
     };
 
     /**
@@ -544,25 +578,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} boundary - the boundary point used to find the text to highlight. Typically this is the
      *                             utterance boundary returned from the utteranceOnBoundary event.
      */
-    fluid.orator.domReader.highlight = function (that, boundary) {
+    fluid.orator.domReader.highlight = function (that) {
         that.removeHighlight();
 
-        if (that.parseQueue.length) {
-            var closestIndex = fluid.orator.domReader.getClosestIndex(that.parseQueue, that.parseIndex, boundary);
+        if (that.model.parseQueuelength) {
+            var data = that.parseQueue[that.model.parseIndex];
+            var rangeNode = data.parentNode.childNodes[data.childIndex];
 
-            if (fluid.isValue(closestIndex)) {
-                that.parseIndex = closestIndex;
-
-                var data = that.parseQueue[that.parseIndex];
-                var rangeNode = data.parentNode.childNodes[data.childIndex];
-
-                that.range.selectNode(rangeNode);
-                that.range.setStart(rangeNode, data.startOffset);
-                that.range.setEnd(rangeNode, data.endOffset);
-                that.range.surroundContents($(that.options.markup.highlight)[0]);
-            }
+            that.range.selectNode(rangeNode);
+            that.range.setStart(rangeNode, data.startOffset);
+            that.range.setEnd(rangeNode, data.endOffset);
+            that.range.surroundContents($(that.options.markup.highlight)[0]);
         }
     };
+
 
     /*******************************************************************************
      * fluid.orator.domReader.parser

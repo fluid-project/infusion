@@ -465,7 +465,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Test fluid.orator.domReader.getClosestIndex", function () {
         fluid.each(fluid.tests.orator.domReader.closestIndexTestCases, function (testCase) {
-            var closest = fluid.orator.domReader.getClosestIndex(fluid.tests.orator.domReader.parsed, testCase.currentIndex, testCase.boundary);
+            var closest = fluid.orator.domReader.getClosestIndex({parseQueue: fluid.tests.orator.domReader.parsed}, testCase.currentIndex, testCase.boundary);
             jqUnit.assertEquals("Closest index for boundary \"" + testCase.boundary + "\" should be: " + testCase.expected, testCase.expected, closest);
         });
     });
@@ -478,9 +478,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // gradeNames: ["fluid.orator.domReader", "fluid.tests.orator.mockTTS"],
         gradeNames: ["fluid.orator.domReader"],
         model: {
-            paused: false,
-            speaking: false,
-            enabled: true
+            tts: {
+                paused: false,
+                speaking: false,
+                enabled: true
+            }
         }
     });
 
@@ -570,23 +572,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 33,
+                expect: 43,
                 name: "Dom Reading",
                 sequence: [{
                     func: "{domReader}.play"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
                     args: ["{domReader}", fluid.tests.orator.domReader.parsed, "{arguments}.0"],
-                    spec: {priority: "last:testing"},
-                    event: "{domReader}.events.onReadFromDOM"
+                    spec: {priority: "last:testing", path: "parseQueuelength"},
+                    changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
                     args: ["{domReader}", "{that}.options.testOptions.expectedSpeechRecord"],
                     spec: {priority: "last:testing"},
                     event: "{domReader}.events.utteranceOnEnd"
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.verifyEnd",
-                    args: ["{domReader}"]
+                    funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
+                    args: ["Self Voicing completed", "{domReader}"]
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyRecords",
                     args: [
@@ -596,60 +598,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "{that}.options.testOptions.stoppedModel"
                     ]
                 }, {
-                    func: "{domReader}.tts.events.utteranceOnBoundary.fire",
+                    func: "{domReader}.events.utteranceOnBoundary.fire",
                     args: [{charIndex: 8}]
                 }, {
-                    funcName: "jqUnit.assertNodeNotExists",
-                    args: ["The parseQueue is empty, no highlight should be added", "{domReader}.dom.highlight"]
+                    listener: "jqUnit.assertNodeNotExists",
+                    args: ["The parseQueue is empty, no highlight should be added", "{domReader}.dom.highlight"],
+                    spec: {priority: "last:testing", path: "ttsBoundary"},
+                    changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     // manually add items to parseQueue so that we can more easily test adding and removing the highlight
-                    funcName: "fluid.set",
-                    args: ["{domReader}", ["parseQueue"], "{that}.options.testOptions.parseQueue"]
+                    funcName: "{domReader}.setParseQueue",
+                    args: ["{that}.options.testOptions.parseQueue"]
                 }, {
-                    func: "{domReader}.events.utteranceOnBoundary.fire",
+                    funcName: "{domReader}.events.utteranceOnBoundary.fire",
                     args: [{charIndex: "{that}.options.testOptions.parseQueue.0.blockIndex"}]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.verifyMark",
-                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.0.word"]
+                    listener: "fluid.tests.orator.domReaderTester.verifyMark",
+                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.0.word"],
+                    spec: {priority: "last:testing", path: "ttsBoundary"},
+                    changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     func: "{domReader}.events.utteranceOnBoundary.fire",
                     args: [{charIndex: "{that}.options.testOptions.parseQueue.1.blockIndex"}]
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyMark",
-                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.1.word"]
+                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.1.word"],
+                    spec: {priority: "last:testing", path: "ttsBoundary"},
+                    changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     // simulate ending reading
                     func: "{domReader}.events.utteranceOnEnd.fire"
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.verifyEnd",
-                    args: ["{domReader}"]
+                    funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
+                    args: ["utteranceOnEnd fired", "{domReader}"],
+                    spec: {priority: "last:testing", path: "parseQueuelength"},
+                    changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     // test readFromDom if the element to parse isn't available
                     funcName: "fluid.orator.domReader.readFromDOM",
                     args: ["{domReader}", "{domReader}.dom.highlight"]
                 }, {
-                    funcName: "jqUnit.assertEquals",
-                    args: ["The parseQueue should still be empty after trying to parse an unavailable DOM node.", 0, "{domReader}.parseQueue.length"]
+                    funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
+                    args: ["No DOM Element to read from", "{domReader}"]
                 }, {
                     // replay after finishing
                     // clear speechRecord
                     funcName: "fluid.set",
-                    args: ["{domReader}.tts", "speechRecord", []]
+                    args: ["{tts}", "speechRecord", []]
                 }, {
                     func: "{domReader}.play"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
                     args: ["{domReader}", fluid.tests.orator.domReader.parsed, "{arguments}.0"],
-                    spec: {priority: "last:testing"},
-                    event: "{domReader}.events.onReadFromDOM"
+                    spec: {priority: "last:testing", path: "parseQueuelength"},
+                    changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
                     args: ["{domReader}", "{that}.options.testOptions.expectedSpeechRecord"],
                     spec: {priority: "last:testing"},
                     event: "{domReader}.events.utteranceOnEnd"
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.verifyEnd",
-                    args: ["{domReader}"]
+                    funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
+                    args: ["Replayed Self Voicing completed", "{domReader}"]
                 }, {
                     // pause when stopped
                     funcName: "fluid.tests.orator.addStub",
@@ -668,7 +678,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{that}.stubs", "{domReader}.tts", "pause"]
                 }, {
                     funcName: "fluid.set",
-                    args: ["{domReader}", "model", "{that}.options.testOptions.pausedModel"]
+                    args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.pausedModel"]
                 }, {
                     func: "{domReader}.pause"
                 }, {
@@ -683,7 +693,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{that}.stubs", "{domReader}.tts", "pause"]
                 }, {
                     funcName: "fluid.set",
-                    args: ["{domReader}", "model", "{that}.options.testOptions.speakingModel"]
+                    args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.speakingModel"]
                 }, {
                     func: "{domReader}.pause"
                 }, {
@@ -695,7 +705,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // play after pause
                     funcName: "fluid.set",
-                    args: ["{domReader}", "model", "{that}.options.testOptions.pausedModel"]
+                    args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.pausedModel"]
                 }, {
                     funcName: "fluid.tests.orator.addStub",
                     args: ["{that}.stubs", "{domReader}.tts", "resume"]
@@ -710,7 +720,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // play while speaking
                     funcName: "fluid.set",
-                    args: ["{domReader}", "model", "{that}.options.testOptions.speakingModel"]
+                    args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.speakingModel"]
                 }, {
                     funcName: "fluid.tests.orator.addStub",
                     args: ["{that}.stubs", "{domReader}", "readFromDOM"]
@@ -725,7 +735,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // speak when disabled
                     funcName: "fluid.set",
-                    args: ["{domReader}", "model", "{that}.options.testOptions.disabledModel"]
+                    args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.disabledModel"]
                 }, {
                     funcName: "fluid.tests.orator.addStub",
                     args: ["{that}.stubs", "{domReader}", "readFromDOM"]
@@ -748,20 +758,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.orator.domReaderTester.verifyEnd = function (that) {
-        jqUnit.assertEquals("The parseQueue should be empty.", 0, that.parseQueue.length);
-        jqUnit.assertEquals("The parseIndex should be reset to 0.", 0, that.parseIndex);
-        jqUnit.assertNodeNotExists("The self voicing has completed. All highlights should be removed.", that.locate("highlight"));
+    fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState = function (testPrefix, that) {
+        jqUnit.assertDeepEq(testPrefix + ": The parseQueue should be empty.", [], that.parseQueue);
+        jqUnit.assertEquals(testPrefix + ": The parseQueueLength model value should be 0.", 0, that.model.parseQueuelength);
+        jqUnit.assertNull(testPrefix + ": The parseIndex model value should be null.", that.model.parseIndex);
+        jqUnit.assertNull(testPrefix + ": The ttsBoundary model value should be null.", that.model.ttsBoundary);
+        jqUnit.assertNodeNotExists(testPrefix + ": All highlights should be removed.", that.locate("highlight"));
     };
 
     fluid.tests.orator.domReaderTester.verifySpeakQueue = function (that, expectedSpeechRecord) {
         jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedSpeechRecord, that.tts.speechRecord);
     };
 
-    fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected, parsed) {
-        jqUnit.assertDeepEq("The parsed data should have been returned correctly", expected, parsed);
+    fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected) {
+        jqUnit.assertDeepEq("The parsedQueueLength model value should have been set correctly", expected.length, that.model.parseQueuelength);
         jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
     };
+
+    // fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected, parsed) {
+    //     jqUnit.assertDeepEq("The parsed data should have been returned correctly", expected, parsed);
+    //     jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
+    // };
 
     fluid.tests.orator.domReaderTester.verifyMark = function (elm, expectedText) {
         jqUnit.assertNodeExists("The highlight should have been added", elm);
@@ -772,7 +789,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.orator.domReaderTester.verifyRecords = function (that, expectedEvents, expectedSpeechRecord, expectedModel) {
         jqUnit.assertDeepEq("TTS: events should have fired correctly", expectedEvents, that.tts.eventRecord);
         jqUnit.assertDeepEq("TTS: text to be spoken should have been queued correctly", expectedSpeechRecord, that.tts.speechRecord);
-        jqUnit.assertDeepEq("TTS: model should be reset correctly", expectedModel, that.model);
+        jqUnit.assertDeepEq("TTS: model should be reset correctly", expectedModel, that.model.tts);
     };
 
     /*******************************************************************************
