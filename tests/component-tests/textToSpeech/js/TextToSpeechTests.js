@@ -279,7 +279,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.textToSpeech.utteranceTests", {
+    fluid.defaults("fluid.tests.textToSpeech.utteranceEnvironment", {
         gradeNames: "fluid.test.testEnvironment",
         components: {
             utterance: {
@@ -378,6 +378,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             jqUnit.assertEquals("The utterance '" + propName + "' property should have been set correctly.", value, expectedValue);
         });
+    };
+
+    fluid.tests.textToSpeech.utteranceTests = function () {
+        fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for Utterance tests",
+         fluid.textToSpeech.checkTTSSupport,
+          fluid.tests.textToSpeech.utteranceEnvironment,
+           fluid.test.conditionalTestUtils.bypassTest,
+           "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
     /*********************************************************************************************
