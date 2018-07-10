@@ -1179,12 +1179,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     $(document).ready(function () {
-        fluid.test.runTests([
-            "fluid.tests.orator.controllerTests",
+        var tests = ["fluid.tests.orator.controllerTests"];
+        var ttsTests = [
             "fluid.tests.orator.domReaderTests",
             "fluid.tests.orator.selectionReaderTests",
             "fluid.tests.oratorTests"
-        ]);
+        ];
+
+        if (fluid.textToSpeech.isSupported()) {
+            tests = tests.concat(ttsTests);
+        };
+        fluid.test.runTests(tests);
     });
 
 })(jQuery);

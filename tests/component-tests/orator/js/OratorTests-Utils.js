@@ -110,14 +110,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var selection = window.getSelection();
 
         range.selectNode(node);
-        selection.empty();
+        selection.removeAllRanges();
         selection.addRange(range);
-        range.detach();
     };
 
     fluid.tests.orator.selection.collapse = function () {
         var selection = window.getSelection();
-        selection.empty();
+        selection.removeAllRanges();
     };
 
     /*******************************************************************************
