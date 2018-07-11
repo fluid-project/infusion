@@ -148,7 +148,7 @@
 
 
 /* Font Icons */
-.fl-icon-orator {
+.fl-icon-orator, .fl-icon-orator-playToggle {
     font-family: 'Orator-Icons' !important;
     speak: none;
     font-style: normal;
@@ -164,6 +164,14 @@
     content: "\e000";
 }
 
+.fl-icon-orator-playToggle:before {
+    content: "\e001";
+}
+
+.fl-orator-controller-play .fl-icon-orator-playToggle:before {
+    content: "\e002";
+}
+
 .fl-icon-orator:before {
     /* the following is to style the icon to appear inset */
     background-color: #565656;
@@ -174,8 +182,12 @@
     background-clip: text;
 }
 
-.fl-orator-controller .fl-icon-orator {
+.fl-orator-controller .fl-icon-orator{
     color: #4E4E4E;
+}
+
+.fl-orator-controller .fl-icon-orator,
+.fl-orator-controller .fl-icon-orator-playToggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -183,12 +195,8 @@
     padding-bottom: 0.5rem;
 }
 
-.fl-icon-orator-playToggle:before {
-    content: "\25B6";
-}
-
-.fl-orator-controller-play .fl-icon-orator-playToggle:before {
-    content: "\2016";
+.fl-orator-controller .fl-icon-orator-playToggle {
+    font-size: 1.5rem;
 }
 
 .fl-orator-selectionReader-play .fl-icon-orator {
