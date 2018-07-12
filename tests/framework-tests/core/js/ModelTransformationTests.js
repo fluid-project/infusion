@@ -1860,7 +1860,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 "trueCATT": "CATT"
             },
-            expectedInputPaths: [ "bogusPath", "whichAnimal", "whichAnimal" ]
+            expectedInputPaths: [ "bogusPath", "whichAnimal" ]
         },
         "inputPath-no-defaultInputPath-fallback": {
             message: "inputPath does not fallback to defaultInputPath if no value is found at inputPath",
@@ -1887,7 +1887,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             expected: {},
-            expectedInputPaths: [ "whichAnimal", "bogusPath", "bogusPath" ],
+            expectedInputPaths: [ "whichAnimal", "bogusPath" ],
             transformWrap: false
         },
         "inputPath-double-match-first-returned": {
@@ -1915,7 +1915,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 smartAnimal: "youWin"
             },
-            expectedInputPaths: [ "whichAnimal", "whichAnimal", "whichCountry" ]
+            expectedInputPaths: [ "whichAnimal", "whichCountry" ]
         },
         "multiMatch-test": {
             message: "valueMapper tie-breaks equally good matches by selecting the first",

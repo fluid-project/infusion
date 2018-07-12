@@ -408,12 +408,10 @@ var fluid = fluid || fluid_3_0_0;
         if (multiInput) {
             fluid.model.transform.accumulateMultiInputPaths(defaults.inputVariables, transformSpec, transformer, transformer.inputPaths);
         }
-        if (!multiInput && !standardInput) {
-            var collector = defaults.collectInputPaths;
-            if (collector) {
-                var collected = fluid.makeArray(fluid.invokeGlobalFunction(collector, [transformSpec, transformer]));
-                Array.prototype.push.apply(transformer.inputPaths, collected); // push all elements of collected onto inputPaths
-            }
+        var collector = defaults.collectInputPaths;
+        if (collector) {
+            var collected = fluid.makeArray(fluid.invokeGlobalFunction(collector, [transformSpec, transformer]));
+            Array.prototype.push.apply(transformer.inputPaths, collected); // push all elements of collected onto inputPaths
         }
     };
 
@@ -524,7 +522,9 @@ var fluid = fluid || fluid_3_0_0;
         };
         fluid.model.transform.makeStrategy(transformer, fluid.model.transform.handleCollectStrategy);
         transformer.expand(rules);
-        return transformer.inputPaths;
+        // Deduplicate input paths
+        var inputPathHash = fluid.arrayToHash(transformer.inputPaths);
+        return Object.keys(inputPathHash);
     };
 
     // unsupported, NON-API function
