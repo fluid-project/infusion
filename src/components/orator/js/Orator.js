@@ -190,12 +190,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    /**
+     * Used to toggle the state of a model value at a specified path. The new state will be the inverse of the current
+     * boolean value at the specified model path, or can be set explicitly by passing in a 'state' value. It's likely
+     * that this method will be used in conjunction with a click handler. In that case it's most likely that the state
+     * will be toggling the existing model value.
+     *
+     * @param {Component} that - the component
+     * @param {String|Array} path - the path, into the model, for the value to toggle
+     * @param {Boolean} state - (optional) explicit state to set the model value to
+     */
     fluid.orator.controller.toggleState = function (that, path, state) {
         var newState = fluid.isValue(state) ? state : !fluid.get(that.model, path);
         // the !! ensures that the newState is a boolean value.
         that.applier.change(path, !!newState, "ADD", "toggleState");
     };
 
+    /**
+     * Sets the view state of the toggle controller.
+     * True - play style added
+     *      - aria-label set to the `pause` string
+     * False - play style removed
+     *       - aria-label set to the `play` string
+     *
+     * @param {Component} that - the component
+     * @param {Boolean} state - the state to set the controller to
+     */
     fluid.orator.controller.setToggleView = function (that, state) {
         var playToggle = that.locate("playToggle");
         playToggle.toggleClass(that.options.styles.play, state);
@@ -452,7 +472,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Sets the parseQueue and related model values
      *
      * @param {Component} that - the component
-     * @param {DomWordMappings} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
+     * @param {{DomWordMap[]}} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
      *                                   {DomElement}.
      */
     fluid.orator.domReader.setParseQueue = function (that, parseQueue) {
@@ -484,17 +504,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     /**
-     * An array of {DomWordMap} objects detailing the words parsed from the a {DomElement}. This information can be used
-     * to map the synthesized speech to the location of each word in the DOM; which is useful for highlighting words as
-     * they are being read.
-     *
-     * @typedef {Array} DomWordMappings
-     */
-
-    /**
      * Combines the parsed text into a String.
      *
-     * @param {DomWordMappings} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
+     * @param {{DomWordMap[]}} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
      *                                   {DomElement}.
      *
      * @return {String} - The parsed text combined into a String.
@@ -530,6 +542,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Component} that - The component
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
+     *                             If the boundary is undefined or out of bounds, `undefined` will be returned.
      *
      * @return {Integer|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
@@ -659,12 +672,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Adds a {DomWordMap} to the 'parsed' {DomWordMappings} array, containing the position mappings for the parsed DOM
+     * Adds a {DomWordMap} to the 'parsed' {{DomWordMap[]}} array, containing the position mappings for the parsed DOM
      * elements.
      *
      * See: DomWordMap TypeDef for a detailed description of its structure.
      *
-     * @param {DomWordMappings} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
+     * @param {{DomWordMap[]}} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
      *                                   {DomElement}.
      * @param {String} word - The word, parsed from the node, to be added
      * @param {DomNode} childNode - The current textnode being operated on
@@ -697,7 +710,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
-     * @return {DomWordMappings} - An array of {DomWordMap} objects containing the position mappings parsed from `elm`.
+     * @return {{DomWordMap[]}} - An array of {DomWordMap} objects containing the position mappings parsed from `elm`.
      */
     fluid.orator.domReader.parser.parse = function (that, elm, blockIndex) {
         var parsed = [];

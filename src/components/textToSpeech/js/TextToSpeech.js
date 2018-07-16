@@ -296,21 +296,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * Options to configure the SpeechSynthesis Utterance with.
+     * See: https://w3c.github.io/speech-api/speechapi.html#utterance-attributes
+     *  {
+     *      text: "", // the text to Synthesize
+     *      lang: "", // the language of the synthesized text
+     *      voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
+     *      volume: 1, // a Floating point number between 0 and 1
+     *      rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
+     *      pitch: 1, // a Floating point number from 0 to 2
+     *   }
+     *
+     * @typedef {Object} UtteranceOpts
+     */
+
+    /**
      * Assembles the utterance options and fires onSpeechQueued which will kick off the creation of an utterance
      * component. If "interrupt" is true, this utterance will replace any existing ones.
      *
      * @param {Component} that - the component
      * @param {String} text - the text to be synthesized
      * @param {Boolean} interrupt - used to indicate if this text should be queued or replace existing utterances
-     * @param {Object} options - options to configure the SpeechSynthesis utterance with. It is merged on top of the
+     * @param {UtteranceOpts} options - options to configure the SpeechSynthesis utterance with. It is merged on top of the
      *                           utteranceOpts from the component's model.
-     *                           {
-     *                               lang: "", // the language of the synthesized text
-     *                               voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
-     *                               volume: 1, // a Floating point number between 0 and 1
-     *                               rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
-     *                               pitch: 1, // a Floating point number from 0 to 2
-     *                           }
      *
      * @return {Promise} - returns a promise that is resolved after the onSpeechQueued event has fired.
      */
@@ -402,15 +410,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Component} that - the component
      * @param {Object} utteranceEventMap - a mapping from SpeechSynthesisUtterance events to component events.
-     * @param {Object} utteranceOpts - options to configure the SpeechSynthesis utterance with.
-     *                                 {
-     *                                     text: "", // the text to Synthesize
-     *                                     lang: "", // the language of the synthesized text
-     *                                     voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
-     *                                     volume: 1, // a Floating point number between 0 and 1
-     *                                     rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
-     *                                     pitch: 1, // a Floating point number from 0 to 2
-     *                                 }
+     * @param {UtteranceOpts} utteranceOpts - options to configure the SpeechSynthesis utterance with.
      *
      * @return {SpeechSynthesisUtterance} - returns the created SpeechSynthesisUtterance object
      */
