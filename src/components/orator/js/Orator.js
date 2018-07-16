@@ -329,9 +329,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         modelListeners: {
-            "parseIndex": {
+            "highlight": {
                 listener: "{that}.highlight",
-                namespace: "highlight"
+                path: ["parseIndex", "parseQueueLength"]
             }
         },
         listeners: {
@@ -596,7 +596,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.domReader.highlight = function (that) {
         that.removeHighlight();
 
-        if (that.model.parseQueueLength) {
+        if (that.model.parseQueueLength && fluid.isValue(that.model.parseIndex)) {
             var data = that.parseQueue[that.model.parseIndex];
             var rangeNode = data.parentNode.childNodes[data.childIndex];
 
