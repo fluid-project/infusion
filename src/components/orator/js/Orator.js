@@ -551,7 +551,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.domReader.getClosestIndex = function (that, boundary) {
         var parseQueue = that.parseQueue;
 
-        if (!parseQueue.length || !fluid.isValue(boundary) && boundary <= 0) {
+        if (!parseQueue.length || !fluid.isValue(boundary)) {
             return undefined;
         };
 
