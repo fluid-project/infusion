@@ -63,12 +63,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     },
                     listeners: {
-                        "utteranceOnEnd.domReaderStop": [{
+                        "utteranceOnEnd.domReaderStop": {
                             changePath: "{orator}.model.play",
                             value: false,
                             source: "domReader.utteranceOnEnd",
                             priority: "after:removeHighlight"
-                        }]
+                        }
                     },
                     modelListeners: {
                         "{orator}.model.play": {
@@ -391,11 +391,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.orator.domReader.removeExtraWhiteSpace = function (text) {
-
         var promise = fluid.promise();
         // force a string value
         var str = text.toString();
-
         // trim whitespace
         str = str.trim();
 
@@ -543,7 +541,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return undefined;
         };
 
-        var maxIndex  = Math.max(parseQueue.length - 1, 0);
+        var maxIndex = Math.max(parseQueue.length - 1, 0);
         var index = Math.max(Math.min(that.model.parseIndex || 0, maxIndex), 0);
         var maxBoundary = parseQueue[maxIndex].blockIndex + parseQueue[maxIndex].word.length;
 
