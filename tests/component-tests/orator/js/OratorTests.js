@@ -574,13 +574,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "fluid.orator.domReader",
             tests: [{
                 expect: 43,
-                name: "Dom Reading",
+                name: "DOM Reading",
                 sequence: [{
                     func: "{domReader}.play"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
                     args: ["{domReader}", fluid.tests.orator.domReader.parsed, "{arguments}.0"],
-                    spec: {priority: "last:testing", path: "parseQueuelength"},
+                    spec: {priority: "last:testing", path: "parseQueueLength"},
                     changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
@@ -632,7 +632,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
                     args: ["utteranceOnEnd fired", "{domReader}"],
-                    spec: {priority: "last:testing", path: "parseQueuelength"},
+                    spec: {priority: "last:testing", path: "parseQueueLength"},
                     changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     // test readFromDom if the element to parse isn't available
@@ -651,7 +651,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
                     args: ["{domReader}", fluid.tests.orator.domReader.parsed, "{arguments}.0"],
-                    spec: {priority: "last:testing", path: "parseQueuelength"},
+                    spec: {priority: "last:testing", path: "parseQueueLength"},
                     changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
@@ -761,7 +761,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState = function (testPrefix, that) {
         jqUnit.assertDeepEq(testPrefix + ": The parseQueue should be empty.", [], that.parseQueue);
-        jqUnit.assertEquals(testPrefix + ": The parseQueueLength model value should be 0.", 0, that.model.parseQueuelength);
+        jqUnit.assertEquals(testPrefix + ": The parseQueueLength model value should be 0.", 0, that.model.parseQueueLength);
         jqUnit.assertNull(testPrefix + ": The parseIndex model value should be null.", that.model.parseIndex);
         jqUnit.assertNull(testPrefix + ": The ttsBoundary model value should be null.", that.model.ttsBoundary);
         jqUnit.assertNodeNotExists(testPrefix + ": All highlights should be removed.", that.locate("highlight"));
@@ -772,7 +772,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected) {
-        jqUnit.assertDeepEq("The parsedQueueLength model value should have been set correctly", expected.length, that.model.parseQueuelength);
+        jqUnit.assertDeepEq("The parsedQueueLength model value should have been set correctly", expected.length, that.model.parseQueueLength);
         jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
     };
 

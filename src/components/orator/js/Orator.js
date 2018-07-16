@@ -265,7 +265,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 speaking: false,
                 enabled: true
             },
-            parseQueuelength: 0,
+            parseQueueLength: 0,
             parseIndex: null,
             ttsBoundary: null
         },
@@ -294,6 +294,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
+            parsedToString: "fluid.orator.domReader.parsedToString",
             readFromDOM: {
                 funcName: "fluid.orator.domReader.readFromDOM",
                 args: ["{that}", "{that}.container"]
@@ -315,7 +316,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{arguments}.0"]
             },
             play: {
-                funcName: "fluid.orator.domReader.speak",
+                funcName: "fluid.orator.domReader.play",
                 args: ["{that}", "{fluid.textToSpeech}.resume"]
             },
             pause: {
@@ -387,7 +388,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.orator.domReader.speak = function (that, resumeFn) {
+    fluid.orator.domReader.play = function (that, resumeFn) {
         if (that.model.tts.enabled) {
             if (that.model.tts.paused) {
                 resumeFn();
@@ -472,13 +473,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Sets the parseQueue and related model values
      *
      * @param {Component} that - the component
-     * @param {{DomWordMap[]}} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
+     * @param {DomWordMap[]} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
      *                                   {DomElement}.
      */
     fluid.orator.domReader.setParseQueue = function (that, parseQueue) {
         that.parseQueue = parseQueue || [];
         that.applier.change("", {
-            parseQueuelength: that.parseQueue.length,
+            parseQueueLength: that.parseQueue.length,
             parseIndex: null,
             ttsBoundary: null
         }, "ADD", "resetParseQueue");
@@ -506,7 +507,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Combines the parsed text into a String.
      *
-     * @param {{DomWordMap[]}} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
+     * @param {DomWordMap[]} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
      *                                   {DomElement}.
      *
      * @return {String} - The parsed text combined into a String.
@@ -533,7 +534,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (elm.length) {
             var parsedFromElm = that.parser.parse(elm[0]);
             that.setParseQueue(parsedFromElm);
-            that.queueSpeech(fluid.orator.domReader.parsedToString(parsedFromElm));
+            that.queueSpeech(that.parsedToString(parsedFromElm));
         }
     };
 
@@ -595,7 +596,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.domReader.highlight = function (that) {
         that.removeHighlight();
 
-        if (that.model.parseQueuelength) {
+        if (that.model.parseQueueLength) {
             var data = that.parseQueue[that.model.parseIndex];
             var rangeNode = data.parentNode.childNodes[data.childIndex];
 
@@ -672,12 +673,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Adds a {DomWordMap} to the 'parsed' {{DomWordMap[]}} array, containing the position mappings for the parsed DOM
+     * Adds a {DomWordMap} to the 'parsed' {DomWordMap[]} array, containing the position mappings for the parsed DOM
      * elements.
      *
      * See: DomWordMap TypeDef for a detailed description of its structure.
      *
-     * @param {{DomWordMap[]}} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
+     * @param {DomWordMap[]} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
      *                                   {DomElement}.
      * @param {String} word - The word, parsed from the node, to be added
      * @param {DomNode} childNode - The current textnode being operated on
@@ -710,7 +711,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
-     * @return {{DomWordMap[]}} - An array of {DomWordMap} objects containing the position mappings parsed from `elm`.
+     * @return {DomWordMap[]} - An array of {DomWordMap} objects containing the position mappings parsed from `elm`.
      */
     fluid.orator.domReader.parser.parse = function (that, elm, blockIndex) {
         var parsed = [];
