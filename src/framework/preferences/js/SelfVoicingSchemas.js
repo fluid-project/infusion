@@ -17,8 +17,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*******************************************************************************
     * Starter auxiliary schema grade
     *
-    * Contains the settings for 7 preferences: text size, line space, text font,
-    * contrast, table of contents, inputs larger and emphasize links
+    * Contains the settings for text-to-speech
     *******************************************************************************/
 
     // Fine-tune the starter aux schema and add speak panel

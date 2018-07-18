@@ -97,7 +97,7 @@ var demo = demo || {};
                 }
             },
 
-            // sepcify augmented container template for panels
+            // specify augmented container template for panels
             template: "html/SeparatedPanelPrefsEditorWithTTS.html"
         }
     });
