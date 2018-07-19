@@ -54,7 +54,7 @@ categorized by license:
 
 ### BSD-3 ###
 
-* [Sinon v4.5.0](http://sinonjs.org)
+* [Sinon v6.1.3](http://sinonjs.org)
 
 ### MIT License ###
 
