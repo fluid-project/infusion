@@ -46,7 +46,8 @@
             "textfieldControls",
             "switch",
             "tableOfContents",
-            "textToSpeech"
+            "textToSpeech",
+            "orator"
         ]
     }
 }
