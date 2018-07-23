@@ -562,12 +562,6 @@ h5 {
     padding: 0;
 }
 
-.demo-content ul {
-    padding: 0;
-    margin: 0;
-}
-
-li { list-style-type:none; }
 div.dropdown {
     z-index:10000000;
     margin-top:2px;
