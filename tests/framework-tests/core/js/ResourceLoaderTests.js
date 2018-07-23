@@ -20,12 +20,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.resourceLoader", {
         gradeNames: ["fluid.resourceLoader"],
+        defaultLocale: "en",
         terms: {
             prefix: "../data"
         },
         resources: {
             template1: "%prefix/testTemplate1.html",
-            template2: "../data/testTemplate2.html"
+            template2: "../data/testTemplate2.html",
+            template3: "%prefix/testTemplate3.html",
+            template4: "../data/testTemplate4.html"
         },
         listeners: {
             onResourcesLoaded: "fluid.tests.resourceLoader.testTemplateLoader"
@@ -43,11 +46,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("\"forceCache\" option for the template2 has been set", resources.template2.forceCache);
         jqUnit.assertEquals("The content of the template2 has been loaded correctly", "<div>Test Template 2</div>", $.trim(resources.template2.resourceText));
 
+        // The localised template with a templating path of prefixTerm + name
+        jqUnit.assertEquals("The content of the template3 has been loaded correctly", "<div>Test Template 3 Localised</div>", $.trim(resources.template3.resourceText));
+
+        // The localised template with a full path
+        jqUnit.assertEquals("The content of the template4 has been loaded correctly", "<div>Test Template 4 Localised</div>", $.trim(resources.template4.resourceText));
+
         jqUnit.start();
     };
 
     jqUnit.asyncTest("Test Resource Loader", function () {
-        jqUnit.expect(6);
+        jqUnit.expect(8);
         fluid.tests.resourceLoader();
     });
 

@@ -67,12 +67,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (resourceSpec.url && !resourceSpec.href) {
                 resourceSpec.href = resourceSpec.url;
             }
+
+            // If options.defaultLocale is set, it will replace any
+            // defaultLocale set on an individual resourceSpec
             if (that.options.defaultLocale) {
                 resourceSpec.defaultLocale = that.options.defaultLocale;
-                if (resourceSpec.locale === undefined) {
-                    resourceSpec.locale = that.options.defaultLocale;
-                }
             }
+            if (!resourceSpec.locale) {
+                resourceSpec.locale = resourceSpec.defaultLocale;
+            }
+
         });
         if (that.options.amalgamateClasses) {
             fluid.fetchResources.amalgamateClasses(resourceSpecs, that.options.amalgamateClasses, that.operate);
