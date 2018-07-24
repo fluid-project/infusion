@@ -77,6 +77,7 @@
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
         <script type="text/javascript" src="../../src/components/orator/js/Orator.js"></script>
 
+        <script type="text/javascript" src="js/injectSVG.js"></script>
         <script type="text/javascript" src="js/prefsEditorDemo.js"></script>
 
         <!-- for Overview Panel -->
@@ -140,8 +141,13 @@
 
                 <header id="header" class="dotGovSub">
                     <div id="headTitle">
-                        <span class="fl-hidden-accessible">NOAA Office of Education</span>
+                        <span>National Oceanic and Atmospheric Administration</span>
                     </div>
+                    <script>
+                        // need to inject the SVG so that we don't have to have the entire SVG document in the markup,
+                        // but still be able to style it.
+                        demo.injectSVG("#headTitle", {svgSource: "images/NOAA_Logo.svg"})
+                    </script>
                     <div id="midBlock">
                         <nav>
                             <ul id="midNavElements">

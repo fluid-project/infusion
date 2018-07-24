@@ -114,31 +114,37 @@ em {
 
 /** Header **/
 #headTitle {
-    display: block;
-    position: relative;
-    width: inherit;
-    height: 76px;
-    background: url(../images/head_title.gif) no-repeat left top;
+    display: flex;
+    align-items: center;
+    height: 5.1rem;
+    font-size: 1.5rem;
     border-bottom:1px solid #aedbf4;
     border-top: 1px solid #aedbf4;
-    vertical-align: middle;
-    margin: 0;
+}
 
+#headTitle svg {
+    color: #263f78;
+    fill: #007ec6;
+    width: 4.75rem;
+    height: 4rem;
+    padding: 0.2rem;
+    padding-right: 1rem;
+    flex-shrink: 0;
 }
-.fl-theme-yb #headTitle {
-    background-image: url(../images/head_title_yellow.png);
+
+.fl-theme-yb #headTitle svg,
+.fl-theme-wb #headTitle svg,
+.fl-theme-by #headTitle svg,
+.fl-theme-bw #headTitle svg,
+.fl-theme-bbr #headTitle svg,
+.fl-theme-lgdg #headTitle svg,
+.fl-theme-gw #headTitle svg {
+    color: inherit;
+    fill: currentColor;
 }
-.fl-theme-wb #headTitle {
-    background-image: url(../images/head_title_white.png);
-}
-.fl-theme-by #headTitle,
-.fl-theme-bw #headTitle,
-.fl-theme-bbr #headTitle {
-    background-image: url(../images/head_title_black.png);
-}
-.fl-theme-lgdg #headTitle,
-.fl-theme-gw #headTitle {
-    background-image: url(../images/head_title_grey.png);
+
+#headTitle span {
+    width: 20rem;
 }
 
 /** MID NAV **/
