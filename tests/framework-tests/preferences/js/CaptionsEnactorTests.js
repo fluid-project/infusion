@@ -291,13 +291,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         members: {
             record: {
-                onVideoElmLocated: []
+                onVideoElementLocated: []
             }
         },
         listeners: {
-            "onVideoElmLocated.record": {
+            "onVideoElementLocated.record": {
                 listener: "fluid.tests.prefs.enactor.captions.recordEvent",
-                args: ["{that}", "onVideoElmLocated", "{arguments}.0"],
+                args: ["{that}", "onVideoElementLocated", "{arguments}.0"],
                 priority: "first"
             }
         }
@@ -350,7 +350,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Init and Events",
                 sequence: [{
                     funcName: "jqUnit.assertEquals",
-                    args: ["The onVideoElmLocated should have fired for each found element", 2, "{captions}.record.onVideoElmLocated.length"]
+                    args: ["The onVideoElementLocated should have fired for each found element", 2, "{captions}.record.onVideoElementLocated.length"]
                 }, {
                     funcName: "fluid.tests.captionsTester.verifyDynamicComponentsCreated",
                     args: ["{captions}", "{that}.options.testOpts.componentNames"]

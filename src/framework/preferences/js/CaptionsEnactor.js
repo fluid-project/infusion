@@ -30,7 +30,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         events: {
-            onVideoElmLocated: null
+            onVideoElementLocated: null
         },
         selectors: {
             videos: "iframe[src^=\"https://www.youtube.com/embed/\"]"
@@ -41,7 +41,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         dynamicComponents: {
             player: {
                 type: "fluid.prefs.enactor.captions.youTubePlayer",
-                createOnEvent: "onVideoElmLocated",
+                createOnEvent: "onVideoElementLocated",
                 container: "{arguments}.0",
                 options: {
                     model: {
@@ -58,7 +58,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Used to determine when the YouTube API is available for use. It will test if the API is already available, and if
      * not, will bind to the onYouTubeIframeAPIReady method that is called when the YouTube API finishes loading.
-     * When the YouTube API is ready, the onVideoElmLocated event will fire for each video element located by the
+     * When the YouTube API is ready, the onVideoElementLocated event will fire for each video element located by the
      * `videos` selector. Each of these event calls will fire with a jQuery object containing a single video element.
      * This allows for dynamicComponens (fluid.prefs.enactor.captions.youTubePlayer) for each video element.
      *
@@ -74,7 +74,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var promise = fluid.promise();
         promise.then(function () {
             that.locate("videos").each(function (index, elm) {
-                that.events.onVideoElmLocated.fire($(elm));
+                that.events.onVideoElementLocated.fire($(elm));
             });
         }, function (error) {
             fluid.log(fluid.logLevel.WARN, error);
