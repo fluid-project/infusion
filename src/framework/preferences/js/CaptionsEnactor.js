@@ -38,6 +38,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         model: {
             enabled: false
         },
+        components: {
+            wndw: {
+                type: "fluid.prefs.enactor.captions.window"
+            }
+        },
         dynamicComponents: {
             player: {
                 type: "fluid.prefs.enactor.captions.youTubePlayer",
@@ -84,11 +89,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             promise.resolve();
         } else {
             // the YouTube iframe api will call onYouTubeIframeAPIReady after the api has loaded
-            window.onYouTubeIframeAPIReady = promise.resolve;
+            that.wndw.setGlobal("onYouTubeIframeAPIReady", promise.resolve);
         }
 
         return promise;
     };
+
+    /*********************************************************************************************
+     * fluid.prefs.enactor.captions.window is a singleton component to be used for assigning     *
+     * values onto the window object.                                                            *
+     *********************************************************************************************/
+
+    fluid.defaults("fluid.prefs.enactor.captions.window", {
+        gradeNames: ["fluid.component", "fluid.resolveRootSingle"],
+        singleRootType: "fluid.prefs.enactor.captions.window",
+        members: {
+            window: window
+        },
+        invokers: {
+            "setGlobal": {
+                funcName: "fluid.set",
+                args: ["{that}.window", "{arguments}.0", "{arguments}.1"]
+            }
+        }
+    });
 
     /**
      * See: https://developers.google.com/youtube/iframe_api_reference#Events for details on the YouTube player
