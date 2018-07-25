@@ -39,8 +39,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             enabled: false
         },
         components: {
-            wndw: {
-                type: "fluid.prefs.enactor.captions.window"
+            ytAPI: {
+                type: "fluid.prefs.enactor.captions.ytAPI"
             }
         },
         dynamicComponents: {
@@ -56,42 +56,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         listeners: {
-            "onCreate.checkYouTubeAPI": "fluid.prefs.enactor.captions.waitForYouTubeAPI"
+            "onCreate.initPlayers": "{that}.initPlayers"
+        },
+        invokers: {
+            initPlayers: {
+                funcName: "fluid.prefs.enactor.captions.initPlayers",
+                args: ["{that}", "{ytAPI}.notifyWhenLoaded", "{that}.dom.videos"]
+            }
         }
     });
 
     /**
-     * Used to determine when the YouTube API is available for use. It will test if the API is already available, and if
-     * not, will bind to the onYouTubeIframeAPIReady method that is called when the YouTube API finishes loading.
-     * When the YouTube API is ready, the onVideoElementLocated event will fire for each video element located by the
-     * `videos` selector. Each of these event calls will fire with a jQuery object containing a single video element.
-     * This allows for dynamicComponens (fluid.prefs.enactor.captions.youTubePlayer) for each video element.
+     * When the YouTube API is available, the onVideoElementLocated event will fire for each video element located by
+     * the `videos` argument. Each of these event calls will fire with a jQuery object containing a single video
+     * element. This allows for initializing dynamicComponents (fluid.prefs.enactor.captions.youTubePlayer) for each
+     * video element.
      *
-     * NOTE: After FLUID-6148 (https://issues.fluidproject.org/browse/FLUID-6148) is complete. It should be possible to
-     *       just source the dynamic components with the videos selector. The framework should at that time be able to
-     *       handle the asynchrony of waiting for the `YT` object from the expander that creates the player.
-     *
-     * @param {Component} - the component itself
-     *
-     * @return {Promise} - a promise resolved after the YouTube API has loaded.
+     * @param {Component} that - the component
+     * @param {Function} getYtApi - a function that returns a promise indicating if the YouTube API is available
+     * @param {jQuery|Element} - the videos to fire onVideoElementLocated events with
      */
-    fluid.prefs.enactor.captions.waitForYouTubeAPI = function (that) {
+    fluid.prefs.enactor.captions.initPlayers = function (that, getYtApi, videos) {
         var promise = fluid.promise();
+        var ytAPINotice = getYtApi();
+
         promise.then(function () {
-            that.locate("videos").each(function (index, elm) {
+            $(videos).each(function (index, elm) {
                 that.events.onVideoElementLocated.fire($(elm));
             });
-        }, function (error) {
-            fluid.log(fluid.logLevel.WARN, error);
         });
 
-        if (fluid.get(window, ["YT", "Player"])) {
-            promise.resolve();
-        } else {
-            // the YouTube iframe api will call onYouTubeIframeAPIReady after the api has loaded
-            that.wndw.setGlobal("onYouTubeIframeAPIReady", promise.resolve);
-        }
-
+        fluid.promise.follow(ytAPINotice, promise);
         return promise;
     };
 
@@ -100,19 +95,53 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * values onto the window object.                                                            *
      *********************************************************************************************/
 
-    fluid.defaults("fluid.prefs.enactor.captions.window", {
+    fluid.defaults("fluid.prefs.enactor.captions.ytAPI", {
         gradeNames: ["fluid.component", "fluid.resolveRootSingle"],
         singleRootType: "fluid.prefs.enactor.captions.window",
+        events: {
+            onYouTubeAPILoaded: null
+        },
         members: {
-            window: window
+            global: window
         },
         invokers: {
-            "setGlobal": {
-                funcName: "fluid.set",
-                args: ["{that}.window", "{arguments}.0", "{arguments}.1"]
+            notifyWhenLoaded: {
+                funcName: "fluid.prefs.enactor.captions.ytAPI.notifyWhenLoaded",
+                args: ["{that}"]
             }
         }
     });
+
+    /**
+     * Used to determine when the YouTube API is available for use. It will test if the API is already available, and if
+     * not, will bind to the onYouTubeIframeAPIReady method that is called when the YouTube API finishes loading.
+     * When the YouTube API is ready, the promise will resolve an the onYouTubeAPILoaded event will fire.
+     *
+     * NOTE: After FLUID-6148 (https://issues.fluidproject.org/browse/FLUID-6148) is complete, it should be possible for
+     *       the framework to handle this asynchrony directly in an expander for the player member in
+     *       fluid.prefs.enactor.captions.youTubePlayer.
+     *
+     * @param {Component} - the component itself
+     *
+     * @return {Promise} - a promise resolved after the YouTube API has loaded.
+     */
+    fluid.prefs.enactor.captions.ytAPI.notifyWhenLoaded = function (that) {
+        var promise = fluid.promise();
+        promise.then(function () {
+            that.events.onYouTubeAPILoaded.fire();
+        }, function (error) {
+            fluid.log(fluid.logLevel.WARN, error);
+        });
+
+        if (fluid.get(window, ["YT", "Player"])) {
+            promise.resolve();
+        } else {
+            // the YouTube iframe api will call onYouTubeIframeAPIReady after the api has loaded
+            fluid.set(that.global, "onYouTubeIframeAPIReady", promise.resolve);
+        }
+
+        return promise;
+    };
 
     /**
      * See: https://developers.google.com/youtube/iframe_api_reference#Events for details on the YouTube player
