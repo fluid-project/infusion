@@ -28,7 +28,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         members: {
             window: window
         },
-        invokers: {
+        listeners: {
             "onCreate.bindEvents": {
                 funcName: "fluid.window.bindEvents",
                 args: ["{that}"]
