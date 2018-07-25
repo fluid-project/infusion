@@ -55,9 +55,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    // After FLUID-6148 (https://issues.fluidproject.org/browse/FLUID-6148) is complete. It should be possible to
-    // just source the dynamic components with the videos selector. The framework should at that time be able to
-    // handle the asynchrony of waiting for YT in the expander that creates the player.
+    /**
+     * Used to determine when the YouTube API is available for use. It will test if the API is already available, and if
+     * not, will bind to the onYouTubeIframeAPIReady method that is called when the YouTube API finishes loading.
+     * When the YouTube API is ready, the onVideoElmLocated event will fire for each video element located by the
+     * `videos` selector. Each of these event calls will fire with a jQuery object containing a single video element.
+     * This allows for dynamicComponens (fluid.prefs.enactor.captions.youTubePlayer) for each video element.
+     *
+     * NOTE: After FLUID-6148 (https://issues.fluidproject.org/browse/FLUID-6148) is complete. It should be possible to
+     *       just source the dynamic components with the videos selector. The framework should at that time be able to
+     *       handle the asynchrony of waiting for the `YT` object from the expander that creates the player.
+     *
+     * @param {Component} - the component itself
+     *
+     * @return {Promise} - a promise resolved after the YouTube API has loaded.
+     */
     fluid.prefs.enactor.captions.waitForYouTubeAPI = function (that) {
         var promise = fluid.promise();
         promise.then(function () {
@@ -155,8 +167,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Adds the "enabledjsapi=1" query paramater to the query string at the end of the src attribute.
-     * If "enabledjsapi" already exists it will modify its value to 1. This is required for API access
+     * Adds the "enablejsapi=1" query parameter to the query string at the end of the src attribute.
+     * If "enablejsapi" already exists it will modify its value to 1. This is required for API access
      * to the embedded YouTube video.
      *
      * @param {jQuery|Element} videoElm - a reference to the existing embedded YouTube video.
