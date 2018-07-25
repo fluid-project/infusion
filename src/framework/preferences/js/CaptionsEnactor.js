@@ -143,6 +143,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
+     * Deprecated: This method is necessary for IE 11 which doesn't support the URL API. When support for IE 11 is
+     *             removed. This function will be removed/replaced in favour of using the URL API.
+     *             see: https://developer.mozilla.org/en-US/docs/Web/API/URL
+     *
      * Convert queryString into a parameter object. Note that repeated parameters will be replaced with the last one.
      *
      * @param {String} queryStr - the query string to parse. It assumes the first character is not "?";
