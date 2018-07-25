@@ -33,6 +33,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "uio.uiEnhancer.ignoreForToC": {
                 source: "{that}.options.ignoreForToC",
                 target: "{that uiEnhancer}.options.ignoreForToC"
+            },
+            "uio.localization.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                target: "{that prefsEditorLoader}.options.defaultLocale"
             }
         },
         enhancer: {
