@@ -77,7 +77,6 @@
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
         <script type="text/javascript" src="../../src/components/orator/js/Orator.js"></script>
 
-        <script type="text/javascript" src="js/injectSVG.js"></script>
         <script type="text/javascript" src="js/prefsEditorDemo.js"></script>
 
         <!-- for Overview Panel -->
@@ -144,9 +143,13 @@
                         <span>National Oceanic and Atmospheric Administration</span>
                     </div>
                     <script>
-                        // need to inject the SVG so that we don't have to have the entire SVG document in the markup,
+                        // Need to inject the SVG so that we don't have to have the entire SVG document in the markup,
                         // but still be able to style it.
-                        demo.injectSVG("#headTitle", {svgSource: "images/NOAA_Logo.svg"})
+                        fluid.templateRenderingView({
+                            container: "#headTitle",
+                            template: "images/NOAA_Logo.svg",
+                            injectionType: "prepend"
+                        });
                     </script>
                     <div id="midBlock">
                         <nav>
