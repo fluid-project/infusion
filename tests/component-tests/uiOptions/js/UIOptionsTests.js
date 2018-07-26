@@ -64,12 +64,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.uiOptions.testPrefsEditorLocalized", {
+        gradeNames: ["fluid.uiOptions.prefsEditor"],
+        defaultLocale: "fr",
+        terms: {
+            templatePrefix: "../../../../src/framework/preferences/html",
+            messagePrefix: "../../../../src/framework/preferences/messages"
+        }
+    });
 
+    fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "UIOptions Locale Tests",
+            tests: [{
+                name: "UIO defaultLocale tests",
+                expect: 1,
+                sequence: [{
+                    event: "{prefsEditorLocalizedTest prefsEditor messageLoader}.events.onResourcesLoaded",
+                    listener: "jqUnit.assertEquals",
+                    args: ["defaultLocale is properly propagated to messageLoader", "fr", "{prefsEditor}.prefsEditorLoader.messageLoader.options.defaultLocale"]
+                }]
+            }]
+        }]
+    });
 
+    fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTest", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            prefsEditorLocalized: {
+                type: "fluid.uiOptions.testPrefsEditorLocalized",
+                container: ".flc-prefsEditor-separatedPanel-localized",
+                createOnEvent: "{prefsEditorLocalizedTester}.events.onTestCaseStart"
+            },
+            prefsEditorLocalizedTester: {
+                type: "fluid.uiOptions.prefsEditorLocalizedTester"
+            }
+        }
+    });
 
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.uiOptions.prefsEditorTest",
+            "fluid.uiOptions.prefsEditorLocalizedTest"
         ]);
     });
 })(jQuery);
