@@ -73,6 +73,7 @@ categorized by license:
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
 * [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
+* [url-polyfill v1.0.13](https://github.com/lifaon74/url-polyfill)
 
 ### zlib/libpng License ###
 

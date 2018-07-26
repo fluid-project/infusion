@@ -22,43 +22,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.prefs.enactor.captions.youTubePlayer");
 
-    fluid.tests.prefs.enactor.captions.youTubePlayer.parseQueryStringTestCases = [{
-        name: "empty",
-        query: "",
-        expected: {}
-    }, {
-        name: "only leading \"?\"",
-        query: "?",
-        expected: {}
-    }, {
-        name: "leading \"?\"",
-        query: "?foo=bar",
-        expected: {foo: "bar"}
-    }, {
-        name: "no leading \"?\"",
-        query: "foo=bar",
-        expected: {foo: "bar"}
-    }, {
-        name: "multiple params",
-        query: "foo=bar&a=b",
-        expected: {foo: "bar", a: "b"}
-    }, {
-        name: "duplicate params",
-        query: "foo=bar&foo=baz",
-        expected: {foo: "baz"}
-    }, {
-        name: "encoded value",
-        query: "email=my%40e-mail.com",
-        expected: {email: "my@e-mail.com"}
-    }];
-
-    jqUnit.test("Test fluid.prefs.enactor.captions.youTubePlayer.parseQueryString", function () {
-        fluid.each(fluid.tests.prefs.enactor.captions.youTubePlayer.parseQueryStringTestCases, function (testCase) {
-            var params = fluid.prefs.enactor.captions.youTubePlayer.parseQueryString(testCase.query);
-            jqUnit.assertDeepEq(testCase.name + " - The params should have been parsed from the query string correctly", testCase.expected, params);
-        });
-    });
-
     fluid.tests.prefs.enactor.captions.youTubePlayer.enableJSAPITestCases = [{
         name: "no query parameters",
         src: "https://localhost:8888/embed/SjnXy0Iplvs"

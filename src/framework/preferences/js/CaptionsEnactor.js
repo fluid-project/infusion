@@ -74,7 +74,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Component} that - the component
      * @param {Function} getYtApi - a function that returns a promise indicating if the YouTube API is available
-     * @param {jQuery|Element} - the videos to fire onVideoElementLocated events with
+     * @param {jQuery|Element} videos - the videos to fire onVideoElementLocated events with
+     *
+     * @return {Promise} - A promise that follows the promise returned by the getYtApi function
      */
     fluid.prefs.enactor.captions.initPlayers = function (that, getYtApi, videos) {
         var promise = fluid.promise();
@@ -121,7 +123,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *       the framework to handle this asynchrony directly in an expander for the player member in
      *       fluid.prefs.enactor.captions.youTubePlayer.
      *
-     * @param {Component} - the component itself
+     * @param {Component} that - the component itself
      *
      * @return {Promise} - a promise resolved after the YouTube API has loaded.
      */
@@ -196,34 +198,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
-     * Deprecated: This method is necessary for IE 11 which doesn't support the URL API. When support for IE 11 is
-     *             removed. This function will be removed/replaced in favour of using the URL API.
-     *             see: https://developer.mozilla.org/en-US/docs/Web/API/URL
-     *
-     * Convert queryString into a parameter object. Note that repeated parameters will be replaced with the last one.
-     *
-     * @param {String} queryStr - the query string to parse. It assumes the first character is not "?";
-     *
-     * @return {Object} - An Object representation of the key/value pairs from the query string.
-     */
-    fluid.prefs.enactor.captions.youTubePlayer.parseQueryString = function (queryStr) {
-        queryStr = queryStr[0] === "?" ? queryStr.slice(1) : queryStr;
-        var params = {};
-
-        if (queryStr) {
-            var strParams = queryStr.split("&");
-
-            fluid.each(strParams, function (strParam) {
-                strParam = decodeURIComponent(strParam);
-                var paramVals = strParam.split("=");
-                params[paramVals[0]] = paramVals[1];
-            });
-        }
-
-        return params;
-    };
-
-    /**
      * Adds the "enablejsapi=1" query parameter to the query string at the end of the src attribute.
      * If "enablejsapi" already exists it will modify its value to 1. This is required for API access
      * to the embedded YouTube video.
@@ -232,14 +206,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.enactor.captions.youTubePlayer.enableJSAPI = function (videoElm) {
         videoElm = $(videoElm);
-        var uri = videoElm.attr("src");
-        var segs = uri.split("?");
-        var params = fluid.prefs.enactor.captions.youTubePlayer.parseQueryString(segs[1] || "");
+        var url = new URL(videoElm.attr("src"));
 
-        params.enablejsapi = 1;
-        segs[1] = $.param(params);
-
-        videoElm.attr("src", segs.join("?"));
+        url.searchParams.set("enablejsapi", 1);
+        videoElm.attr("src", url.toString());
     };
 
     /**
