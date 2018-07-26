@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
  */
 
-/* global fluid */
+/* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
@@ -79,15 +79,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "UIOptions Locale Tests",
             tests: [{
                 name: "UIO defaultLocale tests",
-                expect: 1,
+                expect: 8,
                 sequence: [{
                     event: "{prefsEditorLocalizedTest prefsEditor messageLoader}.events.onResourcesLoaded",
                     listener: "jqUnit.assertEquals",
                     args: ["defaultLocale is properly propagated to messageLoader", "fr", "{prefsEditor}.prefsEditorLoader.messageLoader.options.defaultLocale"]
+                },
+                {
+                    funcName: "fluid.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages",
+                    args: "{prefsEditor}"
                 }]
             }]
         }]
     });
+
+    var localizedValuesToVerify = {
+        fluid_prefs_panel_contrast: "Couleur et contraste",
+        fluid_prefs_panel_enhanceInputs: "Accentuer les contrôles",
+        fluid_prefs_panel_layoutControls: "Table des matières",
+        fluid_prefs_panel_lineSpace: "Interligne",
+        fluid_prefs_panel_textFont: "style du texte",
+        fluid_prefs_panel_textSize: "Taille du texte",
+        prefsEditor: "Préférences de l'utilisateur"
+    };
+
+    fluid.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages = function (prefsEditor) {
+        fluid.each(prefsEditor.prefsEditorLoader.messageLoader.resources, function (panel, key) {
+            var actualValue = "";
+            switch (key) {
+            case "fluid_prefs_panel_textFont":
+                actualValue = panel.resourceText.textFontLabel;
+                break;
+            case "prefsEditor":
+                actualValue = panel.resourceText.slidingPanelPanelLabel;
+                break;
+            default:
+                actualValue = panel.resourceText.label;
+                break;
+            };
+
+            jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", localizedValuesToVerify[key], actualValue);
+        });
+    };
 
     fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTest", {
         gradeNames: ["fluid.test.testEnvironment"],
