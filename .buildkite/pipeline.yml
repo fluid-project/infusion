@@ -4,7 +4,7 @@
 
 agent_tags: &agent_tags
   agents:
-    name: "${BUILDKITE_AGENT_META_DATA_NAME?}"
+    name: "${BUILDKITE_AGENT_NAME?}"
 
 steps:
   - name: "Build"
