@@ -17,16 +17,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
 
-    fluid.defaults("fluid.uiOptions.testPrefsEditor", {
+    /* Mixin grade for UIO test component */
+    fluid.defaults("fluid.uiOptions.testPrefsEditorBase", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
-        tocTemplate: customizedTocTemplate,
         terms: {
             templatePrefix: "../../../../src/framework/preferences/html",
             messagePrefix: "../../../../src/framework/preferences/messages"
         }
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorTester", {
+    /* Mixin grade for UIO test environment */
+    fluid.defaults("fluid.uiOptions.prefsEditorBaseTest", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            prefsEditor: {
+                createOnEvent: "{prefsEditorTester}.events.onTestCaseStart"
+            },
+            prefsEditorTester: {}
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.testPrefsEditorCustomToc", {
+        gradeNames: ["fluid.uiOptions.testPrefsEditorBase"],
+        tocTemplate: customizedTocTemplate
+    });
+
+    fluid.defaults("fluid.uiOptions.prefsEditorCustomTocTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "UIOptions Tests",
@@ -34,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Pass in customized toc template",
                 expect: 2,
                 sequence: [{
-                    event: "{prefsEditorTest prefsEditor}.events.onCreate",
+                    event: "{prefsEditorCustomTocTest prefsEditor}.events.onCreate",
                     listener: "jqUnit.assertEquals",
                     args: ["The toc template is applied properly to the pageEnhancer", customizedTocTemplate, "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
                 },
@@ -50,27 +66,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorTest", {
-        gradeNames: ["fluid.test.testEnvironment"],
+    fluid.defaults("fluid.uiOptions.prefsEditorCustomTocTest", {
+        gradeNames: ["fluid.uiOptions.prefsEditorBaseTest"],
         components: {
             prefsEditor: {
-                type: "fluid.uiOptions.testPrefsEditor",
-                container: ".flc-prefsEditor-separatedPanel",
-                createOnEvent: "{prefsEditorTester}.events.onTestCaseStart"
+                type: "fluid.uiOptions.testPrefsEditorCustomToc",
+                container: ".flc-prefsEditor-separatedPanel"
             },
             prefsEditorTester: {
-                type: "fluid.uiOptions.prefsEditorTester"
+                type: "fluid.uiOptions.prefsEditorCustomTocTester"
             }
         }
     });
 
     fluid.defaults("fluid.uiOptions.testPrefsEditorLocalized", {
-        gradeNames: ["fluid.uiOptions.prefsEditor"],
-        defaultLocale: "fr",
-        terms: {
-            templatePrefix: "../../../../src/framework/preferences/html",
-            messagePrefix: "../../../../src/framework/preferences/messages"
-        }
+        gradeNames: ["fluid.uiOptions.testPrefsEditorBase"],
+        defaultLocale: "fr"
     });
 
     fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTester", {
@@ -81,7 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "UIO defaultLocale tests",
                 expect: 8,
                 sequence: [{
-                    event: "{prefsEditorLocalizedTest prefsEditor messageLoader}.events.onResourcesLoaded",
+                    event: "{prefsEditorBaseTest prefsEditor messageLoader}.events.onResourcesLoaded",
                     listener: "jqUnit.assertEquals",
                     args: ["defaultLocale is properly propagated to messageLoader", "fr", "{prefsEditor}.prefsEditorLoader.messageLoader.options.defaultLocale"]
                 },
@@ -123,14 +134,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTest", {
-        gradeNames: ["fluid.test.testEnvironment"],
+        gradeNames: ["fluid.uiOptions.prefsEditorBaseTest"],
         components: {
-            prefsEditorLocalized: {
+            prefsEditor: {
                 type: "fluid.uiOptions.testPrefsEditorLocalized",
-                container: ".flc-prefsEditor-separatedPanel-localized",
-                createOnEvent: "{prefsEditorLocalizedTester}.events.onTestCaseStart"
+                container: ".flc-prefsEditor-separatedPanel-localized"
             },
-            prefsEditorLocalizedTester: {
+            prefsEditorTester: {
                 type: "fluid.uiOptions.prefsEditorLocalizedTester"
             }
         }
@@ -138,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.uiOptions.prefsEditorTest",
+            "fluid.uiOptions.prefsEditorCustomTocTest",
             "fluid.uiOptions.prefsEditorLocalizedTest"
         ]);
     });
