@@ -49,17 +49,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             elm: $("<li>last</li>")
         }];
 
-        jqUnit.test("fluid.containerRenderingView.addToParent", function () {
+        jqUnit.test("fluid.newViewComponent.addToParent", function () {
             var parent = $(".flc-newViewSupport-addToParent");
 
             fluid.each(fluid.tests.newViewComponent.addToParentCases, function (testCase) {
-                fluid.containerRenderingView.addToParent(parent, testCase.elm, testCase.method);
+                fluid.newViewComponent.addToParent(parent, testCase.elm, testCase.method);
             });
 
             var children = parent.children();
             jqUnit.assertEquals("The prepended node should be the first child", "first", children.eq(0).text());
             jqUnit.assertEquals("The appended node should be the third child", "third", children.eq(2).text());
             jqUnit.assertEquals("The element added without a method should be last", "last", children.eq(3).text());
+        });
+
+        jqUnit.test("fluid.newViewComponent.addToParent replace content", function () {
+            var parent = $(".flc-newViewSupport-addToParent-replace");
+
+            fluid.newViewComponent.addToParent(parent, "<li>new</li>", "html");
+
+            var children = parent.children();
+            jqUnit.assertEquals("There should only be one child element", 1, children.length);
+            jqUnit.assertEquals("The new element should be the child", "new", children.eq(0).text());
         });
 
         fluid.defaults("fluid.tests.containerRenderingView", {
@@ -77,6 +87,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertValue("The component has been instantiated", that);
             jqUnit.assertNodeExists("The container should have been rendered", containerElm);
             jqUnit.assertDomEquals("The container should have the correct element", containerElm, that.container);
+        });
+
+        fluid.defaults("fluid.tests.templateRenderingView", {
+            gradeNames: ["fluid.templateRenderingView"],
+            container: ".flc-newViewSupport-templateContainer",
+            template: "../data/testTemplate1.html"
+        });
+
+        fluid.tests.templateRenderingView.verifyInit = function (container) {
+            var children = container.children();
+            jqUnit.assertEquals("There should be two child elements in the container", 2, children.length);
+            jqUnit.assertTrue("The first child should be the pre-existing element", children.eq(0).hasClass("flc-newViewSupport-templateContainer-existing"));
+            jqUnit.assertTrue("The second child should be the injected template", "Test Template 1", children.eq(1).text());
+            jqUnit.start();
+        };
+
+        jqUnit.asyncTest("Init fluid.templateRenderingView", function () {
+            jqUnit.expect(3);
+            fluid.tests.templateRenderingView({
+                listeners: {
+                    "afterRender.test": {
+                        listener: "fluid.tests.templateRenderingView.verifyInit",
+                        args: "{that}.container",
+                        priority: "last:testing"
+                    }
+                }
+            });
         });
     };
 })(jQuery);

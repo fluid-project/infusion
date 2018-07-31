@@ -17,10 +17,10 @@
             "./js/ModelTransformationTransforms.js",
             "./js/jquery.keyboard-a11y.js",
             "./js/FluidView.js",
-            "./js/NewViewSupport.js",
             "./js/FluidRequests.js",
             "./js/MessageResolver.js",
-            "./js/ResourceLoader.js"
+            "./js/ResourceLoader.js",
+            "./js/NewViewSupport.js"
         ],
         "dependencies": [
             "jQuery",

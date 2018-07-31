@@ -139,6 +139,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             playing: false,
             enabled: true
         },
+        injectionType: "prepend",
         markup: {
             container: "<div class=\"flc-orator-controller fl-orator-controller\">" +
                 "<div class=\"fl-icon-orator\" aria-hidden=\"true\"></div>" +
@@ -163,10 +164,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // when called through the jQuery click event the event object
                 // is passed in.
                 args: ["{that}", "playing"]
-            },
-            // overriding the addToParent to "prepend" the container to the parentContainer
-            addToParent: {
-                args: ["{that}.options.parentContainer", "{arguments}.0", "prepend"]
             }
         },
         listeners: {
