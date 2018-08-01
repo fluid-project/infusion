@@ -197,6 +197,7 @@ grunt custom --name="myPackage"
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
 * normalize
+* url-polyfill
 
 All of these libraries are already bundled within the Infusion image.
 
@@ -254,14 +255,14 @@ upgrade and general VM provisioning mechanism.
 
 #### Coverage Reporting
 
-The preferred way to consistently generate a code coverage report is to use Vagrant as described above.  When you 
-start a VM using `vagrant up` and run `npm run test:vagrant`, the full test suite will run in the VM,  and a coverage 
-report will be saved to the `reports` directory.  You can also run the `npm test` command on your local machine, but 
+The preferred way to consistently generate a code coverage report is to use Vagrant as described above.  When you
+start a VM using `vagrant up` and run `npm run test:vagrant`, the full test suite will run in the VM,  and a coverage
+report will be saved to the `reports` directory.  You can also run the `npm test` command on your local machine, but
 you will need to ensure that browsers receive focus when they are launched (see above).
 
 The `npm test` command has [two additional associated scripts](https://docs.npmjs.com/misc/scripts).  The `pretest`
 script runs before the command defined for the `test` script.  The `posttest` script runs after.  In our case
-we use a `pretest` script to clean up previous coverage data before we run the tests, and a `posttest` script to 
+we use a `pretest` script to clean up previous coverage data before we run the tests, and a `posttest` script to
 compile the actual report.  You should not need to run the `pretest` scripts manually before running either the node or
 browser tests, or to run the `posttest` scripts afterward.
 

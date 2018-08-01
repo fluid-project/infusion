@@ -18,7 +18,8 @@
         "svg/table-of-contents.svg",
         "svg/character-spacing-expanded.svg",
         "svg/character-spacing-condensed.svg",
-        "svg/character-spacing.svg"
+        "svg/character-spacing.svg",
+        "svg/caption.svg"
     ],
     "options": {
         "font": "PrefsFramework-Icons",
@@ -41,7 +42,8 @@
             "font-style": "0xE00f",
             "size": "0xE010",
             "text-to-speech-no-article": "0xE011",
-            "table-of-contents": "0xE012"
+            "table-of-contents": "0xE012",
+            "caption": "0xE013"
         },
         "templateOptions": {
             "classPrefix": "fl-icon-"

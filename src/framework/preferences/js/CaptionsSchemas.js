@@ -1,5 +1,5 @@
 /*
-Copyright 2015 OCAD University
+Copyright 2018 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -17,31 +17,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*******************************************************************************
     * Starter auxiliary schema grade
     *
-    * Contains the settings for text-to-speech
+    * Contains the settings for captions
     *******************************************************************************/
 
-    // Fine-tune the starter aux schema and add speak panel
-    fluid.defaults("fluid.prefs.auxSchema.speak", {
+    // Fine-tune the starter aux schema and add captions panel
+    fluid.defaults("fluid.prefs.auxSchema.captions", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             "namespace": "fluid.prefs.constructed",
             "terms": {
-                "templatePrefix": "../../framework/preferences/html/",
-                "messagePrefix": "../../framework/preferences/messages/"
+                "templatePrefix": "../../framework/preferences/html",
+                "messagePrefix": "../../framework/preferences/messages"
             },
             "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
             "message": "%messagePrefix/prefsEditor.json",
 
-            speak: {
-                type: "fluid.prefs.speak",
+            captions: {
+                type: "fluid.prefs.captions",
                 enactor: {
-                    type: "fluid.prefs.enactor.selfVoicing"
+                    type: "fluid.prefs.enactor.captions",
+                    container: "body"
                 },
                 panel: {
-                    type: "fluid.prefs.panel.speak",
-                    container: ".flc-prefsEditor-speak",
-                    template: "%templatePrefix/PrefsEditorTemplate-speak.html",
-                    message: "%messagePrefix/speak.json"
+                    type: "fluid.prefs.panel.captions",
+                    container: ".flc-prefsEditor-captions",
+                    template: "%templatePrefix/PrefsEditorTemplate-captions.html",
+                    message: "%messagePrefix/captions.json"
                 }
             }
         }
@@ -54,10 +55,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // add extra prefs to the starter primary schemas
 
-    fluid.defaults("fluid.prefs.schemas.speak", {
+    fluid.defaults("fluid.prefs.schemas.captions", {
         gradeNames: ["fluid.prefs.schemas"],
         schema: {
-            "fluid.prefs.speak": {
+            "fluid.prefs.captions": {
                 "type": "boolean",
                 "default": false
             }
