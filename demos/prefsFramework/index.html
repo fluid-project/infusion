@@ -140,8 +140,17 @@
 
                 <header id="header" class="dotGovSub">
                     <div id="headTitle">
-                        <span class="fl-hidden-accessible">NOAA Office of Education</span>
+                        <span>National Oceanic and Atmospheric Administration</span>
                     </div>
+                    <script>
+                        // Need to inject the SVG so that we don't have to have the entire SVG document in the markup,
+                        // but still be able to style it.
+                        fluid.templateRenderingView({
+                            container: "#headTitle",
+                            template: "images/NOAA_Logo.svg",
+                            injectionType: "prepend"
+                        });
+                    </script>
                     <div id="midBlock">
                         <nav>
                             <ul id="midNavElements">
