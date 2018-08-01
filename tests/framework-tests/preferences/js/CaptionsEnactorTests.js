@@ -131,19 +131,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         components: {
-            youtTubePlayer: {
+            youTubePlayer: {
                 type: "fluid.prefs.enactor.captions.youTubePlayer",
                 container: ".flc-captions-ytPlayer",
                 createOnEvent: "onYTPlayerReady"
             },
-            youtTubePlayerTester: {
-                type: "fluid.tests.youtTubePlayerTester",
+            youTubePlayerTester: {
+                type: "fluid.tests.youTubePlayerTester",
                 createOnEvent: "onYTPlayerReady"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.youtTubePlayerTester", {
+    fluid.defaults("fluid.tests.youTubePlayerTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             tracklist: [{track: 1}, {track: 2}]
@@ -154,86 +154,86 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 18,
                 name: "Init and Operation",
                 sequence: [{
-                    funcName: "fluid.tests.youtTubePlayerTester.verifyInit",
-                    args: ["{youtTubePlayer}"]
+                    funcName: "fluid.tests.youTubePlayerTester.verifyInit",
+                    args: ["{youTubePlayer}"]
                 }, {
-                    func: "fluid.tests.youtTubePlayerTester.setTracklistReturn",
-                    args: ["{youtTubePlayer}", "{that}.options.testOpts.tracklist"]
+                    func: "fluid.tests.youTubePlayerTester.setTracklistReturn",
+                    args: ["{youTubePlayer}", "{that}.options.testOpts.tracklist"]
                 }, {
-                    func: "{youtTubePlayer}.player.options.events.onApiChange"
+                    func: "{youTubePlayer}.player.options.events.onApiChange"
                 }, {
-                    listener: "fluid.tests.youtTubePlayerTester.verifyTrackPrep",
+                    listener: "fluid.tests.youTubePlayerTester.verifyTrackPrep",
                     args: [
-                        "{youtTubePlayer}",
+                        "{youTubePlayer}",
                         "{that}.options.testOpts.tracklist"
                     ],
-                    changeEvent: "{youtTubePlayer}.applier.modelChanged",
+                    changeEvent: "{youTubePlayer}.applier.modelChanged",
                     spec: {path: "track", priority: "last:testing"}
                 }, {
-                    funcName: "fluid.tests.youtTubePlayerTester.resetSinonHistory"
+                    funcName: "fluid.tests.youTubePlayerTester.resetSinonHistory"
                 }, {
-                    func: "{youtTubePlayer}.applier.change",
+                    func: "{youTubePlayer}.applier.change",
                     args: ["captions", true]
                 }, {
                     listener: "fluid.tests.prefs.enactor.captions.youTubePlayer.verifyApplyCaptions",
                     args: [
                         "Captions Enabled",
-                        "{youtTubePlayer}.player",
-                        "{youtTubePlayer}.model.track",
+                        "{youTubePlayer}.player",
+                        "{youTubePlayer}.model.track",
                         true
                     ],
-                    changeEvent: "{youtTubePlayer}.applier.modelChanged",
+                    changeEvent: "{youTubePlayer}.applier.modelChanged",
                     spec: {path: "captions", priority: "last:testing"}
                 }, {
-                    funcName: "fluid.tests.youtTubePlayerTester.resetSinonHistory"
+                    funcName: "fluid.tests.youTubePlayerTester.resetSinonHistory"
                 }, {
-                    func: "{youtTubePlayer}.applier.change",
+                    func: "{youTubePlayer}.applier.change",
                     args: ["captions", false]
                 }, {
                     listener: "fluid.tests.prefs.enactor.captions.youTubePlayer.verifyApplyCaptions",
                     args: [
                         "Captions Disabled:",
-                        "{youtTubePlayer}.player",
-                        "{youtTubePlayer}.model.track",
+                        "{youTubePlayer}.player",
+                        "{youTubePlayer}.model.track",
                         false
                     ],
-                    changeEvent: "{youtTubePlayer}.applier.modelChanged",
+                    changeEvent: "{youTubePlayer}.applier.modelChanged",
                     spec: {path: "captions", priority: "last:testing"}
                 }, {
-                    funcName: "fluid.tests.youtTubePlayerTester.resetSinonHistory"
+                    funcName: "fluid.tests.youTubePlayerTester.resetSinonHistory"
                 }, {
-                    func: "{youtTubePlayer}.applier.change",
+                    func: "{youTubePlayer}.applier.change",
                     args: ["track", "{that}.options.testOpts.tracklist.1"]
                 }, {
                     listener: "fluid.tests.prefs.enactor.captions.youTubePlayer.verifyApplyCaptions",
                     args: [
                         "Track Changed",
-                        "{youtTubePlayer}.player",
+                        "{youTubePlayer}.player",
                         "{that}.options.testOpts.tracklist.1",
                         false
                     ],
-                    changeEvent: "{youtTubePlayer}.applier.modelChanged",
+                    changeEvent: "{youTubePlayer}.applier.modelChanged",
                     spec: {path: "track", priority: "last:testing"}
                 }]
             }]
         }]
     });
 
-    fluid.tests.youtTubePlayerTester.resetSinonHistory = function () {
+    fluid.tests.youTubePlayerTester.resetSinonHistory = function () {
         sinon.resetHistory();
     };
 
-    fluid.tests.youtTubePlayerTester.setTracklistReturn = function (that, tracklist) {
+    fluid.tests.youTubePlayerTester.setTracklistReturn = function (that, tracklist) {
         that.player.getOption.returns(tracklist);
     };
 
-    fluid.tests.youtTubePlayerTester.verifyInit = function (that) {
+    fluid.tests.youTubePlayerTester.verifyInit = function (that) {
         var apiParam = "enablejsapi=1";
         jqUnit.assertValue("The YT Player has been created", that.player);
         jqUnit.assertTrue("The src for the embedded video should have the \"" + apiParam + "\" parameter", that.container.attr("src").indexOf(apiParam) >= 0);
     };
 
-    fluid.tests.youtTubePlayerTester.verifyTrackPrep = function (that, tracklist) {
+    fluid.tests.youTubePlayerTester.verifyTrackPrep = function (that, tracklist) {
         jqUnit.assertTrue("Verify Track Prep: the loadModule method was called", that.player.loadModule.calledWithExactly("captions"));
         jqUnit.assertTrue("Verify Track Prep: the loadModule method was called only once", that.player.loadModule.calledOnce);
         jqUnit.assertTrue("Verify Track Prep: the getOption method was called", that.player.getOption.calledWithExactly("captions", "tracklist"));
