@@ -204,7 +204,7 @@ All of these libraries are already bundled within the Infusion image.
 ## How Do I Run Tests? ##
 
 There are two options available for running tests. The first option involves using the browsers installed on your
-compute.  The second uses browsers available in a VM.
+computer.  The second uses browsers available in a VM.
 
 ### Run Tests On Your Computer ###
 
