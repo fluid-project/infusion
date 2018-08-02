@@ -7,13 +7,6 @@
         <link rel="stylesheet" type="text/css" href="../../../lib/normalize/css/normalize.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/core/css/fluid.css" />
 
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-bw/bw.css" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-wb/wb.css" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-by/by.css" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-yb/yb.css" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-lgdg/lgdg.css" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-dglg/dglg.css" />
-
         <!-- Component styles -->
         <link rel="stylesheet" type="text/css" href="../css/Enactors.css" />
         <link rel="stylesheet" type="text/css" href="../css/PrefsEditor.css" />
@@ -23,7 +16,13 @@
      </head>
 
     <body class="fl-prefsEditor-separatedPanel fl-focus">
+        <!--
+            TODO: Rather than injecting hidden containers, we should be able to exclude enactors from executing
+            in the panel.
+        -->
         <div class="flc-toc-tocContainer fl-hidden"></div>
+        <div class="flc-orator-controller fl-hidden"></div>
+        <div class="flc-orator-content fl-hidden"></div>
     </body>
 
 </html>

@@ -17,9 +17,11 @@
             "./js/UIEnhancer.js",
             "./js/PrefsEditor.js",
             "./js/Panels.js",
+            "./js/CaptionsPanel.js",
             "./js/SelfVoicingPanel.js",
             "./js/LetterSpacePanel.js",
             "./js/Enactors.js",
+            "./js/CaptionsEnactor.js",
             "./js/SelfVoicingEnactor.js",
             "./js/LetterSpaceEnactor.js",
             "./js/StarterGrades.js",
@@ -30,6 +32,7 @@
             "./js/PrimaryBuilder.js",
             "./js/AuxBuilder.js",
             "./js/StarterSchemas.js",
+            "./js/CaptionsSchemas.js",
             "./js/SelfVoicingSchemas.js",
             "./js/LetterSpaceSchemas.js",
             "./js/Builder.js"
@@ -39,6 +42,7 @@
             "jQuery",
             "jQueryUI",
             "normalize",
+            "url-polyfill",
             "framework",
             "enhancement",
             "renderer",
@@ -46,7 +50,8 @@
             "textfieldControls",
             "switch",
             "tableOfContents",
-            "textToSpeech"
+            "textToSpeech",
+            "orator"
         ]
     }
 }

@@ -19,7 +19,8 @@
             "./js/FluidView.js",
             "./js/FluidRequests.js",
             "./js/MessageResolver.js",
-            "./js/ResourceLoader.js"
+            "./js/ResourceLoader.js",
+            "./js/NewViewSupport.js"
         ],
         "dependencies": [
             "jQuery",

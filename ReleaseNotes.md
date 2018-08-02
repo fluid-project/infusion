@@ -52,6 +52,10 @@ categorized by license:
 * [`fluid.load.scripts` is based on Jake Archibald's script loading example](http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
 * [Open Sans Light font](http://www.google.com/fonts/specimen/Open+Sans)
 
+### BSD-3 ###
+
+* [Sinon v6.1.3](http://sinonjs.org)
+
 ### MIT License ###
 
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
@@ -69,6 +73,7 @@ categorized by license:
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
 * [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
+* [url-polyfill v1.0.13](https://github.com/lifaon74/url-polyfill)
 
 ### zlib/libpng License ###
 
