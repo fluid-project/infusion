@@ -53,4 +53,155 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    fluid.defaults("fluid.uiOptions.prefsEditor.multilingual", {
+        gradeNames: ["fluid.uiOptions.prefsEditor"],
+        defaultLocale: "fr",
+        model: {
+            locale: "en"
+        },
+        modelListeners: {
+            locale: {
+                funcName: "fluid.set",
+                args: ["{that}", "", "{change}.value"],
+                namespace: "updateUioLanguage"
+            }
+        },
+        events: {
+            onInterfaceLanguageChangeRequested: null,
+            onUioPanelsUpdated: null
+        },
+        listeners: {
+            "onInterfaceLanguageChangeRequested.changeLocale": {
+                func: "{that}.applier.change",
+                args: ["locale", "{arguments}.0.data"]
+            },
+            "onInterfaceLanguageChangeRequested.reloadUioMessages": {
+                func: "{that}.reloadUioMessages",
+                args: "{arguments}.0.data"
+            }
+        },
+        multilingualSettings: {
+            // This is necessary because the Table of Contents
+            // component doesn't use the localization messages
+            // from the panel
+            tocHeader: "Table of Contents",
+            direction: "ltr",
+            slidingPanelStringMap: {
+                showText: "slidingPanelShowText",
+                hideText: "slidingPanelHideText",
+                showTextAriaLabel: "showTextAriaLabel",
+                hideTextAriaLabel: "hideTextAriaLabel",
+                panelLabel: "slidingPanelPanelLabel"
+            }
+        },
+        distributeOptions: {
+            tocHeader: {
+                target: "{that fluid.tableOfContents}.options.strings.tocHeader",
+                source: "{that}.options.multilingualSettings.tocHeader"
+            },
+            locale: {
+                // Targeting documented value does not work
+                target: "{that prefsEditorLoader}.options.settings.preferences.locale",
+                // Targeting the messageLoader locale directly works
+                // target: "{that prefsEditorLoader}.options.components.messageLoader.options.locale",
+                source: "{that}.options.model.locale"
+            }
+        },
+        invokers: {
+            reloadUioMessages: {
+                funcName: "fluid.uiOptions.prefsEditor.multilingual.reloadUioMessages",
+                args: [
+                    "{arguments}.0",
+                    "{prefsEditorLoader}.messageLoader",
+                    "options.locale"
+                ]
+            }
+        },
+        components: {
+            prefsEditorLoader: {
+                options: {
+                    components: {
+                        prefsEditor: {
+                            options: {
+                                listeners: {
+                                    // these listeners only fire once the sliding panel is open
+                                    "{messageLoader}.events.onResourcesLoaded": [{
+                                        func: "{that}.events.onPrefsEditorRefresh",
+                                        namespace: "rerenderPanels"
+                                    },
+                                    {
+                                        funcName: "fluid.uiOptions.prefsEditor.multilingual.updateSlidingPanelText",
+                                        args: ["{prefsEditorLoader}", "{fluid.uiOptions.prefsEditor.multilingual}"],
+                                        priority: "after:rerenderPanels",
+                                        namespace: "updateSlidingPanelText"
+                                    },
+                                    {
+                                        funcName: "fluid.uiOptions.prefsEditor.multilingual.updateUioPanelLanguages",
+                                        args: ["{prefsEditorLoader}", "{fluid.uiOptions.prefsEditor.multilingual}"],
+                                        priority: "before:rerenderPanels",
+                                        namespace: "updateUioPanelLanguages"
+                                    }]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.uiOptions.prefsEditor.multilingual.reloadUioMessages = function (lang, uioMessageLoaderComponent, uioMessageLoaderLocalePath) {
+        // Set the language in the resource loader
+        fluid.set(uioMessageLoaderComponent, uioMessageLoaderLocalePath, lang);
+
+        // Force the resource loader to get the new resources
+        fluid.resourceLoader.loadResources(uioMessageLoaderComponent, uioMessageLoaderComponent.resolveResources());
+    };
+
+    fluid.uiOptions.prefsEditor.multilingual.updateMessageBase = function (prefsEditorLoaderComponent, localizedComponent, localizedComponentName, newLocale) {
+        if (localizedComponent.msgResolver) {
+            // language is stored in order to be verifiable
+            localizedComponent.msgResolver.messageLanguage = newLocale;
+            localizedComponent.msgResolver.messageBase = prefsEditorLoaderComponent.messageLoader.resources[localizedComponentName].resourceText;
+        }
+    };
+
+    fluid.uiOptions.prefsEditor.multilingual.updateSlidingPanelText = function (prefsEditorLoaderComponent, uioComponent) {
+        if (prefsEditorLoaderComponent.slidingPanel) {
+            prefsEditorLoaderComponent.slidingPanel.options.strings = fluid.transform(prefsEditorLoaderComponent.slidingPanel.options.strings, function (string, key) {
+                return prefsEditorLoaderComponent.slidingPanel.msgResolver.messageBase[uioComponent.options.multilingualSettings.slidingPanelStringMap[key]];
+            });
+
+            prefsEditorLoaderComponent.slidingPanel.refreshView();
+        }
+    };
+
+    fluid.uiOptions.prefsEditor.multilingual.updateUioPanelLanguages = function (prefsEditorLoaderComponent, uioComponent) {
+        if (prefsEditorLoaderComponent) {
+            if (prefsEditorLoaderComponent.prefsEditor) {
+                fluid.each(prefsEditorLoaderComponent.prefsEditor, function (panel, key) {
+                    if (key.startsWith("fluid_prefs_panel_")) {
+                        fluid.uiOptions.prefsEditor.multilingual.updateMessageBase(prefsEditorLoaderComponent, panel, key, uioComponent.model.locale);
+                    }
+                });
+            }
+            if (prefsEditorLoaderComponent.slidingPanel) {
+                fluid.uiOptions.prefsEditor.multilingual.updateMessageBase(prefsEditorLoaderComponent, prefsEditorLoaderComponent.slidingPanel, "prefsEditor", uioComponent.model.locale);
+            }
+        }
+
+        var tocHeaders = {
+            "en": "Table of Contents",
+            "es": "Tabla de contenido"
+        };
+
+        // Set the Toc Header String
+        uioComponent.options.multilingualSettings.tocHeader = tocHeaders[uioComponent.model.locale];
+
+        // Set the language on the body
+
+
+        uioComponent.events.onUioPanelsUpdated.fire();
+    };
+
 })(jQuery, fluid_3_0_0);
