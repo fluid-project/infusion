@@ -51,33 +51,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onCreate.setInitialState": {
                 listener: "{that}.refreshView"
             },
-            "onPanelHide.setText": {
-                "this": "{that}.dom.toggleButtonLabel",
-                "method": "text",
-                "args": ["{that}.options.strings.showText"],
-                "priority": "first"
-            },
-            "onPanelHide.setAriaLabel": {
-                "this": "{that}.dom.toggleButtonLabel",
-                "method": "attr",
-                "args": ["aria-label", "{that}.options.strings.showTextAriaLabel"]
-            },
-            "onPanelShow.setText": {
-                "this": "{that}.dom.toggleButtonLabel",
-                "method": "text",
-                "args": ["{that}.options.strings.hideText"],
-                "priority": "first"
-            },
-            "onPanelShow.setAriaLabel": {
-                "this": "{that}.dom.toggleButtonLabel",
-                "method": "attr",
-                "args": ["aria-label", "{that}.options.strings.hideTextAriaLabel"]
-            },
+            "onPanelHide.setText": "{that}.setShowText",
+            "onPanelShow.setText": "{that}.setHideText",
             "onPanelHide.operate": {
-                listener: "{that}.operateHide"
+                listener: "{that}.operateHide",
+                priority: "after:setText"
             },
             "onPanelShow.operate": {
-                listener: "{that}.operateShow"
+                listener: "{that}.operateShow",
+                priority: "after:setText"
             },
             "onCreate.setAriaStates": "{that}.setAriaStates"
         },
@@ -134,6 +116,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             refreshView: {
                 funcName: "fluid.slidingPanel.refreshView",
                 args: ["{that}"]
+            },
+            setShowText: {
+                "funcName": "fluid.slidingPanel.setText",
+                "args": ["{that}.dom.toggleButtonLabel", "{that}.options.strings.showText", "{that}.options.strings.showTextAriaLabel"]
+            },
+            setHideText: {
+                "funcName": "fluid.slidingPanel.setText",
+                "args": ["{that}.dom.toggleButtonLabel", "{that}.options.strings.hideText", "{that}.options.strings.hideTextAriaLabel"]
             }
         },
         animationDurations: {
@@ -141,6 +131,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             show: 400
         }
     });
+
+    fluid.slidingPanel.setText = function (element, text, textAriaLabel) {
+        element = $(element);
+        element.text(text);
+        element.attr("aria-label", textAriaLabel);
+    };
 
     fluid.slidingPanel.togglePanel = function (that) {
         that.applier.change("isShowing", !that.model.isShowing);
