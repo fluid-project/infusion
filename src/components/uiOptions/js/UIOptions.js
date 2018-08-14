@@ -121,6 +121,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             prefsEditorLoader: {
                 options: {
                     components: {
+                        slidingPanel: {
+                            options:{
+                                invokers: {
+                                    setShowText: {
+                                        "funcName": "fluid.slidingPanel.setText",
+                                        "args": ["{that}.dom.toggleButtonLabel", "{that}.msgLookup.slidingPanelShowText", "{that}.msgLookup.showTextAriaLabel"]
+                                    },
+                                    setHideText: {
+                                        "funcName": "fluid.slidingPanel.setText",
+                                        "args": ["{that}.dom.toggleButtonLabel", "{that}.msgLookup.slidingPanelHideText", "{that}.msgLookup.hideTextAriaLabel"]
+                                    }
+                                }
+                            }
+                        },
                         prefsEditor: {
                             options: {
                                 listeners: {
@@ -130,10 +144,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                         namespace: "rerenderPanels"
                                     },
                                     {
-                                        funcName: "fluid.uiOptions.prefsEditor.multilingual.updateSlidingPanelText",
-                                        args: ["{prefsEditorLoader}", "{fluid.uiOptions.prefsEditor.multilingual}"],
-                                        priority: "after:rerenderPanels",
-                                        namespace: "updateSlidingPanelText"
+                                        func: "{slidingPanel}.refreshView",
+                                        namespace: "updateSlidingPanel"
                                     },
                                     {
                                         funcName: "fluid.uiOptions.prefsEditor.multilingual.updateUioPanelLanguages",
@@ -163,16 +175,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // language is stored in order to be verifiable
             localizedComponent.msgResolver.messageLanguage = newLocale;
             localizedComponent.msgResolver.messageBase = prefsEditorLoaderComponent.messageLoader.resources[localizedComponentName].resourceText;
-        }
-    };
-
-    fluid.uiOptions.prefsEditor.multilingual.updateSlidingPanelText = function (prefsEditorLoaderComponent, uioComponent) {
-        if (prefsEditorLoaderComponent.slidingPanel) {
-            prefsEditorLoaderComponent.slidingPanel.options.strings = fluid.transform(prefsEditorLoaderComponent.slidingPanel.options.strings, function (string, key) {
-                return prefsEditorLoaderComponent.slidingPanel.msgResolver.messageBase[uioComponent.options.multilingualSettings.slidingPanelStringMap[key]];
-            });
-
-            prefsEditorLoaderComponent.slidingPanel.refreshView();
         }
     };
 
