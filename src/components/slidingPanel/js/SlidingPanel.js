@@ -52,11 +52,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 listener: "{that}.refreshView"
             },
             "onPanelHide.setText": "{that}.setShowText",
-            "onPanelShow.setText": "{that}.setHideText",
             "onPanelHide.operate": {
                 listener: "{that}.operateHide",
                 priority: "after:setText"
             },
+            "onPanelShow.setText": "{that}.setHideText",
             "onPanelShow.operate": {
                 listener: "{that}.operateShow",
                 priority: "after:setText"
