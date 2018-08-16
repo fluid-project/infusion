@@ -123,6 +123,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     components: {
                         slidingPanel: {
                             options:{
+                                listeners: {
+                                    "{messageLoader}.events.onResourcesLoaded": {
+                                        func: "{slidingPanel}.refreshView",
+                                        namespace: "updateSlidingPanel",
+                                        priority: "last"
+                                    }
+                                },
                                 invokers: {
                                     setShowText: {
                                         "funcName": "fluid.slidingPanel.setText",
@@ -142,10 +149,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                     "{messageLoader}.events.onResourcesLoaded": [{
                                         func: "{that}.events.onPrefsEditorRefresh",
                                         namespace: "rerenderPanels"
-                                    },
-                                    {
-                                        func: "{slidingPanel}.refreshView",
-                                        namespace: "updateSlidingPanel"
                                     },
                                     {
                                         funcName: "fluid.uiOptions.prefsEditor.multilingual.updateUioPanelLanguages",
