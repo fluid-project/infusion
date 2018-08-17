@@ -77,7 +77,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "onInterfaceLanguageChangeRequested.reloadUioMessages": {
                 func: "{that}.reloadUioMessages",
-                args: "{arguments}.0.data"
+                args: "{arguments}.0.data",
+                priority: "after:fireLazyLoad"
             }
         },
         multilingualSettings: {
@@ -120,6 +121,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         components: {
             prefsEditorLoader: {
                 options: {
+                    listeners: {
+                        "{multilingual}.events.onInterfaceLanguageChangeRequested": {
+                            func: "{prefsEditorLoader}.events.onLazyLoad.fire",
+                            priority: "after:changeLocale",
+                            namespace: "fireLazyLoad"
+                        }
+                    },
                     components: {
                         slidingPanel: {
                             options:{
