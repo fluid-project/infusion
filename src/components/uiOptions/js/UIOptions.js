@@ -181,25 +181,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.resourceLoader.loadResources(uioMessageLoaderComponent, uioMessageLoaderComponent.resolveResources());
     };
 
-    fluid.uiOptions.prefsEditor.multilingual.updateMessageBase = function (prefsEditorLoaderComponent, localizedComponent, localizedComponentName, newLocale) {
+    fluid.uiOptions.prefsEditor.multilingual.updateLocalizedComponent = function (localizedComponent, resourceKey, resources, newLocale) {
         if (localizedComponent.msgResolver) {
             // language is stored in order to be verifiable
             localizedComponent.msgResolver.messageLanguage = newLocale;
-            localizedComponent.msgResolver.messageBase = prefsEditorLoaderComponent.messageLoader.resources[localizedComponentName].resourceText;
+            localizedComponent.msgResolver.messageBase = resources[resourceKey].resourceText;
         }
     };
 
     fluid.uiOptions.prefsEditor.multilingual.updateUioPanelLanguages = function (prefsEditorLoaderComponent, uioComponent) {
         if (prefsEditorLoaderComponent) {
-            if (prefsEditorLoaderComponent.prefsEditor) {
-                fluid.each(prefsEditorLoaderComponent.prefsEditor, function (panel, key) {
-                    if (key.startsWith("fluid_prefs_panel_")) {
-                        fluid.uiOptions.prefsEditor.multilingual.updateMessageBase(prefsEditorLoaderComponent, panel, key, uioComponent.model.locale);
-                    }
-                });
-            }
+            fluid.each(prefsEditorLoaderComponent.prefsEditor, function (panel, key) {
+                if (panel && panel.options && fluid.hasGrade(panel.options, "fluid.prefs.panel")) {
+                    fluid.uiOptions.prefsEditor.multilingual.updateLocalizedComponent(panel, key, prefsEditorLoaderComponent.messageLoader.resources, uioComponent.model.locale);
+                }
+            });
+
             if (prefsEditorLoaderComponent.slidingPanel) {
-                fluid.uiOptions.prefsEditor.multilingual.updateMessageBase(prefsEditorLoaderComponent, prefsEditorLoaderComponent.slidingPanel, "prefsEditor", uioComponent.model.locale);
+                fluid.uiOptions.prefsEditor.multilingual.updateLocalizedComponent(prefsEditorLoaderComponent.slidingPanel, "prefsEditor", prefsEditorLoaderComponent.messageLoader.resources, uioComponent.model.locale);
             }
         }
 
