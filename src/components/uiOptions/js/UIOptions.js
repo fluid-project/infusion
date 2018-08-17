@@ -202,17 +202,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
 
-        var tocHeaders = {
-            "en": "Table of Contents",
-            "es": "Tabla de contenido"
-        };
-
-        // Set the Toc Header String
-        uioComponent.options.multilingualSettings.tocHeader = tocHeaders[uioComponent.model.locale];
-
-        // Set the language on the body
-
-
         uioComponent.events.onUioPanelsUpdated.fire();
     };
 
