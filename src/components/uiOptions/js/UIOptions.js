@@ -55,7 +55,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.uiOptions.prefsEditor.multilingual", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
-        defaultLocale: "fr",
+        defaultLocale: "en",
         model: {
             locale: "en"
         },
@@ -101,10 +101,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "{that}.options.multilingualSettings.tocHeader"
             },
             locale: {
-                // Targeting documented value does not work
                 target: "{that prefsEditorLoader}.options.settings.preferences.locale",
-                // Targeting the messageLoader locale directly works
-                // target: "{that prefsEditorLoader}.options.components.messageLoader.options.locale",
                 source: "{that}.options.model.locale"
             }
         },
@@ -153,7 +150,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         prefsEditor: {
                             options: {
                                 listeners: {
-                                    // these listeners only fire once the sliding panel is open
+                                    // these listeners only fire once the sliding panel is open, if lazyLoad is enabled
                                     "{messageLoader}.events.onResourcesLoaded": [{
                                         func: "{that}.events.onPrefsEditorRefresh",
                                         namespace: "rerenderPanels"
