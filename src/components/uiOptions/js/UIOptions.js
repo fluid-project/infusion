@@ -53,7 +53,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditor.multilingual", {
+    // Localized and more dynamic version of the UIO Preferences Editor
+    fluid.defaults("fluid.uiOptions.prefsEditor.localized", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
         defaultLocale: "en",
         model: {
@@ -81,7 +82,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 priority: "after:fireLazyLoad"
             }
         },
-        multilingualSettings: {
+        localeSettings: {
             // This is necessary because the Table of Contents
             // component doesn't use the localization messages
             // from the panel
@@ -98,7 +99,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         distributeOptions: {
             tocHeader: {
                 target: "{that fluid.tableOfContents}.options.strings.tocHeader",
-                source: "{that}.options.multilingualSettings.tocHeader"
+                source: "{that}.options.localeSettings.tocHeader"
             },
             locale: {
                 target: "{that prefsEditorLoader}.options.settings.preferences.locale",
@@ -107,7 +108,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         invokers: {
             reloadUioMessages: {
-                funcName: "fluid.uiOptions.prefsEditor.multilingual.reloadUioMessages",
+                funcName: "fluid.uiOptions.prefsEditor.localized.reloadUioMessages",
                 args: [
                     "{arguments}.0",
                     "{prefsEditorLoader}.messageLoader",
@@ -119,8 +120,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             prefsEditorLoader: {
                 options: {
                     listeners: {
-                        "{multilingual}.events.onInterfaceLanguageChangeRequested": {
-                            func: "{prefsEditorLoader}.events.onLazyLoad.fire",
+                        "{localized}.events.onInterfaceLanguageChangeRequested": {
+                            func: "{prefsEditorLoader}.events.onLazyLoad",
                             priority: "after:changeLocale",
                             namespace: "fireLazyLoad"
                         }
@@ -156,8 +157,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                         namespace: "rerenderPanels"
                                     },
                                     {
-                                        funcName: "fluid.uiOptions.prefsEditor.multilingual.updateUioPanelLanguages",
-                                        args: ["{prefsEditorLoader}", "{fluid.uiOptions.prefsEditor.multilingual}"],
+                                        funcName: "fluid.uiOptions.prefsEditor.localized.updateUioPanelLanguages",
+                                        args: ["{fluid.uiOptions.prefsEditor.localized}"],
                                         priority: "before:rerenderPanels",
                                         namespace: "updateUioPanelLanguages"
                                     }]
@@ -170,32 +171,48 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.uiOptions.prefsEditor.multilingual.reloadUioMessages = function (lang, uioMessageLoaderComponent, uioMessageLoaderLocalePath) {
+    /* Reloads UIO message bundles with the given locale,
+     * subject to the fallback rules of the resourceLoader
+     * - "lang": the locale for which to load messages
+     * - "uioMessageLoaderComponent": the UIO messageLoader component
+     * - "uioMessageLoaderLocalePath": the path on the messageLoader for its locale
+     */
+    fluid.uiOptions.prefsEditor.localized.reloadUioMessages = function (locale, uioMessageLoaderComponent, uioMessageLoaderLocalePath) {
         // Set the language in the resource loader
-        fluid.set(uioMessageLoaderComponent, uioMessageLoaderLocalePath, lang);
+        fluid.set(uioMessageLoaderComponent, uioMessageLoaderLocalePath, locale);
 
         // Force the resource loader to get the new resources
         fluid.resourceLoader.loadResources(uioMessageLoaderComponent, uioMessageLoaderComponent.resolveResources());
     };
 
-    fluid.uiOptions.prefsEditor.multilingual.updateLocalizedComponent = function (localizedComponent, resourceKey, resources, newLocale) {
+    /* Updates a given localized component's messages with new values and sets a
+     * messageLocale value in order for the current locale to be verifiable
+     * - "localizedComponent": the component to be updated
+     * - "resourceKey": the key to access in the resources collection
+     *   where this component's messages are stored
+     * - "resources": the collection of messages
+     * - "locale": the locale of the messages
+     */
+    fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent = function (localizedComponent, resourceKey, resources, locale) {
         if (localizedComponent.msgResolver) {
-            // language is stored in order to be verifiable
-            localizedComponent.msgResolver.messageLanguage = newLocale;
+            localizedComponent.msgResolver.messageLocale = locale;
             localizedComponent.msgResolver.messageBase = resources[resourceKey].resourceText;
         }
     };
 
-    fluid.uiOptions.prefsEditor.multilingual.updateUioPanelLanguages = function (prefsEditorLoaderComponent, uioComponent) {
-        if (prefsEditorLoaderComponent) {
-            fluid.each(prefsEditorLoaderComponent.prefsEditor, function (panel, key) {
+    /* Updates and redraws all panels and the slidingPanel (tab) of a UIO component
+     * - "uioComponent": the UIO component proper
+     */
+    fluid.uiOptions.prefsEditor.localized.updateUioPanelLanguages = function (uioComponent) {
+        if (uioComponent.prefsEditorLoader) {
+            fluid.each(uioComponent.prefsEditorLoader.prefsEditor, function (panel, key) {
                 if (panel && panel.options && fluid.hasGrade(panel.options, "fluid.prefs.panel")) {
-                    fluid.uiOptions.prefsEditor.multilingual.updateLocalizedComponent(panel, key, prefsEditorLoaderComponent.messageLoader.resources, uioComponent.model.locale);
+                    fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(panel, key, uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
                 }
             });
 
-            if (prefsEditorLoaderComponent.slidingPanel) {
-                fluid.uiOptions.prefsEditor.multilingual.updateLocalizedComponent(prefsEditorLoaderComponent.slidingPanel, "prefsEditor", prefsEditorLoaderComponent.messageLoader.resources, uioComponent.model.locale);
+            if (uioComponent.prefsEditorLoader.slidingPanel) {
+                fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(uioComponent.prefsEditorLoader.slidingPanel, "prefsEditor", uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
             }
         }
 
