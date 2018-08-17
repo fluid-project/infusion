@@ -150,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{that}.utterance", "{arguments}.0"]
             },
             utteranceEnd: {
-                funcName: "fluid.mock.textToSpeech.utterance.utterranceEnd",
+                funcName: "fluid.mock.textToSpeech.utterance.utteranceEnd",
                 args: ["{that}"]
             },
             speakUtterance: {
@@ -166,7 +166,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         utterance.dispatchEvent(newEvent);
     };
 
-    fluid.mock.textToSpeech.utterance.utterranceEnd = function (that) {
+    fluid.mock.textToSpeech.utterance.utteranceEnd = function (that) {
         that.dispatchEvent("boundary");
         that.dispatchEvent("end");
     };
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.dispatchEvent(resume ? "resume" : "start");
 
         if (that.options.synchronous) {
-            that.utterranceEnd();
+            that.utteranceEnd();
         } else {
             setTimeout(that.utteranceEnd, that.utterance.text.length);
         }
