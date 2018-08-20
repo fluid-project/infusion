@@ -1,6 +1,7 @@
 /*
-Copyright 2013-2015 OCAD University
-Copyright 2015-2016 Raising the Floor - International
+Copyright 2007-2018 The Infusion Copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
