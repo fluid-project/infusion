@@ -15,11 +15,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function () {
     "use strict";
 
+    /*********************************************************************************************
+     * fluid.mock.textToSpeech component
+     *********************************************************************************************/
+
     // Mocks the fluid.textToSpeech component, removing calls to the
     // Web Speech API. This will allow for tests to run in browsers
     // that don't support the Web Speech API.
     fluid.defaults("fluid.mock.textToSpeech", {
-        gradeNames: ["fluid.textToSpeech"],
         members: {
             // An archive of all the calls to queueSpeech.
             // Will contain an ordered set of objects -- {text: String, options: Object}.
@@ -27,9 +30,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // An archive of all the events fired
             // Will contain a key/value pairing where key is the name of the event and the
             // value is the number of times the event was fired.
-            eventRecord: {}
+            eventRecord: {},
+            lastUtterance: null
         },
         listeners: {
+            // records
+            "utteranceOnStart.recordUtterance": {
+                funcName: "fluid.set",
+                args: ["{that}", "{that}.queue.0"]
+            },
             "onStart.recordEvent": {
                 listener: "{that}.recordEvent",
                 args: ["onStart"]
@@ -41,61 +50,135 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "onSpeechQueued.recordEvent": {
                 listener: "{that}.recordEvent",
                 args: ["onSpeechQueued"]
+            },
+            "onSpeechQueued.recordSpeech": {
+                listener: "fluid.mock.textToSpeech.recordSpeech",
+                args: ["{that}.speechRecord", "{arguments}.0.text", "{arguments}.1"]
+            },
+            // remove cleanup
+            "onCreate.unloadCleanup": {
+                funcName: "fluid.identity"
+            },
+            "onDestroy.cleanup": {
+                funcName: "fluid.identity"
             }
         },
         invokers: {
-            queueSpeech: {
-                funcName: "fluid.mock.textToSpeech.queueSpeech",
-                args: ["{that}", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-            },
-            cancel: {
-                funcName: "fluid.mock.textToSpeech.cancel",
-                args: ["{that}", "{that}.handleEnd"]
-            },
-            getVoices: {
-                funcName: "fluid.identity",
-                args: []
+            invokeSpeechSynthesisFunc: {
+                funcName: "fluid.mock.textToSpeech.invokeStub",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
             },
             recordEvent: {
                 funcName: "fluid.mock.textToSpeech.recordEvent",
                 args: ["{that}.eventRecord", "{arguments}.0"]
+            },
+            // override the speak invoker to return the utterance component instead of the SpeechSynthesisUtterance instance
+            speak: {
+                func: "{that}.invokeSpeechSynthesisFunc",
+                args: ["speak", "{that}.queue.0"]
             }
+        },
+        distributeOptions: {
+            record: "fluid.mock.textToSpeech.utterance",
+            target: "{that fluid.textToSpeech.utterance}.options.gradeNames",
+            namespace: "utteranceMock"
         }
     });
 
-    fluid.mock.textToSpeech.queueSpeech = function (that, handleStart, handleEnd, speechRecord, text, interrupt, options) {
-        if (interrupt) {
-            that.cancel();
-        }
-
-        var record = {
-            text: text,
-            interrupt: !!interrupt
-        };
-
-        if (options) {
-            record.options = options;
-        }
-
-        speechRecord.push(record);
-
-        that.queue.push(text);
-        that.events.onSpeechQueued.fire(text);
-
-        // mocking speechSynthesis speak
-        handleStart();
-        // using setTimeout to preserve asynchronous behaviour
-        setTimeout(handleEnd, 0);
-
+    fluid.mock.textToSpeech.invokeStub = function (that, method, args) {
+        args = fluid.makeArray(args);
+        args.unshift(that);
+        fluid.invokeGlobalFunction(["fluid", "mock", "textToSpeech", "stubs", method], args);
     };
 
-    fluid.mock.textToSpeech.cancel = function (that, handleEnd) {
-        that.queue = [];
-        handleEnd();
+    fluid.registerNamespace("fluid.mock.textToSpeech.stubs");
+
+    fluid.mock.textToSpeech.stubs.speak = function (that, utterance) {
+        utterance.speakUtterance();
+    };
+
+    fluid.mock.textToSpeech.stubs.cancel = function (that) {
+        if (that.lastUtterance) {
+            that.lastUtterance.dispatchEvent("end");
+            that.lastUtterance = null;
+        }
+    };
+
+    fluid.mock.textToSpeech.stubs.pause = function (that) {
+        var utterance = that.queue[0];
+        if (utterance) {
+            utterance.dispatchEvent("pause");
+        }
+    };
+
+    fluid.mock.textToSpeech.stubs.resume = function (that) {
+        var utterance = that.queue[0];
+        if (utterance) {
+            utterance.speakUtterance(true);
+        }
+    };
+
+    fluid.mock.textToSpeech.voices =  [
+        {voiceURI: "Alex", name: "Alex", lang: "en-US", localService: true, default: true},
+        {voiceURI: "Alice", name: "Alice", lang: "it-IT", localService: true, default: false}
+    ];
+
+    fluid.mock.textToSpeech.stubs.getVoices = function () {
+        return fluid.mock.textToSpeech.voices;
     };
 
     fluid.mock.textToSpeech.recordEvent = function (eventRecord, name) {
         eventRecord[name] = (eventRecord[name] || 0) + 1;
+    };
+
+    fluid.mock.textToSpeech.recordSpeech = function (speechRecord, text, interrupt) {
+        speechRecord.push({
+            interrupt: !!interrupt,
+            text: text
+        });
+    };
+
+    /*********************************************************************************************
+     * fluid.mock.textToSpeech.utterance component
+     *********************************************************************************************/
+
+    // to be added to a fluid.textToSpeech.utterance grade when the underlying SpeechSynthesisUtterance should be mocked.
+    fluid.defaults("fluid.mock.textToSpeech.utterance", {
+        invokers: {
+            dispatchEvent: {
+                funcName: "fluid.mock.textToSpeech.utterance.dispatchEvent",
+                args: ["{that}.utterance", "{arguments}.0"]
+            },
+            utteranceEnd: {
+                funcName: "fluid.mock.textToSpeech.utterance.utteranceEnd",
+                args: ["{that}"]
+            },
+            speakUtterance: {
+                funcName: "fluid.mock.textToSpeech.utterance.speakUtterance",
+                args: ["{that}", "{arguments}.0"]
+            }
+        },
+        synchronous: false
+    });
+
+    fluid.mock.textToSpeech.utterance.dispatchEvent = function (utterance, type) {
+        var newEvent = new Event(type);
+        utterance.dispatchEvent(newEvent);
+    };
+
+    fluid.mock.textToSpeech.utterance.utteranceEnd = function (that) {
+        that.dispatchEvent("boundary");
+        that.dispatchEvent("end");
+    };
+
+    fluid.mock.textToSpeech.utterance.speakUtterance = function (that, resume) {
+        that.dispatchEvent(resume ? "resume" : "start");
+
+        if (that.options.synchronous) {
+            that.utteranceEnd();
+        } else {
+            setTimeout(that.utteranceEnd, that.utterance.text.length);
+        }
     };
 
 })();

@@ -1,0 +1,52 @@
+{
+    "src": [
+        "svg/indicator-arrow-triangle.svg",
+        "svg/crossout-diag-dotted-line.svg",
+        "svg/contrast.svg",
+        "svg/bigA.svg",
+        "svg/smallA.svg",
+        "svg/reset-undo-arrow.svg",
+        "svg/line-space-expanded.svg",
+        "svg/line-space-condensed.svg",
+        "svg/line-space.svg",
+        "svg/links.svg",
+        "svg/simplify.svg",
+        "svg/preferences.svg",
+        "svg/font-style.svg",
+        "svg/size.svg",
+        "svg/text-to-speech-no-article.svg",
+        "svg/table-of-contents.svg",
+        "svg/character-spacing-expanded.svg",
+        "svg/character-spacing-condensed.svg",
+        "svg/character-spacing.svg",
+        "svg/caption.svg"
+    ],
+    "options": {
+        "font": "PrefsFramework-Icons",
+        "codepoints": {
+            "character-spacing-expanded": "0xE000",
+            "character-spacing-condensed": "0xE001",
+            "character-spacing": "0xE002",
+            "indicator-arrow-triangle": "0xE003",
+            "crossout-diag-dotted-line": "0xE004",
+            "contrast": "0xE005",
+            "bigA": "0xE006",
+            "smallA": "0xE007",
+            "reset-undo-arrow": "0xE008",
+            "line-space-expanded": "0xE009",
+            "line-space-condensed": "0xE00a",
+            "line-space": "0xE00b",
+            "links": "0xE00c",
+            "simplify": "0xE00d",
+            "preferences": "0xE00e",
+            "font-style": "0xE00f",
+            "size": "0xE010",
+            "text-to-speech-no-article": "0xE011",
+            "table-of-contents": "0xE012",
+            "caption": "0xE013"
+        },
+        "templateOptions": {
+            "classPrefix": "fl-icon-"
+        }
+    }
+}

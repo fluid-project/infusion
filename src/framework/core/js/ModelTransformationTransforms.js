@@ -12,8 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0_0 = fluid_2_0_0 || {};
-var fluid = fluid || fluid_2_0_0;
+var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -226,7 +225,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.defaults("fluid.transforms.valueMapper", {
-        gradeNames: ["fluid.transformFunction", "fluid.lens"],
+        gradeNames: ["fluid.lens"],
         invertConfiguration: "fluid.transforms.valueMapper.invert",
         collectInputPaths: "fluid.transforms.valueMapper.collect"
     });
@@ -716,14 +715,15 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.defaults("fluid.transforms.quantize", {
-        gradeNames: "fluid.standardTransformFunction"
+        gradeNames: "fluid.standardTransformFunction",
+        collectInputPaths: "fluid.transforms.quantize.collect"
     });
 
     /*
      * Quantize function maps a continuous range into discrete values. Given an input, it will
      * be matched into a discrete bucket and the corresponding output will be done.
      */
-    fluid.transforms.quantize = function (value, transformSpec, transform) {
+    fluid.transforms.quantize = function (value, transformSpec, transformer) {
         if (!transformSpec.ranges || !transformSpec.ranges.length) {
             fluid.fail("fluid.transforms.quantize should have a key called ranges containing an array defining ranges to quantize");
         }
@@ -731,9 +731,17 @@ var fluid = fluid || fluid_2_0_0;
         for (var i = 0; i < transformSpec.ranges.length; i++) {
             var rangeSpec = transformSpec.ranges[i];
             if (value <= rangeSpec.upperBound || rangeSpec.upperBound === undefined && value >= Number.NEGATIVE_INFINITY) {
-                return fluid.isPrimitive(rangeSpec.output) ? rangeSpec.output : transform.expand(rangeSpec.output);
+                return fluid.isPrimitive(rangeSpec.output) ? rangeSpec.output : transformer.expand(rangeSpec.output);
             }
         }
+    };
+
+    fluid.transforms.quantize.collect = function (transformSpec, transformer) {
+        transformSpec.ranges.forEach(function (rangeSpec) {
+            if (!fluid.isPrimitive(rangeSpec.output)) {
+                transformer.expand(rangeSpec.output);
+            }
+        });
     };
 
     /**
