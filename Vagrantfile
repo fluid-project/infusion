@@ -30,11 +30,16 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "#{app_directory}"
 
   # Mounts node_modules in /var/tmp to work around issues in the VirtualBox shared folders
-  config.vm.provision "shell", run: "always", inline: <<-SHELL
-    sudo mkdir -p /var/tmp/#{app_name}/node_modules #{app_directory}/node_modules
-    sudo chown vagrant:vagrant -R /var/tmp/#{app_name}/node_modules #{app_directory}/node_modules
-    sudo mount -o bind /var/tmp/#{app_name}/node_modules #{app_directory}/node_modules
-  SHELL
+  #
+  # Set SKIP_NODE_MODULES_BIND_MOUNT to "1" to skip this and have the directory shared
+  # between host and VM
+  if ENV["SKIP_NODE_MODULES_BIND_MOUNT"] != "1"
+    config.vm.provision "shell", run: "always", inline: <<-SHELL
+      sudo mkdir -p /var/tmp/#{app_name}/node_modules #{app_directory}/node_modules
+      sudo chown vagrant:vagrant -R /var/tmp/#{app_name}/node_modules #{app_directory}/node_modules
+      sudo mount -o bind /var/tmp/#{app_name}/node_modules #{app_directory}/node_modules
+    SHELL
+  end
 
   # List additional directories to sync to the VM in your "Vagrantfile.local" file
   # using the following format:
