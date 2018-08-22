@@ -4912,4 +4912,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         freeModel.destroy();
         advisor.destroy();
     });
+
+    /** FLUID-6281: Can't refer to a subcomponent by its grade name in an IoC reference for model listener on the parent. **/
+
+    fluid.defaults("fluid.tests.FLUID6281.child", {
+        gradeNames: ["fluid.component"],
+        members: {
+            myName: "",
+            desc: ""
+        },
+        invokers: {
+            setName: {
+                funcName: "fluid.set",
+                args: ["{that}", ["myName"], "{arguments}.0"]
+            },
+            setDesc: {
+                funcName: "fluid.set",
+                args: ["{that}", ["desc"], "{arguments}.0"]
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID6281", {
+        gradeNames: ["fluid.modelComponent"],
+        components: {
+            childComp: {
+                type: "fluid.tests.FLUID6281.child"
+            }
+        },
+        model: {
+            name: "The Component",
+            description: "I'm a component"
+        },
+        modelListeners: {
+            "name": {
+                listener: "{fluid.tests.FLUID6281.child}.setName",
+                args: ["{change}.value"],
+                namespace: "passDownName"
+            },
+            "description": {
+                listener: "{that}.setDesc",
+                args: ["{change}.value"],
+                namespace: "passDownDesc"
+            }
+        },
+        invokers: {
+            setDesc: "{fluid.tests.FLUID6281.child}.setDesc"
+        }
+    });
+
+    jqUnit.test("FLUID-6281: Can't refer to a subcomponent by its grade name in an IoC reference for model listener on the parent", function () {
+        var that = fluid.tests.FLUID6281();
+        jqUnit.assertEquals("The myName member of the child should be set", that.model.name, that.childComp.myName);
+        jqUnit.assertEquals("The desc member of the child should be set", that.model.description, that.childComp.desc);
+    });
+
 })(jQuery);
