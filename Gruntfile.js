@@ -252,7 +252,7 @@ module.exports = function (grunt) {
         },
         lintAll: {
             sources: {
-                md: [ "./*.md"],
+                md: [ "./*.md", "./demos/**/*.md", "./examples/**/*.md", "./src/**/*.md", "./tests/**/*.md", "!./**/lib/**/*.md"],
                 js: ["./*.js", "./demos/**/*.js", "./examples/**/*.js", "./src/**/*.js", "./tests/**/*.js", "!./**/lib/**/*.js", "!./**/infusion-1.5.js"],
                 json: ["./*.json", "./demos/**/*.json", "./examples/**/*.json", "./src/**/*.json", "./tests/**/*.json", "!**/lib/**/*.json"],
                 other: ["./.*"]
