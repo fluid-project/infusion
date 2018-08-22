@@ -49,7 +49,7 @@
         "grunt-contrib-stylus": "1.2.0",
         "grunt-contrib-uglify": "3.1.0",
         "grunt-contrib-watch": "1.0.0",
-        "grunt-modulefiles": "0.3.1",
+        "grunt-modulefiles": "0.4.0-dev.20180822T162720Z.2360893.FLUID-6253",
         "grunt-shell": "2.1.0",
         "lodash": "4.17.4",
         "ncp": "2.0.0",
