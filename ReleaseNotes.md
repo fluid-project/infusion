@@ -61,9 +61,7 @@ categorized by license:
 
 ### MIT License
 
-* [Buzz v1.1.0](http://buzz.jaysalvat.com)
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
 * [jQuery v3.1.0](http://jquery.com/)
 * [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
