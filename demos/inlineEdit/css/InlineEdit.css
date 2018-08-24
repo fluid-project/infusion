@@ -4,6 +4,10 @@ figure {
     margin-left : 0;
 }
 
+figure img {
+    max-width: 100%;
+}
+
 .demo-inlineEdit-title,
 .demo-inlineEdit-title-edit {
     font-size : 2em;

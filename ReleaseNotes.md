@@ -62,7 +62,6 @@ categorized by license:
 ### MIT License
 
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
-* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
 * [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
 * [jQuery v3.1.0](http://jquery.com/)

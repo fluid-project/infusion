@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
         <title>Simple Layout Reorderer Sample</title>
 
         <link rel="stylesheet" type="text/css" href="../../../src/lib/normalize/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="../../lib/foundation/css/foundation.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/components/reorderer/css/Reorderer.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/components/overviewPanel/css/OverviewPanel.css" />
@@ -42,8 +42,8 @@
 
     </head>
     <body>
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <div class="demo-layoutReorderer-container fl-centered" id="demo-layoutReorderer" >
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+        <section class="demo-layoutReorderer-container fl-centered" id="demo-layoutReorderer" >
             <h1>The GadgetLife.com</h1>
 
             <p><strong>Mouse instructions: </strong>Drag and drop items with the mouse.</p>
@@ -140,7 +140,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
         <script type="text/javascript">
             fluid.reorderLayout("#demo-layoutReorderer", {
                 selectors: {

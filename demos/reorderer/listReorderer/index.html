@@ -2,9 +2,12 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
         <title>Conference Planning Tasks</title>
+
         <link rel="stylesheet" type="text/css" href="../../../src/lib/normalize/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="../../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../../shared/css/demo.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/components/reorderer/css/Reorderer.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/components/overviewPanel/css/OverviewPanel.css" />
@@ -38,41 +41,43 @@
     </head>
 
     <body>
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <div id="demo-selector-listReorderer" class="demo-listReorderer-container fl-centered">
-            <h1>Event Planner - To Do List</h1>
-            <p><strong>Mouse instructions:</strong> Drag and drop items with the mouse.</p>
-            <p><strong>Keyboard instructions:</strong>Direction keys (arrow keys or i-m) move focus. CTRL + direction keys move the item.</p>
-            <ol>
-                <li class="demo-listReorderer-movable flc-reorderer-movable">
-                    Select the date
-                </li>
-                <li class="demo-listReorderer-movable flc-reorderer-movable">
-                    Create promotional plan
-                    <ul>
-                        <li>email campaign</li>
-                        <li>web site</li>
-                        <li>print materials</li>
-                    </ul>
-                </li>
-                <li class="demo-listReorderer-movable flc-reorderer-movable">
-                    Book facilities
-                    <ul>
-                        <li>Select building</li>
-                        <li>Book rooms</li>
-                    </ul>
-                </li>
-                <li class="demo-listReorderer-movable flc-reorderer-movable">
-                    Book caterer
-                </li>
-                <li class="demo-listReorderer-movable flc-reorderer-movable">
-                    Book block of hotel rooms
-                </li>
-                <li class="demo-listReorderer-movable flc-reorderer-movable">
-                    Develop a conference daily schedule of events
-                </li>
-            </ol>
-        </div>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+        <section id="demo-selector-listReorderer" class="fl-demo-container demo-listReorderer-container">
+            <div class="fl-demo-content">
+                <h1>Event Planner - To Do List</h1>
+                <p><strong>Mouse instructions:</strong> Drag and drop items with the mouse.</p>
+                <p><strong>Keyboard instructions:</strong>Direction keys (arrow keys or i-m) move focus. CTRL + direction keys move the item.</p>
+                <ol>
+                    <li class="demo-listReorderer-movable flc-reorderer-movable">
+                        Select the date
+                    </li>
+                    <li class="demo-listReorderer-movable flc-reorderer-movable">
+                        Create promotional plan
+                        <ul>
+                            <li>email campaign</li>
+                            <li>web site</li>
+                            <li>print materials</li>
+                        </ul>
+                    </li>
+                    <li class="demo-listReorderer-movable flc-reorderer-movable">
+                        Book facilities
+                        <ul>
+                            <li>Select building</li>
+                            <li>Book rooms</li>
+                        </ul>
+                    </li>
+                    <li class="demo-listReorderer-movable flc-reorderer-movable">
+                        Book caterer
+                    </li>
+                    <li class="demo-listReorderer-movable flc-reorderer-movable">
+                        Book block of hotel rooms
+                    </li>
+                    <li class="demo-listReorderer-movable flc-reorderer-movable">
+                        Develop a conference daily schedule of events
+                    </li>
+                </ol>
+            </div>
+        </section>
         <script type="text/javascript">
             fluid.reorderList("#demo-selector-listReorderer", {
                 styles: {
