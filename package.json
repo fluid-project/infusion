@@ -19,7 +19,8 @@
     "repository": "git://github.com/fluid-project/infusion.git",
     "main": "./src/module/fluid.js",
     "scripts": {
-        "prepublish": "npm run buildDists && npm run buildStylus",
+        "postinstall": "npm run buildStylus",
+        "prepublishOnly": "npm run buildDists",
         "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
         "test": "npm run test:browser && npm run test:node",
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
