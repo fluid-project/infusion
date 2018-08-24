@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
 
     /* Mixin grade for UIO test component */
-    fluid.defaults("fluid.uiOptions.testPrefsEditorBase", {
+    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorBase", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
         terms: {
             templatePrefix: "../../../../src/framework/preferences/html",
@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /* Mixin grade for UIO test environment */
-    fluid.defaults("fluid.uiOptions.prefsEditorBaseTest", {
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorBaseTest", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             prefsEditor: {
@@ -37,12 +37,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.uiOptions.testPrefsEditorCustomToc", {
-        gradeNames: ["fluid.uiOptions.testPrefsEditorBase"],
+    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorCustomToc", {
+        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
         tocTemplate: customizedTocTemplate
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorCustomTocTester", {
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "UI Options Tests",
@@ -66,25 +66,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorCustomTocTest", {
-        gradeNames: ["fluid.uiOptions.prefsEditorBaseTest"],
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTest", {
+        gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
         components: {
             prefsEditor: {
-                type: "fluid.uiOptions.testPrefsEditorCustomToc",
+                type: "fluid.tests.uiOptions.testPrefsEditorCustomToc",
                 container: ".flc-prefsEditor-separatedPanel"
             },
             prefsEditorTester: {
-                type: "fluid.uiOptions.prefsEditorCustomTocTester"
+                type: "fluid.tests.uiOptions.prefsEditorCustomTocTester"
             }
         }
     });
 
-    fluid.defaults("fluid.uiOptions.testPrefsEditorLocalized", {
-        gradeNames: ["fluid.uiOptions.testPrefsEditorBase"],
+    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorLocalized", {
+        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
         defaultLocale: "fr"
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTester", {
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "UI Options Locale Tests",
@@ -97,14 +97,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["defaultLocale is properly propagated to messageLoader", "fr", "{prefsEditor}.prefsEditorLoader.messageLoader.options.defaultLocale"]
                 },
                 {
-                    funcName: "fluid.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages",
+                    funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages",
                     args: "{prefsEditor}"
                 }]
             }]
         }]
     });
 
-    var localizedValuesToVerify = {
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify = {
         fluid_prefs_panel_contrast: {
             path: "label",
             expected: "Couleur et contraste"
@@ -135,30 +135,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages = function (prefsEditor) {
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages = function (prefsEditor) {
         fluid.each(prefsEditor.prefsEditorLoader.messageLoader.resources, function (panel, key) {
-            var actualValue = panel.resourceText[localizedValuesToVerify[key].path];
-            jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", localizedValuesToVerify[key].expected, actualValue);
+            var actualValue = panel.resourceText[fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].path];
+            jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualValue);
         });
     };
 
-    fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTest", {
-        gradeNames: ["fluid.uiOptions.prefsEditorBaseTest"],
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest", {
+        gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
         components: {
             prefsEditor: {
-                type: "fluid.uiOptions.testPrefsEditorLocalized",
+                type: "fluid.tests.uiOptions.testPrefsEditorLocalized",
                 container: ".flc-prefsEditor-separatedPanel-localized"
             },
             prefsEditorTester: {
-                type: "fluid.uiOptions.prefsEditorLocalizedTester"
+                type: "fluid.tests.uiOptions.prefsEditorLocalizedTester"
             }
         }
     });
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.uiOptions.prefsEditorCustomTocTest",
-            "fluid.uiOptions.prefsEditorLocalizedTest"
+            "fluid.tests.uiOptions.prefsEditorCustomTocTest",
+            "fluid.tests.uiOptions.prefsEditorLocalizedTest"
         ]);
     });
 })(jQuery);
