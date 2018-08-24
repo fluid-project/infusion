@@ -6,6 +6,7 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
+package-lock.json
 report.tap
 coverage
 reports
