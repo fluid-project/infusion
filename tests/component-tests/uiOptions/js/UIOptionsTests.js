@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.uiOptions.prefsEditorCustomTocTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "UIOptions Tests",
+            name: "UI Options Tests",
             tests: [{
                 name: "Pass in customized toc template",
                 expect: 2,
@@ -87,7 +87,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "UIOptions Locale Tests",
+            name: "UI Options Locale Tests",
             tests: [{
                 name: "UIO defaultLocale tests",
                 expect: 8,
