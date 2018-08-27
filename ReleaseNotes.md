@@ -71,7 +71,7 @@ categorized by license:
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
   slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
 * [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
-* [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
+* [jquery.simulate v1.0.2](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
 * [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
 * [url-polyfill v1.0.13](https://github.com/lifaon74/url-polyfill)

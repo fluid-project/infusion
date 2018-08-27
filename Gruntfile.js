@@ -166,6 +166,11 @@ module.exports = function (grunt) {
                     dest: "tests/lib/sinon/js/",
                     expand: true,
                     flatten: true
+                }, {
+                    src: "node_modules/jquery-simulate/jquery.simulate.js",
+                    dest: "tests/lib/jquery-simulate/js/",
+                    expand: true,
+                    flatten: true
                 }]
             }
         },

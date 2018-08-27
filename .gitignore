@@ -7,6 +7,7 @@
 /.bundle/
 /.vagrant/
 /tests/lib/sinon/
+/tests/lib/jquery-simulate/
 package-lock.json
 report.tap
 coverage
