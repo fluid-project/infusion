@@ -6,6 +6,7 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
+/src/lib/normalize/
 /tests/lib/sinon/
 /tests/lib/jquery-simulate/
 package-lock.json

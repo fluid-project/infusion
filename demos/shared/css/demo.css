@@ -1,3 +1,7 @@
+html {
+    font-family: sans-serif;
+}
+
 .fl-demo-container {
     margin-top: 1rem;
     display:flex;

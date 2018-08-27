@@ -58,6 +58,7 @@
         "rimraf": "2.6.2",
         "testem": "2.9.3",
         "sinon": "6.1.5",
+        "normalize.css": "8.0.0",
         "jquery-simulate": "1.0.2"
     }
 }

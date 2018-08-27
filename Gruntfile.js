@@ -162,6 +162,11 @@ module.exports = function (grunt) {
             },
             dependencies: {
                 files: [{
+                    src: "node_modules/normalize.css/normalize.css",
+                    dest: "src/lib/normalize/css/",
+                    expand: true,
+                    flatten: true
+                }, {
                     src: "node_modules/sinon/pkg/sinon.js",
                     dest: "tests/lib/sinon/js/",
                     expand: true,

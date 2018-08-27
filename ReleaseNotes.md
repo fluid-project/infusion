@@ -73,7 +73,7 @@ categorized by license:
 * [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
 * [jquery.simulate v1.0.2](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
-* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
+* [Normalize v8.0.0](https://necolas.github.io/normalize.css/)
 * [url-polyfill v1.0.13](https://github.com/lifaon74/url-polyfill)
 
 ### zlib/libpng License
