@@ -98,7 +98,10 @@ module.exports = function (grunt) {
             dist: "dist",
             postBuild: {
                 files: [{}]
-            }
+            },
+            dependencies: [
+                "tests/lib/sinon"
+            ]
         },
         copy: {
             all: {
@@ -155,6 +158,14 @@ module.exports = function (grunt) {
                     cwd: "build/",
                     src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**"],
                     dest: "dist/assets/"
+                }]
+            },
+            dependencies: {
+                files: [{
+                    src: "node_modules/sinon/pkg/sinon.js",
+                    dest: "tests/lib/sinon/js/",
+                    expand: true,
+                    flatten: true
                 }]
             }
         },
@@ -404,6 +415,7 @@ module.exports = function (grunt) {
         var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
+            "copy:dependencies",
             "lint",
             "stylus:compile",
             "modulefiles:" + target,
@@ -451,6 +463,7 @@ module.exports = function (grunt) {
     grunt.registerTask("buildDists", "Tasks to run before publishing to NPM", function (target) {
         var tasks = [
             "clean",
+            "copy:dependencies",
             "lint",
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
@@ -553,4 +566,5 @@ module.exports = function (grunt) {
     grunt.registerTask("custom", ["build:custom"]);
 
     grunt.registerTask("lint", "Perform all standard lint checks.", ["lint-all"]);
+    grunt.registerTask("loadDependencies", "Load lib files from node_modules", ["clean:dependencies", "copy:dependencies"]);
 };
