@@ -6,6 +6,7 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
+/src/lib/jquery/core/
 /src/lib/normalize/
 /src/lib/url-polyfill/
 /tests/lib/sinon/

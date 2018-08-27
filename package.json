@@ -19,7 +19,7 @@
     "repository": "git://github.com/fluid-project/infusion.git",
     "main": "./src/module/fluid.js",
     "scripts": {
-        "postinstall": "npm run buildStylus",
+        "postinstall": "npm run loadDependencies && npm run buildStylus",
         "prepublishOnly": "npm run buildDists",
         "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
         "test": "npm run test:browser && npm run test:node",
@@ -30,7 +30,8 @@
         "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html --report-dir reports --temp-directory coverage",
         "buildDists": "grunt buildDists",
-        "buildStylus": "grunt buildStylus"
+        "buildStylus": "grunt buildStylus",
+        "loadDependencies": "grunt loadDependencies"
     },
     "engines": {
         "node": ">=0.10.0"
@@ -60,6 +61,7 @@
         "sinon": "6.1.5",
         "normalize.css": "8.0.0",
         "url-polyfill": "1.0.14",
+        "jquery": "3.1.0",
         "jquery-simulate": "1.0.2"
     }
 }

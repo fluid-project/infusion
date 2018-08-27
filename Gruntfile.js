@@ -100,10 +100,11 @@ module.exports = function (grunt) {
                 files: [{}]
             },
             dependencies: [
+                "src/lib/jquery/core",
                 "src/lib/normalize",
                 "src/lib/url-polyfill",
-                "tests/lib/sinon",
-                "tests/lib/jquery-simulate"
+                "tests/lib/jquery-simulate",
+                "tests/lib/sinon"
             ]
         },
         copy: {
@@ -165,6 +166,11 @@ module.exports = function (grunt) {
             },
             dependencies: {
                 files: [{
+                    src: "node_modules/jquery/dist/jquery.js",
+                    dest: "src/lib/jquery/core/js/",
+                    expand: true,
+                    flatten: true
+                }, {
                     src: "node_modules/normalize.css/normalize.css",
                     dest: "src/lib/normalize/css/",
                     expand: true,
@@ -175,13 +181,13 @@ module.exports = function (grunt) {
                     expand: true,
                     flatten: true
                 }, {
-                    src: "node_modules/sinon/pkg/sinon.js",
-                    dest: "tests/lib/sinon/js/",
+                    src: "node_modules/jquery-simulate/jquery.simulate.js",
+                    dest: "tests/lib/jquery-simulate/js/",
                     expand: true,
                     flatten: true
                 }, {
-                    src: "node_modules/jquery-simulate/jquery.simulate.js",
-                    dest: "tests/lib/jquery-simulate/js/",
+                    src: "node_modules/sinon/pkg/sinon.js",
+                    dest: "tests/lib/sinon/js/",
                     expand: true,
                     flatten: true
                 }]
