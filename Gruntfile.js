@@ -100,7 +100,10 @@ module.exports = function (grunt) {
                 files: [{}]
             },
             dependencies: [
-                "tests/lib/sinon"
+                "src/lib/normalize",
+                "src/lib/url-polyfill",
+                "tests/lib/sinon",
+                "tests/lib/jquery-simulate"
             ]
         },
         copy: {
@@ -164,6 +167,11 @@ module.exports = function (grunt) {
                 files: [{
                     src: "node_modules/normalize.css/normalize.css",
                     dest: "src/lib/normalize/css/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/url-polyfill/url-polyfill.js",
+                    dest: "src/lib/url-polyfill/js/",
                     expand: true,
                     flatten: true
                 }, {
