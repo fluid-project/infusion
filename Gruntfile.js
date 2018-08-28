@@ -101,6 +101,7 @@ module.exports = function (grunt) {
             },
             dependencies: [
                 "src/lib/jquery/core",
+                "src/lib/jquery/plugins/scrollTo",
                 "src/lib/normalize",
                 "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
@@ -168,6 +169,11 @@ module.exports = function (grunt) {
                 files: [{
                     src: "node_modules/jquery/dist/jquery.js",
                     dest: "src/lib/jquery/core/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery.scrollto/jquery.scrollTo.js",
+                    dest: "src/lib/jquery/plugins/scrollTo/js/",
                     expand: true,
                     flatten: true
                 }, {

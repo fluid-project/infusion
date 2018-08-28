@@ -62,11 +62,11 @@ categorized by license:
 ### MIT License
 
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [jQuery v3.1.0](http://jquery.com/)
+* [jQuery v3.3.1](http://jquery.com/)
 * [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
-* [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
+* [jQuery scrollTo v2.1.2](https://github.com/flesler/jquery.scrollTo)
 * [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
   slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
