@@ -63,6 +63,7 @@
         "url-polyfill": "1.0.14",
         "jquery": "3.3.1",
         "jquery.scrollto": "2.1.2",
+        "jquery-ui-touch-punch": "0.2.3",
         "jquery-simulate": "1.0.2"
     }
 }

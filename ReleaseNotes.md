@@ -67,7 +67,7 @@ categorized by license:
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
 * [jQuery scrollTo v2.1.2](https://github.com/flesler/jquery.scrollTo)
-* [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
+* [jQuery Touch Punch v0.2.3](http://touchpunch.furf.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
   slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
 * [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)

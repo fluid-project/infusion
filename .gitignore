@@ -7,7 +7,7 @@
 /.bundle/
 /.vagrant/
 /src/lib/jquery/core/
-/src/lib/jquery/plugins/scrollTo/
+/src/lib/jquery/plugins/
 /src/lib/normalize/
 /src/lib/url-polyfill/
 /tests/lib/sinon/

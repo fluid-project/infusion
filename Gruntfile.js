@@ -101,7 +101,7 @@ module.exports = function (grunt) {
             },
             dependencies: [
                 "src/lib/jquery/core",
-                "src/lib/jquery/plugins/scrollTo",
+                "src/lib/jquery/plugins",
                 "src/lib/normalize",
                 "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
@@ -174,6 +174,11 @@ module.exports = function (grunt) {
                 }, {
                     src: "node_modules/jquery.scrollto/jquery.scrollTo.js",
                     dest: "src/lib/jquery/plugins/scrollTo/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.js",
+                    dest: "src/lib/jquery/plugins/touchPunch/js/",
                     expand: true,
                     flatten: true
                 }, {
