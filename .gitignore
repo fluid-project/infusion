@@ -11,8 +11,9 @@
 /src/lib/jquery/plugins/
 /src/lib/normalize/
 /src/lib/url-polyfill/
-/tests/lib/sinon/
 /tests/lib/jquery-simulate/
+/tests/lib/mockjax/
+/tests/lib/sinon/
 package-lock.json
 report.tap
 coverage

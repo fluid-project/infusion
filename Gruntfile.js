@@ -106,6 +106,7 @@ module.exports = function (grunt) {
                 "src/lib/normalize",
                 "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
+                "tests/lib/mockjax",
                 "tests/lib/sinon"
             ]
         },
@@ -195,6 +196,11 @@ module.exports = function (grunt) {
                 }, {
                     src: "node_modules/url-polyfill/url-polyfill.js",
                     dest: "src/lib/url-polyfill/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-mockjax/dist/jquery.mockjax.js",
+                    dest: "tests/lib/mockjax/js/",
                     expand: true,
                     flatten: true
                 }, {
