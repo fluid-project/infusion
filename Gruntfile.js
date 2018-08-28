@@ -100,6 +100,7 @@ module.exports = function (grunt) {
                 files: [{}]
             },
             dependencies: [
+                "src/lib/fonts",
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
                 "src/lib/normalize",
@@ -167,6 +168,11 @@ module.exports = function (grunt) {
             },
             dependencies: {
                 files: [{
+                    src: "node_modules/opensans-webkit/fonts/OpenSans-*.ttf",
+                    dest: "src/lib/fonts/",
+                    expand: true,
+                    flatten: true
+                }, {
                     src: "node_modules/jquery/dist/jquery.js",
                     dest: "src/lib/jquery/core/js/",
                     expand: true,

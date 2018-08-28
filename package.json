@@ -60,6 +60,7 @@
         "testem": "2.9.3",
         "sinon": "6.1.5",
         "normalize.css": "8.0.0",
+        "opensans-webkit": "1.0.1",
         "url-polyfill": "1.0.14",
         "jquery": "3.3.1",
         "jquery.scrollto": "2.1.2",

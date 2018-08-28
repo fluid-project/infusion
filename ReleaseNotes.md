@@ -53,7 +53,7 @@ categorized by license:
 
 * [`fluid.load.scripts` is based on Jake Archibald's script loading example](
   http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
-* [Open Sans Light font](http://www.google.com/fonts/specimen/Open+Sans)
+* [Open Sans font](http://www.google.com/fonts/specimen/Open+Sans)
 
 ### BSD-3
 

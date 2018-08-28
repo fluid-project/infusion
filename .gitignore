@@ -6,6 +6,7 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
+/src/lib/fonts/
 /src/lib/jquery/core/
 /src/lib/jquery/plugins/
 /src/lib/normalize/
