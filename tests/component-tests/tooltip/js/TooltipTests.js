@@ -110,6 +110,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tooltip.container.html(markup);
     };
 
+    fluid.tests.invokeAfter = function (toInvoke, delay) {
+        setTimeout(toInvoke, delay);
+    };
+
     fluid.tests.tooltip.module = {
         name: "Delegating tooltip tests",
         tests: {
@@ -131,8 +135,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // and not after the tooltip is actually removed,
                 // ( https://github.com/jquery/jquery-ui/blob/1.12.1/ui/widgets/tooltip.js#L427 )
                 // means that we can't relay on the component's afterClose event to test the result of closing.
-                funcName: "fluid.invokeLater",
-                args: ["{tree}.events.afterWaitForClose.fire"]
+                funcName: "fluid.tests.invokeAfter",
+                args: ["{tree}.events.afterWaitForClose.fire", 100]
             }, {
                 event: "{tree}.events.afterWaitForClose",
                 priority: "last:testing",
