@@ -43,7 +43,20 @@
         "name": "jQuery UI",
         "description": "jQuery UI Widgets and Interactions. Includes the following: Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip",
         "files": [
-            "./jquery/ui/js/jquery-ui.js"
+            "./jquery/ui/js/version.js",
+            "./jquery/ui/js/widget.js",
+            "./jquery/ui/js/plugin.js",
+            "./jquery/ui/js/safe-active-element.js",
+            "./jquery/ui/js/safe-blur.js",
+            "./jquery/ui/js/scroll-parent.js",
+            "./jquery/ui/js/position.js",
+            "./jquery/ui/js/data.js",
+            "./jquery/ui/js/keycode.js",
+            "./jquery/ui/js/unique-id.js",
+            "./jquery/ui/js/mouse.js",
+            "./jquery/ui/js/draggable.js",
+            "./jquery/ui/js/tabs.js",
+            "./jquery/ui/js/tooltip.js"
         ],
         "dependencies": [
             "jQuery"

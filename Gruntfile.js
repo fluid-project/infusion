@@ -103,6 +103,7 @@ module.exports = function (grunt) {
                 "src/lib/fonts",
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
+                "src/lib/jquery/ui/js",
                 "src/lib/normalize",
                 "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
@@ -186,6 +187,26 @@ module.exports = function (grunt) {
                 }, {
                     src: "node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.js",
                     dest: "src/lib/jquery/plugins/touchPunch/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/ui/version.js",
+                        "node_modules/jquery-ui/ui/widget.js",
+                        "node_modules/jquery-ui/ui/plugin.js",
+                        "node_modules/jquery-ui/ui/safe-active-element.js",
+                        "node_modules/jquery-ui/ui/safe-blur.js",
+                        "node_modules/jquery-ui/ui/position.js",
+                        "node_modules/jquery-ui/ui/data.js",
+                        "node_modules/jquery-ui/ui/keycode.js",
+                        "node_modules/jquery-ui/ui/scroll-parent.js",
+                        "node_modules/jquery-ui/ui/unique-id.js",
+                        "node_modules/jquery-ui/ui/widgets/mouse.js",
+                        "node_modules/jquery-ui/ui/widgets/draggable.js",
+                        "node_modules/jquery-ui/ui/widgets/tabs.js",
+                        "node_modules/jquery-ui/ui/widgets/tooltip.js"
+                    ],
+                    dest: "src/lib/jquery/ui/js/",
                     expand: true,
                     flatten: true
                 }, {
