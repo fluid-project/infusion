@@ -191,6 +191,22 @@ module.exports = function (grunt) {
                     flatten: true
                 }, {
                     src: [
+                        "node_modules/jquery-ui/themes/base/images/*.png"
+                    ],
+                    dest: "src/lib/jquery/ui/css/default-theme/images",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/themes/base/core.css",
+                        "node_modules/jquery-ui/themes/base/theme.css",
+                        "node_modules/jquery-ui/themes/base/tooltip.css"
+                    ],
+                    dest: "src/lib/jquery/ui/css/default-theme/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
                         "node_modules/jquery-ui/ui/version.js",
                         "node_modules/jquery-ui/ui/widget.js",
                         "node_modules/jquery-ui/ui/plugin.js",
@@ -203,7 +219,6 @@ module.exports = function (grunt) {
                         "node_modules/jquery-ui/ui/unique-id.js",
                         "node_modules/jquery-ui/ui/widgets/mouse.js",
                         "node_modules/jquery-ui/ui/widgets/draggable.js",
-                        "node_modules/jquery-ui/ui/widgets/tabs.js",
                         "node_modules/jquery-ui/ui/widgets/tooltip.js"
                     ],
                     dest: "src/lib/jquery/ui/js/",

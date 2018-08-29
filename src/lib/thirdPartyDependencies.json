@@ -55,7 +55,6 @@
             "./jquery/ui/js/unique-id.js",
             "./jquery/ui/js/mouse.js",
             "./jquery/ui/js/draggable.js",
-            "./jquery/ui/js/tabs.js",
             "./jquery/ui/js/tooltip.js"
         ],
         "dependencies": [
