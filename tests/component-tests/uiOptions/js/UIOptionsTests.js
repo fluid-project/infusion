@@ -15,7 +15,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    var customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
 
     /* Mixin grade for UIO test component */
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorBase", {
@@ -37,9 +36,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.uiOptions.customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
+
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorCustomToc", {
         gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
-        tocTemplate: customizedTocTemplate
+        tocTemplate: fluid.tests.uiOptions.customizedTocTemplate
     });
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTester", {
@@ -52,7 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     event: "{prefsEditorCustomTocTest prefsEditor}.events.onCreate",
                     listener: "jqUnit.assertEquals",
-                    args: ["The toc template is applied properly to the pageEnhancer", customizedTocTemplate, "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
+                    args: ["The toc template is applied properly to the pageEnhancer", fluid.tests.uiOptions.customizedTocTemplate, "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
                 },
                 {
                     funcName: "fluid.identity"
@@ -60,7 +61,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     event: "{prefsEditor}.events.onReady",
                     listener: "jqUnit.assertEquals",
-                    args: ["FLUID-5474: The toc template is applied properly to iframeEnhancer", customizedTocTemplate, "{prefsEditor}.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
+                    args: ["FLUID-5474: The toc template is applied properly to iframeEnhancer", fluid.tests.uiOptions.customizedTocTemplate, "{prefsEditor}.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
                 }]
             }]
         }]
