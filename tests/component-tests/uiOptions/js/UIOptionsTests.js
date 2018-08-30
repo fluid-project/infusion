@@ -15,7 +15,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-
     /* Mixin grade for UIO test component */
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorBase", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
@@ -51,21 +50,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Pass in customized toc template",
                 expect: 2,
                 sequence: [{
-                    event: "{prefsEditorCustomTocTest prefsEditor}.events.onCreate",
-                    listener: "jqUnit.assertEquals",
-                    args: ["The toc template is applied properly to the pageEnhancer", fluid.tests.uiOptions.customizedTocTemplate, "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
-                },
-                {
-                    funcName: "fluid.identity"
-                },
-                {
-                    event: "{prefsEditor}.events.onReady",
-                    listener: "jqUnit.assertEquals",
-                    args: ["FLUID-5474: The toc template is applied properly to iframeEnhancer", fluid.tests.uiOptions.customizedTocTemplate, "{prefsEditor}.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
+                    "event": "{prefsEditorCustomTocTest testPrefsEditorCustomToc}.events.onReady",
+                    "listener": "fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates",
+                    "args": ["{testPrefsEditorCustomToc}", fluid.tests.uiOptions.customizedTocTemplate]
                 }]
             }]
         }]
     });
+
+    fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates = function (prefsEditorComponent, expectedTocTemplate) {
+        jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer", expectedTocTemplate, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+        jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", expectedTocTemplate, prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+    };
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTest", {
         gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
