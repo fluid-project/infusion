@@ -15,10 +15,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    var customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
-
     /* Mixin grade for UIO test component */
-    fluid.defaults("fluid.uiOptions.testPrefsEditorBase", {
+    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorBase", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
         terms: {
             templatePrefix: "../../../../src/framework/preferences/html",
@@ -27,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /* Mixin grade for UIO test environment */
-    fluid.defaults("fluid.uiOptions.prefsEditorBaseTest", {
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorBaseTest", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             prefsEditor: {
@@ -37,74 +35,78 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.uiOptions.testPrefsEditorCustomToc", {
-        gradeNames: ["fluid.uiOptions.testPrefsEditorBase"],
-        tocTemplate: customizedTocTemplate
+    fluid.tests.uiOptions.customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
+
+    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorCustomToc", {
+        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
+        tocTemplate: fluid.tests.uiOptions.customizedTocTemplate
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorCustomTocTester", {
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "UIOptions Tests",
+            name: "UI Options Tests",
             tests: [{
                 name: "Pass in customized toc template",
                 expect: 2,
                 sequence: [{
-                    event: "{prefsEditorCustomTocTest prefsEditor}.events.onCreate",
-                    listener: "jqUnit.assertEquals",
-                    args: ["The toc template is applied properly to the pageEnhancer", customizedTocTemplate, "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
-                },
-                {
-                    funcName: "fluid.identity"
-                },
-                {
-                    event: "{prefsEditor}.events.onReady",
-                    listener: "jqUnit.assertEquals",
-                    args: ["FLUID-5474: The toc template is applied properly to iframeEnhancer", customizedTocTemplate, "{prefsEditor}.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate"]
+                    "event": "{prefsEditorCustomTocTest testPrefsEditorCustomToc}.events.onReady",
+                    "listener": "fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates",
+                    "args": ["{testPrefsEditorCustomToc}", fluid.tests.uiOptions.customizedTocTemplate]
                 }]
             }]
         }]
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorCustomTocTest", {
-        gradeNames: ["fluid.uiOptions.prefsEditorBaseTest"],
+    fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates = function (prefsEditorComponent, expectedTocTemplate) {
+        jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer", expectedTocTemplate, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+        jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", expectedTocTemplate, prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+    };
+
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTest", {
+        gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
         components: {
             prefsEditor: {
-                type: "fluid.uiOptions.testPrefsEditorCustomToc",
+                type: "fluid.tests.uiOptions.testPrefsEditorCustomToc",
                 container: ".flc-prefsEditor-separatedPanel"
             },
             prefsEditorTester: {
-                type: "fluid.uiOptions.prefsEditorCustomTocTester"
+                type: "fluid.tests.uiOptions.prefsEditorCustomTocTester"
             }
         }
     });
 
-    fluid.defaults("fluid.uiOptions.testPrefsEditorLocalized", {
-        gradeNames: ["fluid.uiOptions.testPrefsEditorBase"],
+    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorLocalized", {
+        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
         defaultLocale: "fr"
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTester", {
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "UIOptions Locale Tests",
+            name: "UI Options Locale Tests",
             tests: [{
                 name: "UIO defaultLocale tests",
-                expect: 8,
+                expect: 15,
                 sequence: [{
                     event: "{prefsEditorBaseTest prefsEditor messageLoader}.events.onResourcesLoaded",
                     listener: "jqUnit.assertEquals",
                     args: ["defaultLocale is properly propagated to messageLoader", "fr", "{prefsEditor}.prefsEditorLoader.messageLoader.options.defaultLocale"]
                 },
                 {
-                    funcName: "fluid.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages",
+                    event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
+                    listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
                     args: "{prefsEditor}"
+                },
+                {
+                    funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifySlidingPanelMessages",
+                    args: ["{prefsEditor}", "prefsEditor", "Préférences de l'utilisateur"]
                 }]
             }]
         }]
     });
 
-    var localizedValuesToVerify = {
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify = {
         fluid_prefs_panel_contrast: {
             path: "label",
             expected: "Couleur et contraste"
@@ -128,37 +130,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid_prefs_panel_textSize: {
             path: "label",
             expected: "Taille du texte"
-        },
-        prefsEditor: {
-            path: "slidingPanelPanelLabel",
-            expected: "Préférences de l'utilisateur"
         }
     };
 
-    fluid.uiOptions.prefsEditorLocalizedTester.verifyLocalizedMessages = function (prefsEditor) {
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages = function (prefsEditor) {
         fluid.each(prefsEditor.prefsEditorLoader.messageLoader.resources, function (panel, key) {
-            var actualValue = panel.resourceText[localizedValuesToVerify[key].path];
-            jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", localizedValuesToVerify[key].expected, actualValue);
+            if (fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key]) {
+                var actualMessageValue = panel.resourceText[fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].path];
+                jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualMessageValue);
+
+                var actualRenderedValue = prefsEditor.prefsEditorLoader.prefsEditor[key].locate("label").text();
+                jqUnit.assertEquals("Panel " + key + " localized message rendererd correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualRenderedValue);
+            }
         });
     };
 
-    fluid.defaults("fluid.uiOptions.prefsEditorLocalizedTest", {
-        gradeNames: ["fluid.uiOptions.prefsEditorBaseTest"],
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifySlidingPanelMessages = function (prefsEditor, resourceKey, expectedValue) {
+        var actualMessageValue = prefsEditor.prefsEditorLoader.messageLoader.resources.prefsEditor.resourceText.slidingPanelPanelLabel;
+        jqUnit.assertEquals("Sliding panel localized message loaded correctly", expectedValue, actualMessageValue);
+
+        var actualRenderedValue = prefsEditor.prefsEditorLoader.slidingPanel.locate("panel").attr("aria-label");
+        jqUnit.assertEquals("Sliding panel localized message rendered correctly", expectedValue, actualRenderedValue);
+    };
+
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest", {
+        gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
         components: {
             prefsEditor: {
-                type: "fluid.uiOptions.testPrefsEditorLocalized",
+                type: "fluid.tests.uiOptions.testPrefsEditorLocalized",
                 container: ".flc-prefsEditor-separatedPanel-localized"
             },
             prefsEditorTester: {
-                type: "fluid.uiOptions.prefsEditorLocalizedTester"
+                type: "fluid.tests.uiOptions.prefsEditorLocalizedTester"
             }
         }
     });
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.uiOptions.prefsEditorCustomTocTest",
-            "fluid.uiOptions.prefsEditorLocalizedTest"
+            "fluid.tests.uiOptions.prefsEditorCustomTocTest",
+            "fluid.tests.uiOptions.prefsEditorLocalizedTest"
         ]);
     });
 })(jQuery);
