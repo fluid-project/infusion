@@ -4,9 +4,9 @@
     "contrast-wb": "White on black",
     "contrast-by": "Black on yellow",
     "contrast-yb": "Yellow on black",
-    "contrast-lgdg": "Light grey on dark grey",
-    "contrast-gw": "Grey on white",
+    "contrast-lgdg": "Light gray on dark gray",
+    "contrast-gw": "Gray on white",
     "contrast-bbr": "Black on brown",
     "label": "Contrast",
-    "description": "Change text and background colours"
+    "description": "Change text and background colors"
 }
