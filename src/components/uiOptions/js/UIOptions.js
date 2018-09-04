@@ -53,7 +53,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    // Localized and more dynamic version of the UIO Preferences Editor
+    // Localized/internationalized version of the UIO Preferences Editor
     fluid.defaults("fluid.uiOptions.prefsEditor.localized", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
         defaultLocale: "en",
@@ -87,7 +87,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // component doesn't use the localization messages
             // from the panel
             tocHeader: "Table of Contents",
-            direction: "ltr",
             slidingPanelStringMap: {
                 showText: "slidingPanelShowText",
                 hideText: "slidingPanelHideText",
