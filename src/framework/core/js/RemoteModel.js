@@ -68,9 +68,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 listener: "fluid.remoteModelComponent.unblockFetchReq",
                 args: ["{that}"]
             },
+            "afterWrite.updateRemoteModel": {
+                changePath: "remote",
+                value: "{that}.model.local"
+            },
             "afterWrite.unblock": {
                 changePath: "requestInFlight",
-                value: false
+                value: false,
+                priority: "after:updateRemoteModel"
             },
             "onWriteError.unblock": {
                 changePath: "requestInFlight",

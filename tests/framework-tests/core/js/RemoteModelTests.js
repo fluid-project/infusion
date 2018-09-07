@@ -16,6 +16,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
+    /*******************************************************************************
+     * Test Grade
+     *******************************************************************************/
+
     fluid.defaults("fluid.tests.remoteModelComponent", {
         gradeNames: ["fluid.remoteModelComponent"],
         members: {
@@ -29,6 +33,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref2: false
             },
             local: "{that}.model.settings"
+        },
+        modelListeners: {
+            "": {
+                listener: function (change) {
+                    console.log("Change:", change);
+                },
+                args: ["{change}"]
+            }
         },
         invokers: {
             fetchImpl: {
@@ -56,7 +68,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             requestInFlight: false
         },
 
-        emptyRemoteWithRequestInFlight: {
+        empty: {
+            local: {},
+            remote: {},
+            requestInFlight: false,
+            settings: {}
+        },
+
+        sameLocalandRemote: {
             settings: {
                 pref1: true,
                 pref2: false
@@ -65,8 +84,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref1: true,
                 pref2: false
             },
-            remote: {},
-            requestInFlight: true
+            remote: {
+                pref1: true,
+                pref2: false
+            },
+            requestInFlight: false
         },
 
         threePrefs: {
@@ -84,6 +106,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref3: "value"
             },
             requestInFlight: false
+        },
+
+        threePrefsInFlight: {
+            settings: {
+                pref1: true,
+                pref2: false,
+                pref3: "value"
+            },
+            local: {
+                pref1: true,
+                pref2: false,
+                pref3: "value"
+            },
+            remote: {
+                pref3: "value"
+            },
+            requestInFlight: true
         },
 
         differentRemote: {
@@ -124,7 +163,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return promise;
     };
 
-    fluid.defaults("fluid.tests.remoteModelComponent.tester", {
+    /*******************************************************************************
+     * Fetch Tests
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.remoteModelComponent.tester.fetch", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Remote Model tests",
@@ -132,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 34,
                 name: "Fetch",
                 sequence: [{
-                    event: "{fluid.tests.remoteModelComponentTests remoteModelComponent}.events.onCreate",
+                    event: "{fluid.tests.remoteModelComponentTests.fetch remoteModelComponent}.events.onCreate",
                     listener: "jqUnit.assertDeepEq",
                     args: ["The initialized model is correct.", fluid.tests.remoteModelComponent.expectedModel.emptyRemote, "{remoteModelComponent}.model"]
                 }, {
@@ -169,11 +212,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resolve: "fluid.tests.remoteModelComponent.tester.assertFetch",
                     resolveArgs: ["{remoteModelComponent}", "multiple fetches", "{arguments}.0", fluid.tests.remoteModelComponent.expectedModel.emptyRemote]
                 }]
-            }, {
-                expect: 19,
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.remoteModelComponentTests.fetch", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            remoteModelComponent: {
+                type: "fluid.tests.remoteModelComponent",
+                createOnEvent: "{testCases}.events.onTestCaseStart"
+            },
+            testCases: {
+                type: "fluid.tests.remoteModelComponent.tester.fetch"
+            }
+        }
+    });
+
+    /*******************************************************************************
+     * Write Tests
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.remoteModelComponent.tester.write", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "Remote Model tests",
+            tests: [{
+                expect: 21,
                 name: "Write",
                 sequence: [{
-                    funcName: "jqUnit.assertDeepEq",
+                    event: "{fluid.tests.remoteModelComponentTests.write remoteModelComponent}.events.onCreate",
+                    listener: "jqUnit.assertDeepEq",
                     args: ["The initialized model is correct.", fluid.tests.remoteModelComponent.expectedModel.emptyRemote, "{remoteModelComponent}.model"]
                 }, {
                     task: "fluid.tests.remoteModelComponent.tester.triggerWrite",
@@ -181,25 +250,116 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resolve: "fluid.tests.remoteModelComponent.tester.assertWrite",
                     resolveArgs: ["{remoteModelComponent}", "single write", "{arguments}.0", false]
                 }, {
+                    func: "{remoteModelComponent}.applier.change",
+                    args: ["local", {prefsMulti: "multipleWrites"}]
+                }, {
                     task: "fluid.tests.remoteModelComponent.tester.testMultipleWrites",
                     args: ["{remoteModelComponent}"],
                     resolve: "fluid.tests.remoteModelComponent.tester.assertWrite",
                     resolveArgs: ["{remoteModelComponent}", "multiple writes", "{arguments}.0", false]
                 }]
-            }, {
-                expect: 33,
-                name: "Fetch and Write",
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.remoteModelComponentTests.write", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            remoteModelComponent: {
+                type: "fluid.tests.remoteModelComponent",
+                createOnEvent: "{testCases}.events.onTestCaseStart"
+            },
+            testCases: {
+                type: "fluid.tests.remoteModelComponent.tester.write"
+            }
+        }
+    });
+
+    /*******************************************************************************
+     * Write then Fetch Tests
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.remoteModelComponent.tester.writeFetch", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "Remote Model tests",
+            tests: [{
+                expect: 18,
+                name: "Write then Fetch",
                 sequence: [{
-                    funcName: "jqUnit.assertDeepEq",
+                    event: "{fluid.tests.remoteModelComponentTests.writeFetch remoteModelComponent}.events.onCreate",
+                    listener: "jqUnit.assertDeepEq",
                     args: ["The initialized model is correct.", fluid.tests.remoteModelComponent.expectedModel.emptyRemote, "{remoteModelComponent}.model"]
                 }, {
                     task: "fluid.tests.remoteModelComponent.tester.testWriteThenFetch",
                     args: ["{remoteModelComponent}"],
                     resolve: "fluid.tests.remoteModelComponent.tester.assertFetch",
-                    resolveArgs: ["{remoteModelComponent}", "fetch after write", "{arguments}.0", fluid.tests.remoteModelComponent.expectedModel.emptyRemote]
+                    resolveArgs: ["{remoteModelComponent}", "fetch after write", "{arguments}.0", fluid.tests.remoteModelComponent.expectedModel.sameLocalandRemote]
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.remoteModelComponentTests.writeFetch", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            remoteModelComponent: {
+                type: "fluid.tests.remoteModelComponent",
+                createOnEvent: "{testCases}.events.onTestCaseStart",
+                options: {
+                    members: {
+                        fetchedData: "{that}.model.settings"
+                    }
+                }
+            },
+            testCases: {
+                type: "fluid.tests.remoteModelComponent.tester.writeFetch"
+            }
+        }
+    });
+
+    /*******************************************************************************
+     * Fetch the Write Tests
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.remoteModelComponent.tester.fetchWrite", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            fetchedData: {
+                pref3: "value"
+            },
+            newLocal: {
+                pref1: true,
+                pref2: false,
+                prefs4: "other"
+            },
+            newModel: {
+                local: {
+                    pref3: "value",
+                    prefs4: "other"
+                },
+                remote: {
+                    pref3: "value"
+                },
+                requestInFlight: false,
+                settings: {
+                    pref3: "value",
+                    prefs4: "other"
+                }
+            }
+        },
+        modules: [{
+            name: "Remote Model tests",
+            tests: [{
+                expect: 18,
+                name: "Fetch then Write",
+                sequence: [{
+                    event: "{fluid.tests.remoteModelComponentTests.fetchWrite remoteModelComponent}.events.onCreate",
+                    listener: "jqUnit.assertDeepEq",
+                    args: ["The initialized model is correct.", fluid.tests.remoteModelComponent.expectedModel.emptyRemote, "{remoteModelComponent}.model"]
                 }, {
                     task: "fluid.tests.remoteModelComponent.tester.testFetchThenWrite",
-                    args: ["{remoteModelComponent}", fluid.tests.remoteModelComponent.expectedModel.emptyRemoteWithRequestInFlight],
+                    args: ["{remoteModelComponent}", fluid.tests.remoteModelComponent.expectedModel.threePrefsInFlight],
                     resolve: "fluid.tests.remoteModelComponent.tester.assertWrite",
                     resolveArgs: ["{remoteModelComponent}", "write after fetch", "{arguments}.0", false]
                 }]
@@ -207,12 +367,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.remoteModelComponentTests.fetchWrite", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            remoteModelComponent: {
+                type: "fluid.tests.remoteModelComponent",
+                createOnEvent: "{testCases}.events.onTestCaseStart",
+                options: {
+                    members: {
+                        fetchedData: {
+                            "pref3": "value"
+                        }
+                    }
+                }
+            },
+            testCases: {
+                type: "fluid.tests.remoteModelComponent.tester.fetchWrite"
+            }
+        }
+    });
+
+    /*******************************************************************************
+     * Helper functions
+     *******************************************************************************/
+
     fluid.tests.remoteModelComponent.tester.addEvents = function (that, testName, events, namespace, priority) {
         events = fluid.makeArray(events);
         priority = priority || "last:testing";
         fluid.each(events, function (eventName) {
             that.events[eventName].addListener(function () {
-                jqUnit.assert(testName + ": The " + eventName + " event should have fired.");
+                jqUnit.assert(testName + ": The " + eventName + " event fired.");
             }, namespace, priority);
         });
     };
@@ -276,6 +460,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq(name + ": The local model should be passed to the write implementation", that.model.local, writeData);
         jqUnit.assertNull(name + ": There shouldn't be any pending write requests", that.pendingRequests.write);
         jqUnit.assertEquals(name + ": requestInFlight should be set to " + requestInFlight, requestInFlight, that.model.requestInFlight);
+        jqUnit.assertDeepEq(name + ": The local and remote models should be the same", that.model.local, that.model.remote);
     };
 
     fluid.tests.remoteModelComponent.tester.triggerWrite = function (that, testName) {
@@ -345,7 +530,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.remoteModelComponent.tester.testFetchThenWrite = function (that, expectedModel) {
         var promise = fluid.promise();
-        fluid.tests.remoteModelComponent.tester.addEvents(that, "write/fetch", ["onFetch", "afterFetch", "onWrite", "afterWrite"], "testFetchWrite");
+        fluid.tests.remoteModelComponent.tester.addEvents(that, "fetch/write", ["onFetch", "afterFetch", "onWrite", "afterWrite"], "testFetchWrite");
 
         // fetch tests
         var fetch  = that.fetch();
@@ -369,26 +554,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return promise;
     };
 
-    fluid.defaults("fluid.tests.remoteModelComponentTests", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        components: {
-            remoteModelComponent: {
-                type: "fluid.tests.remoteModelComponent",
-                createOnEvent: "{testCases}.events.onTestCaseStart"
-            },
-            testCases: {
-                type: "fluid.tests.remoteModelComponent.tester"
-            }
-        }
-    });
+    /*******************************************************************************
+     * Tests for workflows that trigger fetch during a write request
+     *******************************************************************************/
 
-
-    // Tests for workflows that trigger fetch during a write request
     fluid.defaults("fluid.tests.remoteModelComponent.combined", {
         gradeNames: ["fluid.tests.remoteModelComponent"],
+        members: {
+            fetchedData: {
+                pref1: true,
+                pref2: true,
+                pref3: false
+            }
+        },
+        postWrite: {
+            pref1: true,
+            pref2: false,
+            pref3: false
+        },
         listeners: {
             "onWrite.preFetch": "{that}.fetch",
-            "afterWrite.postFetch": "{that}.fetch"
+            "afterWrite.postFetch": "{that}.fetch",
+            "afterWrite.updateFetchedData": {
+                funcName: "fluid.set",
+                args: ["{that}", "fetchedData", "{that}.options.postWrite"],
+                priority: "before:postFetch"
+            }
         }
     });
 
@@ -397,7 +588,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Remote Model - write with fetch tests",
             tests: [{
-                expect: 10,
+                expect: 11,
                 name: "Fetches triggered by write",
                 sequence: [{
                     event: "{fluid.tests.remoteModelComponent.combinedTests remoteModelComponent}.events.onCreate",
@@ -413,20 +604,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.remoteModelComponent.combined.tester.triggerWrite = function (that, testName) {
-        var promise = fluid.promise();
-
-        fluid.tests.remoteModelComponent.tester.addEvents(that, testName, ["onFetch", "afterFetch", "onWrite", "afterWrite"], "testWrite");
-
-        var write = that.write();
-        write.then(function () {
-            fluid.tests.remoteModelComponent.tester.removeEvents(that, ["onFetch", "afterFetch", "onWrite", "afterWrite"], "testWrite");
-        });
-        fluid.promise.follow(write, promise);
-
-        return promise;
-    };
-
     fluid.defaults("fluid.tests.remoteModelComponent.combinedTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
@@ -440,8 +617,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.remoteModelComponent.combined.tester.triggerWrite = function (that, testName) {
+        var promise = fluid.promise();
+        fluid.tests.remoteModelComponent.tester.addEvents(that, testName, ["onFetch", "afterFetch", "onWrite", "afterWrite"], "testWrite");
+
+        var write = that.write();
+        write.then(function () {
+            fluid.tests.remoteModelComponent.tester.removeEvents(that, ["onFetch", "afterFetch", "onWrite", "afterWrite"], "testWrite");
+        });
+        fluid.promise.follow(write, promise);
+
+        return promise;
+    };
+
     fluid.test.runTests([
-        "fluid.tests.remoteModelComponentTests",
+        "fluid.tests.remoteModelComponentTests.fetch",
+        "fluid.tests.remoteModelComponentTests.write",
+        "fluid.tests.remoteModelComponentTests.writeFetch",
+        "fluid.tests.remoteModelComponentTests.fetchWrite",
         "fluid.tests.remoteModelComponent.combinedTests"
     ]);
 
