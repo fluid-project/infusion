@@ -251,11 +251,13 @@ module.exports = function (grunt) {
                 files: "<%= compress.all.files %>"
             }
         },
-        eslint: {
-            all: ["src/**/*.js", "tests/**/*.js", "demos/**/*.js", "examples/**/*.js", "*.js"]
-        },
-        jsonlint: {
-            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
+        lintAll: {
+            sources: {
+                md: [ "./*.md", "./demos/**/*.md", "./examples/**/*.md", "./src/**/*.md", "./tests/**/*.md", "!./**/lib/**/*.md"],
+                js: ["./*.js", "./demos/**/*.js", "./examples/**/*.js", "./src/**/*.js", "./tests/**/*.js", "!./**/lib/**/*.js", "!./**/infusion-1.5.js"],
+                json: ["./*.json", "./.*.json", "./.nycrc", "./demos/**/*.json", "./examples/**/*.json", "./src/**/*.json", "./tests/**/*.json", "!./src/**/lib/**/*.json"],
+                other: ["./.*"]
+            }
         },
         stylus: {
             compile: {
@@ -366,8 +368,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
-    grunt.loadNpmTasks("fluid-grunt-eslint");
-    grunt.loadNpmTasks("grunt-jsonlint");
+    grunt.loadNpmTasks("gpii-grunt-lint-all");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
     grunt.loadNpmTasks("grunt-contrib-watch");
@@ -552,5 +553,5 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
 
-    grunt.registerTask("lint", "Apply eslint and jsonlint", ["eslint", "jsonlint"]);
+    grunt.registerTask("lint", "Perform all standard lint checks.", ["lint-all"]);
 };
