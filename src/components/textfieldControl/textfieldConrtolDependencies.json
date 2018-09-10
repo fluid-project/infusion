@@ -13,10 +13,8 @@
         ],
         "dependencies": [
             "jQuery",
-            "jQueryUI",
             "normalize",
-            "framework",
-            "enhancement"
+            "framework"
         ]
     }
 }
