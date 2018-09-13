@@ -118,11 +118,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         components: {
             prefsEditorLoader: {
                 options: {
-                    listeners: {
-                        "{localized}.events.onInterfaceLanguageChangeRequested": {
-                            func: "{prefsEditorLoader}.events.onLazyLoad",
-                            priority: "after:changeLocale",
-                            namespace: "fireLazyLoad"
+                    contextAwareness: {
+                        lazyLoad: {
+                            checks: {
+                                lazyLoad: {
+                                    gradeNames: "fluid.prefs.separatedPanel.localized.lazyLoad"
+                                }
+                            }
                         }
                     },
                     components: {
@@ -166,6 +168,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     }
                 }
+            }
+        }
+    });
+
+    // Extension of lazyLoad grade to add listener for locale change
+    fluid.defaults("fluid.prefs.separatedPanel.localized.lazyLoad", {
+        gradeNames: ["fluid.prefs.separatedPanel.lazyLoad"],
+        listeners: {
+            "{localized}.events.onInterfaceLanguageChangeRequested": {
+                func: "{that}.events.onLazyLoad",
+                priority: "after:changeLocale",
+                namespace: "fireLazyLoad"
             }
         }
     });

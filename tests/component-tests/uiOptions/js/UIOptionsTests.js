@@ -77,7 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorLocalized", {
-        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
+        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase", "fluid.uiOptions.prefsEditor.localized"],
         defaultLocale: "fr"
     });
 
