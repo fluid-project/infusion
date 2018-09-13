@@ -456,7 +456,8 @@ module.exports = function (grunt) {
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
             "verifyDistJS",
-            "verifyDistCSS"
+            "verifyDistCSS",
+            "buildStylus" // put back stylus files needed for development
         ];
         grunt.task.run(tasks);
     });
