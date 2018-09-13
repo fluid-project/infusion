@@ -68,15 +68,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         events: {
-            onInterfaceLanguageChangeRequested: null,
+            onInterfaceLocaleChangeRequested: null,
             onUioPanelsUpdated: null
         },
         listeners: {
-            "onInterfaceLanguageChangeRequested.changeLocale": {
+            "onInterfaceLocaleChangeRequested.changeLocale": {
                 func: "{that}.applier.change",
                 args: ["locale", "{arguments}.0.data"]
             },
-            "onInterfaceLanguageChangeRequested.reloadUioMessages": {
+            "onInterfaceLocaleChangeRequested.reloadUioMessages": {
                 func: "{that}.reloadUioMessages",
                 args: "{arguments}.0.data",
                 priority: "after:fireLazyLoad"
@@ -176,7 +176,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.separatedPanel.localized.lazyLoad", {
         gradeNames: ["fluid.prefs.separatedPanel.lazyLoad"],
         listeners: {
-            "{localized}.events.onInterfaceLanguageChangeRequested": {
+            "{localized}.events.onInterfaceLocaleChangeRequested": {
                 func: "{that}.events.onLazyLoad",
                 priority: "after:changeLocale",
                 namespace: "fireLazyLoad"
