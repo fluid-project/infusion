@@ -87,7 +87,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "UI Options Locale Tests",
             tests: [{
                 name: "UIO defaultLocale tests",
-                expect: 27,
+                expect: 43,
                 sequence: [{
                     event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
                     listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyDefaultLocale",
@@ -98,10 +98,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{prefsEditor}", "fr"]
                 },
                 {
-                    funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifySlidingPanelMessages",
-                    args: ["{prefsEditor}", "prefsEditor", "Préférences de l'utilisateur"]
-                },
-                {
                     func: "{prefsEditor}.events.onInterfaceLocaleChangeRequested.fire",
                     args: [{data:"es"}]
                 },
@@ -109,15 +105,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{prefsEditor}.events.onUioPanelsUpdated",
                     listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
                     args: ["{prefsEditor}", "es"]
+                },
+                {
+                    func: "{prefsEditor}.events.onInterfaceLocaleChangeRequested.fire",
+                    args: [{data:"en_US"}]
+                },
+                {
+                    event: "{prefsEditor}.events.onUioPanelsUpdated",
+                    listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
+                    args: ["{prefsEditor}", "en_US"]
                 }]
             }]
         }]
     });
 
-    fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify = {
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.panelValuesToVerify = {
         fluid_prefs_panel_contrast: {
             path: "label",
             expected: {
+                en_US: "Contrast",
                 es: "Color y contraste",
                 fr: "Couleur et contraste"
             }
@@ -125,6 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid_prefs_panel_enhanceInputs: {
             path: "label",
             expected: {
+                en_US: "Enhance Inputs",
                 es: "Mejorar las entradas",
                 fr: "Accentuer les contrôles"
             }
@@ -132,6 +139,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid_prefs_panel_layoutControls: {
             path: "label",
             expected: {
+                en_US: "Table of Contents",
                 es: "Tabla de contenido",
                 fr: "Table des matières"
             }
@@ -139,6 +147,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid_prefs_panel_lineSpace: {
             path: "label",
             expected: {
+                en_US: "Line Spacing",
                 es: "Espaciado entre líneas",
                 fr: "Interligne"
             }
@@ -146,6 +155,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid_prefs_panel_textFont: {
             path: "textFontLabel",
             expected: {
+                en_US: "Text style",
                 es: "Estilo de texto",
                 fr: "Style du texte"
             }
@@ -153,10 +163,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid_prefs_panel_textSize: {
             path: "label",
             expected: {
+                en_US: "Text Size",
                 es: "Tamano del texto",
                 fr: "Taille du texte"
             }
         }
+    };
+
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.slidingPanelExpectedValues = {
+        en_US: "User Preferences",
+        es: "Preferencias de usuario",
+        fr: "Préférences de l'utilisateur"
     };
 
     fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyDefaultLocale = function (prefsEditor, expectedLocale) {
@@ -165,22 +182,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages = function (prefsEditor, expectedLocale) {
         fluid.each(prefsEditor.prefsEditorLoader.messageLoader.resources, function (panel, key) {
-            if (fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key]) {
-                var actualMessageValue = panel.resourceText[fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].path];
-                jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected[expectedLocale], actualMessageValue);
+            if (fluid.tests.uiOptions.prefsEditorLocalizedTester.panelValuesToVerify[key]) {
+                var localizedPanelValues = fluid.tests.uiOptions.prefsEditorLocalizedTester.panelValuesToVerify[key];
+                var actualPanelMessageValue = panel.resourceText[localizedPanelValues.path];
 
-                var actualRenderedValue = prefsEditor.prefsEditorLoader.prefsEditor[key].locate("label").text();
-                jqUnit.assertEquals("Panel " + key + " localized message rendered correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected[expectedLocale], actualRenderedValue);
+                jqUnit.assertEquals("Panel " + key + " localized message loaded correctly for " + expectedLocale, localizedPanelValues.expected[expectedLocale], actualPanelMessageValue);
+
+                var actualPanelRenderedValue = prefsEditor.prefsEditorLoader.prefsEditor[key].locate("label").text();
+                jqUnit.assertEquals("Panel " + key + " localized message rendered correctly for " + expectedLocale, localizedPanelValues.expected[expectedLocale], actualPanelRenderedValue);
             }
         });
-    };
 
-    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifySlidingPanelMessages = function (prefsEditor, resourceKey, expectedValue) {
-        var actualMessageValue = prefsEditor.prefsEditorLoader.messageLoader.resources.prefsEditor.resourceText.slidingPanelPanelLabel;
-        jqUnit.assertEquals("Sliding panel localized message loaded correctly", expectedValue, actualMessageValue);
+        var actualSlidingPanelMessageValue = prefsEditor.prefsEditorLoader.messageLoader.resources.prefsEditor.resourceText.slidingPanelPanelLabel;
+        jqUnit.assertEquals("Sliding panel localized message loaded correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.slidingPanelExpectedValues[expectedLocale], actualSlidingPanelMessageValue);
 
-        var actualRenderedValue = prefsEditor.prefsEditorLoader.slidingPanel.locate("panel").attr("aria-label");
-        jqUnit.assertEquals("Sliding panel localized message rendered correctly", expectedValue, actualRenderedValue);
+        var actualSlidingPanelRenderedValue = prefsEditor.prefsEditorLoader.slidingPanel.locate("panel").attr("aria-label");
+        jqUnit.assertEquals("Sliding panel localized message rendered correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.slidingPanelExpectedValues[expectedLocale], actualSlidingPanelRenderedValue);
     };
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest", {
