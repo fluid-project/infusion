@@ -132,16 +132,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                     "{messageLoader}.events.onResourcesLoaded": {
                                         func: "{slidingPanel}.refreshView",
                                         namespace: "updateSlidingPanel",
-                                        priority: "last"
+                                        priority: "before:panelsUpdated"
                                     }
                                 },
                                 invokers: {
                                     setShowText: {
-                                        "funcName": "fluid.slidingPanel.setText",
                                         "args": ["{that}.dom.toggleButtonLabel", "{that}.msgLookup.slidingPanelShowText", "{that}.msgLookup.showTextAriaLabel"]
                                     },
                                     setHideText: {
-                                        "funcName": "fluid.slidingPanel.setText",
                                         "args": ["{that}.dom.toggleButtonLabel", "{that}.msgLookup.slidingPanelHideText", "{that}.msgLookup.hideTextAriaLabel"]
                                     }
                                 }
