@@ -61,7 +61,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             locale: {
                 funcName: "fluid.set",
                 args: ["{that}", "", "{change}.value"],
-                namespace: "updateUioLanguage",
+                namespace: "updateUioLocale",
                 excludeSource: "init"
             }
         },
@@ -161,10 +161,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                         priority: "last"
                                     },
                                     {
-                                        funcName: "fluid.uiOptions.prefsEditor.localized.updateUioPanelLanguages",
+                                        funcName: "fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales",
                                         args: ["{fluid.uiOptions.prefsEditor.localized}"],
                                         priority: "before:rerenderPanels",
-                                        namespace: "updateUioPanelLanguages"
+                                        namespace: "updateUioPanelLocales"
                                     }]
                                 }
                             }
@@ -194,7 +194,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * - "uioMessageLoaderLocalePath": the path on the messageLoader for its locale
      */
     fluid.uiOptions.prefsEditor.localized.reloadUioMessages = function (locale, uioMessageLoaderComponent, uioMessageLoaderLocalePath) {
-        // Set the language in the resource loader
+        // Set the locale in the resource loader
         fluid.set(uioMessageLoaderComponent, uioMessageLoaderLocalePath, locale);
 
         // Force the resource loader to get the new resources
@@ -219,7 +219,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /* Updates and redraws all panels and the slidingPanel (tab) of a UIO component
      * - "uioComponent": the UIO component proper
      */
-    fluid.uiOptions.prefsEditor.localized.updateUioPanelLanguages = function (uioComponent) {
+    fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales = function (uioComponent) {
         if (uioComponent.prefsEditorLoader) {
             fluid.each(uioComponent.prefsEditorLoader.prefsEditor, function (panel, key) {
                 if (panel && panel.options && fluid.hasGrade(panel.options, "fluid.prefs.panel")) {
