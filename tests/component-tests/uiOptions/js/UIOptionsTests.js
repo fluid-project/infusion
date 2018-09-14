@@ -87,10 +87,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "UI Options Locale Tests",
             tests: [{
                 name: "UIO defaultLocale tests",
-                expect: 15,
+                expect: 27,
                 sequence: [{
                     event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
-                    listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
+                    listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyDefaultLocale",
+                    args: ["{prefsEditor}", "fr"]
+                },
+                {
+                    funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
                     args: ["{prefsEditor}", "fr"]
                 },
                 {
@@ -99,10 +103,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 {
                     func: "{prefsEditor}.events.onInterfaceLocaleChangeRequested.fire",
-                    args: ["es"]
+                    args: [{data:"es"}]
                 },
                 {
-                    event: "{prefsEditor messageLoader}.events.onResourcesLoaded",
+                    event: "{prefsEditor}.events.onUioPanelsUpdated",
                     listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
                     args: ["{prefsEditor}", "es"]
                 }]
@@ -155,9 +159,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages = function (prefsEditor, expectedLocale) {
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyDefaultLocale = function (prefsEditor, expectedLocale) {
         jqUnit.assertEquals("defaultLocale is properly propagated to messageLoader", expectedLocale, prefsEditor.prefsEditorLoader.messageLoader.options.defaultLocale);
+    };
 
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages = function (prefsEditor, expectedLocale) {
         fluid.each(prefsEditor.prefsEditorLoader.messageLoader.resources, function (panel, key) {
             if (fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key]) {
                 var actualMessageValue = panel.resourceText[fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].path];
