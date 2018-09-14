@@ -57,14 +57,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.uiOptions.prefsEditor.localized", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
         defaultLocale: "en",
-        model: {
-            locale: "en"
-        },
         modelListeners: {
             locale: {
                 funcName: "fluid.set",
                 args: ["{that}", "", "{change}.value"],
-                namespace: "updateUioLanguage"
+                namespace: "updateUioLanguage",
+                excludeSource: "init"
             }
         },
         events: {
@@ -79,7 +77,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onInterfaceLocaleChangeRequested.reloadUioMessages": {
                 func: "{that}.reloadUioMessages",
                 args: "{arguments}.0.data",
-                priority: "after:fireLazyLoad"
+                priority: "after:changeLocale"
             }
         },
         localeSettings: {
@@ -158,6 +156,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                         namespace: "rerenderPanels"
                                     },
                                     {
+                                        func: "{fluid.uiOptions.prefsEditor.localized}.events.onUioPanelsUpdated",
+                                        namespace: "panelsUpdated",
+                                        priority: "last"
+                                    },
+                                    {
                                         funcName: "fluid.uiOptions.prefsEditor.localized.updateUioPanelLanguages",
                                         args: ["{fluid.uiOptions.prefsEditor.localized}"],
                                         priority: "before:rerenderPanels",
@@ -228,8 +231,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(uioComponent.prefsEditorLoader.slidingPanel, "prefsEditor", uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
             }
         }
-
-        uioComponent.events.onUioPanelsUpdated.fire();
     };
 
 })(jQuery, fluid_3_0_0);
