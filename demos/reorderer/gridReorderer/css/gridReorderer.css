@@ -1,9 +1,7 @@
-.demo-gridReorderer-container {
-    margin-top: 4em;
-}
-
 .demo-gridReorderer-alphabetGrid {
     width    : 15em;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .demo-gridReorderer-alphabetGrid div,
@@ -11,12 +9,11 @@ div.demo-gridReorderer-avatar {
     width       : 2em;
     height      : 2em;
     margin      : 5px;
-    text-align  : center;
-    display     : inline;
-    float       : left;
+    display     : flex;
+    justify-content: center;
+    align-items: center;
     font-size   : 2em;
-    font-style: : bold;
-    padding-top : 10px;
+    font-weight: bold;
     outline     : 1px solid #CCC;
 }
 

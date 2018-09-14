@@ -98,7 +98,18 @@ module.exports = function (grunt) {
             dist: "dist",
             postBuild: {
                 files: [{}]
-            }
+            },
+            dependencies: [
+                "src/lib/fonts",
+                "src/lib/jquery/core",
+                "src/lib/jquery/plugins",
+                "src/lib/jquery/ui/js",
+                "src/lib/normalize",
+                "src/lib/url-polyfill",
+                "tests/lib/jquery-simulate",
+                "tests/lib/mockjax",
+                "tests/lib/sinon"
+            ]
         },
         copy: {
             all: {
@@ -155,6 +166,89 @@ module.exports = function (grunt) {
                     cwd: "build/",
                     src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**"],
                     dest: "dist/assets/"
+                }]
+            },
+            dependencies: {
+                files: [{
+                    src: "node_modules/opensans-webkit/fonts/OpenSans-*.ttf",
+                    dest: "src/lib/fonts/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery/dist/jquery.js",
+                    dest: "src/lib/jquery/core/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery.scrollto/jquery.scrollTo.js",
+                    dest: "src/lib/jquery/plugins/scrollTo/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.js",
+                    dest: "src/lib/jquery/plugins/touchPunch/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/themes/base/images/*.png"
+                    ],
+                    dest: "src/lib/jquery/ui/css/default-theme/images",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/themes/base/core.css",
+                        "node_modules/jquery-ui/themes/base/theme.css",
+                        "node_modules/jquery-ui/themes/base/tooltip.css"
+                    ],
+                    dest: "src/lib/jquery/ui/css/default-theme/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/ui/version.js",
+                        "node_modules/jquery-ui/ui/widget.js",
+                        "node_modules/jquery-ui/ui/plugin.js",
+                        "node_modules/jquery-ui/ui/safe-active-element.js",
+                        "node_modules/jquery-ui/ui/safe-blur.js",
+                        "node_modules/jquery-ui/ui/position.js",
+                        "node_modules/jquery-ui/ui/data.js",
+                        "node_modules/jquery-ui/ui/keycode.js",
+                        "node_modules/jquery-ui/ui/scroll-parent.js",
+                        "node_modules/jquery-ui/ui/unique-id.js",
+                        "node_modules/jquery-ui/ui/widgets/mouse.js",
+                        "node_modules/jquery-ui/ui/widgets/draggable.js",
+                        "node_modules/jquery-ui/ui/widgets/tooltip.js"
+                    ],
+                    dest: "src/lib/jquery/ui/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/normalize.css/normalize.css",
+                    dest: "src/lib/normalize/css/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/url-polyfill/url-polyfill.js",
+                    dest: "src/lib/url-polyfill/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-mockjax/dist/jquery.mockjax.js",
+                    dest: "tests/lib/mockjax/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-simulate/jquery.simulate.js",
+                    dest: "tests/lib/jquery-simulate/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/sinon/pkg/sinon.js",
+                    dest: "tests/lib/sinon/js/",
+                    expand: true,
+                    flatten: true
                 }]
             }
         },
@@ -404,6 +498,7 @@ module.exports = function (grunt) {
         var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
+            "copy:dependencies",
             "lint",
             "stylus:compile",
             "modulefiles:" + target,
@@ -451,6 +546,7 @@ module.exports = function (grunt) {
     grunt.registerTask("buildDists", "Tasks to run before publishing to NPM", function (target) {
         var tasks = [
             "clean",
+            "copy:dependencies",
             "lint",
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
@@ -554,4 +650,5 @@ module.exports = function (grunt) {
     grunt.registerTask("custom", ["build:custom"]);
 
     grunt.registerTask("lint", "Perform all standard lint checks.", ["lint-all"]);
+    grunt.registerTask("loadDependencies", "Load lib files from node_modules", ["clean:dependencies", "copy:dependencies"]);
 };
