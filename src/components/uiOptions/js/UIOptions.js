@@ -67,7 +67,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             onInterfaceLocaleChangeRequested: null,
-            onUioPanelsUpdated: null
+            onUioPanelsUpdated: null,
+            onSlidingPanelUpdated: null,
+            onAllPanelsUpdated: {
+                events: {
+                    onUioPanelsUpdated: "onUioPanelsUpdated",
+                    onSlidingPanelUpdated: "onSlidingPanelUpdated"
+                }
+            }
         },
         listeners: {
             "onInterfaceLocaleChangeRequested.changeLocale": {
@@ -130,10 +137,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             options:{
                                 listeners: {
                                     "{messageLoader}.events.onResourcesLoaded": {
-                                        func: "{slidingPanel}.refreshView",
-                                        namespace: "updateSlidingPanel",
-                                        priority: "before:panelsUpdated"
-                                    }
+                                        funcName: "fluid.uiOptions.prefsEditor.localized.updateSlidingPanel",
+                                        args: ["{fluid.uiOptions.prefsEditor.localized}", "{fluid.uiOptions.prefsEditor.localized}.prefsEditorLoader.slidingPanel"],
+                                        namespace: "updateSlidingPanel"
+                                    },
+                                    "afterPanelHide.slidingPanelUpdated": "{fluid.uiOptions.prefsEditor.localized}.events.onSlidingPanelUpdated",
+                                    "afterPanelShow.slidingPanelUpdated": "{fluid.uiOptions.prefsEditor.localized}.events.onSlidingPanelUpdated"
                                 },
                                 invokers: {
                                     setShowText: {
@@ -214,7 +223,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /* Updates and redraws all panels and the slidingPanel (tab) of a UIO component
+    /* Updates the locale and text for all panels of a UIO component
      * - "uioComponent": the UIO component proper
      */
     fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales = function (uioComponent) {
@@ -224,11 +233,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(panel, key, uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
                 }
             });
-
-            if (uioComponent.prefsEditorLoader.slidingPanel) {
-                fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(uioComponent.prefsEditorLoader.slidingPanel, "prefsEditor", uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
-            }
         }
+    };
+
+    /* Updates and redraws the slidingPanel of a UIO component
+     * - "uioComponent": the UIO component proper
+     * - "slidingPanel": the fluid.slidingPanel being updated
+     */
+    fluid.uiOptions.prefsEditor.localized.updateSlidingPanel = function (uioComponent, slidingPanel) {
+        fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(slidingPanel, "prefsEditor", uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
+
+        slidingPanel.options.strings = fluid.transform(slidingPanel.options.strings, function (localizedString, key) {
+            return slidingPanel.msgResolver.messageBase[uioComponent.options.localeSettings.slidingPanelStringMap[key]];
+        });
+
+        slidingPanel.refreshView();
     };
 
 })(jQuery, fluid_3_0_0);
