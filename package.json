@@ -19,7 +19,7 @@
     "repository": "git://github.com/fluid-project/infusion.git",
     "main": "./src/module/fluid.js",
     "scripts": {
-        "prepare": "npm run buildStylus",
+        "prepare": "npm run loadDependencies && npm run buildStylus",
         "prepublishOnly": "npm run buildDists",
         "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
         "test": "npm run test:browser && npm run test:node",
@@ -30,7 +30,8 @@
         "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html --report-dir reports --temp-directory coverage",
         "buildDists": "grunt buildDists",
-        "buildStylus": "grunt buildStylus"
+        "buildStylus": "grunt buildStylus",
+        "loadDependencies": "grunt loadDependencies"
     },
     "engines": {
         "node": ">=0.10.0"
@@ -50,12 +51,22 @@
         "grunt-contrib-stylus": "1.2.0",
         "grunt-contrib-uglify": "3.4.0",
         "grunt-contrib-watch": "1.1.0",
-        "grunt-modulefiles": "0.3.1",
+        "grunt-modulefiles": "0.4.0",
         "grunt-shell": "2.1.0",
         "lodash": "4.17.10",
         "ncp": "2.0.0",
         "nyc": "12.0.2",
         "rimraf": "2.6.2",
-        "testem": "2.9.3"
+        "testem": "2.9.3",
+        "normalize.css": "8.0.0",
+        "opensans-webkit": "1.0.1",
+        "url-polyfill": "1.0.14",
+        "jquery": "3.3.1",
+        "jquery-ui": "1.12.1",
+        "jquery.scrollto": "2.1.2",
+        "jquery-ui-touch-punch": "0.2.3",
+        "jquery-mockjax": "2.5.0",
+        "jquery-simulate": "1.0.2",
+        "sinon": "6.1.5"
     }
 }

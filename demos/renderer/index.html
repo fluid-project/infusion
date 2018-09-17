@@ -2,15 +2,17 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
         <title>Renderer Example</title>
         <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
         <link type="text/css" rel="stylesheet" media="all" href="css/renderer.css" />
 
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
@@ -34,16 +36,14 @@
     </head>
 
     <body class="fl-focus">
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <secction class="flc-overviewPanel fl-overviewPanel-container"></secction>
 
-        <main class="demo-banquet-form">
+        <main class="demo-banquet-form demo-container">
             <p class="renderButton-container">
                 <input class="demo-banquet-form-renderButton" type="button" value="Render"/>
             </p>
-
-            <hr/>
-            <div class="row">
-                <div class="large-6 columns">
+            <div class="rendererContent-container">
+                <div class="rendererContent-column">
                     <p class="demo-intro-block">
                         <span class="demo-intro">Template for the intro text</span>
                     </p>
@@ -88,7 +88,7 @@
                         </fieldset>
                     </div>
                 </div>
-                <div class="large-6 columns">
+                <div class="rendererContent-column">
                     <p>Model:</p>
                     <div>
                         <pre class="demo-banquet-form-modelView model-dump">

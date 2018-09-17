@@ -3,15 +3,19 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
     <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+    <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
     <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
     <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
     <link rel="stylesheet" type="text/css" href="../../src/components/switch/css/Switch.css" />
     <link rel="stylesheet" type="text/css" href="css/Switch.css" />
 
     <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+    <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
+
     <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
     <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
     <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
@@ -37,19 +41,21 @@
 </head>
 
 <body>
-    <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-    <section class="demo-faces demo-container row">
-        <p id="flc-switchUI-label">Light</p>
-        <div class="demo-faces-switch fl-switchUI">
-            <span class="flc-switchUI-off fl-switchUI-text" aria-hidden="true"></span>
-            <span class="flc-switchUI-control fl-switchUI-control"><span class="fl-switchUI-controlKnob"></span></span>
-            <span class="flc-switchUI-on fl-switchUI-text" aria-hidden="true"></span>
-        </div>
+    <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+    <section class="fl-demo-container demo-faces demo-container">
+        <div class="fl-demo-content">
+            <p id="flc-switchUI-label">Light</p>
+            <div class="demo-faces-switch fl-switchUI">
+                <span class="flc-switchUI-off fl-switchUI-text" aria-hidden="true"></span>
+                <span class="flc-switchUI-control fl-switchUI-control"><span class="fl-switchUI-controlKnob"></span></span>
+                <span class="flc-switchUI-on fl-switchUI-text" aria-hidden="true"></span>
+            </div>
 
-        <p class="demo-faces-panel demo-panel">
-            <strong class="demo-faces-face demo-face" aria-live="polite"></strong>
-            <strong class="demo-faces-text demo-text"></strong>
-        </p>
+            <p class="demo-faces-panel demo-panel">
+                <strong class="demo-faces-face demo-face" aria-live="polite"></strong>
+                <strong class="demo-faces-text demo-text"></strong>
+            </p>
+        </div>
     </section>
     <script>
         demo.faces(".demo-faces");
