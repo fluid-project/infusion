@@ -81,6 +81,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         defaultLocale: "fr"
     });
 
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyLocalization", {
+        gradeNames: ["fluid.test.sequenceElement"],
+        sequence: [{
+            event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
+            listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyDefaultLocale",
+            args: ["{prefsEditor}", "fr"]
+        },
+        {
+            funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
+            args: ["{prefsEditor}", "fr"]
+        },
+        {
+            func: "{prefsEditor}.events.onInterfaceLocaleChangeRequested.fire",
+            args: [{data:"es"}]
+        },
+        {
+            event: "{prefsEditor}.events.onAllPanelsUpdated",
+            listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
+            args: ["{prefsEditor}", "es"]
+        },
+        {
+            func: "{prefsEditor}.events.onInterfaceLocaleChangeRequested.fire",
+            args: [{data:"en_US"}]
+        },
+        {
+            event: "{prefsEditor}.events.onAllPanelsUpdated",
+            listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
+            args: ["{prefsEditor}", "en_US"]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTestSequence", {
+        gradeNames: ["fluid.test.sequence"],
+        sequenceElements: {
+            verifyLocalization: {
+                gradeNames: "fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyLocalization",
+                priority: "after:sequence"
+            }
+        }
+    });
+
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
@@ -88,33 +129,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 name: "UIO defaultLocale tests",
                 expect: 49,
-                sequence: [{
-                    event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
-                    listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyDefaultLocale",
-                    args: ["{prefsEditor}", "fr"]
-                },
-                {
-                    funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
-                    args: ["{prefsEditor}", "fr"]
-                },
-                {
-                    func: "{prefsEditor}.events.onInterfaceLocaleChangeRequested.fire",
-                    args: [{data:"es"}]
-                },
-                {
-                    event: "{prefsEditor}.events.onAllPanelsUpdated",
-                    listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
-                    args: ["{prefsEditor}", "es"]
-                },
-                {
-                    func: "{prefsEditor}.events.onInterfaceLocaleChangeRequested.fire",
-                    args: [{data:"en_US"}]
-                },
-                {
-                    event: "{prefsEditor}.events.onAllPanelsUpdated",
-                    listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages",
-                    args: ["{prefsEditor}", "en_US"]
-                }]
+                sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence"
             }]
         }]
     });
