@@ -219,13 +219,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var actualSlidingPanelMessageValue = prefsEditor.prefsEditorLoader.messageLoader.resources.prefsEditor.resourceText.slidingPanelPanelLabel;
         var actualSlidingPanelRenderedValue = prefsEditor.prefsEditorLoader.slidingPanel.locate("panel").attr("aria-label");
-        jqUnit.assertEquals("Sliding panel localized panel message loaded correctly", localizedSlidingPanelValues.panel[expectedLocale], actualSlidingPanelMessageValue);
-        jqUnit.assertEquals("Sliding panel localized panel message rendered correctly", localizedSlidingPanelValues.panel[expectedLocale], actualSlidingPanelRenderedValue);
+        jqUnit.assertEquals("Sliding panel localized panel message loaded correctly for " + expectedLocale, localizedSlidingPanelValues.panel[expectedLocale], actualSlidingPanelMessageValue);
+        jqUnit.assertEquals("Sliding panel localized panel message rendered correctly for " + expectedLocale, localizedSlidingPanelValues.panel[expectedLocale], actualSlidingPanelRenderedValue);
 
         var actualToggleButtonMessageValue = prefsEditor.prefsEditorLoader.messageLoader.resources.prefsEditor.resourceText.slidingPanelShowText;
         var actualToggleButtonRenderedValue = prefsEditor.prefsEditorLoader.slidingPanel.locate("toggleButton").text();
-        jqUnit.assertEquals("Sliding panel localized toggleButton message loaded correctly", localizedSlidingPanelValues.toggleButton[expectedLocale], actualToggleButtonMessageValue);
-        jqUnit.assertEquals("Sliding panel localized toggleButton message rendered correctly", localizedSlidingPanelValues.toggleButton[expectedLocale], actualToggleButtonRenderedValue);
+        jqUnit.assertEquals("Sliding panel localized toggleButton message loaded correctly for " + expectedLocale, localizedSlidingPanelValues.toggleButton[expectedLocale], actualToggleButtonMessageValue);
+        jqUnit.assertEquals("Sliding panel localized toggleButton message rendered correctly for " + expectedLocale, localizedSlidingPanelValues.toggleButton[expectedLocale], actualToggleButtonRenderedValue);
     };
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest", {
