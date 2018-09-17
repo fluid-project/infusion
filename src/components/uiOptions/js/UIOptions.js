@@ -159,6 +159,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                 listeners: {
                                     // these listeners only fire once the sliding panel is open, if lazyLoad is enabled
                                     "{messageLoader}.events.onResourcesLoaded": [{
+                                        funcName: "fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales",
+                                        args: ["{fluid.uiOptions.prefsEditor.localized}"],
+                                        priority: "before:rerenderPanels",
+                                        namespace: "updateUioPanelLocales"
+                                    },
+                                    {
                                         func: "{that}.events.onPrefsEditorRefresh",
                                         namespace: "rerenderPanels"
                                     },
@@ -166,12 +172,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                         func: "{fluid.uiOptions.prefsEditor.localized}.events.onUioPanelsUpdated",
                                         namespace: "panelsUpdated",
                                         priority: "last"
-                                    },
-                                    {
-                                        funcName: "fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales",
-                                        args: ["{fluid.uiOptions.prefsEditor.localized}"],
-                                        priority: "before:rerenderPanels",
-                                        namespace: "updateUioPanelLocales"
                                     }]
                                 }
                             }
