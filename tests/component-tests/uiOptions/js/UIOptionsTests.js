@@ -127,7 +127,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "UI Options Locale Tests",
             tests: [{
-                name: "UIO defaultLocale tests",
+                name: "UIO localization tests",
                 expect: 49,
                 sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence"
             }]
@@ -241,10 +241,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorLocalizedLazy", {
+        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorLocalized"],
+        lazyLoad: true
+    });
+
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedLazyTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "UI Options Locale Tests with Lazy Load",
+            tests: [{
+                name: "UIO localization tests",
+                expect: 49,
+                sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence",
+                sequence: [{
+                    func: "{prefsEditor}.prefsEditorLoader.events.onLazyLoad.fire"
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedLazyTest", {
+        gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
+        components: {
+            prefsEditor: {
+                type: "fluid.tests.uiOptions.testPrefsEditorLocalizedLazy",
+                container: ".flc-prefsEditor-separatedPanel-localized-lazy"
+            },
+            prefsEditorTester: {
+                type: "fluid.tests.uiOptions.prefsEditorLocalizedLazyTester"
+            }
+        }
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.uiOptions.prefsEditorCustomTocTest",
-            "fluid.tests.uiOptions.prefsEditorLocalizedTest"
+            "fluid.tests.uiOptions.prefsEditorLocalizedTest",
+            "fluid.tests.uiOptions.prefsEditorLocalizedLazyTest"
         ]);
     });
 })(jQuery);
