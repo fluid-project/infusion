@@ -1,5 +1,5 @@
 /*
-Copyright 2011-2015 OCAD University
+Copyright 2011-2015, 2018 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2016 Raising the Floor - International
 
@@ -115,7 +115,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             refreshView: {
                 funcName: "fluid.slidingPanel.refreshView",
-                args: ["{that}"]
+                args: ["{that}", "{that}.panelId"]
             },
             setShowText: {
                 "funcName": "fluid.slidingPanel.setText",
@@ -142,8 +142,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.applier.change("isShowing", !that.model.isShowing);
     };
 
-    fluid.slidingPanel.refreshView = function (that) {
+    fluid.slidingPanel.refreshView = function (that, panelId) {
         that.events[that.model.isShowing ? "onPanelShow" : "onPanelHide"].fire();
+        fluid.slidingPanel.setAriaProperties(that, panelId);
     };
 
     // panelId is passed in to ensure that it is evaluated before this
