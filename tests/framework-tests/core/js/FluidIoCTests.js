@@ -4972,7 +4972,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         freeModel.destroy();
         advisor.destroy();
     });
-    
+
     /** FLUID-5193: The matching form '*' in IoCSS doesn't match any subcomponents **/
 
     fluid.defaults("fluid.tests.fluid5193root", {
@@ -4999,5 +4999,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The distributed options has been passed down to subComponent #1", 1, that.sub1.options.userOption);
         jqUnit.assertEquals("The distributed options has been passed down to subComponent #2", 1, that.sub2.options.userOption);
     });
-    
+
 })(jQuery);
