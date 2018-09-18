@@ -53,7 +53,7 @@ categorized by license:
 
 * [`fluid.load.scripts` is based on Jake Archibald's script loading example](
   http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
-* [Open Sans Light font](http://www.google.com/fonts/specimen/Open+Sans)
+* [Open Sans font](http://www.google.com/fonts/specimen/Open+Sans)
 
 ### BSD-3
 
@@ -61,23 +61,20 @@ categorized by license:
 
 ### MIT License
 
-* [Buzz v1.1.0](http://buzz.jaysalvat.com)
-* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
-* [jQuery v3.1.0](http://jquery.com/)
-* [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
+* [jQuery v3.3.1](http://jquery.com/)
+* [jQuery Mockjax v2.5.0](https://github.com/jakerella/jquery-mockjax)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
-* [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
-* [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
+* [jQuery scrollTo v2.1.2](https://github.com/flesler/jquery.scrollTo)
+* [jQuery Touch Punch v0.2.3](http://touchpunch.furf.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
   slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
 * [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
-* [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
+* [jquery.simulate v1.0.2](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
-* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
-* [url-polyfill v1.0.13](https://github.com/lifaon74/url-polyfill)
+* [Normalize v8.0.0](https://necolas.github.io/normalize.css/)
+* [url-polyfill v1.0.14](https://github.com/lifaon74/url-polyfill)
 
 ### zlib/libpng License
 

@@ -194,7 +194,6 @@ grunt custom --name="myPackage"
 * slidingPanel
 * switch
 * tableOfContents
-* tabs
 * textfieldControls
 * textToSpeech
 * tooltip

@@ -798,8 +798,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     model: {
                         value: "{fluid.tests.panel.slider1}.model.slider1"
                     },
-                    range: "{fluid.tests.panel.slider1}.options.range",
-                    sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
+                    range: "{fluid.tests.panel.slider1}.options.range"
                 }
             }
         },
@@ -830,8 +829,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     model: {
                         value: "{fluid.tests.panel.slider2}.model.slider2"
                     },
-                    range: "{fluid.tests.panel.slider2}.options.range",
-                    sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
+                    range: "{fluid.tests.panel.slider2}.options.range"
                 }
             }
         },

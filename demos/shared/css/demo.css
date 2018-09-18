@@ -1,0 +1,16 @@
+html {
+    font-family: sans-serif;
+}
+
+.fl-demo-container {
+    margin-top: 1rem;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.fl-demo-content {
+    max-width: 50rem;
+    margin-top: 4rem;
+    border: 1rem solid transparent;
+}

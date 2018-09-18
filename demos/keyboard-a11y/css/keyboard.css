@@ -11,7 +11,7 @@
 /* Stretch the image to fit the height view container, while maintaining the aspect ratio. */
 .demo-image-mainImage {
     height:100%;
-    width:auto; /* maintain the aspect ratio even if height resized. */
+    max-width: calc(100vw - 2em - 2px)
 }
 
 
@@ -19,20 +19,22 @@
 /* Thumbnails */
 /**/
 .demo-container-imageThumbnails  {
+    max-width: calc(100vw - 2em - 2px);
     padding: 1em;
     background-color:#CCCBE4;
     border: 1px solid #000;
-    overflow:auto;
-    white-space:nowrap;
-    z-index:1;
-    clear:both;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    overflow-x: auto;
     list-style:none outside none;
-    margin:0;
 }
 
 .demo-container-imageThumbnails li {
-    display:inline;
-    margin:0.8em;
+    display:inline-block;
+    flex: 0 0 auto;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
     text-align:center;
 }
 

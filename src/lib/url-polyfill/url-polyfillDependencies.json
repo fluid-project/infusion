@@ -1,9 +1,0 @@
-{
-    "url-polyfill": {
-        "name": "url-polyfill",
-        "description": "Polyfill URL and URLSearchParams to match last WHATWG specifications",
-        "files": [
-            "./js/url-polyfill.js"
-        ]
-    }
-}
