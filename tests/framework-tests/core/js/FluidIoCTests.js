@@ -4733,6 +4733,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     },  {
         selector: "child1 child2&fluid5621advised",
         expected: []
+    }, {
+        selector: "child1 > child2",
+        expected: ["child2"]
+    }, {
+        selector: "child1 > child3",
+        expected: []
+    }, {
+        selector: "child1 > *",
+        expected: ["child2"]
+    }, {
+        selector: "child1 *",
+        expected: ["child2", "child3"]
     }];
 
     /** FLUID-5824 tests - distances and namespace overriding for distributions **/

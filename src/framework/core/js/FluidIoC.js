@@ -345,7 +345,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var match = true;
             for (var j = 0; j < selel.predList.length; ++j) {
                 var pred = selel.predList[j];
-                if (pred.context && !(contextHashes[thatpos][pred.context] || memberNames[thatpos] === pred.context)) {
+                var context = pred.context;
+                if (context && context !== "*" && !(contextHashes[thatpos][context] || memberNames[thatpos] === context)) {
                     match = false;
                     break;
                 }
