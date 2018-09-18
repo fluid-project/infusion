@@ -4229,8 +4229,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.subComponent.options.parentOption);
     });
 
-
-
     fluid.defaults("fluid.tests.dynamicInvoker", {
         gradeNames: ["fluid.component", "{that}.getDynamicInvoker"],
         invokers: {
@@ -4974,4 +4972,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         freeModel.destroy();
         advisor.destroy();
     });
+    
+    /** FLUID-5193: The matching form '*' in IoCSS doesn't match any subcomponents **/
+
+    fluid.defaults("fluid.tests.fluid5193root", {
+        gradeNames: ["fluid.component"],
+        components: {
+            sub1: {
+                type: "fluid.component"
+            },
+            sub2: {
+                type: "fluid.component"
+            }
+        },
+        userOption: 1,
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            removeSource: true,
+            target: "{that > *}.options.userOption"
+        }
+    });
+
+    jqUnit.test("FLUID-5193 The matching form '*' in IoCSS doesn't match any subcomponents", function () {
+        var that = fluid.tests.fluid5193root();
+
+        jqUnit.assertEquals("The distributed options has been passed down to subComponent #1", 1, that.sub1.options.userOption);
+        jqUnit.assertEquals("The distributed options has been passed down to subComponent #2", 1, that.sub2.options.userOption);
+    });
+    
 })(jQuery);
