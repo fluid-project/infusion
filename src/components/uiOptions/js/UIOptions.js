@@ -78,8 +78,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onInterfaceLocaleChangeRequested.changeLocale": {
-                func: "{that}.applier.change",
-                args: ["locale", "{arguments}.0.data"]
+                changePath: "locale",
+                value: "{arguments}.0.data"
             },
             "onInterfaceLocaleChangeRequested.reloadUioMessages": {
                 func: "{that}.reloadUioMessages",
