@@ -346,9 +346,9 @@ module.exports = function (grunt) {
         },
         lintAll: {
             sources: {
-                md: [ "./*.md", "./demos/**/*.md", "./examples/**/*.md", "./src/**/*.md", "./tests/**/*.md", "!./**/lib/**/*.md"],
-                js: ["./*.js", "./demos/**/*.js", "./examples/**/*.js", "./src/**/*.js", "./tests/**/*.js", "!./**/lib/**/*.js", "!./**/infusion-1.5.js"],
-                json: ["./*.json", "./.*.json", "./.nycrc", "./demos/**/*.json", "./examples/**/*.json", "./src/**/*.json", "./tests/**/*.json", "!./src/**/lib/**/*.json"],
+                md: [ "*.md", "!./src/**/lib/**/*.md", "!./demos/**/lib/**/*.md", "!./tests/**/lib/**/*.md"],
+                js: ["*.js", "!./src/**/lib/**/*.js", "!./demos/**/lib/**/*.js", "!./dist/**/*.js", "!./tests/**/lib/**/*.js", "!./tests/**/infusion-1.5.js"],
+                json: ["*.json", "./.nycrc", "!./src/**/lib/**/*.json", "!./dist/**/*.json"],
                 other: ["./.*"]
             }
         },
@@ -461,10 +461,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
-    grunt.loadNpmTasks("gpii-grunt-lint-all");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
     grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("gpii-grunt-lint-all");
 
     // Custom tasks:
 
