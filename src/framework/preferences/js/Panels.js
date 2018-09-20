@@ -330,7 +330,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
         var distributeOptions = {};
         var relayOption = {};
-        fluid.each(components, function (componentOptions, componentName) {
+        fluid.each(components, function (componentEntry, componentName) {
+            var componentOptions = componentEntry[0];
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 distributeOptions[componentName + ".subPanelOverrides"] = {
                     source: "{that}.options.subPanelOverrides",
@@ -415,7 +416,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var conditionals = {};
         var listeners = {};
         var events = {};
-        fluid.each(components, function (componentOptions, componentName) {
+        // TODO: All of this old-style options introspection is deprecated and should be replaced by workflow functions -
+        // but in practice the entirety of this prefs framework should be deprecated and replaced by the new renderer
+        fluid.each(components, function (componentEntry, componentName) {
+            var componentOptions = componentEntry[0]; // Compensate for wrapping caused by FLUID-5614 fix
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 var creationEventOpt = "default";
                 // would have had renderOnPreference directly sourced from the componentOptions
@@ -461,7 +465,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * information from it.
      */
     fluid.prefs.compositePanel.hideInactive = function (that) {
-        fluid.each(that.options.components, function (componentOpts, componentName) {
+        fluid.each(that.options.components, function (componentEntry, componentName) {
+            var componentOpts = componentEntry[0]; // See above for FLUID-5614
             if (fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
                 that.locate(componentName).hide();
             }
@@ -514,7 +519,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * surface all possible subpanel selectors, and not just the active ones.
      */
     fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors = function (that, components, selectors) {
-        fluid.each(components, function (compOpts, compName) {
+        fluid.each(components, function (compEntry, compName) {
+            var compOpts = compEntry[0];
             if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
                 var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
                 fluid.each(opts.selectors, function (selector, selName) {
@@ -528,7 +534,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.prefs.compositePanel.surfaceRepeatingSelectors = function (components) {
         var repeatingSelectors = [];
-        fluid.each(components, function (compOpts, compName) {
+        fluid.each(components, function (compEntry, compName) {
+            var compOpts = compEntry[0];
             if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
                 var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
                 var rebasedRepeatingSelectors = fluid.transform(opts.repeatingSelectors, function (selector) {
@@ -803,7 +810,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A base grade for textfield stepper adjuster panels *
      ******************************************************/
 
-    fluid.defaults("fluid.prefs.panel.stepperAjuster", {
+    fluid.defaults("fluid.prefs.panel.stepperAdjuster", {
         gradeNames: ["fluid.prefs.panel"],
         // preferences maps should map model values to "model.value"
         // model: {value: ""}
@@ -821,20 +828,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{fluid.prefs.panel.stepperAjuster}.model.value",
+                        value: "{fluid.prefs.panel.stepperAdjuster}.model.value",
                         range: {
-                            min: "{fluid.prefs.panel.stepperAjuster}.options.range.min",
-                            max: "{fluid.prefs.panel.stepperAjuster}.options.range.max"
+                            min: "{fluid.prefs.panel.stepperAdjuster}.options.range.min",
+                            max: "{fluid.prefs.panel.stepperAdjuster}.options.range.max"
                         },
-                        step: "{fluid.prefs.panel.stepperAjuster}.options.step"
+                        step: "{fluid.prefs.panel.stepperAdjuster}.options.step"
                     },
                     scale: 1,
                     strings: {
-                        increaseLabel: "{fluid.prefs.panel.stepperAjuster}.msgLookup.increaseLabel",
-                        decreaseLabel: "{fluid.prefs.panel.stepperAjuster}.msgLookup.decreaseLabel"
+                        increaseLabel: "{fluid.prefs.panel.stepperAdjuster}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.stepperAdjuster}.msgLookup.decreaseLabel"
                     },
                     attrs: {
-                        "aria-labelledby": "{fluid.prefs.panel.stepperAjuster}.options.panelOptions.labelId"
+                        "aria-labelledby": "{fluid.prefs.panel.stepperAdjuster}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -852,7 +859,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             labelIdTemplate: "%guid",
             labelId: {
                 expander: {
-                    funcName: "fluid.prefs.panel.stepperAjuster.setLabelID",
+                    funcName: "fluid.prefs.panel.stepperAdjuster.setLabelID",
                     args: ["{that}.options.panelOptions.labelIdTemplate"]
                 }
             }
@@ -863,7 +870,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String} template - take string template with a token "%guid" to be replaced by the a unique ID.
      * @return {String} - the resolved templated with the injected unique ID.
      */
-    fluid.prefs.panel.stepperAjuster.setLabelID = function (template) {
+    fluid.prefs.panel.stepperAdjuster.setLabelID = function (template) {
         return fluid.stringTemplate(template, {
             guid: fluid.allocateGuid()
         });
@@ -877,7 +884,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.textSize", {
-        gradeNames: ["fluid.prefs.panel.stepperAjuster"],
+        gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default",
@@ -950,7 +957,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "line space" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.lineSpace", {
-        gradeNames: ["fluid.prefs.panel.stepperAjuster"],
+        gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
                 "model.value": "default",

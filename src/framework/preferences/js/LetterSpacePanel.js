@@ -22,7 +22,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "letter spacing" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.letterSpace", {
-        gradeNames: ["fluid.prefs.panel.stepperAjuster"],
+        gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
         preferenceMap: {
             "fluid.prefs.letterSpace": {
                 "model.value": "default",

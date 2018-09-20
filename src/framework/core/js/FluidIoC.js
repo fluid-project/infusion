@@ -725,6 +725,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     childrenScope: A hash of names to components which are in scope because they are children of this component (BELOW own ownScope in resolution order)
     //     potentia: The original potentia record as supplied to registerPotentia
     //     childComponents: Hash of key names to subcomponents
+    //     lightMergeComponents, lightMergeDynamicComponents: signalling between fluid.processComponentShell and fluid.concludeComponentObservation
 
     fluid.shadowForComponent = function (component) {
         var instantiator = fluid.getInstantiator(component);
@@ -934,7 +935,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             idToShadow: {},
             modelTransactions: {init: {}}, // a map of transaction id to map of component id to records of components enlisted in a current model initialisation transaction
             treeTransactions: {}, // a map of transaction id to: {
-                // pathToPotentia: an aligned map of component paths to "potentia II records"
                 // pendingPotentia: an array of the segs for pathToPotentia which remain to be handled
             // }
             // any instantiation in progress. In the current framework, these are still synchronous - in future, there will be a backlink from the shadow
@@ -1151,21 +1151,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return expanded;
     };
 
-    fluid.componentRecordExpected = fluid.arrayToHash(["type", "options", "container", "createOnEvent"]);
-    fluid.dynamicComponentRecordExpected = $.extend({}, fluid.componentRecordExpected, fluid.arrayToHash(["sources"]));
-
-    fluid.checkComponentRecord = function (localRecord, expected) {
-        if (!fluid.isInjectedComponentRecord(localRecord)) {
-            fluid.each(localRecord, function (value, key) {
-                if (!expected[key]) {
-                    fluid.fail("Probable error in subcomponent record ", localRecord, " - key \"" + key +
-                        "\" found, where the only legal options are " +
-                        fluid.keys(expected).join(", "));
-                }
-            });
-        }
-    };
-
     fluid.computeMergeListPriority = function (toMerge) {
         toMerge.forEach(function (record) {
             var recordType = record.recordType;
@@ -1250,8 +1235,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return recordKey + (sourceKey === 0 ? "" : "-" + sourceKey); // TODO: configurable name strategies
     };
 
-    fluid.bindDeferredComponent = function (that, componentName, componentSpec, dynamicComponent) {
-        var eventName = componentSpec.createOnEvent;
+    fluid.bindDeferredComponent = function (that, componentName, lightMerge, dynamicComponent) {
+        var eventName = lightMerge.createOnEvent;
         var event = fluid.isIoCReference(eventName) ? fluid.expandOptions(eventName, that) : that.events[eventName];
         if (!event || !event.addListener) {
             fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent ", that, " since event specification " +
@@ -1269,26 +1254,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var localRecord = {
                 "arguments": fluid.makeArray(arguments)
             };
-            var filteredRecord = fluid.censorKeys(componentSpec, "createOnEvent");
-            // cf. same dodge in fluid.registerConcreteSubPotentia - strange role for "type" being resolved with parent since at top level
-            filteredRecord.type = fluid.expandImmediate(filteredRecord.type, that, localRecord);
-            filteredRecord.recordType = "subcomponentRecord";
-            var fullPath = fluid.pathForComponent(that).concat([key]);
             fluid.pushActivity("initDeferred", "instantiating deferred component %componentName of parent %that due to event %eventName",
              {componentName: componentName, that: that, eventName: eventName});
-            var existing = that[key];
-            if (existing) {
-                fluid.registerPotentia({
-                    segs: fullPath,
-                    type: "destroy"
-                }, transactionId);
-            }
-            fluid.registerPotentia({
-                segs: fullPath,
-                type: "create",
-                records: [filteredRecord],
-                localRecord: localRecord
-            }, transactionId);
+            var freshLightMerge = fluid.copy(lightMerge);
+            delete freshLightMerge.createOnEvent;
+            fluid.registerConcreteSubPotentia(freshLightMerge, key, 0, that, localRecord, transactionId);
             fluid.popActivity();
         };
         event.addListener(constructListener);
@@ -1347,14 +1317,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         shadow.memberStrategy.initter();
         shadow.invokerStrategy.initter();
 
-        fluid.each(that.options.components, function (subcomponentRecord, key) {
-            if (subcomponentRecord.createOnEvent) {
-                fluid.bindDeferredComponent(that, key, subcomponentRecord);
+        fluid.each(shadow.lightMergeComponents, function (lightMerge, key) {
+            if (lightMerge.createOnEvent) {
+                fluid.bindDeferredComponent(that, key, lightMerge);
             }
         });
-        fluid.each(that.options.dynamicComponents, function (subcomponentRecord, key) {
-            if (subcomponentRecord.createOnEvent) {
-                fluid.bindDeferredComponent(that, key, subcomponentRecord, true);
+
+        fluid.each(shadow.lightMergeDynamicComponents, function (lightMerge, key) {
+            if (lightMerge.createOnEvent) {
+                fluid.bindDeferredComponent(that, key, lightMerge, true);
             }
         });
         fluid.popActivity();
@@ -1388,13 +1359,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     * @param {Potentia} topush - A "create" potentia
     * @return {Potentia|Undefined} `topush` if this was the first potentia registered for this path
     */
-    fluid.pushPathedPotentia = function (potentiaList, path, topush) {
-        var existing = potentiaList.pathToPotentiae[path];
+    fluid.pushCreatePotentia = function (potentiaList, path, topush) {
+        var existing = potentiaList.pathToPotentia[path];
         // TODO: Crude approximation to allowing nested transactions
         if (existing && !existing.applied) {
-            Array.prototype.push.apply(existing.records, topush.records);
+            fluid.lightMergeRecords.pushRecords(existing, topush.records || topush.lightMerge.toMerge);
         } else {
-            potentiaList.pathToPotentiae[path] = topush;
+            potentiaList.pathToPotentia[path] = topush;
+            if (topush.records) {
+                topush.lightMerge = fluid.lightMergeRecords(topush.records);
+                delete topush.records;
+            }
             return topush;
         }
     };
@@ -1404,10 +1379,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             destroys: [],
             creates: [],
             activeCount: 0,
-            pathToPotentiae: {} // aligned map of component paths to "potentia II records"
+            pathToPotentia: {} // map of component paths to list of option records for create potentia
         };
     };
-
 
     fluid.isInjectedComponentRecord = function (record) {
         return typeof(record) === "string" || record.expander;
@@ -1424,34 +1398,43 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Perform a "light merge" of a set of options records in order to immediately discover the type name if they designate a
      * concrete component or whether they designate an injected component.
-     * @param {ComponentOptions[]} records - Array of component options records as held in {Potentia}.records
+     * @param {OptionsRecords[]} records - Array of component options records as held in {Potentia}.records
      * @return {LightMergeRecords} A structure holding
      *     {Boolean} isInjected - whether these designate an injected component
      *     {String} type - the component's type if it is concrete
      *     {String} createOnEvent - the component's "createOnEvent" if any record set it
-     *     {ComponentOptions[]} toMerge - Array of component options to be merged
+     *     {OptionsRecords[]} toMerge - Array of component options to be merged
      */
     fluid.lightMergeRecords = function (records) {
         var togo = {
             toMerge: [],
             isInjected: false
         };
-        records.forEach(function (record) {
-            if (record.injected) {
-                togo.toMerge = [record];
-                togo.isInjected = true;
-            } else {
-                togo.type = togo.type || record.type;
-                togo.createOnEvent = togo.createOnEvent || record.createOnEvent;
-                if (togo.isInjected) {
-                    togo.toMerge = [record];
-                } else {
-                    togo.toMerge.push(record);
-                }
-                togo.isInjected = false;
-            }
-        });
+        fluid.lightMergeRecords.pushRecords(togo, records);
         return togo;
+    };
+
+    fluid.lightMergeRecords.pushRecord = function (lightMerge, record) {
+        if (fluid.isInjectedComponentRecord(record)) {
+            lightMerge.toMerge = [{injected: record}];
+            lightMerge.isInjected = true;
+        } else {
+            lightMerge.type = record.type || lightMerge.type;
+            lightMerge.createOnEvent = record.createOnEvent || lightMerge.createOnEvent;
+            lightMerge.sources = record.sources || lightMerge.sources;
+            if (lightMerge.isInjected) {
+                lightMerge.toMerge = [record];
+            } else {
+                lightMerge.toMerge.push(record);
+            }
+            lightMerge.isInjected = false;
+        }
+    };
+
+    fluid.lightMergeRecords.pushRecords = function (lightMerge, records) {
+        records.forEach(function (record) {
+            fluid.lightMergeRecords.pushRecord(lightMerge, record);
+        });
     };
 
     fluid.instantiateEvents = function (shadow) {
@@ -1493,8 +1476,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
         fluid.sortByPriority(distributions);
-        Array.prototype.push.apply(lightMerge.toMerge, distributions);
-        lightMerge.type = fluid.lightMergeValue(lightMerge.toMerge, "type");
+        fluid.lightMergeRecords.pushRecords(lightMerge, distributions);
         // Update our type and initial guess at defaults based on distributions to type
         upDefaults = fluid.defaults(lightMerge.type);
 
@@ -1519,37 +1501,68 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
-    fluid.registerConcreteSubPotentia = function (lightMerge, key, potentia, parentShell, localRecord) {
+    fluid.registerConcreteSubPotentia = function (lightMerge, key, componentDepth, parentShell, localRecord, transactionId) {
         // "componentDepth" is currently unused but will be incorporated in mergeBlocks sort for refined versions of FLUID-5614
-        var componentDepth = potentia.componentDepth || 0;
-        var newSegs = potentia.segs.concat([key]);
-        var records = fluid.transform(lightMerge.toMerge, function (toMerge) {
+        componentDepth = componentDepth || 0;
+        var newSegs = fluid.pathForComponent(parentShell).concat([key]);
+        var existing = parentShell[key];
+        if (existing) {
+            fluid.registerPotentia({
+                segs: newSegs,
+                type: "destroy"
+            }, transactionId);
+        }
+        lightMerge.toMerge = fluid.transform(lightMerge.toMerge, function (toMerge) {
             var record = $.extend({
                 componentDepth: componentDepth + 1,
                 sourceComponentId: parentShell.id,
-                recordType: "subcomponentRecord",
+                recordType: "subcomponentRecord"
             }, toMerge);
-            record.type = fluid.expandImmediate(record.type, parentShell, localRecord);
             return record;
         });
-        
+        lightMerge.type = fluid.expandImmediate(lightMerge.type, parentShell, localRecord);
         var subPotentia = {
             type: "create",
             segs: newSegs,
-            records: [record],
+            lightMerge: lightMerge,
+            //records: [record],
             // This is awkward - what if we accumulate multiple records with different localRecords?
             // Can't do much about this without "local mergePolicies" and provenance
             localRecord: localRecord
         };
-        fluid.registerPotentia(subPotentia, null, false);
+        fluid.registerPotentia(subPotentia, transactionId);
     };
-    
+
+    // These are stashed in the shadow in between the use of fluid.processComponentShell and fluid.concludeComponentObservation
     fluid.lightMergeComponentRecord = function (shadow, shadowKey, key, mergingArray) {
         var lightMerge = fluid.lightMergeRecords(mergingArray);
         fluid.set(shadow, [shadowKey, key], lightMerge);
         return lightMerge;
     };
 
+    fluid.componentRecordExpected = fluid.arrayToHash(["type", "options", "container", "createOnEvent"]);
+    fluid.dynamicComponentRecordExpected = $.extend({}, fluid.componentRecordExpected, fluid.arrayToHash(["sources"]));
+
+    fluid.checkComponentRecord = function (localRecord, expected) {
+        if (!fluid.isInjectedComponentRecord(localRecord)) {
+            fluid.each(localRecord, function (value, key) {
+                if (!expected[key]) {
+                    fluid.fail("Probable error in subcomponent record ", localRecord, " - key \"" + key +
+                        "\" found, where the only legal options are " +
+                        fluid.keys(expected).join(", "));
+                }
+            });
+        }
+    };
+
+    fluid.checkSubcomponentRecords = function (subcomponentRecords, expected) {
+        subcomponentRecords.forEach(function (oneRecord) {
+            fluid.checkComponentRecord(oneRecord, expected);
+        });
+    };
+
+    // The midpoint of fluid.operateCreatePotentia. We have just created the shell, and will now investigate any subcomponents
+    // and push any immediate ones discovered into potentia records at deeper paths.
     fluid.processComponentShell = function (potentia, shell) {
         var instantiator = fluid.globalInstantiator;
         var shadow = instantiator.idToShadow[shell.id];
@@ -1558,33 +1571,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var mergeOptions = shadow.mergeOptions;
 
         var components = fluid.driveStrategy(shell.options, "components", mergeOptions.strategy);
-        // TODO: We are here - either here, or even a bit earlier, this needs to become a "lightMerge" structure, and we probably
-        // want to replace the "records" structure in a create potentia with this. Then push this all the way down to operateCreatePotentia
-        // which is where lightMergeRecords is currently called. Where to put this? If we call lightMerge here, how do we avoid calling it
-        // again given there are other routes into operateCreatePotentia, e.g. fluid.construct. I guess we need to split up the assembly and the merge operations,
-        // bringing it one step closer to the full merging workflow.
-        fluid.each(components, function (subcomponentRecord, key) {
-            var lightMerge = fluid.lightMergeComponentRecord(shadow, "lightMergeComponents", key, subcomponentRecord);
-            fluid.checkComponentRecord(subcomponentRecord, fluid.componentRecordExpected);
-            // Note that this check is not really timely - what if an overriding record from further up in the tree has added
-            // a createOnEvent annotation where we did not have one ourselves? This logic really needs to be shifted out
-            // into initComponentShell, especially when createOnEvent becomes a plain option, and we allow for async creation.
-            if (!subcomponentRecord.createOnEvent) {
-                fluid.registerConcreteSubPotentia(subcomponentRecord, key, potentia, shell, potentia.localRecord);
+
+        fluid.each(components, function (subcomponentRecords, key) {
+            fluid.checkSubcomponentRecords(subcomponentRecords, fluid.componentRecordExpected);
+            var lightMerge = fluid.lightMergeComponentRecord(shadow, "lightMergeComponents", key, subcomponentRecords);
+            if (!lightMerge.createOnEvent) {
+                fluid.registerConcreteSubPotentia(lightMerge, key, potentia.componentDepth, shell, potentia.localRecord);
             }
         });
         var dynamicComponents = fluid.driveStrategy(shell.options, "dynamicComponents", mergeOptions.strategy);
-        fluid.each(dynamicComponents, function (subcomponentRecord, key) {
-            fluid.checkComponentRecord(subcomponentRecord, fluid.dynamicComponentRecordExpected);
-            if (!subcomponentRecord.sources && !subcomponentRecord.createOnEvent) {
-                fluid.fail("Cannot process dynamicComponents record ", subcomponentRecord, " without a \"sources\" or \"createOnEvent\" entry");
+        fluid.each(dynamicComponents, function (subcomponentRecords, key) {
+            fluid.checkSubcomponentRecords(subcomponentRecords, fluid.dynamicComponentRecordExpected);
+            var lightMerge = fluid.lightMergeComponentRecord(shadow, "lightMergeDynamicComponents", key, subcomponentRecords);
+            if (!lightMerge.sources && !lightMerge.createOnEvent) {
+                fluid.fail("Cannot process dynamicComponents records ", subcomponentRecords, " without a \"sources\" or \"createOnEvent\" entry");
             }
-            if (subcomponentRecord.sources) {
-                var sources = fluid.expandOptions(subcomponentRecord.sources, shell);
+            if (lightMerge.sources) {
+                var sources = fluid.expandOptions(lightMerge.sources, shell);
                 fluid.each(sources, function (source, sourceKey) {
                     var localRecord = $.extend({}, potentia.localRecord, {"source": source, "sourcePath": sourceKey});
                     var dynamicKey = fluid.computeDynamicComponentKey(key, sourceKey);
-                    fluid.registerConcreteSubPotentia(subcomponentRecord, dynamicKey, potentia, shell, localRecord);
+                    var freshLightMerge = fluid.copy(lightMerge);
+                    fluid.registerConcreteSubPotentia(freshLightMerge, dynamicKey, potentia.componentDepth, shell, localRecord);
                 });
             }
         });
@@ -1602,7 +1610,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Begin the action of creating a component - register its shell and mergeOptions at the correct site, and evaluate
     // and scan options for its child components, recursively registering them
     // Returns shadow of created shell, if any
-    fluid.operateCreatePotentia = function (transRec, potentia) {
+    fluid.operateCreatePotentia = function (transRec, potentiaList, potentia) {
         var instantiator = fluid.globalInstantiator;
         // TODO: currently this overall workflow is synchronous and so we have no risk. In future, asynchronous
         // transactions imply that the same path may receive a component from two different transactions - therefore
@@ -1615,7 +1623,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.pushActivity("operateCreatePotentia", "operating create potentia for path \"%path\" with records %records",
             {path: potentia.path, records: potentia.records});
 
-        var lightMerge = fluid.lightMergeRecords(potentia.records);
+        var lightMerge = potentia.lightMerge;
         if (lightMerge.isInjected) {
             parentThat[memberName] = fluid.inEvaluationMarker; // support FLUID-5694
             var instance = fluid.expandImmediate(lightMerge.toMerge[0].injected, parentThat);
@@ -1654,6 +1662,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.pushPotentia(transRec.restoreRecords, instantiator, shadow.potentia);
         }
     };
+
+    /** Cache some frequently used quantities in a potentia with a path (as opposed to a pure distribution potentia)
+     * - segs, memberName and parentThat.
+     */
 
     fluid.preparePathedPotentia = function (potentia, instantiator) {
         var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
@@ -1704,7 +1716,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (!potentia.applied) {
                 if (potentia.type === "create") {
                     fluid.preparePathedPotentia(potentia, instantiator);
-                    var shadow = fluid.operateCreatePotentia(transRec, potentia);
+                    var shadow = fluid.operateCreatePotentia(transRec, pendingPotentiae, potentia);
                     if (shadow) {
                         shadows.push(shadow);
                     }
@@ -1799,7 +1811,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             var newPotentia = potentia;
             if (potentia.type === "create") {
-                newPotentia = fluid.pushPathedPotentia(potentiaList, path, potentia);
+                newPotentia = fluid.pushCreatePotentia(potentiaList, path, potentia);
             }
             if (newPotentia) {
                 potentiaList.creates.push(potentia);

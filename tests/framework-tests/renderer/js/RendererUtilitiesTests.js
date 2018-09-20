@@ -1401,7 +1401,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 ]
             };
-            jqUnit.assertCanoniseEqual("Selection explosion", expected, expanded, jqUnit.sortTree);
+            jqUnit.assertCanoniseEqual("Selection explosion", expected, expanded, jqUnit.sortOldRendererComponentTree);
         });
 
         jqUnit.test("FLUID-3844 test: messagekey resolved by expander", function () {
@@ -1439,7 +1439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var expanded = expander(protoTree);
             jqUnit.assertCanoniseEqual("Message key resolved", holder.model.tabs.here.name,
-                expanded.children[0].children[0].linktext.messagekey.value, jqUnit.sortTree);
+                expanded.children[0].children[0].linktext.messagekey.value, jqUnit.sortOldRendererComponentTree);
         });
 
         fluid.registerNamespace("fluid.tests.FLUID4737");
@@ -1520,9 +1520,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var expanded = expander(protoTree);
             jqUnit.assertCanoniseEqual("Valuebinding should be resolved", "vector.0.index",
-                expanded.children[0].children[0].valuebinding, jqUnit.sortTree);
+                expanded.children[0].children[0].valuebinding, jqUnit.sortOldRendererComponentTree);
             jqUnit.assertCanoniseEqual("Valuebinding should be resolved", "one",
-                 expanded.children[0].children[0].value, jqUnit.sortTree);
+                 expanded.children[0].children[0].value, jqUnit.sortOldRendererComponentTree);
         });
 
         fluid.defaults("fluid.tests.FLUID4537", {

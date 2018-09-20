@@ -26,6 +26,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    // TODO: Undesirable white-box testing following initial FLUID-5614 implementation. We could move to a model
+    // where all createOnEvent components have shells constructed up front, but need to reflect on implications of this
+    fluid.tests.assertCreateOnEventSubcomponent = function (that, componentName, value) {
+        var lightMerge = fluid.lightMergeRecords(that.options.components[componentName]);
+        jqUnit.assertEquals("The createOnEvent for " + componentName + " should be set", value, lightMerge.createOnEvent);
+    };
+
     fluid.defaults("fluid.tests.subPanel", {
         gradeNames: ["fluid.prefs.panel"],
         renderOnInit: true,
@@ -220,7 +227,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("subPanel1's selectors should be surfaced to the compositePanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
         jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
         jqUnit.assertDeepEq("The repeatingSelectors should have been surfaced correctly", expectedRepeatingSelectors, that.options.rendererFnOptions.subPanelRepeatingSelectors);
-        jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
+        jqUnit.assertCanoniseEqual("The produceTree should have combined the subPanel protoTrees together correctly",
+            expectedTree, that.produceTree(), jqUnit.sortOldRendererComponentTree);
         jqUnit.assertEquals("The markup for the compositePanel should have rendered correctly", that.options.messageBase.heading, that.locate("heading").text());
         that.subPanel1.locate("header").each(function (idx, elm) {
             var actual = $(elm).text();
@@ -255,7 +263,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var assertSubPanelLifecycleBindings = function (that, componentName, preference) {
             var pref = fluid.prefs.subPanel.safePrefKey(preference);
             var initEvent = "initOn_" + pref;
-            jqUnit.assertEquals("The createOnEvent for " + componentName + " should be set", initEvent, fluid.get(that, "options.components." + componentName + ".createOnEvent"));
+            fluid.tests.assertCreateOnEventSubcomponent(that, componentName, initEvent);
             jqUnit.assertEquals("The " + initEvent + " event should have been added", null, that.options.events[initEvent]);
             jqUnit.assertTrue("The modelListener for " + pref + " should be added", that.options.modelListeners[pref]);
             jqUnit.assertTrue("The onCreate listener to trigger " + initEvent + " should be added", that.options.listeners["onCreate." + pref]);
@@ -392,9 +400,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // component creation
         jqUnit.expect(18);
         assertInitialized(that, "alwaysPanel1");
-        jqUnit.assertEquals("The createOnEvent for alwaysPanel1 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel1.createOnEvent"));
+        fluid.tests.assertCreateOnEventSubcomponent(that, "alwaysPanel1", "initSubPanels");
         assertInitialized(that, "alwaysPanel2");
-        jqUnit.assertEquals("The createOnEvent for alwaysPanel2 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel2.createOnEvent"));
+        fluid.tests.assertCreateOnEventSubcomponent(that, "alwaysPanel2", "initSubPanels");
         assertNotInitialized(that, "conditionalPanel1");
         assertSubPanelLifecycleBindings(that, "conditionalPanel1", "some.pref.1");
         assertNotInitialized(that, "conditionalPanel2");

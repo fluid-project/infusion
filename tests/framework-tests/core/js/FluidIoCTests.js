@@ -4970,12 +4970,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    /** Merging of "double deep trees" **/
-    
+    /** FLUID-5614: Merging of "double deep trees" **/
+
     fluid.tests.push = function (array, value) {
         array.push(value);
     };
-    
+
     fluid.defaults("fluid.tests.FLUID5614root1", {
         gradeNames: "fluid.component",
         components: {
@@ -4995,9 +4995,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5614root2", fluid.defaults("fluid.tests.FLUID5614root1"));
-    
+
     jqUnit.test("FLUID-5614: Failure to merge \"double deep trees\" correctly", function () {
         var that = fluid.tests.FLUID5614root1({
             gradeNames: "fluid.tests.FLUID5614root2"

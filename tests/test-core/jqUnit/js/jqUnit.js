@@ -199,10 +199,10 @@ var jqUnit = jqUnit || {};
     $.extend(jqUnit, jsUnitCompat);
 
 
-    /** Sort a component tree into canonical order, to facilitate comparison with
+    /** Sort an old renderer component tree into canonical order, to facilitate comparison with
      * deepEq */
 
-    jqUnit.sortTree = function (tree) {
+    jqUnit.sortOldRendererComponentTree = function (tree) {
         function comparator(ela, elb) {
             var ida = ela.ID || "";
             var idb = elb.ID || "";
@@ -220,12 +220,62 @@ var jqUnit = jqUnit || {};
         }
         fluid.each(tree, function (value) {
             if (!fluid.isPrimitive(value)) {
-                jqUnit.sortTree(value);
+                jqUnit.sortOldRendererComponentTree(value);
             }
         });
 
     };
 
+    /** The effect of jqUnit.flattenMergedSubcomponentOptions at the next level of nesting - assumes
+     * that it is given an options block with `components` at the root
+     */
+
+    jqUnit.flattenMergedSubcomponents = function (components) {
+        return fluid.transform(components, function (component) {
+            return component[0];
+        });
+    };
+
+    /** Undoes the effect of the new mergePolicy implemented post FLUID-5614, and flattens the array of
+     * merged subcomponents to match the structure that is written in plain options. E.g. a structure
+     * ```
+     * {
+     * someOption: 4,
+     * components: {
+     *     myComponent: [
+     *         {
+     *             type: "fluid.component"
+     *         }
+     *     ]
+     * }
+     * ```
+     * will be flattened into
+     * someOption: 4,
+     * components: {
+     *     myComponent: {
+     *             type: "fluid.component"
+     *     }
+     * }
+     * ```
+     * @param {Object} tree - A tree of component options
+     * @return {Object} A deep-cloned tree with arrays held in subcomponent entries flattened to hold their 0th entries
+     */
+    jqUnit.flattenMergedSubcomponentOptions = function (tree) {
+        return fluid.transform(tree, function (value, key) {
+            if (key !== "components") {
+                return value;
+            } else {
+                return jqUnit.flattenMergedSubcomponents(value);
+            }
+        });
+    };
+
+    /** A canonicalisation function which will cause any functions encountered in the tree to compare as equal,
+     * as sent to `jqUnit.assertCanoniseEqual`. This returns an deep cloned object tree where every function
+     * encountered in the tree is replaced by `fluid.identity`
+     * @param {Object} tree - The object tree to be canonicalised
+     * @return {Object} A deep-cloned version of `tree` with every function handle replaced by `fluid.identity`
+     */
     jqUnit.canonicaliseFunctions = function (tree) {
         return fluid.transform(tree, function (value) {
             if (fluid.isPrimitive(value)) {
@@ -240,7 +290,7 @@ var jqUnit = jqUnit || {};
 
     /** Assert that two trees are equal after applying a "canonicalisation function". This can be used in
      * cases where the criterion for equivalence is looser than exact object equivalence - for example,
-     * when using renderer trees, "jqUnit.sortTree" can be used for canonFunc", or in the case
+     * when using renderer trees, "jqUnit.sortOldRendererComponentTree" can be used for canonFunc", or in the case
      * of a resourceSpec, "jqUnit.canonicaliseFunctions". **/
 
     jqUnit.assertCanoniseEqual = function (message, expected, actual, canonFunc) {

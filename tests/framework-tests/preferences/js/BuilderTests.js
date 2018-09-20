@@ -43,6 +43,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var actualOpt = fluid.get(grade, optPath);
             if (optPath === "members") {
                 actualOpt = fluid.transform(actualOpt, fluid.tests.mergeMembers);
+            } else if (optPath === "components") {
+                actualOpt = jqUnit.flattenMergedSubcomponents(actualOpt);
             }
             if (optPath !== "gradeNames") {
                 jqUnit.assertDeepEq("The options at path '" + optPath + "'' is set correctly", opt, actualOpt);

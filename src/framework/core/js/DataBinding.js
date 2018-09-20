@@ -438,7 +438,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var priorityIndex = 0;
         components.forEach(function (component) {
             component.forEach(function (recel) {
-                recel.initPriority = recel.completeOnInit ? Math.Infinity : priorityIndex++;
+                recel.initPriority = recel.completeOnInit ? Infinity : priorityIndex++;
             });
         });
 

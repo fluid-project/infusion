@@ -2667,6 +2667,8 @@ var fluid = fluid || fluid_3_0_0;
         },
         components: {
             noexpand: true,
+            // We use this dim mergePolicy since i) there is enough room in the records for provenance information, and
+            // ii) noone can try to consume this, e.g. to find type/createOnEvent until it hits a potentia anyway
             func: fluid.deferringMergePolicy
         },
         dynamicComponents: {
