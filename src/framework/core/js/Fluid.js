@@ -312,7 +312,6 @@ var fluid = fluid || fluid_3_0_0;
     /** Undo the effect of the most recent "setLogging", returning the logging system to its previous state
      * @return {LogLevel} The logLevel that was just popped
      */
-    // TODO: This function is documented, but untested
     fluid.popLogging = function () {
         var togo = logLevelStack.length === 1 ? logLevelStack[0] : logLevelStack.shift();
         fluid.defeatLogging = !fluid.isLogging();

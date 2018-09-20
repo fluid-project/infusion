@@ -1061,4 +1061,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
     });
 
+    fluid.tests.withNoTryCatch = function (notrycatch, func) {
+        var oldnotrycatch = fluid.notrycatch;
+        fluid.notrycatch = notrycatch;
+        try {
+            func();
+        } finally {
+            fluid.notrycatch = oldnotrycatch;
+        }
+    };
+
+    fluid.tests.tryCatchNormal = function () {
+        // normal control flow
+        var record = [];
+        fluid.tryCatch(function () {
+            record.push(1);
+        }, null, function () {
+            record.push(2);
+        });
+        jqUnit.assertDeepEq("Should have executed try followed by finally", [1, 2], record);
+    };
+
+    jqUnit.test("fluid.tryCatch - normal case", function () {
+        fluid.tests.withNoTryCatch(false, function () {
+            fluid.tests.tryCatchNormal();
+            var record = [];
+            fluid.tryCatch(function () {
+                record.push(1);
+                throw 2;
+            }, function (e) {
+                record.push(e);
+            }, function () {
+                record.push(3);
+            });
+            jqUnit.assertDeepEq("Should have executed try, propagated exception to catch, followed by finally",
+                [1, 2, 3], record);
+        });
+    });
+
+    jqUnit.test("fluid.tryCatch - defeated case", function () {
+        fluid.tests.withNoTryCatch(true, function () {
+            jqUnit.expect(2);
+            fluid.tests.tryCatchNormal();
+            var record = [];
+            try {
+                fluid.tryCatch(function () {
+                    record.push(1);
+                    throw 2;
+                }, function (e) {
+                    record.push(e);
+                }, function () {
+                    record.push(3);
+                });
+            } catch (e) {
+                record.push(e);
+                jqUnit.assertDeepEq("Should have executed try, skipped catch and finally, propagating exception out",
+                    [1, 2], record);
+            }
+        });
+    });
+
+    jqUnit.test("isInteger tests", function () {
+        var fixtures = [
+        {value: null, isInt: false},
+        {value: NaN,  isInt: false},
+        {value: Infinity, isInt: false},
+        {value: "1",  isInt: false},
+        {value: {},   isInt: false},
+        {value: true, isInt: false},
+        {value: [],   isInt: false},
+        {value: 3.5,  isInt: false},
+        {value: 4,    isInt: true},
+        {value: -4,   isInt: true},
+        {value: 0,    isInt: true}
+        ];
+        fixtures.forEach(function (fixture, index) {
+            jqUnit.assertEquals("IsInteger fixture " + index, fluid.isInteger(fixture.value), fixture.isInt);
+        });
+    });
+
 })(jQuery);
