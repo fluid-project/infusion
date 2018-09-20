@@ -1,5 +1,5 @@
 ﻿
 .demo-container {
-    margin-top: 5em;
-    min-width: 25em;
+    margin-top: 4em;
+    border: 1rem solid transparent;
 }

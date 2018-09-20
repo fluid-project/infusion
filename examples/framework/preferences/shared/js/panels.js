@@ -80,7 +80,6 @@ var example = example || {};
                         value: "{example.panels.vol}.model.volume",
                         range: "{example.panels.vol}.options.range"
                     },
-                    sliderOptions: "{example.panels.vol}.options.sliderOptions",
                     attrs: {
                         "aria-labelledby": "{example.panels.vol}.options.panelOptions.labelId"
                     }
@@ -129,7 +128,6 @@ var example = example || {};
                         value: "{example.panels.wpm}.model.wordsPerMin",
                         range: "{example.panels.wpm}.options.range"
                     },
-                    sliderOptions: "{example.panels.wpm}.options.sliderOptions",
                     attrs: {
                         "aria-labelledby": "{example.panels.wpm}.options.panelOptions.labelId"
                     }
@@ -178,7 +176,6 @@ var example = example || {};
                         value: "{example.panels.cursor}.model.cursorMult",
                         range: "{example.panels.cursor}.options.range"
                     },
-                    sliderOptions: "{example.panels.cursor}.options.sliderOptions",
                     attrs: {
                         "aria-labelledby": "{example.panels.cursor}.options.panelOptions.labelId"
                     }
@@ -227,7 +224,6 @@ var example = example || {};
                         value: "{example.panels.magFactor}.model.mag",
                         range: "{example.panels.magFactor}.options.range"
                     },
-                    sliderOptions: "{example.panels.magFactor}.options.sliderOptions",
                     attrs: {
                         "aria-labelledby": "{example.panels.magFactor}.options.panelOptions.labelId"
                     }

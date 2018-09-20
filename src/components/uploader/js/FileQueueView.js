@@ -203,7 +203,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         row.fadeIn("slow");
         fluid.uploader.fileQueueView.createProgressorFromTemplate(that, row);
         that.refreshView();
-        that.scroller.scrollTo("100%");
+        that.scroller.scrollTo("max");
     };
 
     // Toggle keyboard row handlers on and off depending on the uploader state
