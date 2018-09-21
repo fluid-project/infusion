@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -24,19 +24,14 @@ var example = example || {};
      * The "speak text" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.speak", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "example.speakText": {
-                "model.speakText": "value"
+                "model.value": "value"
             }
         },
-        selectors: {
-            bool: ".mpe-speakText",
-            speakTextDescr: ".mpe-speakText-descr"
-        },
         protoTree: {
-            speakTextDescr: {messagekey: "speakText"},
-            bool: "${speakText}"
+            description: {messagekey: "speakText"}
         }
     });
 
@@ -44,20 +39,14 @@ var example = example || {};
      * The "increase size" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.incSize", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "example.increaseSize": {
-                "model.incSize": "value"
+                "model.value": "value"
             }
         },
-        selectors: {
-            bool: ".mpe-incSize",
-            label: ".mpe-incSize-label",
-            incSizeDescr: ".mpe-incSize-descr"
-        },
         protoTree: {
-            incSizeDescr: {messagekey: "incSize"},
-            bool: "${incSize}"
+            description: {messagekey: "incSize"}
         }
     });
 
@@ -86,11 +75,10 @@ var example = example || {};
                 createOnEvent: "onDomBind",
                 options: {
                     model: {
-                        value: "{example.panels.vol}.model.volume"
+                        value: "{example.panels.vol}.model.volume",
+                        range: "{example.panels.vol}.options.range"
                     },
-                    range: "{example.panels.vol}.options.range",
-                    sliderOptions: "{example.panels.vol}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.vol}.options.panelOptions.labelId"
                     }
                 }
@@ -135,11 +123,10 @@ var example = example || {};
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{example.panels.wpm}.model.wordsPerMin"
+                        value: "{example.panels.wpm}.model.wordsPerMin",
+                        range: "{example.panels.wpm}.options.range"
                     },
-                    range: "{example.panels.wpm}.options.range",
-                    sliderOptions: "{example.panels.wpm}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.wpm}.options.panelOptions.labelId"
                     }
                 }
@@ -184,11 +171,10 @@ var example = example || {};
                 createOnEvent: "onDomBind",
                 options: {
                     model: {
-                        value: "{example.panels.cursor}.model.cursorMult"
+                        value: "{example.panels.cursor}.model.cursorMult",
+                        range: "{example.panels.cursor}.options.range"
                     },
-                    range: "{example.panels.cursor}.options.range",
-                    sliderOptions: "{example.panels.cursor}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.cursor}.options.panelOptions.labelId"
                     }
                 }
@@ -233,11 +219,10 @@ var example = example || {};
                 createOnEvent: "onDomBind",
                 options: {
                     model: {
-                        value: "{example.panels.magFactor}.model.mag"
+                        value: "{example.panels.magFactor}.model.mag",
+                        range: "{example.panels.magFactor}.options.range"
                     },
-                    range: "{example.panels.magFactor}.options.range",
-                    sliderOptions: "{example.panels.magFactor}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.magFactor}.options.panelOptions.labelId"
                     }
                 }

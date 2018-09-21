@@ -109,8 +109,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * An impl of a page strategy that will always display same number of page links (including skip place holders).
-     * @param   endLinkCount    int     The # of elements first and last trunks of elements
-     * @param   midLinkCount    int     The # of elements from beside the selected #
+     * @param   {Number} endLinkCount  - The number of elements first and last trunks of elements.
+     * @param   {Number} midLinkCount  - The number of elements from beside the selected number.
+     * @return {Function} - A paging function.
      * @author  Eric Dalquist
      */
     fluid.pager.consistentGappedPageStrategy = function (endLinkCount, midLinkCount) {

@@ -2,9 +2,11 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
         <title>Overview Panel Demo</title>
         <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
 
@@ -18,13 +20,14 @@
         <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
         <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
 
     </head>
     <body>
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
 
         <script type="text/javascript">
             fluid.overviewPanel(".flc-overviewPanel", {
@@ -51,8 +54,8 @@
             });
         </script>
 
-        <section class="row">
-            <div class="large-centered">
+        <section class="fl-demo-container">
+            <div class="fl-demo-content">
                 <h1>Nullam in Fringilla</h1>
 
                 <p>Nam hendrerit ante dolor, quis sodales ligula tincidunt vitae. Nullam in fringilla elit, ut interdum massa. Sed imperdiet ultrices arcu. Pellentesque ut eros mauris. Etiam placerat ultrices sapien at dignissim. Vivamus erat nunc, porta vitae purus in, dignissim pellentesque libero. Aliquam erat volutpat. </p>

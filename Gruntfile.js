@@ -23,7 +23,7 @@ var execSync = require("child_process").execSync;
  * @param {String} command - the command to execute
  * @param {Object} options - optional arguments "verbose" will output a full stack trace when an error occurs,
  *                           "defaultValue" will set the default return value, useful in case of errors or when a result may be an empty string.
- * @returns {String} - returns a string representation of the result of the command or the defaultValue.
+ * @return {String} - returns a string representation of the result of the command or the defaultValue.
  */
 var getFromExec = function (command, options) {
     var result = options.defaultValue;
@@ -46,7 +46,7 @@ var getFromExec = function (command, options) {
  * infusion-all.js -> infusion-all.min.js
  * infusion-all.js.map -> infusion-all.min.js.map
  * @param {String} fileName - filename string to add '.min' to
- * @returns the modified filename string
+ * @return {String} The modified filename string.
  */
 var addMin = function (fileName) {
     var segs = fileName.split(".");
@@ -63,7 +63,8 @@ var addMin = function (fileName) {
  * to filename string; won't do anything to strings that already
  * include ".min"
  * @param {String} dest - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
- * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
+ * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property\
+ * @return {String} - The minified version of the original filename.
 */
 var addMinifyToFilename = function (dest, src) {
     return dest + addMin(src);
@@ -91,13 +92,24 @@ module.exports = function (grunt) {
         clean: {
             build: "build",
             products: "products",
-            stylus: "src/framework/preferences/css/*.css",
+            stylus: ["src/components/switch/css/*.css", "src/framework/preferences/css/*.css"],
             stylusDist: "dist/assets/**/stylus", // removes the empty stylus directory from the distribution
             ciArtifacts: ["*.tap"],
             dist: "dist",
             postBuild: {
                 files: [{}]
-            }
+            },
+            dependencies: [
+                "src/lib/fonts",
+                "src/lib/jquery/core",
+                "src/lib/jquery/plugins",
+                "src/lib/jquery/ui/js",
+                "src/lib/normalize",
+                "src/lib/url-polyfill",
+                "tests/lib/jquery-simulate",
+                "tests/lib/mockjax",
+                "tests/lib/sinon"
+            ]
         },
         copy: {
             all: {
@@ -154,6 +166,89 @@ module.exports = function (grunt) {
                     cwd: "build/",
                     src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**"],
                     dest: "dist/assets/"
+                }]
+            },
+            dependencies: {
+                files: [{
+                    src: "node_modules/opensans-webkit/fonts/OpenSans-*.ttf",
+                    dest: "src/lib/fonts/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery/dist/jquery.js",
+                    dest: "src/lib/jquery/core/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery.scrollto/jquery.scrollTo.js",
+                    dest: "src/lib/jquery/plugins/scrollTo/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.js",
+                    dest: "src/lib/jquery/plugins/touchPunch/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/themes/base/images/*.png"
+                    ],
+                    dest: "src/lib/jquery/ui/css/default-theme/images",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/themes/base/core.css",
+                        "node_modules/jquery-ui/themes/base/theme.css",
+                        "node_modules/jquery-ui/themes/base/tooltip.css"
+                    ],
+                    dest: "src/lib/jquery/ui/css/default-theme/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: [
+                        "node_modules/jquery-ui/ui/version.js",
+                        "node_modules/jquery-ui/ui/widget.js",
+                        "node_modules/jquery-ui/ui/plugin.js",
+                        "node_modules/jquery-ui/ui/safe-active-element.js",
+                        "node_modules/jquery-ui/ui/safe-blur.js",
+                        "node_modules/jquery-ui/ui/position.js",
+                        "node_modules/jquery-ui/ui/data.js",
+                        "node_modules/jquery-ui/ui/keycode.js",
+                        "node_modules/jquery-ui/ui/scroll-parent.js",
+                        "node_modules/jquery-ui/ui/unique-id.js",
+                        "node_modules/jquery-ui/ui/widgets/mouse.js",
+                        "node_modules/jquery-ui/ui/widgets/draggable.js",
+                        "node_modules/jquery-ui/ui/widgets/tooltip.js"
+                    ],
+                    dest: "src/lib/jquery/ui/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/normalize.css/normalize.css",
+                    dest: "src/lib/normalize/css/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/url-polyfill/url-polyfill.js",
+                    dest: "src/lib/url-polyfill/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-mockjax/dist/jquery.mockjax.js",
+                    dest: "tests/lib/mockjax/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-simulate/jquery.simulate.js",
+                    dest: "tests/lib/jquery-simulate/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/sinon/pkg/sinon.js",
+                    dest: "tests/lib/sinon/js/",
+                    expand: true,
+                    flatten: true
                 }]
             }
         },
@@ -249,11 +344,13 @@ module.exports = function (grunt) {
                 files: "<%= compress.all.files %>"
             }
         },
-        eslint: {
-            all: ["src/**/*.js", "tests/**/*.js", "demos/**/*.js", "examples/**/*.js", "*.js"]
-        },
-        jsonlint: {
-            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
+        lintAll: {
+            sources: {
+                md: [ "*.md", "!./src/**/lib/**/*.md", "!./demos/**/lib/**/*.md", "!./tests/**/lib/**/*.md"],
+                js: ["*.js", "!./src/**/lib/**/*.js", "!./demos/**/lib/**/*.js", "!./dist/**/*.js", "!./tests/**/lib/**/*.js", "!./tests/**/infusion-1.5.js"],
+                json: ["*.json", "./.nycrc", "!./src/**/lib/**/*.json", "!./dist/**/*.json"],
+                other: ["./.*"]
+            }
         },
         stylus: {
             compile: {
@@ -286,11 +383,6 @@ module.exports = function (grunt) {
             buildStylus: {
                 files: ["src/**/css/stylus/*.styl", "src/**/css/stylus/utils/*.styl"],
                 tasks: "buildStylus"
-            }
-        },
-        shell: {
-            runTests: {
-                command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
             }
         },
         distributions:
@@ -335,6 +427,30 @@ module.exports = function (grunt) {
                     exclude: "jQuery, jQueryUI",
                     compress: true
                 }
+            },
+            "uio": {
+                options: {
+                    include: "uiOptions"
+                }
+            },
+            "uio.min": {
+                options: {
+                    include: "uiOptions",
+                    compress: true
+                }
+            },
+            "uio-no-jquery": {
+                options: {
+                    include: "uiOptions",
+                    exclude: "jQuery, jQueryUI"
+                }
+            },
+            "uio-no-jquery.min": {
+                options: {
+                    include: "uiOptions",
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
+                }
             }
         }
     });
@@ -345,12 +461,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
-    grunt.loadNpmTasks("fluid-grunt-eslint");
-    grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
-    grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("gpii-grunt-lint-all");
 
     // Custom tasks:
 
@@ -384,6 +498,7 @@ module.exports = function (grunt) {
         var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
+            "copy:dependencies",
             "lint",
             "stylus:compile",
             "modulefiles:" + target,
@@ -431,11 +546,13 @@ module.exports = function (grunt) {
     grunt.registerTask("buildDists", "Tasks to run before publishing to NPM", function (target) {
         var tasks = [
             "clean",
+            "copy:dependencies",
             "lint",
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
             "verifyDistJS",
-            "verifyDistCSS"
+            "verifyDistCSS",
+            "buildStylus" // put back stylus files needed for development
         ];
         grunt.task.run(tasks);
     });
@@ -445,7 +562,7 @@ module.exports = function (grunt) {
     * @param {String} dir - base directory expected to contain files
     * @param {Array} fileList - array of string filenames to check; may include
     * full paths and thereby search subdirectories of dir
-    * @returns a report structure for further processing
+    * @return {Object} A report structure for further processing.
     */
     var verifyFiles = function (dir, fileList) {
         var report = {
@@ -526,13 +643,12 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:stylusDist", "clean:ciArtifacts"]);
+    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylusDist", "clean:ciArtifacts"]);
     grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
 
-    grunt.registerTask("lint", "Apply eslint and jsonlint", ["eslint", "jsonlint"]);
-
-    grunt.registerTask("tests", "Run tests", ["shell:runTests"]);
+    grunt.registerTask("lint", "Perform all standard lint checks.", ["lint-all"]);
+    grunt.registerTask("loadDependencies", "Load lib files from node_modules", ["clean:dependencies", "copy:dependencies"]);
 };

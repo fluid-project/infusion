@@ -7,53 +7,67 @@
         <!--  This is the jqUnit test css file -->
         <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
-        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/lib/jquery/ui/js/version.js"></script>
+        <script src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
 
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidPromises.js"></script>
+        <script src="../../../../src/framework/core/js/DataSource.js"></script>
+        <script src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/RemoteModel.js"></script>
+        <script src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
 
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/URLUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
-        <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
-        <script type="text/javascript" src="../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
-        <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
-        <script type="text/javascript" src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
+        <script src="../../../../src/framework/preferences/js/URLUtilities.js"></script>
+        <script src="../../../../src/framework/preferences/js/Store.js"></script>
+        <script src="../../../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script src="../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script src="../../../../src/framework/preferences/js/ArrowScrolling.js"></script>
+        <script src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script src="../../../../src/framework/preferences/js/Panels.js"></script>
+        <script src="../../../../src/framework/preferences/js/Enactors.js"></script>
+        <script src="../../../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
+        <script src="../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script src="../../../../src/components/switch/js/Switch.js"></script>
+        <script src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script src="../../../../src/framework/preferences/js/Builder.js"></script>
+        <script src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
 
         <!--  These are the jqUnit test framework js files -->
-        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+        <script src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
 
         <!--  These are tests that have been written using this page as data and test supports -->
-        <script type="text/javascript" src="../js/UIOptionsTests.js"></script>
+        <script src="../js/UIOptionsTests.js"></script>
 
     </head>
     <body>
     <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
-    <h1 id="qunit-header">UIOptions Test Suite</h1>
+    <h1 id="qunit-header">UI Options Test Suite</h1>
     <h2 id="qunit-banner"></h2>
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
@@ -67,8 +81,23 @@
             <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
             <div class="fl-panelBar">
                 <span class="fl-prefsEditor-buttons">
-                    <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
-                    <button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                </span>
+            </div>
+        </div>
+        <!-- END markup for Preference Editor -->
+
+        <!-- BEGIN markup for Preference Editor -->
+        <div class="flc-prefsEditor-separatedPanel-localized fl-prefsEditor-separatedPanel">
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
+
+            <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
+            <div class="fl-panelBar">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
                 </span>
             </div>
         </div>

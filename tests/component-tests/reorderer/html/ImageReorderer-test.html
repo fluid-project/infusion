@@ -15,33 +15,49 @@
     <link type="text/css" rel="stylesheet" media="all" href="../css/TestStyles.css" />
 
     <!--  These are the required javascript modules for the imageReorderer -->
-    <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
-    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
-    <script type="text/javascript" src="../../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
-    <script type="text/javascript" src="../../../../src/components/reorderer/js/GeometricManager.js"></script>
-    <script type="text/javascript" src="../../../../src/components/reorderer/js/Reorderer.js"></script>
-    <script type="text/javascript" src="../../../../src/components/reorderer/js/ImageReorderer.js"></script>
+    <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/version.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/widget.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/plugin.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/safe-active-element.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/safe-blur.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/scroll-parent.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/position.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/unique-id.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/mouse.js"></script>
+    <script src="../../../../src/lib/jquery/ui/js/draggable.js"></script>
+
+    <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+    <script src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script src="../../../../src/framework/core/js/Fluid.js"></script>
+    <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+    <script src="../../../../src/framework/core/js/FluidView.js"></script>
+    <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+    <script src="../../../../src/framework/core/js/MessageResolver.js"></script>
+    <script src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+    <script src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+    <script src="../../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
+    <script src="../../../../src/components/reorderer/js/GeometricManager.js"></script>
+    <script src="../../../../src/components/reorderer/js/Reorderer.js"></script>
+    <script src="../../../../src/components/reorderer/js/ImageReorderer.js"></script>
 
     <!--  These are the jqUnit test js files -->
-    <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
-    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+    <script src="../../../lib/qunit/js/qunit.js"></script>
+    <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
 
     <!--  These are test-time dependencies. -->
-    <script type="text/javascript" src="../js/ImageReordererTestConstants.js"></script>
-    <script type="text/javascript" src="../js/ReordererTestUtils.js"></script>
+    <script src="../js/ImageReordererTestConstants.js"></script>
+    <script src="../js/ReordererTestUtils.js"></script>
+
+    <!-- Required to send coverage data at the end of the test run on this page -->
+    <script src="/testem.js"></script>
+    <script src="/coverage/client/coverageSender.js"></script>
 
     <!--  These are the tests -->
-    <script type="text/javascript" src="../js/ImageReordererTests.js"></script>
-    <script type="text/javascript" src="../js/ReorderGridTests.js"></script>
+    <script src="../js/ImageReordererTests.js"></script>
+    <script src="../js/ReorderGridTests.js"></script>
 
   </head>
   <body>

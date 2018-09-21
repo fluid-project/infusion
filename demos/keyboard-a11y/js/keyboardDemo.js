@@ -41,7 +41,7 @@ var demo = demo || {};
     // Main keyboard accessibility plugin functions
     //
 
-    /**
+    /*
      * Ensure that the image thumbnails can be navigated using the keyboard
      */
     demo.imageViewer.makeThumbnailsNavigable = function (thumbContainer, selectedStyle) {
@@ -64,7 +64,7 @@ var demo = demo || {};
         });
     };
 
-    /**
+    /*
      * Ensure that the image thumbnails can be activated using the keyboard
      */
     demo.imageViewer.makeThumbnailsActivatable = function (thumbContainer, thumbnails, selectFn) {

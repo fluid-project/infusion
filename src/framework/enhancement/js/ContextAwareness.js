@@ -63,16 +63,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Takes an object whose keys are check context names and whose values are check records, designating a collection of context markers which might be registered at a location
      * in the component tree.
-
-     * @param checkHash {Object} The keys in this structure are the context names to be supplied if the check passes, and the values are check records.
+     *
+     * @param {Object} checkHash - The keys in this structure are the context names to be supplied if the check passes, and the values are check records.
      * A check record contains:
      *    ONE OF:
      *    value {Any} [optional] A literal value name to be attached to the context
      *    func {Function} [optional] A zero-arg function to be called to compute the value
      *    funcName {String} [optional] The name of a zero-arg global function which will compute the value
      * If the check record consists of a Number or Boolean, it is assumed to be the value given to "value".
-     * @param path {String|Array} [optional] The path in the component tree at which the check markers are to be registered. If omitted, "" is assumed
-     * @param instantiator {Instantiator} [optional] The instantiator holding the component tree which will receive the markers. If omitted, use `fluid.globalInstantiator`.
+     * @param {String|Array} [path] - [optional] The path in the component tree at which the check markers are to be registered. If omitted, "" is assumed
+     * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component tree which will receive the markers. If omitted, use `fluid.globalInstantiator`.
      */
     fluid.contextAware.makeChecks = function (checkHash, path, instantiator) {
         var checkOptions = fluid.contextAware.performChecks(checkHash);
@@ -81,9 +81,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Forgets a check made at a particular level of the component tree.
-     * @param markerNames {Array of String} The marker typeNames whose check values are to be forgotten
-     * @param path {String|Array} [optional] The path in the component tree at which the check markers are to be removed. If omitted, "" is assumed
-     * @param instantiator {Instantiator} [optional] The instantiator holding the component tree the markers are to be removed from. If omitted, use `fluid.globalInstantiator`.
+     *
+     * @param {String[]} markerNames - The marker typeNames whose check values are to be forgotten.
+     * @param {String|String[]} [path] - [optional] The path in the component tree at which the check markers are to be removed. If omitted, "" is assumed
+     * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component tree the markers are to be removed from. If omitted, use `fluid.globalInstantiator`.
      */
     fluid.contextAware.forgetChecks = function (markerNames, path, instantiator) {
         instantiator = instantiator || fluid.globalInstantiator;
@@ -119,7 +120,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             //         gradeNames: gradeNames which will be output,
             //         priority: String/Number for priority of check [optional]
             //         equals: Value to be compared to contextValue [optional - default is `true`]
-            //     defaultGradeNames: // String or Array of String holding default gradeNames which will be output if no check matches [optional]
+            //     defaultGradeNames: // String or String[] holding default gradeNames which will be output if no check matches [optional]
             //     priority: // Number or String encoding priority relative to other records (same format as with event listeners) [optional]
             // }
         },
@@ -178,7 +179,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  checkName {String} the name of the check within the contextAwareness record to receive the record - this will be a simple string
      *  record {Object} the record to be broadcast into contextAwareness - should contain entries
      *      contextValue {IoC expression} the context value to be checked to activate the adaptation
-     *      gradeNames {String/Array of String} the grade names to be supplied to the adapting target (matching advisedName)
+     *      gradeNames {String/String[]} the grade names to be supplied to the adapting target (matching advisedName)
+     *
+     * @param {Object} options - The options to use when making an adaptation.  See above for supported sub-options.
      */
     fluid.contextAware.makeAdaptation = function (options) {
         fluid.expect("fluid.contextAware.makeAdaptation", options, ["distributionName", "targetName", "adaptationName", "checkName", "record"]);

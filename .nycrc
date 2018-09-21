@@ -1,0 +1,16 @@
+{
+    "include": [
+        "**/*.js"
+    ],
+    "exclude": [
+        "tests",
+        "reports",
+        "coverage",
+        "examples",
+        "Gruntfile.js"
+    ],
+    "reporter": "none",
+    "report-dir": "reports",
+    "temp-directory": "coverage",
+    "clean": false
+}

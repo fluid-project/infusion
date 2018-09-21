@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>SeparatedPanel Preferences Editor Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidPromises.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataSource.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/RemoteModel.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/MessageResolver.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/URLUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/ArrowScrolling.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../../../src/components/switch/js/Switch.js"></script>
+        <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/PrefsEditorTestsCommon.js"></script>
+        <script type="text/javascript" src="../js/IntegrationTestsCommon.js"></script>
+        <script type="text/javascript" src="../js/SeparatedPanelPrefsEditorResponsiveTests.js"></script>
+
+    </head>
+    <body>
+    <h1 id="qunit-header">SeparatedPanel Preferences Editor Responsive Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <!-- <div id="qunit-fixture"> -->
+        <!--
+            The tests are run in an iframe so that the size of the document can be set to trigger the responsive
+            layouts.
+
+            We require separate iframes for each of the tests due to IE 11 and Edge throwing a "Permission Denied"
+            error when trying to setup the iframe for the second run. This was likely caused by reseting the iframe's
+            source and may be related to https://github.com/jquery/jquery/issues/1831
+        -->
+        <iframe class="flc-iframeSetup-responsiveTests"></iframe>
+        <iframe class="flc-iframeSetup-panelIndexTests"></iframe>
+    <!-- </div> -->
+
+    </body>
+</html>

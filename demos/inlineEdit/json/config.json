@@ -10,6 +10,6 @@
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/inlineEdit",
         "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/InlineEditAPI.html",
-        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Simple%20Tex%20Inline%20Edit%20feedback"
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Simple%20Text%20Inline%20Edit%20feedback"
     }
 }

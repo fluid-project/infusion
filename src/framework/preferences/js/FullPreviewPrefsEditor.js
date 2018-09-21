@@ -41,12 +41,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     },
                     listeners: {
-                        "onReady.boilOnPrefsEditorReady": "{fullPreview}.events.onPrefsEditorReady"
+                        "onReady.boil": {
+                            listener: "{prefsEditorLoader}.events.onPrefsEditorReady"
+                        }
                     },
                     distributeOptions: {
-                        source: "{that}.options.preview",
-                        removeSource: true,
-                        target: "{that > preview}.options"
+                        "fullPreview.prefsEditor.preview": {
+                            source: "{that}.options.preview",
+                            removeSource: true,
+                            target: "{that > preview}.options"
+                        }
                     }
                 }
             }
@@ -62,19 +66,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: "{that}"
             }
         },
-        distributeOptions: [{
-            source: "{that}.options.outerUiEnhancerOptions",
-            target: "{that enhancer}.options"
-        }, {
-            source: "{that}.options.preview",
-            target: "{that preview}.options"
-        }, {
-            source: "{that}.options.previewEnhancer",
-            target: "{that enhancer}.options"
-        }, {
-            source: "{that}.options.outerUiEnhancerGrades",
-            target: "{that enhancer}.options.gradeNames"
-        }]
+        distributeOptions: {
+            "fullPreview.enhancer.outerUiEnhancerOptions": {
+                source: "{that}.options.outerUiEnhancerOptions",
+                target: "{that enhancer}.options"
+            },
+            "fullPreview.enhancer.previewEnhancer": {
+                source: "{that}.options.previewEnhancer",
+                target: "{that enhancer}.options"
+            },
+            "fullPreviw.preview": {
+                source: "{that}.options.preview",
+                target: "{that preview}.options"
+            },
+            "fullPreview.enhancer.outerUiEnhancerGrades": {
+                source: "{that}.options.outerUiEnhancerGrades",
+                target: "{that enhancer}.options.gradeNames"
+            }
+        }
     });
 
 })(jQuery, fluid_3_0_0);

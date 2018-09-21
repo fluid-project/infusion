@@ -14,7 +14,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    /**
+    /*
      * Returns the absolute position of a supplied DOM node in pixels.
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
      * At the original time of writing considerably quicker and more reliable than jQuery.offset()
@@ -32,7 +32,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /**
+    /*
      * Cleanse the children of a DOM node by removing all <script> tags.
      * This is necessary to prevent the possibility that these blocks are
      * reevaluated if the node were reattached to the document.
@@ -50,8 +50,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Inserts newChild as the next sibling of refChild.
-     * @param {Object} newChild
-     * @param {Object} refChild
+     * @param {Object} newChild - The new child element to insert.
+     * @param {Object} refChild - The existing child element.
      */
     fluid.dom.insertAfter = function (newChild, refChild) {
         var nextSib = refChild.nextSibling;
@@ -66,10 +66,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Determine whether a node's text content is entirely whitespace.
      *
-     * @param node  A node implementing the |CharacterData| interface (i.e.,
-     *              a |Text|, |Comment|, or |CDATASection| node
-     * @return     True if all of the text content of |nod| is whitespace,
-     *             otherwise false.
+     * @param {Object} node - A node implementing the |CharacterData| interface (i.e., a |Text|, |Comment|, or |CDATASection| node).
+     * @return {Boolean} - True if all of the text content of `node` is whitespace, otherwise false.
      */
     fluid.dom.isWhitespaceNode = function (node) {
        // Use ECMA-262 Edition 3 String and RegExp features
@@ -79,11 +77,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Determine if a node should be ignored by the iterator functions.
      *
-     * @param nod  An object implementing the DOM1 |Node| interface.
-     * @return     true if the node is:
-     *                1) A |Text| node that is all whitespace
-     *                2) A |Comment| node
-     *             and otherwise false.
+     * @param {Object} node - An object implementing the DOM1 |Node| interface.
+     * @return {Boolean} - Returns `true` if the node is:
+     *                     1) A |Text| node that is all whitespace
+     *                     2) A |Comment| node
+     *                     and otherwise `false`.
      */
     fluid.dom.isIgnorableNode = function (node) {
         return (node.nodeType === 8) || // A comment node

@@ -190,6 +190,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("fluid.values", [1, null, false, "Sneeze"], fluid.values(seek1));
     });
 
+    jqUnit.test("fluid.keys and fluid.values with prototype chain", function () {
+        var proto = {
+            a: 1
+        };
+        var Derived = function () {};
+        Derived.prototype = proto;
+        var derived = new Derived();
+        derived.b = 2;
+
+        jqUnit.assertDeepEq("fluid.keys", ["a", "b"], fluid.keys(derived).sort());
+        jqUnit.assertDeepEq("fluid.values", [1, 2], fluid.values(derived).sort());
+    });
+
     jqUnit.test("null iteration", function () {
         jqUnit.expect(2);
 
@@ -294,6 +307,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    fluid.tests.debounceTests = [1, 2, 3, 4 ,5];
+
+    jqUnit.asyncTest("fluid.debounce", function () {
+        var result = {};
+        var lead = fluid.debounce(function (val) {
+            result.lead = val;
+        }, 300, true);
+        var trail = fluid.debounce(function (val) {
+            result.trail = val;
+        }, 300);
+
+        setTimeout(function () {
+            jqUnit.assertEquals("The first value should be returned when accepting the leading response", fluid.tests.debounceTests[0], result.lead);
+            jqUnit.assertEquals("The last value should be returned when accepting the trailing response", fluid.tests.debounceTests[4], result.trail);
+            jqUnit.start();
+        }, 500);
+
+        fluid.each(fluid.tests.debounceTests, lead);
+        fluid.each(fluid.tests.debounceTests, trail);
+    });
+
     jqUnit.test("merge", function () {
         jqUnit.expect(8);
 
@@ -355,6 +389,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var array = [1, "thing", true, null];
         var copy = fluid.copy(array);
         jqUnit.assertDeepEq("Array copy", array, copy);
+    });
+
+    jqUnit.test("flattenObjectPaths: deep values", function () {
+        var originalObject = {
+            path: {
+                to: {
+                    value: "foo"
+                }
+            },
+            otherPath: {
+                to: {
+                    otherValue: "bar"
+                }
+            }
+        };
+        var output = fluid.flattenObjectPaths(originalObject);
+        var expectedValue = {
+            "path": "[object Object]",
+            "path.to": "[object Object]",
+            "path.to.value": "foo",
+            "otherPath": "[object Object]",
+            "otherPath.to": "[object Object]",
+            "otherPath.to.otherValue": "bar"
+        };
+        jqUnit.assertDeepEq("Deep values should be flattened correctly.", expectedValue, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: reflattening", function () {
+        var originalObject = { "deep.path.to.value": "foo"};
+        var output = fluid.flattenObjectPaths(originalObject);
+        jqUnit.assertDeepEq("A preflattened object should remain unchanged when flattened again.", originalObject, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: top-level array", function () {
+        var output = fluid.flattenObjectPaths(["monkey", "fighting", "snakes"]);
+        jqUnit.assertDeepEq("A top-level array should be flattened correctly.", { 0: "monkey", 1: "fighting", 2: "snakes"}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: deep array", function () {
+        var output = fluid.flattenObjectPaths({ "plane": ["monday", "to", "friday"]});
+        jqUnit.assertDeepEq("A deep array should be flattened correctly.", { "plane": "monday,to,friday", "plane.0": "monday", "plane.1": "to", "plane.2": "friday"}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: deep empty objects", function () {
+        var output = fluid.flattenObjectPaths({ deeply: { empty: {}, nonEmpty: true }});
+        jqUnit.assertDeepEq("A deep empty object should be handled appropriately.", { "deeply": "[object Object]", "deeply.empty": "[object Object]", "deeply.nonEmpty": true }, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: empty object", function () {
+        var output = fluid.flattenObjectPaths({});
+        jqUnit.assertDeepEq("A top-level empty object should be handled correctly.", {}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: root value is null", function () {
+        var output = fluid.flattenObjectPaths(null);
+        jqUnit.assertDeepEq("A top-level null value should be handled correctly.", {}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: deep value is null", function () {
+        var output = fluid.flattenObjectPaths({ deep: { value: null} });
+        jqUnit.assertDeepEq("A top-level null value should be handled correctly.", { "deep.value": null, "deep": "[object Object]" }, output);
     });
 
     jqUnit.test("stringTemplate: greedy", function () {
@@ -514,6 +609,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
 
+    jqUnit.test("stringTemplate: EL paths (FLUID-6237)", function () {
+        var template = "Deep EL paths %deep.path.to.value.";
+        var data = {
+            deep: {
+                path: {
+                    to: {
+                        value: "are working"
+                    }
+                }
+            }
+        };
+        var expected = "Deep EL paths are working.";
+        var result = fluid.stringTemplate(template, data);
+        jqUnit.assertEquals("The templat strings should match.", expected, result);
+    });
 
     var testDefaults = {
         gradeNames: "fluid.component",
@@ -634,6 +744,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return 2;
         });
         jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
+    });
+
+    jqUnit.test("fluid.get for FLUID-6217 - get ending at falsy value", function () {
+        jqUnit.assertUndefined("Simple 0-based fetch", fluid.get([0,1,2],"0.value"));
+        jqUnit.assertUndefined("Nested 0-based fetch", fluid.get([0,1,2],"0.any.path.at.all"));
+        jqUnit.assertUndefined("Nested false-based fetch", fluid.get([0, false, 2],"1.foo.bar.baz"));
+        jqUnit.assertUndefined("Fetch from hash", fluid.get({foo:false}, "foo.bar.baz"));
     });
 
     jqUnit.test("Globals", function () {

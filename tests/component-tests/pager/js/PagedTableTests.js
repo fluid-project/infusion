@@ -141,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ];
 
 
-    /** Convenience strategy pager creator **/
+    /* Convenience strategy pager creator */
     var strategyRenderer = function (n, pageSize, pageList) {
         var dataModel = {};
         dataModel.pets = [];
@@ -331,7 +331,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
 
-        /**
+        /*
          * Test everyPageStrategy Strategy
          */
         jqUnit.test("Pager everyPageStrategy", function () {
@@ -355,7 +355,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             pager.destroy();
         });
 
-        /**
+        /*
          * Test gappedPageStrategy Strategy
          */
         jqUnit.asyncTest("Pager gappedPageStrategy", function () {
@@ -459,7 +459,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             jqUnit.assertDeepEq("All table data rendered", fluid.tests.pager.animalDataModel, {pets: recovered});
 
-            /**
+            /*
              * Get a string representation of the parameter based on the strings we have in Pager.js
              */
             var sortableColumnTextStr = function (dir_order) {
@@ -476,9 +476,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              * Upon a click on a single column, this function will check the aira-sort attribute, and the anchor titles on ALL columns,
              * making sure they all have the correct values.
              *
-             * @param   int     index of the header column on which aria-sort should display in
-             * @param   string  the n-th times this column is clicked, use strings like 1st, 2nd, 3rd, etc. Used for displaying report.
-             * @param   string  descending/ascending
+             * @param {Integer} aria_index - The index of the header column on which aria-sort should display in.
+             * @param {String} times - The n-th times this column is clicked, use strings like 1st, 2nd, 3rd, etc. Used for displaying report.
+             * @param {String} dir_order - The order (descending/ascending).
              */
             var testAriaOnAllHeaders = function (aria_index, times, dir_order) {
                 var currentHeadersMod = pager.locate("headerSortStylisticOffset");
@@ -502,7 +502,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             /**
              * This function performs a mouse click on the column header
              *
-             * @param   int     index of the header column on which aria-sort should display in
+             * @param {Integer} aria_index - The index of the header column on which aria-sort should display in
              */
             var clickHeader = function (aria_index) {
                 currentHeaders = pager.locate("headerSortStylisticOffset");

@@ -36,7 +36,7 @@ var demo = demo || {};
             handler(number);
         };
     };
-    /**
+    /*
      * Apply appropriate ARIA role and attributes
      */
     demo.fiveStar.setARIA = function (container, stars) {
@@ -47,7 +47,7 @@ var demo = demo || {};
         });
     };
 
-    /**
+    /*
      * When the selected rank changes, update the ARIA to reflect the new value
      */
     demo.fiveStar.updateARIA = function (stars, rank) {
@@ -55,7 +55,7 @@ var demo = demo || {};
         $(stars[rank - 1]).attr("aria-checked", true);
     };
 
-    /**
+    /*
      * Set the colour of the stars depending on the current rank and hover
      */
     demo.fiveStar.renderStarState = function (stars, hovered, rank, imgs) {
@@ -72,7 +72,7 @@ var demo = demo || {};
     //=====================================================================
     // Initialization
 
-    /**
+    /*
      * A very simple five-star ranking widget that allows users to click on a star to set a rank.
      */
 

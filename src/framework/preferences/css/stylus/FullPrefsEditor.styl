@@ -30,9 +30,16 @@
     }
 
     // Section header icons
-    h2 img {
-        margin-bottom: -3px;
-        padding-right: 5px;
+    h2 {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        justify-content: flex-start;
+        white-space: normal;
+
+        [class*='fl-icon-'] {
+            margin: 0 0.3em 0 0;
+        }
     }
 
     // Text controls
@@ -41,7 +48,20 @@
         height: 3.5em;
     }
 
-    .fl-slider-input {
-        float: right;
+    // Theme radio buttons
+    .fl-choices {
+        justify-content: flex-start;
+    }
+
+    // Stepper
+    // Custom styling for the textfield stepper when used in the prefs framework
+    .fl-textfieldStepper {
+        justify-content: flex-start;;
+    }
+
+    // Switch
+    // Custom styling for the switch when used in the prefs framework
+    .fl-prefsEditor-onoff .fl-switchUI {
+        justify-content: flex-start;
     }
 }

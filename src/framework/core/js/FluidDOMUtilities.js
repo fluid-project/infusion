@@ -47,10 +47,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Reorderer component. General clients of the framework should use this method with caution if at all, and
      * the performance issues should be reassessed when we have time.
      *
-     * @param {Element} node the node to start walking from
-     * @param {Function} acceptor the function to invoke with each DOM element
-     * @param {Boolean} allnodes Use <code>true</code> to call acceptor on all nodes,
-     * rather than just element nodes (type 1)
+     * @param {Element} node - The node to start walking from.
+     * @param {Function} acceptor - The function to invoke with each DOM element.
+     * @param {Boolean} allNodes - Use <code>true</code> to call acceptor on all nodes, rather than just element nodes
+     * (type 1).
+     * @return {Object|undefined} - Returns `undefined` if the run completed successfully.  If a node stopped the run,
+     * that node is returned.
      */
     fluid.dom.iterateDom = function (node, acceptor, allNodes) {
         var currentNode = {node: node, depth: 0};
@@ -82,8 +84,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Checks if the specified container is actually the parent of containee.
      *
-     * @param {Element} container the potential parent
-     * @param {Element} containee the child in question
+     * @param {Element} container - the potential parent
+     * @param {Element} containee - the child in question
+     * @return {Boolean} - `true` if `container` contains `containee`, `false` otherwise.
      */
     fluid.dom.isContainer = function (container, containee) {
         for (; containee; containee = containee.parentNode) {
@@ -94,7 +97,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return false;
     };
 
-    /** Return the element text from the supplied DOM node as a single String.
+    /* Return the element text from the supplied DOM node as a single String.
      * Implementation note - this is a special-purpose utility used in the framework in just one
      * position in the Reorderer. It only performs a "shallow" traversal of the text and was intended
      * as a quick and dirty means of extracting element labels where the user had not explicitly provided one.

@@ -102,7 +102,7 @@ var demo = demo || {};
         }
     });
 
-    /**
+    /*
      * Build a component subtree that describes how to render the list of canape plates. This uses
      * the framework's transform() function to build a subtree element for each data item. This
      * method is similar to the "fluid.renderer.selection.inputs" renderer component tree expander,

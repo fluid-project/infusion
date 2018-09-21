@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/textfieldControl/css/TextfieldSlider.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/textfieldControl/css/TextfieldStepper.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+    <link rel="stylesheet" type="text/css" href="css/textfieldControlDemo.css" />
+
+    <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../src/components/tooltip/js/Tooltip.js"></script>
+    <script type="text/javascript" src="../../src/components/textfieldControl/js/Textfield.js"></script>
+    <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldSlider.js"></script>
+    <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+
+    <!-- required for the Overview Panel -->
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+    <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+    <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+    <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+    <title>Textfield Controls Demo</title>
+</head>
+
+<body>
+    <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+    <section class="fl-demo-container">
+        <div>
+            <h2>Textfield Slider</h2>
+            <div class="flc-textfieldSlider">
+                <span class="demo-smallIcon">A</span>
+                <input class="flc-textfieldSlider-slider fl-slider">
+                <span class="demo-largeIcon">A</span>
+                <input class="flc-textfieldSlider-field fl-textfieldSlider-textField" type="text">
+            </div>
+
+            <script type="text/javascript">
+                fluid.textfieldSlider(".flc-textfieldSlider", {
+                    attrs: {
+                        "aria-label": "{that}.options.strings.label",
+                    },
+                    strings: {
+                        "label": "Textfield Slider"
+                    },
+                    model: {
+                        value: 7,
+                        step: 1,
+                        range: {
+                            min: 0,
+                            max: 10
+                        }
+                    },
+                    scale: 0
+                });
+            </script>
+
+            <h2>Textfield Stepper</h2>
+            <div class="flc-textfieldStepper">
+                <span class="demo-smallIcon">A</span>
+                <span class="flc-textfieldStepper-focusContainer fl-textfieldStepper-focusContainer">
+                    <button class="flc-textfieldStepper-decrease" type="button">-</button>
+                    <input class="flc-textfieldStepper-field fl-textfieldStepper-textField" type="text">
+                    <button class="flc-textfieldStepper-increase" type="button">+</button>
+                </span>
+                <span class="demo-largeIcon">A</span>
+            </div>
+
+            <script type="text/javascript">
+                fluid.textfieldStepper(".flc-textfieldStepper", {
+                    attrs: {
+                        "aria-label": "{that}.options.strings.label",
+                    },
+                    strings: {
+                        "label": "Textfield Stepper"
+                    },
+                    model: {
+                        value: 1,
+                        step: 0.1,
+                        range: {
+                            min: 1,
+                            max: 2
+                        }
+                    },
+                    scale: 1
+                });
+            </script>
+        </div>
+    </section>
+</body>
+</html>

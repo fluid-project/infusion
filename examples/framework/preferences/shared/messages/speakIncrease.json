@@ -1,6 +1,8 @@
 {
     "speakIncreaseHeader": "Speaking and Increasing",
     "incSize": "Magnification",
+    "toggleOn": "ON",
+    "toggleOff": "OFF",
     "magFactorLabel": "Magnification Factor",
     "magFactorMultiplier": "times",
     "cursorLabel": "Cursor Size",

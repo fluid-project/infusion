@@ -1,5 +1,5 @@
 /*
-Copyright 2011-2016 OCAD University
+Copyright 2011-2017 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -54,16 +54,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         gradeNames: "fluid.prefs.separatedPanel.lazyLoad"
                     }
                 }
-            },
-            separatedPanelPrefsWidgetType: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.separatedPanel.nativeHTML"
             }
         },
         selectors: {
@@ -151,73 +141,74 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderPrefsEditorContainer",
                 options: {
-                    gradeNames: ["fluid.prefs.uiEnhancerRelay"],
+                    gradeNames: ["fluid.prefs.uiEnhancerRelay", "fluid.prefs.arrowScrolling"],
                     // ensure that model and applier are available to users at top level
-                    model: "{separatedPanel}.model",
+                    model: {
+                        preferences: "{separatedPanel}.model.preferences",
+                        panelIndex: "{separatedPanel}.model.panelIndex",
+                        panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
+                        // The `local` model path is used by the `fluid.remoteModelComponent` grade
+                        // for persisting and synchronizing model values with remotely stored data.
+                        // Below, the panelIndex is being tracked for such persistence and synchronization.
+                        local: {
+                            panelIndex: "{that}.model.panelIndex"
+                        }
+                    },
+                    autoSave: true,
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
+                    modelListeners: {
+                        "panelIndex": [{
+                            listener: "fluid.prefs.prefsEditor.handleAutoSave",
+                            args: ["{that}"],
+                            namespace: "autoSavePanelIndex"
+                        }]
+                    },
                     listeners: {
-                        "modelChanged.save": "{that}.save",
                         "onCreate.bindReset": {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
                         "afterReset.applyChanges": "{that}.applyChanges",
-                        "onReady.boilOnReady": {
-                            listener: "{separatedPanel}.events.onReady",
-                            args: "{separatedPanel}"
+                        // Scroll to active panel after opening the separate Panel.
+                        // This is when the panels are all rendered and the actual sizes are available.
+                        "{separatedPanel}.slidingPanel.events.afterPanelShow": {
+                            listener: "fluid.prefs.arrowScrolling.scrollToPanel",
+                            args: ["{that}", "{that}.model.panelIndex"],
+                            priority: "after:updateView",
+                            namespace: "scrollToPanel"
                         }
                     }
                 }
             }
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
-        distributeOptions: [{
-            source: "{that}.options.slidingPanel",
-            removeSource: true,
-            target: "{that > slidingPanel}.options"
-        }, {
-            source: "{that}.options.iframeRenderer",
-            removeSource: true,
-            target: "{that > iframeRenderer}.options"
-        }, {
-            source: "{that}.options.iframe",
-            removeSource: true,
-            target: "{that}.options.selectors.iframe"
-        }, {
-            source: "{that}.options.outerEnhancerOptions",
-            removeSource: true,
-            target: "{that iframeEnhancer}.options"
-        }, {
-            source: "{that}.options.terms",
-            target: "{that > iframeRenderer}.options.terms"
-        }]
-    });
-
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.nativeHTML", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
-                    }
-                }
-            }
-        }
-    });
-
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.jQueryUI", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
-                    }
-                }
+        distributeOptions: {
+            "separatedPanel.slidingPanel": {
+                source: "{that}.options.slidingPanel",
+                removeSource: true,
+                target: "{that > slidingPanel}.options"
+            },
+            "separatedPanel.iframeRenderer": {
+                source: "{that}.options.iframeRenderer",
+                removeSource: true,
+                target: "{that > iframeRenderer}.options"
+            },
+            "separatedPanel.iframeRendered.terms": {
+                source: "{that}.options.terms",
+                target: "{that > iframeRenderer}.options.terms"
+            },
+            "separatedPanel.selectors.iframe": {
+                source: "{that}.options.iframe",
+                removeSource: true,
+                target: "{that}.options.selectors.iframe"
+            },
+            "separatedPanel.iframeEnhancer.outerEnhancerOptions": {
+                source: "{that}.options.outerEnhancerOptions",
+                removeSource: true,
+                target: "{that iframeEnhancer}.options"
             }
         }
     });
@@ -225,6 +216,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
         separatedPanel.locate("reset").hide();
     };
+
     /*****************************************
      * fluid.prefs.separatedPanel.renderIframe *
      *****************************************/
@@ -242,7 +234,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         markupProps: {
             "class": "flc-iframe",
-            src: "%templatePrefix/prefsEditorIframe.html"
+            src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
         },
         listeners: {
             "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"
@@ -302,13 +294,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         }, "updateView");
         prefsEditor.events.onSignificantDOMChange.addListener(function () {
-            var dokkument = prefsEditor.container[0].ownerDocument;
-            var height = fluid.dom.getDocumentHeight(dokkument);
-            var iframe = separatedPanel.iframeRenderer.iframe;
-            var attrs = {height: height + 15}; // TODO: Configurable padding here
-            var panel = separatedPanel.slidingPanel.locate("panel");
-            panel.css({height: ""});
-            iframe.animate(attrs, 400);
+            // ensure that the panel is open before trying to adjust its height
+            if ( fluid.get(separatedPanel, "slidingPanel.model.isShowing") ) {
+                var dokkument = prefsEditor.container[0].ownerDocument;
+                var height = fluid.dom.getDocumentHeight(dokkument);
+                var iframe = separatedPanel.iframeRenderer.iframe;
+                var attrs = {height: height};
+                var panel = separatedPanel.slidingPanel.locate("panel");
+                panel.css({height: ""});
+                iframe.clearQueue();
+                iframe.animate(attrs, 400);
+            }
         }, "adjustHeight");
 
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
@@ -319,6 +315,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }, "collapseFrame");
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             separatedPanel.iframeRenderer.iframe.show();
+
+            // FLUID-6183: Required for bug in MS EDGE that clips off the bottom of adjusters
+            // The height needs to be recalculated in order for the panel to show up completely
+            separatedPanel.iframeRenderer.iframe.height();
             separatedPanel.locate("reset").show();
         }, "openPanel");
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
@@ -399,7 +399,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         },
                         "{separatedPanel}.events.onLazyLoad": {
                             listener: "fluid.resourceLoader.loadResources",
-                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}]
+                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}],
+                            namespace: "loadResources"
                         }
                     }
                 }
@@ -436,9 +437,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * for the "fluid.prefs.separatedPanel.lazyLoad".
      *
      * @param {Object} that - the component
-     * @param {Object} resource - all of the resourceSpecs to load, including preload and others.
-     *                            see: fluid.fetchResources
-     * @param {Array/String} toPreload - a String or an Array of Strings corresponding to the names
+     * @param {Object} resources - all of the resourceSpecs to load, including preload and others.
+     *                             see: fluid.fetchResources
+     * @param {Array|String} toPreload - a String or an String[]s corresponding to the names
      *                                   of the resources, supplied in the resource argument, that
      *                                   should be loaded. Only these resources will be loaded.
      */

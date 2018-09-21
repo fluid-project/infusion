@@ -42,24 +42,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "lineSpace",
             "textFont",
             "contrast",
-            "layoutControls",
-            "linksControls"
+            "enhanceInputs"
         ],
         "fluid.prefs.fullNoPreview": [
             "textSize",
             "lineSpace",
             "textFont",
             "contrast",
-            "layoutControls",
-            "linksControls"
+            "enhanceInputs"
         ],
         "fluid.prefs.fullPreview": [
             "textSize",
             "lineSpace",
             "textFont",
             "contrast",
-            "layoutControls",
-            "linksControls",
+            "enhanceInputs",
             "preview"
         ]
     };
@@ -161,7 +158,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 listeners: {
-                    onReady: {
+                    "onReady.runTest": {
                         listener: testComponent,
                         priority: "last"
                     }

@@ -16,14 +16,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
 
 (function ($, fluid) {
     "use strict";
 
     /** Render a timestamp from a Date object into a helpful fixed format for debug logs to millisecond accuracy
-     * @param date {Date} The date to be rendered
-     * @return {String} A string format consisting of hours:minutes:seconds.millis for the datestamp padded to fixed with
+     * @param {Date} date - The date to be rendered
+     * @return {String} - A string format consisting of hours:minutes:seconds.millis for the datestamp padded to fixed with
      */
 
     fluid.renderTimestamp = function (date) {
@@ -161,8 +160,8 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /** Generates a string for padding purposes by replicating a character a given number of times
-     * @param c {Character} A character to be used for padding
-     * @param count {Integer} The number of times to repeat the character
+     * @param {Character} c - A character to be used for padding
+     * @param {Integer} count - The number of times to repeat the character
      * @return A string of length <code>count</code> consisting of repetitions of the supplied character
      */
     // UNOPTIMISED
@@ -175,7 +174,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     // Marker so that we can render a custom string for properties which are not direct and concrete
-    fluid.SYNTHETIC_PROPERTY = {};
+    fluid.SYNTHETIC_PROPERTY = Object.freeze({});
 
     // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object
     fluid.getSafeProperty = function (obj, key) {
@@ -245,10 +244,11 @@ var fluid = fluid || fluid_3_0_0;
     }
 
     /** Render a complex JSON object into a nicely indented format suitable for human readability.
-     * @param obj {Object} The object to be rendered
-     * @param options {Object} An options structure governing the rendering process. This supports the following options:
+     * @param {Object} obj - The object to be rendered
+     * @param {Object} options - An options structure governing the rendering process. This supports the following options:
      *     <code>indent</code> {Integer} the number of space characters to be used to indent each level of containment (default value: 4)
      *     <code>maxRenderChars</code> {Integer} rendering the object will cease once this number of characters has been generated
+     * @return {String} - The generated output.
      */
     fluid.prettyPrintJSON = function (obj, options) {
         options = $.extend({indent: 4, stack: [], output: ""}, options);
@@ -261,8 +261,8 @@ var fluid = fluid || fluid_3_0_0;
      * Dumps a DOM element into a readily recognisable form for debugging - produces a
      * "semi-selector" summarising its tag name, class and id, whichever are set.
      *
-     * @param {jQueryable} element The element to be dumped
-     * @return A string representing the element.
+     * @param {jQueryable} element - The element to be dumped
+     * @return {String} - A string representing the element.
      */
     fluid.dumpEl = function (element) {
         var togo;

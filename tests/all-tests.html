@@ -4,92 +4,117 @@
     <meta charset="UTF-8" />
     <title>Fluid framework complete tests runner</title>
 
+    <!--  Fluid is required for the "coverage sender" below -->
+    <script src="../src/lib/jquery/core/js/jquery.js"></script>
+    <script src="../src/framework/core/js/Fluid.js"></script>
+    <script src="../src/framework/core/js/FluidDebugging.js"></script>
+
     <link rel="stylesheet" href="lib/qunit/css/qunit.css" type="text/css" media="screen">
     <link rel="stylesheet" href="lib/qunit/addons/composite/qunit-composite.css">
     <script src="lib/qunit/js/qunit.js"></script>
+
     <script src="/testem.js"></script>
+
     <script src="lib/qunit/addons/composite/qunit-composite.js"></script>
 
     <!--
         command line search:
-        find . -name "*-test.html" | awk '{print "\""$1"\","}'
+        find . -name "*-test.html" | awk '{print "\""$1"\","}' | sort
     -->
     <script>
-    QUnit.testSuites("Framework Tests", [
-        "./framework-tests/core/html/FluidJS-test.html",
-        "./framework-tests/core/html/FluidJSStandalone-test.html",
-        "./framework-tests/core/html/FluidDebugging-test.html",
-        "./framework-tests/core/html/FluidPromises-test.html",
-        "./framework-tests/core/html/FluidDocument-test.html",
-        "./framework-tests/core/html/Keyboard-a11y-test.html",
-        "./framework-tests/core/html/ModelTransformation-test.html",
-        "./framework-tests/core/html/DataBinding-test.html",
-        "./framework-tests/core/html/FluidView-test.html",
-        "./framework-tests/core/html/Caching-test.html",
-        "./framework-tests/core/html/FluidRequests-test.html",
-        "./framework-tests/core/html/ResourceLoader-test.html",
-        "./framework-tests/renderer/html/Renderer-test.html",
-        "./framework-tests/core/html/FluidIoC-test.html",
-        "./framework-tests/core/html/FluidIoCStandalone-test.html",
-        "./framework-tests/core/html/FluidIoCView-test.html",
-        "./framework-tests/core/html/WebWorker-test.html",
-        "./framework-tests/enhancement/html/ContextAwareness-test.html",
-        "./framework-tests/renderer/html/RendererUtilities-test.html",
-        "./framework-tests/preferences/html/AuxBuilder-test.html",
-        "./framework-tests/preferences/html/Builder-test.html",
-        "./framework-tests/preferences/html/Enactors-test.html",
-        "./framework-tests/preferences/html/SelfVoicingEnactor-test.html",
-        "./framework-tests/preferences/html/SeparatedPanelPrefsEditor-test.html",
-        "./framework-tests/preferences/html/FullNoPreviewPrefsEditor-test.html",
-        "./framework-tests/preferences/html/FullPreviewPrefsEditor-test.html",
-        "./framework-tests/preferences/html/PageEnhancer-test.html",
-        "./framework-tests/preferences/html/Panels-test.html",
-        "./framework-tests/preferences/html/SelfVoicingPanel-test.html",
-        "./framework-tests/preferences/html/PrimaryBuilder-test.html",
-        "./framework-tests/preferences/html/Store-test.html",
-        "./framework-tests/preferences/html/UIEnhancer-test.html",
-        "./framework-tests/preferences/html/PrefsEditor-test.html",
-        "./framework-tests/preferences/html/URLUtilities-test.html"
-    ]);
-    QUnit.testSuites("Testing Framework Tests", [
-        "./test-core/testTests/html/jqUnit-test.html",
-        "./test-core/testTests/html/IoCTesting-test.html",
-        "./test-core/testTests/html/IoCTestingView-test.html",
-        "./test-core/testTests/html/ConditionalTestUtils-test.html"
-    ]);
-    QUnit.testSuites("Component Tests", [
-        "./component-tests/inlineEdit/html/InlineEdit-test.html",
-        "./component-tests/pager/html/Pager-test.html",
-        "./component-tests/pager/html/PagedTable-test.html",
-        "./component-tests/progress/html/Progress-test.html",
-        "./component-tests/reorderer/html/AriaLabeller-test.html",
-        "./component-tests/reorderer/html/GeometricManager-test.html",
-        "./component-tests/reorderer/html/ImageReorderer-test.html",
-        "./component-tests/reorderer/html/LayoutReorderer-test.html",
-        "./component-tests/reorderer/html/NestedReorderer-test.html",
-        "./component-tests/reorderer/html/ReorderList-test.html",
-        "./component-tests/reorderer/html/Scheduler-test.html",
-        "./component-tests/tableOfContents/html/TableOfContents-test.html",
-        "./component-tests/slidingPanel/html/SlidingPanel-test.html",
-        "./component-tests/textfieldSlider/html/TextfieldSlider-test.html",
-        "./component-tests/textToSpeech/html/TextToSpeech-test.html",
-        "./component-tests/tabs/html/Tabs-test.html",
-        "./component-tests/tooltip/html/Tooltip-test.html",
-        "./component-tests/uiOptions/html/UIOptions-test.html",
-        "./component-tests/uploader/html/DemoUploadManager-test.html",
-        "./component-tests/uploader/html/ErrorPanel-test.html",
-        "./component-tests/uploader/html/FileQueue-test.html",
-        "./component-tests/uploader/html/FileQueueView-test.html",
-        "./component-tests/uploader/html/HTML5UploaderSupport-test.html",
-        "./component-tests/uploader/html/Uploader-test.html",
-        "./component-tests/uploader/html/UploaderCompatibility-test.html",
-        "./component-tests/overviewPanel/html/OverviewPanel-test.html"
-    ]);
+        var rawTestSuites = {
+            "Framework Tests": [
+                "/framework-tests/core/html/Caching-test.html",
+                "/framework-tests/core/html/DataBinding-test.html",
+                "/framework-tests/core/html/DataSource-test.html",
+                "/framework-tests/core/html/FluidDebugging-test.html",
+                "/framework-tests/core/html/FluidDocument-test.html",
+                "/framework-tests/core/html/FluidIoC-test.html",
+                "/framework-tests/core/html/FluidIoCStandalone-test.html",
+                "/framework-tests/core/html/FluidIoCView-test.html",
+                "/framework-tests/core/html/FluidJS-test.html",
+                "/framework-tests/core/html/FluidJSStandalone-test.html",
+                "/framework-tests/core/html/FluidPromises-test.html",
+                "/framework-tests/core/html/FluidRequests-test.html",
+                "/framework-tests/core/html/FluidView-test.html",
+                "/framework-tests/core/html/Keyboard-a11y-test.html",
+                "/framework-tests/core/html/ModelTransformation-test.html",
+                "/framework-tests/core/html/NewViewSupport-test.html",
+                "/framework-tests/core/html/RemoteModel-test.html",
+                "/framework-tests/core/html/ResourceLoader-test.html",
+                "/framework-tests/core/html/WebWorker-test.html",
+                "/framework-tests/enhancement/html/ContextAwareness-test.html",
+                "/framework-tests/preferences/html/AuxBuilder-test.html",
+                "/framework-tests/preferences/html/Builder-test.html",
+                "/framework-tests/preferences/html/Enactors-test.html",
+                "/framework-tests/preferences/html/FullNoPreviewPrefsEditor-test.html",
+                "/framework-tests/preferences/html/FullPreviewPrefsEditor-test.html",
+                "/framework-tests/preferences/html/PageEnhancer-test.html",
+                "/framework-tests/preferences/html/Panels-test.html",
+                "/framework-tests/preferences/html/PrefsEditor-test.html",
+                "/framework-tests/preferences/html/PrimaryBuilder-test.html",
+                "/framework-tests/preferences/html/CaptionsEnactor-test.html",
+                "/framework-tests/preferences/html/CaptionsPanel-test.html",
+                "/framework-tests/preferences/html/SelfVoicingEnactor-test.html",
+                "/framework-tests/preferences/html/SelfVoicingPanel-test.html",
+                "/framework-tests/preferences/html/SeparatedPanelPrefsEditor-test.html",
+                "/framework-tests/preferences/html/SeparatedPanelPrefsEditorResponsive-test.html",
+                "/framework-tests/preferences/html/Store-test.html",
+                "/framework-tests/preferences/html/UIEnhancer-test.html",
+                "/framework-tests/preferences/html/URLUtilities-test.html",
+                "/framework-tests/renderer/html/Renderer-test.html",
+                "/framework-tests/renderer/html/RendererUtilities-test.html"
+            ],
+            "Testing Framework Tests": [
+                "/test-core/testTests/html/ConditionalTestUtils-test.html",
+                "/test-core/testTests/html/IoCTesting-test.html",
+                "/test-core/testTests/html/IoCTestingView-test.html",
+                "/test-core/testTests/html/jqUnit-test.html"
+            ],
+            "Component Tests": [
+                "/component-tests/inlineEdit/html/InlineEdit-test.html",
+                "/component-tests/orator/html/Orator-test.html",
+                "/component-tests/overviewPanel/html/OverviewPanel-test.html",
+                "/component-tests/pager/html/PagedTable-test.html",
+                "/component-tests/pager/html/Pager-test.html",
+                "/component-tests/progress/html/Progress-test.html",
+                "/component-tests/reorderer/html/AriaLabeller-test.html",
+                "/component-tests/reorderer/html/GeometricManager-test.html",
+                "/component-tests/reorderer/html/ImageReorderer-test.html",
+                "/component-tests/reorderer/html/LayoutReorderer-test.html",
+                "/component-tests/reorderer/html/NestedReorderer-test.html",
+                "/component-tests/reorderer/html/ReorderList-test.html",
+                "/component-tests/reorderer/html/Scheduler-test.html",
+                "/component-tests/slidingPanel/html/SlidingPanel-test.html",
+                "/component-tests/switch/html/Switch-test.html",
+                "/component-tests/tableOfContents/html/TableOfContents-test.html",
+                "/component-tests/textToSpeech/html/TextToSpeech-test.html",
+                "/component-tests/textfieldControl/html/Textfield-test.html",
+                "/component-tests/textfieldControl/html/TextfieldSlider-test.html",
+                "/component-tests/textfieldControl/html/TextfieldStepper-test.html",
+                "/component-tests/tooltip/html/Tooltip-test.html",
+                "/component-tests/uiOptions/html/UIOptions-test.html",
+                "/component-tests/uploader/html/DemoUploadManager-test.html",
+                "/component-tests/uploader/html/ErrorPanel-test.html",
+                "/component-tests/uploader/html/FileQueue-test.html",
+                "/component-tests/uploader/html/FileQueueView-test.html",
+                "/component-tests/uploader/html/HTML5UploaderSupport-test.html",
+                "/component-tests/uploader/html/Uploader-test.html",
+                "/component-tests/uploader/html/UploaderCompatibility-test.html"
+            ]
+        };
+
+        fluid.each(rawTestSuites, function (tests, moduleName) {
+            var testsWithPaths = tests.map(function (entry) {
+                var leader = typeof Testem === "undefined" ? "." : "/tests";
+                return leader + entry;
+            });
+            QUnit.testSuites(moduleName, testsWithPaths);
+        });
     </script>
 </head>
 <body>
     <div id="qunit"></div>
-    <div id="qunit-fixture">
-</div>
+    <div id="qunit-fixture"></div>
 </body>
 </html>

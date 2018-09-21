@@ -1,0 +1,15 @@
+{
+    "templateUrl": "../shared/html/overviewPanelTemplate-noDesign.html",
+    "strings": {
+        "componentName": "Switch UI"
+    },
+    "markup": {
+        "description": "A simple switch ui widget",
+        "instructions": "<ul><li>Click, tap, or use the keyboard (spacebar or enter key) to toggle the switch</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/switch",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/SwitchAPI.html",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Switch%20feedback"
+    }
+}

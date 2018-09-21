@@ -45,6 +45,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /**
      * Initialize and instantiate the editor
+     * @param {jQueryable} container -The container for our component.
+     * @return {Object} The created component.
      * TODO: Update this when https://issues.fluidproject.org/browse/FLUID-5817 is addressed
      */
     awesomeCars.prefs.init = function (container) {

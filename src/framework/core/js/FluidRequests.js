@@ -1,8 +1,8 @@
 /*
-Copyright 2010-2011 OCAD University
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2013 Raising the Floor - US
 Copyright 2014-2015 Raising the Floor - International
+Copyright 2010-2011, 2018 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -67,12 +67,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (resourceSpec.url && !resourceSpec.href) {
                 resourceSpec.href = resourceSpec.url;
             }
+
+            // If options.defaultLocale is set, it will replace any
+            // defaultLocale set on an individual resourceSpec
             if (that.options.defaultLocale) {
                 resourceSpec.defaultLocale = that.options.defaultLocale;
-                if (resourceSpec.locale === undefined) {
-                    resourceSpec.locale = that.options.defaultLocale;
-                }
             }
+            if (!resourceSpec.locale) {
+                resourceSpec.locale = resourceSpec.defaultLocale;
+            }
+
         });
         if (that.options.amalgamateClasses) {
             fluid.fetchResources.amalgamateClasses(resourceSpecs, that.options.amalgamateClasses, that.operate);
@@ -333,13 +337,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.fetchResources.fetchResourcesImpl = function (that) {
         var complete = true;
-        var allSync = true;
         var resourceSpecs = that.resourceSpecs;
         for (var key in resourceSpecs) {
             var resourceSpec = resourceSpecs[key];
-            if (!resourceSpec.options || resourceSpec.options.async) {
-                allSync = false;
-            }
             if (resourceSpec.href && !resourceSpec.completeTime) {
                 if (!resourceSpec.queued) {
                     fluid.fetchResources.issueRequest(resourceSpec, key);
@@ -358,15 +358,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         if (complete && that.callback && !that.callbackCalled) {
             that.callbackCalled = true;
-            if ($.browser.mozilla && !allSync) {
-                // Defer this callback to avoid debugging problems on Firefox
-                setTimeout(function () {
-                    fluid.fetchResources.notifyResources(that, resourceSpecs, that.callback);
-                }, 1);
-            }
-            else {
+            // Always defer notification in an anti-Zalgo scheme to ease problems like FLUID-6202
+            // In time this will be resolved by i) latched events, ii) global async ginger world
+            setTimeout(function () {
                 fluid.fetchResources.notifyResources(that, resourceSpecs, that.callback);
-            }
+            }, 1);
         }
     };
 

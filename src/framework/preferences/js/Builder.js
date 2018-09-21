@@ -62,11 +62,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
-        distributeOptions: [{
-            source: "{that}.options.primarySchema",
-            removeSource: true,
-            target: "{that > primaryBuilder}.options.primarySchema"
-        }]
+        distributeOptions: {
+            "builder.primaryBuilder.primarySchema": {
+                source: "{that}.options.primarySchema",
+                removeSource: true,
+                target: "{that > primaryBuilder}.options.primarySchema"
+            }
+        }
     });
 
     fluid.defaults("fluid.prefs.assembler.uie", {
@@ -77,10 +79,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 type: "fluid.prefs.globalSettingsStore",
                 options: {
                     distributeOptions: {
-                        target: "{that fluid.prefs.store}.options.contextAwareness.strategy.checks.user",
-                        record: {
-                            contextValue: "{fluid.prefs.assembler.uie}.options.storeType",
-                            gradeNames: "{fluid.prefs.assembler.uie}.options.storeType"
+                        "uie.store.context.checkUser": {
+                            target: "{that fluid.prefs.store}.options.contextAwareness.strategy.checks.user",
+                            record: {
+                                contextValue: "{fluid.prefs.assembler.uie}.options.storeType",
+                                gradeNames: "{fluid.prefs.assembler.uie}.options.storeType"
+                            }
                         }
                     }
                 }
@@ -100,17 +104,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
-        distributeOptions: [{
-            source: "{that}.options.enhancer",
-            target: "{that uiEnhancer}.options",
-            removeSource: true
-        }, { // TODO: not clear that this hits anything since settings store is not a subcomponent
-            source: "{that}.options.store",
-            target: "{that fluid.prefs.store}.options"
-        }, {
-            source: "{that}.options.enhancerType",
-            target: "{that > enhancer}.options.enhancerType"
-        }]
+        distributeOptions: {
+            "uie.enhancer": {
+                source: "{that}.options.enhancer",
+                target: "{that uiEnhancer}.options",
+                removeSource: true
+            },
+            "uie.enhancer.enhancerType": {
+                source: "{that}.options.enhancerType",
+                target: "{that > enhancer}.options.enhancerType"
+            },
+            "uie.store": { // TODO: not clear that this hits anything since settings store is not a subcomponent
+                source: "{that}.options.store",
+                target: "{that fluid.prefs.store}.options"
+            }
+        }
     });
 
     fluid.defaults("fluid.prefs.assembler.prefsEd", {
@@ -152,19 +160,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}"]
             }
         },
-        distributeOptions: [{
-            source: "{that}.options.loaderGrades",
-            removeSource: true,
-            target: "{that > prefsEditorLoader}.options.loaderGrades"
-        }, {
-            source: "{that}.options.prefsEditor",
-            removeSource: true,
-            target: "{that prefsEditor}.options"
-        }, {
-            source: "{that}.options.terms",
-            removeSource: true,
-            target: "{that prefsEditorLoader}.options.terms"
-        }]
+        distributeOptions: {
+            "prefsEdAssembler.prefsEditorLoader.loaderGrades": {
+                source: "{that}.options.loaderGrades",
+                removeSource: true,
+                target: "{that > prefsEditorLoader}.options.loaderGrades"
+            },
+            "prefsEdAssembler.prefsEditorLoader.terms": {
+                source: "{that}.options.terms",
+                removeSource: true,
+                target: "{that prefsEditorLoader}.options.terms"
+            },
+            "prefsEdAssembler.prefsEditor": {
+                source: "{that}.options.prefsEditor",
+                removeSource: true,
+                target: "{that prefsEditor}.options"
+            }
+        }
     });
 
     fluid.prefs.builder.generateGrade = function (name, namespace, options) {

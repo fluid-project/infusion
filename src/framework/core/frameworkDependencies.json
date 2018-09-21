@@ -5,18 +5,22 @@
         "files": [
             "./js/Fluid.js",
             "./js/FluidPromises.js",
+            "./js/DataSource.js",
             "./js/FluidDocument.js",
             "./js/FluidDOMUtilities.js",
             "./js/JavaProperties.js",
             "./js/FluidDebugging.js",
             "./js/FluidIoC.js",
             "./js/DataBinding.js",
+            "./js/RemoteModel.js",
             "./js/ModelTransformation.js",
             "./js/ModelTransformationTransforms.js",
             "./js/jquery.keyboard-a11y.js",
             "./js/FluidView.js",
             "./js/FluidRequests.js",
-            "./js/ResourceLoader.js"
+            "./js/MessageResolver.js",
+            "./js/ResourceLoader.js",
+            "./js/NewViewSupport.js"
         ],
         "dependencies": [
             "jQuery",

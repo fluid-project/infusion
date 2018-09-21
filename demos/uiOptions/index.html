@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
         <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
@@ -15,21 +16,30 @@
 
         <title>Preferences Editor Demo: Using Schemas</title>
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/widget.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/position.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/unique-id.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/tooltip.js"></script>
 
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidPromises.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/DataSource.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/RemoteModel.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
         <script type="text/javascript" src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
@@ -42,13 +52,16 @@
 
         <script type="text/javascript" src="../../src/framework/preferences/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Store.js"></script>
-        <script type="text/javascript" src="../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/ArrowScrolling.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../src/components/switch/js/Switch.js"></script>
         <script type="text/javascript" src="../../src/components/tableOfContents/js/TableOfContents.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/PrimaryBuilder.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/AuxBuilder.js"></script>
@@ -77,17 +90,31 @@
             });
         </script>
 
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the mobile view.
+                A separate panel bar for mobile displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-smallScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+
             <!-- This is the div that will contain the Preference Editor component -->
             <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
 
-            <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
-            <div class="fl-panelBar">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the desktop view.
+                A separate panel bar for desktop displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-wideScreen">
                 <span class="fl-prefsEditor-buttons">
-                    <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
-                    <button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
                 </span>
             </div>
         </div>

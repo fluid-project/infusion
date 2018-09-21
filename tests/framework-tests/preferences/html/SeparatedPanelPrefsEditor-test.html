@@ -8,21 +8,27 @@
         <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
 
         <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidPromises.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataSource.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/RemoteModel.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/MessageResolver.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
         <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
@@ -31,12 +37,15 @@
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
-        <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/ArrowScrolling.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../../../src/components/switch/js/Switch.js"></script>
         <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
 
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
@@ -44,16 +53,20 @@
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
 
         <!--  These are the jqUnit test js files -->
-        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
-        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+        <script src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
 
         <!--  These are tests that have been written using this page as data -->
-        <script type="text/javascript" src="../js/PrefsEditorTestsCommon.js"></script>
-        <script type="text/javascript" src="../js/IntegrationTestsCommon.js"></script>
-        <script type="text/javascript" src="../js/CompositePanelTestsGrades.js"></script>
-        <script type="text/javascript" src="../js/SeparatedPanelPrefsEditorTests.js"></script>
+        <script src="../js/PrefsEditorTestsCommon.js"></script>
+        <script src="../js/IntegrationTestsCommon.js"></script>
+        <script src="../js/CompositePanelTestsGrades.js"></script>
+        <script src="../js/SeparatedPanelPrefsEditorTests.js"></script>
 
     </head>
     <body>

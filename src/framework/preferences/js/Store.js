@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2011-2013 OCAD University
+Copyright 2011-2017 OCAD University
 Copyright 2015 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -16,21 +16,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    /**
-     * A Generic data source grade that defines an API for getting and setting
-     * data.
-     */
-     // TODO: unify with Kettle's and ultimately Infusion's dataSource
-    fluid.defaults("fluid.prefs.dataSource", {
-        gradeNames: ["fluid.component"],
-        invokers: {
-            get: "fluid.notImplemented",
-            set: "fluid.notImplemented"
-        }
-    });
-
     fluid.defaults("fluid.prefs.store", {
-        gradeNames: ["fluid.prefs.dataSource", "fluid.contextAware"],
+        gradeNames: ["fluid.dataSource", "fluid.contextAware"],
         contextAwareness: {
             strategy: {
                 defaultGradeNames: "fluid.prefs.cookieStore"
@@ -38,37 +25,79 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    fluid.prefs.store.decodeURIComponent = function (payload) {
+        if (typeof payload === "string") {
+            return decodeURIComponent(payload);
+        }
+    };
+
+    fluid.prefs.store.encodeURIComponent = function (payload) {
+        if (typeof payload === "string") {
+            return encodeURIComponent(payload);
+        }
+    };
+
     /****************
      * Cookie Store *
      ****************/
 
     /**
      * SettingsStore Subcomponent that uses a cookie for persistence.
-     * @param {Object} options
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.cookieStore", {
-        gradeNames: ["fluid.prefs.store"],
+        gradeNames: ["fluid.dataSource"],
         cookie: {
             name: "fluid-ui-settings",
             path: "/",
             expires: ""
         },
+        listeners: {
+            "onRead.impl": {
+                listener: "fluid.prefs.cookieStore.getCookie",
+                args: ["{arguments}.1"]
+            },
+            "onRead.decodeURI": {
+                listener: "fluid.prefs.store.decodeURIComponent",
+                priority: "before:encoding"
+            }
+        },
         invokers: {
             get: {
-                funcName: "fluid.prefs.cookieStore.get",
-                args: "{that}.options.cookie.name"
-            },
-            set: {
-                funcName: "fluid.prefs.cookieStore.set",
-                args: ["{arguments}.0", "{that}.options.cookie"]
+                args: ["{that}", "{arguments}.0", "{that}.options.cookie"] // directModel, options/callback
             }
         }
     });
 
-    /**
+    fluid.defaults("fluid.prefs.cookieStore.writable", {
+        gradeNames: ["fluid.dataSource.writable"],
+        listeners: {
+            "onWrite.encodeURI": {
+                func: "fluid.prefs.store.encodeURIComponent",
+                priority: "before:impl"
+            },
+            "onWrite.impl": {
+                listener: "fluid.prefs.cookieStore.writeCookie"
+            },
+            "onWriteResponse.decodeURI": {
+                listener: "fluid.prefs.store.decodeURIComponent",
+                priority: "before:encoding"
+            }
+        },
+        invokers: {
+            set: {
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{that}.options.cookie"] // directModel, model, options/callback
+            }
+        }
+    });
+
+    fluid.makeGradeLinkage("fluid.prefs.cookieStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.cookieStore"], "fluid.prefs.cookieStore.writable");
+
+    /*
      * Retrieve and return the value of the cookie
      */
-    fluid.prefs.cookieStore.get = function (cookieName) {
+    fluid.prefs.cookieStore.getCookie = function (options) {
+        var cookieName = fluid.get(options, ["directModel", "cookieName"]) || options.name;
         var cookie = document.cookie;
         if (cookie.length <= 0) {
             return;
@@ -85,30 +114,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (endIndex < startIndex) {
             endIndex = cookie.length;
         }
-        var cookieSection = cookie.substring(startIndex, endIndex);
-        var togo;
-        try {
-            togo = JSON.parse(decodeURIComponent(cookieSection));
-        } catch (e) {
-            fluid.log("Error parsing cookie " + cookieSection + " as JSON - clearing");
-            document.cookie = "";
-        }
-        return togo;
+        return cookie.substring(startIndex, endIndex);
     };
 
     /**
      * Assembles the cookie string
-     * @param {Object} cookie settings
+     * @param {String} cookieName - name of the cookie
+     * @param {String} data - the serialized data to be stored in the cookie
+     * @param {Object} options - settings
+     * @return {String} - A string representing the assembled cookie.
      */
-    fluid.prefs.cookieStore.assembleCookie = function (cookieOptions) {
-        var cookieStr = cookieOptions.name + "=" + cookieOptions.data;
+    fluid.prefs.cookieStore.assembleCookie = function (cookieName, data, options) {
+        options = options || {};
+        var cookieStr = cookieName + "=" + data;
 
-        if (cookieOptions.expires) {
-            cookieStr += "; expires=" + cookieOptions.expires;
+        if (options.expires) {
+            cookieStr += "; expires=" + options.expires;
         }
 
-        if (cookieOptions.path) {
-            cookieStr += "; path=" + cookieOptions.path;
+        if (options.path) {
+            cookieStr += "; path=" + options.path;
         }
 
         return cookieStr;
@@ -116,12 +141,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Saves the settings into a cookie
-     * @param {Object} settings
-     * @param {Object} cookieOptions
+     * @param {Object} payload - the serialized data to write to the cookie
+     * @param {Object} options - settings
+     * @return {Object} - The original payload.
      */
-    fluid.prefs.cookieStore.set = function (settings, cookieOptions) {
-        cookieOptions.data = encodeURIComponent(JSON.stringify(settings));
-        document.cookie = fluid.prefs.cookieStore.assembleCookie(cookieOptions);
+    fluid.prefs.cookieStore.writeCookie = function (payload, options) {
+        var cookieName = fluid.get(options, ["directModel", "cookieName"]) || options.name;
+        var cookieStr = fluid.prefs.cookieStore.assembleCookie(cookieName, payload, options);
+
+        document.cookie = cookieStr;
+        return payload;
     };
 
 
@@ -129,28 +158,58 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Temp Store *
      **************/
 
+    fluid.defaults("fluid.dataSource.encoding.model", {
+        gradeNames: "fluid.component",
+        invokers: {
+            parse: "fluid.identity",
+            render: "fluid.identity"
+        },
+        contentType: "application/json"
+    });
+
     /**
      * SettingsStore mock that doesn't do persistence.
-     * @param {Object} options
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.tempStore", {
-        gradeNames: ["fluid.prefs.store", "fluid.modelComponent"],
-        invokers: {
-            get: {
-                funcName: "fluid.identity",
-                args: "{that}.model"
-            },
-            set: {
-                funcName: "fluid.prefs.tempStore.set",
-                args: ["{arguments}.0", "{that}.applier"]
+        gradeNames: ["fluid.dataSource", "fluid.modelComponent"],
+        components: {
+            encoding: {
+                type: "fluid.dataSource.encoding.model"
+            }
+        },
+        listeners: {
+            "onRead.impl": {
+                listener: "fluid.identity",
+                args: ["{that}.model"]
             }
         }
     });
 
-    fluid.prefs.tempStore.set = function (settings, applier) {
-        applier.fireChangeRequest({path: "", type: "DELETE"});
-        applier.change("", settings);
+    fluid.defaults("fluid.prefs.tempStore.writable", {
+        gradeNames: ["fluid.dataSource.writable", "fluid.modelComponent"],
+        components: {
+            encoding: {
+                type: "fluid.dataSource.encoding.model"
+            }
+        },
+        listeners: {
+            "onWrite.impl": {
+                listener: "fluid.prefs.tempStore.write",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            }
+        }
+    });
+
+    fluid.prefs.tempStore.write = function (that, settings) {
+        var transaction = that.applier.initiate();
+        transaction.fireChangeRequest({path: "", type: "DELETE"});
+        transaction.change("", settings);
+        transaction.commit();
+        return that.model;
     };
+
+    fluid.makeGradeLinkage("fluid.prefs.tempStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.tempStore"], "fluid.prefs.tempStore.writable");
 
     fluid.defaults("fluid.prefs.globalSettingsStore", {
         gradeNames: ["fluid.component"],
@@ -158,7 +217,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             settingsStore: {
                 type: "fluid.prefs.store",
                 options: {
-                    gradeNames: ["fluid.resolveRootSingle"],
+                    gradeNames: ["fluid.resolveRootSingle", "fluid.dataSource.writable"],
                     singleRootType: "fluid.prefs.store"
                 }
             }

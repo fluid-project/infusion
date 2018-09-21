@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Textfield Control complete tests runner</title>
+
+        <link rel="stylesheet" href="../../lib/qunit/css/qunit.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="../../lib/qunit/addons/composite/qunit-composite.css">
+        <script src="../../lib/qunit/js/qunit.js"></script>
+        <script src="../../lib/qunit/addons/composite/qunit-composite.js"></script>
+
+        <!--
+            command line search:
+            find . -name "*-test.html" | awk '{print "\""$1"\","}'
+        -->
+        <script>
+            QUnit.testSuites("Textfield Control Tests", [
+                "./html/Textfield-test.html",
+                "./html/TextfieldSlider-test.html",
+                "./html/TextfieldStepper-test.html"
+            ]);
+        </script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture">
+    </div>
+    </body>
+</html>

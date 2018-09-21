@@ -64,10 +64,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse(message + itemId + " should not be default", item.hasClass(fluid.testUtils.imageReorderer.defaultClass));
     };
 
-        /** Break down the process of firing a particular modified key into the separate events
-         * of firing the modifier followed by the modified key itself, to give realism to the process
-         * of generating the composite key sequence.
-         */
+    /* Break down the process of firing a particular modified key into the separate events
+     * of firing the modifier followed by the modified key itself, to give realism to the process
+     * of generating the composite key sequence.
+     */
     fluid.testUtils.reorderer.compositeKey = function (reorderer, event, target, keepModifierPressed) {
         target = fluid.unwrap(target);
         var modifierEvent = $.extend(true, {}, event);

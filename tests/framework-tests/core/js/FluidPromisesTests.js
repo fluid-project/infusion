@@ -142,15 +142,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.simplePromiseTransform", {
-        gradeNames: ["fluid.component"],
+        gradeNames: ["fluid.modelComponent"],
         events: {
             forwardTransform: null,
-            backwardTransform: null
+            backwardTransform: null,
+            thisist: null,
+            modelPath: null
         },
         invokers: {
             linearScale: "fluid.tests.linearScale"
         },
         listeners: {
+            thisist: {
+                "this": "$",
+                method: "extend",
+                args: [{}, "{arguments}.0", {new: "new"}],
+                namespace: "thisist"
+            },
+            modelPath: {
+                changePath: "value",
+                value: "{arguments}.0",
+                namespace: "modelChange"
+            },
             forwardTransform: [{
                 func: "{that}.linearScale",
                 args: ["{arguments}.0", {offset: 1}],
@@ -197,6 +210,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Operate only "add" namespaces transforms
     fluid.tests.testSyncPromises("Chain filtering by namespace", 2, {filterNamespaces: ["add"]});
+
+    jqUnit.test("Transform chain with changePath", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.simplePromiseTransform();
+        var transformed = fluid.promise.fireTransformEvent(that.events.modelPath, 1);
+        // This will be synchronous as per Fluid promises impl
+        transformed.then(function () {
+            jqUnit.assertEquals("Received transformed value", 1, that.model.value);
+        });
+    });
+
+    jqUnit.test("Transform chain with thisist listener", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.simplePromiseTransform();
+        var transformed = fluid.promise.fireTransformEvent(that.events.thisist, {orig: "orig", new: null});
+        // This will be synchronous as per Fluid promises impl
+        transformed.then(function (value) {
+            jqUnit.assertDeepEq("Received transformed value", {orig: "orig", new: "new"}, value);
+        });
+    });
 
     fluid.tests.linearScaleLater = function (value, options) {
         var promise = fluid.promise();

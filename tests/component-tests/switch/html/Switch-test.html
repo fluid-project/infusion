@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Switch Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/lib/jquery/ui/js/version.js"></script>
+        <script src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
+
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/components/switch/js/Switch.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script src="../js/SwitchTests.js"></script>
+
+    </head>
+    <body>
+    <h1 id="qunit-header">Switch Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture" class="container">
+        <label id="label">labelledby</label>
+        <div class="flc-switchUI fl-switchUI">
+            <span class="flc-switchUI-off fl-switchUI-text" aria-hidden="true"></span>
+            <span class="flc-switchUI-control fl-switchUI-control"><span class="fl-switchUI-controlKnob"></span></span>
+            <span class="flc-switchUI-on fl-switchUI-text" aria-hidden="true"></span>
+        </div>
+
+    </div>
+
+    </body>
+</html>

@@ -32,10 +32,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "afterReset.save": {
                             listener: "{that}.save",
                             priority: "after:applyChanges"
-                        },
-                        "onReady.boilOnReady": {
-                            listener: "{fullNoPreview}.events.onReady",
-                            args: "{fullNoPreview}"
                         }
                     }
                 }

@@ -33,7 +33,8 @@ var example = example || {};
         modelListeners: {
             "speak": {
                 funcName: "example.logModelValue",
-                args: ["speak", "{change}.value"]
+                args: ["speak", "{change}.value"],
+                namespace: "log"
             }
         }
     });
@@ -48,7 +49,8 @@ var example = example || {};
         modelListeners: {
             "incSize": {
                 funcName: "example.logModelValue",
-                args: ["incSize", "{change}.value"]
+                args: ["incSize", "{change}.value"],
+                namespace: "log"
             }
         }
     });
@@ -63,7 +65,8 @@ var example = example || {};
         modelListeners: {
             "volume": {
                 funcName: "example.logModelValue",
-                args: ["vol", "{change}.value"]
+                args: ["vol", "{change}.value"],
+                namespace: "log"
             }
         }
     });
@@ -78,7 +81,8 @@ var example = example || {};
         modelListeners: {
             "wordsPerMin": {
                 funcName: "example.logModelValue",
-                args: ["wpm", "{change}.value"]
+                args: ["wpm", "{change}.value"],
+                namespace: "log"
             }
         }
     });
@@ -93,7 +97,8 @@ var example = example || {};
         modelListeners: {
             "cursorMult": {
                 funcName: "example.logModelValue",
-                args: ["cursor", "{change}.value"]
+                args: ["cursor", "{change}.value"],
+                namespace: "log"
             }
         }
     });
@@ -108,7 +113,8 @@ var example = example || {};
         modelListeners: {
             "mag": {
                 funcName: "example.logModelValue",
-                args: ["magFactor", "{change}.value"]
+                args: ["magFactor", "{change}.value"],
+                namespace: "log"
             }
         }
     });
@@ -123,7 +129,8 @@ var example = example || {};
         modelListeners: {
             "magPos": {
                 funcName: "example.logModelValue",
-                args: ["magPos", "{change}.value"]
+                args: ["magPos", "{change}.value"],
+                namespace: "log"
             }
         }
     });

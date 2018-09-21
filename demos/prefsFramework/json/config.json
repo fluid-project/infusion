@@ -5,7 +5,7 @@
         "titleEnd": "framework demo"
     },
     "markup": {
-        "description": "<p>The Preferences Framework offers a reusable set of schemas, programming APIs, and UI building blocks specific to the creation, persistence, and integration of preference editors into a variety of web-based applications, content management systems, and delivery environments.</p><p><em>NOTE: The 'text-to-speech' and 'simplify' adjusters are not part of the Preferences Framework, but are provided as illustrations for adding additional panels/enactors, as well as a preview of how advanced preferences could be set.</em></p>",
+        "description": "<p>The Preferences Framework offers a reusable set of schemas, programming APIs, and UI building blocks specific to the creation, persistence, and integration of preference editors into a variety of web-based applications, content management systems, and delivery environments.</p><p><em><strong>NOTE:</strong> The 'simplify' adjuster is not part of the Preferences Framework, but is provided as an illustration for adding additional panels/enactors, as well as a preview of how advanced preferences could be set.</em></p>",
         "instructions": "<ul><li>To access the preference editor on this page, click the 'Show Display Preferences' tab in the upper right corner of the window.</li><li>Try adjusting the controls in the panel that opens. You will see the changes applied to the page immediately.</li></ul>"
     },
     "links": {

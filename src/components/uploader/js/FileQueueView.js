@@ -207,7 +207,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         row.fadeIn("slow");
         fluid.uploader.fileQueueView.createProgressorFromTemplate(that, row);
         that.refreshView();
-        that.scroller.scrollTo("100%");
+        that.scroller.scrollTo("max");
     };
 
     // Toggle keyboard row handlers on and off depending on the uploader state
@@ -310,9 +310,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Creates a new File Queue view.
      *
-     * @param {jQuery|selector} container the file queue's container DOM element
-     * @param {fileQueue} queue a file queue model instance
-     * @param {Object} options configuration options for the view
+     * @param container {jQuery|selector} the file queue's container DOM element
+     * @param queue {fileQueue} a file queue model instance
+     * @param options {Object} configuration options for the view
      */
 
     fluid.defaults("fluid.uploader.fileQueueView", {
@@ -478,8 +478,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Simple component cover for the jQuery scrollTo plugin. Provides roughly equivalent
      * functionality to Uploader's old Scroller plugin.
      *
-     * @param {jQueryable} element the element to make scrollable
-     * @param {Object} options for the component
+     * @param element {jQueryable} the element to make scrollable
+     * @param options {Object} for the component
      * @return the scrollable component
      */
 
@@ -539,8 +539,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Wraps a table in order to make it scrollable with the jQuery.scrollTo plugin.
      * Container divs are injected to allow cross-browser support.
      *
-     * @param {jQueryable} table the table to make scrollable
-     * @param {Object} options configuration options
+     * @param table {jQueryable} the table to make scrollable
+     * @param options {Object} configuration options
      * @return the scrollable component
      */
 

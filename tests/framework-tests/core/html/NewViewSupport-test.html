@@ -1,0 +1,80 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>NewViewSupport.js Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <!--  These are the required javascript modules  -->
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDebugging.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../../../src/framework/core/js/NewViewSupport.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script src="../js/NewViewSupportTests.js"></script>
+
+    </head>
+    <body>
+    <h1 id="qunit-header">New View Support Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture">
+        <div class="container" id="main-container"></div>
+        <div class="container"></div>
+
+        <ul id="pager-top" class="pager-top">
+            <li id="top1" class="page-link"><a href="#" id="page-link-1">1</a></li>
+            <li id="top2" class="page-link"><a href="#" id="page-link-2">2</a></li>
+            <li id="top3" class="page-link"><a href="#" id="page-link-3">3</a></li>
+            <li id="previous-top" class="previous">&lt; previous</li>
+            <li id="next-top" class="next">next &gt;</li>
+        </ul>
+
+        <div class="flc-newViewSupport-container">
+            <span "flc-newViewSupport-elm">Test</span>
+        </div>
+
+        <ul class="flc-newViewSupport-addToParent">
+            <li class="original">original</li>
+        </ul>
+
+        <ul class="flc-newViewSupport-addToParent-replace">
+            <li class="original">original</li>
+        </ul>
+
+        <div class="flc-newViewSupport-parentContainer"></div>
+
+        <div class="flc-newViewSupport-templateContainer">
+            <div class="flc-newViewSupport-templateContainer-existing">Existing</div>
+        </div>
+
+     </div>
+
+    <script>
+        fluid.tests.testNewViewSupport();
+    </script>
+
+    </body>
+</html>

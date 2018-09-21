@@ -26,7 +26,7 @@ var fluid = fluid || fluid_3_0_0;
      * Will load an array of scripts into an HTML document syncronously, by
      * appending script tags into the `<head>`
      *
-     * @param scripts {Array} - the array of script URLs to load
+     * @param {Array} scripts - the array of script URLs to load
      */
     fluid.load.loadScripts = function (scripts) {
         scripts.forEach(function (src) {
@@ -41,8 +41,8 @@ var fluid = fluid || fluid_3_0_0;
      * Determines if a browser cookie with the given name is available. It does
      * not check the contents of the cookie.
      *
-     * @param cookieName {String} - name of browser cookie to look for
-     * @returns {Boolean} - returns `true` if the browser cookie is found, false
+     * @param {String} cookieName - name of browser cookie to look for
+     * @return {Boolean} - returns `true` if the browser cookie is found, false
      *                      otherwise.
      */
     fluid.load.hasCookie = function (cookieName) {
@@ -55,8 +55,8 @@ var fluid = fluid || fluid_3_0_0;
      * Will load the set of scripts into the Document if the specified browser
      * cookie is available.
      *
-     * @param cookieName {String} - name of browser cookie to look for
-     * @param scripts {Array} - the array of script URLs to load
+     * @param {String} cookieName - name of browser cookie to look for
+     * @param {Array} scripts - the array of script URLs to load
      */
     fluid.load.lazyLoadScripts = function (cookieName, scripts) {
         if (fluid.load.hasCookie(cookieName)) {

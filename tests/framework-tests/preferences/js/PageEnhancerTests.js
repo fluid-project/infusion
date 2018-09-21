@@ -23,12 +23,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             settingsStore: {
-                type: "fluid.prefs.tempStore"
+                type: "fluid.prefs.store",
+                options: {
+                    gradeNames: ["fluid.prefs.tempStore"]
+                }
             },
             pageEnhancer: {
                 type: "fluid.pageEnhancer",
+                createOnEvent: "createPageEnhancer",
                 options: {
-                    creatOnEvent: "createPageEnhancer", // TODO: HORRIBLE typo here
                     uiEnhancer: {
                         options: {
                             gradeNames: ["fluid.uiEnhancer.starterEnactors"],

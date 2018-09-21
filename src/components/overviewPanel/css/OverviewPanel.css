@@ -69,6 +69,7 @@
     color: #ccc;
     padding: 0.5em 0.5em 0.5em 3em;
     height: 5.5em;
+    width: calc(100% - 3.5em);
     position: absolute;
     top: 0;
     left: 0;
@@ -98,6 +99,7 @@
     left: 0;
     width: 100%;
     line-height: 1em;
+    overflow: auto;
 }
 
 
@@ -360,7 +362,9 @@
 .fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel,
-.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel {
+.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel,
+.fl-theme-gw .fl-overviewPanel-hidden .fl-overviewPanel,
+.fl-theme-bbr .fl-overviewPanel-hidden .fl-overviewPanel {
     /* on all themes, hide the right border when "hidden". */
     border-right: 0;
 }
@@ -455,50 +459,6 @@
 }
 
 
-/* Low contrast: light grey on dark grey */
-.fl-theme-lgdg .fl-overviewPanel,
-.fl-theme-lgdg .fl-overviewPanel-body,
-.fl-theme-lgdg .fl-overviewPanel a,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #bdbdbb;
-    background-color: #555;
-}
-
-.fl-theme-lgdg .fl-overviewPanel {
-    border-right: 0.2em solid #bdbdbb;
-}
-
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #bdbdbb;
-    color: #555;
-}
-
-.fl-theme-lgdg .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #555;
-}
-
-.fl-theme-lgdg .fl-overviewPanel *:focus,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #bdbdbb;
-}
-
-.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #bdbdbb;
-}
-
-.fl-theme-lgdg .fl-overviewPanel-instructions {
-    border: 0.2em solid #bdbdbb;
-}
-
 /* Yellow on Black */
 .fl-theme-yb .fl-overviewPanel,
 .fl-theme-yb .fl-overviewPanel-body,
@@ -542,6 +502,7 @@
 .fl-theme-yb .fl-overviewPanel-instructions {
     border: 0.2em solid #FFFF00;
 }
+
 
 /* Black on Yellow */
 .fl-theme-by .fl-overviewPanel,
@@ -588,5 +549,140 @@
 }
 
 .fl-theme-by .fl-overviewPanel-instructions {
+    border: 0.2em solid #000;
+}
+
+
+/* Low contrast: light grey on dark grey */
+.fl-theme-lgdg .fl-overviewPanel,
+.fl-theme-lgdg .fl-overviewPanel-body,
+.fl-theme-lgdg .fl-overviewPanel a,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-design {
+    color: #bdbdbb;
+    background-color: #555;
+}
+
+.fl-theme-lgdg .fl-overviewPanel {
+    border-right: 0.2em solid #bdbdbb;
+}
+
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title {
+    background-color: #bdbdbb;
+    color: #555;
+}
+
+.fl-theme-lgdg .fl-overviewPanel a {
+    text-decoration: underline;
+}
+
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
+    outline: 0.2em solid #555;
+}
+
+.fl-theme-lgdg .fl-overviewPanel *:focus,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
+.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
+    outline: 0.3em solid #bdbdbb;
+}
+
+.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
+    outline: 0.1em solid #bdbdbb;
+}
+
+.fl-theme-lgdg .fl-overviewPanel-instructions {
+    border: 0.2em solid #bdbdbb;
+}
+
+
+/* Low contrast: grey on white */
+.fl-theme-gw .fl-overviewPanel,
+.fl-theme-gw .fl-overviewPanel-body,
+.fl-theme-gw .fl-overviewPanel a,
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-links-icon-design {
+    color: #6c6c6c;
+    background-color: #fff;
+}
+
+.fl-theme-gw .fl-overviewPanel {
+    border-right: 0.2em solid #6c6c6c;
+}
+
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-title {
+    background-color: #6c6c6c;
+    color: #fff;
+}
+
+.fl-theme-gw .fl-overviewPanel a {
+    text-decoration: underline;
+}
+
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
+    outline: 0.2em solid #fff;
+}
+
+.fl-theme-gw .fl-overviewPanel *:focus,
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
+.fl-theme-gw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
+    outline: 0.3em solid #6c6c6c;
+}
+
+.fl-theme-gw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
+    outline: 0.1em solid #6c6c6c;
+}
+
+.fl-theme-gw .fl-overviewPanel-instructions {
+    border: 0.2em solid #6c6c6c;
+}
+
+
+/* Low contrast: black on brown */
+.fl-theme-bbr .fl-overviewPanel,
+.fl-theme-bbr .fl-overviewPanel-body,
+.fl-theme-bbr .fl-overviewPanel a,
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-links-icon-design {
+    color: #000;
+    background-color: #bb9966;
+}
+
+.fl-theme-bbr .fl-overviewPanel {
+    border-right: 0.2em solid #000;
+}
+
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-title {
+    background-color: #000;
+    color: #bb9966;
+}
+
+.fl-theme-bbr .fl-overviewPanel a {
+    text-decoration: underline;
+}
+
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
+    outline: 0.2em solid #bb9966;
+}
+
+.fl-theme-bbr .fl-overviewPanel *:focus,
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
+.fl-theme-bbr .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
+    outline: 0.3em solid #000;
+}
+
+.fl-theme-bbr .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
+    outline: 0.1em solid #000;
+}
+
+.fl-theme-bbr .fl-overviewPanel-instructions {
     border: 0.2em solid #000;
 }

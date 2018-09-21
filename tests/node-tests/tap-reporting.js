@@ -18,6 +18,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // in basic-node-tests.js
 var QUnit = fluid.registerNamespace("QUnit");
 
+fluid.registerNamespace("fluid.tests.tapOutput");
+
 // Set boolean for the  presence of the --tap command line option to output a
 // TAP report for consumption by testem when used as a custom launcher
 fluid.tests.tapOutput.shouldOutputTAP = process.argv.findIndex(function (argument) {

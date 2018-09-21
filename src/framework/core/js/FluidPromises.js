@@ -73,7 +73,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
-    /** Any object with a member <code>then</code> of type <code>function</code> passes this test.
+    /* Any object with a member <code>then</code> of type <code>function</code> passes this test.
      * This includes essentially every known variety, including jQuery promises.
      */
     fluid.isPromise = function (totest) {
@@ -81,8 +81,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Coerces any value to a promise
-     * @param promiseOrValue The value to be coerced
-     * @return If the supplied value is already a promise, it is returned unchanged. Otherwise a fresh promise is created with the value as resolution and returned
+     * @param {Any} promiseOrValue - The value to be coerced
+     * @return {Promise} - If the supplied value is already a promise, it is returned unchanged. Otherwise a fresh promise is created with the value as resolution and returned
      */
     fluid.toPromise = function (promiseOrValue) {
         if (fluid.isPromise(promiseOrValue)) {
@@ -94,18 +94,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /** Chains the resolution methods of one promise (target) so that they follow those of another (source).
-      * That is, whenever source resolves, target will resolve, or when source rejects, target will reject, with the
-      * same payloads in each case.
-      */
+    /* Chains the resolution methods of one promise (target) so that they follow those of another (source).
+     * That is, whenever source resolves, target will resolve, or when source rejects, target will reject, with the
+     * same payloads in each case.
+     */
     fluid.promise.follow = function (source, target) {
         source.then(target.resolve, target.reject);
     };
 
     /** Returns a promise whose resolved value is mapped from the source promise or value by the supplied function.
-     * @param source {Object|Promise} An object or promise whose value is to be mapped
-     * @param func {Function} A function which will map the resolved promise value
-     * @return {Promise} A promise for the resolved mapped value.
+     * @param {Object|Promise} source - An object or promise whose value is to be mapped
+     * @param {Function} func - A function which will map the resolved promise value
+     * @return {Promise} - A promise for the resolved mapped value.
      */
     fluid.promise.map = function (source, func) {
         var promise = fluid.toPromise(source);
@@ -206,7 +206,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             invokeNext: function (that) {
                 var lisrec = that.sources[that.index];
                 lisrec.listener = fluid.event.resolveListener(lisrec.listener);
-                var value = lisrec.listener(that.returns[that.index], that.options);
+                var value = lisrec.listener.apply(null, [that.returns[that.index], that.options]);
                 return value;
             },
             resolveResult: function (that) {
@@ -243,11 +243,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * same payload, each listener to the event accepts the payload returned by the
      * previous listener, and returns either a transformed payload or else a promise
      * yielding such a payload.
-     * @param event {fluid.eventFirer} A Fluid event to which the listeners are to be interpreted as
+     * @param {fluid.eventFirer} event - A Fluid event to which the listeners are to be interpreted as
      * elements cooperating in a chained transform. Each listener will receive arguments <code>(payload, options)</code> where <code>payload</code>
      * is the (successful, resolved) return value of the previous listener, and <code>options</code> is the final argument to this function
-     * @param payload {Object|Promise} The initial payload input to the transform chain
-     * @param options {Object} A free object containing options governing the transform. Fields interpreted at this top level are:
+     * @param {Object|Promise} payload - The initial payload input to the transform chain
+     * @param {Object} options - A free object containing options governing the transform. Fields interpreted at this top level are:
      *     reverse {Boolean}: <code>true</code> if the listeners are to be called in reverse order of priority (typically the case for an inverse transform)
      *     filterTransforms {Array}: An array of listener namespaces. If this field is set, only the transform elements whose listener namespaces listed in this array will be applied.
      * @return {fluid.promise} A promise which will yield either the final transformed value, or the response of the first transform which fails.

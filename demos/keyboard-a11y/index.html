@@ -2,15 +2,19 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
     <title>Keyboard Accessbility Demo</title>
     <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+    <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
     <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
     <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
     <link rel="stylesheet" type="text/css" href="css/keyboard.css" />
 
     <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+    <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
+
     <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
     <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
     <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
@@ -25,6 +29,7 @@
     <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
     <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
     <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
     <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
     <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
     <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
@@ -35,9 +40,9 @@
 </head>
 <body>
 
-    <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-    <section class="row">
-        <div class="demo-container large-centered">
+    <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+    <section class="fl-demo-container">
+        <div class="demo-container">
 
             <h1>Gallery Viewer</h1>
             <p><strong>Mouse instructions:</strong> Click an image to focus and to open in viewer.</p>

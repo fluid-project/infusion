@@ -22,12 +22,14 @@ themes = {
         foregroundColor: #bdbdbb,
         backgroundColor: #555555
     }
-}
-
-slider-thumb-common-contrastTheme() {
-    background: none;
-    background-color: fColor;
-    box-shadow: none !important;
+    ".fl-theme-gw": {
+        foregroundColor: #6c6c6c,
+        backgroundColor: #ffffff
+    }
+    ".fl-theme-bbr": {
+        foregroundColor: #000000,
+        backgroundColor: #bb9966
+    }
 }
 
 build-themes-prefsEditor(contrastThemes) {
@@ -39,45 +41,15 @@ build-themes-prefsEditor(contrastThemes) {
 
         {themeName} {
             .fl-prefsEditor {
-                // slider
-                & .fl-slider {
-                    background: none;
-                    background-color: fColor;
-
-                    a, a:hover,
-                    .fl-slider-handle, .fl-slider-handle:hover {
-                        slider-thumb-common-contrastTheme();
-                    }
-                }
-
-                input[type=range].fl-slider {
-                    background: none;
-                    background-color: fColor;
-                    &::-webkit-slider-thumb {
-                        slider-thumb-common-contrastTheme();
-                    }
-                    &::-moz-range-thumb {
-                        slider-thumb-common-contrastTheme();
-                    }
-                    &::-ms-thumb {
-                        slider-thumb-common-contrastTheme();
-                    }
-                }
 
                 // ON/OFF switch
-                .fl-prefsEditor-switch,
-                .fl-prefsEditor-switch-inner,
-                input + label .fl-prefsEditor-switch:before {
-                    box-shadow: none !important;
-                    text-shadow: none;
-                    color: inherit;
-                    background-image: none;
-                    background-color: inherit;
+                .fl-switchUI-control:focus {
+                    box-shadow: 0 0 0 0.2em bColor,
+                                0 0 0 0.35em fColor;
                 }
 
-                input:focus + label,
-                .fl-choice input:focus ~ label {
-                    outline: 0.2em solid fColor;
+                .fl-switchUI-controlKnob {
+                    background-color: fColor !important;
                 }
             }
         }
@@ -238,6 +210,57 @@ build-themes-Enactors(contrastThemes) {
                 margin-left: -0.1em;
             }
 
+            // Textfield Stepper
+            .fl-textfieldStepper .fl-textfieldStepper-textField {
+                border: solid 1px fColor;
+            }
+
+            .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
+                visibility: hidden;
+            }
+
+            // Orator
+            .fl-orator-highlight {
+                color: bColor !important;
+                background-color: fColor !important;
+                outline-color: fColor;
+            }
+
+            .fl-orator-controller-playToggle {
+                text-shadow: unset;
+            }
+
+            .fl-icon-orator:before {
+                background-color: bColor;
+                color: fColor;
+                text-shadow: unset;
+            }
+
+            .fl-orator-controller > *:not(:first-child):hover,
+            .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
+                background-color: fColor !important;
+                color: bColor !important;
+            }
+
+            .fl-orator-selectionReader-play:hover,
+            .fl-orator-selectionReader-play:hover .fl-icon-orator:before,
+            .fl-orator-selectionReader-play:hover * {
+                background-color: fColor !important;
+                color: bColor !important;
+            }
+
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-above:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-above:hover:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-above:before {
+                border-top-color: fColor;
+            }
+
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-below:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-below:hover:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-below:before {
+                border-bottom-color: fColor;
+            }
+
             // Inverted color
             // General Styling
             &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color {
@@ -249,8 +272,18 @@ build-themes-Enactors(contrastThemes) {
                 border-left-color: bColor !important;
             }
 
+            .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable
+
+
             // Focus
-            &.fl-inverted-color.fl-focus :focus {
+            &.fl-inverted-color.fl-focus :focus,
+            &.fl-inverted-color.fl-focus:focus,
+            .fl-inverted-color.fl-focus :focus,
+            .fl-inverted-color.fl-focus:focus,
+            &.fl-focus .fl-inverted-color :focus,
+            &.fl-focus .fl-inverted-color:focus,
+            .fl-focus .fl-inverted-color :focus,
+            .fl-focus .fl-inverted-color:focus {
                 outline-width: 0.2em;
                 outline-style: solid;
                 outline-color: bColor;
@@ -351,6 +384,43 @@ build-themes-Enactors(contrastThemes) {
                     margin-right: -0.1em;
                     margin-bottom: -0.1em;
                     margin-left: -0.1em;
+                }
+
+                // Orator
+                .fl-orator-highlight {
+                    color: fColor !important;
+                    background-color: bColor !important;
+                    outline-color: bColor;
+                }
+
+                .fl-icon-orator:before {
+                    background-color: fColor;
+                    color: bColor;
+                }
+
+                .fl-orator-controller > *:not(:first-child):hover,
+                .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
+                    background-color: bColor !important;
+                    color: fColor !important;
+                }
+
+                .fl-orator-selectionReader-play:hover,
+                .fl-orator-selectionReader-play:hover .fl-icon-orator:before,
+                .fl-orator-selectionReader-play:hover * {
+                    background-color: bColor !important;
+                    color: fColor !important;
+                }
+
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-above:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-above:hover:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-above:before {
+                    border-top-color: bColor;
+                }
+
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-below:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-below:hover:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-below:before {
+                    border-bottom-color: bColor;
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2015 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -81,87 +81,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.emphasizeLinks
+     * Unit tests for fluid.prefs.enactor.enhanceInputs
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.emphasizeLinksTests", {
+    fluid.defaults("fluid.tests.enhanceInputsTests", {
         gradeNames: ["fluid.test.testEnvironment"],
-        container: ".flc-emphasizeLinks",
-        expectedEmphasizeLinksClass: "fl-emphasizeLinks-test",
+        expectedEnhanceInputsClass: "fl-enhanceInputs-test",
         expectedDefaultFlag: false,
         components: {
-            emphasizeLinks: {
-                type: "fluid.prefs.enactor.emphasizeLinks",
-                container: ".flc-emphasizeLinks",
+            enhanceInputs: {
+                type: "fluid.prefs.enactor.enhanceInputs",
+                container: ".flc-enhanceInputs",
                 options: {
-                    cssClass: "fl-emphasizeLinks-test",
+                    cssClass: "fl-enhanceInputs-test",
                     model: {
                         value: false
                     }
                 }
             },
-            emphasizeLinksTester: {
-                type: "fluid.tests.emphasizeLinksTester"
+            enhanceInputsTester: {
+                type: "fluid.tests.enhanceInputsTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.emphasizeLinksTester", {
+    fluid.defaults("fluid.tests.enhanceInputsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "Test emphasize links enactor",
+            name: "Test enhance inputs enactor",
             tests: [{
                 expect: 5,
-                name: "Apply and reset emphasized links",
+                name: "Apply and reset enhance inputs",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksTests}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksTests}.options.expectedEmphasizeLinksClass"]
+                args: ["{enhanceInputs}", "{fluid.tests.enhanceInputsTests}.options.expectedDefaultFlag", "{fluid.tests.enhanceInputsTests}.options.expectedEnhanceInputsClass"]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.inputsLarger
-     *******************************************************************************/
-
-    fluid.defaults("fluid.tests.inputsLargerTests", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        container: ".flc-inputsLarger",
-        expectedDefaultFlag: false,
-        expectedInputsLargerClass: "fl-text-larger",
-        components: {
-            inputsLarger: {
-                type: "fluid.prefs.enactor.inputsLarger",
-                container: ".flc-inputsLarger",
-                options: {
-                    cssClass: "fl-text-larger",
-                    model: {
-                        value: false
-                    }
-                }
-            },
-            inputsLargerTester: {
-                type: "fluid.tests.inputsLargerTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.inputsLargerTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        modules: [{
-            name: "Test inputs larger enactor",
-            tests: [{
-                expect: 5,
-                name: "Apply and reset larger inputs",
-                type: "test",
-                func: "fluid.tests.testStyle",
-                args: ["{inputsLarger}", "{fluid.tests.inputsLargerTests}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerTests}.options.expectedInputsLargerClass"]
-            }]
-        }]
-    });
-
-    /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.inputsLarger
+     * Unit tests for fluid.prefs.enactor.classSwapper
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.classSwapperTests", {
@@ -214,20 +173,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * fontSizeMap used for the various size related enactor tests
-     *******************************************************************************/
-
-    var fontSizeMap = {
-        "xx-small": "9px",
-        "x-small":  "11px",
-        "small":    "13px",
-        "medium":   "15px",
-        "large":    "18px",
-        "x-large":  "23px",
-        "xx-large": "30px"
-    };
-
-    /*******************************************************************************
      * Unit tests for fluid.prefs.enactor.textSize
      *******************************************************************************/
 
@@ -238,7 +183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.textSize",
                 container: ".flc-textSize",
                 options: {
-                    fontSizeMap: fontSizeMap,
+                    fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
                     model: {
                         value: 1
                     }
@@ -254,12 +199,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedInitialSize = 16;
         var muliplier = 2;
         var remTestElm = $("#flc-textSize-remTest");
-        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap);
+        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactors.utils.fontSizeMap);
 
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
         that.applier.change("value", muliplier);
         jqUnit.assertEquals("The size should be doubled", (expectedInitialSize * muliplier) + "px", that.root.css("fontSize"));
-        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap));
+        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactors.utils.fontSizeMap));
 
         // reset font size of root
         $("html").css("font-size", that.initialSize + "px");
@@ -286,7 +231,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.getLineHeightTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         container: ".flc-lineSpace",
-        fontSizeMap: fontSizeMap,
+        fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
         expectedTestSize: 8,
         expectedSizeAtUndetected: 1,
         components: {
@@ -297,7 +242,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testGetLineHeight = function () {
-        var container = $(".flc-lineSpace");
+        var container = $(".flc-lineSpace-getTests");
         var lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
 
         // In IE8 and IE9 the lineHeight is returned as a mutliplier
@@ -310,8 +255,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var testGetLineHeightMultiplier = function (lineHeight, expected) {
-        var container = $(".flc-lineSpace");
-        var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fontSizeMap);
+        var container = $(".flc-lineSpace-getTests");
+        var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fluid.tests.enactors.utils.fontSizeMap);
 
         var numerizedLineHeight = fluid.prefs.enactor.lineSpace.getLineHeightMultiplier(lineHeight, Math.round(fontSize));
 
@@ -351,18 +296,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.prefs.enactor.lineSpace
      *******************************************************************************/
 
+    fluid.defaults("fluid.tests.prefs.enactor.lineSpace", {
+        gradeNames: ["fluid.prefs.enactor.lineSpace"],
+        fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
+        model: {
+            value: 1
+        }
+    });
+
     fluid.defaults("fluid.tests.lineSpaceTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             lineSpace: {
-                type: "fluid.prefs.enactor.lineSpace",
+                type: "fluid.tests.prefs.enactor.lineSpace",
                 container: ".flc-lineSpace",
+                // Forcing getLineHeight to return "normal" and getLineHeightMultiplier to return 28.8px
+                // because of the various ways that browsers treat the default/"normal" line-height style.
                 options: {
-                    fontSizeMap: fontSizeMap,
-                    model: {
-                        value: 1
+                    invokers: {
+                        getLineHeight: {
+                            funcName: "fluid.identity",
+                            args: ["normal"]
+                        },
+                        getLineHeightMultiplier: {
+                            funcName: "fluid.identity",
+                            args: [1.2]
+                        }
                     }
                 }
+            },
+            lineSpaceLength: {
+                type: "fluid.tests.prefs.enactor.lineSpace",
+                container: ".flc-lineSpace-length"
+            },
+            lineSpaceNumber: {
+                type: "fluid.tests.prefs.enactor.lineSpace",
+                container: ".flc-lineSpace-number"
+            },
+            lineSpacePercentage: {
+                type: "fluid.tests.prefs.enactor.lineSpace",
+                container: ".flc-lineSpace-percentage"
             },
             lineSpaceTester: {
                 type: "fluid.tests.lineSpaceTester"
@@ -370,33 +343,84 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // This is necessary to work around IE differences in handling line-height unitless factors
-    var convertLineHeightFactor = function (lineHeight, fontSize) {
-        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (lineHeight.match(/[0-9]$/)) {
-            return Math.round(lineHeight * parseFloat(fontSize)) + "px";
-        } else {
-            return lineHeight;
-        }
+    fluid.tests.verifyInitValues = function (that, initialSize, multiplier) {
+
+        jqUnit.assertEquals("The initial size is retrieved correctly", initialSize, that.initialSize);
+        jqUnit.assertEquals("The line height multiplier is calculated correctly", multiplier, that.lineHeightMultiplier);
     };
 
-    fluid.tests.testLineSpace = function (that) {
-        jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(that.initialSize));
-        jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
-        that.applier.change("value", 2);
-        jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
+    fluid.tests.verifyLineSpaceSet = function (that, value, lineHeight) {
+        jqUnit.assertEquals("The new model value should be set correctly.", value, that.model.value);
+        jqUnit.assertEquals("The new line height should be set correctly.", lineHeight, that.container.css("line-height"));
     };
 
     fluid.defaults("fluid.tests.lineSpaceTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "Test line space enactor",
+            name: "Line Space - normal line-height",
             tests: [{
-                expect: 3,
-                name: "Apply line space in times",
-                type: "test",
-                func: "fluid.tests.testLineSpace",
-                args: ["{lineSpace}"]
+                expect: 2,
+                name: "Set Line-height",
+                // Not running the model changed tests due to the variances across browsers in what the
+                // default line-height is.
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpace}", "normal", 1.2]
+                }]
+            }]
+        }, {
+            name: "Line Space - line-height in length",
+            tests: [{
+                expect: 4,
+                name: "Set Line-height",
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpaceLength}", "12px", 0.5]
+                }, {
+                    func: "{lineSpaceLength}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    listener: "fluid.tests.verifyLineSpaceSet",
+                    args: ["{lineSpaceLength}", 2, "24px"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpaceLength}.applier.modelChanged"
+                }]
+            }]
+        }, {
+            name: "Line Space - line-height in unitless number",
+            tests: [{
+                expect: 4,
+                name: "Set Line-height",
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpaceNumber}", "36px", 1.5]
+                }, {
+                    func: "{lineSpaceNumber}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    listener: "fluid.tests.verifyLineSpaceSet",
+                    args: ["{lineSpaceNumber}", 2, "72px"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpaceNumber}.applier.modelChanged"
+                }]
+            }]
+        }, {
+            name: "Line Space - line-height in percentage",
+            tests: [{
+                expect: 4,
+                name: "Set Line-height",
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpacePercentage}", "12px", 0.5]
+                }, {
+                    func: "{lineSpacePercentage}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    listener: "fluid.tests.verifyLineSpaceSet",
+                    args: ["{lineSpacePercentage}", 2, "24px"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpacePercentage}.applier.modelChanged"
+                }]
             }]
         }]
     });
@@ -469,8 +493,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.styleElementsTests",
-            "fluid.tests.emphasizeLinksTests",
-            "fluid.tests.inputsLargerTests",
+            "fluid.tests.enhanceInputsTests",
             "fluid.tests.classSwapperTests",
             "fluid.tests.textSizeTests",
             "fluid.tests.getLineHeightTests",

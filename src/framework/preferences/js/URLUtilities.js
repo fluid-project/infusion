@@ -46,7 +46,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /** Collapse the array of segments into a URL path, starting at the specified
+    /* Collapse the array of segments into a URL path, starting at the specified
      * segment index - this will not terminate with a slash, unless the final segment
      * is the empty string
      */
@@ -75,7 +75,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /** Canonicalise IN PLACE the supplied segment array derived from parsing a
+    /* Canonicalise IN PLACE the supplied segment array derived from parsing a
      * pathInfo structure. Warning, this destructively modifies the argument.
      */
     fluid.url.cononocolosePath = function (pathInfo) {

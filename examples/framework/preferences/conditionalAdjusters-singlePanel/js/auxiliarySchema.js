@@ -19,19 +19,7 @@ var example = example || {};
      * Auxiliary Schema
      */
     fluid.defaults("example.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema", "fluid.contextAware"],
-        contextAwareness: {
-            sliderVariety: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "example.auxSchema.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "example.auxSchema.nativeHTML"
-            }
-        },
+        gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             template: "html/prefsEditor.html",
             message: "%messagePrefix/prefsEditor.json",
@@ -56,7 +44,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.speak",
                     container: ".mpe-speaking-onOff",
-                    template: "%templatePrefix/speak-template.html",
+                    template: "%templatePrefix/switch-template.html",
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
@@ -68,7 +56,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
-                    message: "%messagePrefix/speakIncrease.json"
+                    message: "%messagePrefix/speakIncrease.json",
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             wpm: {
@@ -79,7 +68,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    message: "%messagePrefix/speakIncrease.json"
+                    message: "%messagePrefix/speakIncrease.json",
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             incSize: {
@@ -90,7 +80,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.incSize",
                     container: ".mpe-increasing-onOff",
-                    template: "%templatePrefix/incSize-template.html",
+                    template: "%templatePrefix/switch-template.html",
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
@@ -102,7 +92,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    message: "%messagePrefix/speakIncrease.json"
+                    message: "%messagePrefix/speakIncrease.json",
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             magFactor: {
@@ -113,7 +104,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    message: "%messagePrefix/speakIncrease.json"
+                    message: "%messagePrefix/speakIncrease.json",
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             magPos: {

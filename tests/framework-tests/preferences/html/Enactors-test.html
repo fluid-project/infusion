@@ -7,37 +7,42 @@
         <!--  This is the jqUnit test css file -->
         <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
-        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
-        <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
-        <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script src="../../../../src/framework/preferences/js/Panels.js"></script>
 
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
+        <script src="../../../../src/framework/preferences/js/Enactors.js"></script>
+        <script src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
 
         <!--  These are the jqUnit test js files -->
-        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
 
         <!--  These are tests that have been written using this page as data -->
-        <script type="text/javascript" src="../js/EnactorsTests.js"></script>
+        <script src="../js/EnactorsTestUtils.js"></script>
+        <script src="../js/EnactorsTests.js"></script>
 
     </head>
 
@@ -52,12 +57,9 @@
             <div></div>
         </div>
 
-        <div class="flc-emphasizeLinks">
+        <div class="flc-enhanceInputs">
             <a href="#"></a>
             <a href="#"></a>
-        </div>
-
-        <div class="flc-inputsLarger">
             <input type="hidden" />
             <button></button>
         </div>
@@ -75,8 +77,11 @@
         </div>
 
         <div class="flc-lineSpace-parent" style="font-size: 24px">
-            <div class="flc-lineSpace" style="line-height: 12px; font-size: 6px">
-            </div>
+            <div class="flc-lineSpace-getTests" style="line-height: 12px; font-size: 6px;"></div>
+            <div class="flc-lineSpace" style="line-height: normal;"></div>
+            <div class="flc-lineSpace-length" style="line-height: 12px;"></div>
+            <div class="flc-lineSpace-number" style="line-height: 1.5;"></div>
+            <div class="flc-lineSpace-percentage" style="line-height: 50%;"></div>
         </div>
 
         <div class="flc-tableOfContents">

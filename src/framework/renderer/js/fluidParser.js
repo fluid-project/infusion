@@ -443,7 +443,7 @@ parseloop: // eslint-disable-line indent
         }
     };
 
-    /** Returns a "template structure", with globalmap in the root, and a list
+    /* Returns a "template structure", with globalmap in the root, and a list
      * of entries {href, template, cutpoints} for each parsed template.
      */
     fluid.parseTemplates = function (resourceSpec, templateList, opts) {

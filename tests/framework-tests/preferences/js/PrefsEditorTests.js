@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 University of Toronto
-Copyright 2010-2015 OCAD University
+Copyright 2010-2017 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2015 Raising the Floor - International
 
@@ -42,18 +42,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
+        model: {
+            local:{
+                state: "{that}.model.state"
+            }
+        },
         members: {
             saveCalled: false,
             savedModel: null,
             refreshCount: 0
         },
         listeners: {
-            onSave: "fluid.tests.prefs.trackSave({prefsEditor}, {arguments}.0)",
+            "onSave.track": "fluid.tests.prefs.trackSave({prefsEditor}, {arguments}.0)",
             "onPrefsEditorRefresh.noteCalled": "fluid.tests.prefs.noteRefreshCalled({that})"
         }
     });
 
-
+    fluid.tests.prefs.previewTemplateURL = "TestPreviewTemplate.html";
     fluid.tests.prefs.templatePrefix = "../../../../src/framework/preferences/html";
     fluid.tests.prefs.messagePrefix = "../../../../src/framework/preferences/messages";
 
@@ -91,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.prefs.models.bwSkin2 = {
+    fluid.tests.prefs.models.cwSkin = {
         preferences: {
             textSize: 1.1,
             textFont: "italic",
@@ -112,6 +117,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
+    fluid.tests.prefs.models.state = {
+        state: {
+            userData: true
+        }
+    };
+
     fluid.tests.prefs.testPrefsEditor = function (onReady, prefsEditorGrades, loaderGrades) {
         fluid.prefs.globalSettingsStore();
         fluid.tests.prefs.commonLoader("#ui-options", {
@@ -119,7 +130,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             distributeOptions: [{
                 record: {
                     funcName: onReady,
-                    args: ["{prefsEditor}", "{prefsEditorLoader}"]
+                    args: ["{prefsEditor}", "{prefsEditorLoader}"],
+                    namespace: "runTest"
                 },
                 target: "{that prefsEditor}.options.listeners.onReady"
             }, {
@@ -129,31 +141,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.prefs.assertInitialModel = function (model) {
-        jqUnit.expect(3);
-        jqUnit.assertNotNull("Model is not null", model);
-        jqUnit.assertNotUndefined("Model is not undefined", model);
+    fluid.tests.prefs.assertInit = function (prefsEditor) {
+        var model = prefsEditor.model;
+
+        jqUnit.assertValue("Initialization: Model is set", model);
         var initialModel = fluid.tests.mergeMembers(fluid.defaults("fluid.prefs.initialModel.starter").members.initialModel);
-        jqUnit.assertDeepEq("Initial model is the starter initialModel", initialModel, model);
+        jqUnit.assertDeepEq("Initialization: Initial model contains the initial start preferences", initialModel.preferences, model.preferences);
+
+        var themeValues = prefsEditor.contrast.options.controlValues.theme;
+        jqUnit.assertEquals("Initialization: There are 8 themes in the contrast adjuster", 8, themeValues.length);
+        jqUnit.assertEquals("Initialization: The first theme is default", "default", themeValues[0]);
+
+        var fontValues = prefsEditor.textFont.options.controlValues.textFont;
+        jqUnit.assertEquals("Initialization: There are 5 font values in font style adjuster", 5, fontValues.length);
+        jqUnit.assertTrue("Initialization: There is a default font value", fontValues.indexOf("default") !== -1);
+
+        jqUnit.assertEquals("Initialization: The onPrefsEditorRefresh event has been called once", 1, prefsEditor.refreshCount);
     };
-
-    jqUnit.asyncTest("Init Model and Controls", function () {
-        jqUnit.expect(4);
-
-        fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
-            fluid.tests.prefs.assertInitialModel(prefsEditor.model);
-
-            var themeValues = prefsEditor.contrast.options.controlValues.theme;
-            jqUnit.assertEquals("There are 6 themes in the control", 6, themeValues.length);
-            jqUnit.assertEquals("The first theme is default", "default", themeValues[0]);
-
-            var fontValues = prefsEditor.textFont.options.controlValues.textFont;
-            jqUnit.assertEquals("There are 5 font values in the control", 5, fontValues.length);
-            jqUnit.assertTrue("There is a default font value", fontValues.indexOf("default") !== -1);
-
-            jqUnit.start();
-        }, "fluid.prefs.starterPanels");
-    });
 
     fluid.tests.prefs.assertPrefs = function (template, prefs, method, expected, model) {
         var t = function (term) {
@@ -167,325 +171,513 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
             jqUnit[method](t(pref), expectedPref, model.preferences[pref]);
         });
-        jqUnit.assertTrue(t("some preference") + " must have had a value", definedPrefs > 0); // guard against model misalignment simply comparing undefined with undefined
+        jqUnit.assertTrue(t("- some preference") + " must have had a value", definedPrefs > 0); // guard against model misalignment simply comparing undefined with undefined
     };
 
-    jqUnit.asyncTest("PrefsEditor Save, Reset, and Cancel", function () {
-        jqUnit.expect(20);
+    fluid.tests.prefs.assertAdjusterValues = function (testName, prefsEditor) {
+        var prefs = prefsEditor.model.preferences;
 
-        fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
-            var bwSkin = fluid.tests.prefs.models.bwSkin;
-            var ps = ["textSize", "textFont", "theme"];
-            prefsEditor.applier.change("", bwSkin);
-            var expectedRefreshCount = prefsEditor.refreshCount + 1;
+        var fontVal = $(":selected", prefsEditor.locate("textFont"))[0].value;
+        jqUnit.assertEquals(testName + ": Font style set to " + prefs.textFont, prefs.textFont.toString(), fontVal);
 
-            jqUnit.assertFalse("Save hasn't been called", prefsEditor.saveCalled);
-            prefsEditor.saveAndApply();
-            jqUnit.assertTrue("Save has been called", prefsEditor.saveCalled);
-            jqUnit.assertEquals("PrefsEditor has been refreshed when preferences are changed", expectedRefreshCount, prefsEditor.refreshCount);
+        var textSizeVal = $(".flc-textfieldStepper-field", prefsEditor.locate("textSize")).val();
+        jqUnit.assertEquals(testName + ": Font Size adjuster set to " + prefs.textSize, prefs.textSize.toString(), textSizeVal);
 
-            var savedSettings = prefsEditor.getSettings();
-            var container = $("body");
-            jqUnit.assertDeepEq("bw setting was saved", bwSkin.preferences.theme, savedSettings.preferences.theme);
-            jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-bw"));
-            fluid.tests.prefs.assertPrefs("%p has been saved", ps, "assertEquals", bwSkin, prefsEditor.model);
+        var contrastVal = $(":checked", prefsEditor.locate("contrast"))[0].value;
+        jqUnit.assertEquals(testName + ": Contrast adjuster set to " + prefs.theme, prefs.theme.toString(), contrastVal);
 
-            var noPrefsChange = $.extend(true, {}, bwSkin, {userData: true});
-            prefsEditor.applier.change("", noPrefsChange);
-            jqUnit.assertEquals("PrefsEditor hasn't been refreshed when preferences are not changed", expectedRefreshCount, prefsEditor.refreshCount);
+        var lineSpaceVal = $(".flc-textfieldStepper-field", prefsEditor.locate("lineSpace")).val();
+        jqUnit.assertEquals(testName + ": Line Space adjuster set to " + prefs.lineSpace, prefs.lineSpace.toString(), lineSpaceVal);
 
-            prefsEditor.reset();
-            fluid.tests.prefs.assertPrefs("Reset model %p", ps, "assertNotEquals", bwSkin, prefsEditor.model);
+        var tocVal = $(".flc-switchUI-control", prefsEditor.locate("layoutControls")).attr("aria-checked");
+        jqUnit.assertEquals(testName + ": Table of Contents adjuster set to " + prefs.toc, prefs.toc.toString(), tocVal);
 
-            var stateModel = {state: 1};
-            var saveCases = [{
-                msg: "Unchanged preferences are not saved",
-                model: $.extend({}, true, stateModel, prefsEditor.initialModel),
-                expectedSavedModel: stateModel
-            }, {
-                msg: "The state information and changed preferences (compared to the initial model) are saved",
-                model: $.extend({}, true, stateModel, bwSkin),
-                expectedSavedModel: {
-                    state: 1,
-                    preferences: {
-                        lineSpace: 2,
-                        textFont: "verdana",
-                        textSize: 1.8,
-                        theme: "bw"
+        var enhanceInputsVal = $(".flc-switchUI-control", prefsEditor.locate("enhanceInputs")).attr("aria-checked");
+        jqUnit.assertEquals(testName + ": Table of Contents adjuster set to " + prefs.inputs, prefs.inputs.toString(), enhanceInputsVal);
+    };
+
+    fluid.tests.prefs.assertHasClass = function (msg, elm, className) {
+        elm = $(elm);
+        jqUnit.assertTrue(msg, elm.hasClass(className));
+    };
+
+    fluid.tests.prefs.assertSaved = function (testName, prefsEditor, expected) {
+        if (expected) {
+            jqUnit.assertTrue(testName + ": Save should have been called", prefsEditor.saveCalled);
+        } else {
+            jqUnit.assertFalse(testName + ": Save should not have been called", prefsEditor.saveCalled);
+        }
+
+        // reset saveCalled so that we can check it again later.
+        prefsEditor.saveCalled = false;
+    };
+
+    /*********************
+     * PrefsEditor Tests *
+     *********************/
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader", {
+        gradeNames: ["fluid.tests.prefs.commonLoader"],
+        distributeOptions: [{
+            record: ["fluid.prefs.starterPanels"],
+            target: "{that prefsEditor}.options.gradeNames"
+        }]
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            settingStore: {
+                type: "fluid.prefs.globalSettingsStore"
+            },
+            prefsEditorLoader: {
+                type: "fluid.tests.prefs.prefsEditorLoader",
+                container: "#ui-options",
+                createOnEvent: "{tester}.events.onTestCaseStart"
+            },
+            tester: {
+                type: "fluid.tests.prefs.prefsEditorLoader.tester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            prefs: ["textSize", "textFont", "theme"],
+            models: {
+                bwState: {
+                    expander: {
+                        "this": "$",
+                        method: "extend",
+                        args: [{}, true, fluid.tests.prefs.models.bwSkin, fluid.tests.prefs.models.state]
                     }
                 }
-            }];
-
-            fluid.each(saveCases, function (aCase) {
-                prefsEditor.applier.change("", aCase.model);
-                prefsEditor.save();
-                jqUnit.assertDeepEq(aCase.msg, aCase.expectedSavedModel, prefsEditor.savedModel);
-            });
-
-            prefsEditor.applier.change("", bwSkin);
-            prefsEditor.save();
-            prefsEditor.applier.change("", fluid.tests.prefs.models.bwSkin2);
-
-            prefsEditor.cancel();
-            fluid.tests.prefs.assertPrefs("cancel %p change", ps, "assertEquals", bwSkin, prefsEditor.model);
-
-            jqUnit.start();
-        }, "fluid.prefs.starterPanels");
+            }
+        },
+        modules: [{
+            name: "PrefsEditor Loader",
+            tests: [{
+                expect: 58,
+                name: "Save, Reset, and Cancel",
+                sequence: [{
+                    event: "{tests prefsEditorLoader}.events.onReady",
+                    priority: "last:testing",
+                    listener: "fluid.tests.prefs.assertInit",
+                    args: ["{prefsEditorLoader}.prefsEditor"]
+                }, {
+                    // Change, save and apply preferences
+                    funcName: "{prefsEditorLoader}.prefsEditor.applier.change",
+                    args: ["", fluid.tests.prefs.models.bwSkin]
+                }, {
+                    changeEvent: "{prefsEditorLoader}.prefsEditor.applier.modelChanged",
+                    spec: {path: "", priority: "last:testing"},
+                    listener: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Save, Apply", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.saveAndApply",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Change, Save, Apply: The changed preferences should be saved", fluid.tests.prefs.models.bwSkin, "{arguments}.0"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Save, Apply", "{prefsEditorLoader}.prefsEditor", true]
+                }, {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["Change, Save, Apply: The prefsEditor has been refreshed after preferences are changed", 2, "{prefsEditorLoader}.prefsEditor.refreshCount"]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.getSettings",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Change, Save, Apply: bw setting was saved", fluid.tests.prefs.models.bwSkin.preferences.theme, "{arguments}.0.preferences.theme"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertHasClass",
+                    args: ["Change, Save, Apply: The body element has the high contrast colour scheme", "body", "fl-theme-bw"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertPrefs",
+                    args: ["Change, Save, Apply: %p has been saved", "{that}.options.testOpts.prefs", "assertEquals", fluid.tests.prefs.models.bwSkin, "{prefsEditorLoader}.prefsEditor.model"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertAdjusterValues",
+                    args: ["Change, Save, Apply", "{prefsEditorLoader}.prefsEditor"]
+                }, {
+                    // Change, save and apply non-preference model values
+                    funcName: "{prefsEditorLoader}.prefsEditor.applier.change",
+                    args: ["", fluid.tests.prefs.models.state]
+                }, {
+                    changeEvent: "{prefsEditorLoader}.prefsEditor.applier.modelChanged",
+                    spec: {path: "", priority: "last:testing"},
+                    listener: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Save, Apply (non-pref state)", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.saveAndApply",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Change, Save, Apply (non-pref state): The preferences should be saved", "{that}.options.testOpts.models.bwState", "{arguments}.0"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Save, Apply (non-pref state)", "{prefsEditorLoader}.prefsEditor", true]
+                }, {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["Change, Save, Apply (non-pref state): The prefsEditor hasn't been refreshed when preferences are not changed", 2, "{prefsEditorLoader}.prefsEditor.refreshCount"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertAdjusterValues",
+                    args: ["Change, Save, Apply (non-pref state)", "{prefsEditorLoader}.prefsEditor"]
+                }, {
+                    // Change, cancel
+                    funcName: "{prefsEditorLoader}.prefsEditor.applier.change",
+                    args: ["", fluid.tests.prefs.models.cwSkin]
+                }, {
+                    changeEvent: "{prefsEditorLoader}.prefsEditor.applier.modelChanged",
+                    spec: {path: "", priority: "last:testing"},
+                    listener: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Cancel", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    funcName: "{prefsEditorLoader}.prefsEditor.cancel"
+                }, {
+                    event: "{prefsEditorLoader}.prefsEditor.events.onPrefsEditorRefresh",
+                    priority: "last:testing",
+                    listener: "jqUnit.assertEquals",
+                    args: ["Change, Cancel: The prefsEditor has been refreshed after cancel", 3, "{prefsEditorLoader}.prefsEditor.refreshCount"]
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: [
+                        "Change, Cancel: The changes should be removed and preferences restored to last saved state",
+                        {
+                            expander: {
+                                "this": "$",
+                                method: "extend",
+                                args: [{}, true, "{prefsEditorLoader}.initialModel.preferences", fluid.tests.prefs.models.bwSkin.preferences]
+                            }
+                        },
+                        "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertAdjusterValues",
+                    args: ["Change, Cancel", "{prefsEditorLoader}.prefsEditor"]
+                }, {
+                    // reset, save
+                    funcName: "{prefsEditorLoader}.prefsEditor.reset"
+                }, {
+                    event: "{prefsEditorLoader}prefsEditor.events.afterReset",
+                    listener: "fluid.tests.prefs.assertPrefs",
+                    args: ["Reset, Save: Reset model %p", "{that}.options.testOpts.prefs", "assertNotEquals", fluid.tests.prefs.models.bwSkin, "{prefsEditorLoader}.prefsEditor.model"]
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["Reset, Save: The preferences should be reset to the initial model", "{prefsEditorLoader}.prefsEditor.initialModel.preferences", "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["Reset, Save: The prefsEditor has been refreshed after reset", 4, "{prefsEditorLoader}.prefsEditor.refreshCount"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertAdjusterValues",
+                    args: ["Reset, Save", "{prefsEditorLoader}.prefsEditor"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Reset, Save", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.save",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Reset, Save: The default preferences shouldn't be saved", fluid.tests.prefs.models.state, "{arguments}.0"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Reset, Save", "{prefsEditorLoader}.prefsEditor", true]
+                }, {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["Reset, Save: The prefsEditor hasn't been refreshed when preferences are not changed", 4, "{prefsEditorLoader}.prefsEditor.refreshCount"]
+                }]
+            }]
+        }]
     });
 
-    jqUnit.asyncTest("Refresh View", function () {
-        jqUnit.expect(5);
+    /************************
+     * Custom initial model *
+     ************************/
 
-        fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
-            var bwSkin = fluid.tests.prefs.models.bwSkin;
-            prefsEditor.applier.change("", bwSkin);
-
-            jqUnit.assertEquals("bw setting was set in the model", bwSkin.preferences.theme, prefsEditor.model.preferences.theme);
-
-            var savedSettings = prefsEditor.getSettings();
-            jqUnit.assertUndefined("bw setting was not saved", savedSettings);
-
-            prefsEditor.events.onPrefsEditorRefresh.fire();
-            var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
-            var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val();
-            jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
-            var fontStyleSelection = $(":selected", $(".flc-prefsEditor-text-font"));
-            jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
-            var contrastSelection = $(":checked", $(".flc-prefsEditor-contrast"));
-            jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
-
-            prefsEditor.reset();
-            jqUnit.start();
-        }, "fluid.prefs.starterPanels");
-    });
-
-    fluid.defaults("fluid.tests.prefs.diffInit", {
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.customInitModel", {
+        gradeNames: ["fluid.tests.prefs.prefsEditorLoader"],
         distributeOptions: {
             record: {
-                theme: "wb",
-                textFont: "times"
+                preferences: {
+                    theme: "wb",
+                    textFont: "times"
+                }
             },
-            target: "{fluid.prefs.prefsEditor}.options.members.initialModel"
+            target: "{prefsEditorLoader}.options.members.initialModel"
         }
     });
 
-    jqUnit.asyncTest("Init with site defaults different from PrefsEditor control values", function () {
-        jqUnit.expect(2);
-
-        fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
-            var settings = prefsEditor.initialModel;
-
-            var themeValue = settings.theme;
-            jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
-
-            var fontValue = settings.textFont;
-            jqUnit.assertEquals("The font is set to times", "times", fontValue);
-            jqUnit.start();
-        }, ["fluid.prefs.starterPanels", "fluid.tests.prefs.diffInit"]);
-    });
-
-    /****************************************
-     * Preferences Editor Integration tests *
-     * **************************************/
-
-    fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
-        ["textFont", "theme", "textSize", "lineSpace"].forEach(function (pref) {
-            prefsEditor.applier.change(["preferences", pref], selectionOptions.preferences[pref]);
-        });
-    };
-
-    fluid.tests.prefs.checkPaths = function (prefsEditor, paths) {
-        fluid.each(paths, function (exists, path) {
-            jqUnit.assertEquals("Check existence of path " + path, exists, !!fluid.get(prefsEditor, path));
-        });
-    };
-
-    fluid.tests.prefs.checkSettingsStore = function (message, expectedSelections, actualSelections, preSaveSelections) {
-        fluid.each(expectedSelections, function (val, key) {
-            if (val === preSaveSelections[key]) {
-                jqUnit.assertUndefined("Only exactly changed options should be stored", actualSelections[key]);
-            }
-        });
-    };
-
-    fluid.tests.prefs.checkSaveCancel = function (prefsEditor, saveModel, cancelModel) {
-        var ps = ["textFont", "theme", "textSize", "lineSpace"];
-        var saveButton = prefsEditor.locate("save");
-        var cancelButton = prefsEditor.locate("cancel");
-        var resetButton = prefsEditor.locate("reset");
-
-        jqUnit.assertTrue("Initially, settings store settings are empty",
-            $.isEmptyObject(prefsEditor.getSettings()));
-        jqUnit.assertDeepEq("Initially, model should correspond to default model",
-            prefsEditor.initialModel, prefsEditor.model);
-
-        var preSaveSelections = fluid.copy(prefsEditor.model);
-        fluid.tests.prefs.applierRequestChanges(prefsEditor, saveModel);
-
-        fluid.tests.prefs.assertPrefs("After apply saveModel: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.model);
-        fluid.tests.prefs.checkSettingsStore("After apply saveModel", saveModel, prefsEditor.model, preSaveSelections);
-        saveButton.click();
-        fluid.tests.prefs.assertPrefs("After clicking save: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.getSettings());
-        fluid.tests.prefs.checkSettingsStore("After clicking save", saveModel, prefsEditor.getSettings(), preSaveSelections);
-        fluid.tests.prefs.applierRequestChanges(prefsEditor, cancelModel);
-        cancelButton.click();
-        fluid.tests.prefs.assertPrefs("After applying cancelModel and clicking cancel: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.getSettings());
-        fluid.tests.prefs.checkSettingsStore("After applying cancelModel and clicking cancel", saveModel,
-            prefsEditor.getSettings(), preSaveSelections);
-        resetButton.click();
-        fluid.tests.prefs.assertPrefs("After clicking reset: %p correctly updated", ps, "assertEquals", prefsEditor.initialModel, prefsEditor.model);
-        cancelButton.click();
-        fluid.tests.prefs.assertPrefs("After clicking cancel 2nd time: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.getSettings());
-        fluid.tests.prefs.checkSettingsStore("After clicking cancel", saveModel, prefsEditor.getSettings(), preSaveSelections);
-        // apply the reset settings to make the test result page more readable
-        resetButton.click();
-        saveButton.click();
-    };
-
-    fluid.defaults("fluid.tests.prefs.testIntegration", {
-        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter"],
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.customInitModel.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
-            uiEnhancer: {
-                type: "fluid.uiEnhancer",
-                container: "body",
-                priority: "first",
-                options: {
-                    gradeNames: ["fluid.uiEnhancer.starterEnactors"]
-                }
-            }
-        },
-        autoSave: false
-    });
-
-    fluid.tests.prefs.defaultPanelsPaths = {
-        "uiEnhancer": true,
-        "textSize": true,
-        "lineSpace": true,
-        "textFont": true,
-        "contrast": true,
-        "layoutControls": true,
-        "linksControls": true,
-        "uiEnhancer.options.components.tableOfContents": true
-    };
-
-    jqUnit.asyncTest("PrefsEditor Integration tests", function () {
-        fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
-            fluid.tests.prefs.checkPaths(prefsEditor, fluid.tests.prefs.defaultPanelsPaths);
-            fluid.tests.prefs.checkSaveCancel(prefsEditor, fluid.tests.prefs.models.bwSkin, fluid.tests.prefs.models.bwSkin2);
-            jqUnit.start();
-        }, "fluid.tests.prefs.testIntegration");
-    });
-
-    fluid.defaults("fluid.tests.prefs.testNonDefaultIntegration", {
-        selectors: {
-            textSize: ".flc-prefsEditor-text-size"
-        },
-        components: {
-            textSize: {
-                type: "fluid.prefs.panel.textSize",
-                container: "{prefsEditor}.dom.textSize",
-                createOnEvent: "onPrefsEditorMarkupReady",
-                options: {
-                    listeners: {
-                        "{prefsEditor}.events.onPrefsEditorRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.textSize"
-                    }
-                }
+            settingStore: {
+                type: "fluid.prefs.globalSettingsStore"
             },
-            uiEnhancer: {
-                type: "fluid.uiEnhancer",
-                container: "body",
-                priority: "first",
-                options: {
-                    components: {
-                        textSize: {
-                            type: "fluid.prefs.enactor.textSize",
-                            container: "{uiEnhancer}.container",
-                            options: {
-                                fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                                value: "{uiEnhancer}.model.textSize"
+            prefsEditorLoader: {
+                type: "fluid.tests.prefs.prefsEditorLoader.customInitModel",
+                container: "#ui-options",
+                createOnEvent: "{tester}.events.onTestCaseStart"
+            },
+            tester: {
+                type: "fluid.tests.prefs.prefsEditorLoader.customInitModel.tester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.customInitModel.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            initialModel: {
+                preferences: {
+                    textFont: "times",
+                    theme: "wb",
+                    textSize: 1,
+                    lineSpace: 1,
+                    toc: false,
+                    inputs: false
+                }
+            }
+        },
+        modules: [{
+            name: "PrefsEditor Loader",
+            tests: [{
+                expect: 8,
+                name: "Custom Initial Model",
+                sequence: [{
+                    event: "{tests prefsEditorLoader}.events.onReady",
+                    priority: "last:testing",
+                    listener: "jqUnit.assertDeepEq",
+                    args: ["Initialization: The initialModel include the custom prefs", "{that}.options.testOpts.initialModel", "{prefsEditorLoader}.prefsEditor.initialModel"]
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["Initialization: The model should be set to the initial model", "{that}.options.testOpts.initialModel.preferences", "{prefsEditorLoader}.prefsEditor.initialModel.preferences"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertAdjusterValues",
+                    args: ["Initialization", "{prefsEditorLoader}.prefsEditor"]
+                }]
+            }]
+        }]
+    });
+
+    /*********************
+     * Integration Tests *
+     *********************/
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.integration", {
+        gradeNames: ["fluid.tests.prefs.prefsEditorLoader"]
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.integration.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            settingStore: {
+                type: "fluid.prefs.globalSettingsStore"
+            },
+            prefsEditorLoader: {
+                type: "fluid.tests.prefs.prefsEditorLoader.integration",
+                container: "#ui-options",
+                createOnEvent: "{tester}.events.onTestCaseStart"
+            },
+            tester: {
+                type: "fluid.tests.prefs.prefsEditorLoader.integration.tester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.integration.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "PrefsEditor Loader",
+            tests: [{
+                expect: 17,
+                name: "Integration",
+                sequence: [{
+                    // Initialization
+                    event: "{tests prefsEditorLoader}.events.onReady",
+                    priority: "last:testing",
+                    listener: "jqUnit.assertDeepEq",
+                    args: ["Initialization: The prefs in the initialModel and model should match", "{prefsEditorLoader}.prefsEditor.initialModel.preferences", "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.getSettings",
+                    resolve: "jqUnit.assertUndefined",
+                    resolveArgs: ["Initialization: store should be empty to start", "{arguments}.0"]
+                }, {
+                    // Change, Save
+                    funcName: "{prefsEditorLoader}.prefsEditor.applier.change",
+                    args: ["", fluid.tests.prefs.models.bwSkin]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Save", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{prefsEditorLoader}.prefsEditor.dom.save"
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Save", "{prefsEditorLoader}.prefsEditor", true]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.getSettings",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Change, Save: store should contained the changed prefs", fluid.tests.prefs.models.bwSkin.preferences, "{arguments}.0.preferences"]
+                }, {
+                    // Change, Cancel
+                    funcName: "{prefsEditorLoader}.prefsEditor.applier.change",
+                    args: ["", fluid.tests.prefs.models.cwSkin]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Cancel", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{prefsEditorLoader}.prefsEditor.dom.cancel"
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: [
+                        "Change, Cancel: The changes should be removed and preferences restored to last saved state",
+                        {
+                            expander: {
+                                "this": "$",
+                                method: "extend",
+                                args: [{}, true, "{prefsEditorLoader}.initialModel.preferences", fluid.tests.prefs.models.bwSkin.preferences]
                             }
+                        },
+                        "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Cancel", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.getSettings",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Change, Save: store should not have changed", fluid.tests.prefs.models.bwSkin.preferences, "{arguments}.0.preferences"]
+                }, {
+                    // Reset, Cancel
+                    jQueryTrigger: "click",
+                    element: "{prefsEditorLoader}.prefsEditor.dom.reset"
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["Reset, Cancel: The preferences should be restored to the initialModel", "{prefsEditorLoader}.initialModel.preferences", "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Reset, Cancel", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{prefsEditorLoader}.prefsEditor.dom.cancel"
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: [
+                        "Reset, Cancel: The changes should be removed and preferences restored to last saved state",
+                        {
+                            expander: {
+                                "this": "$",
+                                method: "extend",
+                                args: [{}, true, "{prefsEditorLoader}.initialModel.preferences", fluid.tests.prefs.models.bwSkin.preferences]
+                            }
+                        },
+                        "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Reset, Cancel", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    // Reset, Save
+                    jQueryTrigger: "click",
+                    element: "{prefsEditorLoader}.prefsEditor.dom.reset"
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["Reset, Save: The preferences should be restored to the initialModel", "{prefsEditorLoader}.initialModel.preferences", "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Reset, Save", "{prefsEditorLoader}.prefsEditor", false]
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{prefsEditorLoader}.prefsEditor.dom.save"
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Reset, Save", "{prefsEditorLoader}.prefsEditor", true]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.getSettings",
+                    resolve: "jqUnit.assertUndefined",
+                    resolveArgs: ["Reset, Save: store should contained the changed prefs", "{arguments}.0.preferences"]
+                }]
+            }]
+        }]
+    });
+
+    /*************
+     * Auto-save *
+     *************/
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.autoSave", {
+        gradeNames: ["fluid.tests.prefs.prefsEditorLoader"],
+        prefsEditor: {
+            autoSave: true
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.autoSave.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            settingStore: {
+                type: "fluid.prefs.globalSettingsStore"
+            },
+            prefsEditorLoader: {
+                type: "fluid.tests.prefs.prefsEditorLoader.autoSave",
+                container: "#ui-options",
+                createOnEvent: "{tester}.events.onTestCaseStart"
+            },
+            tester: {
+                type: "fluid.tests.prefs.prefsEditorLoader.autoSave.tester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.autoSave.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "PrefsEditor Loader",
+            tests: [{
+                expect: 4,
+                name: "Auto-save",
+                sequence: [{
+                    event: "{tests prefsEditorLoader}.events.onReady",
+                    priority: "last:testing",
+                    listener: "jqUnit.assertDeepEq",
+                    args: ["Initialization: The prefs in the initialModel and model should match", "{prefsEditorLoader}.prefsEditor.initialModel.preferences", "{prefsEditorLoader}.prefsEditor.model.preferences"]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.getSettings",
+                    resolve: "jqUnit.assertUndefined",
+                    resolveArgs: ["Initialization: store should be empty to start", "{arguments}.0"]
+                }, {
+                    // Change, Save
+                    funcName: "{prefsEditorLoader}.prefsEditor.applier.change",
+                    args: ["", fluid.tests.prefs.models.bwSkin]
+                }, {
+                    funcName: "fluid.tests.prefs.assertSaved",
+                    args: ["Change, Save", "{prefsEditorLoader}.prefsEditor", true]
+                }, {
+                    task: "{prefsEditorLoader}.prefsEditor.getSettings",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Change, Save: store should contained the changed prefs", fluid.tests.prefs.models.bwSkin.preferences, "{arguments}.0.preferences"]
+                }]
+            }]
+        }]
+    });
+
+    /***********
+     * Preview *
+     ***********/
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.preview", {
+        gradeNames: ["fluid.tests.prefs.prefsEditorLoader"],
+        prefsEditor: {
+            events: {
+                previewReady: null
+            },
+            components: {
+                preview: {
+                    type: "fluid.prefs.preview",
+                    createOnEvent: "onReady",
+                    container: "{prefsEditor}.dom.previewFrame",
+                    options: {
+                        templateUrl: fluid.tests.prefs.previewTemplateURL,
+                        listeners: {
+                            "onReady.boilOnPrefsEditorReady": "{prefsEditor}.events.previewReady"
                         }
                     }
                 }
             }
         },
-        autoSave: false
-    });
-
-    fluid.tests.prefs.customizedPanelPaths = {
-        "uiEnhancer": true,
-        "textSize": true,
-        "lineSpace": false,
-        "textFont": false,
-        "contrast": false,
-        "layoutControls": false,
-        "linksControls": false,
-        "uiEnhancer.options.components.tableOfContents": true
-    };
-
-    jqUnit.asyncTest("Non-default PrefsEditor Integration tests", function () {
-        fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
-            fluid.tests.prefs.checkPaths(prefsEditor, fluid.tests.prefs.customizedPanelPaths);
-            fluid.tests.prefs.checkSaveCancel(prefsEditor, fluid.tests.prefs.models.maxTextSize, fluid.tests.prefs.models.minTextSize);
-            jqUnit.start();
-        }, "fluid.tests.prefs.testNonDefaultIntegration");
-    });
-
-    /*******************
-     * Auto-save tests *
-     *******************/
-
-    fluid.defaults("fluid.prefs.tests.autoSave", {
-        gradeNames: "fluid.prefs.starterPanels",
-        autoSave: true
-    });
-
-    jqUnit.asyncTest("PrefsEditor Auto-save", function () {
-        jqUnit.expect(2);
-
-        fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
-            prefsEditor.applier.change("", fluid.tests.prefs.models.bwSkin);
-            jqUnit.assertTrue("Model has changed, auto-save changes", prefsEditor.saveCalled);
-
-            var savedSettings = prefsEditor.getSettings();
-            jqUnit.assertDeepEq("bw setting was saved", fluid.tests.prefs.models.bwSkin.preferences.theme, savedSettings.preferences.theme);
-
-            prefsEditor.reset();
-            jqUnit.start();
-        }, "fluid.prefs.tests.autoSave");
-    });
-
-
-    /*****************
-     * Preview tests *
-     *****************/
-
-    fluid.tests.prefs.templateUrl = "TestPreviewTemplate.html";
-
-    fluid.defaults("fluid.prefs.tests.preview", {
-        gradeNames: "fluid.prefs.starterPanels",
-        components: {
-            preview: {
-                type: "fluid.prefs.preview",
-                createOnEvent: "onReady",
-                container: "{prefsEditor}.dom.previewFrame",
-                options: {
-                    templateUrl: fluid.tests.prefs.templateUrl,
-                    listeners: {
-                        onReady: {
-                            funcName: "fluid.tests.prefs.testPreview",
-                            args: "{prefsEditor}"
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    fluid.defaults("fluid.prefs.tests.preview.loader", {
         distributeOptions: {
             target: "{that templateLoader}.options",
             record: {
@@ -496,49 +688,111 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.prefs.testPreview = function (prefsEditor) {
-        jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
-                fluid.tests.prefs.templateUrl, prefsEditor.preview.container.attr("src"));
-        jqUnit.start();
-    };
-
-    jqUnit.asyncTest("Preview URL", function () {
-        jqUnit.expect(1);
-        fluid.tests.prefs.testPrefsEditor(fluid.identity, "fluid.prefs.tests.preview", "fluid.prefs.tests.preview.loader");
-    });
-
-
-    /****************
-     * Locale tests *
-     ****************/
-
-    fluid.defaults("fluid.prefs.initialModel.localeStarter", {
-        members: {
-            initialModel: {
-                locale: "fr"
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.preview.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            settingStore: {
+                type: "fluid.prefs.globalSettingsStore"
+            },
+            prefsEditorLoader: {
+                type: "fluid.tests.prefs.prefsEditorLoader.preview",
+                container: "#ui-options",
+                createOnEvent: "{tester}.events.onTestCaseStart"
+            },
+            tester: {
+                type: "fluid.tests.prefs.prefsEditorLoader.preview.tester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.prefs.locale", {
-        gradeNames: ["fluid.prefs.initialModel.localeStarter"],
-        defaultLocale: "en",
-        messagePrefix: "../data/"
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.preview.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "PrefsEditor Loader",
+            tests: [{
+                expect: 1,
+                name: "Preview",
+                sequence: [{
+                    event: "{tests prefsEditorLoader prefsEditor}.events.previewReady",
+                    priority: "last:testing",
+                    listener: "fluid.tests.prefs.prefsEditorLoader.preview.tester.assertPreviewURL",
+                    args: ["{prefsEditorLoader}.prefsEditor"]
+                }]
+            }]
+        }]
     });
 
-    fluid.tests.prefs.testLocale = function (prefsEditor, prefsEditorLoader) {
-        jqUnit.assertEquals("The locale value in the initial model has been set properly", "fr", prefsEditorLoader.initialModel.locale);
-        jqUnit.assertEquals("The locale value in the settings has been set properly", "fr", prefsEditorLoader.settings.locale);
-        jqUnit.assertEquals("The locale value in the initial model has been passed to the prefs editor", "fr", prefsEditorLoader.prefsEditor.initialModel.locale);
-        jqUnit.assertEquals("The default locale value in the message loader has been set properly", "en", prefsEditorLoader.messageLoader.options.defaultLocale);
-        jqUnit.assertEquals("The locale value in the message loader has been set properly", "fr", prefsEditorLoader.messageLoader.options.locale);
-        jqUnit.start();
+    fluid.tests.prefs.prefsEditorLoader.preview.tester.assertPreviewURL = function (prefsEditor) {
+        jqUnit.assertEquals("The preview iFrame is pointing to the specified markup", fluid.tests.prefs.previewTemplateURL, prefsEditor.preview.container.attr("src"));
     };
 
-    jqUnit.asyncTest("Locale Tests", function () {
-        jqUnit.expect(5);
+    /**********
+     * Locale *
+     **********/
 
-        fluid.tests.prefs.testPrefsEditor(fluid.tests.prefs.testLocale, [], "fluid.tests.prefs.locale");
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.locale", {
+        gradeNames: ["fluid.tests.prefs.prefsEditorLoader"],
+        defaultLocale: "en",
+        messagePrefix: "../data/",
+        distributeOptions: {
+            record: {
+                preferences: {
+                    locale: "fr"
+                }
+            },
+            target: "{prefsEditorLoader}.options.members.initialModel"
+        }
     });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.locale.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            settingStore: {
+                type: "fluid.prefs.globalSettingsStore"
+            },
+            prefsEditorLoader: {
+                type: "fluid.tests.prefs.prefsEditorLoader.locale",
+                container: "#ui-options",
+                createOnEvent: "{tester}.events.onTestCaseStart"
+            },
+            tester: {
+                type: "fluid.tests.prefs.prefsEditorLoader.locale.tester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.prefsEditorLoader.locale.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "PrefsEditor Loader",
+            tests: [{
+                expect: 5,
+                name: "Auto-save",
+                sequence: [{
+                    event: "{tests prefsEditorLoader}.events.onReady",
+                    priority: "last:testing",
+                    listener: "fluid.tests.prefs.prefsEditorLoader.locale.tester.assertLocale",
+                    args: ["{prefsEditorLoader}", "fr", "en"]
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.prefs.prefsEditorLoader.locale.tester.assertLocale = function (prefsEditorLoader, locale, defaultLocale) {
+        jqUnit.assertEquals("The locale value in the initial model has been set properly", locale, prefsEditorLoader.initialModel.preferences.locale);
+        jqUnit.assertEquals("The locale value in the settings has been set properly", locale, prefsEditorLoader.settings.preferences.locale);
+        jqUnit.assertEquals("The locale value in the initial model has been passed to the prefs editor", locale, prefsEditorLoader.prefsEditor.initialModel.preferences.locale);
+        jqUnit.assertEquals("The default locale value in the message loader has been set properly", defaultLocale, prefsEditorLoader.messageLoader.options.defaultLocale);
+        jqUnit.assertEquals("The locale value in the message loader has been set properly", locale, prefsEditorLoader.messageLoader.options.locale);
+    };
+
+    fluid.test.runTests([
+        "fluid.tests.prefs.prefsEditorLoader.tests",
+        "fluid.tests.prefs.prefsEditorLoader.customInitModel.tests",
+        "fluid.tests.prefs.prefsEditorLoader.integration.tests",
+        "fluid.tests.prefs.prefsEditorLoader.autoSave.tests",
+        "fluid.tests.prefs.prefsEditorLoader.preview.tests",
+        "fluid.tests.prefs.prefsEditorLoader.locale.tests"
+    ]);
 
 })(jQuery);

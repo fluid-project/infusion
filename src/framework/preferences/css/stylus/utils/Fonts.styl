@@ -1,0 +1,31 @@
+// Contains a utility function for changing font family
+// !important is used for all styles to ensure that Preferences Framework's enactors are able to override the pages default styles.
+
+fonts = {
+    ".fl-font-arial": {
+        fontFamily: "Arial"
+    }
+    ".fl-font-verdana": {
+        fontFamily: "Verdana"
+    }
+    ".fl-font-times": {
+        fontFamily: "Georgia, Times, Times New Roman, serif"
+    }
+    ".fl-font-comic-sans": {
+        fontFamily: "Comic Sans MS, sans-serif"
+    }
+}
+
+build-fonts-Enactors(textFont) {
+
+    for fontName in textFont {
+        font = textFont[fontName].fontFamily;
+        
+        {fontName},
+        {fontName} * {
+            &:not([class*='icon']) {
+                font-family: unquote(font) !important;
+            }
+        }
+    }
+}

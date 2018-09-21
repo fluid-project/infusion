@@ -22,18 +22,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Empty uiEnhancer works with customized enactors grades
      *******************************************************************************/
 
-    var emphasizeLinksClass = "fl-emphasize-links";
+    var enhanceInputsClass = "fl-input-enhanced";
 
     fluid.defaults("fluid.uiEnhancer.customizedEnactors", {
         gradeNames: ["fluid.viewComponent"],
         components: {
-            emphasizeLinks: {
-                type: "fluid.prefs.enactor.emphasizeLinks",
+            enhanceInputs: {
+                type: "fluid.prefs.enactor.enhanceInputs",
                 container: "{uiEnhancer}.container",
                 options: {
-                    cssClass: emphasizeLinksClass,
+                    cssClass: enhanceInputsClass,
                     model: {
-                        value: "{uiEnhancer}.model.emphasizeLinks"
+                        value: "{uiEnhancer}.model.enhanceInputs"
                     }
                 }
             }
@@ -60,13 +60,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testCustomizedEnactors = function (container, cssClass, expectedValue) {
         var index = $(container).prop("class").indexOf(cssClass);
         var assertFunc = expectedValue ? jqUnit.assertNotEquals : jqUnit.assertEquals;
-        assertFunc("The emphasized links css selector has " + expectedValue ? "" : "not " + "been applied - " + expectedValue, -1, index);
+        assertFunc("The enhance inputs css selector has " + expectedValue ? "" : "not " + "been applied - " + expectedValue, -1, index);
     };
 
     fluid.defaults("fluid.tests.customizedEnactorsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
-            cssClass: emphasizeLinksClass
+            cssClass: enhanceInputsClass
         },
         modules: [{
             name: "Customized enactors grade with empty UIEnhancer",
@@ -78,13 +78,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
                 }, {
                     func: "{uiEnhancer}.applier.change",
-                    args: ["emphasizeLinks", true]
+                    args: ["enhanceInputs", true]
                 }, {
                     func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", true]
                 }, {
                     func: "{uiEnhancer}.applier.change",
-                    args: ["emphasizeLinks", false]
+                    args: ["enhanceInputs", false]
                 }, {
                     func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
@@ -143,8 +143,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 textFont: "verdana",
                 theme: "bw",
                 layout: false,
-                toc: true,
-                links: true
+                toc: true
             }
         },
         modules: [{

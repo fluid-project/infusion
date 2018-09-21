@@ -6,12 +6,6 @@
         <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
 
-        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-by/by.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-yb/yb.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-bw/bw.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-wb/wb.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-lgdg/lgdg.css" />
-
         <!-- Component styles -->
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/Enactors.css" />
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
@@ -32,13 +26,19 @@
             e.g. From a Custom Build - "../../../../infusion-custom.js"
         -->
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
+        
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidPromises.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataSource.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/RemoteModel.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
@@ -46,12 +46,15 @@
         <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/MessageResolver.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
-        <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../../../src/components/switch/js/Switch.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
@@ -127,7 +130,7 @@
                         listeners: {
                             // Tells the PrefsEditor where to redirect to if the user cancels the operation.
                             // In this case, it goes back one step in the browser's history.
-                            onCancel: {
+                            "onCancel.back": {
                                 "this": window.history,
                                 method: "back"
                             }

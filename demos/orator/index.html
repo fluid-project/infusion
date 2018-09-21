@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/orator/css/Orator.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+
+    <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+    
+    <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidPromises.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/NewViewSupport.js"></script>
+    <script type="text/javascript" src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
+    <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
+    <script type="text/javascript" src="../../src/components/orator/js/Orator.js"></script>
+    <script type="text/javascript" src="js/oratorDemo.js"></script>
+
+    <!-- required for the Overview Panel -->
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+    <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+    <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+    <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+    <title>Orator Demo</title>
+</head>
+
+<body class="fl-focus">
+    <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+    <section class="fl-demo-container">
+        <div class="flc-orator fl-demo-content">
+            <article class="flc-orator-content">
+                <h1>Diverse Participation and Perspectives</h1>
+
+                <p>
+                    In keeping with the edict “nothing about us without us”, this principle is about inviting a diversity of people with a broad range of needs, preferences, interests and skills into the design process, and in so doing, weakening the distinction between user and designer. Considering inclusion in all aspects and at all stages of the design process requires that our communication methods, group processes and daily interactions are inclusive. This helps to ensure that the products and services that are created will be more inclusive.
+                </p>
+
+                <p>
+                    To support diverse participation and enable the design to be as closely linked as possible to the application, the design and development tools should be as accessible and usable as possible. Those new to the process must be provided with the information and resources to fully participate (e.g. by being given time to observe and become familiar with the community, culture, collective knowledge and processes). Communication methods should be transparent and multimodal, and design considerations for “alternative” modes of interaction should be given equal weight.
+                </p>
+
+                <p>
+                    <em><strong>Note:</strong> This does not denigrate the skills of professional designers but calls for those skills to become more accessible and for the design process to become more inclusive of diverse designers and consumers. The role of the professional designer expands to include the responsibility for ensuring diverse participation and for ensuring that diverse voices are heard.</em>
+                </p>
+
+                <h2>Try</h2>
+
+                <p>
+                    Make a list of the methods of communication used in your everyday life (meetings, informal discussions, video conferences, phone calls, social media, emails, etc.). Identify some possible barriers that might prevent some from participating in that communication. Consider your own challenges with these processes or those of someone you know.
+                </p>
+
+                <span>Content from <a href="https://guide.inclusivedesign.ca/insights/DiverseParticipationAndPerspectives.html">The Inclusive Design Guide</a>.</span>
+            </article>
+        </div>
+        <script>
+            demo.orator(".flc-orator");
+        </script>
+    </section>
+</body>
+</html>

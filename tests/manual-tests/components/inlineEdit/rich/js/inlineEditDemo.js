@@ -23,7 +23,7 @@ var demo = demo || {};
     demo.initRichInlineEdit = function () {
         /**
          * Create cancel and save buttons for a rich inline editor.
-         * @param {Object} editor
+         * @param {Object} editor - The editor.
          */
         var makeButtons = function (editor) {
             $(".demo-save", editor.container).click(function () {

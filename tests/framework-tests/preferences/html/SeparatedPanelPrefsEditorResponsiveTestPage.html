@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>SeparatedPanel Preferences Editor Responsive Test Page</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+
+        <!-- CSS required for the Prefs Editor -->
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/Enactors.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+
+    </head>
+    <body>
+        <!-- BEGIN markup for Preference Editor -->
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the mobile view.
+                A separate panel bar for mobile displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-smallScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
+
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the desktop view.
+                A separate panel bar for desktop displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-wideScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+        </div>
+        <!-- END markup for Preference Editor -->
+
+        <div class="flc-toc-tocContainer toc">
+        </div>
+
+        <div id="main">
+            <h1>Some Sample Title</h1>
+            <p>Some content with <a id="myLink">a link</a> and <button>a button</button>. </p>
+        </div>
+    </body>
+</html>

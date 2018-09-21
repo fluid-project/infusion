@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    /** Convenience markup driven pager creator **/
+    /* Convenience markup driven pager creator */
     var markupPager = function (container, options) {
         options = $.extend(true, {}, options, {
             gradeNames: "fluid.tests.testMarkupPager",
@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.pager(container, options);
     };
 
-    /** Convenience test functions **/
+    /* Convenience test functions */
     var enabled = function (str, link) {
         jqUnit.assertFalse(str + " link is enabled",
             link.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.disabled));

@@ -1,0 +1,206 @@
+@font-face {
+    font-family:'Orator-Icons';
+    src:url("../fonts/Orator-Icons.ttf"),url("../fonts/Orator-Icons.eot")
+}
+
+/* controller */
+.fl-orator-controller {
+    display: inline-flex;
+    box-sizing: border-box;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    /* set normal letter-spacing and line-height so that the prefs editor settings won't affect alignment */
+    letter-spacing: normal;
+    line-height: normal;
+    font-size: 2.25rem;
+}
+
+.fl-orator-controller * {
+    box-sizing: inherit;
+}
+
+.fl-orator-controller > * {
+    background-color: #666666;
+    min-width: 3.6rem;
+}
+
+.fl-orator-controller > *:not(:first-child) {
+    border-left: 0.1rem solid #4E4E4E;
+}
+
+.fl-orator-controller > :first-child {
+    border: 0.1rem solid #4E4E4E;
+    border-right: none;
+    border-top-left-radius: 0.3rem;
+    border-bottom-left-radius: 0.3rem;
+}
+
+.fl-orator-controller > *:not(:first-child):hover,
+.fl-orator-controller-playToggle:hover:before {
+    background-color: #4E4E4E;
+}
+
+.fl-orator-controller > *:not(:first-child):focus {
+    border-color: #FFFFFF;
+}
+
+.fl-orator-controller > :last-child {
+    border: 0.1rem solid #4E4E4E;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+}
+
+.fl-orator-controller-playToggle {
+    color: #FFFFFF;
+    text-shadow: 0.1rem 0.2rem 0.2rem #4E4E4E;
+}
+
+
+.flc-orator-controller .fl-orator-controller-playToggle {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* selection reader */
+.fl-orator-selectionReader-play {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    position: absolute;
+    padding: 0.2rem 0.5rem;
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    background: #666666;
+    border: 0.1rem solid #4E4E4E;
+    border-radius: 0.2rem;
+    /* Align down arrow to the beginning of the character that is first selected. */
+    transform: translate(-49%);
+}
+
+.fl-orator-selectionReader-play:after,
+.fl-orator-selectionReader-play:before {
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.fl-orator-selectionReader-play:after {
+    border-color: rgba(136, 183, 213, 0);
+    border-width: 0.5rem;
+    margin-left: -0.5rem;
+}
+
+.fl-orator-selectionReader-play:before {
+    border-color: rgba(194, 225, 245, 0);
+    border-width: 0.7rem;
+    margin-left: -0.7rem;
+}
+
+.fl-orator-selectionReader-play:hover{
+    background: #1ea771;
+}
+
+/* Play above, pointing down */
+.fl-orator-selectionReader-play.fl-orator-selectionReader-above:after,
+.fl-orator-selectionReader-play.fl-orator-selectionReader-above:before {
+    top: 100%
+}
+
+.fl-orator-selectionReader-play.fl-orator-selectionReader-above:after {
+    border-top-color: #666666;
+}
+
+.fl-orator-selectionReader-play.fl-orator-selectionReader-above:hover:after {
+    border-top-color: #1ea771;
+}
+
+.fl-orator-selectionReader-play.fl-orator-selectionReader-above:before {
+    border-top-color: #4E4E4E;
+}
+
+/* Play below, pointing up */
+.fl-orator-selectionReader-play.fl-orator-selectionReader-below:after,
+.fl-orator-selectionReader-play.fl-orator-selectionReader-below:before {
+    bottom: 100%
+}
+
+.fl-orator-selectionReader-play.fl-orator-selectionReader-below:after {
+    border-bottom-color: #666666;
+}
+
+.fl-orator-selectionReader-play.fl-orator-selectionReader-below:hover:after {
+    border-bottom-color: #1ea771;
+}
+
+.fl-orator-selectionReader-play.fl-orator-selectionReader-below:before {
+    border-bottom-color: #4E4E4E;
+}
+
+/* highlight */
+.fl-orator-highlight {
+    color: #000000;
+    background-color: #EED400;
+    /* Used to make the background appear larger so that it stands out in a block of text */
+    outline: 0.2rem solid #EED400;
+}
+
+
+/* Font Icons */
+.fl-icon-orator, .fl-icon-orator-playToggle {
+    font-family: 'Orator-Icons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* control icons */
+
+.fl-icon-orator:before {
+    content: "\e000";
+}
+
+.fl-icon-orator-playToggle:before {
+    content: "\e001";
+}
+
+.fl-orator-controller-play .fl-icon-orator-playToggle:before {
+    content: "\e002";
+}
+
+.fl-icon-orator:before {
+    /* the following is to style the icon to appear inset */
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 0px 2px 0.5px rgba(255,255,255,0.5);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+}
+
+.fl-orator-controller .fl-icon-orator{
+    color: #4E4E4E;
+}
+
+.fl-orator-controller .fl-icon-orator,
+.fl-orator-controller .fl-icon-orator-playToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.fl-orator-controller .fl-icon-orator-playToggle {
+    font-size: 1.5rem;
+}
+
+.fl-orator-selectionReader-play .fl-icon-orator {
+    font-size: 1.5rem;
+    padding-right: 0.5rem;
+    color: #FFFFFF;
+}

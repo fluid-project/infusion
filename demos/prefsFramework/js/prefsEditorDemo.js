@@ -1,5 +1,5 @@
 /*
-Copyright 2014-2015 OCAD University
+Copyright 2014-2017 OCAD University
 Copyright 2015 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -97,7 +97,7 @@ var demo = demo || {};
                 }
             },
 
-            // sepcify augmented container template for panels
+            // specify augmented container template for panels
             template: "html/SeparatedPanelPrefsEditorWithTTS.html"
         }
     });
@@ -106,22 +106,13 @@ var demo = demo || {};
     /**********************************************************************************
      * simplifyPanel
      **********************************************************************************/
+
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "demo.prefs.simplify": {
-                "model.simplify": "value"
+                "model.value": "value"
             }
-        },
-        selectors: {
-            simplify: ".demo-prefsEditor-simplify",
-            label: ".demo-prefsEditor-simplify-label",
-            simplifyDescr: ".demo-prefsEditor-simplify-descr"
-        },
-        protoTree: {
-            label: {messagekey: "simplifyLabel"},
-            simplifyDescr: {messagekey: "simplifyDescr"},
-            simplify: "${simplify}"
         }
     });
 
@@ -129,6 +120,10 @@ var demo = demo || {};
      * simplifyEnactor
      *
      * Simplify content based upon the model value.
+     *
+     * This component is added as an example of how simplification may appear.
+     * However, the following code does not provide a generalized solution that
+     * can be easily used across sites.
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyEnactor", {
         gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
@@ -137,62 +132,19 @@ var demo = demo || {};
                 "model.simplify": "value"
             }
         },
-        selectors: {
-            content: ".demo-content"
-        },
         styles: {
-            simplified: "demo-content-simplified" // TODO: This class is not defined anywhere; do we need it?
+            simplified: "demo-content-simplified"
         },
         model: {
             simplify: false
         },
         modelListeners: {
             simplify: {
-                listener: "{that}.set",
-                args: ["{change}.value"]
-            }
-        },
-        events: {
-            settingChanged: null
-        },
-        invokers: {
-            set: {
-                funcName: "demo.prefsEditor.simplifyEnactor.set",
-                args: ["{arguments}.0", "{that}"]
+                "this": "{that}.container",
+                method: "toggleClass",
+                args: ["{that}.options.styles.simplified", "{change}.value"]
             }
         }
     });
-
-    demo.prefsEditor.simplifyEnactor.set = function (value, that) {
-        var contentContainer = that.container.find(that.options.selectors.content);
-        var simplified = contentContainer.hasClass(that.options.styles.simplified);
-
-        if (!that.initialContent || !that.article) {
-            that.initialContent = contentContainer.html();
-            var articleDom = contentContainer.find("article").clone();
-            $("aside", articleDom).remove();
-            $("img", articleDom).css("float", "none");
-            $("figure", articleDom).css("float", "none");
-            var article = articleDom.html();
-            that.article = article ? article : that.initialContent;
-            that.origBg = $("body").css("background-image");
-        }
-
-        if (value) {
-            if (!simplified) {
-                $("body").css("background-image", "none");
-                contentContainer.html(that.article);
-                contentContainer.addClass(that.options.styles.simplified);
-                that.events.settingChanged.fire();
-            }
-        } else {
-            if (simplified) {
-                $("body").css("background-image", that.origBg);
-                contentContainer.html(that.initialContent);
-                contentContainer.removeClass(that.options.styles.simplified);
-                that.events.settingChanged.fire();
-            }
-        }
-    };
 
 })(jQuery, fluid);

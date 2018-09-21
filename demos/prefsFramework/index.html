@@ -2,6 +2,8 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
         <link rel="shortcut icon" href="http://www.education.noaa.gov/education_web/images/favicon.ico">
         <link rel="icon" type="image/x-icon" href="http://www.education.noaa.gov/favicon.ico">
 
@@ -12,30 +14,34 @@
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/Enactors.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/components/orator/css/Orator.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
 
         <link href="css/main.css" rel="stylesheet" type="text/css" media="screen">
+        <link href="css/simplify.css" rel="stylesheet" type="text/css" media="screen">
 
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
-        <script type="text/javascript" src="lib/buzz/js/buzz.js"></script>
-        <!--[if IE 8]>
-            <script type="text/javascript" src="lib/html5shiv/js/html5shiv.js"></script>
-        <![endif]-->
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
 
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidPromises.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/DataSource.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/RemoteModel.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/NewViewSupport.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
         <script type="text/javascript" src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
@@ -43,24 +49,30 @@
 
         <script type="text/javascript" src="../../src/framework/preferences/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Store.js"></script>
-        <script type="text/javascript" src="../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/ArrowScrolling.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingPanel.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpacePanel.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingEnactor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceEnactor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../src/components/switch/js/Switch.js"></script>
         <script type="text/javascript" src="../../src/components/tableOfContents/js/TableOfContents.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/PrimaryBuilder.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingSchemas.js"></script>
-        <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
+        <script type="text/javascript" src="../../src/components/orator/js/Orator.js"></script>
 
         <script type="text/javascript" src="js/prefsEditorDemo.js"></script>
 
@@ -79,8 +91,9 @@
                     build: {
                         gradeNames: [
                             "fluid.prefs.auxSchema.starter", // this will add the starter set
+                            "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor
                             "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
-                            "demo.prefsEditor.progressiveEnhancement" // progressive enhancment
+                            "demo.prefsEditor.progressiveEnhancement" // progressive enhancement - may add selfVoicing
                         ],
                         primarySchema: demo.prefsEditor.primarySchema
                     }
@@ -88,30 +101,53 @@
             });
         </script>
 
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the mobile view.
+                A separate panel bar for mobile displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-smallScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+
             <!-- This is the div that will contain the Preference Editor component -->
             <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
 
-            <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
-            <div class="fl-panelBar">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the desktop view.
+                A separate panel bar for desktop displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-wideScreen">
                 <span class="fl-prefsEditor-buttons">
-                    <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
-                    <button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
                 </span>
             </div>
         </div>
         <!-- END markup for Preference Editor -->
 
-        <div class="flc-toc-tocContainer toc"> </div>
         <div id="content" class="demo-content">
             <div id="container">
+                <div class="flc-toc-tocContainer toc"> </div>
 
                 <header id="header" class="dotGovSub">
                     <div id="headTitle">
-                        <span class="fl-hidden-accessible">NOAA Office of Education</span>
+                        <span>National Oceanic and Atmospheric Administration</span>
                     </div>
+                    <script>
+                        // Need to inject the SVG so that we don't have to have the entire SVG document in the markup,
+                        // but still be able to style it.
+                        fluid.templateRenderingView({
+                            container: "#headTitle",
+                            template: "images/NOAA_Logo.svg",
+                            injectionType: "prepend"
+                        });
+                    </script>
                     <div id="midBlock">
                         <nav>
                             <ul id="midNavElements">
@@ -372,9 +408,8 @@
                     <a href="#">Home</a> &gt;&gt; <a href="#">Climate</a> &gt;&gt; Climate Change Impacts
                 </nav>
 
-                <div id="contentArea" class="home">
-
-                    <article>
+                <div id="contentArea" class="flc-prefs-selfVoicingWidget home">
+                    <article class="flc-orator-content">
                         <h1 class="ocean">Climate Change Impacts</h1>
 
                         <img class="icon" style="padding-right: 5px; float: right;" src="images/theme_climate_90.gif" alt="Oceans and Coasts" height="90" width="90">
@@ -382,7 +417,7 @@
 
                             <div class="left_tab"></div>
                             <div class="middle_tab">
-                                <h2 class="h1_middle_text">Resources</h2>
+                                <h2 class="h1_middle_text fl-inverted-color">Resources</h2>
                             </div>
                             <div class="right_tab"></div><div style="clear:both;"></div>
                             <div id="newsReleasesList" style="overflow: hidden;border: 1px #CCC solid ;margin-bottom: 11px; ">

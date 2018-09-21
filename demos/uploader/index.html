@@ -2,10 +2,11 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
         <title>Uploader</title>
 
         <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/uploader/css/Uploader.css" />
@@ -13,7 +14,9 @@
 
         <!-- Fluid and jQuery Dependencies -->
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
+
         <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../src/lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"></script>
 
@@ -31,6 +34,7 @@
         <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
 
@@ -51,21 +55,23 @@
         <script type="text/javascript" src="js/uploaderDemo.js"></script>
     </head>
     <body>
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <!-- Basic upload controls, used when JavaScript is unavailable -->
-        <form method="post" enctype="multipart/form-data" class="fl-progEnhance-basic">
-            <p>Use the Browse button to add a file, and the Save button to upload it.</p>
-            <input name="fileData" type="file" />
-            <input class="fl-uploader-basic-save" type="submit" value="Save"/>
-        </form>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+        <section class="fl-demo-container">
+            <!-- Basic upload controls, used when JavaScript is unavailable -->
+            <form method="post" enctype="multipart/form-data" class="fl-progEnhance-basic">
+                <p>Use the Browse button to add a file, and the Save button to upload it.</p>
+                <input name="fileData" type="file" />
+                <input class="fl-uploader-basic-save" type="submit" value="Save"/>
+            </form>
 
-        <!-- The Uploader's template will be injected via AJAX into this container. -->
-        <div id="uploader-contents">
-        </div>
+            <!-- The Uploader's template will be injected via AJAX into this container. -->
+            <div id="uploader-contents">
+            </div>
 
-        <script type="text/javascript">
-            demo.uploader("#uploader-contents");
-        </script>
+            <script type="text/javascript">
+                demo.uploader("#uploader-contents");
+            </script>
+        </section>
 
     </body>
 </html>

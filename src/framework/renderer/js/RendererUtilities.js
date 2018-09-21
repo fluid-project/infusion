@@ -288,7 +288,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.renderer.NO_COMPONENT = {};
 
-    /** A special "shallow copy" operation suitable for nondestructively
+    /* A special "shallow copy" operation suitable for nondestructively
      * merging trees of components. jQuery.extend in shallow mode will
      * neglect null valued properties.
      * This function is unsupported: It is not really intended for use by implementors.
@@ -307,16 +307,20 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.renderer.selection.inputs = function (options, container, key, config) {
         fluid.expect("Selection to inputs expander", options, ["selectID", "inputID", "labelID", "rowID"]);
         var selection = config.expander(options.tree);
+        // Remove the tree from option expansion as this is handled above, and
+        // the tree may have strings with similar syntax to IoC references.
+        var optsToExpand = fluid.censorKeys(options, ["tree"]);
+        var expandedOpts = config.expandLight(optsToExpand);
         var rows = fluid.transform(selection.optionlist.value, function (option, index) {
             var togo = {};
-            var element =  {parentRelativeID: "..::" + options.selectID, choiceindex: index};
-            togo[options.inputID] = element;
-            togo[options.labelID] = fluid.copy(element);
+            var element =  {parentRelativeID: "..::" + expandedOpts.selectID, choiceindex: index};
+            togo[expandedOpts.inputID] = element;
+            togo[expandedOpts.labelID] = fluid.copy(element);
             return togo;
         });
         var togo = {}; // TODO: JICO needs to support "quoted literal key initialisers" :P
-        togo[options.selectID] = selection;
-        togo[options.rowID] = {children: rows};
+        togo[expandedOpts.selectID] = selection;
+        togo[expandedOpts.rowID] = {children: rows};
         togo = config.expander(togo);
         return togo;
     };

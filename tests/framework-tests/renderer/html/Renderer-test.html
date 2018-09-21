@@ -7,31 +7,37 @@
         <!--  This is the jqUnit test css file -->
         <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
-        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
         <!-- This file verifies that the Renderer still basically functions in the absence of the IoC framework -->
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDebugging.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/JavaProperties.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDebugging.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script src="../../../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../../../src/framework/core/js/JavaProperties.js"></script>
+        <script src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
 
         <!-- for fluid.iota -->
-        <script type="text/javascript" src="../../../../src/components/pager/js/Pager.js"></script>
+        <script src="../../../../src/components/pager/js/Pager.js"></script>
 
         <!--  These are the jqUnit test js files -->
-        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+        <!-- Required to ensure we send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
 
         <!--  These are tests that have been written using this page as data -->
-        <script type="text/javascript" src="../js/RendererTests.js"></script>
+        <script src="../js/RendererTests.js"></script>
 
   </head>
   <body>
@@ -294,7 +300,7 @@
 
   <div class="FLUID-3524-b-test">
     <!--
-        <script type="text/javascript" src="../../../../src/fluid-engage-core/components/home/js/Home.js"></script>
+        <script src="../../../../src/fluid-engage-core/components/home/js/Home.js"></script>
       -->
   </div>
   <div class="FLUID-3819-test">

@@ -73,7 +73,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Private constants.
     var NAMESPACE_KEY = "fluid-scoped-data";
 
-    /**
+    /*
      * Gets stored state from the jQuery instance's data map.
      * This function is unsupported: It is not really intended for use by implementors.
      */
@@ -82,7 +82,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return data ? data[key] : undefined;
     };
 
-    /**
+    /*
      * Stores state in the jQuery instance's data map. Unlike jQuery's version,
      * accepts multiple-element jQueries.
      * This function is unsupported: It is not really intended for use by implementors.
@@ -179,8 +179,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Note: when using jQuery val() function to change the node value, the change event would
      * not be fired automatically, it requires to be initiated by the user.
      *
-     * @param node {A jQueryable DOM element} A selector, a DOM node, or a jQuery instance
-     * @param value {String|Number|Array} A string of text, a number, or an array of strings
+     * @param {A jQueryable DOM element} node - A selector, a DOM node, or a jQuery instance
+     * @param {String|Number|Array} value - A string of text, a number, or an array of strings
      * corresponding to the value of each matched element to set in the node
      */
     fluid.changeElementValue = function (node, value) {
