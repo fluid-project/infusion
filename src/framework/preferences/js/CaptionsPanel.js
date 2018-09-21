@@ -21,7 +21,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.captions": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
