@@ -346,8 +346,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var togo = [];
         var parsed = fluid.copy(selector);
         parsed.shift();
-        fluid.visitComponentsForMatching(root, {}, function (that, thatStack, contextHashes, memberNames, i) {
-            if (fluid.matchIoCSelector(parsed, thatStack, contextHashes, memberNames, i)) {
+        fluid.visitComponentsForMatching(root, {}, function (that, thatStack, contextHashes) {
+            if (fluid.matchIoCSelector(parsed, thatStack, contextHashes, [], 1)) {
                 togo.push(that);
             }
         });
@@ -379,13 +379,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return {resolved: testCaseState.expand(material)};
     };
 
+    /** Searches from the supplied event (which may be a synthetic event constructed by fluid.event.resolveEvent)
+     * for a concrete event holding the listener list
+     * @param {Event} event - A possibly synthetic `fluid.event.firer`
+     * @return {Event} The base event wrapped by `event` holding the listener list
+     */
+    fluid.test.findConcreteEvent = function (event) {
+        while (event.originEvent) {
+            event = event.originEvent;
+        }
+        return event;
+    };
     // Because of listener instance removal code driven by fluid.event.resolveListenerRecord, the id assigned
     // on registration of a listener via IoC may not agree with its raw id - this is so that the same listener
     // handle can be distributed to the same function via multiple declarative blocks. Therefore here we need to
     // search for the assigned id since we mean to do something untypical - programmatically remove a listener
     // which was registered declaratively.
     fluid.test.findListenerId = function (event, listener) {
-        return fluid.find(event.byId, function (lisRec, key) {
+        var concreteEvent = fluid.test.findConcreteEvent(event);
+        return fluid.find(concreteEvent.byId, function (lisRec, key) {
             return lisRec.listener.$$fluid_guid === listener.$$fluid_guid ? key : undefined;
         }, fluid.event.identifyListener(listener));
     };
@@ -395,6 +407,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var listener = fluid.test.decodeListener(testCaseState, fixture);
         var priority = fixture.priority === undefined ? "last:testing" : fixture.priority;
         var bind, unbind;
+        var reject = function () {
+            var args = ["Error in listening fixture ", fixture, " selector " + fixture.event].concat(fluid.makeArray(arguments));
+            fluid.fail.apply(null, args);
+        };
         if (analysed.resolved) {
             var event = analysed.resolved;
             bind = function (wrapped) {
@@ -426,8 +442,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     var event = fluid.getForComponent(existent[0], ["events"].concat(analysed.path));
                     event.addListener(wrapped, fixture.namespace, priority);
                 } else if (existent.length > 1) {
-                    fluid.fail("Error in listening fixture ", fixture, " selector " + fixture.event + " matched more than one component during bind: ", existent);
-                }
+                    reject(" matched more than one component during bind: ", existent);
+                } // Note we do not reject on 0 matches since it may match via the distribution after construction
             };
             unbind = function (wrapped) {
                 fluid.clearDistribution(analysed.head.id, id);
@@ -441,7 +457,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     var identified = fluid.test.findListenerId(event, wrapped);
                     event.removeListener(identified);
                 } else if (existent.length > 1) {
-                    fluid.fail("Error in listening fixture ", fixture, " selector " + fixture.event + " matched more than one component during unbind: ", existent);
+                    reject(" matched more than one component during unbind: ", existent);
                 }
             };
         } else {

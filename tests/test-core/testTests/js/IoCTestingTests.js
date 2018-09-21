@@ -400,6 +400,76 @@ fluid.tests.fluid5633Tree.assertValue2 = function (that) {
     jqUnit.assertEquals("Received argument from 2nd event firing", 2, that.options.value);
 };
 
+// More ambitious test tree to flush out further cases observed by gmoss -
+// i) multi-component IoCSS selector
+// ii) injected event receiving listener
+// iii) selector matching by member name rather than context name
+
+fluid.defaults("fluid.tests.fluid5633Tree_2", {
+    gradeNames: ["fluid.test.testEnvironment", "fluid.test.testCaseHolder"],
+    events: {
+        createIt: null
+    },
+    components: {
+        fluid5633top: {
+            type: "fluid.component",
+            options: {
+                events: {
+                    createIt: null,
+                    bindIt: null
+                },
+                components: {
+                    fluid5633middle: {
+                        type: "fluid.component",
+                        createOnEvent: "createIt",
+                        options: {
+                            components: {
+                                fluid5633bottom: {
+                                    type: "fluid.component",
+                                    options: {
+                                        events: {
+                                            bindIt: "{fluid5633top}.events.bindIt"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    listeners: {
+        onCreate: "fluid.tests.fluid5633Tree_2.bindLater"
+    },
+    modules: [{
+        name: "FLUID-5633 strikes back: Deregistration of IoCSS listeners",
+        tests: [{
+            name: "FLUID-5633 strikes back sequence",
+            expect: 2,
+            sequence: [{
+                event: "{fluid5633Tree_2 fluid5633middle fluid5633bottom}.events.bindIt",
+                listener: "jqUnit.assertEquals",
+                args: 42
+            }, {
+                func: "{fluid5633Tree_2}.fluid5633top.events.bindIt.fire",
+                args: 43
+            }, {
+                event: "{fluid5633Tree_2 fluid5633middle fluid5633bottom}.events.bindIt",
+                listener: "jqUnit.assertEquals",
+                args: 43
+            }]
+        }]
+    }]
+});
+
+fluid.tests.fluid5633Tree_2.bindLater = function (that) {
+    fluid.invokeLater(function () {
+        that.fluid5633top.events.createIt.fire();
+        that.fluid5633top.events.bindIt.fire(42);
+    });
+};
+
 // FLUID-5575 late firing of onTestCaseStart
 
 // In this variant, we attach the onCreate listener directly, and refer to the
@@ -666,6 +736,7 @@ fluid.tests.IoCTestingTests = function () {
             "fluid.tests.modelTestTree",
             "fluid.tests.fluid5559Tree",
             "fluid.tests.fluid5633Tree",
+            "fluid.tests.fluid5633Tree_2",
             "fluid.tests.fluid5575Tree.singleActive",
             "fluid.tests.fluid5575Tree.doubleActive",
             "fluid.tests.fluid5575Tree.activePassive",
