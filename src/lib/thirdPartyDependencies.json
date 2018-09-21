@@ -1,0 +1,78 @@
+{
+    "fastXmlPull": {
+        "name": "XML for Script's Fast XML Pull Parser",
+        "description": "A fast XML pull parser based on source code from the XML for Script project. Used by the Renderer to parse templates.",
+        "files": [
+            "./fastXmlPull/js/fastXmlPull.js"
+        ]
+    },
+    "fonts": {
+        "name": "fonts",
+        "description": "Additional web fonts",
+        "fontFiles": ["./fonts/OpenSans-Light.ttf", "./fonts/OpenSans-Regular.ttf", "./fonts/OpenSans-Semibold.ttf"]
+    },
+    "jQuery": {
+        "name": "jQuery",
+        "description": "The jQuery core JavaScript library, used as the foundation for Infusion.",
+        "files": [
+            "./jquery/core/js/jquery.js"
+        ]
+    },
+    "jQueryScrollToPlugin": {
+        "name": "jQuery scrollTo Plugin",
+        "description": "Provides a way to scroll the browser's view to a specific element or location on the page.",
+        "files": [
+            "./jquery/plugins/scrollTo/js/jquery.scrollTo.js"
+        ],
+        "dependencies": [
+            "jQuery"
+        ]
+    },
+    "jQueryTouchPunchPlugin": {
+        "name": "jQuery Touch Punch Plugin",
+        "description": "Provides touch event support for jQuery UI.",
+        "files": [
+            "./jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUI"
+        ]
+    },
+    "jQueryUI": {
+        "name": "jQuery UI",
+        "description": "jQuery UI Widgets and Interactions. Includes the following: Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip",
+        "files": [
+            "./jquery/ui/js/version.js",
+            "./jquery/ui/js/widget.js",
+            "./jquery/ui/js/plugin.js",
+            "./jquery/ui/js/safe-active-element.js",
+            "./jquery/ui/js/safe-blur.js",
+            "./jquery/ui/js/scroll-parent.js",
+            "./jquery/ui/js/position.js",
+            "./jquery/ui/js/data.js",
+            "./jquery/ui/js/keycode.js",
+            "./jquery/ui/js/unique-id.js",
+            "./jquery/ui/js/mouse.js",
+            "./jquery/ui/js/draggable.js",
+            "./jquery/ui/js/tooltip.js"
+        ],
+        "dependencies": [
+            "jQuery"
+        ]
+    },
+    "normalize": {
+        "name": "normalize.css",
+        "description": "Normalize.css makes browsers render all elements more consistently and in line with modern standards. It precisely targets only the styles that need normalizing.",
+        "cssFiles": [
+            "./normalize/css/normalize.css"
+        ]
+    },
+    "url-polyfill": {
+        "name": "url-polyfill",
+        "description": "Polyfill URL and URLSearchParams to match last WHATWG specifications",
+        "files": [
+            "./url-polyfill/js/url-polyfill.js"
+        ]
+    }
+}

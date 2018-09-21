@@ -2,16 +2,17 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
         <title>Progress Example</title>
         <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
         <link rel="stylesheet" type="text/css" href="css/progress.css" />
 
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+
         <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
@@ -33,8 +34,8 @@
         <script type="text/javascript" src="js/progressDemo.js"></script>
     </head>
     <body>
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <div class="demoSelector-shoppingDemo demo-progress-container fl-centered fl-focus">
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+        <section class="demoSelector-shoppingDemo demo-progress-container fl-centered fl-focus">
 
             <h1>Zip Grocery Delivery</h1>
 
@@ -128,7 +129,7 @@
         <div class="progress-demo-submit">
             <button title="Submit your order">Submit</button>
         </div>
-    </div>
+    </section>
 
     <script type="text/javascript">
         demo.shoppingDemo(".demoSelector-shoppingDemo");

@@ -5,8 +5,3 @@
 .demo-largeIcon {
     font-size: 1.5rem;
 }
-
-/* foundation overrides */
-.fl-textfieldStepper .fl-textfieldStepper-textField {
-    display: inline;
-}

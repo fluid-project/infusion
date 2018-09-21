@@ -1,4 +1,8 @@
 
+.demo-listReorderer-container ol {
+    padding-left: unset;
+}
+
 .demo-listReorderer-container ol li {
     padding: 5px;
     margin-bottom: 5px;
@@ -12,15 +16,10 @@
 }
 
 .demo-listReorderer-container ul li {
-    list-style-type: none;
     margin:0px;
     padding:0px;
     padding-left:1em;
     border-right: none;
-}
-
-.demo-listReorderer-container {
-    width: 95%;
 }
 
 .demo-listReorderer-movable-default{

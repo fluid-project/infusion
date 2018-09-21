@@ -3,15 +3,16 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
     <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+    <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
     <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
     <link rel="stylesheet" type="text/css" href="../../src/components/orator/css/Orator.css" />
     <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
 
     <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
-    <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+    
     <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
     <script type="text/javascript" src="../../src/framework/core/js/FluidPromises.js"></script>
     <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
@@ -41,9 +42,9 @@
 </head>
 
 <body class="fl-focus">
-    <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-    <div class="row">
-        <div class="flc-orator large-centered">
+    <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+    <section class="fl-demo-container">
+        <div class="flc-orator fl-demo-content">
             <article class="flc-orator-content">
                 <h1>Diverse Participation and Perspectives</h1>
 
@@ -71,6 +72,6 @@
         <script>
             demo.orator(".flc-orator");
         </script>
-    </div>
+    </section>
 </body>
 </html>
