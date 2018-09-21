@@ -4,7 +4,6 @@ Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2010-2011 OCAD University
-Copyright 2011 Charly Molter
 Copyright 2012-2013 Raising the Floor - US
 Copyright 2014-2016 Raising the Floor - International
 
