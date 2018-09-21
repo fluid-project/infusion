@@ -20,6 +20,7 @@
         "svg/smallA.svg",
         "svg/table-of-contents.svg",
         "svg/text-to-speech-no-article.svg",
+        "svg/word-space.svg",
         "svg/word-space-condensed.svg",
         "svg/word-space-expanded.svg"
     ],
@@ -46,8 +47,9 @@
             "text-to-speech-no-article": "0xE011",
             "table-of-contents": "0xE012",
             "caption": "0xE013",
-            "word-space-condensed": "0xE014",
-            "word-space-expanded": "0xE015"
+            "word-space": "0xE014",
+            "word-space-condensed": "0xE015",
+            "word-space-expanded": "0xE016"
         },
         "templateOptions": {
             "classPrefix": "fl-icon-"
