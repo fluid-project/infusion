@@ -14,16 +14,15 @@
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/Enactors.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/components/orator/css/Orator.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
 
         <link href="css/main.css" rel="stylesheet" type="text/css" media="screen">
+        <link href="css/simplify.css" rel="stylesheet" type="text/css" media="screen">
 
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
-        <script type="text/javascript" src="lib/buzz/js/buzz.js"></script>
-        <!--[if IE 8]>
-            <script type="text/javascript" src="lib/html5shiv/js/html5shiv.js"></script>
-        <![endif]-->
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
 
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
@@ -38,6 +37,7 @@
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/NewViewSupport.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
@@ -72,6 +72,7 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
+        <script type="text/javascript" src="../../src/components/orator/js/Orator.js"></script>
 
         <script type="text/javascript" src="js/prefsEditorDemo.js"></script>
 
@@ -100,7 +101,7 @@
             });
         </script>
 
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
             <!--
@@ -130,14 +131,23 @@
         </div>
         <!-- END markup for Preference Editor -->
 
-        <div class="flc-toc-tocContainer toc"> </div>
         <div id="content" class="demo-content">
             <div id="container">
+                <div class="flc-toc-tocContainer toc"> </div>
 
                 <header id="header" class="dotGovSub">
                     <div id="headTitle">
-                        <span class="fl-hidden-accessible">NOAA Office of Education</span>
+                        <span>National Oceanic and Atmospheric Administration</span>
                     </div>
+                    <script>
+                        // Need to inject the SVG so that we don't have to have the entire SVG document in the markup,
+                        // but still be able to style it.
+                        fluid.templateRenderingView({
+                            container: "#headTitle",
+                            template: "images/NOAA_Logo.svg",
+                            injectionType: "prepend"
+                        });
+                    </script>
                     <div id="midBlock">
                         <nav>
                             <ul id="midNavElements">
@@ -398,9 +408,8 @@
                     <a href="#">Home</a> &gt;&gt; <a href="#">Climate</a> &gt;&gt; Climate Change Impacts
                 </nav>
 
-                <div id="contentArea" class="home">
-
-                    <article>
+                <div id="contentArea" class="flc-prefs-selfVoicingWidget home">
+                    <article class="flc-orator-content">
                         <h1 class="ocean">Climate Change Impacts</h1>
 
                         <img class="icon" style="padding-right: 5px; float: right;" src="images/theme_climate_90.gif" alt="Oceans and Coasts" height="90" width="90">
@@ -408,7 +417,7 @@
 
                             <div class="left_tab"></div>
                             <div class="middle_tab">
-                                <h2 class="h1_middle_text">Resources</h2>
+                                <h2 class="h1_middle_text fl-inverted-color">Resources</h2>
                             </div>
                             <div class="right_tab"></div><div style="clear:both;"></div>
                             <div id="newsReleasesList" style="overflow: hidden;border: 1px #CCC solid ;margin-bottom: 11px; ">

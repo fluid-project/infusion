@@ -1,0 +1,17 @@
+{
+    "orator": {
+        "name": "Orator",
+        "description": "A user interface for self voicing web pages",
+        "cssFiles": [
+            "Orator.css"
+        ],
+        "files": [
+            "./js/Orator.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "framework",
+            "textToSpeech"
+        ]
+    }
+}

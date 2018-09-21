@@ -674,4 +674,3 @@ fluid.tests.IoCTestingTests = function () {
         ]);
     });
 };
-

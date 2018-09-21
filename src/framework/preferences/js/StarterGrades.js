@@ -62,7 +62,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "wb": "fl-theme-wb",
                 "by": "fl-theme-by",
                 "yb": "fl-theme-yb",
-                "lgdg": "fl-theme-lgdg"
+                "lgdg": "fl-theme-lgdg",
+                "gw": "fl-theme-gw",
+                "bbr": "fl-theme-bbr"
             },
             "inputs": "fl-input-enhanced"
         }

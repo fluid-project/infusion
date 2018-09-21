@@ -469,6 +469,81 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    fluid.transforms.nestedValueMapperTransformationTest = [{
+        message: "Using an nested valueMapper transformation to see if expected input paths are detected correctly",
+        transform: {
+            Arrow: {
+                "transform": {
+                    "type": "fluid.transforms.quantize",
+                    "inputPath": "cursorSize",
+                    "ranges": [
+                        {
+                            "upperBound": 0.333,
+                            "output": {
+                                "transform": {
+                                    "type": "fluid.transforms.valueMapper",
+                                    "defaultInputPath": "cursorColor",
+                                    "defaultOutputValue": "",
+                                    "match": {
+                                        "": "Nothing on cursor color",
+                                        "White": "",
+                                        "Black": "%SystemRoot%\\cursors\\arrow_r.cur",
+                                        "ReverseBlack": "%SystemRoot%\\cursors\\arrow_i.cur"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "upperBound": 0.666,
+                            "output": {
+                                "transform": {
+                                    "type": "fluid.transforms.valueMapper",
+                                    "defaultInputPath": "cursorColor",
+                                    "defaultOutputValue": "",
+                                    "match": {
+                                        "": "Nothing on cursor color",
+                                        "White": "%SystemRoot%\\cursors\\arrow_m.cur",
+                                        "Black": "%SystemRoot%\\cursors\\arrow_rm.cur",
+                                        "ReverseBlack": "%SystemRoot%\\cursors\\arrow_im.cur"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "output": {
+                                "transform": {
+                                    "type": "fluid.transforms.valueMapper",
+                                    "defaultInputPath": "cursorColor",
+                                    "defaultOutputValue": "",
+                                    "match": {
+                                        "": "Nothing on cursor color",
+                                        "White": "%SystemRoot%\\cursors\\arrow_l.cur",
+                                        "Black": "%SystemRoot%\\cursors\\arrow_rl.cur",
+                                        "ReverseBlack": "%SystemRoot%\\cursors\\arrow_il.cur"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        expected: {
+            Arrow: "%SystemRoot%\\cursors\\arrow_im.cur"
+        },
+        model: {
+            "cursorSize": 0.4,
+            "cursorColor": "ReverseBlack"
+        },
+        expectedInputPaths: [ "cursorSize", "cursorColor" ]
+    }];
+
+    jqUnit.test("fluid.transforms.nestedValueMapperTransformationTest()", function () {
+        fluid.tests.transforms.testOneStructure(fluid.transforms.nestedValueMapperTransformationTest, {
+            method: "assertDeepEq"
+        });
+    });
+
     fluid.tests.transforms.literalValueTests = [{
         message: "literalValue - basic test",
         transform: {
@@ -1785,7 +1860,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 "trueCATT": "CATT"
             },
-            expectedInputPaths: [ "bogusPath", "whichAnimal", "whichAnimal" ]
+            expectedInputPaths: [ "bogusPath", "whichAnimal" ]
         },
         "inputPath-no-defaultInputPath-fallback": {
             message: "inputPath does not fallback to defaultInputPath if no value is found at inputPath",
@@ -1812,7 +1887,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             expected: {},
-            expectedInputPaths: [ "whichAnimal", "bogusPath", "bogusPath" ],
+            expectedInputPaths: [ "whichAnimal", "bogusPath" ],
             transformWrap: false
         },
         "inputPath-double-match-first-returned": {
@@ -1840,7 +1915,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 smartAnimal: "youWin"
             },
-            expectedInputPaths: [ "whichAnimal", "whichAnimal", "whichCountry" ]
+            expectedInputPaths: [ "whichAnimal", "whichCountry" ]
         },
         "multiMatch-test": {
             message: "valueMapper tie-breaks equally good matches by selecting the first",

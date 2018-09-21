@@ -22,6 +22,14 @@ themes = {
         foregroundColor: #bdbdbb,
         backgroundColor: #555555
     }
+    ".fl-theme-gw": {
+        foregroundColor: #6c6c6c,
+        backgroundColor: #ffffff
+    }
+    ".fl-theme-bbr": {
+        foregroundColor: #000000,
+        backgroundColor: #bb9966
+    }
 }
 
 build-themes-prefsEditor(contrastThemes) {
@@ -211,6 +219,48 @@ build-themes-Enactors(contrastThemes) {
                 visibility: hidden;
             }
 
+            // Orator
+            .fl-orator-highlight {
+                color: bColor !important;
+                background-color: fColor !important;
+                outline-color: fColor;
+            }
+
+            .fl-orator-controller-playToggle {
+                text-shadow: unset;
+            }
+
+            .fl-icon-orator:before {
+                background-color: bColor;
+                color: fColor;
+                text-shadow: unset;
+            }
+
+            .fl-orator-controller > *:not(:first-child):hover,
+            .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
+                background-color: fColor !important;
+                color: bColor !important;
+            }
+
+            .fl-orator-selectionReader-play:hover,
+            .fl-orator-selectionReader-play:hover .fl-icon-orator:before,
+            .fl-orator-selectionReader-play:hover * {
+                background-color: fColor !important;
+                color: bColor !important;
+            }
+
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-above:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-above:hover:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-above:before {
+                border-top-color: fColor;
+            }
+
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-below:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-below:hover:after,
+            .fl-orator-selectionReader-play.fl-orator-selectionReader-below:before {
+                border-bottom-color: fColor;
+            }
+
             // Inverted color
             // General Styling
             &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color {
@@ -222,8 +272,18 @@ build-themes-Enactors(contrastThemes) {
                 border-left-color: bColor !important;
             }
 
+            .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable
+
+
             // Focus
-            &.fl-inverted-color.fl-focus :focus {
+            &.fl-inverted-color.fl-focus :focus,
+            &.fl-inverted-color.fl-focus:focus,
+            .fl-inverted-color.fl-focus :focus,
+            .fl-inverted-color.fl-focus:focus,
+            &.fl-focus .fl-inverted-color :focus,
+            &.fl-focus .fl-inverted-color:focus,
+            .fl-focus .fl-inverted-color :focus,
+            .fl-focus .fl-inverted-color:focus {
                 outline-width: 0.2em;
                 outline-style: solid;
                 outline-color: bColor;
@@ -324,6 +384,43 @@ build-themes-Enactors(contrastThemes) {
                     margin-right: -0.1em;
                     margin-bottom: -0.1em;
                     margin-left: -0.1em;
+                }
+
+                // Orator
+                .fl-orator-highlight {
+                    color: fColor !important;
+                    background-color: bColor !important;
+                    outline-color: bColor;
+                }
+
+                .fl-icon-orator:before {
+                    background-color: fColor;
+                    color: bColor;
+                }
+
+                .fl-orator-controller > *:not(:first-child):hover,
+                .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
+                    background-color: bColor !important;
+                    color: fColor !important;
+                }
+
+                .fl-orator-selectionReader-play:hover,
+                .fl-orator-selectionReader-play:hover .fl-icon-orator:before,
+                .fl-orator-selectionReader-play:hover * {
+                    background-color: bColor !important;
+                    color: fColor !important;
+                }
+
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-above:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-above:hover:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-above:before {
+                    border-top-color: bColor;
+                }
+
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-below:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-below:hover:after,
+                .fl-orator-selectionReader-play.fl-orator-selectionReader-below:before {
+                    border-bottom-color: bColor;
                 }
             }
         }

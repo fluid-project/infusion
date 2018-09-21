@@ -6,15 +6,12 @@ nodejs_app_name: infusion
 
 nodejs_branch: lts
 
-nodejs_npm_version: 3.10.10
-
 nodejs_app_npm_packages:
   - testem
   - istanbul
 
 nodejs_app_commands:
   - npm install
-  - grunt
 
 nodejs_app_install_dir: /home/vagrant/sync
 

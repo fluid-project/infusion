@@ -1,22 +1,39 @@
 # A block step is introduced in all pull request branches before any of the steps listed below. It 
 # is configured using the Buildkite web UI and has a "Run this CI job" label. It is not included 
 # in this YAML configuration to prevent it from being accidentally removed as part of a PR change.
+
+agent_tags: &agent_tags
+  agents:
+    name: "${BUILDKITE_AGENT_META_DATA_NAME?}"
+
 steps:
-  - name: "Create VM"
-    command: "DISPLAY=:0 vagrant up --provider virtualbox && npm install"
-    timeout_in_minutes: 15
+  - name: "Build"
+    command: "DISPLAY=:0 vagrant up --provider virtualbox"
+    timeout_in_minutes: 25
+    <<: *agent_tags
 
   # Wait and make sure the VM was successfully created before proceeding. Otherwise the remaining steps will not run.
   - wait
 
-  - name: "Install dependencies"
-    command: "vagrant ssh -c 'cd /home/vagrant/sync; npm install'"
+  - name: "Code Linter"
+    command: "vagrant ssh -c 'cd /home/vagrant/sync/; $(npm bin)/grunt lint'"
+    timeout_in_minutes: 10
+    <<: *agent_tags
 
-  - name: "Build Infusion"
-    command: "vagrant ssh -c 'cd /home/vagrant/sync; grunt clean stylus modulefiles:all pathMap:all copy:all copy:necessities uglify:all concat:all compress:all'"
+  - name: "Browser Tests"
+    command: "npm run test:vagrantBrowser"
+    timeout_in_minutes: 15
+    <<: *agent_tags
 
-  - name: "Run tests"
-    command: "npm run test:vagrant"
+  - name: "Node Tests"
+    command: "npm run test:vagrantNode"
+    timeout_in_minutes: 5
+    <<: *agent_tags
 
-  - name: "Destroy VM"
+  - wait: ~
+    continue_on_failure: true
+
+  - name: "Cleanup"
     command: "vagrant destroy -f"
+    timeout_in_minutes: 5
+    <<: *agent_tags

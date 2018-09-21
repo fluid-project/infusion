@@ -69,7 +69,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.letterSpace": {
                 "type": "number",
                 "default": 1,
-                "minimum": 1,
+                "minimum": 0.9,
                 "maximum": 2,
                 "divisibleBy": 0.1
             }

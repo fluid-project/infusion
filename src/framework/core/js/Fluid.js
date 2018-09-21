@@ -923,7 +923,7 @@ var fluid = fluid || fluid_3_0_0;
     /**
      * Copied from Underscore.js 1.4.3 - see licence at head of this file
      *
-     * Will execute the passed in function after the specified about of time since it was last executed.
+     * Will execute the passed in function after the specified amount of time since it was last executed.
      * @param {Function} func - the function to execute
      * @param {Number} wait - the number of milliseconds to wait before executing the function
      * @param {Boolean} immediate - Whether to trigger the function at the start (true) or end (false) of

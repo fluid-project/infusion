@@ -1002,10 +1002,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             defaultThemeLabel: "fl-prefsEditor-themePicker-defaultThemeLabel"
         },
         stringArrayIndex: {
-            theme: ["contrast-default", "contrast-bw", "contrast-wb", "contrast-by", "contrast-yb", "contrast-lgdg"]
+            theme: [
+                "contrast-default",
+                "contrast-bw",
+                "contrast-wb",
+                "contrast-by",
+                "contrast-yb",
+                "contrast-lgdg",
+                "contrast-gw",
+                "contrast-bbr"
+            ]
         },
         controlValues: {
-            theme: ["default", "bw", "wb", "by", "yb", "lgdg"]
+            theme: ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "bbr"]
         }
     });
 

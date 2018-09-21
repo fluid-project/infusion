@@ -1,8 +1,8 @@
 /*
-Copyright 2010-2011 OCAD University
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2013 Raising the Floor - US
 Copyright 2014-2015 Raising the Floor - International
+Copyright 2010-2011, 2018 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -67,12 +67,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (resourceSpec.url && !resourceSpec.href) {
                 resourceSpec.href = resourceSpec.url;
             }
+
+            // If options.defaultLocale is set, it will replace any
+            // defaultLocale set on an individual resourceSpec
             if (that.options.defaultLocale) {
                 resourceSpec.defaultLocale = that.options.defaultLocale;
-                if (resourceSpec.locale === undefined) {
-                    resourceSpec.locale = that.options.defaultLocale;
-                }
             }
+            if (!resourceSpec.locale) {
+                resourceSpec.locale = resourceSpec.defaultLocale;
+            }
+
         });
         if (that.options.amalgamateClasses) {
             fluid.fetchResources.amalgamateClasses(resourceSpecs, that.options.amalgamateClasses, that.operate);

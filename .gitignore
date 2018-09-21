@@ -6,6 +6,14 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
+/src/lib/fonts/
+/src/lib/jquery/
+/src/lib/normalize/
+/src/lib/url-polyfill/
+/tests/lib/jquery-simulate/
+/tests/lib/mockjax/
+/tests/lib/sinon/
+package-lock.json
 report.tap
 coverage
 reports

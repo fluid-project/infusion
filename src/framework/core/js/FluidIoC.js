@@ -1896,19 +1896,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.cancelTreeTransaction = function (transactionId) {
         var instantiator = fluid.globalInstantiator;
         var transRec = instantiator.treeTransactions[transactionId];
-        try {
-            transRec.commitDepth = 1;
-            transRec.pendingPotentiae = transRec.restoreRecords;
-            transRec.restoreRecords = fluid.blankPotentiaList();
-            transactionId = instantiator.currentTreeTransaction;
-            transRec.cancelled = true;
-            fluid.commitPotentiae(transactionId, true);
-        } catch (e) {
-            fluid.log(fluid.logLevels.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
-            transRec.restoreRecords.forEach(function (potentia) {
-                instantiator.clearComponent(potentia.parentThat, potentia.memberName, potentia.parentThat[potentia.memberName]);
-            });
-            throw e;
+        if (transRec) {
+            try {
+                transRec.commitDepth = 1;
+                transRec.pendingPotentiae = transRec.restoreRecords;
+                transRec.restoreRecords = fluid.blankPotentiaList();
+                transactionId = instantiator.currentTreeTransaction;
+                transRec.cancelled = true;
+                fluid.commitPotentiae(transactionId, true);
+            } catch (e) {
+                fluid.log(fluid.logLevel.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
+                transRec.restoreRecords.forEach(function (potentia) {
+                    instantiator.clearComponent(potentia.parentThat, potentia.memberName, potentia.parentThat[potentia.memberName]);
+                });
+                throw e;
+            }
         }
     };
 

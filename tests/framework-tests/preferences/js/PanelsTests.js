@@ -806,8 +806,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     model: {
                         value: "{fluid.tests.panel.slider1}.model.slider1"
                     },
-                    range: "{fluid.tests.panel.slider1}.options.range",
-                    sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
+                    range: "{fluid.tests.panel.slider1}.options.range"
                 }
             }
         },
@@ -838,8 +837,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     model: {
                         value: "{fluid.tests.panel.slider2}.model.slider2"
                     },
-                    range: "{fluid.tests.panel.slider2}.options.range",
-                    sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
+                    range: "{fluid.tests.panel.slider2}.options.range"
                 }
             }
         },
@@ -1183,7 +1181,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "wb": "fl-theme-wb",
                 "by": "fl-theme-by",
                 "yb": "fl-theme-yb",
-                "lgdg": "fl-theme-lgdg"
+                "lgdg": "fl-theme-lgdg",
+                "gw": "fl-theme-gw",
+                "bbr": "fl-theme-bbr"
             }
         }
     });
@@ -1234,14 +1234,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.contrastTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
-            expectedNumOfOptions: 6,
+            expectedNumOfOptions: 8,
             defaultValue: "default",
             newValue: "bw"
         },
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 24,
+                expect: 30,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     listener: "fluid.tests.contrastPanel.testDefault",

@@ -1,5 +1,5 @@
 /*
-Copyright 2015 OCAD University
+Copyright 2015-2018 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -17,122 +17,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.speak
-     *******************************************************************************/
-
-    fluid.defaults("fluid.tests.prefs.enactor.speakEnactor", {
-        gradeNames: ["fluid.prefs.enactor.speak"],
-        model: {
-            enabled: true
-        },
-        components: {
-            tts: {
-                type: "fluid.mock.textToSpeech",
-                options: {
-                    invokers: {
-                        queueSpeech: {
-                            funcName: "fluid.mock.textToSpeech.queueSpeech",
-                            args: ["{that}", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.speakTests", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        components: {
-            speak: {
-                type: "fluid.tests.prefs.enactor.speakEnactor"
-            },
-            speakTester: {
-                type: "fluid.tests.speakTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.speakTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            sampleText: "Reading sample text",
-            startStopFireRecord: {
-                onStart: 1,
-                onStop: 1,
-                onSpeechQueued: 1
-            },
-            stoppedModel: {
-                enabled: true,
-                speaking: false,
-                pending: false,
-                paused: false,
-                utteranceOpts: {}
-            }
-        },
-        modules: [{
-            name: "fluid.prefs.enactor.speak",
-            tests: [{
-                expect: 3,
-                name: "Start-Stop flow",
-                sequence: [{
-                    func: "{speak}.tts.queueSpeech",
-                    args: ["{that}.options.testOptions.sampleText"]
-                }, {
-                    listener: "fluid.tests.speakTester.verifyRecords",
-                    args: [
-                        "{speak}",
-                        "{that}.options.testOptions.startStopFireRecord",
-                        [{
-                            text: "{that}.options.testOptions.sampleText",
-                            interrupt: false
-                        }],
-                        "{that}.options.testOptions.stoppedModel"
-                    ],
-                    spec: {priority: "last"},
-                    event: "{speak}.tts.events.onStop"
-                }]
-            }]
-        }]
-    });
-
-    fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedSpeechRecord, expectedModel) {
-        jqUnit.assertDeepEq("The events should have fired correctly", expectedEvents, that.tts.eventRecord);
-        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedSpeechRecord, that.tts.speechRecord);
-        jqUnit.assertDeepEq("The model should be reset correctly", expectedModel, that.model);
-    };
-
-    /*******************************************************************************
      * Unit tests for fluid.prefs.enactor.selfVoicing
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
         gradeNames: ["fluid.prefs.enactor.selfVoicing"],
+        selectors: {
+            node: ".flc-selfVoicing-selection"
+        },
         model: {
             enabled: false
         },
-        components: {
-            tts: {
-                type: "fluid.mock.textToSpeech",
-                options: {
-                    invokers: {
-                        // put back the selfVoicingEnactors own queueSpeech method, but pass in the
-                        // mock queueSpeech function as the speechFn
-                        queueSpeech: {
-                            funcName: "fluid.prefs.enactor.speak.queueSpeech",
-                            args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                        },
-                        mockQueueSpeech: {
-                            funcName: "fluid.mock.textToSpeech.queueSpeech",
-                            args: ["{arguments}.0", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
-                        }
-                    }
-                }
+        orator: {
+            gradeNames: ["fluid.tests.orator.mockTTS"],
+            domReader: {
+                gradeNames: ["fluid.tests.orator.domReaderRecorder"]
             }
         },
         invokers: {
             toggle: {
                 changePath: "enabled",
-                value: "{arguments}.0"
+                value: "{arguments}.0",
+                source: "testToggle"
             }
         }
     });
@@ -155,36 +61,93 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             expectedText: [
-                {text: "{selfVoicing}.options.strings.welcomeMsg", interrupt: true},
-                {text: "Reading text from DOM", interrupt: false},
-                {text: "no image", interrupt: false}
+                {text: "Reading text from DOM", interrupt: true}
             ]
         },
         modules: [{
             name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
-                expect: 1,
-                name: "Dom Reading",
+                expect: 26,
+                name: "Init",
                 sequence: [{
+                    func: "fluid.tests.selfVoicingTester.verifySubComponentNotInitted",
+                    args: ["{selfVoicing}", "orator"]
+                }, {
                     func: "{selfVoicing}.toggle",
                     args: [true]
                 }, {
-                    listener: "fluid.tests.selfVoicingTester.verifySpeakQueue",
-                    args: ["{selfVoicing}", "{that}.options.testOptions.expectedText"],
-                    spec: {priority: "last"},
-                    event: "{selfVoicing}.tts.events.onStop"
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{selfVoicing}.orator", "Init", false],
+                    spec: {priority: "last:testing"},
+                    event: "{selfVoicing orator}.events.onCreate"
+                }, {
+                    func: "jqUnit.isVisible",
+                    args: ["The orator controller should be visible.", "{selfVoicing}.orator.controller.container"]
+                }, {
+                    func: "{selfVoicing}.toggle",
+                    args: [false]
+                }, {
+                    func: "jqUnit.notVisible",
+                    args: ["The orator controller should not be visible.", "{selfVoicing}.orator.controller.container"]
+                }, {
+                    func: "{selfVoicing}.toggle",
+                    args: [true]
+                }, {
+                    func: "jqUnit.isVisible",
+                    args: ["The orator controller should be visible again.", "{selfVoicing}.orator.controller.container"]
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{selfVoicing}.orator.controller.dom.playToggle"
+                }, {
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{selfVoicing}.orator", "Play", true],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selfVoicing}.orator.applier.modelChanged"
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{selfVoicing}.orator.controller.dom.playToggle"
+                }, {
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{selfVoicing}.orator", "Pause", false],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selfVoicing}.orator.applier.modelChanged"
+                }, {
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selfVoicing}.dom.node"]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selfVoicing}.orator.selectionReader", "Selection", {
+                        showUI: true,
+                        play: false,
+                        text: "text",
+                        enabled: true
+                    }],
+                    spec: {priority: "last:testing", path: "text"},
+                    changeEvent: "{selfVoicing}.orator.selectionReader.applier.modelChanged"
+                }, {
+                    func: "{selfVoicing}.toggle",
+                    args: [false]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selfVoicing}.orator.selectionReader", "Remove Selection UI", {
+                        showUI: false,
+                        play: false,
+                        text: "",
+                        enabled: false
+                    }],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selfVoicing}.orator.selectionReader.applier.modelChanged"
                 }]
             }]
         }]
     });
 
-    fluid.tests.selfVoicingTester.verifySpeakQueue = function (that, expectedText) {
-        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.tts.speechRecord);
+    fluid.tests.selfVoicingTester.verifySubComponentNotInitted = function (that, subComponentName) {
+        jqUnit.assertUndefined("The \"" + subComponentName + "\" subcomponent should not have been initialized yet.", that[subComponentName]);
     };
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.speakTests",
             "fluid.tests.selfVoicingTests"
         ]);
     });

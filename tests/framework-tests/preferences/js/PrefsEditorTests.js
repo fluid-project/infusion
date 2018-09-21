@@ -148,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Initialization: Initial model contains the initial start preferences", initialModel.preferences, model.preferences);
 
         var themeValues = prefsEditor.contrast.options.controlValues.theme;
-        jqUnit.assertEquals("Initialization: There are 6 themes in the contrast adjuster", 6, themeValues.length);
+        jqUnit.assertEquals("Initialization: There are 8 themes in the contrast adjuster", 8, themeValues.length);
         jqUnit.assertEquals("Initialization: The first theme is default", "default", themeValues[0]);
 
         var fontValues = prefsEditor.textFont.options.controlValues.textFont;
