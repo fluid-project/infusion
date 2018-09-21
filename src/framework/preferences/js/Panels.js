@@ -873,7 +873,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel.stepperAjuster"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
                 "step": "divisibleBy"
@@ -895,7 +895,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.textFont": {
-                "model.value": "default",
+                "model.value": "value",
                 "controlValues.textFont": "enum"
             }
         },
@@ -946,7 +946,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel.stepperAjuster"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
                 "step": "divisibleBy"
@@ -968,7 +968,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel.themePicker"],
         preferenceMap: {
             "fluid.prefs.contrast": {
-                "model.value": "default",
+                "model.value": "value",
                 "controlValues.theme": "enum"
             }
         },
@@ -1015,7 +1015,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1031,7 +1031,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.enhanceInputs": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });

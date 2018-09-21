@@ -25,7 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel.stepperAjuster"],
         preferenceMap: {
             "fluid.prefs.letterSpace": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
                 "step": "divisibleBy"
