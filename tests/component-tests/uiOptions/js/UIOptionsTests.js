@@ -84,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyLocalization", {
         gradeNames: ["fluid.test.sequenceElement"],
         sequence: [{
-            event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
+            event: "{prefsEditorBaseTest prefsEditorLoader prefsEditor}.events.onReady",
             listener: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyDefaultLocale",
             args: ["{prefsEditor}", "fr"]
         },
