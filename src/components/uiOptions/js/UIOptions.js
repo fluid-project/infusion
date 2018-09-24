@@ -141,8 +141,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                         args: ["{fluid.uiOptions.prefsEditor.localized}", "{fluid.uiOptions.prefsEditor.localized}.prefsEditorLoader.slidingPanel"],
                                         namespace: "updateSlidingPanel"
                                     },
-                                    "afterPanelHide.slidingPanelUpdated": "{fluid.uiOptions.prefsEditor.localized}.events.onSlidingPanelUpdated",
-                                    "afterPanelShow.slidingPanelUpdated": "{fluid.uiOptions.prefsEditor.localized}.events.onSlidingPanelUpdated"
+                                    "afterPanelHide.slidingPanelUpdated": {
+                                        func: "{fluid.uiOptions.prefsEditor.localized}.events.onSlidingPanelUpdated",
+                                        priority: "last"
+                                    },
+                                    "afterPanelShow.slidingPanelUpdated": {
+                                        namespace: "",
+                                        func: "{fluid.uiOptions.prefsEditor.localized}.events.onSlidingPanelUpdated",
+                                        priority: "last"
+                                    }
                                 },
                                 invokers: {
                                     setShowText: {
