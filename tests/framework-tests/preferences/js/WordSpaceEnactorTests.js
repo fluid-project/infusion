@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             value: 1
         },
-        fontSizeMap: fluid.tests.enactors.utils.fontSizeMap
+        fontSizeMap: fluid.tests.enactor.utils.fontSizeMap
     });
 
     fluid.defaults("fluid.tests.wordSpaceTests", {
@@ -54,24 +54,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{wordSpaceTests wordSpace}.events.onCreate",
                     args: ["The word space enactor was created"]
                 }, {
-                    func: "fluid.tests.wordSpaceTester.assertWordSpace",
-                    args: ["{wordSpace}", 16, {value: 1, unit: 0}]
+                    func: "fluid.tests.enactor.spacingSetter.assertSpacing",
+                    args: ["{wordSpace}", 16, "word-spacing", {value: 1, unit: 0}]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", 2]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.wordSpaceTester.assertWordSpace",
-                    args: ["{wordSpace}", 16, {value: 2, unit: 1}]
+                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
+                    args: ["{wordSpace}", 16, "word-spacing", {value: 2, unit: 1}]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", -0.5]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.wordSpaceTester.assertWordSpace",
-                    args: ["{wordSpace}", 16, {value: -0.5, unit: -1.5}]
+                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
+                    args: ["{wordSpace}", 16, "word-spacing", {value: -0.5, unit: -1.5}]
                 }, {
                     funcName: "fluid.tests.wordSpaceTester.reset",
                     args: ["{wordSpace}.container"]
@@ -106,24 +106,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{wordSpaceExistingTests wordSpace}.events.onCreate",
                     args: ["The word space enactor was created"]
                 }, {
-                    func: "fluid.tests.wordSpaceTester.assertWordSpace",
-                    args: ["{wordSpace}", 16, {value: 1, unit: 0}, 3.2]
+                    func: "fluid.tests.enactor.spacingSetter.assertSpacing",
+                    args: ["{wordSpace}", 16, "word-spacing", {value: 1, unit: 0}, 3.2]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", 2]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.wordSpaceTester.assertWordSpace",
-                    args: ["{wordSpace}", 16, {value: 2, unit: 1}, 19.2]
+                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
+                    args: ["{wordSpace}", 16, "word-spacing", {value: 2, unit: 1}, 19.2]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", -0.5]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.wordSpaceTester.assertWordSpace",
-                    args: ["{wordSpace}", 16, {value: -0.5, unit: -1.5}, -20.8]
+                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
+                    args: ["{wordSpace}", 16, "word-spacing", {value: -0.5, unit: -1.5}, -20.8]
                 }, {
                     funcName: "fluid.tests.wordSpaceTester.reset",
                     args: ["{wordSpace}.container"]
@@ -131,13 +131,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }]
     });
-
-    fluid.tests.wordSpaceTester.assertWordSpace = function (that, baseFontSize, expectedModel, expectedStyleValue) {
-        var pxVal = expectedStyleValue || expectedModel.unit * baseFontSize; // convert from em to px
-        var expectedWordSpace = pxVal + "px";
-        jqUnit.assertDeepEq("The model should be set correctly", expectedModel, that.model);
-        jqUnit.assertEquals("The word-spacing css style should be set to " + expectedWordSpace, expectedWordSpace, that.container.css("word-spacing"));
-    };
 
     fluid.tests.wordSpaceTester.reset = function (elm) {
         $(elm).css("word-spacing", "");
