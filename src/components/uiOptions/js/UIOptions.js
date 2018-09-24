@@ -123,23 +123,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         components: {
             prefsEditorLoader: {
                 options: {
-                    contextAwareness: {
-                        lazyLoad: {
-                            checks: {
-                                lazyLoad: {
-                                    gradeNames: "fluid.prefs.separatedPanel.localized.lazyLoad"
-                                }
-                            }
-                        }
-                    },
                     components: {
                         slidingPanel: {
                             options:{
                                 listeners: {
                                     "{messageLoader}.events.onResourcesLoaded": {
                                         funcName: "fluid.uiOptions.prefsEditor.localized.updateSlidingPanel",
-                                        args: ["{fluid.uiOptions.prefsEditor.localized}", "{fluid.uiOptions.prefsEditor.localized}.prefsEditorLoader.slidingPanel"],
-                                        namespace: "updateSlidingPanel"
+                                        args: [
+                                            "{fluid.uiOptions.prefsEditor.localized}.prefsEditorLoader.messageLoader.resources",
+                                            "{fluid.uiOptions.prefsEditor.localized}.model.locale",
+                                            "{fluid.uiOptions.prefsEditor.localized}.prefsEditorLoader.slidingPanel",
+                                            "{fluid.uiOptions.prefsEditor.localized}.options.localeSettings.slidingPanelStringMap"
+                                        ],
+                                        namespace: "updateSlidingPanel",
+                                        priority: "after:updateUioPanelLocales"
                                     },
                                     "afterPanelHide.slidingPanelUpdated": {
                                         func: "{fluid.uiOptions.prefsEditor.localized}.events.onSlidingPanelUpdated",
@@ -164,10 +161,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         prefsEditor: {
                             options: {
                                 listeners: {
-                                    // these listeners only fire once the sliding panel is open, if lazyLoad is enabled
                                     "{messageLoader}.events.onResourcesLoaded": [{
                                         funcName: "fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales",
-                                        args: ["{fluid.uiOptions.prefsEditor.localized}"],
+                                        args: [
+                                            "{fluid.uiOptions.prefsEditor.localized}.prefsEditorLoader.messageLoader.resources",
+                                            "{fluid.uiOptions.prefsEditor.localized}.model.locale",
+                                            "{fluid.uiOptions.prefsEditor.localized}.prefsEditorLoader.prefsEditor"
+                                        ],
                                         priority: "before:rerenderPanels",
                                         namespace: "updateUioPanelLocales"
                                     },
@@ -185,18 +185,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     }
                 }
-            }
-        }
-    });
-
-    // Extension of lazyLoad grade to add listener for locale change
-    fluid.defaults("fluid.prefs.separatedPanel.localized.lazyLoad", {
-        gradeNames: ["fluid.prefs.separatedPanel.lazyLoad"],
-        listeners: {
-            "{localized}.events.onInterfaceLocaleChangeRequested": {
-                func: "{that}.events.onLazyLoad",
-                priority: "after:changeLocale",
-                namespace: "fireLazyLoad"
             }
         }
     });
@@ -230,31 +218,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /* Updates the locale and text for all panels of a UIO component
-     * - "uioComponent": the UIO component proper
-     */
-    fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales = function (uioComponent) {
-        if (uioComponent.prefsEditorLoader) {
-            fluid.each(uioComponent.prefsEditorLoader.prefsEditor, function (panel, key) {
-                if (panel && panel.options && fluid.hasGrade(panel.options, "fluid.prefs.panel")) {
-                    fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(panel, key, uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
-                }
-            });
-        }
-    };
-
     /* Updates and redraws the slidingPanel of a UIO component
-     * - "uioComponent": the UIO component proper
-     * - "slidingPanel": the fluid.slidingPanel being updated
-     */
-    fluid.uiOptions.prefsEditor.localized.updateSlidingPanel = function (uioComponent, slidingPanel) {
-        fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(slidingPanel, "prefsEditor", uioComponent.prefsEditorLoader.messageLoader.resources, uioComponent.model.locale);
+    * - "uioComponent": the UIO component proper
+    * - "slidingPanel": the fluid.slidingPanel being updated
+    * - "resources": a set of message bundles
+    * - "locale": the locale to be loaded/updated
+    * - "slidingPanel": the slidingPanel component to update
+    * - "slidingPanelStringMap": a map of msgLookup key names to bundle-specific key names
+    */
+    fluid.uiOptions.prefsEditor.localized.updateSlidingPanel = function (resources, locale, slidingPanel, slidingPanelStringMap) {
+        fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(slidingPanel, "prefsEditor", resources, locale);
 
         slidingPanel.options.strings = fluid.transform(slidingPanel.options.strings, function (localizedString, key) {
-            return slidingPanel.msgResolver.messageBase[uioComponent.options.localeSettings.slidingPanelStringMap[key]];
+            return slidingPanel.msgResolver.messageBase[slidingPanelStringMap[key]];
         });
 
         slidingPanel.refreshView();
+    };
+
+    /* Updates the locale and text for all panels of a UIO component
+     * - "prefsEditorComponent": the prefsEditor subcomponent of the UIO's prefsEditorLoader component
+     * - "locale": the locale to be loaded/updated
+     */
+    fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales = function (resources, locale, prefsEditorComponent) {
+        fluid.each(prefsEditorComponent, function (panel, key) {
+            if (panel && panel.options && fluid.hasGrade(panel.options, "fluid.prefs.panel")) {
+                fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(panel, key, resources, locale);
+            }
+        });
     };
 
 })(jQuery, fluid_3_0_0);
