@@ -1,5 +1,5 @@
 /*
-Copyright 2011-2015 OCAD University
+Copyright 2011-2015, 2018 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -149,5 +149,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             slidingPanel.togglePanel();
         });
+
+        jqUnit.test("Test setText function", function () {
+            jqUnit.expect(2);
+
+            var el = $(".flc-test-text");
+
+            fluid.slidingPanel.setText(el, "Meow!", "The sound a cat makes");
+
+            var expectedText = "Meow!";
+            var actualText = $(".flc-test-text").html();
+            var expectedAriaLabel = "The sound a cat makes";
+            var actualAriaLabel = $(".flc-test-text").attr("aria-label");
+
+            jqUnit.assertEquals("Element text updated using setText", expectedText, actualText);
+            jqUnit.assertEquals("Element aria-label updated using setText", expectedAriaLabel, actualAriaLabel);
+        });
+
     });
 })(jQuery);
