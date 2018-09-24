@@ -214,10 +214,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /* Reloads UIO message bundles with the given locale,
-     * subject to the fallback rules of the resourceLoader
+     * subject to the fallback rules of the resourceLoader and,
+     * if provided, fires an event to trigger lazy loading
      * - "lang": the locale for which to load messages
      * - "uioMessageLoaderComponent": the UIO messageLoader component
      * - "uioMessageLoaderLocalePath": the path on the messageLoader for its locale
+     * - "lazyLoadEvent": the event to fire to trigger lazy loading
      */
     fluid.uiOptions.prefsEditor.localized.reloadUioMessages = function (locale, uioMessageLoaderComponent, uioMessageLoaderLocalePath, lazyLoadEvent) {
         // Set the locale in the resource loader

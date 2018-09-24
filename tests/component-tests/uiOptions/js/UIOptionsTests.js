@@ -115,15 +115,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyFunctions", {
         gradeNames: ["fluid.test.sequenceElement"],
         sequence: [{
-            funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyReloadUioMessages",
-            args: ["{prefsEditor}.prefsEditorLoader.messageLoader"]
-        },
-        {
-            event: "{prefsEditor}.prefsEditorLoader.messageLoader.events.onResourcesLoaded",
-            listener: "jqUnit.assert",
-            args: ["Messages were reloaded"]
-        },
-        {
             funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyUpdateLocalizedComponent"
         },
         {
@@ -144,7 +135,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             verifyFunctions: {
                 gradeNames: "fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyFunctions",
                 priority: "after:verifyLocalization"
-                // priority: "after:sequence"
             }
         }
     });
@@ -156,7 +146,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 name: "UIO localization tests",
                 expect: 57,
-                sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence"
+                sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence",
+                sequence: [{
+                    funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyReloadUioMessages",
+                    args: ["{prefsEditor}.prefsEditorLoader.messageLoader"]
+                },
+                {
+                    event: "{prefsEditor}.prefsEditorLoader.messageLoader.events.onResourcesLoaded",
+                    listener: "jqUnit.assert",
+                    args: ["Messages were reloaded"]
+                }]
             }]
         }]
     });
@@ -255,11 +254,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Sliding panel localized toggleButton message rendered correctly for " + expectedLocale, localizedSlidingPanelValues.toggleButton[expectedLocale], actualToggleButtonRenderedValue);
     };
 
-    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyReloadUioMessages = function (messageLoader) {
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyReloadUioMessages = function (messageLoader, lazyLoadEvent) {
         if (messageLoader) {
-            jqUnit.assertEquals("Initial locale is as expected", "en_US", messageLoader.options.locale);
+            jqUnit.assertEquals("Initial locale is as expected", null, messageLoader.options.locale);
 
-            fluid.uiOptions.prefsEditor.localized.reloadUioMessages("fr", messageLoader, "options.locale");
+            if (lazyLoadEvent) {
+                fluid.uiOptions.prefsEditor.localized.reloadUioMessages("fr", messageLoader, "options.locale", lazyLoadEvent);
+            } else {
+                fluid.uiOptions.prefsEditor.localized.reloadUioMessages("fr", messageLoader, "options.locale");
+            }
 
             jqUnit.assertEquals("Updated locale is as expected", "fr", messageLoader.options.locale);
         } else {
@@ -438,6 +441,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence",
                 sequence: [{
                     func: "{prefsEditor}.prefsEditorLoader.events.onLazyLoad.fire"
+                },
+                {
+                    funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyReloadUioMessages",
+                    args: ["{prefsEditor}.prefsEditorLoader.messageLoader", "{prefsEditor}.prefsEditorLoader.events.onLazyLoad"]
+                },
+                {
+                    event: "{prefsEditor}.prefsEditorLoader.events.onLazyLoad",
+                    listener: "jqUnit.assert",
+                    args: ["Lazy load was triggered"]
                 }]
             }]
         }]
