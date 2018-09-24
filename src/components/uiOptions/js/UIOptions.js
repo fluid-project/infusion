@@ -82,8 +82,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 value: "{arguments}.0.data"
             },
             "onInterfaceLocaleChangeRequested.reloadUioMessages": {
-                func: "{that}.reloadUioMessages",
-                args: "{arguments}.0.data",
+                funcName: "fluid.uiOptions.prefsEditor.localized.reloadUioMessages",
+                args: ["{arguments}.0.data", "{prefsEditorLoader}.messageLoader", "options.locale"],
                 priority: "after:changeLocale"
             }
         },
@@ -108,16 +108,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             locale: {
                 target: "{that prefsEditorLoader}.options.settings.preferences.locale",
                 source: "{that}.options.model.locale"
-            }
-        },
-        invokers: {
-            reloadUioMessages: {
-                funcName: "fluid.uiOptions.prefsEditor.localized.reloadUioMessages",
-                args: [
-                    "{arguments}.0",
-                    "{prefsEditorLoader}.messageLoader",
-                    "options.locale"
-                ]
             }
         },
         components: {
