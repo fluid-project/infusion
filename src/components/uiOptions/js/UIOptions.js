@@ -172,7 +172,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                         namespace: "updateUioPanelLocales"
                                     },
                                     {
-                                        func: "{that}.events.onPrefsEditorRefresh",
+                                        funcName: "fluid.prefs.separatedPanel.updateView",
+                                        args: ["{that}"],
                                         namespace: "rerenderPanels"
                                     },
                                     {
