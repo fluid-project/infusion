@@ -120,5 +120,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             slidingPanel.togglePanel();
         });
 
+        jqUnit.asyncTest("Refresh Hidden Panel", function () {
+            jqUnit.expect(7);
+            var slidingPanel = fluid.tests.createSlidingPanel();
+
+            slidingPanel.events.afterPanelHide.addListener(function () {
+                jqUnit.assertEquals("Refresh panel via invoker", "none", slidingPanel.locate("panel").css("display"));
+                fluid.tests.slidingPanel.assertAria(slidingPanel, "true");
+                jqUnit.start();
+            });
+
+            slidingPanel.togglePanel();
+        });
+
+        jqUnit.asyncTest("Refresh Shown Panel", function () {
+            jqUnit.expect(7);
+            var slidingPanel = fluid.tests.createSlidingPanel({
+                model: {
+                    isShowing: true
+                }
+            });
+
+            slidingPanel.events.afterPanelShow.addListener(function () {
+                jqUnit.assertEquals("Refresh panel via invoker", "block", slidingPanel.locate("panel").css("display"));
+                fluid.tests.slidingPanel.assertAria(slidingPanel, "false");
+                jqUnit.start();
+            });
+
+            slidingPanel.togglePanel();
+        });
     });
 })(jQuery);
