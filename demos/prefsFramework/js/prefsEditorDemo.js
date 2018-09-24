@@ -112,7 +112,7 @@ var demo = demo || {};
         gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "demo.prefs.simplify": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -130,7 +130,7 @@ var demo = demo || {};
         gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "demo.prefs.simplify": {
-                "model.simplify": "default"
+                "model.simplify": "value"
             }
         },
         styles: {

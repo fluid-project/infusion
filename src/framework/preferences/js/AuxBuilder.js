@@ -165,7 +165,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.each(map, function (primaryPath, internalPath) {
                 if (fluid.prefs.checkPrimarySchema(prefSchema, prefKey)) {
                     var opts = {};
-                    if (internalPath.indexOf("model.") === 0) {
+                    if (internalPath.indexOf("model.") === 0 && primaryPath === "value") {
                         var internalModelName = internalPath.slice(6);
                         // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
                         fluid.set(opts, "model", fluid.get(opts, "model") || {});
@@ -173,7 +173,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             internalModelName: internalModelName,
                             externalModelName: flattenedPrefKey
                         });
-                        fluid.set(initialModel, ["members", "initialModel", "preferences", flattenedPrefKey], prefSchema[primaryPath]);
+                        fluid.set(initialModel, ["members", "initialModel", "preferences", flattenedPrefKey], prefSchema["default"]);
                     } else {
                         fluid.set(opts, internalPath, prefSchema[primaryPath]);
                     }
@@ -287,14 +287,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.each(map, function (primaryPath, internalPath) {
                     if (fluid.prefs.checkPrimarySchema(prefSchema, subPanelPrefsKey)) {
                         var opts;
-                        if (internalPath.indexOf("model.") === 0) {
+                        if (internalPath.indexOf("model.") === 0 && primaryPath === "value") {
                             // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
                             fluid.set(compositePanelOptions, ["options", "model"], fluid.get(compositePanelOptions, ["options", "model"]) || {});
                             fluid.prefs.addCommonOptions(compositePanelOptions, ["options", "model"], panelModelCommonOptions, {
                                 internalModelName: safeSubPanelPrefsKey,
                                 externalModelName: safeSubPanelPrefsKey
                             });
-                            fluid.set(initialModel, ["members", "initialModel", "preferences", safeSubPanelPrefsKey], prefSchema[primaryPath]);
+                            fluid.set(initialModel, ["members", "initialModel", "preferences", safeSubPanelPrefsKey], prefSchema["default"]);
                         } else {
                             opts = opts || {options: {}};
                             fluid.set(opts, "options." + internalPath, prefSchema[primaryPath]);

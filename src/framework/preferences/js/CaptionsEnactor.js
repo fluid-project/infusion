@@ -28,7 +28,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.captions": {
-                "model.enabled": "default"
+                "model.enabled": "value"
             }
         },
         events: {

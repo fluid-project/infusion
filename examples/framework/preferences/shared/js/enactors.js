@@ -29,7 +29,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.speakText": {
-                "model.speak": "default"
+                "model.speak": "value"
             }
         },
         modelListeners: {
@@ -45,7 +45,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.increaseSize": {
-                "model.incSize": "default"
+                "model.incSize": "value"
             }
         },
         modelListeners: {
@@ -61,7 +61,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.volume": {
-                "model.volume": "default"
+                "model.volume": "value"
             }
         },
         modelListeners: {
@@ -77,7 +77,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.wordsPerMinute": {
-                "model.wordsPerMin": "default"
+                "model.wordsPerMin": "value"
             }
         },
         modelListeners: {
@@ -93,7 +93,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.cursorSize": {
-                "model.cursorMult": "default"
+                "model.cursorMult": "value"
             }
         },
         modelListeners: {
@@ -109,7 +109,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.magnification": {
-                "model.mag": "default"
+                "model.mag": "value"
             }
         },
         modelListeners: {
@@ -125,7 +125,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.magnifierPosition": {
-                "model.magPos": "default"
+                "model.magPos": "value"
             }
         },
         modelListeners: {

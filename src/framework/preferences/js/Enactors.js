@@ -135,7 +135,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.enhanceInputs": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         cssClass: null,  // Must be supplied by implementors
@@ -152,7 +152,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.classSwapper"],
         preferenceMap: {
             "fluid.prefs.textFont": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -167,7 +167,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.classSwapper"],
         preferenceMap: {
             "fluid.prefs.contrast": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -233,7 +233,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         members: {
@@ -281,7 +281,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         invokers: {
@@ -359,7 +359,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
-                "model.toc": "default"
+                "model.toc": "value"
             }
         },
         tocTemplate: null,  // must be supplied by implementors

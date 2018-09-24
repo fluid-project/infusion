@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // the key must match the name of the pref in the primary schema
             "awesomeCars.prefs.heatedSeats": {
                 // this key is the path into the panel's model where this preference is stored
-                "model.heatedSeats": "default"
+                "model.heatedSeats": "value"
             }
         },
 
