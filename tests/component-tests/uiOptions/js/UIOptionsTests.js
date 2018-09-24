@@ -112,12 +112,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyFunctions", {
+        gradeNames: ["fluid.test.sequenceElement"],
+        sequence: [{
+            funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyReloadUioMessages",
+            args: ["{prefsEditor}.prefsEditorLoader.messageLoader"]
+        },
+        {
+            event: "{prefsEditor}.prefsEditorLoader.messageLoader.events.onResourcesLoaded",
+            listener: "jqUnit.assert",
+            args: ["Messages were reloaded"]
+        },
+        {
+            funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyUpdateLocalizedComponent"
+        },
+        {
+            funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyUpdateSlidingPanel"
+        },
+        {
+            funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyUpdateUioPanelLocales"
+        }]
+    });
+
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTestSequence", {
         gradeNames: ["fluid.test.sequence"],
         sequenceElements: {
             verifyLocalization: {
                 gradeNames: "fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyLocalization",
                 priority: "after:sequence"
+            },
+            verifyFunctions: {
+                gradeNames: "fluid.tests.uiOptions.prefsEditorLocalizedTest.verifyFunctions",
+                priority: "after:verifyLocalization"
+                // priority: "after:sequence"
             }
         }
     });
@@ -128,7 +155,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "UI Options Locale Tests",
             tests: [{
                 name: "UIO localization tests",
-                expect: 49,
+                expect: 57,
                 sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence"
             }]
         }]
@@ -228,6 +255,161 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Sliding panel localized toggleButton message rendered correctly for " + expectedLocale, localizedSlidingPanelValues.toggleButton[expectedLocale], actualToggleButtonRenderedValue);
     };
 
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyReloadUioMessages = function (messageLoader) {
+        if (messageLoader) {
+            jqUnit.assertEquals("Initial locale is as expected", "en_US", messageLoader.options.locale);
+
+            fluid.uiOptions.prefsEditor.localized.reloadUioMessages("fr", messageLoader, "options.locale");
+
+            jqUnit.assertEquals("Updated locale is as expected", "fr", messageLoader.options.locale);
+        } else {
+            jqUnit.fail("The messageLoader component is not available");
+        }
+    };
+
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyUpdateLocalizedComponent = function () {
+        var testLocalizedComponentWithoutMsgResolver = {};
+        var testLocalizedComponentWithMsgResolver = {
+            msgResolver: {}
+        };
+
+        var testResources = {
+            shyguy: {
+                resourceText: "Shyguy is a cat"
+            }
+        };
+
+        var expectedLocalizedComponent = {
+            msgResolver: {
+                messageLocale: "en",
+                messageBase: "Shyguy is a cat"
+            }
+        };
+
+        fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(testLocalizedComponentWithoutMsgResolver, "shyguy", testResources, "en");
+        jqUnit.assertDeepEq("Localized component was not updated when msgResolver was not truthy", {}, testLocalizedComponentWithoutMsgResolver);
+
+        fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent(testLocalizedComponentWithMsgResolver, "shyguy", testResources, "en");
+        jqUnit.assertDeepEq("Localized component was updated with new values", expectedLocalizedComponent, testLocalizedComponentWithMsgResolver);
+    };
+
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyUpdateSlidingPanel = function () {
+        var testResources = {
+            prefsEditor: {
+                resourceText: {
+                    shyguy: "Shyguy likes gentle pats",
+                    rootbeer: "Rootbeer likes all sorts of pats"
+                }
+            }
+        };
+
+        var testSlidingPanel = {
+            msgResolver: {},
+            options: {
+                strings: {
+                    shyguyMessage: "",
+                    rootbeerMessage: ""
+                }
+            },
+            refreshView: function () {
+                jqUnit.assert("slidingPanel refresh function was called");
+            }
+        };
+
+        var testStringMap = {
+            shyguyMessage: "shyguy",
+            rootbeerMessage: "rootbeer"
+        };
+
+        var expectedResult = {
+            msgResolver: {
+                messageLocale: "catspeak",
+                messageBase: {
+                    shyguy: "Shyguy likes gentle pats",
+                    rootbeer: "Rootbeer likes all sorts of pats"
+                }
+            },
+            options: {
+                strings: {
+                    shyguyMessage: "Shyguy likes gentle pats",
+                    rootbeerMessage: "Rootbeer likes all sorts of pats"
+                }
+            },
+            refreshView: function () {
+                jqUnit.assert("slidingPanel refresh function was called");
+            }
+        };
+
+        fluid.uiOptions.prefsEditor.localized.updateSlidingPanel(testResources, "catspeak", testSlidingPanel, testStringMap);
+
+        jqUnit.assertDeepEq("slidingPanel was updated with new values", expectedResult, testSlidingPanel);
+    };
+
+    fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyUpdateUioPanelLocales = function () {
+        var testResources = {
+            panelTheFirst: {
+                resourceText: {
+                    shyguy: "Shyguy is a little skittish",
+                    rootbeer: "Rootbeer is a little clumsy"
+                }
+            },
+            panelTheSecond: {
+                resourceText: {
+                    shyguy: "Shyguy still likes attention",
+                    rootbeer: "Rootbeer has separation anxiety"
+                }
+            }
+        };
+
+        var testPrefsEditor = {
+            panelTheFirst: {
+                msgResolver: {},
+                options: {
+                    gradeNames: ["fluid.prefs.panel"]
+                }
+            },
+            panelTheSecond: {
+                msgResolver: {},
+                options: {
+                    gradeNames: ["fluid.prefs.panel"]
+                }
+            },
+            notActuallyAPanel: "No cats here"
+        };
+
+        var expectedResult = {
+            panelTheFirst: {
+                msgResolver: {
+                    messageLocale: "meowish",
+                    messageBase: {
+                        shyguy: "Shyguy is a little skittish",
+                        rootbeer: "Rootbeer is a little clumsy"
+                    }
+                },
+                options: {
+                    gradeNames: ["fluid.prefs.panel"]
+                }
+            },
+            panelTheSecond: {
+                msgResolver: {
+                    messageLocale: "meowish",
+                    messageBase: {
+                        shyguy: "Shyguy still likes attention",
+                        rootbeer: "Rootbeer has separation anxiety"
+                    }
+                },
+                options: {
+                    gradeNames: ["fluid.prefs.panel"]
+                }
+            },
+            notActuallyAPanel: "No cats here"
+        };
+
+        fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales(testResources, "meowish", testPrefsEditor);
+
+        jqUnit.assertDeepEq("All panels were updated with new values", expectedResult, testPrefsEditor);
+    };
+
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTest", {
         gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
         components: {
@@ -252,7 +434,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "UI Options Locale Tests with Lazy Load",
             tests: [{
                 name: "UIO localization tests",
-                expect: 49,
+                expect: 57,
                 sequenceGrade: "fluid.tests.uiOptions.prefsEditorLocalizedTestSequence",
                 sequence: [{
                     func: "{prefsEditor}.prefsEditorLoader.events.onLazyLoad.fire"
