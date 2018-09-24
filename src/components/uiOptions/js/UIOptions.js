@@ -82,8 +82,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 value: "{arguments}.0.data"
             },
             "onInterfaceLocaleChangeRequested.reloadUioMessages": {
-                funcName: "fluid.uiOptions.prefsEditor.localized.reloadUioMessages",
-                args: ["{arguments}.0.data", "{prefsEditorLoader}.messageLoader", "options.locale"],
+                func: "{that}.reloadUioMessages",
+                args: "{arguments}.0.data",
                 priority: "after:changeLocale"
             }
         },
@@ -110,9 +110,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "{that}.options.model.locale"
             }
         },
+        invokers: {
+            reloadUioMessages: {
+                funcName: "fluid.uiOptions.prefsEditor.localized.reloadUioMessages",
+                args: [
+                    "{arguments}.0",
+                    "{prefsEditorLoader}.messageLoader",
+                    "options.locale",
+                    "{arguments}.1"
+                ]
+            }
+        },
         components: {
             prefsEditorLoader: {
                 options: {
+                    contextAwareness: {
+                        lazyLoad: {
+                            checks: {
+                                lazyLoad: {
+                                    gradeNames: "fluid.prefs.separatedPanel.localized.lazyLoad"
+                                }
+                            }
+                        }
+                    },
                     components: {
                         slidingPanel: {
                             options:{
@@ -180,18 +200,35 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    // Extension of lazyLoad grade to add listener for locale change
+    fluid.defaults("fluid.prefs.separatedPanel.localized.lazyLoad", {
+        gradeNames: ["fluid.prefs.separatedPanel.lazyLoad"],
+        listeners: {
+            "{fluid.uiOptions.prefsEditor.localized}.events.onInterfaceLocaleChangeRequested": {
+                func: "{fluid.uiOptions.prefsEditor.localized}.reloadUioMessages",
+                args: ["{arguments}.0.data", "{that}.events.onLazyLoad"],
+                priority: "after:changeLocale",
+                namespace: "reloadUioMessages"
+            }
+        }
+    });
+
     /* Reloads UIO message bundles with the given locale,
      * subject to the fallback rules of the resourceLoader
      * - "lang": the locale for which to load messages
      * - "uioMessageLoaderComponent": the UIO messageLoader component
      * - "uioMessageLoaderLocalePath": the path on the messageLoader for its locale
      */
-    fluid.uiOptions.prefsEditor.localized.reloadUioMessages = function (locale, uioMessageLoaderComponent, uioMessageLoaderLocalePath) {
+    fluid.uiOptions.prefsEditor.localized.reloadUioMessages = function (locale, uioMessageLoaderComponent, uioMessageLoaderLocalePath, lazyLoadEvent) {
         // Set the locale in the resource loader
         fluid.set(uioMessageLoaderComponent, uioMessageLoaderLocalePath, locale);
 
         // Force the resource loader to get the new resources
         fluid.resourceLoader.loadResources(uioMessageLoaderComponent, uioMessageLoaderComponent.resolveResources());
+
+        if (lazyLoadEvent) {
+            lazyLoadEvent.fire();
+        }
     };
 
     /* Updates a given localized component's messages with new values and sets a
