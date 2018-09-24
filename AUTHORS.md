@@ -8,7 +8,6 @@ Please see the version control system's revision history for details on contribu
 
 Copyright 2007-2018
 
-* Charly Molter
 * Dinuka De Silva
 * John Kremer
 * Lucendo Development Ltd.
