@@ -216,7 +216,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /* Reloads UIO message bundles with the given locale,
      * subject to the fallback rules of the resourceLoader and,
      * if provided, fires an event to trigger lazy loading
-     * - "lang": the locale for which to load messages
+     * - "locale": the locale for which to load messages
      * - "uioMessageLoaderComponent": the UIO messageLoader component
      * - "uioMessageLoaderLocalePath": the path on the messageLoader for its locale
      * - "lazyLoadEvent": the event to fire to trigger lazy loading
@@ -238,7 +238,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * - "localizedComponent": the component to be updated
      * - "resourceKey": the key to access in the resources collection
      *   where this component's messages are stored
-     * - "resources": the collection of messages
+     * - "resources": a set of message bundles
      * - "locale": the locale of the messages
      */
     fluid.uiOptions.prefsEditor.localized.updateLocalizedComponent = function (localizedComponent, resourceKey, resources, locale) {
@@ -249,8 +249,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /* Updates and redraws the slidingPanel of a UIO component
-    * - "uioComponent": the UIO component proper
-    * - "slidingPanel": the fluid.slidingPanel being updated
     * - "resources": a set of message bundles
     * - "locale": the locale to be loaded/updated
     * - "slidingPanel": the slidingPanel component to update
@@ -267,8 +265,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /* Updates the locale and text for all panels of a UIO component
+     * - "resources": a set of message bundles
+     * - "locale": the locale to be loaded/updated,
      * - "prefsEditorComponent": the prefsEditor subcomponent of the UIO's prefsEditorLoader component
-     * - "locale": the locale to be loaded/updated
      */
     fluid.uiOptions.prefsEditor.localized.updateUioPanelLocales = function (resources, locale, prefsEditorComponent) {
         fluid.each(prefsEditorComponent, function (panel, key) {
