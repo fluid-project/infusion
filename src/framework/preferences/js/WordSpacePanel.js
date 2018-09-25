@@ -1,5 +1,5 @@
 /*
-Copyright 2017 OCAD University
+Copyright 2018 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -15,24 +15,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /*************************************
-     * Preferences Editor Letter Spacing *
+     * Preferences Editor Word Spacing *
      *************************************/
 
     /**
-     * A sub-component of fluid.prefs that renders the "letter spacing" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "word spacing" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.prefs.panel.letterSpace", {
+    fluid.defaults("fluid.prefs.panel.wordSpace", {
         gradeNames: ["fluid.prefs.panel.stepperAjuster"],
         preferenceMap: {
-            "fluid.prefs.letterSpace": {
-                "model.value": "value",
+            "fluid.prefs.wordSpace": {
+                "model.value": "default",
                 "range.min": "minimum",
                 "range.max": "maximum",
                 "step": "divisibleBy"
             }
         },
         panelOptions: {
-            labelIdTemplate: "letterSpace-label-%guid"
+            labelIdTemplate: "wordSpace-label-%guid"
         }
     });
 
