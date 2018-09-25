@@ -185,7 +185,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.textSize",
                 container: ".flc-textSize",
                 options: {
-                    fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
+                    fontSizeMap: fluid.tests.enactor.utils.fontSizeMap,
                     model: {
                         value: 1
                     }
@@ -201,12 +201,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedInitialSize = 16;
         var muliplier = 2;
         var remTestElm = $("#flc-textSize-remTest");
-        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactors.utils.fontSizeMap);
+        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactor.utils.fontSizeMap);
 
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
         that.applier.change("value", muliplier);
         jqUnit.assertEquals("The size should be doubled", (expectedInitialSize * muliplier) + "px", that.root.css("fontSize"));
-        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactors.utils.fontSizeMap));
+        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactor.utils.fontSizeMap));
 
         // reset font size of root
         $("html").css("font-size", that.initialSize + "px");
@@ -233,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.getLineHeightTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         container: ".flc-lineSpace",
-        fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
+        fontSizeMap: fluid.tests.enactor.utils.fontSizeMap,
         expectedTestSize: 8,
         expectedSizeAtUndetected: 1,
         components: {
@@ -258,7 +258,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var testGetLineHeightMultiplier = function (lineHeight, expected) {
         var container = $(".flc-lineSpace-getTests");
-        var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fluid.tests.enactors.utils.fontSizeMap);
+        var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fluid.tests.enactor.utils.fontSizeMap);
 
         var numerizedLineHeight = fluid.prefs.enactor.lineSpace.getLineHeightMultiplier(lineHeight, Math.round(fontSize));
 
@@ -300,7 +300,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.enactor.lineSpace", {
         gradeNames: ["fluid.prefs.enactor.lineSpace"],
-        fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
+        fontSizeMap: fluid.tests.enactor.utils.fontSizeMap,
         model: {
             value: 1
         }

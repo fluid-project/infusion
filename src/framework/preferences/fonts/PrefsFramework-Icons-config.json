@@ -1,25 +1,28 @@
 {
     "src": [
-        "svg/indicator-arrow-triangle.svg",
-        "svg/crossout-diag-dotted-line.svg",
-        "svg/contrast.svg",
         "svg/bigA.svg",
-        "svg/smallA.svg",
-        "svg/reset-undo-arrow.svg",
-        "svg/line-space-expanded.svg",
-        "svg/line-space-condensed.svg",
-        "svg/line-space.svg",
-        "svg/links.svg",
-        "svg/simplify.svg",
-        "svg/preferences.svg",
-        "svg/font-style.svg",
-        "svg/size.svg",
-        "svg/text-to-speech-no-article.svg",
-        "svg/table-of-contents.svg",
-        "svg/character-spacing-expanded.svg",
-        "svg/character-spacing-condensed.svg",
+        "svg/caption.svg",
         "svg/character-spacing.svg",
-        "svg/caption.svg"
+        "svg/character-spacing-condensed.svg",
+        "svg/character-spacing-expanded.svg",
+        "svg/contrast.svg",
+        "svg/crossout-diag-dotted-line.svg",
+        "svg/font-style.svg",
+        "svg/indicator-arrow-triangle.svg",
+        "svg/line-space.svg",
+        "svg/line-space-condensed.svg",
+        "svg/line-space-expanded.svg",
+        "svg/links.svg",
+        "svg/preferences.svg",
+        "svg/reset-undo-arrow.svg",
+        "svg/simplify.svg",
+        "svg/size.svg",
+        "svg/smallA.svg",
+        "svg/table-of-contents.svg",
+        "svg/text-to-speech-no-article.svg",
+        "svg/word-space.svg",
+        "svg/word-space-condensed.svg",
+        "svg/word-space-expanded.svg"
     ],
     "options": {
         "font": "PrefsFramework-Icons",
@@ -43,7 +46,10 @@
             "size": "0xE010",
             "text-to-speech-no-article": "0xE011",
             "table-of-contents": "0xE012",
-            "caption": "0xE013"
+            "caption": "0xE013",
+            "word-space": "0xE014",
+            "word-space-condensed": "0xE015",
+            "word-space-expanded": "0xE016"
         },
         "templateOptions": {
             "classPrefix": "fl-icon-"

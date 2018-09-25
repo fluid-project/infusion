@@ -1,7 +1,5 @@
 /*
-Copyright 2007-2018 The Infusion Copyright holders
-See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+Copyright 2018 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -17,23 +15,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /*******************************************************************************
-     * letterSpace
+     * wordSpace
      *
-     * Sets the letter space on the container to the number of units to increase
-     * the letter space by. If a negative number is provided, the space between
+     * Sets the word space on the container to the number of units to increase
+     * the word space by. If a negative number is provided, the space between
      * characters will decrease. Setting the value to 1 or unit to 0 will use the
-     * default letter space.
+     * default word space.
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.prefs.enactor.letterSpace", {
+    fluid.defaults("fluid.prefs.enactor.wordSpace", {
         gradeNames: ["fluid.prefs.enactor.spacingSetter"],
         preferenceMap: {
-            "fluid.prefs.letterSpace": {
-                "model.value": "value"
+            "fluid.prefs.wordSpace": {
+                "model.value": "default"
             }
         },
-        cssProp: "letter-spacing"
+        cssProp: "word-spacing"
     });
 
 })(jQuery, fluid_3_0_0);

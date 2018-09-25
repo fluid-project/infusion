@@ -20,10 +20,12 @@
             "./js/CaptionsPanel.js",
             "./js/SelfVoicingPanel.js",
             "./js/LetterSpacePanel.js",
+            "./js/WordSpacePanel.js",
             "./js/Enactors.js",
             "./js/CaptionsEnactor.js",
             "./js/SelfVoicingEnactor.js",
             "./js/LetterSpaceEnactor.js",
+            "./js/WordSpaceEnactor.js",
             "./js/StarterGrades.js",
             "./js/ArrowScrolling.js",
             "./js/SeparatedPanelPrefsEditor.js",
@@ -35,6 +37,7 @@
             "./js/CaptionsSchemas.js",
             "./js/SelfVoicingSchemas.js",
             "./js/LetterSpaceSchemas.js",
+            "./js/WordSpaceSchemas.js",
             "./js/Builder.js"
         ],
         "dependencies": [
