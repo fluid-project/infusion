@@ -14,7 +14,7 @@
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
         <link rel="stylesheet" type="text/css" href="css/uiOptions.css" />
 
-        <title>Preferences Editor Demo: Using Schemas</title>
+        <title>Preferences Editor Localized Demo: Using Schemas</title>
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
         <script type="text/javascript" src="../../src/lib/jquery/ui/js/widget.js"></script>
@@ -71,6 +71,8 @@
 
         <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+        <script type="text/javascript" src="js/uioDemo.js"></script>
     </head>
 
     <body class="prefsEditor-demo-theme fl-focus">
@@ -86,32 +88,15 @@
                     "ignoreForToC": {
                         "overviewPanel": ".flc-overviewPanel"
                     },
-                    selectors: {
-                        languageLinkEnglish: ".flc-languages-en",
-                        languageLinkSpanish: ".flc-languages-es",
-                        languageLinkFarsi: ".flc-languages-fa",
-                        languageLinkFrench: ".flc-languages-fr"
-                    },
-                    listeners: {
-                        "onCreate.bindLanguageLinkEnglish": {
-                            "this": "{that}.dom.languageLinkEnglish",
-                            "method": "click",
-                            "args": ["en", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
-                        },
-                        "onCreate.bindLanguageLinkSpanish": {
-                            "this": "{that}.dom.languageLinkSpanish",
-                            "method": "click",
-                            "args": ["es", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
-                        },
-                        "onCreate.bindLanguageLinkFarsi": {
-                            "this": "{that}.dom.languageLinkFarsi",
-                            "method": "click",
-                            "args": ["fa", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
-                        },
-                        "onCreate.bindLanguageLinkFrench": {
-                            "this": "{that}.dom.languageLinkFrench",
-                            "method": "click",
-                            "args": ["fr", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
+                    components: {
+                        localizationControls: {
+                            type: "fluid.uiOptions.prefsEditor.localizedDemoControls",
+                            container: "{fluid.uiOptions.prefsEditor.localized}.container",
+                            options: {
+                                listeners: {
+                                    "onLocaleChangeRequested.escalate": "{fluid.uiOptions.prefsEditor.localized}.events.onInterfaceLocaleChangeRequested"
+                                }
+                            }
                         }
                     }
                 });
