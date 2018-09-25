@@ -76,7 +76,7 @@
     <body class="prefsEditor-demo-theme fl-focus">
         <script type="text/javascript">
             $(document).ready(function () {
-                fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
+                fluid.uiOptions.prefsEditor.localized(".flc-prefsEditor-separatedPanel", {
                     lazyLoad: true,
                     terms: {
                         "templatePrefix": "../../src/framework/preferences/html",
@@ -85,6 +85,34 @@
                     "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html",
                     "ignoreForToC": {
                         "overviewPanel": ".flc-overviewPanel"
+                    },
+                    selectors: {
+                        languageLinkEnglish: ".flc-languages-en",
+                        languageLinkSpanish: ".flc-languages-es",
+                        languageLinkFarsi: ".flc-languages-fa",
+                        languageLinkFrench: ".flc-languages-fr"
+                    },
+                    listeners: {
+                        "onCreate.bindLanguageLinkEnglish": {
+                            "this": "{that}.dom.languageLinkEnglish",
+                            "method": "click",
+                            "args": ["en", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
+                        },
+                        "onCreate.bindLanguageLinkSpanish": {
+                            "this": "{that}.dom.languageLinkSpanish",
+                            "method": "click",
+                            "args": ["es", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
+                        },
+                        "onCreate.bindLanguageLinkFarsi": {
+                            "this": "{that}.dom.languageLinkFarsi",
+                            "method": "click",
+                            "args": ["fa", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
+                        },
+                        "onCreate.bindLanguageLinkFrench": {
+                            "this": "{that}.dom.languageLinkFrench",
+                            "method": "click",
+                            "args": ["fr", "{that}.events.onInterfaceLocaleChangeRequested.fire"]
+                        }
                     }
                 });
             });
@@ -116,6 +144,12 @@
                     <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
                     <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
                 </span>
+            </div>
+            <div style="margin-left: 4em;">
+                <button class="flc-languages-en">EN</button>
+                <button class="flc-languages-es">ES</button>
+                <button class="flc-languages-fa">FA</button>
+                <button class="flc-languages-fr">FR</button>
             </div>
         </div>
         <!-- END markup for Preference Editor -->
