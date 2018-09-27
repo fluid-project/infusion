@@ -1,0 +1,11 @@
+{
+    "localization-default": "Defecto",
+    "localization-en": "Inglés",
+    "localization-en_CA": "Inglés (Canadá)",
+    "localization-en_US": "Inglés (Estados Unidos)",
+    "localization-es": "Español",
+    "localization-fa": "Persa",
+    "localization-fr": "Francés",
+    "label": "Localisation",
+    "description": "Ajustar la localización o el idioma"
+}
