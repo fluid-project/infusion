@@ -33,10 +33,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             localization: {
                 "type": "fluid.prefs.localization",
                 "classes": {
-                    "en": "fl-locale-en",
-                    "es": "fl-locale-es",
-                    "fa": "fl-locale-fa",
-                    "fr": "fl-locale-fr"
+                    "en": "fl-localization-en",
+                    "es": "fl-localization-es",
+                    "fa": "fl-localization-fa",
+                    "fr": "fl-localization-fr"
                 },
                 "enactor": {
                     "type": "fluid.prefs.enactor.localization",
