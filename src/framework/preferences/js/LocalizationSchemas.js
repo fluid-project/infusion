@@ -24,7 +24,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.localization", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            "namespace": "fluid.prefs.constructed",
             "terms": {
                 "templatePrefix": "../../framework/preferences/html/",
                 "messagePrefix": "../../framework/preferences/messages/"
@@ -35,7 +34,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "type": "fluid.prefs.localization",
                 "classes": {
                     "en": "fl-locale-en",
-                    "es": "fl-locale-",
+                    "es": "fl-locale-es",
                     "fa": "fl-locale-fa",
                     "fr": "fl-locale-fr"
                 },
@@ -66,7 +65,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.localization": {
                 "type": "string",
                 "default": "English",
-                "enum": ["English", "Farsi", "French", "Spanish"]
+                "enum": ["en", "fa", "fr", "es"]
             }
         }
     });
