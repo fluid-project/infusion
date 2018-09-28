@@ -25,7 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.localization": {
-                "model.locale": "default"
+                "model.locale": "en"
             }
         },
         mergePolicy: {
@@ -40,7 +40,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["header"],
         stringArrayIndex: {
-            localization: ["localization-default", "localization-en", "localization-es", "localization-fa", "localization-fr"]
+            localization: ["localization-en", "localization-es", "localization-fa", "localization-fr"]
         },
         protoTree: {
             label: {messagekey: "label"},
@@ -60,7 +60,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         classnameMap: null, // must be supplied by implementors
         controlValues: {
-            localization: ["default", "en", "es", "fa", "fr"]
+            localization: ["en", "es", "fa", "fr"]
         }
     });
 

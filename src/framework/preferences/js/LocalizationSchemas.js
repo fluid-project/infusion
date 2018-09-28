@@ -34,7 +34,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             localization: {
                 "type": "fluid.prefs.localization",
                 "classes": {
-                    "default": "",
                     "en": "fl-locale-en",
                     "es": "fl-locale-",
                     "fa": "fl-locale-fa",
@@ -66,8 +65,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         schema: {
             "fluid.prefs.localization": {
                 "type": "string",
-                "default": "default",
-                "enum": ["default", "English", "Farsi", "French", "Spanish"]
+                "default": "English",
+                "enum": ["English", "Farsi", "French", "Spanish"]
             }
         }
     });
