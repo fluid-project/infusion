@@ -72,8 +72,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["value", "es"]
                 },
                 {
-                    changeEvent: "{localization}.applier.modelChanged",
-                    spec: {path: "value", priority: "last:testing"},
+                    event: "{localization}.events.onLocalizationChangeRequested",
                     listener: "fluid.tests.localizationTester.assertLocale",
                     args: ["{localization}", {value: "es"}]
                 },
@@ -139,9 +138,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["value", "es"]
                 },
                 {
-                    changeEvent: "{localization}.applier.modelChanged",
-                    spec: {path: "value", priority: "last:testing"},
-                    func: "fluid.tests.localizationTester.assertLocale",
+                    event: "{localization}.events.onLocalizationChangeRequested",
+                    listener: "fluid.tests.localizationTester.assertLocale",
                     args: ["{localization}", {value: "es"}]
                 },
                 {

@@ -24,7 +24,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.localization": {
-                "model.locale": "locale"
+                "model.value": "value"
+            }
+        },
+        events: {
+            onLocalizationChangeRequested: null
+        },
+        modelListeners: {
+            value: {
+                listener: "{that}.events.onLocalizationChangeRequested.fire",
+                args: ["{change}.value"],
+                namespace: "onLocalizationChangeRequested"
             }
         }
     });

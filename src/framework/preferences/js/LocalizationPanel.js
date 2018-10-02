@@ -25,7 +25,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.localization": {
-                "model.locale": "en"
+                "model.value": "default",
+                "controlValues.localization": "enum"
             }
         },
         mergePolicy: {
