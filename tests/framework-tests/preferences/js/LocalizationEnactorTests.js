@@ -93,7 +93,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.localizationTester.assertLocale = function (that, expectedModel) {
-        console.log(that.model)
         jqUnit.assertDeepEq("The model value is set correctly: " + expectedModel.value, expectedModel, that.model);
     };
 
