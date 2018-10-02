@@ -46,7 +46,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.localization",
             tests: [{
-                expect: 5,
+                expect: 6,
                 name: "Set localization",
                 sequence: [{
                     listener: "jqUnit.assert",
@@ -73,7 +73,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 {
                     event: "{localization}.events.onLocalizationChangeRequested",
-                    listener: "fluid.tests.localizationTester.assertLocale",
+                    listener: "jqUnit.assertEquals",
+                    args: ["Event arguments are as expected", "es", "{arguments}.0"]
+                },
+                {
+                    funcName: "fluid.tests.localizationTester.assertLocale",
                     args: ["{localization}", {value: "es"}]
                 },
                 {
@@ -112,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.localization",
             tests: [{
-                expect: 4,
+                expect: 5,
                 name: "Set localization when existing localization present",
                 sequence: [{
                     listener: "jqUnit.assert",
@@ -139,16 +143,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 {
                     event: "{localization}.events.onLocalizationChangeRequested",
-                    listener: "fluid.tests.localizationTester.assertLocale",
+                    listener: "jqUnit.assertEquals",
+                    args: ["Event arguments are as expected", "es", "{arguments}.0"]
+                },
+                {
+                    funcName: "fluid.tests.localizationTester.assertLocale",
                     args: ["{localization}", {value: "es"}]
-                },
-                {
-                    funcName: "fluid.tests.localizationTester.reset",
-                    args: ["{localization}.container"]
-                },
-                {
-                    func: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: ""}]
                 }]
             }]
         }]
