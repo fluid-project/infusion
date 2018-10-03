@@ -71,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the localization settings panel",
             tests: [{
-                expect: 8,
+                expect: 9,
                 name: "Test the rendering of the localization panel",
                 sequence: [{
                     event: "{fluid.tests.localizationPanelTests localization}.events.afterRender",
@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{localization}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"]
                 },
                 {
-                    func: "fluid.tests.panels.changeInput",
+                    func: "fluid.changeElementValue",
                     args: ["{localization}.dom.localization", "{that}.options.testOptions.newValue"]
                 },
                 {
