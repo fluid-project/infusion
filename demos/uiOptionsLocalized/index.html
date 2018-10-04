@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+        <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluidDebugging.css" />
+
+        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/Enactors.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/PrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+        <link rel="stylesheet" type="text/css" href="css/uiOptions.css" />
+
+        <title>Preferences Editor Localized Demo: Using Schemas</title>
+        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/widget.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/position.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/unique-id.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/tooltip.js"></script>
+
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidPromises.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/DataSource.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/RemoteModel.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+
+        <!-- For the IoC Inspector UI -->
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDebugging.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidViewDebugging.js"></script>
+        <script type="text/javascript" src="../../src/components/tooltip/js/Tooltip.js"></script>
+
+        <script type="text/javascript" src="../../src/framework/preferences/js/URLUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/ArrowScrolling.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../src/components/switch/js/Switch.js"></script>
+        <script type="text/javascript" src="../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
+        <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
+
+        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+        <script type="text/javascript" src="js/uioDemo.js"></script>
+    </head>
+
+    <body class="prefsEditor-demo-theme fl-focus">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                fluid.uiOptions.prefsEditor.localized(".flc-prefsEditor-separatedPanel", {
+                    lazyLoad: true,
+                    terms: {
+                        "templatePrefix": "../../src/framework/preferences/html",
+                        "messagePrefix": "../../src/framework/preferences/messages"
+                    },
+                    "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html",
+                    "ignoreForToC": {
+                        "overviewPanel": ".flc-overviewPanel"
+                    },
+                    components: {
+                        localizationControls: {
+                            type: "fluid.uiOptions.prefsEditor.localizedDemoControls",
+                            container: "{fluid.uiOptions.prefsEditor.localized}.container"
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+        <!-- BEGIN markup for Preference Editor -->
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the mobile view.
+                A separate panel bar for mobile displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-smallScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
+
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the desktop view.
+                A separate panel bar for desktop displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-wideScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+            <div style="margin-left: 4em;">
+                <button class="flc-languages-en">EN</button>
+                <button class="flc-languages-es">ES</button>
+                <button class="flc-languages-fa">FA</button>
+                <button class="flc-languages-fr">FR</button>
+            </div>
+        </div>
+        <!-- END markup for Preference Editor -->
+
+        <main class="fl-centered">
+            <div class="flc-toc-tocContainer toc"> </div>
+
+            <div class="header">
+                <h1>Preferences Editor</h1>
+                <div class="tagline">This page might be a bit difficult to read or use.<br />
+                Why don't you consider using the <span class="disp-pref">display preferences</span> option?</div>
+            </div>
+            <div class="instructions">
+                <h2>Some helpful tips</h2>
+                <ol>
+                    <li>Preference Editor and its different configurations.<br/>
+                        <span class="instruction-comment">On this page, Preference Editor can be found along the top edge.
+                        There are other layout options in development - see <a href="http://wiki.fluidproject.org/display/fluid/%28Floe%29+UI+Options+Design+Wireframes%2C+C.1" target="_blank" title="Opens in new window">Preference Editor Design Wireframes</a>.</span></li>
+                    <li>Try tinkering with the options.</li>
+                </ol>
+            </div>
+            <div class="demo-columns content">
+                <div class="demo-columns">
+                    <h2>Introduction</h2>
+                    <img src="images/photo_orange.png" alt="an orange"/>
+                    <p>
+                        Aliquam varius lacus non arcu venenatis scelerisque quis in sapien.
+                        Curabitur nec felis tortor.
+                        Cras euismod ipsum erat.
+                        Sed ac lacus dolor, sed vestibulum sem.
+                        <a href="#">Donec tristique</a> lacinia augue.
+                        In mollis venenatis mollis.
+                        Duis facilisis fermentum accumsan.
+                        Quisque aliquet eros at nunc volutpat euismod.
+                    </p>
+                    <p>
+                        Pellentesque dictum mattis sapien a consectetur.
+                        In <a href="#">hac habitasse</a> platea dictumst.
+                        Integer pharetra accumsan euismod.
+                        Morbi congue leo eu diam bibendum luctus.
+                        Ut quam orci, rhoncus sed fermentum eget, tempus rhoncus justo.
+                        Donec gravida lorem vel orci aliquam vitae tristique ipsum pulvinar.
+                        Sed lorem orci, gravida ac tristique at, aliquam eget massa.
+                    </p>
+                    <p>
+                        In diam lorem, consequat vel lobortis non, pretium in leo.
+                        Cras ut dolor ac nunc pharetra venenatis id at orci.
+                        Nam a nibh id lectus dignissim molestie.
+                        Donec est arcu, luctus eu tempor quis, posuere non risus.
+                   </p>
+                    <h2>Why do oranges taste better than apples?</h2>
+                    <p>
+                        Aliquam mattis placerat odio.
+                        Aliquam sodales euismod sodales.
+                        Integer mollis nulla eget quam imperdiet vitae elementum sapien adipiscing.
+                   </p>
+                </div>
+                <div class="demo-columns">
+                    <p>
+                        Sed tempus laoreet facilisis.
+                        Curabitur at augue in justo tincidunt cursus.
+                        Aliquam iaculis libero vel dolor fringilla a rutrum nisl tempus.
+                   </p>
+                    <p>
+                        Cras lorem nulla, tincidunt nec dapibus id, interdum pellentesque elit.
+                        Sed faucibus posuere augue, ac vehicula dolor feugiat id.
+                        Ut scelerisque mollis aliquam.
+                        Nulla facilisi.
+                        Vestibulum porttitor pulvinar mauris et placerat.
+                        Donec ultrices, eros eget pharetra eleifend, risus orci iaculis leo, nec facilisis nisi odio et nunc.
+                    </p>
+                    <p>
+                        <a href="#">Sed varius sem sed sapien cursus</a> vel iaculis nisl rhoncus.
+                        Fusce placerat sapien ut erat mollis vestibulum.
+                        Aenean eget tellus sem.
+                    </p>
+
+                    <h2>Some people actually prefer apples</h2>
+                    <img src="images/photo_apple.png" alt="an apple"/>
+                    <p>
+                        Praesent vulputate, sem vel feugiat iaculis, eros diam condimentum nisl, eget suscipit nunc est vitae justo.
+                        Vivamus imperdiet convallis laoreet.
+                        Quisque eget magna vitae tortor egestas imperdiet.
+                    </p>
+                    <p>
+                        Donec at ipsum magna.
+                        Suspendisse potenti.
+                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+                        Mauris <a href="#">vel eros eu purus</a> sodales rutrum.
+                        Suspendisse potenti.
+                    </p>
+
+                </div>
+                <div class="demo-columns">
+                    <p>
+                        Fusce vel massa vitae dui sollicitudin adipiscing eget sed velit.
+                        Fusce auctor vehicula turpis non faucibus.
+                        Sed faucibus mollis enim venenatis mollis.
+                        Morbi cursus scelerisque ornare.
+                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+                        Cras at cursus nisl.
+                    </p>
+                    <h2>Conclusion: Oranges are still yummier</h2>
+                    <p>
+                        Praesent consequat laoreet tellus, quis molestie dui pretium sit amet.
+                        Donec et turpis vitae tortor blandit tristique eu sed justo.
+                        Fusce in quam sem, ac hendrerit nisl.
+                        <a href="#">Mauris consequat tellus in est vehicula placerat.</a>
+                        Sed sed ornare quam.
+                        Quisque vel faucibus augue.
+                        Donec euismod tellus a risus fringilla congue.
+                        Proin feugiat, mauris ut ullamcorper pharetra, sem nulla lacinia nunc, ut hendrerit justo urna malesuada libero.
+                        Pellentesque viverra fringilla arcu, consectetur interdum sapien tempus sed.
+                        Donec tincidunt consequat libero, quis vulputate magna ullamcorper.
+                    </p>
+                </div>
+                <div class="demo-columns">
+                    <h2>Leave some feedback</h2>
+                    <form class="feedback-form">
+                        <div>
+                            <label for="email">Email address <span class="optional">(optional)</span></label>
+                            <input type="text" id="email" value="This form is non-functional" />
+                        </div>
+                        <div>
+                            <label for="comments">Your comments</label>
+                            <textarea id="comments">This form is non-functional, and exists only for demonstrating Preferences Editor functionality</textarea>
+                        </div>
+                        <div>
+                            <button class="fl-force-right">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
