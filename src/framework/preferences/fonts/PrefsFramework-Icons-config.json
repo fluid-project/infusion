@@ -18,6 +18,7 @@
         "svg/simplify.svg",
         "svg/size.svg",
         "svg/smallA.svg",
+        "svg/syllabification.svg",
         "svg/table-of-contents.svg",
         "svg/text-to-speech-no-article.svg",
         "svg/word-space.svg",
@@ -49,7 +50,8 @@
             "caption": "0xE013",
             "word-space": "0xE014",
             "word-space-condensed": "0xE015",
-            "word-space-expanded": "0xE016"
+            "word-space-expanded": "0xE016",
+            "syllabification": "0xE017"
         },
         "templateOptions": {
             "classPrefix": "fl-icon-"

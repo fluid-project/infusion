@@ -62,6 +62,7 @@ categorized by license:
 ### MIT License
 
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
+* [Hyphen v1.0.2](https://github.com/ytiurin/hyphen)
 * [jQuery v3.3.1](http://jquery.com/)
 * [jQuery Mockjax v2.5.0](https://github.com/jakerella/jquery-mockjax)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)

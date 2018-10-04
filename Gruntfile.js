@@ -101,6 +101,7 @@ module.exports = function (grunt) {
             },
             dependencies: [
                 "src/lib/fonts",
+                "src/lib/hyphen",
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
                 "src/lib/jquery/ui/js",
@@ -172,6 +173,16 @@ module.exports = function (grunt) {
                 files: [{
                     src: "node_modules/opensans-webkit/fonts/OpenSans-*.ttf",
                     dest: "src/lib/fonts/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/hyphen/hyphen.js",
+                    dest: "src/lib/hyphen/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/hyphen/patterns/*",
+                    dest: "src/lib/hyphen/patterns/",
                     expand: true,
                     flatten: true
                 }, {
