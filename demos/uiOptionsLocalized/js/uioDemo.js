@@ -13,6 +13,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    fluid.prefs.builder({
+        gradeNames: ["fluid.prefs.auxSchema.starter", "fluid.prefs.auxSchema.localization"],
+        auxiliarySchema: {
+            template: "html/SeparatedPanelPrefsEditor.html"
+        }
+    });
+
     fluid.defaults("fluid.uiOptions.prefsEditor.localizedDemoControls", {
         gradeNames: ["fluid.viewComponent"],
         events: {

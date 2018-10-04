@@ -81,13 +81,6 @@
     <body class="prefsEditor-demo-theme fl-focus">
         <script type="text/javascript">
             $(document).ready(function () {
-                fluid.prefs.builder({
-                    gradeNames: ["fluid.prefs.auxSchema.starter", "fluid.prefs.auxSchema.localization"],
-                    auxiliarySchema: {
-                        template: "html/SeparatedPanelPrefsEditor.html"
-                    }
-                });
-
                 fluid.uiOptions.prefsEditor.localized(".flc-prefsEditor-separatedPanel", {
                     lazyLoad: true,
                     terms: {
