@@ -66,6 +66,9 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/PrimaryBuilder.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LocalizationEnactor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LocalizationPanel.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LocalizationSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
 
@@ -78,6 +81,13 @@
     <body class="prefsEditor-demo-theme fl-focus">
         <script type="text/javascript">
             $(document).ready(function () {
+                fluid.prefs.builder({
+                    gradeNames: ["fluid.prefs.auxSchema.starter", "fluid.prefs.auxSchema.localization"],
+                    auxiliarySchema: {
+                        template: "html/SeparatedPanelPrefsEditor.html"
+                    }
+                });
+
                 fluid.uiOptions.prefsEditor.localized(".flc-prefsEditor-separatedPanel", {
                     lazyLoad: true,
                     terms: {
