@@ -1367,7 +1367,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Amalgamates any further creations with any existing potentia at a path
-    * @param {PotentiaList} potentiaList - A `PotentiaList` structure as constructed by `fluid.blankPotentiaList` holding the potentia in
+    * @param {PotentiaList} potentiaList - A `PotentiaList` structure as constructed by `fluid.blankPotentiaList` holding the potentiae in
     *     progress for a particular tree transaction
     * @param {String} path - Path at which the potentia will be registered
     * @param {Potentia} topush - A "create" potentia
@@ -1621,11 +1621,60 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /** Cache some frequently used quantities in a potentia with a path (as opposed to a pure distribution potentia)
+     * - segs, memberName and parentThat.
+     */
+
+    fluid.preparePathedPotentia = function (potentia, instantiator) {
+        var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
+        potentia.segs = segs;
+        potentia.memberName = segs[segs.length - 1];
+        potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
+    };
+
+    // Fetch the component referred to if a createPotentia is determined to hold an injected component reference.
+    // This is more complex than it needs to be because of the potential for references to concrete components which
+    // are further along in the potentia list. This used to be handled by the old-fashioned one-step
+    // "ginger component reference" system and needs to be harmonised some day, perhaps via "light promises".
+    fluid.fetchInjectedComponentReference = function (transRec, potentiaList, injected, parentThat) {
+        var instantiator = fluid.globalInstantiator;
+        if (injected.expander) {
+            return fluid.expandImmediate(injected, parentThat);
+        } else {
+            var parsed = fluid.parseContextReference(injected);
+            var head = fluid.resolveContext(parsed.context, parentThat);
+            if (!head) {
+                if (parsed.path !== "") {
+                    fluid.fail("Error in injected component reference ", injected, " - could not resolve context {" + parsed.context + "} to a head component");
+                } else {
+                    return head;
+                }
+            } else {
+                var parentPath = instantiator.idToShadow[head.id].path;
+                var fullPath = fluid.composePath(parentPath, parsed.path);
+                var current = instantiator.pathToComponent[fullPath];
+                if (current) {
+                    return current;
+                } else { // possible forward reference
+                    var upcoming = potentiaList.pathToPotentia[fullPath];
+                    if (upcoming) {
+                        if (upcoming.applied) {
+                            fluid.fail("Circular reference found when resolving injected component reference ", injected, " - the target of the reference is still in construction");
+                        } else {
+                            return fluid.operateOneCreatePotentia(transRec, upcoming);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     // Begin the action of creating a component - register its shell and mergeOptions at the correct site, and evaluate
     // and scan options for its child components, recursively registering them
     // Returns shadow of created shell, if any
     fluid.operateCreatePotentia = function (transRec, potentiaList, potentia) {
         var instantiator = fluid.globalInstantiator;
+        fluid.preparePathedPotentia(potentia, instantiator);
         // TODO: currently this overall workflow is synchronous and so we have no risk. In future, asynchronous
         // transactions imply that the same path may receive a component from two different transactions - therefore
         // we will need to pass the transaction along to these methods and allocate the components themselves within
@@ -1640,7 +1689,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var lightMerge = potentia.lightMerge;
         if (lightMerge.isInjected) {
             parentThat[memberName] = fluid.inEvaluationMarker; // support FLUID-5694
-            var instance = fluid.expandImmediate(lightMerge.toMerge[0].injected, parentThat);
+            var instance = fluid.fetchInjectedComponentReference(transRec, potentiaList, lightMerge.toMerge[0].injected, parentThat);
             if (instance) {
                 instantiator.recordKnownComponent(parentThat, instance, memberName, false);
             } else {
@@ -1666,6 +1715,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.operateDestroyPotentia = function (transRec, potentia, instantiator) {
         instantiator = instantiator || fluid.globalInstantiator;
+        fluid.preparePathedPotentia(potentia, instantiator);
         var that = fluid.getImmediate(fluid.rootComponent, potentia.segs);
         if (that) {
             var shadow = fluid.shadowForComponent(that);
@@ -1675,17 +1725,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // but at least our intention is good
             fluid.pushPotentia(transRec.restoreRecords, instantiator, shadow.potentia);
         }
-    };
-
-    /** Cache some frequently used quantities in a potentia with a path (as opposed to a pure distribution potentia)
-     * - segs, memberName and parentThat.
-     */
-
-    fluid.preparePathedPotentia = function (potentia, instantiator) {
-        var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
-        potentia.segs = segs;
-        potentia.memberName = segs[segs.length - 1];
-        potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
     };
 
     fluid.addWorkflows = function (event, workflows) {
@@ -1710,44 +1749,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /* Operate one phase of a tree transaction, consisting of a list of component destructions and a list of
-     * component creations.
-     */
-
-    fluid.commitPotentiaePhase = function (transRec, instantiator) {
-        var pendingPotentiae = transRec.pendingPotentiae;
-        pendingPotentiae.destroys.forEach(function (potentia) {
-            if (!potentia.applied) {
-                fluid.preparePathedPotentia(potentia, instantiator);
-                fluid.operateDestroyPotentia(transRec, potentia);
-                potentia.applied = true;
-                --pendingPotentiae.activeCount;
-            }
-        });
-        var shadows = [];
-        for (var i = 0; i < pendingPotentiae.creates.length; ++i) {
-            var potentia = pendingPotentiae.creates[i]; // not "forEach" since further elements will accumulate during construction
-            if (!potentia.applied) {
-                if (potentia.type === "create") {
-                    fluid.preparePathedPotentia(potentia, instantiator);
-                    var shadow = fluid.operateCreatePotentia(transRec, pendingPotentiae, potentia);
-                    if (shadow) {
-                        shadows.push(shadow);
-                    }
-                    potentia.applied = true;
-                    --pendingPotentiae.activeCount;
-                } else if (potentia.type === "distributeOptions") {
-                    potentia.distributions.forEach(function (distro) {
-                        fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
-                    });
-                    potentia.applied = true;
-                    --pendingPotentiae.activeCount;
-                } else {
-                    fluid.fail("Unrecognised potentia type " + potentia.type);
-                }
-            }
-        }
-
+    fluid.concludePotentiaePhase = function (transRec) {
+        var shadows = transRec.outputShadows;
         var togo = shadows[0]; // We need to track the first created shadow to support constructing free components
         transRec.workflows = fluid.evaluateWorkflows(shadows, transRec.transactionId);
         if (transRec.breakAt !== "shells") {
@@ -1765,6 +1768,51 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
         return togo;
+    };
+
+    // Tightly bound to commitPotentiaePhase - broken out as a function so that we can call it from
+    // fluid.fetchInjectedComponentReference for out-of-order construction.
+    fluid.operateOneCreatePotentia = function (transRec, potentia) {
+        potentia.applied = true;
+        var shadow = fluid.operateCreatePotentia(transRec, transRec.pendingPotentiae, potentia);
+        if (shadow) {
+            transRec.outputShadows.push(shadow);
+        }
+        --transRec.pendingPotentiae.activeCount;
+        return shadow && shadow.that;
+    };
+
+    /* Operate one phase of a tree transaction, consisting of a list of component destructions and a list of
+     * component creations.
+     */
+
+    fluid.commitPotentiaePhase = function (transRec) {
+        var pendingPotentiae = transRec.pendingPotentiae;
+        pendingPotentiae.destroys.forEach(function (potentia) {
+            if (!potentia.applied) {
+                fluid.operateDestroyPotentia(transRec, potentia);
+                potentia.applied = true;
+                --pendingPotentiae.activeCount;
+            }
+        });
+        transRec.outputShadows = [];
+        for (var i = 0; i < pendingPotentiae.creates.length; ++i) {
+            var potentia = pendingPotentiae.creates[i]; // not "forEach" since further elements will accumulate during construction
+            if (!potentia.applied) {
+                if (potentia.type === "create") {
+                    fluid.operateOneCreatePotentia(transRec, potentia);
+                } else if (potentia.type === "distributeOptions") {
+                    potentia.distributions.forEach(function (distro) {
+                        fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
+                    });
+                    potentia.applied = true;
+                    --pendingPotentiae.activeCount;
+                } else {
+                    fluid.fail("Unrecognised potentia type " + potentia.type);
+                }
+            }
+        }
+        return fluid.concludePotentiaePhase(transRec);
     };
 
     fluid.isPopulatedPotentiaList = function (potentiaList) {

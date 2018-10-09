@@ -2940,6 +2940,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("Absence of string mouse droppings in reference holder", member[0]);
     });
 
+    /** FLUID-5694: Circularity in component injection **/
+
     fluid.defaults("fluid.tests.fluid5694circle", {
         gradeNames: "fluid.component",
         components: {
@@ -2950,9 +2952,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5694 circularity test", function () {
         jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on self-injection", function () {
             fluid.tests.fluid5694circle();
-        }, "circular");
+        }, "Circular");
     });
 
+    /** FLUID-6148: Injection of unconstructed component **/
+
+    fluid.defaults("fluid.tests.fluid6148ahead", {
+        gradeNames: "fluid.component",
+        components: {
+            injected: "{fluid6148ahead}.ahead",
+            ahead: {
+                type: "fluid.component"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6148: Injection of unconstructed component", function () {
+        var that = fluid.tests.fluid6148ahead();
+        jqUnit.assertValue("Expected injected value", that.injected);
+        jqUnit.assertEquals("Expected injected value equal to constructed", that.injected, that.ahead);
+    });
 
     /** Correct resolution of invoker arguments through the tree **/
 
