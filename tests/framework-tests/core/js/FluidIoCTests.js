@@ -2949,9 +2949,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.fluid5694circle2", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: "{fluid5694circle2}.child2",
+            child2: "{fluid5694circle2}.child1"
+        }
+    });
+
     jqUnit.test("FLUID-5694 circularity test", function () {
         jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on self-injection", function () {
             fluid.tests.fluid5694circle();
+        }, "Circular");
+        jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on circular injection", function () {
+            fluid.tests.fluid5694circle2();
         }, "Circular");
     });
 
