@@ -358,331 +358,47 @@
 
 /* Theming */
 
+.fl-theme-bw .fl-overviewPanel,
+.fl-theme-wb .fl-overviewPanel,
+.fl-theme-yb .fl-overviewPanel,
+.fl-theme-by .fl-overviewPanel,
+.fl-theme-lgdg .fl-overviewPanel,
+.fl-theme-gd .fl-overviewPanel,
+.fl-theme-gw .fl-overviewPanel,
+.fl-theme-bbr .fl-overviewPanel {
+    border-right: 0.2em solid;
+}
+
+.fl-theme-bw .fl-overviewPanel a,
+.fl-theme-wb .fl-overviewPanel a,
+.fl-theme-yb .fl-overviewPanel a,
+.fl-theme-by .fl-overviewPanel a,
+.fl-theme-lgdg .fl-overviewPanel a,
+.fl-theme-gd .fl-overviewPanel a,
+.fl-theme-gw .fl-overviewPanel a,
+.fl-theme-bbr .fl-overviewPanel a {
+    text-decoration: underline;
+}
+
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a,
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a,
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a,
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a,
+.fl-theme-gd .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a,
+.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a,
+.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
+    outline: none;
+}
+
 .fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel,
+.fl-theme-gd .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-gw .fl-overviewPanel-hidden .fl-overviewPanel,
 .fl-theme-bbr .fl-overviewPanel-hidden .fl-overviewPanel {
     /* on all themes, hide the right border when "hidden". */
     border-right: 0;
-}
-
-/* black on white */
-.fl-theme-bw .fl-overviewPanel,
-.fl-theme-bw .fl-overviewPanel-body,
-.fl-theme-bw .fl-overviewPanel a,
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #000;
-    background-color: #fff;
-}
-
-.fl-theme-bw .fl-overviewPanel {
-    border-right: 0.2em solid #000;
-}
-
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #000;
-    color: #fff;
-}
-
-.fl-theme-bw .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #fff;
-}
-
-.fl-theme-bw .fl-overviewPanel *:focus,
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #000;
-}
-
-.fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #000;
-}
-
-.fl-theme-bw .fl-overviewPanel-instructions {
-    border: 0.2em solid #000;
-}
-
-
-/* white on black */
-.fl-theme-wb .fl-overviewPanel,
-.fl-theme-wb .fl-overviewPanel-body,
-.fl-theme-wb .fl-overviewPanel a,
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #fff;
-    background-color: #000;
-}
-
-.fl-theme-wb .fl-overviewPanel {
-    border-right: 0.2em solid #fff;
-}
-
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #fff;
-    color: #000;
-}
-
-.fl-theme-wb .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #000;
-}
-
-.fl-theme-wb .fl-overviewPanel *:focus,
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #fff;
-}
-
-.fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #fff;
-}
-
-.fl-theme-wb .fl-overviewPanel-instructions {
-    border: 0.2em solid #fff;
-}
-
-
-/* Yellow on Black */
-.fl-theme-yb .fl-overviewPanel,
-.fl-theme-yb .fl-overviewPanel-body,
-.fl-theme-yb .fl-overviewPanel a,
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #FFFF00;
-    background-color: #000;
-}
-
-.fl-theme-yb .fl-overviewPanel {
-    border-right: 0.2em solid #ffcc00;
-}
-
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #FFFF00;
-    color: #000;
-}
-
-.fl-theme-yb .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #000;
-}
-
-.fl-theme-yb .fl-overviewPanel *:focus,
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #FFFF00;
-}
-
-.fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #FFFF00;
-}
-
-.fl-theme-yb .fl-overviewPanel-instructions {
-    border: 0.2em solid #FFFF00;
-}
-
-
-/* Black on Yellow */
-.fl-theme-by .fl-overviewPanel,
-.fl-theme-by .fl-overviewPanel-body,
-.fl-theme-by .fl-overviewPanel a,
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #000;
-    background-color: #FFFF00;
-}
-
-.fl-theme-by .fl-overviewPanel {
-    border-right: 0.2em solid #000;
-}
-
-.fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel {
-    border: none;
-}
-
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #000;
-    color: #FFFF00;
-}
-
-.fl-theme-by .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #FFFF00;
-}
-
-.fl-theme-by .fl-overviewPanel *:focus,
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #000;
-}
-
-.fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #000;
-}
-
-.fl-theme-by .fl-overviewPanel-instructions {
-    border: 0.2em solid #000;
-}
-
-
-/* Low contrast: light grey on dark grey */
-.fl-theme-lgdg .fl-overviewPanel,
-.fl-theme-lgdg .fl-overviewPanel-body,
-.fl-theme-lgdg .fl-overviewPanel a,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #bdbdbb;
-    background-color: #555;
-}
-
-.fl-theme-lgdg .fl-overviewPanel {
-    border-right: 0.2em solid #bdbdbb;
-}
-
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #bdbdbb;
-    color: #555;
-}
-
-.fl-theme-lgdg .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #555;
-}
-
-.fl-theme-lgdg .fl-overviewPanel *:focus,
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #bdbdbb;
-}
-
-.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #bdbdbb;
-}
-
-.fl-theme-lgdg .fl-overviewPanel-instructions {
-    border: 0.2em solid #bdbdbb;
-}
-
-
-/* Low contrast: grey on white */
-.fl-theme-gw .fl-overviewPanel,
-.fl-theme-gw .fl-overviewPanel-body,
-.fl-theme-gw .fl-overviewPanel a,
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #6c6c6c;
-    background-color: #fff;
-}
-
-.fl-theme-gw .fl-overviewPanel {
-    border-right: 0.2em solid #6c6c6c;
-}
-
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #6c6c6c;
-    color: #fff;
-}
-
-.fl-theme-gw .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #fff;
-}
-
-.fl-theme-gw .fl-overviewPanel *:focus,
-.fl-theme-gw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-gw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #6c6c6c;
-}
-
-.fl-theme-gw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #6c6c6c;
-}
-
-.fl-theme-gw .fl-overviewPanel-instructions {
-    border: 0.2em solid #6c6c6c;
-}
-
-
-/* Low contrast: black on brown */
-.fl-theme-bbr .fl-overviewPanel,
-.fl-theme-bbr .fl-overviewPanel-body,
-.fl-theme-bbr .fl-overviewPanel a,
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-links-icon-design {
-    color: #000;
-    background-color: #bb9966;
-}
-
-.fl-theme-bbr .fl-overviewPanel {
-    border-right: 0.2em solid #000;
-}
-
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-title {
-    background-color: #000;
-    color: #bb9966;
-}
-
-.fl-theme-bbr .fl-overviewPanel a {
-    text-decoration: underline;
-}
-
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.2em solid #bb9966;
-}
-
-.fl-theme-bbr .fl-overviewPanel *:focus,
-.fl-theme-bbr .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-bbr .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.3em solid #000;
-}
-
-.fl-theme-bbr .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
-    outline: 0.1em solid #000;
-}
-
-.fl-theme-bbr .fl-overviewPanel-instructions {
-    border: 0.2em solid #000;
 }

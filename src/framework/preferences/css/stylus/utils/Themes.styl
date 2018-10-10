@@ -22,13 +22,35 @@ themes = {
         foregroundColor: #bdbdbb,
         backgroundColor: #555555
     }
+    ".fl-theme-gd": {
+        foregroundColor: #888888,
+        backgroundColor: #222222,
+        linkColor: #8080ff,
+        disabledColor: #cc0000,
+        selectedForegroundColor: #ffffff,
+        selectedBackgroundColor: #008000,
+        buttonForegroundColor: #ffffff,
+        buttonBackgroundColor: #000000
+    }
     ".fl-theme-gw": {
         foregroundColor: #6c6c6c,
-        backgroundColor: #ffffff
+        backgroundColor: #ffffff,
+        linkColor: #6666cc,
+        disabledColor: #993333,
+        selectedForegroundColor: #ffffff,
+        selectedBackgroundColor: #404080,
+        buttonForegroundColor: #000000,
+        buttonBackgroundColor: #ffffff
     }
     ".fl-theme-bbr": {
         foregroundColor: #000000,
-        backgroundColor: #bb9966
+        backgroundColor: #bb9966,
+        linkColor: #000099,
+        disabledColor: #600000,
+        selectedForegroundColor: #ffffff,
+        selectedBackgroundColor: #000070,
+        buttonForegroundColor: #000000,
+        buttonBackgroundColor: #ffd18a
     }
 }
 
@@ -37,7 +59,6 @@ build-themes-prefsEditor(contrastThemes) {
     for themeName in contrastThemes {
         fColor = contrastThemes[themeName].foregroundColor;
         bColor = contrastThemes[themeName].backgroundColor;
-
 
         {themeName} {
             .fl-prefsEditor {
@@ -97,9 +118,6 @@ build-themes-separatedPanelPrefsEditor(contrastThemes) {
 // For the separated panel iframe
 build-themes-separatedPanelPrefsEditorFrame(contrastThemes) {
     for themeName in contrastThemes {
-        fColor = contrastThemes[themeName].foregroundColor;
-        bColor = contrastThemes[themeName].backgroundColor;
-
         .fl-prefsEditor-separatedPanel{themeName} {
             background-image: none;
         }
@@ -111,6 +129,14 @@ build-themes-Enactors(contrastThemes) {
     for themeName in contrastThemes {
         fColor = contrastThemes[themeName].foregroundColor;
         bColor = contrastThemes[themeName].backgroundColor;
+        linkColor = contrastThemes[themeName].linkColor || fColor;
+        buttonFColor = contrastThemes[themeName].buttonForegroundColor || fColor;
+        buttonBColor = contrastThemes[themeName].buttonBackgroundColor || bColor;
+
+        disabledColor = contrastThemes[themeName].disabledColor;
+        selectedFColor = contrastThemes[themeName].selectedForegroundColor;
+        selectedBColor = contrastThemes[themeName].selectedBackgroundColor;
+
 
         {themeName} {
             // General Styling
@@ -125,6 +151,21 @@ build-themes-Enactors(contrastThemes) {
                 border-left-color: fColor !important;
             }
 
+            if (selectedFColor && selectedBColor) {
+                &::selection,
+                ::selection {
+                    color: selectedFColor !important;
+                    background-color: selectedBColor !important;
+                }
+            }
+
+            if (disabledColor) {
+                &:disabled,
+                :disabled {
+                    color: disabledColor !important;
+                }
+            }
+
             iframe {
                 border-top-color: fColor !important;
                 border-right-color: fColor !important;
@@ -132,10 +173,21 @@ build-themes-Enactors(contrastThemes) {
                 border-left-color: fColor !important;
             }
 
-            a {
-                color: fColor !important;
+            a,
+            a *, {
+                color: linkColor !important;
                 font-weight: bold !important;
                 background-color: bColor !important;
+            }
+
+            button,
+            button *,
+            input[type="button"],
+            input[type="button"] *,
+            .fl-input-button,
+            .fl-input-button * {
+                color: buttonFColor !important;
+                background-color: buttonBColor !important;
             }
 
             // Tables
@@ -237,11 +289,8 @@ build-themes-Enactors(contrastThemes) {
             }
 
             .fl-orator-controller > *:not(:first-child):hover,
-            .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
-                background-color: fColor !important;
-                color: bColor !important;
-            }
-
+            .fl-orator-controller :hover .fl-orator-controller-playToggle,
+            .fl-orator-controller :hover .fl-orator-controller-playToggle:before,
             .fl-orator-selectionReader-play:hover,
             .fl-orator-selectionReader-play:hover .fl-icon-orator:before,
             .fl-orator-selectionReader-play:hover * {
@@ -301,6 +350,14 @@ build-themes-Enactors(contrastThemes) {
                     border-left-color: bColor !important;
                 }
 
+                if (selectedFColor && selectedBColor) {
+                    &::selection,
+                    ::selection {
+                        color: selectedBColor !important;
+                        background-color: selectedFColor !important;
+                    }
+                }
+
                 iframe {
                     border-top-color: bColor !important;
                     border-right-color: bColor !important;
@@ -308,10 +365,29 @@ build-themes-Enactors(contrastThemes) {
                     border-left-color: bColor !important;
                 }
 
-                a {
+                a,
+                ^[0..-2] a.fl-inverted-color,
+                a *,
+                ^[0..-2] a.fl-inverted-color * {
                     color: bColor !important;
                     font-weight: bold !important;
-                    background-color: fColor !important;
+                    background-color: linkColor !important;
+                }
+
+                button,
+                ^[0..-2] button.fl-inverted-color,
+                button *,
+                ^[0..-2] button.fl-inverted-color *,
+                input[type="button"],
+                ^[0..-2] input[type="button"].fl-inverted-color,
+                button *,
+                ^[0..-2] input[type="button"].fl-inverted-color *,
+                .fl-input-button,
+                &.fl-input-button,
+                .fl-input-button *,
+                &.fl-input-button * {
+                    color: buttonBColor !important;
+                    background-color: buttonFColor !important;
                 }
 
                 // Tables
