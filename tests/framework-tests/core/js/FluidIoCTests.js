@@ -5060,6 +5060,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /** Test cleanup after cancellation of transaction featuring creation and destruction **/
+    // Discovered through running GPII's new LifecycleManagerSession/UserRequest setup through FLUID-6148 branch
+    fluid.defaults("fluid.tests.FLUID6148cleanup2", {
+        gradeNames: "fluid.component",
+        events: {
+            createOne: null,
+            createTwo: null
+        },
+        components: {
+            createOne: {
+                type: "fluid.component",
+                createOnEvent: "createOne",
+                options: {
+                    destroyOther: "{arguments}.0",
+                    listeners: {
+                        "onCreate.destroyOther": "fluid.tests.FLUID6148destroyOther({FLUID6148cleanup2})",
+                        "onCreate.explode": {
+                            funcName: "fluid.builtinFail",
+                            args: [["Fail after destruction"]],
+                            priority: "after:destroyOther"
+                        }
+                    }
+                }
+            },
+            createTwo: {
+                type: "fluid.component",
+                createOnEvent: "createTwo"
+            }
+        }
+    });
+
+    fluid.tests.FLUID6148destroyOther = function (head) {
+        head.createTwo.destroy();
+    };
+
+    jqUnit.test("FLUID-6184: Cleanup test 2", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.FLUID6148cleanup2();
+        that.events.createTwo.fire();
+        try {
+            that.events.createOne.fire();
+        } catch (e) {
+            jqUnit.assertUndefined("Component one not created", that.createOne);
+            jqUnit.assertUndefined("Component two destroyed", that.createTwo);
+        }
+    });
+
     /** FLUID-5614: Merging of "double deep trees" **/
 
     fluid.tests.push = function (array, value) {

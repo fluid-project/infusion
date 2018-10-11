@@ -1718,12 +1718,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.preparePathedPotentia(potentia, instantiator);
         var that = fluid.getImmediate(fluid.rootComponent, potentia.segs);
         if (that) {
-            var shadow = fluid.shadowForComponent(that);
+            // var shadow = fluid.shadowForComponent(that);
             instantiator.clearComponent(potentia.parentThat, potentia.memberName, that);
-            // Store the record that if this transaction is cancelled, the potentia which constructed this component
-            // should be used to recreate it. Pretty esoteric currently since we don't have WHITEHEADIAN OBSERVATION
-            // but at least our intention is good
-            fluid.pushPotentia(transRec.restoreRecords, instantiator, shadow.potentia);
+            // We would like to store the record that if this transaction is cancelled, the potentia which constructed
+            // this component should be used to recreate it.
+            // However, this is pretty esoteric currently since we don't have WHITEHEADIAN OBSERVATION, and we are not
+            // exception-safe in the case that this re-creation itself throws, so this is commented out for now
+            // fluid.pushPotentia(transRec.restoreRecords, instantiator, shadow.potentia);
         }
     };
 
@@ -1774,11 +1775,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // fluid.fetchInjectedComponentReference for out-of-order construction.
     fluid.operateOneCreatePotentia = function (transRec, potentia) {
         potentia.applied = true;
+        --transRec.pendingPotentiae.activeCount;
         var shadow = fluid.operateCreatePotentia(transRec, transRec.pendingPotentiae, potentia);
         if (shadow) {
             transRec.outputShadows.push(shadow);
         }
-        --transRec.pendingPotentiae.activeCount;
         return shadow && shadow.that;
     };
 
