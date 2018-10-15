@@ -94,7 +94,7 @@ fluid.renderLoggingArg = function (arg) {
     return togo;
 };
 
-// Improve the behaviour of onkey-patch the built-in fluid.doLog utility to improve its behaviour within node.js - see FLUID-5475
+// Improve the rendering of logged arguments within node.js - see FLUID-5475
 fluid.renderNodeLoggingArgs = function (args) {
     fluid.each(args, function (arg, i) {
         args[i] = fluid.renderLoggingArg(arg);

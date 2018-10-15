@@ -1477,7 +1477,7 @@ var fluid = fluid || fluid_3_0_0;
         var that;
 
         var lazyInit = function () { // Lazy init function to economise on object references for events which are never listened to
-            // The authoritative list of all listeners, a a hash indexed by namespace, looking up to a stack (array) of
+            // The authoritative list of all listeners, a hash indexed by namespace, looking up to a stack (array) of
             // listener records in "burial order"
             that.listeners = {};
             // An index of all listeners by "id" - we should consider removing this since it is only used during removal
@@ -1758,7 +1758,8 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.loggingEvent.addListener(fluid.doBrowserLog, "log");
-    // A placeholder for any actions filtering the log arguments before dispatching
+    // Not intended to be overridden - just a positional placeholder so that the priority of
+    // actions filtering the log arguments before dispatching may be referred to it
     fluid.loggingEvent.addListener(fluid.identity, "filterArgs", "before:log");
     fluid.loggingEvent.addListener(fluid.addTimestampArg, "addTimestampArg", "after:filterArgs");
 
