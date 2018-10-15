@@ -94,11 +94,19 @@ fluid.renderLoggingArg = function (arg) {
     return togo;
 };
 
-// Monkey-patch the built-in fluid.doLog utility to improve its behaviour within node.js - see FLUID-5475
-fluid.doLog = function (args) {
-    args = fluid.transform(args, fluid.renderLoggingArg);
+// Improve the behaviour of onkey-patch the built-in fluid.doLog utility to improve its behaviour within node.js - see FLUID-5475
+fluid.renderNodeLoggingArgs = function (args) {
+    fluid.each(args, function (arg, i) {
+        args[i] = fluid.renderLoggingArg(arg);
+    });
+};
+
+fluid.doNodeLog = function (args) {
     console.log(args.join(""));
 };
+
+fluid.loggingEvent.addListener(fluid.doNodeLog, "log");
+fluid.loggingEvent.addListener(fluid.renderNodeLoggingArgs, "renderNodeLoggingArgs", "before:log");
 
 fluid.prepareV8StackTrace = function (err, stack) {
     return stack;
@@ -142,7 +150,7 @@ fluid.loadTestingSupport = function () {
     }
 };
 
-/** Implementation for FLUID-5822 to avoid requirement for dedupe-infusion **/
+/** Implementation of self-deduplication algorithm for FLUID-5822 **/
 
 // Version of resolve.sync which does not throw when module is not found
 fluid.module.resolveSync = function (moduleId, fromPath) {

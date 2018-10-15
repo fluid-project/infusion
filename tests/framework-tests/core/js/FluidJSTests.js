@@ -718,6 +718,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.popActivity();
     });
 
+    fluid.tests.insert42 = function (args) {
+        args.push(42);
+    };
+
+    fluid.tests.memoryLog = [];
+
+    fluid.tests.doMemoryLog = function (args) {
+        fluid.tests.memoryLog.push(args);
+    };
+
+    jqUnit.test("FLUID-6330 test - interception of fluid.log", function () {
+        fluid.loggingEvent.addListener(fluid.tests.insert42, "42", "before:log");
+        fluid.loggingEvent.addListener(fluid.tests.doMemoryLog, "log");
+        fluid.log("Zis guy");
+        // Slice to remove the timestamp argument unshifted by the standard interceptor
+        jqUnit.assertDeepEq("Logged to memory with interception", ["Zis guy", 42],
+            fluid.tests.memoryLog[0].slice(1));
+        fluid.loggingEvent.removeListener(fluid.tests.doMemoryLog);
+        fluid.loggingEvent.removeListener("42");
+        var listeners = fluid.getMembers(fluid.loggingEvent.sortedListeners, "listener");
+        jqUnit.assertFalse("Intercepting listener removed", listeners.includes(fluid.tests.insert42));
+        jqUnit.assertFalse("Memory log listener removed", listeners.includes(fluid.tests.doMemoryLog));
+        jqUnit.assertTrue("Browser log listener restored", listeners.includes(fluid.doBrowserLog));
+    });
+
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         jqUnit.expectFrameworkDiagnostic("Registering double options component", function () {
             fluid.defaults("news.parent", {
