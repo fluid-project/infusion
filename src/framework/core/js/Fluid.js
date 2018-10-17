@@ -143,10 +143,12 @@ var fluid = fluid || fluid_3_0_0;
     fluid.logActivity = function (activity) {
         activity = activity || fluid.describeActivity();
         var rendered = fluid.renderActivity(activity).reverse();
-        fluid.log("Current activity: ");
-        fluid.each(rendered, function (args) {
-            fluid.log.apply(null, args);
-        });
+        if (rendered.length > 0) {
+            fluid.log("Current activity: ");
+            fluid.each(rendered, function (args) {
+                fluid.log.apply(null, args);
+            });
+        }
     };
 
     // Execute the supplied function with the specified activity description pushed onto the stack
@@ -352,8 +354,11 @@ var fluid = fluid || fluid_3_0_0;
      * @param {Any} totest - The value to be tested
      * @return {Boolean} `true` if the supplied value is an array
      */
+    // Note: The primary place jQuery->Array conversion is used in the framework is in dynamic components with a jQuery source.
     fluid.isArrayable = function (totest) {
-        return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
+        return (Boolean)(totest && (Object.prototype.toString.call(totest) === "[object Array]"
+            || totest.jquery && totest.constructor && totest.constructor.prototype
+               && totest.constructor.prototype.jquery));
     };
 
     /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object

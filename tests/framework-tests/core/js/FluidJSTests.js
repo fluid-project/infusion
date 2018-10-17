@@ -54,6 +54,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Array is nonplain in strict", false, fluid.isPlainObject([], true));
     });
 
+    fluid.tests.plainObjectFalseArrayable = {
+        "null": false,
+        "undefined": false,
+        "document": false,
+        "window": false,
+        "jDocument": true,
+        "component": false
+    };
+
+    fluid.tests.arrayableFalse = {
+        fakeJquery: {jquery: true},
+        fakeArray: {length: 10}
+    };
+
+    jqUnit.test("fluid.isArrayable tests", function () {
+        fluid.each(fluid.tests.plainObjectTrue, function (totest, key) {
+            jqUnit.assertEquals("Expected not isArrayable: " + key, false, fluid.isArrayable(totest));
+        });
+        fluid.each(fluid.tests.plainObjectFalse, function (totest, key) {
+            jqUnit.assertEquals("Expected isArrayable: " + key, fluid.tests.plainObjectFalseArrayable[key],
+                fluid.isArrayable(totest));
+        });
+        fluid.each(fluid.tests.arrayableFalse, function (totest, key) {
+            jqUnit.assertEquals("Expected not isArrayable: " + key, false, fluid.isArrayable(totest));
+        });
+        jqUnit.assertEquals("Array is arrayable", true, fluid.isArrayable([]));
+    });
+
     fluid.tests.firstDefinedTests = [
         {a: undefined, b: 3, expected: 3},
         {a: 0, b: 5, expected: 0},
@@ -630,14 +658,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         foo: "bar"
     };
 
-    fluid.defaults("test", testDefaults);
+    fluid.defaults("fluid.tests.storeDefaults", testDefaults);
 
     jqUnit.test("Defaults: store and retrieve default values", function () {
         jqUnit.expect(4);
         // Assign a collection of defaults for the first time.
 
         jqUnit.assertCanoniseEqual("defaults() should return the specified defaults",
-            testDefaults, fluid.defaults("test"), function (options) {
+            testDefaults, fluid.defaults("fluid.tests.storeDefaults"), function (options) {
                 return fluid.filterKeys(options, ["foo"]);
             });
 
@@ -646,8 +674,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: "fluid.component",
             baz: "foo"
         };
-        fluid.defaults("test", testDefaults2);
-        var retrieved = fluid.defaults("test");
+        fluid.defaults("fluid.tests.storeDefaults", testDefaults2);
+        var retrieved = fluid.defaults("fluid.tests.storeDefaults");
         jqUnit.assertCanoniseEqual("defaults() should return the updated defaults",
             testDefaults2, retrieved, function (options) {
                 return fluid.filterKeys(options, ["foo", "baz"]);
