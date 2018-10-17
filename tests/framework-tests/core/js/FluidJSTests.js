@@ -82,6 +82,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Array is arrayable", true, fluid.isArrayable([]));
     });
 
+    jqUnit.test("fluid.isJQuery tests", function () {
+        fluid.each(fluid.tests.plainObjectFalse, function (totest, key) {
+            jqUnit.assertEquals("Expected not isJQuery: " + key, fluid.tests.plainObjectFalseArrayable[key],
+                fluid.isJQuery(totest));
+        });
+        fluid.each(fluid.tests.arrayableFalse, function (totest, key) {
+            jqUnit.assertEquals("Expected not isJQuery: " + key, false, fluid.isJQuery(totest));
+        });
+    });
+
     fluid.tests.firstDefinedTests = [
         {a: undefined, b: 3, expected: 3},
         {a: 0, b: 5, expected: 0},
