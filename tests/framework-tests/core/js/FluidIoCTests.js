@@ -109,6 +109,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, ["incomplete", "nonexistentGrade"]);
     });
 
+    fluid.defaults("fluid.tests.nonexistentRootBase", {
+        gradeNames: "fluid.component",
+        components: {
+            nonexistentRoot: {
+                type: "fluid.tests.nonexistentGrade"
+            }
+        }
+    });
+
+    jqUnit.test("Framework diagnostic for all grades nonexistent", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on all grades nonexistent ", function () {
+            fluid.tests.nonexistentRootBase();
+        }, ["defined", "nonexistentGrade"]);
+    });
+
+    /** Forward reference through grade hierarchy **/
 
     fluid.defaults("fluid.tests.forwardRefComponent", {
         gradeNames: "fluid.tests.forwardBaseComponent"
@@ -124,6 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Should have received component with forward grade reference", that);
     });
 
+    /** fluid.parseContextReference tests **/
 
     fluid.tests.parseContext = [{
         ref: "{context}.path",

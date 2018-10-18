@@ -91,6 +91,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    jqUnit.test("isInteger tests", function () {
+        var fixtures = [
+        {value: null, isInt: false},
+        {value: NaN,  isInt: false},
+        {value: Infinity, isInt: false},
+        {value: "1",  isInt: false},
+        {value: {},   isInt: false},
+        {value: true, isInt: false},
+        {value: [],   isInt: false},
+        {value: 3.5,  isInt: false},
+        {value: 4,    isInt: true},
+        {value: -4,   isInt: true},
+        {value: 0,    isInt: true}
+        ];
+        fixtures.forEach(function (fixture, index) {
+            jqUnit.assertEquals("IsInteger fixture " + index, fluid.isInteger(fixture.value), fixture.isInt);
+        });
+    });
+
     fluid.tests.firstDefinedTests = [
         {a: undefined, b: 3, expected: 3},
         {a: 0, b: 5, expected: 0},
@@ -999,59 +1018,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    fluid.defaults("fluid.tests.schema.textSizer", {
-        gradeNames: ["fluid.tests.schema", "fluid.component"],
-        schema: {
-            "fluid.prefs.textSizer": { // common grade name
-                "type": "number",
-                "default": 1,
-                "min": 1,
-                "max": 2,
-                "divisibleBy": 0.1
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
-        gradeNames: ["fluid.component"],
-        preferenceMap: {
-            thing: "fluid.prefs.nonThing"
-        }
-    });
-
-    fluid.defaults("fluid.tests.panels.linksControls", {
-        gradeNames: ["fluid.tests.settingsPanel", "fluid.component"],
-        preferenceMap: {
-            links: "fluid.prefs.emphasizeLinks",
-            inputsLarger: "fluid.prefs.inputsLarger"
-        }
-    });
-
-    fluid.tests.schema.indexer = function (defaults) {
-        return fluid.keys(defaults.schema);
-    };
-
-    fluid.tests.panels.indexer = function (defaults) {
-        return fluid.values(defaults.preferenceMap);
-    };
-
-    jqUnit.test("FLUID-5067 grade indexing", function () {
-        var indexedSchema = fluid.indexDefaults("schemaIndexer", {
-            gradeNames: "fluid.tests.schema",
-            indexFunc: "fluid.tests.schema.indexer"
-        });
-        jqUnit.assertDeepEq("Indexed grade", ["fluid.tests.schema.textSizer"], indexedSchema["fluid.prefs.textSizer"]);
-        var indexedPanels = fluid.indexDefaults("panelIndexer", {
-            gradeNames: "fluid.tests.settingsPanel",
-            indexFunc: "fluid.tests.panels.indexer"
-        });
-        var expected = {
-            "fluid.prefs.emphasizeLinks": ["fluid.tests.panels.linksControls"],
-            "fluid.prefs.inputsLarger": ["fluid.tests.panels.linksControls"]
-        };
-        jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
-    });
-
     fluid.tests.invokeGlobalFunction = {
         withArgs: function (arg1) {
             jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
@@ -1183,23 +1149,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    jqUnit.test("isInteger tests", function () {
-        var fixtures = [
-        {value: null, isInt: false},
-        {value: NaN,  isInt: false},
-        {value: Infinity, isInt: false},
-        {value: "1",  isInt: false},
-        {value: {},   isInt: false},
-        {value: true, isInt: false},
-        {value: [],   isInt: false},
-        {value: 3.5,  isInt: false},
-        {value: 4,    isInt: true},
-        {value: -4,   isInt: true},
-        {value: 0,    isInt: true}
-        ];
-        fixtures.forEach(function (fixture, index) {
-            jqUnit.assertEquals("IsInteger fixture " + index, fluid.isInteger(fixture.value), fixture.isInt);
+    /** FLUID-5067: grade indexing tests **/
+
+    fluid.defaults("fluid.tests.schema.textSizer", {
+        gradeNames: ["fluid.tests.schema", "fluid.component"],
+        schema: {
+            "fluid.prefs.textSizer": { // common grade name
+                "type": "number",
+                "default": 1,
+                "min": 1,
+                "max": 2,
+                "divisibleBy": 0.1
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
+        gradeNames: ["fluid.component"],
+        preferenceMap: {
+            thing: "fluid.prefs.nonThing"
+        }
+    });
+
+    fluid.defaults("fluid.tests.panels.linksControls", {
+        gradeNames: ["fluid.tests.settingsPanel", "fluid.component"],
+        preferenceMap: {
+            links: "fluid.prefs.emphasizeLinks",
+            inputsLarger: "fluid.prefs.inputsLarger"
+        }
+    });
+
+    fluid.tests.schema.indexer = function (defaults) {
+        return fluid.keys(defaults.schema);
+    };
+
+    fluid.tests.panels.indexer = function (defaults) {
+        return fluid.values(defaults.preferenceMap);
+    };
+
+    jqUnit.test("FLUID-5067 grade indexing", function () {
+        var indexedSchema = fluid.indexDefaults("schemaIndexer", {
+            gradeNames: "fluid.tests.schema",
+            indexFunc: "fluid.tests.schema.indexer"
         });
+        jqUnit.assertDeepEq("Indexed grade", ["fluid.tests.schema.textSizer"], indexedSchema["fluid.prefs.textSizer"]);
+        var indexedPanels = fluid.indexDefaults("panelIndexer", {
+            gradeNames: "fluid.tests.settingsPanel",
+            indexFunc: "fluid.tests.panels.indexer"
+        });
+        var expected = {
+            "fluid.prefs.emphasizeLinks": ["fluid.tests.panels.linksControls"],
+            "fluid.prefs.inputsLarger": ["fluid.tests.panels.linksControls"]
+        };
+        jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
     });
 
 })(jQuery);

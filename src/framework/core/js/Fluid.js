@@ -1675,7 +1675,7 @@ var fluid = fluid || fluid_3_0_0;
     // unsupported, NON-API function
     // Fires to an event which may not be instantiated (in which case no-op) - primary modern usage is to resolve FLUID-5904
     fluid.fireEvent = function (component, eventName, args) {
-        var firer = component.events[eventName];
+        var firer = component.events && component.events[eventName];
         if (firer) {
             firer.fire.apply(null, fluid.makeArray(args));
         }
@@ -2078,7 +2078,7 @@ var fluid = fluid || fluid_3_0_0;
 
     fluid.validateCreatorGrade = function (message, componentName) {
         var defaults = fluid.getMergedDefaults(componentName);
-        if (!defaults.gradeNames || defaults.gradeNames.length === 0) {
+        if (!defaults || !defaults.gradeNames || defaults.gradeNames.length === 0) {
             fluid.fail(message + " type " + componentName + " which does not have any gradeNames defined");
         } else if (!defaults.argumentMap) {
             var blankGrades = [];
