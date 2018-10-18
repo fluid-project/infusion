@@ -55,8 +55,8 @@ context.window = context;
 /** Load a standard, non-require-aware Fluid framework file into the Fluid context, given a filename
  * relative to this directory (src/module) **/
 
-var loadInContext = function (path) {
-    var fullpath = buildPath(path);
+var loadInContext = function (path, absolute) {
+    var fullpath = absolute ? path : buildPath(path);
     var data = fs.readFileSync(fullpath);
     vm.runInContext(data, context, fullpath);
 };
