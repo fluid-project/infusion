@@ -9,7 +9,7 @@ agent_tags: &agent_tags
 steps:
   - name: "Build"
     command: "DISPLAY=:0 vagrant up --provider virtualbox"
-    timeout_in_minutes: 20
+    timeout_in_minutes: 25
     <<: *agent_tags
 
   # Wait and make sure the VM was successfully created before proceeding. Otherwise the remaining steps will not run.
@@ -17,7 +17,7 @@ steps:
 
   - name: "Code Linter"
     command: "vagrant ssh -c 'cd /home/vagrant/sync/; $(npm bin)/grunt lint'"
-    timeout_in_minutes: 2
+    timeout_in_minutes: 10
     <<: *agent_tags
 
   - name: "Browser Tests"

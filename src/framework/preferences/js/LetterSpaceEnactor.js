@@ -25,75 +25,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.letterSpace", {
-        gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
+        gradeNames: ["fluid.prefs.enactor.spacingSetter"],
         preferenceMap: {
             "fluid.prefs.letterSpace": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
-        members: {
-            originalLetterSpace: {
-                expander: {
-                    func: "{that}.getLetterSpace"
-                }
-            }
-        },
-        invokers: {
-            set: {
-                funcName: "fluid.prefs.enactor.letterSpace.set",
-                args: ["{that}", "{arguments}.0"]
-            },
-            getLetterSpace: {
-                funcName: "fluid.prefs.enactor.letterSpace.getLetterSpace",
-                args: ["{that}", "{that}.getTextSizeInPx"]
-            }
-        },
-        modelListeners: {
-            unit: {
-                listener: "{that}.set",
-                args: ["{change}.value"],
-                namespace: "setAdaptation"
-            },
-            // Replace default model listener, because `value` needs be transformed before being applied.
-            // The `unit` model value should be used for setting the adaptation.
-            value: {
-                listener: "fluid.identity",
-                namespace: "setAdaptation"
-            }
-        },
-        modelRelay: {
-            target: "unit",
-            namespace: "toUnit",
-            singleTransform: {
-                type: "fluid.transforms.round",
-                scale: 1,
-                input: {
-                    transform: {
-                        "type": "fluid.transforms.linearScale",
-                        "offset": -1,
-                        "input": "{that}.model.value"
-                    }
-                }
-            }
-        }
+        cssProp: "letter-spacing"
     });
-
-    fluid.prefs.enactor.letterSpace.getLetterSpace = function (that, getTextSizeFn) {
-        var current = parseFloat(that.container.css("letter-spacing"));
-        var textSize = getTextSizeFn();
-        return fluid.roundToDecimal(current / textSize, 2);
-    };
-
-    fluid.prefs.enactor.letterSpace.set = function (that, units) {
-        var targetSize = that.originalLetterSpace;
-
-        if (units) {
-            targetSize = targetSize + units;
-        }
-
-        // setting the style value to "" will remove it.
-        var letterSpace = targetSize ?  fluid.roundToDecimal(targetSize, 2) + "em" : "";
-        that.container.css("letter-spacing", letterSpace);
-    };
 
 })(jQuery, fluid_3_0_0);

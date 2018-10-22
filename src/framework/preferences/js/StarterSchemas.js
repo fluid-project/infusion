@@ -153,7 +153,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.textSize": {
                 "type": "number",
                 "default": 1,
-                "minimum": 1,
+                "minimum": 0.5,
                 "maximum": 2,
                 "divisibleBy": 0.1
             }
@@ -166,7 +166,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.lineSpace": {
                 "type": "number",
                 "default": 1,
-                "minimum": 1,
+                "minimum": 0.7,
                 "maximum": 2,
                 "divisibleBy": 0.1
             }

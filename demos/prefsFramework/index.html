@@ -21,11 +21,8 @@
         <link href="css/simplify.css" rel="stylesheet" type="text/css" media="screen">
 
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
-        <script type="text/javascript" src="lib/buzz/js/buzz.js"></script>
-        <!--[if IE 8]>
-            <script type="text/javascript" src="lib/html5shiv/js/html5shiv.js"></script>
-        <![endif]-->
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
 
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
@@ -60,9 +57,11 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingPanel.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpacePanel.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/WordSpacePanel.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingEnactor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceEnactor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/WordSpaceEnactor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../src/components/switch/js/Switch.js"></script>
@@ -72,6 +71,7 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/WordSpaceSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
@@ -95,6 +95,7 @@
                         gradeNames: [
                             "fluid.prefs.auxSchema.starter", // this will add the starter set
                             "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor
+                            "fluid.prefs.auxSchema.wordSpace", // this will add the word space adjuster and enactor
                             "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
                             "demo.prefsEditor.progressiveEnhancement" // progressive enhancement - may add selfVoicing
                         ],
@@ -104,7 +105,7 @@
             });
         </script>
 
-        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
             <!--

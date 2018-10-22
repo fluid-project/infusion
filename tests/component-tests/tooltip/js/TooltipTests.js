@@ -110,6 +110,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tooltip.container.html(markup);
     };
 
+    fluid.tests.invokeAfter = function (toInvoke, delay) {
+        setTimeout(toInvoke, delay);
+    };
+
     fluid.tests.tooltip.module = {
         name: "Delegating tooltip tests",
         tests: {
@@ -125,7 +129,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "fluid.tests.tooltip.closer",
                 args: "{tree}.tooltip"
             }, {
-                funcName: "fluid.tests.delegateTest.assertVisible",
+                // The wait is required due to a recent change in jQuery 3.2.0 that makes
+                // delays of 0 asynchronous https://github.com/jquery/jquery/commit/6d43dc42337089f5fb52b715981c12993f490920.
+                // This coupled with the fact that the jQuery UI Tooltip seems to fire its closed event immediately
+                // and not after the tooltip is actually removed,
+                // ( https://github.com/jquery/jquery-ui/blob/1.12.1/ui/widgets/tooltip.js#L427 )
+                // means that we can't relay on the component's afterClose event to test the result of closing.
+                funcName: "fluid.tests.invokeAfter",
+                args: ["{tree}.events.afterWaitForClose.fire", 100]
+            }, {
+                event: "{tree}.events.afterWaitForClose",
+                priority: "last:testing",
+                listener: "fluid.tests.delegateTest.assertVisible",
                 args: ["{trackTooltips}", []]
             }, {
                 funcName: "fluid.tests.tooltip.markupBlaster",
@@ -141,6 +156,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"],
         selectors: {
             focusTarget: ".focusTarget"
+        },
+        events: {
+            "afterWaitForClose": null
         },
         components: {
             tooltip: {

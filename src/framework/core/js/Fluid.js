@@ -143,10 +143,12 @@ var fluid = fluid || fluid_3_0_0;
     fluid.logActivity = function (activity) {
         activity = activity || fluid.describeActivity();
         var rendered = fluid.renderActivity(activity).reverse();
-        fluid.log("Current activity: ");
-        fluid.each(rendered, function (args) {
-            fluid.doLog(args);
-        });
+        if (rendered.length > 0) {
+            fluid.log("Current activity: ");
+            fluid.each(rendered, function (args) {
+                fluid.log.apply(null, args);
+            });
+        }
     };
 
     // Execute the supplied function with the specified activity description pushed onto the stack
@@ -157,7 +159,7 @@ var fluid = fluid || fluid_3_0_0;
             fluid.activityTrace.push(record);
         }
         if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
-            fluid.doLog(fluid.renderOneActivity(record, true));
+            fluid.log.apply(null, fluid.renderOneActivity(record, true));
         }
         var activityStack = fluid.getActivityStack();
         activityStack.push(record);
@@ -251,9 +253,8 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /** Check whether the current framework logging level would cause a message logged with the specified level to be
-     * logged. Clients who
-     *  issue particularly expensive log payload arguments are recommended to guard their logging statements with this
-     *  function
+     * logged. Clients who issue particularly expensive log payload arguments are recommended to guard their logging
+     * statements with this function
      * @param {LogLevel} testLogLevel - The logLevel value which the current logging level will be tested against.
      * Accepts one of the members of the <code>fluid.logLevel</code> structure.
      * @return {Boolean} Returns <code>true</code> if a message supplied at that log priority would be accepted at the current logging level.
@@ -294,10 +295,11 @@ var fluid = fluid || fluid_3_0_0;
         return togo;
     };
 
-    /* Actually do the work of logging <code>args</code> to the environment's console. If the standard "console"
+    /** Actually do the work of logging <code>args</code> to the environment's console. If the standard "console"
      * stream is available, the message will be sent there.
+     * @param {Array} args - The complete array of arguments to be logged
      */
-    fluid.doLog = function (args) {
+    fluid.doBrowserLog = function (args) {
         if (typeof (console) !== "undefined") {
             if (console.debug) {
                 console.debug.apply(console, args);
@@ -320,9 +322,7 @@ var fluid = fluid || fluid_3_0_0;
             userLogLevel = directArgs.shift();
         }
         if (fluid.passLogLevel(userLogLevel)) {
-            var arg0 = fluid.renderTimestamp(new Date()) + ":  ";
-            var args = [arg0].concat(directArgs);
-            fluid.doLog(args);
+            fluid.loggingEvent.fire(directArgs);
         }
     };
 
@@ -347,6 +347,16 @@ var fluid = fluid || fluid_3_0_0;
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
 
+    /** Determines whether the supplied object is an jQuery object. The strategy uses optimised inspection of the
+     * constructor prototype since jQuery may not actually be loaded
+     * @param {Any} totest - The value to be tested
+     * @return {Boolean} `true` if the supplied value is a jQuery object
+     */
+    fluid.isJQuery = function (totest) {
+        return Boolean(totest && totest.jquery && totest.constructor && totest.constructor.prototype
+               && totest.constructor.prototype.jquery);
+    };
+
     /** Determines whether the supplied object is an array. The strategy used is an optimised
      * approach taken from an earlier version of jQuery - detecting whether the toString() version
      * of the object agrees with the textual form [object Array], or else whether the object is a
@@ -354,8 +364,9 @@ var fluid = fluid || fluid_3_0_0;
      * @param {Any} totest - The value to be tested
      * @return {Boolean} `true` if the supplied value is an array
      */
+    // Note: The primary place jQuery->Array conversion is used in the framework is in dynamic components with a jQuery source.
     fluid.isArrayable = function (totest) {
-        return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
+        return Boolean(totest) && (Object.prototype.toString.call(totest) === "[object Array]" || fluid.isJQuery(totest));
     };
 
     /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
@@ -1479,8 +1490,14 @@ var fluid = fluid || fluid_3_0_0;
         var that;
 
         var lazyInit = function () { // Lazy init function to economise on object references for events which are never listened to
+            // The authoritative list of all listeners, a hash indexed by namespace, looking up to a stack (array) of
+            // listener records in "burial order"
             that.listeners = {};
+            // An index of all listeners by "id" - we should consider removing this since it is only used during removal
+            // and because that.listeners is a hash of stacks we can't really accelerate removal by much
             that.byId = {};
+            // The "live" list of listeners which will be notified in order on any firing. Recomputed on any use of
+            // addListener/removeListener
             that.sortedListeners = [];
             // arguments after 3rd are not part of public API
             // listener as Object is used only by ChangeApplier to tunnel path, segs, etc as part of its "spec"
@@ -1586,12 +1603,11 @@ var fluid = fluid || fluid_3_0_0;
             fire: function () {
                 var listeners = that.sortedListeners;
                 if (!listeners || that.destroyed) { return; }
-                if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
-                    fluid.log(fluid.logLevel.TRACE, "Firing event " + name + " to list of " + listeners.length + " listeners");
-                }
                 for (var i = 0; i < listeners.length; ++i) {
                     var lisrec = listeners[i];
-                    lisrec.listener = fluid.event.resolveListener(lisrec.listener);
+                    if (typeof(lisrec.listener) !== "function") {
+                        lisrec.listener = fluid.event.resolveListener(lisrec.listener);
+                    }
                     var listener = lisrec.listener;
                     var ret = listener.apply(null, arguments);
                     var value;
@@ -1740,6 +1756,25 @@ var fluid = fluid || fluid_3_0_0;
     fluid.arrayConcatPolicy = function (target, source) {
         return fluid.makeArray(target).concat(fluid.makeArray(source));
     };
+
+    /*** FLUID LOGGING SYSTEM ***/
+
+    // This event represents the process of resolving the action of a request to fluid.log. Each listener shares
+    // access to an array, shallow-copied from the original arguments list to fluid.log, which is assumed writeable
+    // and which they may splice, transform, etc. before it is dispatched to the listener with namespace "log" which
+    // actually performs the logging action
+    fluid.loggingEvent = fluid.makeEventFirer({name: "logging event"});
+
+    fluid.addTimestampArg = function (args) {
+        var arg0 = fluid.renderTimestamp(new Date()) + ":  ";
+        args.unshift(arg0);
+    };
+
+    fluid.loggingEvent.addListener(fluid.doBrowserLog, "log");
+    // Not intended to be overridden - just a positional placeholder so that the priority of
+    // actions filtering the log arguments before dispatching may be referred to it
+    fluid.loggingEvent.addListener(fluid.identity, "filterArgs", "before:log");
+    fluid.loggingEvent.addListener(fluid.addTimestampArg, "addTimestampArg", "after:filterArgs");
 
     /*** FLUID ERROR SYSTEM ***/
 

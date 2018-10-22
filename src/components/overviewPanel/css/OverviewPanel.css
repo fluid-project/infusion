@@ -69,6 +69,7 @@
     color: #ccc;
     padding: 0.5em 0.5em 0.5em 3em;
     height: 5.5em;
+    width: calc(100% - 3.5em);
     position: absolute;
     top: 0;
     left: 0;

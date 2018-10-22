@@ -19,7 +19,8 @@
     "repository": "git://github.com/fluid-project/infusion.git",
     "main": "./src/module/fluid.js",
     "scripts": {
-        "prepublish": "npm run buildDists && npm run buildStylus",
+        "prepare": "npm run loadDependencies && npm run buildStylus",
+        "prepublishOnly": "npm run buildDists",
         "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
         "test": "npm run test:browser && npm run test:node",
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
@@ -29,7 +30,8 @@
         "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html --report-dir reports --temp-directory coverage",
         "buildDists": "grunt buildDists",
-        "buildStylus": "grunt buildStylus"
+        "buildStylus": "grunt buildStylus",
+        "loadDependencies": "grunt loadDependencies"
     },
     "engines": {
         "node": ">=0.10.0"
@@ -38,24 +40,33 @@
         "fluid-resolve": "1.3.0"
     },
     "devDependencies": {
-        "eslint-config-fluid": "1.2.0-dev.20180213T130610Z.40e6281",
-        "fluid-grunt-eslint": "18.1.2",
-        "gpii-testem": "2.1.1-dev.20180320T102716Z.5caff1c",
-        "grunt": "1.0.1",
-        "grunt-contrib-clean": "1.1.0",
+        "eslint-config-fluid": "1.3.0",
+        "gpii-grunt-lint-all": "1.0.5",
+        "gpii-testem": "2.1.5",
+        "grunt": "1.0.2",
+        "grunt-contrib-clean": "2.0.0",
         "grunt-contrib-compress": "1.4.3",
         "grunt-contrib-concat": "1.0.1",
         "grunt-contrib-copy": "1.0.0",
         "grunt-contrib-stylus": "1.2.0",
-        "grunt-contrib-uglify": "3.1.0",
-        "grunt-contrib-watch": "1.0.0",
-        "grunt-jsonlint": "1.1.0",
-        "grunt-modulefiles": "0.3.1",
+        "grunt-contrib-uglify": "4.0.0",
+        "grunt-contrib-watch": "1.1.0",
+        "grunt-modulefiles": "0.4.0",
         "grunt-shell": "2.1.0",
-        "lodash": "4.17.4",
+        "lodash": "4.17.11",
         "ncp": "2.0.0",
-        "nyc": "11.4.1",
+        "nyc": "13.0.1",
         "rimraf": "2.6.2",
-        "testem": "1.18.4"
+        "testem": "2.9.3",
+        "normalize.css": "8.0.0",
+        "opensans-webkit": "1.0.1",
+        "url-polyfill": "1.1.0",
+        "jquery": "3.3.1",
+        "jquery-ui": "1.12.1",
+        "jquery.scrollto": "2.1.2",
+        "jquery-ui-touch-punch": "0.2.3",
+        "jquery-mockjax": "2.5.0",
+        "jquery-simulate": "1.0.2",
+        "sinon": "6.3.3"
     }
 }

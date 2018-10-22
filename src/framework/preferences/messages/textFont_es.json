@@ -1,0 +1,9 @@
+{
+    "textFont-default": "Defecto",
+    "textFont-times": "Times New Roman",
+    "textFont-comic": "Comic Sans",
+    "textFont-arial": "Arial",
+    "textFont-verdana": "Verdana",
+    "textFontLabel": "estilo de texto",
+    "textFontDescr": "Cambiar la fuente utilizada"
+}

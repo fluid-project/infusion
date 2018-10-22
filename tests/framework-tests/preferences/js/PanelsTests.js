@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.subPanel"],
         preferenceMap: {
             "fluid.prefs.sub1": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -67,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.subPanel"],
         preferenceMap: {
             "fluid.prefs.sub2": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -289,7 +289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         preferenceMap: {
                             "some.pref.1": {
-                                "model.value": "default"
+                                "model.value": "value"
                             }
                         },
                         messageBase: {
@@ -309,7 +309,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         preferenceMap: {
                             "some.pref.2": {
-                                "model.value": "default"
+                                "model.value": "value"
                             }
                         },
                         messageBase: {
@@ -330,7 +330,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         renderOnPreference: "some.pref.1",
                         preferenceMap: {
                             "some.pref.3": {
-                                "model.value": "default"
+                                "model.value": "value"
                             }
                         },
                         messageBase: {
@@ -353,7 +353,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         renderOnPreference: "some.pref.2",
                         preferenceMap: {
                             "some.pref.4": {
-                                "model.value": "default"
+                                "model.value": "value"
                             }
                         },
                         messageBase: {
@@ -532,7 +532,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "learning.dropdownTest1": {
-                "model.ddVal": "default",
+                "model.ddVal": "value",
                 "controlValues.ddStrings": "enum"
             }
         },
@@ -626,7 +626,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "learning.radioTest1": {
-                "model.radioVal": "default",
+                "model.radioVal": "value",
                 "controlValues.radioStrings": "enum"
             }
         },
@@ -798,8 +798,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     model: {
                         value: "{fluid.tests.panel.slider1}.model.slider1"
                     },
-                    range: "{fluid.tests.panel.slider1}.options.range",
-                    sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
+                    range: "{fluid.tests.panel.slider1}.options.range"
                 }
             }
         },
@@ -830,8 +829,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     model: {
                         value: "{fluid.tests.panel.slider2}.model.slider2"
                     },
-                    range: "{fluid.tests.panel.slider2}.options.range",
-                    sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
+                    range: "{fluid.tests.panel.slider2}.options.range"
                 }
             }
         },

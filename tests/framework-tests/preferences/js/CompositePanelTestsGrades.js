@@ -109,7 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.tests.composite.pref.speakText": {
-                "model.speakText": "default"
+                "model.speakText": "value"
             }
         },
         selectors: {
@@ -141,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.cmpPanel.base"],
         preferenceMap: {
             "fluid.tests.composite.pref.increaseSize": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -150,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.cmpPanel.base"],
         preferenceMap: {
             "fluid.tests.composite.pref.magnification": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -159,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.cmpPanel.base"],
         preferenceMap: {
             "fluid.tests.composite.pref.lineSpace": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });

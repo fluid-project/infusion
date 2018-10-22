@@ -134,7 +134,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.enhanceInputs": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         cssClass: null,  // Must be supplied by implementors
@@ -151,7 +151,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.classSwapper"],
         preferenceMap: {
             "fluid.prefs.textFont": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -166,7 +166,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.classSwapper"],
         preferenceMap: {
             "fluid.prefs.contrast": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -222,6 +222,82 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /*******************************************************************************
+     * spacingSetter
+     *
+     * Sets the css spacing value on the container to the number of units to
+     * increase the space by. If a negative number is provided, the space between
+     * will decrease. Setting the value to 1 or unit to 0 will use the default.
+     *******************************************************************************/
+
+    fluid.defaults("fluid.prefs.enactor.spacingSetter", {
+        gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
+        members: {
+            originalSpacing: {
+                expander: {
+                    func: "{that}.getSpacing"
+                }
+            }
+        },
+        cssProp: "",
+        invokers: {
+            set: {
+                funcName: "fluid.prefs.enactor.spacingSetter.set",
+                args: ["{that}", "{that}.options.cssProp", "{arguments}.0"]
+            },
+            getSpacing: {
+                funcName: "fluid.prefs.enactor.spacingSetter.getSpacing",
+                args: ["{that}", "{that}.options.cssProp", "{that}.getTextSizeInPx"]
+            }
+        },
+        modelListeners: {
+            unit: {
+                listener: "{that}.set",
+                args: ["{change}.value"],
+                namespace: "setAdaptation"
+            },
+            // Replace default model listener, because `value` needs be transformed before being applied.
+            // The `unit` model value should be used for setting the adaptation.
+            value: {
+                listener: "fluid.identity",
+                namespace: "setAdaptation"
+            }
+        },
+        modelRelay: {
+            target: "unit",
+            namespace: "toUnit",
+            singleTransform: {
+                type: "fluid.transforms.round",
+                scale: 1,
+                input: {
+                    transform: {
+                        "type": "fluid.transforms.linearScale",
+                        "offset": -1,
+                        "input": "{that}.model.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.prefs.enactor.spacingSetter.getSpacing = function (that, cssProp, getTextSizeFn) {
+        var current = parseFloat(that.container.css(cssProp));
+        var textSize = getTextSizeFn();
+        return fluid.roundToDecimal(current / textSize, 2);
+    };
+
+    fluid.prefs.enactor.spacingSetter.set = function (that, cssProp, units) {
+        var targetSize = that.originalSpacing;
+
+        if (units) {
+            targetSize = targetSize + units;
+        }
+
+        // setting the style value to "" will remove it.
+        var spacingSetter = targetSize ?  fluid.roundToDecimal(targetSize, 2) + "em" : "";
+        that.container.css(cssProp, spacingSetter);
+    };
+
+    /*******************************************************************************
      * textSize
      *
      * Sets the text size on the root element to the multiple provided.
@@ -232,7 +308,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         members: {
@@ -280,7 +356,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         invokers: {
@@ -358,7 +434,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
-                "model.toc": "default"
+                "model.toc": "value"
             }
         },
         tocTemplate: null,  // must be supplied by implementors
