@@ -321,18 +321,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // TODO: This implementation is obviously poor and has numerous flaws - in particular it does no backtracking as well as matching backwards through the selector
+    /** Match a parsed IoC selector against a selection of data structures representing a component's tree context.
+     * @param {ParsedSelector} selector - A parsed selector structure as returned from `fluid.parseSelector`.
+     * @param {Component[]} thatStack - An array of components ascending up the tree from the component being matched,
+     * which will be held in the last position.
+     * @param {Object[]} contextHashes - An array of context hashes as cached in the component's shadows - a hash to
+     * `true`/"memberName" depending on the reason the context matches
+     * @param {String[]} [memberNames] - An array of member names of components in their parents. This is only used in the distributeOptions route.
+     * @param {Number} i - One plus the index of the IoCSS head component within `thatStack` - all components before this
+     * index will be ignored for matching. Will have value `1` in the queryIoCSelector route.
+     * @return {Boolean} `true` if the selector matches the leaf component at the end of `thatStack`
+     */
     fluid.matchIoCSelector = function (selector, thatStack, contextHashes, memberNames, i) {
         var thatpos = thatStack.length - 1;
         var selpos = selector.length - 1;
         while (true) {
-            var mustMatchHere = thatpos === thatStack.length - 1 || selector[selpos].child;
+            var isChild = selector[selpos].child;
+            var mustMatchHere = thatpos === thatStack.length - 1 || isChild;
 
             var that = thatStack[thatpos];
             var selel = selector[selpos];
             var match = true;
             for (var j = 0; j < selel.predList.length; ++j) {
                 var pred = selel.predList[j];
-                if (pred.context && !(contextHashes[thatpos][pred.context] || memberNames[thatpos] === pred.context)) {
+                var context = pred.context;
+                if (context && context !== "*" && !(contextHashes[thatpos][context] || memberNames[thatpos] === context)) {
                     match = false;
                     break;
                 }
@@ -341,7 +354,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     break;
                 }
             }
-            if (selpos === 0 && thatpos > i && mustMatchHere) {
+            if (selpos === 0 && thatpos > i && mustMatchHere && isChild) {
                 match = false; // child selector must exhaust stack completely - FLUID-5029
             }
             if (match) {
@@ -372,14 +385,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * simply <code>"fluid.viewComponent"</code> will match all viewComponents below the root.
      * @param {Boolean} flat - [Optional] <code>true</code> if the search should just be performed at top level of the component tree
      * Note that with <code>flat=true</code> this search will scan every component in the tree and may well be very slow.
+     * @return {Component[]} The list of all components matching the selector
      */
     // supported, PUBLIC API function
     fluid.queryIoCSelector = function (root, selector, flat) {
         var parsed = fluid.parseSelector(selector, fluid.IoCSSMatcher);
         var togo = [];
 
-        fluid.visitComponentsForMatching(root, {flat: flat}, function (that, thatStack, contextHashes, memberNames, i) {
-            if (fluid.matchIoCSelector(parsed, thatStack, contextHashes, memberNames, i)) {
+        fluid.visitComponentsForMatching(root, {flat: flat}, function (that, thatStack, contextHashes) {
+            if (fluid.matchIoCSelector(parsed, thatStack, contextHashes, [], 1)) {
                 togo.push(that);
             }
         });
@@ -1948,6 +1962,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             firer.removeListener = function (listener) {
                 origin.removeListener(listener);
             };
+            // To allow introspection on listeners in cases such as fluid.test.findListenerId
+            firer.originEvent = origin;
         }
         fluid.popActivity();
         return firer;

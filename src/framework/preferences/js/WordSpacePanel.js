@@ -24,7 +24,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "word spacing" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.wordSpace", {
-        gradeNames: ["fluid.prefs.panel.stepperAjuster"],
+        gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
         preferenceMap: {
             "fluid.prefs.wordSpace": {
                 "model.value": "default",

@@ -4228,8 +4228,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.subComponent.options.parentOption);
     });
 
-
-
     fluid.defaults("fluid.tests.dynamicInvoker", {
         gradeNames: ["fluid.component", "{that}.getDynamicInvoker"],
         invokers: {
@@ -4673,16 +4671,78 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("Test FLUID-5621 distributeOptions priority arbitration", function () {
+    jqUnit.test("Test FLUID-5621 distributeOptions priority arbitration and fluid.queryIoCSelector", function () {
         var advisor = fluid.tests.fluid5621global();
         var that = fluid.tests.fluid5621root();
         // all things being equal, the furthest away distribution source merges on top
         var expected = ["closest", "global", "middle", "root"];
         var options = that.child1.child2.child3.options.target;
         jqUnit.assertDeepEq("Distributed options resolved in required priority order", expected, options);
+        fluid.tests.queryIoCSelector.fixtures.forEach(function (fixture) {
+            fluid.tests.queryIoCSelector(that, fixture);
+        });
         that.destroy(); // it contains a global distribution!
         advisor.destroy();
     });
+
+    fluid.tests.queryIoCSelector = function (that, fixture) {
+        var results = fluid.queryIoCSelector(that, fixture.selector, fixture.flat);
+        var leaves = fluid.transform(results, function (result) {
+            var path = fluid.pathForComponent(result);
+            return path[path.length - 1];
+        });
+        jqUnit.assertDeepEq("Expected results for queryIoCSelector", fixture.expected, leaves);
+    };
+
+    fluid.tests.queryIoCSelector.fixtures = [{
+        selector: "child1",
+        flat:true,
+        expected: ["child1"]
+    }, {
+        selector: "child1",
+        expected: ["child1"]
+    }, {
+        selector: "child2",
+        flat:true,
+        expected: []
+    }, {
+        selector: "child2",
+        expected: ["child2"]
+    },  {
+        selector: "child3",
+        flat:true,
+        expected: []
+    }, {
+        selector: "child3",
+        expected: ["child3"]
+    }, {
+        selector: "child1 child2",
+        expected: ["child2"]
+    }, {
+        selector: "child1 child3",
+        expected: ["child3"]
+    },  {
+        selector: "child1 child2 child3",
+        expected: ["child3"]
+    },  {
+        selector: "child1 child2 child3&fluid5621advised",
+        expected: ["child3"]
+    },  {
+        selector: "child1 child2&fluid5621advised",
+        expected: []
+    }, {
+        selector: "child1 > child2",
+        expected: ["child2"]
+    }, {
+        selector: "child1 > child3",
+        expected: []
+    }, {
+        selector: "child1 > *",
+        expected: ["child2"]
+    }, {
+        selector: "child1 *",
+        expected: ["child2", "child3"]
+    }];
 
     /** FLUID-5824 tests - distances and namespace overriding for distributions **/
 
@@ -4911,4 +4971,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         freeModel.destroy();
         advisor.destroy();
     });
+
+    /** FLUID-5193: The matching form '*' in IoCSS doesn't match any subcomponents **/
+
+    fluid.defaults("fluid.tests.fluid5193root", {
+        gradeNames: ["fluid.component"],
+        components: {
+            sub1: {
+                type: "fluid.component"
+            },
+            sub2: {
+                type: "fluid.component"
+            }
+        },
+        userOption: 1,
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            removeSource: true,
+            target: "{that > *}.options.userOption"
+        }
+    });
+
+    jqUnit.test("FLUID-5193 The matching form '*' in IoCSS doesn't match any subcomponents", function () {
+        var that = fluid.tests.fluid5193root();
+
+        jqUnit.assertEquals("The distributed options has been passed down to subComponent #1", 1, that.sub1.options.userOption);
+        jqUnit.assertEquals("The distributed options has been passed down to subComponent #2", 1, that.sub2.options.userOption);
+    });
+
 })(jQuery);
