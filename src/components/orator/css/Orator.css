@@ -73,6 +73,14 @@
     border-radius: 0.2rem;
     /* Align down arrow to the beginning of the character that is first selected. */
     transform: translate(-49%);
+
+    /*
+        Force the play button to the top of the stacking order (see: https://issues.fluidproject.org/browse/FLUID-6348)
+
+        The z-index can take an integer value (https://www.w3.org/TR/CSS22/visuren.html#z-index) but a max and min are
+        not specified. Here we make use of a value equal to the JavaScript `Number.MAX_SAFE_INTEGER`
+    */
+    z-index: 9007199254740991;
 }
 
 .fl-orator-selectionReader-play:after,
