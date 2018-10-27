@@ -151,18 +151,22 @@ build-themes-Enactors(contrastThemes) {
                 border-left-color: fColor !important;
             }
 
+            // Styling for disabled elements
+            if (disabledColor) {
+                &:disabled,
+                :disabled,
+                :disabled legend,
+                input[type="button"]:disabled,
+                input[type="button"]:disabled *  {
+                    color: disabledColor !important;
+                }
+            }
+
             if (selectedFColor && selectedBColor) {
                 &::selection,
                 ::selection {
                     color: selectedFColor !important;
                     background-color: selectedBColor !important;
-                }
-            }
-
-            if (disabledColor) {
-                &:disabled,
-                :disabled {
-                    color: disabledColor !important;
                 }
             }
 
