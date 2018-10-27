@@ -68,12 +68,26 @@ input[type="submit"] {
 .select-text-input code {
     float: right;
 }
+.text-area textarea {
+    display: block;
+    margin-bottom: 1rem;
+}
 .text-area button {
     width: 10rem;
     height: 2rem;
     background-image: url("http://wiki.fluidproject.org/download/attachments/24939866/INFUSION_orange_graphic.png");
     background-size: contain;
     background-repeat: no-repeat;
+}
+.disabled-inputs ul {
+    list-style: none;
+    padding-left: 0;
+}
+.disabled-inputs li {
+    margin-bottom: 1rem;
+}
+.disabled-inputs #test-input-submit-disabled {
+    float: none;
 }
 
 /* figure styling */
