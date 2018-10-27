@@ -31,7 +31,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
             "message": "%messagePrefix/prefsEditor.json",
-
             syllabification: {
                 type: "fluid.prefs.syllabification",
                 enactor: {
