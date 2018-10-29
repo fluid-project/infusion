@@ -28,6 +28,8 @@ a:hover {
 }
 main {
     padding: 1rem 1rem 3rem;
+    /* needed for IE11 */
+    display: block;
 }
 .assortedContent-theme-basic main {
     background-color: #ffffff;
