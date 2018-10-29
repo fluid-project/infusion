@@ -111,6 +111,15 @@ input.submit {
     background-repeat: repeat-x;
 }
 
+.assortedContent-theme-basic.fl-prefsEditor-themePicker-defaultThemeLabel,
+.assortedContent-theme-basic.fl-prefsEditor-themePicker-defaultThemeLabel span,
+.assortedContent-theme-basic.fl-prefsEditor-themePicker-defaultThemeLabel .fl-crossout {
+    background-image: none !important;
+    background-color: #FFFFFF !important;
+    border-color: #000000 !important;
+    color: #000000 !important;
+}
+
 .assortedContent-theme-basic .assortedContent-content {
     background-color: white;
     margin-top: 50px;
