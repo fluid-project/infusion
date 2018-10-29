@@ -55,7 +55,7 @@ textarea {
     padding: 0.3rem;
     resize: vertical;
 }
-input[type="submit"] {
+input.submit {
     float: right;
     margin-top: 1rem;
 }
@@ -79,15 +79,16 @@ input[type="submit"] {
     background-size: contain;
     background-repeat: no-repeat;
 }
+
+.disabled-inputs {
+    margin-top: 4rem;
+}
 .disabled-inputs ul {
     list-style: none;
     padding-left: 0;
 }
 .disabled-inputs li {
     margin-bottom: 1rem;
-}
-.disabled-inputs #test-input-submit-disabled {
-    float: none;
 }
 
 /* figure styling */

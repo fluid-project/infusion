@@ -232,7 +232,7 @@
                         </tbody>
                         <tfoot><tr><td colspan=2> </td></tr></tfoot>
                     </table>
-                    <h3>Form</h3>
+                    <h3>Forms</h3>
                     <form>
                         <h4>Mid-term Exam</h4>
                         <fieldset class="radio-buttons">
@@ -291,120 +291,118 @@
                             <textarea>Please enter a simple JavaScript function to find the smallest value of an array.</textarea>
                             <button>Run Script</button>
                         </fieldset>
-                        <fieldset class="disabled-inputs">
-                            <legend>HTML Property</legend>
-                            <label for="">Enter the common property</label>
-                            <input type="text">
-                            <fieldset disabled>
-                                <legend>A fieldset</legend>
-                                <label for="test-input-disabledFieldset">test input</label>
-                                <input id="test-input-disabledFieldset" type="text" name="test" value="test">
-                            </fieldset>
-                            <fieldset>
-                                <legend>input types</legend>
-                                <ul>
-                                    <li>
-                                        <button disabled>button tag</button>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-button-disabled">input type = button</label>
-                                        <input id="test-input-button-disabled" type="button" value="button input" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-reset-disabled">input type = reset</label>
-                                        <input id="test-input-reset-disabled" type="reset" value="reset" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-submit-disabled">input type = submit</label>
-                                        <input id="test-input-submit-disabled" type="submit" value="submit" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-checkbox-disabled">input type = checkbox</label>
-                                        <input id="test-input-checkbox-disabled" type="checkbox" value="checkbox" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-radio-disabled">input type = radio</label>
-                                        <input id="test-input-radio-disabled" type="radio" value="radio" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-date-disabled">input type = date</label>
-                                        <input id="test-input-date-disabled" type="date" value="date" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-datetime-local-disabled">input type = datetime-local</label>
-                                        <input id="test-input-datetime-local-disabled" type="datetime-local" value="datetime-local" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-month-disabled">input type = month</label>
-                                        <input id="test-input-month-disabled" type="month" value="month" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-week-disabled">input type = week</label>
-                                        <input id="test-input-week-disabled" type="week" value="week" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-time-disabled">input type = time</label>
-                                        <input id="test-input-time-disabled" type="time" value="time" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-email-disabled">input type = email</label>
-                                        <input id="test-input-email-disabled" type="email" value="email" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-file-disabled">input type = file</label>
-                                        <input id="test-input-file-disabled" type="file" value="file" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-number-disabled">input type = number</label>
-                                        <input id="test-input-number-disabled" type="number" value="2" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-range-disabled">input type = range</label>
-                                        <input id="test-input-range-disabled" type="range" value="2" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-password-disabled">input type = password</label>
-                                        <input id="test-input-password-disabled" type="password" value="password" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-search-disabled">input type = search</label>
-                                        <input id="test-input-search-disabled" type="search" value="search" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-tel-disabled">input type = tel</label>
-                                        <input id="test-input-tel-disabled" type="tel" value="tel" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-text-disabled">input type = text</label>
-                                        <input id="test-input-text-disabled" type="text" value="text" disabled>
-                                    </li>
-                                    <li>
-                                        <label for="test-input-url-disabled">input type = url</label>
-                                        <input id="test-input-url-disabled" type="url" value="url" disabled>
-                                    </li>
-                                    <li>
-                                        <select disabled>
+                        <input type="submit" value="Submit answers" class="submit">
+                    </form>
+                    <form class="disabled-inputs">
+                        <h4>Disabled Inputs</h4>
+                        <fieldset disabled>
+                            <legend>A Disabled Fieldset</legend>
+                            <label for="test-input-disabledFieldset">test input</label>
+                            <input id="test-input-disabledFieldset" type="text" name="test" value="test">
+                        </fieldset>
+                        <fieldset>
+                            <legend>Input Types</legend>
+                            <ul>
+                                <li>
+                                    <button disabled>button tag</button>
+                                </li>
+                                <li>
+                                    <label for="test-input-button-disabled">input type = button</label>
+                                    <input id="test-input-button-disabled" type="button" value="button input" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-reset-disabled">input type = reset</label>
+                                    <input id="test-input-reset-disabled" type="reset" value="reset" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-submit-disabled">input type = submit</label>
+                                    <input id="test-input-submit-disabled" type="submit" value="submit" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-checkbox-disabled">input type = checkbox</label>
+                                    <input id="test-input-checkbox-disabled" type="checkbox" value="checkbox" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-radio-disabled">input type = radio</label>
+                                    <input id="test-input-radio-disabled" type="radio" value="radio" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-date-disabled">input type = date</label>
+                                    <input id="test-input-date-disabled" type="date" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-datetime-local-disabled">input type = datetime-local</label>
+                                    <input id="test-input-datetime-local-disabled" type="datetime-local" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-month-disabled">input type = month</label>
+                                    <input id="test-input-month-disabled" type="month" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-week-disabled">input type = week</label>
+                                    <input id="test-input-week-disabled" type="week" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-time-disabled">input type = time</label>
+                                    <input id="test-input-time-disabled" type="time" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-email-disabled">input type = email</label>
+                                    <input id="test-input-email-disabled" type="email" value="example@email.com" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-file-disabled">input type = file</label>
+                                    <input id="test-input-file-disabled" type="file" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-number-disabled">input type = number</label>
+                                    <input id="test-input-number-disabled" type="number" value="2" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-range-disabled">input type = range</label>
+                                    <input id="test-input-range-disabled" type="range" value="2" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-password-disabled">input type = password</label>
+                                    <input id="test-input-password-disabled" type="password" value="password" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-search-disabled">input type = search</label>
+                                    <input id="test-input-search-disabled" type="search" value="search" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-tel-disabled">input type = tel</label>
+                                    <input id="test-input-tel-disabled" type="tel" value="555-555-5555" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-text-disabled">input type = text</label>
+                                    <input id="test-input-text-disabled" type="text" value="text" disabled>
+                                </li>
+                                <li>
+                                    <label for="test-input-url-disabled">input type = url</label>
+                                    <input id="test-input-url-disabled" type="url" value="https://localhost:8081" disabled>
+                                </li>
+                                <li>
+                                    <select disabled>
+                                        <option value="opt1">option 1</option>
+                                        <option value="opt2">option 2</option>
+                                    </select>
+                                    <select>
+                                        <optgroup label="Options">
                                             <option value="opt1">option 1</option>
                                             <option value="opt2">option 2</option>
-                                        </select>
-                                        <select>
-                                            <optgroup label="Options">
-                                                <option value="opt1">option 1</option>
-                                                <option value="opt2">option 2</option>
-                                                <option value="opt3" disabled>option 3</option>
-                                            <optgroup label="Choices" disabled>
-                                                <option value="choice1">choice 1</option>
-                                                <option value="choice2">choice 2</option>
-                                                <option value="choice3" disabled>choice 3</option>
-                                        </select>
-                                    </li>
-                                    <li>
-                                        <textarea disabled>textarea</textarea>
-                                    </li>
-                                </ul>
-                            </fieldset>
+                                            <option value="opt3" disabled>option 3</option>
+                                        <optgroup label="Choices" disabled>
+                                            <option value="choice1">choice 1</option>
+                                            <option value="choice2">choice 2</option>
+                                            <option value="choice3" disabled>choice 3</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    <textarea disabled>textarea</textarea>
+                                </li>
+                            </ul>
                         </fieldset>
-                        <input type="submit" value="Submit answers">
                     </form>
                 </section>
             </article>
