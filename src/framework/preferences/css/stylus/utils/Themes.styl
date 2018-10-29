@@ -157,7 +157,11 @@ build-themes-Enactors(contrastThemes) {
                 :disabled,
                 :disabled legend,
                 input[type="button"]:disabled,
-                input[type="button"]:disabled *  {
+                input[type="button"]:disabled *,
+                input[type="reset"]:disabled,
+                input[type="reset"]:disabled *,
+                input[type="submit"]:disabled,
+                input[type="submit"]:disabled *  {
                     color: disabledColor !important;
                 }
             }
@@ -188,6 +192,10 @@ build-themes-Enactors(contrastThemes) {
             button *,
             input[type="button"],
             input[type="button"] *,
+            input[type="reset"],
+            input[type="reset"] *,
+            input[type="submit"],
+            input[type="submit"] *,
             .fl-input-button,
             .fl-input-button * {
                 color: buttonFColor !important;
@@ -384,8 +392,13 @@ build-themes-Enactors(contrastThemes) {
                 ^[0..-2] button.fl-inverted-color *,
                 input[type="button"],
                 ^[0..-2] input[type="button"].fl-inverted-color,
-                button *,
                 ^[0..-2] input[type="button"].fl-inverted-color *,
+                input[type="reset"],
+                ^[0..-2] input[type="reset"].fl-inverted-color,
+                ^[0..-2] input[type="reset"].fl-inverted-color *,
+                input[type="submit"],
+                ^[0..-2] input[type="submit"].fl-inverted-color,
+                ^[0..-2] input[type="submit"].fl-inverted-color *,
                 .fl-input-button,
                 &.fl-input-button,
                 .fl-input-button *,
