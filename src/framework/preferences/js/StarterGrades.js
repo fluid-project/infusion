@@ -65,6 +65,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "by": "fl-theme-by",
                 "yb": "fl-theme-yb",
                 "lgdg": "fl-theme-lgdg",
+                "gd": "fl-theme-gd",
                 "gw": "fl-theme-gw",
                 "bbr": "fl-theme-bbr"
             },
