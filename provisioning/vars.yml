@@ -4,9 +4,7 @@
 
 nodejs_app_name: infusion
 
-nodejs_branch: current
-
-nodejs_npm_version: 6.4.1
+nodejs_branch: lts
 
 nodejs_app_npm_packages:
   - testem
