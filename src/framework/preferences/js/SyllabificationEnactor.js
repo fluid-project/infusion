@@ -24,7 +24,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /*
         TODO:
-        - Add hyphens to dynamically added content
         - adjust to work with TTS
      */
 
@@ -61,12 +60,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             onParsedNode: null,
+            onNodeAdded: null,
             onError: null
         },
         listeners: {
             "onParsedNode.syllabify": {
                 func: "{that}.togglePresentation",
                 args: ["{arguments}.0", "{arguments}.1", "{that}.model.enabled"]
+            },
+            "onNodeAdded.syllabify": {
+                func: "{that}.parse",
+                args: ["{arguments}.0", "{that}.model.enabled"]
             }
         },
         components: {
@@ -77,6 +81,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "onParsedNode.syllabify": "{syllabification}.events.onParsedNode"
                     }
                 }
+            },
+            observer: {
+                type: "fluid.mutationObserver",
+                container: "{that}.container",
+                options: {
+                    defaultObserveConfig: {
+                        attributes: false
+                    },
+                    modelListeners: {
+                        "{syllabification}.model.enabled": {
+                            funcName: "fluid.prefs.enactor.syllabification.toggleObservation",
+                            args: ["{that}", "{change}.value"],
+                            namespace: "toggleObservation"
+                        }
+                    },
+                    listeners: {
+                        "onNodeAdded.boil": "{syllabification}.events.onNodeAdded"
+                    }
+                }
             }
         },
         members: {
@@ -84,8 +107,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         modelListeners: {
             "enabled": {
-                listener: "fluid.prefs.enactor.syllabification.parseIf",
-                args: ["{that}", "{change}.value", "{change}.oldValue"],
+                listener: "{that}.parse",
+                args: ["{that}.container", "{change}.value", "{change}.oldValue"],
                 namespace: "parse"
             }
         },
@@ -101,6 +124,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             togglePresentation: {
                 funcName: "fluid.prefs.enactor.syllabification.togglePresentation",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            },
+            parse: {
+                funcName: "fluid.prefs.enactor.syllabification.parseIf",
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             }
         }
     });
@@ -109,15 +136,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Only run the parsing if the syllabification is to be enabled, or was previously enabled.
      * That is, the parsing should not be run when the component is instantiated with syllabifcaiton disabled.
      *
+     * @param {Component} that - an instance of `fluid.mutationObserver`
+     * @param {Boolean} state - if `true` observe, else disconnect the observer
+     */
+    fluid.prefs.enactor.syllabification.toggleObservation = function (that, state) {
+        if (state) {
+            that.observe();
+        } else {
+            that.disconnect();
+        }
+    };
+
+    /**
+     * Only run the parsing if the syllabification is to be enabled, or was previously enabled.
+     * That is, the parsing should not be run when the component is instantiated with syllabifcation disabled.
+     *
      * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {jQuery|DomElement} elm - the DOM node to parse
      * @param {Boolean} newValue - current model state
      * @param {Boolean} oldValue - previous model state
      */
-    fluid.prefs.enactor.syllabification.parseIf = function (that, newValue, oldValue) {
+    fluid.prefs.enactor.syllabification.parseIf = function (that, elm, newValue, oldValue) {
+        elm = fluid.unwrap(elm);
+        elm = elm.nodeType === Node.ELEMENT_NODE ? $(elm) : $(elm.parentNode);
         if (newValue || oldValue) {
-            // TODO: see if we can improve this so that it doesn't check every time we change the setting
-            var lang = that.container.closest("[lang]").attr("lang");
-            that.parser.parse(that.container, lang);
+            var lang = elm.closest("[lang]").attr("lang");
+            that.parser.parse(elm, lang);
         }
     };
 
