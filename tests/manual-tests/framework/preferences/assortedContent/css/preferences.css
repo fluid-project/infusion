@@ -28,6 +28,8 @@ a:hover {
 }
 main {
     padding: 1rem 1rem 3rem;
+    /* needed for IE11 */
+    display: block;
 }
 .assortedContent-theme-basic main {
     background-color: #ffffff;
@@ -55,7 +57,7 @@ textarea {
     padding: 0.3rem;
     resize: vertical;
 }
-input[type="submit"] {
+input.submit {
     float: right;
     margin-top: 1rem;
 }
@@ -68,12 +70,27 @@ input[type="submit"] {
 .select-text-input code {
     float: right;
 }
+.text-area textarea {
+    display: block;
+    margin-bottom: 1rem;
+}
 .text-area button {
     width: 10rem;
     height: 2rem;
     background-image: url("http://wiki.fluidproject.org/download/attachments/24939866/INFUSION_orange_graphic.png");
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+.disabled-inputs {
+    margin-top: 4rem;
+}
+.disabled-inputs ul {
+    list-style: none;
+    padding-left: 0;
+}
+.disabled-inputs li {
+    margin-bottom: 1rem;
 }
 
 /* figure styling */
@@ -92,6 +109,15 @@ input[type="submit"] {
     background-image: url("../images/bg-grad.png");
     background-position: left top;
     background-repeat: repeat-x;
+}
+
+.assortedContent-theme-basic.fl-prefsEditor-themePicker-defaultThemeLabel,
+.assortedContent-theme-basic.fl-prefsEditor-themePicker-defaultThemeLabel span,
+.assortedContent-theme-basic.fl-prefsEditor-themePicker-defaultThemeLabel .fl-crossout {
+    background-image: none !important;
+    background-color: #FFFFFF !important;
+    border-color: #000000 !important;
+    color: #000000 !important;
 }
 
 .assortedContent-theme-basic .assortedContent-content {
