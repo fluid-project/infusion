@@ -59,12 +59,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             enabled: false
         },
         events: {
-            onParsedNode: null,
+            onParsedTextNode: null,
             onNodeAdded: null,
             onError: null
         },
         listeners: {
-            "onParsedNode.syllabify": {
+            "onParsedTextNode.syllabify": {
                 func: "{that}.togglePresentation",
                 args: ["{arguments}.0", "{arguments}.1", "{that}.model.enabled"]
             },
@@ -75,10 +75,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         components: {
             parser: {
-                type: "fluid.domReader.parser",
+                type: "fluid.textNodeParser",
                 options: {
                     listeners: {
-                        "onParsedNode.syllabify": "{syllabification}.events.onParsedNode"
+                        "onParsedTextNode.syllabify": "{syllabification}.events.onParsedTextNode"
                     }
                 }
             },
@@ -160,8 +160,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         elm = fluid.unwrap(elm);
         elm = elm.nodeType === Node.ELEMENT_NODE ? $(elm) : $(elm.parentNode);
         if (newValue || oldValue) {
-            var lang = elm.closest("[lang]").attr("lang");
-            that.parser.parse(elm, lang);
+            that.parser.parse(elm);
         }
     };
 
@@ -298,97 +297,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.apply(node, lang);
         } else {
             that.remove(node);
-        }
-    };
-
-    /*
-     * TODO: Combine the parser with the one from the Orator and make a generalized version to use in both places.
-     */
-
-    /*******************************************************************************
-     * fluid.domReader.parser
-     *
-     * Parses the text from the DOM into a format that is suitable for reading back
-     * by the fluid.domReader
-     *******************************************************************************/
-
-    fluid.defaults("fluid.domReader.parser", {
-        gradeNames: ["fluid.component"],
-        events: {
-            onParsedNode: null
-        },
-        invokers: {
-            parse: {
-                funcName: "fluid.domReader.parser.parse",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"]
-            },
-            hasTextToRead: "fluid.domReader.parser.hasTextToRead",
-            isWord: "fluid.domReader.parser.isWord"
-        }
-    });
-
-    /**
-     * Tests if a string is a word, that is it has a value and is not only whitespace.
-     * inspired by https://stackoverflow.com/a/2031143
-     *
-     * @param {String} str - the String to test
-     *
-     * @return {Boolean} - `true` if a word, `false` otherwise.
-     */
-    fluid.domReader.parser.isWord = function (str) {
-        return fluid.isValue(str) && /\S/.test(str);
-    };
-
-    /**
-     * Determines if there is text in an element that should be read.
-     * Will return false in the following conditions:
-     * - elm is falsey (undefined, null, etc.)
-     * - elm's offsetHeight is 0 (e.g. display none set on itself or its parent)
-     * - elm has no text or only whitespace
-     * - elm or its parent has `aria-hidden="true"` set.
-     *
-     * NOTE: Text added by pseudo elements (e.g. :before, :after) are not considered.
-     * NOTE: This method is not supported in IE 11 because innerText returns the text for some hidden elements
-     *       that is inconsistent with modern browsers.
-     *
-     * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
-     *
-     * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
-     *                     (See rules above)
-     */
-    fluid.domReader.parser.hasTextToRead = function (elm) {
-        elm = fluid.unwrap(elm);
-
-        return elm &&
-               !!elm.offsetHeight &&
-               fluid.domReader.parser.isWord(elm.innerText);
-    };
-
-    /**
-     * Recursively parses a DOM element and it's sub elements to construct an array of data points representing the
-     * words and space between the words. This data structure provides the means for locating text to highlight as the
-     * self voicing engine runs.
-     * NOTE: consecutive whitespace is collapsed to the first whitespace character.
-     * NOTE: hidden text is skipped.
-     *
-     * @param {Component} that - the component
-     * @param {jQuery|DomElement} elm - the DOM node to parse
-     * @param {String} lang - a valid BCP 47 language code.
-     */
-    fluid.domReader.parser.parse = function (that, elm, lang) {
-        elm = fluid.unwrap(elm);
-
-        if (that.hasTextToRead(elm)) {
-            var childNodes = elm.childNodes;
-            var elementLang = elm.getAttribute("lang") || lang;
-
-            $.each(childNodes, function (childIndex, childNode) {
-                if (childNode.nodeType === Node.TEXT_NODE) {
-                    that.events.onParsedNode.fire(childNode, elementLang);
-                } else if (childNode.nodeType === Node.ELEMENT_NODE) {
-                    fluid.domReader.parser.parse(that, childNode, elementLang);
-                }
-            });
         }
     };
 

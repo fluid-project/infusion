@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Text Node Parser tests</title>
+
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/framework/core/js/TextNodeParser.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <script src="../js/TextNodeParserTests.js"></script>
+    </head>
+
+    <body id="body">
+        <h1 id="qunit-header">Text Node Parser tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <!-- Test Markup -->
+
+        <div class="flc-textNodeParser-test-checkDOMText">
+            <span style="display: none;" class="flc-textNodeParser-test-checkDOMText-none">
+                <span class="flc-textNodeParser-test-checkDOMText-none-nested">Display None</span>
+            </span>
+            <span style="visibility: hidden;" class="flc-textNodeParser-test-checkDOMText-visHidden">
+                <span class="flc-textNodeParser-test-checkDOMText-visHidden-nested">Visiblity Hidden</span>
+            </span>
+            <span hidden class="flc-textNodeParser-test-checkDOMText-hidden">
+                <span class="flc-textNodeParser-test-checkDOMText-hidden-nested">Hidden attribute</span>
+            </span>
+            <span aria-hidden=true class="flc-textNodeParser-test-checkDOMText-ariaHiddenTrue">
+                <span class="flc-textNodeParser-test-checkDOMText-ariaHiddenTrue-nested">aria-hidden true</span>
+            </span>
+            <span aria-hidden=false class="flc-textNodeParser-test-checkDOMText-ariaHiddenFalse">
+                <span class="flc-textNodeParser-test-checkDOMText-ariaHiddenFalse-nested">aria-hidden false</span>
+            </span>
+            <span class="flc-textNodeParser-test-checkDOMText-hiddenA11y fl-hidden-accessible">
+                <span class="flc-textNodeParser-test-checkDOMText-hiddenA11y-nested">Hidden accessible</span>
+            </span>
+            <span class="flc-textNodeParser-test-checkDOMText-nestedNone">
+                <span style="display: none;">Nested Display None</span>
+            </span>
+            <span class="flc-textNodeParser-test-checkDOMText-visible">Visible</span>
+            <span class="flc-textNodeParser-test-checkDOMText-empty"></span>
+            <script class="flc-textNodeParser-test-checkDOMText-script">
+                // to test if text from script tags are read.
+                var div1 = $("<div>");
+            </script>
+            <span class="flc-textNodeParser-test-checkDOMText-nestedScript">
+                <script>
+                    // to test if text from script tags are read.
+                    var div2 = $("<div>");
+                </script>
+            </span>
+        </div>
+
+        <div class="flc-textNodeParser-test-lang-none">
+            <div lang="en-CA">
+                <div class="flc-textNodeParser-test-lang-self" lang="en-US"></div>
+                <div class="flc-textNodeParser-test-lang-parent"></div>
+            </div>
+        </div>
+
+        <div class="flc-textNodeParser-test" lang="en-CA">
+            <p>
+                Text to test. Including <strong lang="en">nested <span>text</span> nodes<strong> to verify proper parsing.
+            </p>
+        </div>
+
+    </body>
+</html>
