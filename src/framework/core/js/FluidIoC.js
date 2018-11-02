@@ -1209,8 +1209,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return typeName.replace(/\./g, "_");
     };
 
+    /** Begin the process of expanding component options. Generates the core ``mergeBlocks'' array which drives the expansion process. Has
+     * various other side-effects, such as hoisting the "container" option, adding framework builtins to the supplied mergePolicy, and computing
+     * the priorities of the merge blocks, as a result of generally poor factoring in this area and work in progress.
+     * @param mergePolicy {CompiledMergePolicy} A "compiled" mergePolicy object as output from `fluid.compileMergePolicy`
+     * @param potentia {Potentia} The `create` potentia responsible for this component construction
+     * @param lightMerge {LightMerge} The lightly merged options for the component
+     * @param that {Component} The component in progress
+     * @return {MergeBlock[]} An array of `MergeBlock` structures ready to mount in the `shadow.mergeOptions` structure.
+     */
     // This is the initial entry point from the non-IoC side reporting the first presence of a new component - called from fluid.mergeComponentOptions
-    // Returns an array of mergeBlocks
     fluid.expandComponentOptions = function (mergePolicy, potentia, lightMerge, that) {
         var toMerge = lightMerge.toMerge;
         var container = fluid.lightMergeValue(toMerge, "container");
@@ -1410,14 +1418,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return value;
     };
 
+    /** @typedef {Object} LightMerge
+     *    @property {Boolean} isInjected - whether these designate an injected component
+     *    @property {String} type - the component's type if it is concrete
+     *    @property {String} createOnEvent - the component's "createOnEvent" if any record set it
+     *    @property {OptionsRecords[]} toMerge - Array of component options to be merged
+     */
+
     /** Perform a "light merge" of a set of options records in order to immediately discover the type name if they designate a
      * concrete component or whether they designate an injected component.
      * @param {OptionsRecords[]} records - Array of component options records as held in {Potentia}.records
-     * @return {LightMergeRecords} A structure holding
-     *     {Boolean} isInjected - whether these designate an injected component
-     *     {String} type - the component's type if it is concrete
-     *     {String} createOnEvent - the component's "createOnEvent" if any record set it
-     *     {OptionsRecords[]} toMerge - Array of component options to be merged
+     * @return {LightMerge} A structure holding the lightly merged options records
      */
     fluid.lightMergeRecords = function (records) {
         var togo = {
@@ -1471,7 +1482,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * without creating events or (hopefully) any side-effects
      *
      * @param {Potentia} potentia - Creation potentia for the component
-     * @param {LightMergeRecords} lightMerge - A set of lightly merged component options as returned from `fluid.lightMergeRecords`
+     * @param {LightMerge} lightMerge - A set of lightly merged component options as returned from `fluid.lightMergeRecords`
      * @return {Component|Null} A component shell which has begun the process of construction, or `null` if the component
      * has been configured away by resolving to the type "fluid.emptySubcomponent"
      */

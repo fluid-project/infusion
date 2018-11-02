@@ -2927,6 +2927,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expectFrameworkDiagnostic("Attempt to invoke creator via invoker", fluid.tests.circular.strategy, "invoker");
     });
 
+    /** FLUID-5668: Mouse droppings when merging member holding expander reference **/
+
     fluid.defaults("fluid.tests.droppingsRoot", {
         gradeNames: "fluid.component",
         topRecord: {
@@ -2955,6 +2957,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.droppingsRoot();
         var member = that.child.mergingMember;
         jqUnit.assertNoValue("Absence of string mouse droppings in reference holder", member[0]);
+    });
+
+    /** FLUID-5668: Ability to suppress merging for member using mergePolicy **/
+
+    fluid.defaults("fluid.tests.FLUID5668nomerge", {
+        gradeNames: "fluid.component",
+        mergePolicy: {
+            "members.noMergeMember": "replace"
+        },
+        members: {
+            noMergeMember: "@expand:fluid.fail(Exploding member should not be evaluated)"
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID5668nomergeDerived", {
+        gradeNames: "fluid.tests.FLUID5668nomerge",
+        members: {
+            noMergeMember: 3
+        }
+    });
+
+    jqUnit.test("FLUID-5668: Ability to defeat merging for members", function () {
+        var that = fluid.tests.FLUID5668nomergeDerived();
+        jqUnit.assertEquals("Successfully overridden merging member declaration", 3, that.noMergeMember);
     });
 
     /** FLUID-5694: Circularity in component injection **/

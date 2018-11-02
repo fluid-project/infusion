@@ -2112,11 +2112,38 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.emptyPolicy = fluid.freezeRecursive({});
+    /** Dereference an element of a `CompiledMergePolicy` armoured with the `*` key, ensuring to return an object
+     * which can be tested for mergePolicy properties such as `replace` without failure. This function always returns
+     * an object even if `policy` or `policy.*` is empty.
+     * @param {Object} policy - A trunk member of a `CompiledMergePolicy`
+     * @return {Object} A leaf object which can be property-tested for a builtin mergePolicy.
+     */
     // unsupported, NON-API function
     fluid.derefMergePolicy = function (policy) {
         return (policy ? policy["*"] : fluid.emptyPolicy) || fluid.emptyPolicy;
     };
 
+    /** @typedef {Object} CompiledMergePolicyReturn
+     * @property {Object} defaultValues - An map of options paths to IoC references holding the path elsewhere within
+     *    the options structure from where the default value for them is to be taken
+     * @property {CompiledMergePolicy} builtins - A structure isomorphic to the options structure, with node-specific
+     *    metadata held in a leaf child named "*". This metadata holds a map of builtin mergePolicies to "*" as well
+     *    as possibly a function member named `func`.
+     * @property {Boolean} [hasDefaults] - `true` if the `defaultValues` object has any members
+     */
+
+    /** Accepts a mergePolicy as encoded in a component's options and outputs a "compiled" variant which is more suited
+     * to random structure-directed access. This is isomorphic to the options structure itself, with node-specific metadata
+     * housed in a leaf child named "*". Function policies will be attached to a leaf member named `func`, and
+     * "default value merge policies" (references to other option paths) will be converted into IoC self-references
+     * beginning with `{that}.options`.
+     * @param {Object} mergePolicy - The `mergePolicy` options area of a component
+     * @return {CompiledMergePolicyReturn} - Holds members:
+     * A CompiledMergePolicy object housing the "compiled" rendering of the merge policy, in the member `builtins` and
+     * any dereferenced default value policies in the member `defaultValues`
+     */
+    // Main entry point is in fluid.mergeComponentOptions
+    // Note that there is currently no support for other than flat mergePolicies
     // unsupported, NON-API function
     fluid.compileMergePolicy = function (mergePolicy) {
         var builtins = {}, defaultValues = {};
@@ -2161,7 +2188,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     // unsupported, NON-API function
-    fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, i, segs) {
+    fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, newPolicyHolder, i, segs) {
         var togo = thisTarget;
 
         var primitiveTarget = fluid.isPrimitive(thisTarget);
@@ -2176,7 +2203,7 @@ var fluid = fluid || fluid_3_0_0;
             } else {
                 sources[j] = undefined;
                 if (newPolicy.func) {
-                    togo = newPolicy.func.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
+                    togo = newPolicy.func.call(null, thisTarget, thisSource, newPolicyHolder, segs, i);
                 } else {
                     togo = thisSource;
                 }
@@ -2308,7 +2335,7 @@ var fluid = fluid || fluid_3_0_0;
                         }
                         else {
                             // write this in early, since early expansions may generate a trunk object which is written in to by later ones
-                            thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+                            thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, newPolicyHolder, i, segs, options);
                             if (target !== fluid.inEvaluationMarker) {
                                 target[name] = thisTarget;
                             }
@@ -2390,6 +2417,10 @@ var fluid = fluid || fluid_3_0_0;
         return block;
     };
 
+    /** Construct the core of the `mergeOptions` structure responsible for evaluating merged options.
+     * This will eventually be housed in the shadow as `shadow.mergeOptions`.
+     * The main entry point is `fluid.mergeComponentOptions` which will add other elements such as `mergeBlocks`
+     */
     // unsupported, NON-API function
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
         // note - we close over the supplied policy as a shared object reference - it will be updated during discovery
@@ -2644,12 +2675,15 @@ var fluid = fluid || fluid_3_0_0;
     fluid.mergingArray = function () {};
     fluid.mergingArray.prototype = [];
 
-    // Defer all evaluation of all nested members to resolve FLUID-5668
-    fluid.deferringMergePolicy = function (target, source) {
+    // Defer all evaluation of all nested members to hack FLUID-5668
+    fluid.deferringMergePolicy = function (target, source, mergePolicyHolder) {
         target = target || {};
         fluid.each(source, function (oneSource, key) {
             if (!target[key]) {
                 target[key] = new fluid.mergingArray();
+            }
+            if (fluid.derefMergePolicy(mergePolicyHolder[key]).replace) {
+                target[key].length = 0;
             }
             if (oneSource instanceof fluid.mergingArray) {
                 target[key].push.apply(target[key], oneSource);
@@ -2702,7 +2736,7 @@ var fluid = fluid || fluid_3_0_0;
         components: {
             noexpand: true,
             // We use this dim mergePolicy since i) there is enough room in the records for provenance information, and
-            // ii) noone can try to consume this, e.g. to find type/createOnEvent until it hits a potentia anyway
+            // ii) noone can try to consume this, e.g. to find type/createOnEvent before it hits a potentia anyway
             func: fluid.deferringMergePolicy
         },
         dynamicComponents: {
