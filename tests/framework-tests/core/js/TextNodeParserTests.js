@@ -184,10 +184,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.test("Test fluid.textNodeParser", function () {
-            var that = fluid.tests.textNodeParser();
+            jqUnit.expect(1);
+            var that = fluid.tests.textNodeParser({
+                listeners: {
+                    "afterParse.test": {
+                        listener: function (that) {
+                            jqUnit.assertDeepEq("The DOM structure should have been parsed correctly.", fluid.tests.textNodeParser.parsed, that.record);
+                        },
+                        args: ["{that}"]
+                    }
+                }
+            });
             that.parse($(".flc-textNodeParser-test"));
-
-            jqUnit.assertDeepEq("The DOM structure should have been parsed correctly.", fluid.tests.textNodeParser.parsed, that.record);
         });
 
     });

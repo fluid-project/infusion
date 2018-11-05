@@ -23,12 +23,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.textNodeParser", {
         gradeNames: ["fluid.component"],
         events: {
-            onParsedTextNode: null
+            onParsedTextNode: null,
+            afterParse: null
         },
         invokers: {
             parse: {
                 funcName: "fluid.textNodeParser.parse",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{that}.events.afterParse.fire"]
             },
             hasTextToRead: "fluid.textNodeParser.hasTextToRead",
             isWord: "fluid.textNodeParser.isWord",
@@ -106,8 +107,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Component} that - an instance of `fluid.textNodeParser`
      * @param {jQuery|DomElement} elm - the DOM node to parse
      * @param {String} lang - a valid BCP 47 language code.
+     * @param {Event} afterParseEvent - the event to fire after parsing has completed.
      */
-    fluid.textNodeParser.parse = function (that, elm, lang) {
+    fluid.textNodeParser.parse = function (that, elm, lang, afterParseEvent) {
         elm = fluid.unwrap(elm);
         lang = lang || that.getLang(elm);
 
@@ -119,9 +121,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (childNode.nodeType === Node.TEXT_NODE) {
                     that.events.onParsedTextNode.fire(childNode, elementLang, childIndex);
                 } else if (childNode.nodeType === Node.ELEMENT_NODE) {
-                    fluid.textNodeParser.parse(that, childNode, elementLang, childIndex);
+                    fluid.textNodeParser.parse(that, childNode, elementLang);
                 }
             });
+        }
+
+        if (afterParseEvent) {
+            afterParseEvent(that);
         }
     };
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Syllabification Enactor Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/lib/hyphen/hyphen.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidPromises.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script src="../../../../src/framework/core/js/MutationObserver.js"></script>
+        <script src="../../../../src/framework/core/js/TextNodeParser.js"></script>
+        <script src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script src="../../../../src/framework/preferences/js/Enactors.js"></script>
+
+        <script src="../../../../src/framework/preferences/js/SyllabificationEnactor.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script src="../js/SyllabificationEnactorTests.js"></script>
+
+    </head>
+
+    <body>
+        <h1 id="qunit-header">Syllabification Enactor Test Suite</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+
+        <div class="flc-syllabification" lang="en-US">
+            <p class="flc-syllabification-parentLang">Climate changes are underway in the United States and are projected to grow.</p>
+            <p class="flc-syllabification-otherRegion" lang="en-gb">Climate changes are underway in the United States and are projected to grow.</p>
+            <p class="flc-syllabification-generic" lang="en">Climate changes are underway in the United States and are projected to grow.</p>
+            <p class="flc-syllabification-fallback" lang="en-CA">Climate changes are underway in the United States and are projected to grow.</p>
+            <p class="flc-syllabification-notAvailable" lang="es">Los cambios climáticos están en marcha en los Estados Unidos y se prevé que crezcan.</p>
+        </div>
+    </body>
+
+</html>

@@ -25,6 +25,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*
         TODO:
         - adjust to work with TTS
+        - look into issue with word-space enactor
+        - add message bundle localizations for the panel
      */
 
     /*
@@ -59,17 +61,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             enabled: false
         },
         events: {
+            afterParse: null,
+            afterSyllabification: null,
             onParsedTextNode: null,
             onNodeAdded: null,
             onError: null
         },
         listeners: {
+            "afterParse.waitForHyphenators": {
+                listener: "fluid.prefs.enactor.syllabification.waitForHyphenators",
+                args: ["{that}"]
+            },
             "onParsedTextNode.syllabify": {
-                func: "{that}.togglePresentation",
+                listener: "{that}.togglePresentation",
                 args: ["{arguments}.0", "{arguments}.1", "{that}.model.enabled"]
             },
             "onNodeAdded.syllabify": {
-                func: "{that}.parse",
+                listener: "{that}.parse",
                 args: ["{arguments}.0", "{that}.model.enabled"]
             }
         },
@@ -78,7 +86,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 type: "fluid.textNodeParser",
                 options: {
                     listeners: {
-                        "onParsedTextNode.syllabify": "{syllabification}.events.onParsedTextNode"
+                        "afterParse.boil": "{syllabification}.events.afterParse",
+                        "onParsedTextNode.boil": "{syllabification}.events.onParsedTextNode"
                     }
                 }
             },
@@ -92,6 +101,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     modelListeners: {
                         "{syllabification}.model.enabled": {
                             funcName: "fluid.prefs.enactor.syllabification.toggleObservation",
+                            priority: "before:parse",
                             args: ["{that}", "{change}.value"],
                             namespace: "toggleObservation"
                         }
@@ -148,6 +158,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * Wait for all hyphenators to be resolved. After they are resolved the `afterSyllabification` event is fired.
+     * If any of the hyphenator promises is rejected, the `onError` event is fired instead.
+     *
+     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     *
+     * @return {Promise} - returns the sequence promise; which is constructed from the hyphenator promises.
+     */
+    fluid.prefs.enactor.syllabification.waitForHyphenators = function (that) {
+        var hyphenatorPromises = fluid.values(that.hyphenators);
+        var promise = fluid.promise.sequence(hyphenatorPromises);
+        promise.then(function () {
+            that.events.afterSyllabification.fire();
+        }, that.events.onError.fire);
+        return promise;
+    };
+
+    /**
      * Only run the parsing if the syllabification is to be enabled, or was previously enabled.
      * That is, the parsing should not be run when the component is instantiated with syllabifcation disabled.
      *
@@ -187,7 +214,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Creates a hyphenator instance making use of the pattern supplied in the config. The config also specifies the
-     * required JavaScript file for the pattern, which is injected into the Document.
+     * required JavaScript file for the pattern, which is injected into the Document. If the pattern file cannot be
+     * loaded, the onError event is fired.
      *
      * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
      * @param {Object} config - the hyphenator configuration containing the `file` path and `pattern` name to use when
@@ -195,7 +223,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Options} options - options for creating the hyphenator. Typically this is the 'hyphenChar'.
      *
      * @return {Promise} - If a hyphenator is successfully created, the promise is resolved with it. Otherwise it is
-     *                     rejected.
+     *                     resolved with undefined and the `onError` event fired.
      */
     fluid.prefs.enactor.syllabification.createHyphenator = function (that, config, options) {
         var promise = fluid.promise();
@@ -205,7 +233,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         injectPromise.then(function () {
             var hyphenator = createHyphenator(fluid.getGlobalValue(config.pattern), options);
             promise.resolve(hyphenator);
-        }, promise.reject);
+        }, function (jqXHR, textStatus, errorThrown) {
+            that.events.onError.fire(
+                "The pattern file \"" + src + "\" could not be loaded.",
+                jqXHR,
+                textStatus,
+                errorThrown
+            );
+            // If the pattern file could not be loaded resolve the promise with out a hyphenator (undefined).
+            promise.resolve();
+        });
         return promise;
     };
 
@@ -216,15 +253,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * When creating a hyphenator, it first checks if there is configuration for the specified `lang`. If that fails,
      * it attempts to fall back to a less specific localization.
      *
-     * Any errors, either searching for an available language configuration or creating the hyphenator, will reject the
-     * promise and trigger an `onError` event.
-     *
      * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `langConfigs`) option.
      *
      * @return {Promise} - returns a promise. If a hyphenator is successfully created, it is resolved with it.
-     *                     Otherwise, it is rejected.
+     *                     Otherwise, it resolves with undefined.
      */
     fluid.prefs.enactor.syllabification.getHyphenator = function (that, lang) {
         var promise = fluid.promise();
@@ -236,9 +270,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.promise.follow(existing, promise);
             return promise;
         }
-
-        // Only fire the error once per rejected promise
-        promise.then(fluid.identity, that.events.onError.fire);
 
         // Attempt to create an appropriate hyphenator
         var hyphenatorPromise;
@@ -267,8 +298,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.promise.follow(hyphenatorPromise, promise);
         } else {
             hyphenatorPromise = promise;
-            // Reject the promise if there no available patterns to match the specified language.
-            promise.reject({message: fluid.stringTemplate(that.options.strings.languageUnavailable, {lang: lang})});
+            // If there no available patterns to match the specified language, resolve the promise with out a
+            // hyphenator (undefined).
+            promise.resolve();
         }
 
         that.hyphenators[lang] = hyphenatorPromise;
@@ -279,7 +311,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.enactor.syllabification.syllabify = function (that, node, lang) {
         var hyphenatorPromise = fluid.prefs.enactor.syllabification.getHyphenator(that, lang);
         hyphenatorPromise.then(function (hyphenator) {
-            node.textContent = hyphenator(node.textContent);
+            if (hyphenator) {
+                node.textContent = hyphenator(node.textContent);
+            }
         });
     };
 
@@ -315,59 +349,59 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         langConfigs: {
             af: {
                 pattern: "hyphenationPatternsAf",
-                file: "%patternPrefix/af.js"
+                file: "%patternPrefix/patterns/af.js"
             },
             as: {
                 pattern: "hyphenationPatternsAs",
-                file: "%patternPrefix/as.js"
+                file: "%patternPrefix/patterns/as.js"
             },
             bg: {
                 pattern: "hyphenationPatternsBg",
-                file: "%patternPrefix/bg.js"
+                file: "%patternPrefix/patterns/bg.js"
             },
             bn: {
                 pattern: "hyphenationPatternsBn",
-                file: "%patternPrefix/bn.js"
+                file: "%patternPrefix/patterns/bn.js"
             },
             ca: {
                 pattern: "hyphenationPatternsCa",
-                file: "%patternPrefix/ca.js"
+                file: "%patternPrefix/patterns/ca.js"
             },
             cop: {
                 pattern: "hyphenationPatternsCop",
-                file: "%patternPrefix/cop.js"
+                file: "%patternPrefix/patterns/cop.js"
             },
             cs: {
                 pattern: "hyphenationPatternsCs",
-                file: "%patternPrefix/cs.js"
+                file: "%patternPrefix/patterns/cs.js"
             },
             cu: {
                 pattern: "hyphenationPatternsCu",
-                file: "%patternPrefix/cu.js"
+                file: "%patternPrefix/patterns/cu.js"
             },
             cy: {
                 pattern: "hyphenationPatternsCy",
-                file: "%patternPrefix/cy.js"
+                file: "%patternPrefix/patterns/cy.js"
             },
             da: {
                 pattern: "hyphenationPatternsDa",
-                file: "%patternPrefix/da.js"
+                file: "%patternPrefix/patterns/da.js"
             },
             de: {
                 pattern: "hyphenationPatternsDe",
-                file: "%patternPrefix/de.js"
+                file: "%patternPrefix/patterns/de.js"
             },
             "de-ch": {
                 pattern: "hyphenationPatternsDeCh",
-                file: "%patternPrefix/de-ch.js"
+                file: "%patternPrefix/patterns/de-ch.js"
             },
             "el-monoton": {
                 pattern: "hyphenationPatternsElMonoton",
-                file: "%patternPrefix/el-monoton.js"
+                file: "%patternPrefix/patterns/el-monoton.js"
             },
             "el-polyton": {
                 pattern: "hyphenationPatternsElPolyton",
-                file: "%patternPrefix/el-polyton.js"
+                file: "%patternPrefix/patterns/el-polyton.js"
             },
             en: {
                 pattern: "hyphenationPatternsEnUs",
@@ -383,239 +417,239 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             eo: {
                 pattern: "hyphenationPatternsEo",
-                file: "%patternPrefix/eo.js"
+                file: "%patternPrefix/patterns/eo.js"
             },
             es: {
                 pattern: "hyphenationPatternsEs",
-                file: "%patternPrefix/es.js"
+                file: "%patternPrefix/patterns/es.js"
             },
             et: {
                 pattern: "hyphenationPatternsEt",
-                file: "%patternPrefix/et.js"
+                file: "%patternPrefix/patterns/et.js"
             },
             eu: {
                 pattern: "hyphenationPatternsEu",
-                file: "%patternPrefix/eu.js"
+                file: "%patternPrefix/patterns/eu.js"
             },
             fi: {
                 pattern: "hyphenationPatternsFi",
-                file: "%patternPrefix/fi.js"
+                file: "%patternPrefix/patterns/fi.js"
             },
             fr: {
                 pattern: "hyphenationPatternsFr",
-                file: "%patternPrefix/fr.js"
+                file: "%patternPrefix/patterns/fr.js"
             },
             fur: {
                 pattern: "hyphenationPatternsFur",
-                file: "%patternPrefix/fur.js"
+                file: "%patternPrefix/patterns/fur.js"
             },
             ga: {
                 pattern: "hyphenationPatternsGa",
-                file: "%patternPrefix/ga.js"
+                file: "%patternPrefix/patterns/ga.js"
             },
             gl: {
                 pattern: "hyphenationPatternsGl",
-                file: "%patternPrefix/gl.js"
+                file: "%patternPrefix/patterns/gl.js"
             },
             grc: {
                 pattern: "hyphenationPatternsGrc",
-                file: "%patternPrefix/grc.js"
+                file: "%patternPrefix/patterns/grc.js"
             },
             gu: {
                 pattern: "hyphenationPatternsGu",
-                file: "%patternPrefix/gu.js"
+                file: "%patternPrefix/patterns/gu.js"
             },
             hi: {
                 pattern: "hyphenationPatternsHi",
-                file: "%patternPrefix/hi.js"
+                file: "%patternPrefix/patterns/hi.js"
             },
             hr: {
                 pattern: "hyphenationPatternsHr",
-                file: "%patternPrefix/hr.js"
+                file: "%patternPrefix/patterns/hr.js"
             },
             hsb: {
                 pattern: "hyphenationPatternsHsb",
-                file: "%patternPrefix/hsb.js"
+                file: "%patternPrefix/patterns/hsb.js"
             },
             hu: {
                 pattern: "hyphenationPatternsHu",
-                file: "%patternPrefix/hu.js"
+                file: "%patternPrefix/patterns/hu.js"
             },
             hy: {
                 pattern: "hyphenationPatternsHy",
-                file: "%patternPrefix/hy.js"
+                file: "%patternPrefix/patterns/hy.js"
             },
             ia: {
                 pattern: "hyphenationPatternsIa",
-                file: "%patternPrefix/ia.js"
+                file: "%patternPrefix/patterns/ia.js"
             },
             id: {
                 pattern: "hyphenationPatternsId",
-                file: "%patternPrefix/id.js"
+                file: "%patternPrefix/patterns/id.js"
             },
             is: {
                 pattern: "hyphenationPatternsIs",
-                file: "%patternPrefix/is.js"
+                file: "%patternPrefix/patterns/is.js"
             },
             it: {
                 pattern: "hyphenationPatternsIt",
-                file: "%patternPrefix/it.js"
+                file: "%patternPrefix/patterns/it.js"
             },
             ka: {
                 pattern: "hyphenationPatternsKa",
-                file: "%patternPrefix/ka.js"
+                file: "%patternPrefix/patterns/ka.js"
             },
             kmr: {
                 pattern: "hyphenationPatternsKmr",
-                file: "%patternPrefix/kmr.js"
+                file: "%patternPrefix/patterns/kmr.js"
             },
             kn: {
                 pattern: "hyphenationPatternsKn",
-                file: "%patternPrefix/kn.js"
+                file: "%patternPrefix/patterns/kn.js"
             },
             la: {
                 pattern: "hyphenationPatternsLa",
-                file: "%patternPrefix/la.js"
+                file: "%patternPrefix/patterns/la.js"
             },
             "la-classic": {
                 pattern: "hyphenationPatternsLaClassic",
-                file: "%patternPrefix/la-classic.js"
+                file: "%patternPrefix/patterns/la-classic.js"
             },
             "la-liturgic": {
                 pattern: "hyphenationPatternsLaLiturgic",
-                file: "%patternPrefix/la-liturgic.js"
+                file: "%patternPrefix/patterns/la-liturgic.js"
             },
             lt: {
                 pattern: "hyphenationPatternsLt",
-                file: "%patternPrefix/lt.js"
+                file: "%patternPrefix/patterns/lt.js"
             },
             lv: {
                 pattern: "hyphenationPatternsLv",
-                file: "%patternPrefix/lv.js"
+                file: "%patternPrefix/patterns/lv.js"
             },
             ml: {
                 pattern: "hyphenationPatternsMl",
-                file: "%patternPrefix/ml.js"
+                file: "%patternPrefix/patterns/ml.js"
             },
             mn: {
                 pattern: "hyphenationPatternsMn",
-                file: "%patternPrefix/mn.js"
+                file: "%patternPrefix/patterns/mn.js"
             },
             mr: {
                 pattern: "hyphenationPatternsMr",
-                file: "%patternPrefix/mr.js"
+                file: "%patternPrefix/patterns/mr.js"
             },
             "mul-ethi": {
                 pattern: "hyphenationPatternsMulEthi",
-                file: "%patternPrefix/mul-ethi.js"
+                file: "%patternPrefix/patterns/mul-ethi.js"
             },
             nb: {
                 pattern: "hyphenationPatternsNb",
-                file: "%patternPrefix/nb.js"
+                file: "%patternPrefix/patterns/nb.js"
             },
             nl: {
                 pattern: "hyphenationPatternsNl",
-                file: "%patternPrefix/nl.js"
+                file: "%patternPrefix/patterns/nl.js"
             },
             nn: {
                 pattern: "hyphenationPatternsNn",
-                file: "%patternPrefix/nn.js"
+                file: "%patternPrefix/patterns/nn.js"
             },
             no: {
                 pattern: "hyphenationPatternsNo",
-                file: "%patternPrefix/no.js"
+                file: "%patternPrefix/patterns/no.js"
             },
             oc: {
                 pattern: "hyphenationPatternsOc",
-                file: "%patternPrefix/oc.js"
+                file: "%patternPrefix/patterns/oc.js"
             },
             or: {
                 pattern: "hyphenationPatternsOr",
-                file: "%patternPrefix/or.js"
+                file: "%patternPrefix/patterns/or.js"
             },
             pa: {
                 pattern: "hyphenationPatternsPa",
-                file: "%patternPrefix/pa.js"
+                file: "%patternPrefix/patterns/pa.js"
             },
             pl: {
                 pattern: "hyphenationPatternsPl",
-                file: "%patternPrefix/pl.js"
+                file: "%patternPrefix/patterns/pl.js"
             },
             pms: {
                 pattern: "hyphenationPatternsPms",
-                file: "%patternPrefix/pms.js"
+                file: "%patternPrefix/patterns/pms.js"
             },
             pt: {
                 pattern: "hyphenationPatternsPt",
-                file: "%patternPrefix/pt.js"
+                file: "%patternPrefix/patterns/pt.js"
             },
             rm: {
                 pattern: "hyphenationPatternsRm",
-                file: "%patternPrefix/rm/js"
+                file: "%patternPrefix/patterns/rm/js"
             },
             ro: {
                 pattern: "hyphenationPatternsRo",
-                file: "%patternPrefix/ro.js"
+                file: "%patternPrefix/patterns/ro.js"
             },
             ru: {
                 pattern: "hyphenationPatternsRu",
-                file: "%patternPrefix/ru.js"
+                file: "%patternPrefix/patterns/ru.js"
             },
             sa: {
                 pattern: "hyphenationPatternsSa",
-                file: "%patternPrefix/sa.js"
+                file: "%patternPrefix/patterns/sa.js"
             },
             "sh-cyrl": {
                 pattern: "hyphenationPatternsShCyrl",
-                file: "%patternPrefix/sh-cyrl.js"
+                file: "%patternPrefix/patterns/sh-cyrl.js"
             },
             "sh-latn": {
                 pattern: "hyphenationPatternsShLatn",
-                file: "%patternPrefix/sh-latn.js"
+                file: "%patternPrefix/patterns/sh-latn.js"
             },
             sk: {
                 pattern: "hyphenationPatternsSk",
-                file: "%patternPrefix/sk.js"
+                file: "%patternPrefix/patterns/sk.js"
             },
             sl: {
                 pattern: "hyphenationPatternsSl",
-                file: "%patternPrefix/sl.js"
+                file: "%patternPrefix/patterns/sl.js"
             },
             "sr-cyrl": {
                 pattern: "hyphenationPatternsSrCyrl",
-                file: "%patternPrefix/sr-cyrl.js"
+                file: "%patternPrefix/patterns/sr-cyrl.js"
             },
             sv: {
                 pattern: "hyphenationPatternsSv",
-                file: "%patternPrefix/sv.js"
+                file: "%patternPrefix/patterns/sv.js"
             },
             ta: {
                 pattern: "hyphenationPatternsTa",
-                file: "%patternPrefix/ta.js"
+                file: "%patternPrefix/patterns/ta.js"
             },
             te: {
                 pattern: "hyphenationPatternsTe",
-                file: "%patternPrefix/te.js"
+                file: "%patternPrefix/patterns/te.js"
             },
             th: {
                 pattern: "hyphenationPatternsTh",
-                file: "%patternPrefix/th.js"
+                file: "%patternPrefix/patterns/th.js"
             },
             tk: {
                 pattern: "hyphenationPatternsTk",
-                file: "%patternPrefix/tk.js"
+                file: "%patternPrefix/patterns/tk.js"
             },
             tr: {
                 pattern: "hyphenationPatternsTr",
-                file: "%patternPrefix/tr.js"
+                file: "%patternPrefix/patterns/tr.js"
             },
             uk: {
                 pattern: "hyphenationPatternsUk",
-                file: "%patternPrefix/uk.js"
+                file: "%patternPrefix/patterns/uk.js"
             },
             "zh-latn": {
                 pattern: "hyphenationPatternsZhLatn",
-                file: "%patternPrefix/zh-latn.js"
+                file: "%patternPrefix/patterns/zh-latn.js"
             }
         }
     });
