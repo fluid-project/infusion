@@ -341,7 +341,8 @@ Test.prototype = {
 			failed: bad,
 			passed: this.assertions.length - bad,
 			total: this.assertions.length,
-			duration: this.runtime
+   		        duration: this.runtime,
+		        runtime: this.runtime
 		});
 
 		QUnit.reset();
