@@ -1,0 +1,6 @@
+{
+    "label": "Simplifier",
+    "description": "Afficher uniquement le contenu principal",
+    "switchOn": "ACTIF",
+    "switchOff": "ÉTEINT"
+}

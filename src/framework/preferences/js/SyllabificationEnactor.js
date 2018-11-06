@@ -25,7 +25,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*
         TODO:
         - adjust to work with TTS
-        - add message bundle localizations for the panel
      */
 
     /*
