@@ -25,6 +25,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*
         TODO:
         - adjust to work with TTS
+            - parsing for tts will need to remove empty tags and understand that adjacent parts form whole words.
+            - empty elements would have to be reasonable to remove in all cases.
      */
 
     /*
@@ -45,16 +47,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "model.enabled": "value"
             }
         },
+        selectors: {
+            separator: ".flc-syllabification-separator"
+        },
         strings: {
             languageUnavailable: "Syllabification not available for %lang"
         },
-        hyphenChar: "·",
-        regex: {
-            expander: {
-                funcName: "fluid.prefs.enactor.syllabification.generateRegex",
-                args: ["{that}.options.hyphenChar", "gi"]
-            }
+        markup: {
+            separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>"
         },
+        // Used by the hyphenator when parsing words into syllables. However, the separator character displayed in the
+        // document is set through the `fl-syllabification-separator` class.
+        hyphenChar: "·",
         model: {
             enabled: false
         },
@@ -71,8 +75,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}"]
             },
             "onParsedTextNode.syllabify": {
-                listener: "{that}.togglePresentation",
-                args: ["{arguments}.0", "{arguments}.1", "{that}.model.enabled"]
+                listener: "{that}.apply",
+                args: ["{arguments}.0", "{arguments}.1"]
             },
             "onNodeAdded.syllabify": {
                 listener: "{that}.parse",
@@ -98,14 +102,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     },
                     modelListeners: {
                         "{syllabification}.model.enabled": {
-                            funcName: "fluid.prefs.enactor.syllabification.toggleObservation",
-                            priority: "before:parse",
+                            funcName: "fluid.prefs.enactor.syllabification.disconnectObserver",
+                            priority: "before:setPresentation",
                             args: ["{that}", "{change}.value"],
-                            namespace: "toggleObservation"
+                            namespace: "disconnectObserver"
                         }
                     },
                     listeners: {
-                        "onNodeAdded.boil": "{syllabification}.events.onNodeAdded"
+                        "onNodeAdded.boil": "{syllabification}.events.onNodeAdded",
+                        "{syllabification}.events.afterSyllabification": {
+                            listener: "{that}.observe",
+                            namespace: "enableObserver"
+                        }
                     }
                 }
             }
@@ -115,9 +123,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         modelListeners: {
             "enabled": {
-                listener: "{that}.parse",
-                args: ["{that}.container", "{change}.value", "{change}.oldValue"],
-                namespace: "parse"
+                listener: "{that}.setPresentation",
+                args: ["{that}.container", "{change}.value"],
+                namespace: "setPresentation"
             }
         },
         invokers: {
@@ -127,30 +135,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             remove: {
                 funcName: "fluid.prefs.enactor.syllabification.removeSyllabification",
-                args: ["{that}.options.regex", "{arguments}.0"]
+                args: ["{that}"]
             },
-            togglePresentation: {
-                funcName: "fluid.prefs.enactor.syllabification.togglePresentation",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            setPresentation: {
+                funcName: "fluid.prefs.enactor.syllabification.setPresentation",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
             },
             parse: {
-                funcName: "fluid.prefs.enactor.syllabification.parseIf",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                funcName: "fluid.prefs.enactor.syllabification.parse",
+                args: ["{that}", "{arguments}.0"]
             }
         }
     });
 
     /**
-     * Only run the parsing if the syllabification is to be enabled, or was previously enabled.
-     * That is, the parsing should not be run when the component is instantiated with syllabifcaiton disabled.
+     * Only disconnect the observer is the state is set to false.
+     * This corresponds to the syllabification's `enabled` model path being set to false.
      *
      * @param {Component} that - an instance of `fluid.mutationObserver`
-     * @param {Boolean} state - if `true` observe, else disconnect the observer
+     * @param {Boolean} state - if `false` disconnect, otherwise do nothing
      */
-    fluid.prefs.enactor.syllabification.toggleObservation = function (that, state) {
-        if (state) {
-            that.observe();
-        } else {
+    fluid.prefs.enactor.syllabification.disconnectObserver = function (that, state) {
+        if (!state) {
             that.disconnect();
         }
     };
@@ -172,21 +178,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
-    /**
-     * Only run the parsing if the syllabification is to be enabled, or was previously enabled.
-     * That is, the parsing should not be run when the component is instantiated with syllabifcation disabled.
-     *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
-     * @param {jQuery|DomElement} elm - the DOM node to parse
-     * @param {Boolean} newValue - current model state
-     * @param {Boolean} oldValue - previous model state
-     */
-    fluid.prefs.enactor.syllabification.parseIf = function (that, elm, newValue, oldValue) {
+    fluid.prefs.enactor.syllabification.parse = function (that, elm) {
         elm = fluid.unwrap(elm);
         elm = elm.nodeType === Node.ELEMENT_NODE ? $(elm) : $(elm.parentNode);
-        if (newValue || oldValue) {
-            that.parser.parse(elm);
-        }
+        that.parser.parse(elm);
     };
 
     /**
@@ -310,25 +305,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var hyphenatorPromise = fluid.prefs.enactor.syllabification.getHyphenator(that, lang);
         hyphenatorPromise.then(function (hyphenator) {
             if (hyphenator) {
-                node.textContent = hyphenator(node.textContent);
+                var hyphenated = hyphenator(node.textContent);
+                // check if hyphenation was applied.
+                if (hyphenated.length > node.textContent.length) {
+                    var segs = hyphenated.split(that.options.hyphenChar);
+                    // remove the last segment as we only need to place separators in between the parts of the words
+                    segs.pop();
+                    fluid.each(segs, function (seg) {
+                        var separator = $(that.options.markup.separator)[0];
+                        node = node.splitText(seg.length);
+                        node.parentNode.insertBefore(separator, node);
+                    });
+                }
             }
         });
     };
 
-    fluid.prefs.enactor.syllabification.generateRegex = function (pattern, flags) {
-        return new RegExp(pattern, flags);
+    fluid.prefs.enactor.syllabification.removeSyllabification = function (that) {
+        that.locate("separator").each(function (index, elm) {
+            var parent = elm.parentNode;
+            $(elm).remove();
+            parent.normalize();
+        });
+
     };
 
-    fluid.prefs.enactor.syllabification.removeSyllabification = function (regex, node) {
-        node.textContent = node.textContent.replace(regex, "");
-    };
-
-    fluid.prefs.enactor.syllabification.togglePresentation = function (that, node, lang, state) {
-        state = fluid.isValue(state) ? state : !that.model.enabled;
+    fluid.prefs.enactor.syllabification.setPresentation = function (that, elm, state) {
         if (state) {
-            that.apply(node, lang);
+            that.parse(elm);
         } else {
-            that.remove(node);
+            that.remove();
         }
     };
 

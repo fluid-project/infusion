@@ -34,65 +34,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    /**************************************************************************
-     * fluid.prefs.enactor.syllabification.generateRegex tests
-     **************************************************************************/
-
-    fluid.prefs.enactor.syllabification.regexTestCases = [{
-        pattern: "string",
-        sample: "string to test with"
-    }, {
-        pattern: "STRING",
-        flags: "i",
-        sample: "string to test with"
-    }, {
-        pattern: "\\s",
-        sample: "string to test with"
-    }];
-
-    jqUnit.test("Test fluid.prefs.enactor.syllabification.generateRegex", function () {
-        fluid.each(fluid.prefs.enactor.syllabification.regexTestCases, function (testCase) {
-            var regex = fluid.prefs.enactor.syllabification.generateRegex(testCase.pattern, testCase.flags);
-            jqUnit.assertEquals("The pattern \"" + testCase.pattern + "\" is set correctly", testCase.pattern, regex.source);
-            jqUnit.assertEquals("The flags \"" + testCase.flags + "\" are set correctly", testCase.flags || "", regex.flags);
-            jqUnit.assertTrue("The regex found a match in the sample string.", regex.test(testCase.sample));
-        });
-    });
-
-    /**************************************************************************
-     * fluid.prefs.enactor.syllabification.removeSyllabification tests
-     **************************************************************************/
-
-    fluid.prefs.enactor.syllabification.removeSyllabificationTestCases = [{
-        regex: /·/,
-        sample: "syl·la·bles",
-        expected: "sylla·bles"
-    }, {
-        regex: /·/g,
-        sample: "syl·la·bles",
-        expected: "syllables"
-    }, {
-        regex: new RegExp("·"),
-        sample: "syl·la·bles",
-        expected: "sylla·bles"
-    }, {
-        regex: new RegExp("·", "g"),
-        sample: "syl·la·bles",
-        expected: "syllables"
-    }];
-
-    jqUnit.test("Test fluid.prefs.enactor.syllabification.removeSyllabification", function () {
-        fluid.each(fluid.prefs.enactor.syllabification.removeSyllabificationTestCases, function (testCase) {
-            var node = {textContent: testCase.sample};
-            fluid.prefs.enactor.syllabification.removeSyllabification(testCase.regex, node);
-            jqUnit.assertEquals(
-                "The syllabification was removed according to regex rules (pattern: " + testCase.regex.source + " flags: "  + testCase.regex.flags + ")",
-                testCase.expected,
-                node.textContent
-            );
-        });
-    });
-
     /*******************************************************************************
      * IoC Unit tests for fluid.prefs.enactor.syllabification
      *******************************************************************************/
@@ -129,110 +70,195 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             text: {
-                default: {
-                    "en": "Climate changes are underway in the United States and are projected to grow.",
-                    "es": "Los cambios climáticos están en marcha en los Estados Unidos y se prevé que crezcan."
-                },
-                syllabified: {
-                    "en-US": "Cli·mate changes are un·der·way in the Unit·ed States and are pro·ject·ed to grow.",
-                    "en-GB": "Cli·mate changes are un·der·way in the United States and are pro·jec·ted to grow."
-                }
-            },
-            default: {
-                ".flc-syllabification-parentLang": ["default", "en"],
-                ".flc-syllabification-otherRegion": ["default", "en"],
-                ".flc-syllabification-generic": ["default", "en"],
-                ".flc-syllabification-fallback": ["default", "en"],
-                ".flc-syllabification-notAvailable": ["default", "es"]
+                "en": "Climate changes are underway in the United States and are projected to grow.",
+                "es": "Los cambios climáticos están en marcha en los Estados Unidos y se prevé que crezcan."
             },
             syllabified: {
-                ".flc-syllabification-parentLang": ["syllabified", "en-US"],
-                ".flc-syllabification-otherRegion": ["syllabified", "en-GB"],
-                ".flc-syllabification-generic": ["syllabified", "en-US"],
-                ".flc-syllabification-fallback": ["syllabified", "en-US"],
-                ".flc-syllabification-notAvailable": ["default", "es"]
+                "en-US": [{
+                    type: Node.TEXT_NODE,
+                    text: "Cli"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "mate changes are un"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "der"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "way in the Unit"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "ed States and are pro"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "ject"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "ed to grow."
+                }],
+                "en-GB": [{
+                    type: Node.TEXT_NODE,
+                    text: "Cli"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "mate changes are un"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "der"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "way in the United States and are pro"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "jec"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "ted to grow."
+                }],
+                "es": [{
+                    type: Node.TEXT_NODE,
+                    text: "Los cambios climáticos están en marcha en los Estados Unidos y se prevé que crezcan."
+                }]
+            },
+            existing: {
+                ".flc-syllabification-parentLang": {
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US",
+                    separatorCount: 6
+                },
+                ".flc-syllabification-otherRegion": {
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-GB",
+                    separatorCount: 5
+                },
+                ".flc-syllabification-generic": {
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US",
+                    separatorCount: 6
+                },
+                ".flc-syllabification-fallback": {
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US",
+                    separatorCount: 6
+                },
+                ".flc-syllabification-notAvailable": {
+                    text: "{that}.options.testOpts.text.es",
+                    syllabified: "{that}.options.testOpts.syllabified.es",
+                    separatorCount: 0
+                }
             },
             injected: {
                 disabled: {
-                    markup: "<p class=\"flc-syllabification-injectWhenDisabled\">Climate changes are underway in the United States and are projected to grow.</p>",
-                    default: {
-                        ".flc-syllabification-injectWhenDisabled": ["default", "en"]
-                    },
-                    syllabified: {
-                        ".flc-syllabification-injectWhenDisabled": ["syllabified", "en-US"]
+                    ".flc-syllabification-injectWhenDisabled": {
+                        text: "{that}.options.testOpts.text.en",
+                        syllabified: "{that}.options.testOpts.syllabified.en-US",
+                        separatorCount: 6
                     }
                 },
                 enabled: {
-                    markup: "<p class=\"flc-syllabification-injectWhenEnabled\">Climate changes are underway in the United States and are projected to grow.</p>",
-                    default: {
-                        ".flc-syllabification-injectWhenEnabled": ["default", "en"]
-                    },
-                    syllabified: {
-                        ".flc-syllabification-injectWhenEnabled": ["syllabified", "en-US"]
+                    ".flc-syllabification-injectWhenEnabled": {
+                        text: "{that}.options.testOpts.text.en",
+                        syllabified: "{that}.options.testOpts.syllabified.en-US",
+                        separatorCount: 6
                     }
+                },
+                combined: {
+                    ".flc-syllabification-injectWhenDisabled": "{that}.options.testOpts.injected.disabled.\.flc-syllabification-injectWhenDisabled",
+                    ".flc-syllabification-injectWhenEnabled": "{that}.options.testOpts.injected.disabled.\.flc-syllabification-injectWhenEnabled"
                 }
+            },
+            markup: {
+                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Climate changes are underway in the United States and are projected to grow.</p>",
+                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Climate changes are underway in the United States and are projected to grow.</p>"
             }
         },
         modules: [{
             name: "fluid.prefs.enactor.syllabification",
             tests: [{
-                expect: 19,
-                name: "Add/Remove syllabification",
+                expect: 11,
+                name: "Initial State",
                 sequence: [{
                     // init, before syllabification
-                    funcName: "fluid.tests.syllabificationTester.verifyTextOutput",
-                    args: ["Intial Text", "{that}.options.testOpts.text", "{that}.options.testOpts.default"]
-                }, {
+                    funcName: "fluid.tests.syllabificationTester.verifyUnsyllabified",
+                    args: ["Init", "{syllabification}", "{that}.options.testOpts.existing"]
+                }]
+            }, {
+                expect: 119,
+                name: "Add/Remove syllabification",
+                sequence: [{
                     // enabled syllabification
                     func: "{syllabification}.applier.change",
                     args: ["enabled", true]
                 }, {
                     event: "{syllabification}.events.afterSyllabification",
-                    listener: "fluid.tests.syllabificationTester.verifyTextOutput",
+                    listener: "fluid.tests.syllabificationTester.verifySyllabified",
                     priority: "last:testing",
-                    args: ["Syllabified", "{that}.options.testOpts.text", "{that}.options.testOpts.syllabified"]
+                    args: ["Syllabified", "{syllabification}", "{that}.options.testOpts.existing"]
                 }, {
                     // disable syllabification
                     func: "{syllabification}.applier.change",
                     args: ["enabled", false]
                 }, {
-                    event: "{syllabification}.events.afterSyllabification",
-                    listener: "fluid.tests.syllabificationTester.verifyTextOutput",
-                    priority: "last:testing",
-                    args: ["Removed", "{that}.options.testOpts.text", "{that}.options.testOpts.default"]
-                }, {
+                    changeEvent: "{syllabification}.applier.modelChanged",
+                    listener: "fluid.tests.syllabificationTester.verifyUnsyllabified",
+                    spec: {path: "enabled", priority: "last:testing"},
+                    args: ["Syllabification Removed", "{syllabification}", "{that}.options.testOpts.existing"]
+                }]
+            }, {
+                expect: 57,
+                name: "Injected Content",
+                sequence: [{
                     // inject content, then enable syllabification
                     func: "fluid.tests.syllabificationTester.injectContent",
-                    args: ["{syllabification}.container", "{that}.options.testOpts.injected.disabled.markup"]
+                    args: ["{syllabification}.container", "{that}.options.testOpts.markup.injectWhenDisabled"]
                 }, {
                     func: "{syllabification}.applier.change",
                     args: ["enabled", true]
                 }, {
                     event: "{syllabification}.events.afterSyllabification",
-                    listener: "fluid.tests.syllabificationTester.verifyTextOutput",
+                    listener: "fluid.tests.syllabificationTester.verifySyllabified",
                     priority: "last:testing",
-                    args: ["Injected content - Disabled", "{that}.options.testOpts.text", "{that}.options.testOpts.injected.disabled.syllabified"]
+                    args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.disabled", 23]
                 }, {
                     // inject content when enabled
                     func: "fluid.tests.syllabificationTester.injectContent",
-                    args: ["{syllabification}.container", "{that}.options.testOpts.injected.enabled.markup"]
+                    args: ["{syllabification}.container", "{that}.options.testOpts.markup.injectWhenEnabled"]
                 }, {
                     event: "{syllabification}.events.afterSyllabification",
-                    listener: "fluid.tests.syllabificationTester.verifyTextOutput",
+                    listener: "fluid.tests.syllabificationTester.verifySyllabified",
                     priority: "last:testing",
-                    args: ["Injected content - Enabled", "{that}.options.testOpts.text", "{that}.options.testOpts.injected.enabled.syllabified"]
+                    args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.enabled", 29]
                 }, {
                     // disable syllabification
                     func: "{syllabification}.applier.change",
                     args: ["enabled", false]
                 }, {
-                    event: "{syllabification}.events.afterSyllabification",
-                    listener: "fluid.tests.syllabificationTester.verifyTextOutput",
-                    priority: "last:testing",
-                    args: ["Injected content - Syllabification Removed", "{that}.options.testOpts.text", "{that}.options.testOpts.injected.disabled.default"]
-                }, {
-                    funcName: "fluid.tests.syllabificationTester.verifyTextOutput",
-                    args: ["Injected content - Syllabification Removed", "{that}.options.testOpts.text", "{that}.options.testOpts.injected.enabled.default"]
+                    changeEvent: "{syllabification}.applier.modelChanged",
+                    listener: "fluid.tests.syllabificationTester.verifyUnsyllabified",
+                    spec: {path: "enabled", priority: "last:testing"},
+                    args: ["Syllabification Removed from Injected", "{syllabification}", "{that}.options.testOpts.injected.combined"]
                 }]
             }]
         }]
@@ -242,15 +268,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         $(container).append(markup);
     };
 
-    fluid.tests.syllabificationTester.verifyTextOutput = function (prefix, textOutputs, map) {
-        fluid.each(map, function (path, selector) {
-            jqUnit.assertEquals(prefix + ": the text for " + selector + " is set correctly", fluid.get(textOutputs, path),$(selector).text());
-        });
+    fluid.tests.syllabificationTester.verifySeparatorCount = function (prefix, that, expected) {
+        var separators = that.locate("separator");
+        jqUnit.assertEquals(prefix + ": The correct number of separator elements found.", expected, separators.length);
     };
 
-    fluid.tests.syllabificationTester.verifyDynamicComponentsModel = function (that, componentNames, state) {
-        fluid.each(componentNames, function (name) {
-            jqUnit.assertEquals("The \"" + name + "\" dynamic component model is set correctly.", state, that[name].model.syllabification);
+    fluid.tests.syllabificationTester.verifySyllabified = function (prefix, that, testCases, separatorCount) {
+        // Specify an initial separatorCount for cases where the test cases do not cover all of the text that is being
+        // syllabified. For example when testing injected content.
+        separatorCount = separatorCount || 0;
+
+        fluid.each(testCases, function (testCase, selector) {
+            var childNodes = $(selector)[0].childNodes;
+            separatorCount += testCase.separatorCount;
+            jqUnit.assertEquals(prefix + ": The text for " + selector + " is returned correctly");
+
+            fluid.each(testCase.syllabified, function (expected, index) {
+                var childNode = childNodes[index];
+                jqUnit.assertEquals(prefix + ": The childNode of " + selector + ", at index \"" + index + "\", is the correct node type", expected.type, childNode.nodeType);
+
+                if (expected.type === Node.TEXT_NODE) {
+                    jqUnit.assertEquals(prefix + ": The childNode of " + selector + ", at index \"" + index + "\", has the correct text content", expected.text, childNode.textContent);
+                } else {
+                    jqUnit.assertTrue(prefix + ": The childNode of " + selector + ", at index \"" + index + "\", is a separator", $(childNode).is(that.options.selectors.separator));
+                }
+            });
+        });
+
+        fluid.tests.syllabificationTester.verifySeparatorCount("Syllabified", that, separatorCount);
+    };
+
+    fluid.tests.syllabificationTester.verifyUnsyllabified = function (prefix, that, testCases) {
+        fluid.tests.syllabificationTester.verifySeparatorCount(prefix, that, 0);
+
+        fluid.each(testCases, function (testCase, selector) {
+            var childNodes = $(selector)[0].childNodes;
+            jqUnit.assertEquals(prefix + ": " + selector + " should only have one child node", 1, childNodes.length);
+            jqUnit.assertEquals(prefix + ": " + selector + " should have the correct textcontent", testCase.text, childNodes[0].textContent);
         });
     };
 
