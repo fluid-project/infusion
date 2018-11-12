@@ -519,31 +519,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
 
         fluid.each(words, function (word) {
-            parsed.word = word;
-            parsed.endOffset = parsed.startOffset + word.length;
+            var lastIsWord = that.isWord(lastParsed.word);
+            var currentIsWord = that.isWord(word);
 
             // If the last parsed item is a word and the current item is a word, combine into the the last parsed block.
             // Otherwise, if the new item is a word or non-empty string create a new parsed block.
-            if (that.isWord(lastParsed.word)) {
-                if (that.isWord(word)) {
-                    lastParsed.word += word;
-                    lastParsed.endOffset += word.length;
-                    parsed.blockIndex += word.length;
-                    parsed.startOffset += word.length;
-                } else if (word) {
+            if (lastIsWord && currentIsWord) {
+                lastParsed.word += word;
+                lastParsed.endOffset += word.length;
+                parsed.blockIndex += word.length;
+                parsed.startOffset += word.length;
+            } else {
+                parsed.word = word;
+                parsed.endOffset = parsed.startOffset + word.length;
+                if (currentIsWord || word && lastIsWord) {
                     lastParsed = fluid.copy(parsed);
                     that.parseQueue.push(lastParsed);
                     that.applier.change("parseQueueLength", that.parseQueue.length, "ADD", "addToParseQueue");
                     parsed.blockIndex += word.length;
-                    parsed.startOffset = parsed.endOffset;
                 }
-            } else if (that.isWord(word)) {
-                lastParsed = fluid.copy(parsed);
-                that.parseQueue.push(lastParsed);
-                that.applier.change("parseQueueLength", that.parseQueue.length, "ADD", "addToParseQueue");
-                parsed.blockIndex += word.length;
-                parsed.startOffset = parsed.endOffset;
-            } else {
                 parsed.startOffset = parsed.endOffset;
             }
         });
