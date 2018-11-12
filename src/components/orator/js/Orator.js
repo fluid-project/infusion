@@ -497,6 +497,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Takes in a textnode and separates the contained words into DomWordMaps that are added to the parseQueue.
      * Typically this handles parsed data passed along by a Parser's (`fluid.textNodeParser`) `onParsedTextNode` event.
+     * Empty nodes are skipped and the subsequent text is analyzed to determine if it should be appended to the
+     * previous DomWordMap in the parseQueue. For example: when the syllabification separator is tag is inserted
+     * between words.
      *
      * @param {Component} that - an instance of `fluid.orator.domReader`
      * @param {DomNode} textNode - the text node being parsed
@@ -518,15 +521,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(words, function (word) {
             parsed.word = word;
             parsed.endOffset = parsed.startOffset + word.length;
-            // if the current `word` is not whitespace
-            // or if it is not an empty string and the last parsed `word` is not whitespace
-            if (that.isWord(word) || (word && that.isWord(lastParsed.word))) {
+
+            // If the last parsed item is a word and the current item is a word, combine into the the last parsed block.
+            // Otherwise, if the new item is a word or non-empty string create a new parsed block.
+            if (that.isWord(lastParsed.word)) {
+                if (that.isWord(word)) {
+                    lastParsed.word += word;
+                    lastParsed.endOffset += word.length;
+                    parsed.blockIndex += word.length;
+                    parsed.startOffset += word.length;
+                } else if (word) {
+                    lastParsed = fluid.copy(parsed);
+                    that.parseQueue.push(lastParsed);
+                    that.applier.change("parseQueueLength", that.parseQueue.length, "ADD", "addToParseQueue");
+                    parsed.blockIndex += word.length;
+                    parsed.startOffset = parsed.endOffset;
+                }
+            } else if (that.isWord(word)) {
                 lastParsed = fluid.copy(parsed);
                 that.parseQueue.push(lastParsed);
                 that.applier.change("parseQueueLength", that.parseQueue.length, "ADD", "addToParseQueue");
                 parsed.blockIndex += word.length;
+                parsed.startOffset = parsed.endOffset;
+            } else {
+                parsed.startOffset = parsed.endOffset;
             }
-            parsed.startOffset = parsed.endOffset;
         });
     };
 
@@ -625,6 +644,63 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * Searches down, starting from the provided node, returning the first text node found.
+     *
+     * @param  {DomNode} node - the DOM Node to start searching from.
+     * @return {DomNode|Undefined} - Returns the first text node found, or `undefined` if none located.
+     */
+    fluid.orator.domReader.findTextNode = function (node) {
+        if (!node) {
+            return;
+        }
+
+        if (node.nodeType === Node.TEXT_NODE) {
+            return node;
+        }
+
+        var children = node.childNodes;
+        for (var i = 0; i < children.length; i++) {
+            var textNode = fluid.orator.domReader.findTextNode(children[i]);
+            if (textNode !== undefined) {
+                return textNode;
+            }
+        }
+    };
+
+    fluid.orator.domReader.getTextNodeFromSibling = function (node) {
+        while (node.nextSibling) {
+            node = node.nextSibling;
+            var textNode = fluid.orator.domReader.findTextNode(node);
+            if (textNode) {
+                return textNode;
+            }
+        }
+    };
+
+    fluid.orator.domReader.getNextTextNode = function (node) {
+        var nextTextNode = fluid.orator.domReader.getTextNodeFromSibling(node);
+
+        if (nextTextNode) {
+            return nextTextNode;
+        }
+
+        var parent = node.parentNode;
+
+        if (parent) {
+            return fluid.orator.domReader.getNextTextNode(parent);
+        }
+    };
+
+    fluid.orator.domReader.setRangeEnd = function (range, node, end) {
+        if (end <= node.length) {
+            range.setEnd(node, end);
+        } else {
+            var nextTextNode = fluid.orator.domReader.getNextTextNode(node);
+            fluid.orator.domReader.setRangeEnd(range, nextTextNode, end - node.length);
+        }
+    };
+
+    /**
      * Highlights text from the parseQueue according to the specified boundary. Highlights are performed by wrapping
      * the appropriate text in the markup specified by `that.options.markup.highlight`.
      *
@@ -641,7 +717,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             that.range.selectNode(rangeNode);
             that.range.setStart(rangeNode, data.startOffset);
-            that.range.setEnd(rangeNode, data.endOffset);
+            fluid.orator.domReader.setRangeEnd (that.range, rangeNode, data.endOffset);
             that.range.surroundContents($(that.options.markup.highlight)[0]);
         }
     };

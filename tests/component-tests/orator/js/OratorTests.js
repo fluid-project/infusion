@@ -231,12 +231,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         // 1
         "blockIndex": 7,
-        "childIndex": 0,
-        "endOffset": 21,
+        "childIndex": 2,
+        "endOffset": 4,
         "lang": "en-CA",
         "node": {},
         "parentNode": {},
-        "startOffset": 20,
+        "startOffset": 3,
         "word": " "
     }, {
         // 2
@@ -251,7 +251,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         // 3
         "blockIndex": 12,
-        "childIndex": 2,
+        "childIndex": 4,
         "endOffset": 1,
         "lang": "en-CA",
         "node": {},
@@ -261,7 +261,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         // 4
         "blockIndex": 13,
-        "childIndex": 2,
+        "childIndex": 4,
         "endOffset": 5,
         "lang": "en-CA",
         "node": {},
@@ -271,7 +271,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         // 5
         "blockIndex": 17,
-        "childIndex": 2,
+        "childIndex": 4,
         "endOffset": 6,
         "lang": "en-CA",
         "node": {},
@@ -291,7 +291,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         // 7
         "blockIndex": 21,
-        "childIndex": 5,
+        "childIndex": 7,
         "endOffset": 9,
         "lang": "en-CA",
         "node": {},
@@ -356,6 +356,79 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var mockThat = {parseQueue: fluid.tests.orator.domReader.parsed, model: {parseIndex: testCase.parseIndex}};
             var closest = fluid.orator.domReader.getClosestIndex(mockThat, testCase.boundary);
             jqUnit.assertEquals("Closest index for boundary \"" + testCase.boundary + "\" should be: " + testCase.expected, testCase.expected, closest);
+        });
+    });
+
+    // fluid.orator.domReader.findTextNode tests
+    fluid.tests.orator.domReader.findTextNodeTestCases = [{
+        markup: "<span>first <strong>child</strong></span>",
+        expected: "first "
+    }, {
+        markup: "<span><strong></strong>second child</span>",
+        expected: "second child"
+    }, {
+        markup: "<span><strong>nested</strong> child</span>",
+        expected: "nested"
+    }];
+
+    jqUnit.test("Test fluid.orator.domReader.findTextNode", function () {
+
+        var undefinedNode = fluid.orator.domReader.findTextNode();
+        jqUnit.assertUndefined("An undefined node should return undefined", undefinedNode);
+
+        var textNode = fluid.orator.domReader.findTextNode($("<span>test</span>")[0].childNodes[0]);
+        jqUnit.assertEquals("Should return the node, if it is already a text node.", "test", textNode.textContent);
+
+        fluid.each(fluid.tests.orator.domReader.findTextNodeTestCases, function (testCase) {
+            var node = $(testCase.markup)[0];
+            var retrieved = fluid.orator.domReader.findTextNode(node);
+            jqUnit.assertEquals("The text node with text \"" + testCase.expected + "\" should be retrieved", testCase.expected, retrieved.textContent);
+        });
+    });
+
+    // fluid.orator.domReader.getTextNodeFromSibling tests
+    fluid.tests.orator.domReader.getTextNodeFromSiblingTestCases = [{
+        markup: "<span>no sibling</span>"
+    }, {
+        markup: "<span></span><strong>sibling</strong>",
+        expected: "sibling"
+    }, {
+        markup: "<span></span><span></span><strong>third</strong>",
+        expected: "third"
+    }, {
+        markup: "<span></span><strong><span>nested<span></strong>",
+        expected: "nested"
+    }];
+
+    jqUnit.test("Test fluid.orator.domReader.getTextNodeFromSibling", function () {
+        fluid.each(fluid.tests.orator.domReader.getTextNodeFromSiblingTestCases, function (testCase) {
+            var node = $(testCase.markup)[0];
+            var retrieved = fluid.orator.domReader.getTextNodeFromSibling(node);
+            var expected = testCase.expected;
+            var actual = retrieved && retrieved.textContent;
+            jqUnit.assertEquals("The text node with text \"" + expected + "\" should be retrieved", expected, actual);
+        });
+    });
+
+    // fluid.orator.domReader.getNextTextNode tests
+    fluid.tests.orator.domReader.getNextTextNodeTestCases = [{
+        markup: "<span class=\"start\">no sibling or parent</span>"
+    }, {
+        markup: "<span class=\"start\"></span><strong>sibling</strong>",
+        expected: "sibling"
+    }, {
+        markup: "<span><span class=\"start\"></span></span><strong>parent sibling</strong>",
+        expected: "parent sibling"
+    }];
+
+    jqUnit.test("Test fluid.orator.domReader.getNextTextNode", function () {
+        fluid.each(fluid.tests.orator.domReader.getNextTextNodeTestCases, function (testCase) {
+            var node = $(testCase.markup);
+            node = node.is(".start") ? node[0] : node.find(".start")[0];
+            var retrieved = fluid.orator.domReader.getNextTextNode(node);
+            var expected = testCase.expected;
+            var actual = retrieved && retrieved.textContent;
+            jqUnit.assertEquals("The text node with text \"" + expected + "\" should be retrieved", expected, actual);
         });
     });
 
@@ -451,7 +524,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "parentNode": {
                     expander: {
                         func: function (elm) {
-                            return $(elm).children()[0];
+                            return $(elm).children()[1];
                         },
                         args: ["{domReader}.container"]
                     }
