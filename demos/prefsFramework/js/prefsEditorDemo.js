@@ -109,7 +109,7 @@ var demo = demo || {};
             syllabification: {
                 enactor: {
                     terms: {
-                        patternPrefix: "../../src/lib/hyphen"
+                        patternPrefix: "../../src/lib/hypher/patterns"
                     }
                 }
             }

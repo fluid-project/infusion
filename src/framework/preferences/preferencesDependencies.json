@@ -44,6 +44,7 @@
             "fonts",
             "jQuery",
             "jQueryUI",
+            "hypher",
             "normalize",
             "url-polyfill",
             "framework",

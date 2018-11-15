@@ -44,10 +44,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             enabled: false
         },
         terms: {
-            patternPrefix: "../../../../src/lib/hyphen"
+            patternPrefix: "../../../../src/lib/hypher/patterns"
         },
-        // remove `es` from pattern config to test when configuration isn't available
-        langConfigs: {
+        // Remove `es` from pattern config to test when configuration isn't available.
+        // Tests for patterns with broken paths or non-existent files are not tested because they
+        // may cause a global failure if the server returns a 404 html page when we are expecting a JS file.
+        patterns: {
             es: null
         }
     });
@@ -70,98 +72,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             text: {
-                "en": "Climate changes are underway in the United States and are projected to grow.",
-                "es": "Los cambios climáticos están en marcha en los Estados Unidos y se prevé que crezcan."
+                "en": "Global temperature has increased over the past 50 years.",
+                "es": "La temperatura global ha aumentado en los últimos 50 años."
             },
             syllabified: {
                 "en-US": [{
                     type: Node.TEXT_NODE,
-                    text: "Cli"
+                    text: "Global tem"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "mate changes are un"
+                    text: "per"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "der"
+                    text: "a"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "way in the Unit"
+                    text: "ture has in"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "ed States and are pro"
-                }, {
-                    type: Node.ELEMENT_NODE
-                }, {
-                    type: Node.TEXT_NODE,
-                    text: "ject"
-                }, {
-                    type: Node.ELEMENT_NODE
-                }, {
-                    type: Node.TEXT_NODE,
-                    text: "ed to grow."
+                    text: "creased over the past 50 years."
                 }],
                 "en-GB": [{
                     type: Node.TEXT_NODE,
-                    text: "Cli"
+                    text: "Global tem"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "mate changes are un"
+                    text: "per"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "der"
+                    text: "at"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "way in the United States and are pro"
+                    text: "ure has in"
                 }, {
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "jec"
-                }, {
-                    type: Node.ELEMENT_NODE
-                }, {
-                    type: Node.TEXT_NODE,
-                    text: "ted to grow."
+                    text: "creased over the past 50 years."
                 }],
                 "es": [{
                     type: Node.TEXT_NODE,
-                    text: "Los cambios climáticos están en marcha en los Estados Unidos y se prevé que crezcan."
+                    text: "La temperatura global ha aumentado en los últimos 50 años."
                 }]
             },
             existing: {
                 ".flc-syllabification-parentLang": {
                     text: "{that}.options.testOpts.text.en",
                     syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 6
+                    separatorCount: 4
                 },
                 ".flc-syllabification-otherRegion": {
                     text: "{that}.options.testOpts.text.en",
                     syllabified: "{that}.options.testOpts.syllabified.en-GB",
-                    separatorCount: 5
+                    separatorCount: 4
                 },
                 ".flc-syllabification-generic": {
                     text: "{that}.options.testOpts.text.en",
                     syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 6
+                    separatorCount: 4
                 },
                 ".flc-syllabification-fallback": {
                     text: "{that}.options.testOpts.text.en",
                     syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 6
+                    separatorCount: 4
                 },
                 ".flc-syllabification-notAvailable": {
                     text: "{that}.options.testOpts.text.es",
@@ -174,14 +161,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ".flc-syllabification-injectWhenDisabled": {
                         text: "{that}.options.testOpts.text.en",
                         syllabified: "{that}.options.testOpts.syllabified.en-US",
-                        separatorCount: 6
+                        separatorCount: 4
                     }
                 },
                 enabled: {
                     ".flc-syllabification-injectWhenEnabled": {
                         text: "{that}.options.testOpts.text.en",
                         syllabified: "{that}.options.testOpts.syllabified.en-US",
-                        separatorCount: 6
+                        separatorCount: 4
                     }
                 },
                 combined: {
@@ -190,8 +177,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             markup: {
-                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Climate changes are underway in the United States and are projected to grow.</p>",
-                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Climate changes are underway in the United States and are projected to grow.</p>"
+                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global temperature has increased over the past 50 years.</p>",
+                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global temperature has increased over the past 50 years.</p>"
             }
         },
         modules: [{
@@ -205,7 +192,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Init", "{syllabification}", "{that}.options.testOpts.existing"]
                 }]
             }, {
-                expect: 119,
+                expect: 91,
                 name: "Add/Remove syllabification",
                 sequence: [{
                     // enabled syllabification
@@ -227,7 +214,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Syllabification Removed", "{syllabification}", "{that}.options.testOpts.existing"]
                 }]
             }, {
-                expect: 57,
+                expect: 41,
                 name: "Injected Content",
                 sequence: [{
                     // inject content, then enable syllabification
@@ -240,7 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{syllabification}.events.afterSyllabification",
                     listener: "fluid.tests.syllabificationTester.verifySyllabified",
                     priority: "last:testing",
-                    args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.disabled", 23]
+                    args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.disabled", 16]
                 }, {
                     // inject content when enabled
                     func: "fluid.tests.syllabificationTester.injectContent",
@@ -249,7 +236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{syllabification}.events.afterSyllabification",
                     listener: "fluid.tests.syllabificationTester.verifySyllabified",
                     priority: "last:testing",
-                    args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.enabled", 29]
+                    args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.enabled", 20]
                 }, {
                     // disable syllabification
                     func: "{syllabification}.applier.change",

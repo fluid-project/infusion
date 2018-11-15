@@ -57,12 +57,16 @@ categorized by license:
 
 ### BSD-3
 
+* [Hypher v0.2.5](https://github.com/bramstein/Hypher)
 * [Sinon v6.1.3](http://sinonjs.org)
+
+### LGPL
+
+* [hyphenation-patterns v0.2.1](https://github.com/bramstein/hyphenation-patterns)
 
 ### MIT License
 
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [Hyphen v1.0.2](https://github.com/ytiurin/hyphen)
 * [jQuery v3.3.1](http://jquery.com/)
 * [jQuery Mockjax v2.5.0](https://github.com/jakerella/jquery-mockjax)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)

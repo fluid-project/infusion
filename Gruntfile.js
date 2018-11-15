@@ -101,7 +101,7 @@ module.exports = function (grunt) {
             },
             dependencies: [
                 "src/lib/fonts",
-                "src/lib/hyphen",
+                "src/lib/hypher",
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
                 "src/lib/jquery/ui/js",
@@ -176,13 +176,13 @@ module.exports = function (grunt) {
                     expand: true,
                     flatten: true
                 }, {
-                    src: "node_modules/hyphen/hyphen.js",
-                    dest: "src/lib/hyphen/",
+                    src: "node_modules/hypher/dist/jquery.hypher.js",
+                    dest: "src/lib/hypher/",
                     expand: true,
                     flatten: true
                 }, {
-                    src: "node_modules/hyphen/patterns/*",
-                    dest: "src/lib/hyphen/patterns/",
+                    src: "node_modules/@fluid-project/hyphenation-patterns/dist/browser/*",
+                    dest: "src/lib/hypher/patterns/",
                     expand: true,
                     flatten: true
                 }, {

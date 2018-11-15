@@ -204,6 +204,8 @@ grunt custom --name="myPackage"
 #### External Libraries
 
 * fastXmlPull
+* fonts
+* hypher
 * jQuery
 * jQueryUI
 * jQueryScrollToPlugin

@@ -7,7 +7,7 @@
 /.bundle/
 /.vagrant/
 /src/lib/fonts/
-/src/lib/hyphen/
+/src/lib/hypher/
 /src/lib/jquery/
 /src/lib/normalize/
 /src/lib/url-polyfill/
