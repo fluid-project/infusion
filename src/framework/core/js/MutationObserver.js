@@ -83,13 +83,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.mutationObserver.createObserver = function (that) {
         var observer = new MutationObserver(function (mutationRecords) {
-            mutationRecords.forEach(function (mutationRecord) {
-                mutationRecord.addedNodes.forEach(function (node) {
-                    that.events.onNodeAdded.fire(node, mutationRecord);
-                });
-                mutationRecord.removedNodes.forEach(function (node) {
-                    that.events.onNodeRemoved.fire(node, mutationRecord);
-                });
+            fluid.each(mutationRecords, function (mutationRecord) {
+                // IE11 doesn't support forEach on NodeLists and NodeLists aren't real arrays so using fluid.each
+                // will iterate over the object properties. Therefore we use a for loop to iterate over the nodes.
+                for (var i = 0; i < mutationRecord.addedNodes.length; i++) {
+                    that.events.onNodeAdded.fire(mutationRecord.addedNodes[i], mutationRecord);
+                }
+                for (var j = 0; j < mutationRecord.removedNodes.length; j++) {
+                    that.events.onNodeRemoved.fire(mutationRecord.removedNodes[j], mutationRecord);
+                }
                 if (mutationRecord.type === "attributes") {
                     that.events.onAttributeChanged.fire(mutationRecord.target, mutationRecord);
                 }
