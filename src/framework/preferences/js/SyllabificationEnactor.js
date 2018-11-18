@@ -136,7 +136,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             hyphenateNode: {
                 funcName: "fluid.prefs.enactor.syllabification.hyphenateNode",
                 args: ["{arguments}.0", "{arguments}.1", "{that}.options.markup.separator"]
-            }
+            },
+            injectScript: "fluid.prefs.enactor.syllabification.injectScript"
         }
     });
 
@@ -221,7 +222,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         var src = fluid.stringTemplate(pattern, that.options.terms);
-        var injectPromise = fluid.prefs.enactor.syllabification.injectScript(src);
+        var injectPromise = that.injectScript(src);
         injectPromise.then(function () {
             hyphenator = fluid.getGlobalValue(globalPath);
             promise.resolve(hyphenator);
