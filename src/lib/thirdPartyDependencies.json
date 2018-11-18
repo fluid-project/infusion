@@ -11,6 +11,16 @@
         "description": "Additional web fonts",
         "fontFiles": ["./fonts/OpenSans-Light.ttf", "./fonts/OpenSans-Regular.ttf", "./fonts/OpenSans-Semibold.ttf"]
     },
+    "hypher": {
+        "name": "hypher",
+        "description": "A small and fast JavaScript hyphenation engine.",
+        "files": [
+            "./hypher/jquery.hypher.js"
+        ],
+        "dependencies": [
+            "jQuery"
+        ]
+    },
     "jQuery": {
         "name": "jQuery",
         "description": "The jQuery core JavaScript library, used as the foundation for Infusion.",
