@@ -132,6 +132,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             getHyphenator: {
                 funcName: "fluid.prefs.enactor.syllabification.getHyphenator",
                 args: ["{that}", "{arguments}.0"]
+            },
+            hyphenateNode: {
+                funcName: "fluid.prefs.enactor.syllabification.hyphenateNode",
+                args: ["{arguments}.0", "{arguments}.1", "{that}.options.markup.separator"]
             }
         }
     });
@@ -294,20 +298,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.enactor.syllabification.syllabify = function (that, node, lang) {
         var hyphenatorPromise = that.getHyphenator(lang);
         hyphenatorPromise.then(function (hyphenator) {
-            if (hyphenator) {
-                // remove \u200B characters added hyphenateText
-                var hyphenated = hyphenator.hyphenateText(node.textContent).replace(/\u200B/gi, "");
+            that.hyphenateNode(hyphenator, node);
+        });
+    };
 
-                // split words on soft hyphens
-                var segs = hyphenated.split("\u00AD");
-                // remove the last segment as we only need to place separators in between the parts of the words
-                segs.pop();
-                fluid.each(segs, function (seg) {
-                    var separator = $(that.options.markup.separator)[0];
-                    node = node.splitText(seg.length);
-                    node.parentNode.insertBefore(separator, node);
-                });
-            }
+    fluid.prefs.enactor.syllabification.hyphenateNode = function (hyphenator, node, separatorMarkup) {
+        if (!hyphenator) {
+            return;
+        }
+
+        // remove \u200B characters added hyphenateText
+        var hyphenated = hyphenator.hyphenateText(node.textContent).replace(/\u200B/gi, "");
+
+        // split words on soft hyphens
+        var segs = hyphenated.split("\u00AD");
+        // remove the last segment as we only need to place separators in between the parts of the words
+        segs.pop();
+        fluid.each(segs, function (seg) {
+            var separator = $(separatorMarkup)[0];
+            node = node.splitText(seg.length);
+            node.parentNode.insertBefore(separator, node);
         });
     };
 
