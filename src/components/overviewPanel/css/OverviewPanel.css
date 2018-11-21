@@ -26,12 +26,12 @@
 
 @font-face {
     font-family: 'RobotoSlab';
-    src: url('../fonts/RobotoSlab-Regular.ttf');
+    src: url('../../../lib/roboto/fonts/Roboto-Slab-Regular.woff');
 }
 
 @font-face {
     font-family: 'RobotoSlab';
-    src: url('../fonts/RobotoSlab-Bold.ttf');
+    src: url('../../../lib/roboto/fonts/Roboto-Slab-Bold.woff');
     font-weight: bold;
 }
 

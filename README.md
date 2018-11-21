@@ -16,7 +16,7 @@ Infusion includes:
 
 ## Where Can I See Infusion Components?
 
-<http://fluidproject.org/infusion.html>
+<https://fluidproject.org/infusion.html>
 
 ## How Do I Get Infusion?
 
@@ -32,7 +32,7 @@ custom packages of Infusion.
 
 ## Where is the Infusion Documentation?
 
-Infusion has comprehensive documentation at <http://docs.fluidproject.org/infusion>.
+Infusion has comprehensive documentation at <https://docs.fluidproject.org/infusion>.
 
 ## Who Makes Infusion, and How Can I Help?
 
@@ -40,7 +40,7 @@ The Fluid community is an international group of designers, developers, and test
 improving the user experience and accessibility of the open web.
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our
-[website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
+[website](https://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
 ## Inclusion
 
@@ -48,14 +48,14 @@ The Fluid community is dedicated to inclusive design&mdash;design that considers
 respect to ability, language, culture, gender, age and other forms of human difference. To help ensure that our
 community is a safe space for all contributors, we have adopted a
 [code of conduct](https://wiki.fluidproject.org/display/fluid/Inclusion+in+the+Fluid+Community) based on the
-[Contributor Covenant](http://contributor-covenant.org/). All participants and contributors have the responsibility to
+[Contributor Covenant](https://contributor-covenant.org/). All participants and contributors have the responsibility to
 uphold this code. Please contact the [Advocacy working group](mailto:fluid-advocacy@fluidproject.org) if you encounter
 unacceptable behaviour.
 
 ## Where is Infusion Used?
 
 Infusion is the cornerstone of a number of Fluid's own projects dedicated to supporting inclusive design on the Web. You
-can see some of them featured on our [Projects page](http://fluidproject.org/projects.html). Infusion is also used in a
+can see some of them featured on our [Projects page](https://fluidproject.org/projects.html). Infusion is also used in a
 variety of third-party applications, which are listed on the
 [Infusion Integrations](https://wiki.fluidproject.org/display/fluid/Infusion+Integrations) wiki page.
 
@@ -91,8 +91,8 @@ in your debugging environment, and ensure that the source maps are hosted adjace
 
 ### Dependencies
 
-* [node.js](http://nodejs.org/)
-* [grunt-cli](http://gruntjs.com/)
+* [node.js](https://nodejs.org/)
+* [grunt-cli](https://gruntjs.com/)
 
 All other development dependencies will be installed by running the following from the project root:
 
@@ -211,6 +211,7 @@ grunt custom --name="myPackage"
 * jQueryTouchPunchPlugin
 * normalize
 * opensans
+* roboto
 * url-polyfill
 
 ## How Do I Run Tests?

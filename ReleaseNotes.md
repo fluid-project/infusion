@@ -1,6 +1,6 @@
 # Release Notes for Fluid Infusion 3.0.0
 
-[Fluid Project](http://fluidproject.org)
+[Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
@@ -33,7 +33,7 @@ complete or custom packages of Infusion.
 ## Demos
 
 Infusion ships with demos of all of the components in action. You can find them in the _**demos**_ folder in the release
-bundle or on our [build site](http://build.fluidproject.org/).
+bundle or on our [build site](https://build.fluidproject.org/).
 
 When running the demos on your local machine, a web server is recommended. Several of the demos make use of AJAX calls;
 which typically are not allowed by the browser when run from the local file system.
@@ -42,7 +42,7 @@ which typically are not allowed by the browser when run from the local file syst
 
 Fluid Infusion is licensed under both the ECL 2.0 and new BSD licenses.
 
-More information is available in our [wiki](http://wiki.fluidproject.org/display/fluid/Fluid+Licensing).
+More information is available in our [wiki](https://wiki.fluidproject.org/display/fluid/Fluid+Licensing).
 
 ## Third Party Software in Infusion
 
@@ -52,13 +52,14 @@ categorized by license:
 ### Apache 2.0
 
 * [`fluid.load.scripts` is based on Jake Archibald's script loading example](
-  http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
-* [Open Sans font](http://www.google.com/fonts/specimen/Open+Sans)
+  https://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
+* [Open Sans font](https://www.google.com/fonts/specimen/Open+Sans)
+* [Roboto font](https://fonts.google.com/specimen/Roboto)
 
 ### BSD-3
 
 * [Hypher v0.2.5](https://github.com/bramstein/Hypher)
-* [Sinon v6.1.3](http://sinonjs.org)
+* [Sinon v6.1.3](https://sinonjs.org)
 
 ### LGPL
 
@@ -66,15 +67,15 @@ categorized by license:
 
 ### MIT License
 
-* [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [jQuery v3.3.1](http://jquery.com/)
+* [HTML5 Boilerplate v4.3](https://html5boilerplate.com/)
+* [jQuery v3.3.1](https://jquery.com/)
 * [jQuery Mockjax v2.5.0](https://github.com/jakerella/jquery-mockjax)
-* [jQuery QUnit v1.12.0](http://qunitjs.com)
+* [jQuery QUnit v1.12.0](https://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
 * [jQuery scrollTo v2.1.2](https://github.com/flesler/jquery.scrollTo)
 * [jQuery Touch Punch v0.2.3](http://touchpunch.furf.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
-  slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
+  slider, tabs, and tooltip) v1.12.1](https://jqueryui.com/)
 * [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
 * [jquery.simulate v1.0.2](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
@@ -84,12 +85,12 @@ categorized by license:
 ### zlib/libpng License
 
 * [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](
-  http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
+  https://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
 
 ## Documentation
 
 Documentation and tutorials can found on the [Infusion Documentation](
-http://docs.fluidproject.org/infusion/development/) site.
+https://docs.fluidproject.org/infusion/development/) site.
 
 ## Supported Browsers
 
@@ -276,5 +277,5 @@ https://wiki.fluidproject.org/display/fluid/Prior+Browser+Support) wiki page.
 
 ## Known Issues
 
-The Fluid Project uses a [JIRA](http://issues.fluidproject.org) website to track bugs. Some of the known issues in this
+The Fluid Project uses a [JIRA](https://issues.fluidproject.org) website to track bugs. Some of the known issues in this
 release are described here:

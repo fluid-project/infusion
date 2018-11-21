@@ -89,6 +89,16 @@
             "./opensans/fonts/OpenSans-SemiboldItalic.woff"
         ]
     },
+    "roboto": {
+        "name": "roboto",
+        "description": "Roboto web font",
+        "fontFiles": [
+            "./roboto/fonts/Roboto-Slab-Bold.woff",
+            "./roboto/fonts/Roboto-Slab-Light.woff",
+            "./roboto/fonts/Roboto-Slab-Regular.woff",
+            "./roboto/fonts/Roboto-Slab-Thin.woff"
+        ]
+    },
     "url-polyfill": {
         "name": "url-polyfill",
         "description": "Polyfill URL and URLSearchParams to match last WHATWG specifications",

@@ -6,10 +6,11 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
-/src/lib/opensans/
 /src/lib/hypher/
 /src/lib/jquery/
 /src/lib/normalize/
+/src/lib/opensans/
+/src/lib/roboto/
 /src/lib/url-polyfill/
 /tests/lib/jquery-simulate/
 /tests/lib/mockjax/

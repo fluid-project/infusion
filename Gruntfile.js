@@ -100,12 +100,13 @@ module.exports = function (grunt) {
                 files: [{}]
             },
             dependencies: [
-                "src/lib/opensans",
                 "src/lib/hypher",
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
                 "src/lib/jquery/ui/js",
                 "src/lib/normalize",
+                "src/lib/opensans",
+                "src/lib/roboto",
                 "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
                 "tests/lib/mockjax",
@@ -171,11 +172,6 @@ module.exports = function (grunt) {
             },
             dependencies: {
                 files: [{
-                    src: "node_modules/opensans-webkit/fonts/OpenSans-*.woff",
-                    dest: "src/lib/opensans/fonts/",
-                    expand: true,
-                    flatten: true
-                }, {
                     src: "node_modules/hypher/dist/jquery.hypher.js",
                     dest: "src/lib/hypher/",
                     expand: true,
@@ -191,8 +187,18 @@ module.exports = function (grunt) {
                     expand: true,
                     flatten: true
                 }, {
+                    src: "node_modules/jquery-mockjax/dist/jquery.mockjax.js",
+                    dest: "tests/lib/mockjax/js/",
+                    expand: true,
+                    flatten: true
+                }, {
                     src: "node_modules/jquery.scrollto/jquery.scrollTo.js",
                     dest: "src/lib/jquery/plugins/scrollTo/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/jquery-simulate/jquery.simulate.js",
+                    dest: "tests/lib/jquery-simulate/js/",
                     expand: true,
                     flatten: true
                 }, {
@@ -241,23 +247,23 @@ module.exports = function (grunt) {
                     expand: true,
                     flatten: true
                 }, {
-                    src: "node_modules/url-polyfill/url-polyfill.js",
-                    dest: "src/lib/url-polyfill/js/",
+                    src: "node_modules/opensans-webkit/fonts/OpenSans-*.woff",
+                    dest: "src/lib/opensans/fonts/",
                     expand: true,
                     flatten: true
                 }, {
-                    src: "node_modules/jquery-mockjax/dist/jquery.mockjax.js",
-                    dest: "tests/lib/mockjax/js/",
-                    expand: true,
-                    flatten: true
-                }, {
-                    src: "node_modules/jquery-simulate/jquery.simulate.js",
-                    dest: "tests/lib/jquery-simulate/js/",
+                    src: "node_modules/roboto-fontface/fonts/roboto-slab/Roboto-Slab-*.woff",
+                    dest: "src/lib/roboto/fonts/",
                     expand: true,
                     flatten: true
                 }, {
                     src: "node_modules/sinon/pkg/sinon.js",
                     dest: "tests/lib/sinon/js/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/url-polyfill/url-polyfill.js",
+                    dest: "src/lib/url-polyfill/js/",
                     expand: true,
                     flatten: true
                 }]

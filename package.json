@@ -67,6 +67,7 @@
         "nyc": "13.0.1",
         "opensans-webkit": "1.0.1",
         "rimraf": "2.6.2",
+        "roboto-fontface": "0.10.0",
         "sinon": "6.3.3",
         "testem": "2.9.3",
         "url-polyfill": "1.1.0"
