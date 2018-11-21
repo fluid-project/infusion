@@ -61,7 +61,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * A Mutation Observer; allows for tracking changes to the DOM.
-     * A mutation observer is created with a callback function, configured through its observe` method.
+     * A mutation observer is created with a callback function, configured through its `observe` method.
      * See: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
      *
      * @typedef {Object} MutationObserver
@@ -77,7 +77,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * onNodeRemoved - fired for each removed node, includes the node and mutation record
      * onAttributeChanged - fired for each attribute change, includes the node and mutation record
      *
-     * @param {Component} that - an instance of `fluid.mutationObserver
+     * @param {Component} that - an instance of `fluid.mutationObserver`
      *
      * @return {MutationObserver} - the created mutation observer`
      */
