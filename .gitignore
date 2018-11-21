@@ -6,7 +6,7 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
-/src/lib/fonts/
+/src/lib/opensans/
 /src/lib/hypher/
 /src/lib/jquery/
 /src/lib/normalize/

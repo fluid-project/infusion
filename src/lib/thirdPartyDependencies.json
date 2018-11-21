@@ -6,11 +6,6 @@
             "./fastXmlPull/js/fastXmlPull.js"
         ]
     },
-    "fonts": {
-        "name": "fonts",
-        "description": "Additional web fonts",
-        "fontFiles": ["./fonts/OpenSans-Light.ttf", "./fonts/OpenSans-Regular.ttf", "./fonts/OpenSans-Semibold.ttf"]
-    },
     "hypher": {
         "name": "hypher",
         "description": "A small and fast JavaScript hyphenation engine.",
@@ -76,6 +71,22 @@
         "description": "Normalize.css makes browsers render all elements more consistently and in line with modern standards. It precisely targets only the styles that need normalizing.",
         "cssFiles": [
             "./normalize/css/normalize.css"
+        ]
+    },
+    "opensans": {
+        "name": "opensans",
+        "description": "Open Sans web font",
+        "fontFiles": [
+            "./opensans/fonts/OpenSans-Bold.woff",
+            "./opensans/fonts/OpenSans-BoldItalic.woff",
+            "./opensans/fonts/OpenSans-ExtraBold.woff",
+            "./opensans/fonts/OpenSans-ExtraBoldItalic.woff",
+            "./opensans/fonts/OpenSans-Italic.woff",
+            "./opensans/fonts/OpenSans-Light.woff",
+            "./opensans/fonts/OpenSans-LightItalic.woff",
+            "./opensans/fonts/OpenSans-Regular.woff",
+            "./opensans/fonts/OpenSans-Semibold.woff"
+            "./opensans/fonts/OpenSans-SemiboldItalic.woff"
         ]
     },
     "url-polyfill": {

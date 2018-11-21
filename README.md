@@ -204,16 +204,14 @@ grunt custom --name="myPackage"
 #### External Libraries
 
 * fastXmlPull
-* fonts
 * hypher
 * jQuery
 * jQueryUI
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
 * normalize
+* opensans
 * url-polyfill
-
-All of these libraries are already bundled within the Infusion image.
 
 ## How Do I Run Tests?
 

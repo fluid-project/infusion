@@ -44,11 +44,11 @@
             "./js/Builder.js"
         ],
         "dependencies": [
-            "fonts",
             "jQuery",
             "jQueryUI",
             "hypher",
             "normalize",
+            "opensans",
             "url-polyfill",
             "framework",
             "enhancement",

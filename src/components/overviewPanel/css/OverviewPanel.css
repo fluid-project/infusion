@@ -15,12 +15,12 @@
 
 @font-face {
     font-family: 'OpenSans';
-    src: url('../fonts/OpenSans-Regular.ttf');
+    src: url('../../../lib/opensans/fonts/OpenSans-Regular.woff');
 }
 
 @font-face {
     font-family: 'OpenSans';
-    src: url('../fonts/OpenSans-Bold.ttf');
+    src: url('../../../lib/opensans/fonts/OpenSans-Bold.woff');
     font-weight: bold;
 }
 

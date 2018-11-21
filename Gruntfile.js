@@ -100,7 +100,7 @@ module.exports = function (grunt) {
                 files: [{}]
             },
             dependencies: [
-                "src/lib/fonts",
+                "src/lib/opensans",
                 "src/lib/hypher",
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
@@ -171,8 +171,8 @@ module.exports = function (grunt) {
             },
             dependencies: {
                 files: [{
-                    src: "node_modules/opensans-webkit/fonts/OpenSans-*.ttf",
-                    dest: "src/lib/fonts/",
+                    src: "node_modules/opensans-webkit/fonts/OpenSans-*.woff",
+                    dest: "src/lib/opensans/fonts/",
                     expand: true,
                     flatten: true
                 }, {
