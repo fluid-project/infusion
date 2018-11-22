@@ -82,6 +82,11 @@ categorized by license:
 * [Normalize v8.0.0](https://necolas.github.io/normalize.css/)
 * [url-polyfill v1.0.14](https://github.com/lifaon74/url-polyfill)
 
+### Open Font License
+
+* [Lato font v2.015](http://www.latofonts.com)
+* [Love Ya Like A Sister font](https://fonts.google.com/specimen/Love+Ya+Like+A+Sister)
+
 ### zlib/libpng License
 
 * [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](
