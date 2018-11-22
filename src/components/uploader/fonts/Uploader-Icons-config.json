@@ -1,0 +1,20 @@
+{
+    "src": [
+        "svg/uploader-button-01.svg",
+        "svg/uploader-button-02.svg",
+        "svg/uploader-button-03.svg",
+        "svg/uploader-button-04.svg"
+    ],
+    "options": {
+        "font": "Uploader-Icons",
+        "codepoints": {
+            "uploader-button-01": "0xE001",
+            "uploader-button-02": "0xE000",
+            "uploader-button-03": "0xE002",
+            "uploader-button-04": "0xE003"
+        },
+        "templateOptions": {
+            "classPrefix": "fl-icon-"
+        }
+    }
+}
