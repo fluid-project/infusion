@@ -61,6 +61,15 @@ categorized by license:
 * [Hypher v0.2.5](https://github.com/bramstein/Hypher)
 * [Sinon v6.1.3](https://sinonjs.org)
 
+### CC-BY-4.0
+
+* [Infusion Icons](https://github.com/fluid-project/infusion-icons)
+  * Orator-Icons
+  * OverviewPanel-Icons
+  * PrefsFramework-Icons
+  * Uploader-Icons
+
+
 ### LGPL
 
 * [hyphenation-patterns v0.2.1](https://github.com/bramstein/hyphenation-patterns)

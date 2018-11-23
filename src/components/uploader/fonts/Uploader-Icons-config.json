@@ -1,9 +1,9 @@
 {
     "src": [
-        "svg/uploader-button-01.svg",
-        "svg/uploader-button-02.svg",
-        "svg/uploader-button-03.svg",
-        "svg/uploader-button-04.svg"
+        "svg/infusion/uploader-button-01.svg",
+        "svg/infusion/uploader-button-02.svg",
+        "svg/infusion/uploader-button-03.svg",
+        "svg/infusion/uploader-button-04.svg"
     ],
     "options": {
         "font": "Uploader-Icons",

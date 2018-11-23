@@ -1,0 +1,20 @@
+{
+    "src": [
+        "svg/fontawesome/solid/code.svg",
+        "svg/fontawesome/brands/github-alt.svg",
+        "svg/fontawesome/solid/book.svg",
+        "svg/fontawesome/solid/pencil-alt.svg"
+    ],
+    "options": {
+        "font": "OverviewPanel-Icons",
+        "codepoints": {
+            "code": "0xE600",
+            "github-alt": "0xE601",
+            "book": "0xE602",
+            "pencil-alt": "0xE603"
+        },
+        "templateOptions": {
+            "classPrefix": "fl-icon-"
+        }
+    }
+}

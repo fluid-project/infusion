@@ -1,9 +1,7 @@
 
 @font-face {
     font-family: "Icons";
-    src:url('../fonts/overviewPanel-icons.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/overviewPanel-icons.eot'),
-         url('../fonts/overviewPanel-icons.ttf');
+    src:url('../fonts/overviewPanel-icons.woff');
 }
 
 @font-face {
@@ -284,8 +282,8 @@
 .fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon {
     display: inline-block;
     background-color: #fff;
-    width: 2em;
-    height: 2em;
+    width: 2.5em;
+    height: 2.5em;
     border-radius: 50em;
     font-family: icons !important; /* FLUID-5321: use important to keep learner prefs from changing it. */
     font-weight: normal !important; /* Keep UIO from changing the weight of icons. Bold icons look poor. */
@@ -297,7 +295,7 @@
 
 .fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon:before {
     position: relative;
-    top: 0.35em;
+    top: 0.6em;
     font-size: 1.2em;
 }
 
@@ -315,6 +313,8 @@
 
 .fl-overviewPanel .fl-overviewPanel-links-icon-code:before {
     content: "\e600";
+    /* Adjust centering of icon */
+    margin-left: -0.2em;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links-icon-design:before {

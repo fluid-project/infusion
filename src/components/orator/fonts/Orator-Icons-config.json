@@ -1,8 +1,8 @@
 {
     "src": [
-        "svg/text-to-speech-read.svg",
-        "svg/play.svg",
-        "svg/pause.svg"
+        "svg/infusion/text-to-speech-read.svg",
+        "svg/infusion/play.svg",
+        "svg/infusion/pause.svg"
     ],
     "options": {
         "font": "Orator-Icons",
