@@ -266,9 +266,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         separatorCount = separatorCount || 0;
 
         fluid.each(testCases, function (testCase, selector) {
-            var childNodes = $(selector)[0].childNodes;
+            var elm = $(selector);
+            var childNodes = elm[0].childNodes;
             separatorCount += testCase.separatorCount;
-            jqUnit.assertEquals(prefix + ": The text for " + selector + " is returned correctly");
+            jqUnit.assertEquals(prefix + ": The text for " + selector + " is returned correctly", testCase.text, elm.text());
 
             fluid.each(testCase.syllabified, function (expected, index) {
                 var childNode = childNodes[index];
