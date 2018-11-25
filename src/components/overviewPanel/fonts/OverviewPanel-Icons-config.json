@@ -3,7 +3,8 @@
         "svg/fontawesome/solid/code.svg",
         "svg/fontawesome/brands/github-alt.svg",
         "svg/fontawesome/solid/book.svg",
-        "svg/fontawesome/solid/pencil-alt.svg"
+        "svg/fontawesome/solid/pencil-alt.svg",
+        "svg/infusion/fluid-star.svg"
     ],
     "options": {
         "font": "OverviewPanel-Icons",
@@ -11,7 +12,8 @@
             "code": "0xE600",
             "github-alt": "0xE601",
             "book": "0xE602",
-            "pencil-alt": "0xE603"
+            "pencil-alt": "0xE603",
+            "fluid-star": "0xE604"
         },
         "templateOptions": {
             "classPrefix": "fl-icon-"
