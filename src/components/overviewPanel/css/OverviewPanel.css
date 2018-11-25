@@ -146,6 +146,7 @@
     background-color: #333; /* IE8 */
     background-color: rgba(51,51,51,.96);
     line-height: 1.8em;
+    letter-spacing: normal; /* to prevent override from letter spacing adjuster */
     transition: background-color 0.2s ease;
     outline: 0.2em solid #333;
     outline: 0.2em solid rgba(51,51,51,.96);
@@ -282,6 +283,7 @@
     font-weight: normal !important; /* Keep UIO from changing the weight of icons. Bold icons look poor. */
     color: #333333;
     line-height: 1em;
+    letter-spacing: normal; /* to prevent override from letter spacing adjuster */
     text-align: center;
     transition: background-color 0.2s ease;
 }
