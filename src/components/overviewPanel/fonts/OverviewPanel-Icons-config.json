@@ -4,7 +4,7 @@
         "svg/fontawesome/brands/github-alt.svg",
         "svg/fontawesome/solid/book.svg",
         "svg/fontawesome/solid/pencil-alt.svg",
-        "svg/infusion/fluid-star.svg"
+        "svg/infusion/infusion-logo-star.svg"
     ],
     "options": {
         "font": "OverviewPanel-Icons",
@@ -13,7 +13,7 @@
             "github-alt": "0xE601",
             "book": "0xE602",
             "pencil-alt": "0xE603",
-            "fluid-star": "0xE604"
+            "infusion-logo-star": "0xE604"
         },
         "templateOptions": {
             "classPrefix": "fl-icon-"
