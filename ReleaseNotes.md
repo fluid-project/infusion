@@ -69,7 +69,6 @@ categorized by license:
   * PrefsFramework-Icons
   * Uploader-Icons
 
-
 ### LGPL
 
 * [hyphenation-patterns v0.2.1](https://github.com/bramstein/hyphenation-patterns)
