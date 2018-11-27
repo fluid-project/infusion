@@ -160,17 +160,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             toggle: {
                 funcName: "fluid.orator.controller.toggleState",
-                // Not providing an option for the explicit state value because
-                // when called through the jQuery click event the event object
-                // is passed in.
-                args: ["{that}", "playing"]
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
             }
         },
         listeners: {
             "onCreate.bindClick": {
-                "this": "{that}.dom.playToggle",
-                method: "click",
-                args: ["{that}.toggle"]
+                listener: "fluid.orator.controller.bindClick",
+                args: ["{that}"]
             }
         },
         modelListeners: {
@@ -188,12 +184,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
+     * Binds the click event for the "playToggle" element to trigger the `that.toggle` method.
+     * This is not bound declaratively to ensure that the correct arguments are passed along to the `that.toggle`
+     * method.
+     *
+     * @param {Component} that - an instance of `fluid.orator.controller`
+     */
+    fluid.orator.controller.bindClick = function (that) {
+        that.locate("playToggle").click(function () {
+            that.toggle("playing");
+        });
+    };
+
+    /**
      * Used to toggle the state of a model value at a specified path. The new state will be the inverse of the current
      * boolean value at the specified model path, or can be set explicitly by passing in a 'state' value. It's likely
      * that this method will be used in conjunction with a click handler. In that case it's most likely that the state
      * will be toggling the existing model value.
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.controller`
      * @param {String|Array} path - the path, into the model, for the value to toggle
      * @param {Boolean} state - (optional) explicit state to set the model value to
      */
@@ -210,7 +219,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * False - play style removed
      *       - aria-label set to the `play` string
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.controller`
      * @param {Boolean} state - the state to set the controller to
      */
     fluid.orator.controller.setToggleView = function (that, state) {
@@ -429,7 +438,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * initial text; which then proceeds through the transform chain to arrive at the final text.
      * To change the speech function (e.g for testing) the onQueueSpeech.queueSpeech listener can be overridden.
      *
-     * @param {Component} that - The component
+     * @param {Component} that - an instance of `fluid.orator.domReader`
      * @param {String} text - The text to be synthesized
      * @param {Boolean} interrupt - Used to indicate if this text should be queued or replace existing utterances.
      *                              This will be passed along to the listeners in the options; `options.interrupt`.
@@ -469,7 +478,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Sets the parseQueue and related model values
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.domReader`
      * @param {DomWordMap[]} parseQueue - An array of {DomWordMap} objects containing the position mappings from a parsed
      *                                   {DomElement}.
      */
@@ -521,7 +530,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Parses the DOM element into data points to use for highlighting the text, and queues the text into the self
      * voicing engine. The parsed data points are added to the component's `parseQueue`
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.domReader`
      * @param {String|jQuery|DomElement} elm - The DOM node to read
      */
     fluid.orator.domReader.readFromDOM = function (that, elm) {
@@ -538,7 +547,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns the index of the closest data point from the parseQueue based on the boundary provided.
      *
-     * @param {Component} that - The component
+     * @param {Component} that - an instance of `fluid.orator.domReader`
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *                             If the boundary is undefined or out of bounds, `undefined` will be returned.
      *
@@ -586,7 +595,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Highlights text from the parseQueue according to the specified boundary. Highlights are performed by wrapping
      * the appropriate text in the markup specified by `that.options.markup.highlight`.
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.domReader`
      * @param {Integer} boundary - the boundary point used to find the text to highlight. Typically this is the
      *                             utterance boundary returned from the utteranceOnBoundary event.
      */
@@ -703,7 +712,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * NOTE: consecutive whitespace is collapsed to the first whitespace character.
      * NOTE: hidden text is skipped.
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.domReader.parser`
      * @param {jQuery|DomElement} elm - the DOM node to parse
      * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
@@ -859,7 +868,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             toggle: {
                 funcName: "fluid.orator.selectionReader.togglePlay",
-                args: ["{that}"]
+                args: ["{that}", "{arguments}.0"]
             }
         }
     });
@@ -979,7 +988,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             var positionClass = that.options.styles[position.location === fluid.orator.selectionReader.location.TOP ? "above" : "below"];
             control.addClass(positionClass);
-            control.click(that.events.onToggleControl.fire);
+            control.click(function () {
+                // wrapped in an empty function so as not to pass along the jQuery event object
+                that.events.onToggleControl.fire();
+            });
             control.appendTo(that.container);
 
             // cleanup range
