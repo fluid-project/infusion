@@ -58,14 +58,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     spec: {priority: "last:testing"},
                     event: "{controllerTests oratorController}.events.onCreate"
                 }, {
-                    func: "{oratorController}.toggle"
+                    func: "{oratorController}.toggle",
+                    args: ["playing"]
                 }, {
                     listener: "fluid.tests.orator.controllerTester.verifyState",
                     args: ["{oratorController}", true],
                     spec: {path: "playing", priority: "last:testing"},
                     changeEvent: "{oratorController}.applier.modelChanged"
                 }, {
-                    func: "{oratorController}.toggle"
+                    func: "{oratorController}.toggle",
+                    args: ["playing"]
                 }, {
                     listener: "fluid.tests.orator.controllerTester.verifyState",
                     args: ["{oratorController}", false],
