@@ -322,13 +322,35 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    /**
+     * Collapses adjacent text nodes within an element.
+     * Similar to NODE.normalize() but works in IE 11.
+     * See: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8727426/
+     *
+     * @param {jQuery|DomElement} elm - The element to normalize.
+     */
+    fluid.prefs.enactor.syllabification.normalize = function (elm) {
+        elm = fluid.unwrap(elm);
+        var childNode = elm.childNodes[0];
+        while (childNode && childNode.nextSibling) {
+            var nextSibling = childNode.nextSibling;
+            if (childNode.nodeType === Node.TEXT_NODE && nextSibling.nodeType === Node.TEXT_NODE) {
+                childNode.textContent += nextSibling.textContent;
+                elm.removeChild(nextSibling);
+            } else {
+                childNode = nextSibling;
+            }
+        }
+    };
+
     fluid.prefs.enactor.syllabification.removeSyllabification = function (that) {
         that.locate("separator").each(function (index, elm) {
             var parent = elm.parentNode;
             $(elm).remove();
-            parent.normalize();
+            // Because Node.normalize doesn't work properly in IE 11, we use a custom function
+            // to normalize the text nodes in the parent.
+            fluid.prefs.enactor.syllabification.normalize(parent);
         });
-
     };
 
     fluid.prefs.enactor.syllabification.setPresentation = function (that, elm, state) {
