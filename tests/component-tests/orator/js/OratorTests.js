@@ -982,7 +982,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.selectionReader",
             tests: [{
-                expect: 22,
+                expect: 29,
                 name: "fluid.orator.selectionReader",
                 sequence: [{
                     listener: "fluid.tests.orator.verifySelectionState",
@@ -1019,7 +1019,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // click play
                     jQueryTrigger: "click",
-                    element: "{selectionReader}.dom.play"
+                    element: "{selectionReader}.dom.control"
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Replay", "{that}.options.testOpts.expected.textPlay"],

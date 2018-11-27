@@ -136,9 +136,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq(testPrefix + ": The model should be set correctly.", expectedModel, that.model);
 
         if (expectedModel.showUI) {
-            jqUnit.assertNodeExists(testPrefix + ": The selection play button should be present", that.options.selectors.play);
+            jqUnit.assertNodeExists(testPrefix + ": The selection control should be present", that.options.selectors.control);
+
+            var expectedText = that.options.strings[that.model.play ? "stop" : "play"];
+            jqUnit.assertEquals(testPrefix + ": The selection control label should have the correct text", expectedText, that.locate("controlLabel").text());
         } else {
-            jqUnit.assertNodeNotExists(testPrefix + ": The selection play button should not be present", that.options.selectors.play);
+            jqUnit.assertNodeNotExists(testPrefix + ": The selection control should not be present", that.options.selectors.control);
         }
     };
 

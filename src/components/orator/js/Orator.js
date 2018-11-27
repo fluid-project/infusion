@@ -760,17 +760,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.orator.selectionReader", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
-            play: ".flc-orator-selectionReader-play"
+            control: ".flc-orator-selectionReader-control",
+            controlLabel: ".flc-orator-selectionReader-controlLabel"
         },
         strings: {
-            playButton: "play"
+            play: "play",
+            stop: "stop"
         },
         styles: {
             above: "fl-orator-selectionReader-above",
-            below: "fl-orator-selectionReader-below"
+            below: "fl-orator-selectionReader-below",
+            control: "fl-orator-selectionReader-control"
         },
         markup: {
-            playButton: "<button class=\"flc-orator-selectionReader-play fl-orator-selectionReader-play\"><span class=\"fl-icon-orator\"></span><span>%playButton</span></button>"
+            control: "<button class=\"flc-orator-selectionReader-control\"><span class=\"fl-icon-orator\"></span><span class=\"flc-orator-selectionReader-controlLabel\"></span></button>"
         },
         model: {
             enabled: true,
@@ -785,7 +788,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             onSelectionChanged: null,
-            utteranceOnEnd: null
+            utteranceOnEnd: null,
+            onToggleControl: null
         },
         listeners: {
             "onCreate.bindEvents": {
@@ -797,11 +801,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 changePath: "play",
                 value: false,
                 source: "stopMethod"
-            }
+            },
+            "onToggleControl.togglePlay": "{that}.toggle"
         },
         modelListeners: {
             "showUI": {
-                funcName: "fluid.orator.selectionReader.renderPlayButton",
+                funcName: "fluid.orator.selectionReader.renderControl",
                 args: ["{that}", "{change}.value"],
                 namespace: "render"
             },
@@ -809,11 +814,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 func: "{that}.stop",
                 namespace: "stopPlayingWhenTextChanges"
             },
-            "play": {
+            "play": [{
                 func: "fluid.orator.selectionReader.queueSpeech",
                 args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
                 namespace: "queueSpeech"
-            },
+            }, {
+                func: "fluid.orator.selectionReader.renderControlState",
+                args: ["{that}", "{that}.dom.control", "{arguments}.0"],
+                namespace: "renderControlState"
+            }],
             "enabled": {
                 funcName: "fluid.orator.selectionReader.updateText",
                 args: ["{that}", "{change}.value"],
@@ -847,6 +856,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             stop: {
                 funcName: "fluid.orator.selectionReader.stopSpeech",
                 args: ["{that}.model.play", "{fluid.textToSpeech}.cancel"]
+            },
+            toggle: {
+                funcName: "fluid.orator.selectionReader.togglePlay",
+                args: ["{that}"]
             }
         }
     });
@@ -943,30 +956,43 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return position;
     };
 
-    fluid.orator.selectionReader.renderPlayButton = function (that, state) {
+
+    fluid.orator.selectionReader.renderControlState = function (that, control) {
+        var text = that.options.strings[that.model.play ? "stop" : "play"];
+        control.find(that.options.selectors.controlLabel).text(text);
+    };
+
+    fluid.orator.selectionReader.renderControl = function (that, state) {
         if (state) {
             var selectionRange = window.getSelection().getRangeAt(0);
             var rect = selectionRange.getClientRects()[0];
             var fontSize = parseFloat(that.container.css("font-size"));
             var position = fluid.orator.selectionReader.calculatePosition(rect, fontSize, that.options.offsetScale);
-            var playMarkup = fluid.stringTemplate(that.options.markup.playButton, that.options.strings);
-            var playButton = $(playMarkup);
+            var control = $(that.options.markup.control);
+            control.addClass(that.options.styles.control);
+            fluid.orator.selectionReader.renderControlState(that, control);
 
-            playButton.css({
+            control.css({
                 top:  position.top,
                 left: position.left
             });
+
             var positionClass = that.options.styles[position.location === fluid.orator.selectionReader.location.TOP ? "above" : "below"];
-            playButton.addClass(positionClass);
-            playButton.click(that.play);
-            playButton.appendTo(that.container);
+            control.addClass(positionClass);
+            control.click(that.events.onToggleControl.fire);
+            control.appendTo(that.container);
 
             // cleanup range
             selectionRange.detach();
 
         } else {
-            that.locate("play").remove();
+            that.locate("control").remove();
         }
+    };
+
+    fluid.orator.selectionReader.togglePlay = function (that, state) {
+        var newState = state || !that.model.play;
+        that[newState ? "play" : "stop"]();
     };
 
 })(jQuery, fluid_3_0_0);
