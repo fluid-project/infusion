@@ -20,7 +20,9 @@
             "./js/FluidRequests.js",
             "./js/MessageResolver.js",
             "./js/ResourceLoader.js",
-            "./js/NewViewSupport.js"
+            "./js/NewViewSupport.js",
+            "./js/MutationObserver.js",
+            "./js/TextNodeParser.js"
         ],
         "dependencies": [
             "jQuery",

@@ -28,7 +28,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.enactor.spacingSetter"],
         preferenceMap: {
             "fluid.prefs.wordSpace": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         cssProp: "word-spacing"

@@ -3,23 +3,23 @@
 /* Define font families */
 @font-face {
   font-family: Lato;
-  src: url(../fonts/Lato-Regular.ttf);
+  src: url(../fonts/Lato-Regular.woff);
 }
 @font-face {
   font-family: LatoLight;
-  src: url(../fonts/Lato-Light.ttf);
+  src: url(../fonts/Lato-Light.woff);
 }
 @font-face {
   font-family: LatoLightItalic;
-  src: url(../fonts/Lato-LightItalic.ttf);
+  src: url(../fonts/Lato-LightItalic.woff);
 }
 @font-face {
   font-family: LatoBlack;
-  src: url(../fonts/Lato-Black.ttf);
+  src: url(../fonts/Lato-Black.woff);
 }
 @font-face {
   font-family: LatoRegular;
-  src: url(../fonts/Lato-Regular.ttf);
+  src: url(../fonts/Lato-Regular.woff);
 }
 @font-face {
   font-family: LoveYaLikeASister;

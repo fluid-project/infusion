@@ -34,14 +34,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             local: "{that}.model.settings"
         },
-        modelListeners: {
-            "": {
-                listener: function (change) {
-                    console.log("Change:", change);
-                },
-                args: ["{change}"]
-            }
-        },
         invokers: {
             fetchImpl: {
                 funcName: "fluid.tests.remoteModelComponent.reqImpl",

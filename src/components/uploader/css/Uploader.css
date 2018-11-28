@@ -1,8 +1,6 @@
 @font-face {
     font-family: 'InfusionIcons';
-    src: url('../fonts/InfusionIcons-Uploader.eot?#iefix') format('embedded-opentype'), /* IE8 fix. Reference: https://www.fontspring.com/blog/the-new-bulletproof-font-face-syntax */
-         url('../fonts/InfusionIcons-Uploader.ttf'),
-         url('../fonts/InfusionIcons-Uploader.eot');
+    src: url('../fonts/Uploader-Icons.woff');
 }
 
 /*
