@@ -103,6 +103,20 @@ var demo = demo || {};
         }
     });
 
+    // Fine-tune the syllabification schema
+    fluid.defaults("demo.prefsEditor.auxSchema.syllabification", {
+        gradeNames: ["fluid.prefs.auxSchema.syllabification"],
+        auxiliarySchema: {
+            syllabification: {
+                enactor: {
+                    terms: {
+                        patternPrefix: "../../src/lib/hypher/patterns"
+                    }
+                }
+            }
+        }
+    });
+
 
     /**********************************************************************************
      * simplifyPanel

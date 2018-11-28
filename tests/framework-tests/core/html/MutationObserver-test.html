@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Mutation Observer tests</title>
+
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script src="../../../../src/framework/core/js/MutationObserver.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <script src="../js/MutationObserverTests.js"></script>
+    </head>
+
+    <body id="body">
+        <h1 id="qunit-header">Mutation Observer tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <!-- Test Markup -->
+
+        <ul class="flc-mutationObserver">
+            <li class="flc-mutationObserver-changeAttr">change attribute</li>
+            <li class="flc-mutationObserver-remove">to remove</li>
+        </ul>
+
+    </body>
+</html>
