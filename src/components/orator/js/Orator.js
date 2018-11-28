@@ -160,17 +160,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             toggle: {
                 funcName: "fluid.orator.controller.toggleState",
-                // Not providing an option for the explicit state value because
-                // when called through the jQuery click event the event object
-                // is passed in.
-                args: ["{that}", "playing"]
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
             }
         },
         listeners: {
             "onCreate.bindClick": {
-                "this": "{that}.dom.playToggle",
-                method: "click",
-                args: ["{that}.toggle"]
+                listener: "fluid.orator.controller.bindClick",
+                args: ["{that}"]
             }
         },
         modelListeners: {
@@ -188,12 +184,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
+     * Binds the click event for the "playToggle" element to trigger the `that.toggle` method.
+     * This is not bound declaratively to ensure that the correct arguments are passed along to the `that.toggle`
+     * method.
+     *
+     * @param {Component} that - an instance of `fluid.orator.controller`
+     */
+    fluid.orator.controller.bindClick = function (that) {
+        that.locate("playToggle").click(function () {
+            that.toggle("playing");
+        });
+    };
+
+    /**
      * Used to toggle the state of a model value at a specified path. The new state will be the inverse of the current
      * boolean value at the specified model path, or can be set explicitly by passing in a 'state' value. It's likely
      * that this method will be used in conjunction with a click handler. In that case it's most likely that the state
      * will be toggling the existing model value.
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.controller`
      * @param {String|Array} path - the path, into the model, for the value to toggle
      * @param {Boolean} state - (optional) explicit state to set the model value to
      */
@@ -210,7 +219,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * False - play style removed
      *       - aria-label set to the `play` string
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.orator.controller`
      * @param {Boolean} state - the state to set the controller to
      */
     fluid.orator.controller.setToggleView = function (that, state) {
@@ -560,7 +569,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Combines the parsed text into a String.
      *
      * @param {DomWordMap[]} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
-     *                                   {DomElement}.
+     *                                {DomElement}.
      *
      * @return {String} - The parsed text combined into a String.
      */
@@ -695,12 +704,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Highlights text from the parseQueue according to the specified boundary. Highlights are performed by wrapping
-     * the appropriate text in the markup specified by `that.options.markup.highlight`.
+     * Highlights text from the parseQueue. Highlights are performed by wrapping the appropriate text in the markup
+     * specified by `that.options.markup.highlight`.
      *
-     * @param {Component} that - the component
-     * @param {Integer} boundary - the boundary point used to find the text to highlight. Typically this is the
-     *                             utterance boundary returned from the utteranceOnBoundary event.
+     * @param {Component} that - an instance of `fluid.orator.domReader`
      */
     fluid.orator.domReader.highlight = function (that) {
         that.removeHighlight();
@@ -725,17 +732,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.orator.selectionReader", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
-            play: ".flc-orator-selectionReader-play"
+            control: ".flc-orator-selectionReader-control",
+            controlLabel: ".flc-orator-selectionReader-controlLabel"
         },
         strings: {
-            playButton: "play"
+            play: "play",
+            stop: "stop"
         },
         styles: {
             above: "fl-orator-selectionReader-above",
-            below: "fl-orator-selectionReader-below"
+            below: "fl-orator-selectionReader-below",
+            control: "fl-orator-selectionReader-control"
         },
         markup: {
-            playButton: "<button class=\"flc-orator-selectionReader-play fl-orator-selectionReader-play\"><span class=\"fl-icon-orator\"></span><span>%playButton</span></button>"
+            control: "<button class=\"flc-orator-selectionReader-control\"><span class=\"fl-icon-orator\"></span><span class=\"flc-orator-selectionReader-controlLabel\"></span></button>"
         },
         model: {
             enabled: true,
@@ -750,7 +760,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             onSelectionChanged: null,
-            utteranceOnEnd: null
+            utteranceOnEnd: null,
+            onToggleControl: null
         },
         listeners: {
             "onCreate.bindEvents": {
@@ -762,11 +773,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 changePath: "play",
                 value: false,
                 source: "stopMethod"
-            }
+            },
+            "onToggleControl.togglePlay": "{that}.toggle"
         },
         modelListeners: {
             "showUI": {
-                funcName: "fluid.orator.selectionReader.renderPlayButton",
+                funcName: "fluid.orator.selectionReader.renderControl",
                 args: ["{that}", "{change}.value"],
                 namespace: "render"
             },
@@ -774,11 +786,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 func: "{that}.stop",
                 namespace: "stopPlayingWhenTextChanges"
             },
-            "play": {
+            "play": [{
                 func: "fluid.orator.selectionReader.queueSpeech",
                 args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
                 namespace: "queueSpeech"
-            },
+            }, {
+                func: "fluid.orator.selectionReader.renderControlState",
+                args: ["{that}", "{that}.dom.control", "{arguments}.0"],
+                namespace: "renderControlState"
+            }],
             "enabled": {
                 funcName: "fluid.orator.selectionReader.updateText",
                 args: ["{that}", "{change}.value"],
@@ -812,6 +828,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             stop: {
                 funcName: "fluid.orator.selectionReader.stopSpeech",
                 args: ["{that}.model.play", "{fluid.textToSpeech}.cancel"]
+            },
+            toggle: {
+                funcName: "fluid.orator.selectionReader.togglePlay",
+                args: ["{that}", "{arguments}.0"]
             }
         }
     });
@@ -908,30 +928,46 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return position;
     };
 
-    fluid.orator.selectionReader.renderPlayButton = function (that, state) {
+
+    fluid.orator.selectionReader.renderControlState = function (that, control) {
+        var text = that.options.strings[that.model.play ? "stop" : "play"];
+        control.find(that.options.selectors.controlLabel).text(text);
+    };
+
+    fluid.orator.selectionReader.renderControl = function (that, state) {
         if (state) {
             var selectionRange = window.getSelection().getRangeAt(0);
             var rect = selectionRange.getClientRects()[0];
             var fontSize = parseFloat(that.container.css("font-size"));
             var position = fluid.orator.selectionReader.calculatePosition(rect, fontSize, that.options.offsetScale);
-            var playMarkup = fluid.stringTemplate(that.options.markup.playButton, that.options.strings);
-            var playButton = $(playMarkup);
+            var control = $(that.options.markup.control);
+            control.addClass(that.options.styles.control);
+            fluid.orator.selectionReader.renderControlState(that, control);
 
-            playButton.css({
+            control.css({
                 top:  position.top,
                 left: position.left
             });
+
             var positionClass = that.options.styles[position.location === fluid.orator.selectionReader.location.TOP ? "above" : "below"];
-            playButton.addClass(positionClass);
-            playButton.click(that.play);
-            playButton.appendTo(that.container);
+            control.addClass(positionClass);
+            control.click(function () {
+                // wrapped in an empty function so as not to pass along the jQuery event object
+                that.events.onToggleControl.fire();
+            });
+            control.appendTo(that.container);
 
             // cleanup range
             selectionRange.detach();
 
         } else {
-            that.locate("play").remove();
+            that.locate("control").remove();
         }
+    };
+
+    fluid.orator.selectionReader.togglePlay = function (that, state) {
+        var newState = state || !that.model.play;
+        that[newState ? "play" : "stop"]();
     };
 
 })(jQuery, fluid_3_0_0);
