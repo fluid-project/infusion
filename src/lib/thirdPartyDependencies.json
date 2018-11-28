@@ -85,7 +85,7 @@
             "./opensans/fonts/OpenSans-Light.woff",
             "./opensans/fonts/OpenSans-LightItalic.woff",
             "./opensans/fonts/OpenSans-Regular.woff",
-            "./opensans/fonts/OpenSans-Semibold.woff"
+            "./opensans/fonts/OpenSans-Semibold.woff",
             "./opensans/fonts/OpenSans-SemiboldItalic.woff"
         ]
     },
