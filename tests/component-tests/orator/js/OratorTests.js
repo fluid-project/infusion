@@ -60,14 +60,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     spec: {priority: "last:testing"},
                     event: "{controllerTests oratorController}.events.onCreate"
                 }, {
-                    func: "{oratorController}.toggle"
+                    func: "{oratorController}.toggle",
+                    args: ["playing"]
                 }, {
                     listener: "fluid.tests.orator.controllerTester.verifyState",
                     args: ["{oratorController}", true],
                     spec: {path: "playing", priority: "last:testing"},
                     changeEvent: "{oratorController}.applier.modelChanged"
                 }, {
-                    func: "{oratorController}.toggle"
+                    func: "{oratorController}.toggle",
+                    args: ["playing"]
                 }, {
                     listener: "fluid.tests.orator.controllerTester.verifyState",
                     args: ["{oratorController}", false],
@@ -984,7 +986,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.selectionReader",
             tests: [{
-                expect: 22,
+                expect: 29,
                 name: "fluid.orator.selectionReader",
                 sequence: [{
                     listener: "fluid.tests.orator.verifySelectionState",
@@ -1021,7 +1023,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // click play
                     jQueryTrigger: "click",
-                    element: "{selectionReader}.dom.play"
+                    element: "{selectionReader}.dom.control"
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Replay", "{that}.options.testOpts.expected.textPlay"],
