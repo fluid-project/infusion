@@ -85,8 +85,8 @@
             "./lib/opensans/fonts/OpenSans-Light.woff",
             "./lib/opensans/fonts/OpenSans-LightItalic.woff",
             "./lib/opensans/fonts/OpenSans-Regular.woff",
-            "./lib/opensans/fonts/OpenSans-Semibold.woff",
-            "./lib/opensans/fonts/OpenSans-SemiboldItalic.woff"
+            "./lib/opensans/fonts/OpenSans-SemiBold.woff",
+            "./lib/opensans/fonts/OpenSans-SemiBoldItalic.woff"
         ]
     },
     "roboto": {
