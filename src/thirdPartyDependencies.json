@@ -3,14 +3,14 @@
         "name": "XML for Script's Fast XML Pull Parser",
         "description": "A fast XML pull parser based on source code from the XML for Script project. Used by the Renderer to parse templates.",
         "files": [
-            "./fastXmlPull/js/fastXmlPull.js"
+            "./lib/fastXmlPull/js/fastXmlPull.js"
         ]
     },
     "hypher": {
         "name": "hypher",
         "description": "A small and fast JavaScript hyphenation engine.",
         "files": [
-            "./hypher/jquery.hypher.js"
+            "./lib/hypher/jquery.hypher.js"
         ],
         "dependencies": [
             "jQuery"
@@ -20,14 +20,14 @@
         "name": "jQuery",
         "description": "The jQuery core JavaScript library, used as the foundation for Infusion.",
         "files": [
-            "./jquery/core/js/jquery.js"
+            "./lib/jquery/core/js/jquery.js"
         ]
     },
     "jQueryScrollToPlugin": {
         "name": "jQuery scrollTo Plugin",
         "description": "Provides a way to scroll the browser's view to a specific element or location on the page.",
         "files": [
-            "./jquery/plugins/scrollTo/js/jquery.scrollTo.js"
+            "./lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"
         ],
         "dependencies": [
             "jQuery"
@@ -37,7 +37,7 @@
         "name": "jQuery Touch Punch Plugin",
         "description": "Provides touch event support for jQuery UI.",
         "files": [
-            "./jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"
+            "./lib/jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"
         ],
         "dependencies": [
             "jQuery",
@@ -48,19 +48,19 @@
         "name": "jQuery UI",
         "description": "jQuery UI Widgets and Interactions. Includes the following: Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip",
         "files": [
-            "./jquery/ui/js/version.js",
-            "./jquery/ui/js/widget.js",
-            "./jquery/ui/js/plugin.js",
-            "./jquery/ui/js/safe-active-element.js",
-            "./jquery/ui/js/safe-blur.js",
-            "./jquery/ui/js/scroll-parent.js",
-            "./jquery/ui/js/position.js",
-            "./jquery/ui/js/data.js",
-            "./jquery/ui/js/keycode.js",
-            "./jquery/ui/js/unique-id.js",
-            "./jquery/ui/js/mouse.js",
-            "./jquery/ui/js/draggable.js",
-            "./jquery/ui/js/tooltip.js"
+            "./lib/jquery/ui/js/version.js",
+            "./lib/jquery/ui/js/widget.js",
+            "./lib/jquery/ui/js/plugin.js",
+            "./lib/jquery/ui/js/safe-active-element.js",
+            "./lib/jquery/ui/js/safe-blur.js",
+            "./lib/jquery/ui/js/scroll-parent.js",
+            "./lib/jquery/ui/js/position.js",
+            "./lib/jquery/ui/js/data.js",
+            "./lib/jquery/ui/js/keycode.js",
+            "./lib/jquery/ui/js/unique-id.js",
+            "./lib/jquery/ui/js/mouse.js",
+            "./lib/jquery/ui/js/draggable.js",
+            "./lib/jquery/ui/js/tooltip.js"
         ],
         "dependencies": [
             "jQuery"
@@ -70,40 +70,40 @@
         "name": "normalize.css",
         "description": "Normalize.css makes browsers render all elements more consistently and in line with modern standards. It precisely targets only the styles that need normalizing.",
         "cssFiles": [
-            "./normalize/css/normalize.css"
+            "./lib/normalize/css/normalize.css"
         ]
     },
     "opensans": {
         "name": "opensans",
         "description": "Open Sans web font",
         "fontFiles": [
-            "./opensans/fonts/OpenSans-Bold.woff",
-            "./opensans/fonts/OpenSans-BoldItalic.woff",
-            "./opensans/fonts/OpenSans-ExtraBold.woff",
-            "./opensans/fonts/OpenSans-ExtraBoldItalic.woff",
-            "./opensans/fonts/OpenSans-Italic.woff",
-            "./opensans/fonts/OpenSans-Light.woff",
-            "./opensans/fonts/OpenSans-LightItalic.woff",
-            "./opensans/fonts/OpenSans-Regular.woff",
-            "./opensans/fonts/OpenSans-Semibold.woff"
-            "./opensans/fonts/OpenSans-SemiboldItalic.woff"
+            "./lib/opensans/fonts/OpenSans-Bold.woff",
+            "./lib/opensans/fonts/OpenSans-BoldItalic.woff",
+            "./lib/opensans/fonts/OpenSans-ExtraBold.woff",
+            "./lib/opensans/fonts/OpenSans-ExtraBoldItalic.woff",
+            "./lib/opensans/fonts/OpenSans-Italic.woff",
+            "./lib/opensans/fonts/OpenSans-Light.woff",
+            "./lib/opensans/fonts/OpenSans-LightItalic.woff",
+            "./lib/opensans/fonts/OpenSans-Regular.woff",
+            "./lib/opensans/fonts/OpenSans-Semibold.woff",
+            "./lib/opensans/fonts/OpenSans-SemiboldItalic.woff"
         ]
     },
     "roboto": {
         "name": "roboto",
         "description": "Roboto web font",
         "fontFiles": [
-            "./roboto/fonts/Roboto-Slab-Bold.woff",
-            "./roboto/fonts/Roboto-Slab-Light.woff",
-            "./roboto/fonts/Roboto-Slab-Regular.woff",
-            "./roboto/fonts/Roboto-Slab-Thin.woff"
+            "./lib/roboto/fonts/Roboto-Slab-Bold.woff",
+            "./lib/roboto/fonts/Roboto-Slab-Light.woff",
+            "./lib/roboto/fonts/Roboto-Slab-Regular.woff",
+            "./lib/roboto/fonts/Roboto-Slab-Thin.woff"
         ]
     },
     "url-polyfill": {
         "name": "url-polyfill",
         "description": "Polyfill URL and URLSearchParams to match last WHATWG specifications",
         "files": [
-            "./url-polyfill/js/url-polyfill.js"
+            "./lib/url-polyfill/js/url-polyfill.js"
         ]
     }
 }
