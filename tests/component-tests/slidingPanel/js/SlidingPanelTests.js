@@ -45,9 +45,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Show/hide button has the button role", "button", button.attr("role"));
             jqUnit.assertEquals("Show/hide button has correct aria-pressed", state, button.attr("aria-pressed"));
             jqUnit.assertEquals("Show/hide button has correct aria-controls", panel.attr("id"), button.attr("aria-controls"));
+            jqUnit.assertEquals("Show/hide button has correct aria-expanded", state, button.attr("aria-expanded"));
             jqUnit.assertEquals("Panel has the group role", "group", panel.attr("role"));
             jqUnit.assertEquals("Panel has the correct aria-label", that.options.strings.panelLabel, panel.attr("aria-label"));
-            jqUnit.assertEquals("Panel has correct aria-expanded", state, panel.attr("aria-expanded"));
         };
 
         jqUnit.test("Test Init", function () {
