@@ -127,18 +127,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var attrState = state ? "true" : "false";
         fluid.tests.prefs.responsive.assertAriaForButton(button, buttonName, controlsId);
         jqUnit.assertEquals(buttonName + " button has correct aria-pressed", attrState, button.attr("aria-pressed"));
+        jqUnit.assertEquals(buttonName + " button has correct aria-expanded", attrState, button.attr("aria-expanded"));
     };
 
     fluid.tests.prefs.responsive.assertAria = function (that, state) {
         var toggleButton = that.locate("toggleButton");
         var panel = that.locate("panel");
         var panelId = panel.attr("id");
-        var attrState = state ? "true" : "false";
 
         fluid.tests.prefs.responsive.assertAriaForToggleButton(toggleButton, "Hide/show", panelId, state);
         jqUnit.assertEquals("Panel has the group role", "group", panel.attr("role"));
         jqUnit.assertEquals("Panel has the correct aria-label", that.options.strings.panelLabel, panel.attr("aria-label"));
-        jqUnit.assertEquals("Panel has correct aria-expanded", attrState, panel.attr("aria-expanded"));
     };
 
     fluid.tests.prefs.responsive.assertResetButton = function (separatedPanel, state) {
