@@ -19,7 +19,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         distributeOptions: {
             target: "{/ fluid.tableOfContents.levels}.options.resources.template",
             record: {
-                forceCache: true,
                 url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
             }
         }
@@ -307,7 +306,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    forceCache: true,
                     url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             }

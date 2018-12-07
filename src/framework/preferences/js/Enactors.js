@@ -450,7 +450,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             options: {
                                 resources: {
                                     template: {
-                                        forceCache: true,
                                         url: "{fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
                                     }
                                 }

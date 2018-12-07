@@ -59,7 +59,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messages5: { // test locale and default locale identical - FLUID-5662
             href: "../data/messages4.json",
-            forceCache: true,
             locale: "en",
             defaultLocale: "en"
         }
@@ -94,7 +93,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messages5: { // test locale and default locale identical - FLUID-5662
             href: "../data/messages4.json",
-            forceCache: true,
             locale: "en",
             defaultLocale: "en"
         }

@@ -38,12 +38,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.resourceLoader.testTemplateLoader = function (resources) {
         // The template with a templating path of prefixTerm + name
         jqUnit.assertEquals("The template1 url has been set correctly", "../data/testTemplate1.html", resources.template1.url);
-        jqUnit.assertTrue("\"forceCache\" option for the template1 has been set", resources.template1.forceCache);
         jqUnit.assertEquals("The content of the template1 has been loaded correctly", "<div>Test Template 1</div>", $.trim(resources.template1.resourceText));
 
         // The template with a full path
         jqUnit.assertEquals("The template2 url has been set correctly", "../data/testTemplate2.html", resources.template2.url);
-        jqUnit.assertTrue("\"forceCache\" option for the template2 has been set", resources.template2.forceCache);
         jqUnit.assertEquals("The content of the template2 has been loaded correctly", "<div>Test Template 2</div>", $.trim(resources.template2.resourceText));
 
         // The localised template with a templating path of prefixTerm + name

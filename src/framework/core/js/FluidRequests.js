@@ -39,12 +39,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return exploded;
     };
 
-    /** Framework-global caching state for fluid.fetchResources **/
-
-    var resourceCache = {};
-
-    var pendingClass = {};
-
     /** Accepts a hash of structures with free keys, where each entry has either
      * href/url or nodeId set - on completion, callback will be called with the populated
      * structure with fetched resource text in the field "resourceText" for each
@@ -78,9 +72,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
 
         });
-        if (that.options.amalgamateClasses) {
-            fluid.fetchResources.amalgamateClasses(resourceSpecs, that.options.amalgamateClasses, that.operate);
-        }
         fluid.fetchResources.explodeForLocales(resourceSpecs);
         that.operate();
         return that;
@@ -135,21 +126,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    // Add "synthetic" elements of *this* resourceSpec list corresponding to any
-    // still pending elements matching the PROLEPTICK CLASS SPECIFICATION supplied
-    fluid.fetchResources.amalgamateClasses = function (specs, classes, operator) {
-        fluid.each(classes, function (clazz) {
-            var pending = pendingClass[clazz];
-            fluid.each(pending, function (pendingrec, canon) {
-                specs[clazz + "!" + canon] = pendingrec;
-                pendingrec.recurseFirer.addListener(operator);
-            });
-        });
-    };
-
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
     fluid.fetchResources.timeSuccessCallback = function (resourceSpec) {
         if (resourceSpec.timeSuccess && resourceSpec.options && resourceSpec.options.success) {
             var success = resourceSpec.options.success;
@@ -160,39 +136,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         (new Date().getTime() - startTime.getTime()) + "ms");
                 return ret;
             };
-        }
-    };
-
-    // TODO: Integrate punch-through from old Engage implementation
-    function canonUrl(url) {
-        return url;
-    }
-
-    fluid.fetchResources.clearResourceCache = function (url) {
-        if (url) {
-            delete resourceCache[canonUrl(url)];
-        }
-        else {
-            fluid.clear(resourceCache);
-        }
-    };
-
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
-    fluid.fetchResources.handleCachedRequest = function (resourceSpec, response, fetchError) {
-        var canon = canonUrl(resourceSpec.href);
-        var cached = resourceCache[canon];
-        if (cached.$$firer$$) {
-            fluid.log("Handling request for " + canon + " from cache");
-            var fetchClass = resourceSpec.fetchClass;
-            if (fetchClass && pendingClass[fetchClass]) {
-                fluid.log("Clearing pendingClass entry for class " + fetchClass);
-                delete pendingClass[fetchClass][canon];
-            }
-            var result = {response: response, fetchError: fetchError};
-            resourceCache[canon] = result;
-            cached.fire(response, fetchError);
         }
     };
 
@@ -215,9 +158,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             success: function (response) {
                 thisSpec.resourceText = response;
                 thisSpec.resourceKey = thisSpec.href;
-                if (thisSpec.forceCache) {
-                    fluid.fetchResources.handleCachedRequest(thisSpec, response);
-                }
                 fluid.fetchResources.completeRequest(thisSpec);
             },
             error: function (response, textStatus, errorThrown) {
@@ -226,56 +166,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     textStatus: response.textStatus,
                     errorThrown: errorThrown
                 };
-                if (thisSpec.forceCache) {
-                    fluid.fetchResources.handleCachedRequest(thisSpec, null, thisSpec.fetchError);
-                }
                 fluid.fetchResources.completeRequest(thisSpec);
             }
 
         };
-    };
-
-
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
-    fluid.fetchResources.issueCachedRequest = function (resourceSpec, options) {
-        var canon = canonUrl(resourceSpec.href);
-        var cached = resourceCache[canon];
-        if (!cached) {
-            fluid.log("First request for cached resource with url " + canon);
-            cached = fluid.makeEventFirer({name: "cache notifier for resource URL " + canon});
-            cached.$$firer$$ = true;
-            resourceCache[canon] = cached;
-            var fetchClass = resourceSpec.fetchClass;
-            if (fetchClass) {
-                if (!pendingClass[fetchClass]) {
-                    pendingClass[fetchClass] = {};
-                }
-                pendingClass[fetchClass][canon] = resourceSpec;
-            }
-            options.cache = false; // TODO: Getting weird "not modified" issues on Firefox
-            $.ajax(options);
-        }
-        else {
-            if (!cached.$$firer$$) {
-                if (cached.response) {
-                    options.success(cached.response);
-                } else {
-                    options.error(cached.fetchError);
-                }
-            }
-            else {
-                fluid.log("Request for cached resource which is in flight: url " + canon);
-                cached.addListener(function (response, fetchError) {
-                    if (response) {
-                        options.success(response);
-                    } else {
-                        options.error(fetchError);
-                    }
-                });
-            }
-        }
     };
 
     /*
@@ -326,12 +220,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         resourceSpec.initTime = new Date();
         fluid.log("Request with key " + key + " queued for " + resourceSpec.href);
 
-        if (resourceSpec.forceCache) {
-            fluid.fetchResources.issueCachedRequest(resourceSpec, options);
-        }
-        else {
-            $.ajax(options);
-        }
+        $.ajax(options);
     };
 
 
@@ -365,71 +254,5 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }, 1);
         }
     };
-
-    // TODO: This framework function is a stop-gap before the "ginger world" is capable of
-    // asynchronous instantiation. It currently performs very poor fidelity expansion of a
-    // component's options to discover "resources" only held in the static environment
-    fluid.fetchResources.primeCacheFromResources = function (componentName) {
-        var resources = fluid.defaults(componentName).resources;
-        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources));
-        fluid.fetchResources(expanded);
-    };
-
-    /** Utilities invoking requests for expansion **/
-    fluid.registerNamespace("fluid.expander");
-
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
-    fluid.expander.makeDefaultFetchOptions = function (successdisposer, failid, options) {
-        return $.extend(true, {dataType: "text"}, options, {
-            success: function (response, environmentdisposer) {
-                var json = JSON.parse(response);
-                environmentdisposer(successdisposer(json));
-            },
-            error: function (response, textStatus) {
-                fluid.log("Error fetching " + failid + ": " + textStatus);
-            }
-        });
-    };
-
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
-    fluid.expander.makeFetchExpander = function (options) {
-        return { expander: {
-            type: "fluid.expander.deferredFetcher",
-            href: options.url,
-            options: fluid.expander.makeDefaultFetchOptions(options.disposer, options.url, options.options),
-            resourceSpecCollector: "{resourceSpecCollector}",
-            fetchKey: options.fetchKey
-        }};
-    };
-
-    fluid.expander.deferredFetcher = function (deliverer, source, expandOptions) {
-        var expander = source.expander;
-        var spec = fluid.copy(expander);
-        // fetch the "global" collector specified in the external environment to receive
-        // this resourceSpec
-        var collector = fluid.expand(expander.resourceSpecCollector, expandOptions);
-        delete spec.type;
-        delete spec.resourceSpecCollector;
-        delete spec.fetchKey;
-        var environmentdisposer = function (disposed) {
-            deliverer(disposed);
-        };
-        // replace the callback which is there (taking 2 arguments) with one which
-        // directly responds to the request, passing in the result and OUR "disposer" -
-        // which once the user has processed the response (say, parsing JSON and repackaging)
-        // finally deposits it in the place of the expander in the tree to which this reference
-        // has been stored at the point this expander was evaluated.
-        spec.options.success = function (response) {
-            expander.options.success(response, environmentdisposer);
-        };
-        var key = expander.fetchKey || fluid.allocateGuid();
-        collector[key] = spec;
-        return fluid.NO_VALUE;
-    };
-
 
 })(jQuery, fluid_3_0_0);

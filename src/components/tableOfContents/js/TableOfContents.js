@@ -363,7 +363,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         resources: {
             template: {
-                forceCache: true,
                 url: "../html/TableOfContents.html"
             }
         },

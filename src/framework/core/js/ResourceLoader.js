@@ -57,7 +57,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var mapped = fluid.transform(that.options.resources, that.transformURL);
 
         return fluid.transform(mapped, function (url) {
-            var resourceSpec = {url: url, forceCache: true, options: that.options.resourceOptions};
+            var resourceSpec = {url: url, options: that.options.resourceOptions};
             return $.extend(resourceSpec, fluid.filterKeys(that.options, ["defaultLocale", "locale"]));
         });
     };
