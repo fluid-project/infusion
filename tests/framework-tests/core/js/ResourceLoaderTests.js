@@ -54,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.asyncTest("Test Resource Loader", function () {
-        jqUnit.expect(8);
+        jqUnit.expect(6);
         fluid.tests.resourceLoader();
     });
 
