@@ -1182,6 +1182,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "by": "fl-theme-by",
                 "yb": "fl-theme-yb",
                 "lgdg": "fl-theme-lgdg",
+                "gd": "fl-theme-gd",
                 "gw": "fl-theme-gw",
                 "bbr": "fl-theme-bbr"
             }
@@ -1234,14 +1235,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.contrastTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
-            expectedNumOfOptions: 8,
+            expectedNumOfOptions: 9,
             defaultValue: "default",
             newValue: "bw"
         },
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 30,
+                expect: 33,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     listener: "fluid.tests.contrastPanel.testDefault",

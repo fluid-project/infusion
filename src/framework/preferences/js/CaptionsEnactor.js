@@ -19,7 +19,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*******************************************************************************
      * captions
      *
-     * An enactor that is capable enabling captions on embedded YouTube videos
+     * An enactor that is capable of enabling captions on embedded YouTube videos
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.captions", {

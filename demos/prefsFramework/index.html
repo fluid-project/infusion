@@ -24,6 +24,8 @@
         <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
         <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
 
+        <script type="text/javascript" src="../../src/lib/hypher/jquery.hypher.js"></script>
+
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
@@ -38,6 +40,8 @@
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/NewViewSupport.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/MutationObserver.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/TextNodeParser.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
@@ -58,10 +62,12 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingPanel.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpacePanel.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/WordSpacePanel.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SyllabificationPanel.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingEnactor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceEnactor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/WordSpaceEnactor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SyllabificationEnactor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../src/components/switch/js/Switch.js"></script>
@@ -72,8 +78,8 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/WordSpaceSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SyllabificationSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
-        <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
         <script type="text/javascript" src="../../src/components/orator/js/Orator.js"></script>
 
@@ -96,6 +102,7 @@
                             "fluid.prefs.auxSchema.starter", // this will add the starter set
                             "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor
                             "fluid.prefs.auxSchema.wordSpace", // this will add the word space adjuster and enactor
+                            "demo.prefsEditor.auxSchema.syllabification", // this will add the syllabification adjuster and enactor
                             "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
                             "demo.prefsEditor.progressiveEnhancement" // progressive enhancement - may add selfVoicing
                         ],
@@ -418,12 +425,14 @@
 
                         <img class="icon" style="padding-right: 5px; float: right;" src="images/theme_climate_90.gif" alt="Oceans and Coasts" height="90" width="90">
                         <aside id="left_box">
-
-                            <div class="left_tab"></div>
-                            <div class="middle_tab">
-                                <h2 class="h1_middle_text fl-inverted-color">Resources</h2>
+                            <div class="fl-inverted-color">
+                                <div class="left_tab"></div>
+                                <div class="middle_tab">
+                                    <h2 class="h1_middle_text">Resources</h2>
+                                </div>
+                                <div class="right_tab"></div>
                             </div>
-                            <div class="right_tab"></div><div style="clear:both;"></div>
+                            <div style="clear:both;"></div>
                             <div id="newsReleasesList" style="overflow: hidden;border: 1px #CCC solid ;margin-bottom: 11px; ">
                                 <h3 style="padding:5px; padding-bottom:0px; background-color:#F0F8FF">Multimedia</h3>
                                 <ul>

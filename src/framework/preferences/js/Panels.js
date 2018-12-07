@@ -1010,11 +1010,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "contrast-yb",
                 "contrast-lgdg",
                 "contrast-gw",
+                "contrast-gd",
                 "contrast-bbr"
             ]
         },
         controlValues: {
-            theme: ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "bbr"]
+            theme: ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"]
         }
     });
 
