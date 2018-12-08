@@ -1547,7 +1547,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         }
         target = fluid.unwrap(target);
         var resourceSpec = {base: {resourceText: template,
-                            href: ".", resourceKey: ".", cutpoints: options.cutpoints}
+                            url: ".", resourceKey: ".", cutpoints: options.cutpoints}
                             };
         var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
         return fluid.reRender(templates, target, tree, options);

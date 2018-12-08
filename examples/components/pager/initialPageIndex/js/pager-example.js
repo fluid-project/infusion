@@ -25,7 +25,7 @@ var example = example || {};
     example.initPager = function () {
         var resources = {
             users: {
-                href: "../shared/data/pager.json",
+                url: "../shared/data/pager.json",
                 options: {
                     dataType: "json"
                 }

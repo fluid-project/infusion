@@ -497,7 +497,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var resourceSpec = {
             base: {
                 resourceText: resources.template.resourceText,
-                href: ".",
+                url: ".",
                 resourceKey: ".",
                 cutpoints: cutpoints
             }

@@ -1023,7 +1023,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textFont.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textFont.html"
             }
         },
         classnameMap: {
@@ -1171,7 +1171,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-contrast.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-contrast.html"
             }
         },
         classnameMap: {
@@ -1329,7 +1329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize.html"
             }
         }
     });
@@ -1393,7 +1393,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace.html"
             }
         }
     });
@@ -1466,7 +1466,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-layout.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-layout.html"
             }
         }
     });
@@ -1531,7 +1531,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-enhanceInputs.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-enhanceInputs.html"
             }
         }
     });

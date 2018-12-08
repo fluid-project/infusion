@@ -54,10 +54,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.resourceLoader.resolveResources = function (that) {
-        var mapped = fluid.transform(that.options.resources, that.transformURL);
-
-        return fluid.transform(mapped, function (url) {
-            var resourceSpec = {url: url, options: that.options.resourceOptions};
+        return fluid.transform(that.options.resources, function (record) {
+            var userSpec = typeof(record) === "string" ? {url: record} : record;
+            var resourceSpec = $.extend(true, {}, {
+                defaultLocale: that.options.defaultLocale,
+                locale: that.options.locale,
+                options: that.options.resourceOptions}, userSpec);
+            resourceSpec.url = that.transformURL(resourceSpec.url);
             return $.extend(resourceSpec, fluid.filterKeys(that.options, ["defaultLocale", "locale"]));
         });
     };

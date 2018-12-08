@@ -30,7 +30,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.rendererComponent"],
         resources: {
             template: {
-                href: "../html/overviewPanelTemplate.html"
+                url: "../html/overviewPanelTemplate.html"
             }
         },
         listeners: {

@@ -21,13 +21,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var resourceSpecs = {
             objects: {
-                href: "../data/objects.json",
+                url: "../data/objects.json",
                 options: {
                     dataType: "text"
                 }
             },
             intake: {
-                href: "../data/intake.json",
+                url: "../data/intake.json",
                 options: {
                     dataType: "text"
                 }
@@ -58,7 +58,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             locale: "gr"
         },
         messages5: { // test locale and default locale identical - FLUID-5662
-            href: "../data/messages4.json",
+            url: "../data/messages4.json",
             locale: "en",
             defaultLocale: "en"
         }
@@ -92,7 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             defaultLocale: "en"
         },
         messages5: { // test locale and default locale identical - FLUID-5662
-            href: "../data/messages4.json",
+            url: "../data/messages4.json",
             locale: "en",
             defaultLocale: "en"
         }

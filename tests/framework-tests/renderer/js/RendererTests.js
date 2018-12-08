@@ -1233,7 +1233,7 @@
             var resourceSpec = {
                 base: {
                     resourceText: fluid.extractTemplate(node[0], options.armouring),
-                    href: ".",
+                    url: ".",
                     resourceKey: "."
                 }
             };
@@ -1499,10 +1499,10 @@
 
         var resourceSpec = {
             properties: {
-                href: "../data/testProperties.properties"
+                url: "../data/testProperties.properties"
             },
             json: {
-                href: "../data/testProperties.json"
+                url: "../data/testProperties.json"
             }
         };
         var calls = 0;
@@ -1530,14 +1530,14 @@
 
         var resourceSpec2 = {
             properties: {
-                href: "../data/testProperties.properties",
+                url: "../data/testProperties.properties",
                 options: {
                     success: destructiveCountingFunction,
                     async: false
                 }
             },
             json: {
-                href: "../data/testProperties.json",
+                url: "../data/testProperties.json",
                 options: {
                     success: destructiveCountingFunction,
                     async: false
@@ -1560,10 +1560,10 @@
 
         var resourceSpec3 = {
             data: {
-                href: "../data/testPerformance.json"
+                url: "../data/testPerformance.json"
             },
             html: {
-                href: "../data/testPerformance.html"
+                url: "../data/testPerformance.html"
             }
         };
 
@@ -1664,7 +1664,7 @@
                 var resourceSpec = {
                     base: {
                         resourceText: template,
-                        href: ".",
+                        url: ".",
                         resourceKey: ".",
                         cutpoints: options.cutpoints
                     }

@@ -40,7 +40,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Accepts a hash of structures with free keys, where each entry has either
-     * href/url or nodeId set - on completion, callback will be called with the populated
+     * url or nodeId set - on completion, callback will be called with the populated
      * structure with fetched resource text in the field "resourceText" for each
      * entry. Each structure may contain "options" holding raw options to be forwarded
      * to jQuery.ajax().
@@ -58,9 +58,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             resourceSpec.recurseFirer = fluid.makeEventFirer({name: "I/O completion for resource \"" + key + "\""});
             resourceSpec.recurseFirer.addListener(that.operate);
-            if (resourceSpec.url && !resourceSpec.href) {
-                resourceSpec.href = resourceSpec.url;
-            }
 
             // If options.defaultLocale is set, it will replace any
             // defaultLocale set on an individual resourceSpec
@@ -80,11 +77,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.fetchResources.explodeForLocales = function (resourceSpecs) {
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             if (resourceSpec.locale) {
-                var exploded = fluid.explodeLocalisedName(resourceSpec.href, resourceSpec.locale, resourceSpec.defaultLocale);
+                var exploded = fluid.explodeLocalisedName(resourceSpec.url, resourceSpec.locale, resourceSpec.defaultLocale);
                 for (var i = 0; i < exploded.length; ++i) {
                     var newKey = key + "$localised-" + i;
                     var newRecord = $.extend(true, {}, resourceSpec, {
-                        href: exploded[i],
+                        url: exploded[i],
                         localeExploded: true
                     });
                     resourceSpecs[newKey] = newRecord;
@@ -132,8 +129,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             resourceSpec.options.success = function () {
                 var startTime = new Date();
                 var ret = success.apply(null, arguments);
-                fluid.log("External callback for URL " + resourceSpec.href + " completed - callback time: " +
-                        (new Date().getTime() - startTime.getTime()) + "ms");
+                fluid.log("External callback for URL " + resourceSpec.url + " completed - callback time: " +
+                        (Date.now() - startTime.getTime()) + "ms");
                 return ret;
             };
         }
@@ -145,7 +142,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.fetchResources.completeRequest = function (thisSpec) {
         thisSpec.queued = false;
         thisSpec.completeTime = new Date();
-        fluid.log("Request to URL " + thisSpec.href + " completed - total elapsed time: " +
+        fluid.log("Request to URL " + thisSpec.url + " completed - total elapsed time: " +
             (thisSpec.completeTime.getTime() - thisSpec.initTime.getTime()) + "ms");
         thisSpec.recurseFirer.fire();
     };
@@ -157,7 +154,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return {
             success: function (response) {
                 thisSpec.resourceText = response;
-                thisSpec.resourceKey = thisSpec.href;
+                thisSpec.resourceKey = thisSpec.url;
                 fluid.fetchResources.completeRequest(thisSpec);
             },
             error: function (response, textStatus, errorThrown) {
@@ -208,7 +205,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.fetchResources.issueRequest = function (resourceSpec, key) {
         var thisCallback = fluid.fetchResources.makeResourceCallback(resourceSpec);
         var options = {
-            url:     resourceSpec.href,
+            url:     resourceSpec.url,
             success: thisCallback.success,
             error:   thisCallback.error,
             dataType: resourceSpec.dataType || "text"
@@ -218,7 +215,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                       options, resourceSpec.options);
         resourceSpec.queued = true;
         resourceSpec.initTime = new Date();
-        fluid.log("Request with key " + key + " queued for " + resourceSpec.href);
+        fluid.log("Request with key " + key + " queued for " + resourceSpec.url);
 
         $.ajax(options);
     };
@@ -229,7 +226,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var resourceSpecs = that.resourceSpecs;
         for (var key in resourceSpecs) {
             var resourceSpec = resourceSpecs[key];
-            if (resourceSpec.href && !resourceSpec.completeTime) {
+            if (resourceSpec.url && !resourceSpec.completeTime) {
                 if (!resourceSpec.queued) {
                     fluid.fetchResources.issueRequest(resourceSpec, key);
                 }

@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var resources = {
         bundle: {
-            href: "json/config.json"
+            url: "json/config.json"
         }
     };
 
@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: {
                     template: {
-                        href: bundle.templateUrl || "../../src/components/overviewPanel/html/overviewPanelTemplate.html"
+                        url: bundle.templateUrl || "../../src/components/overviewPanel/html/overviewPanelTemplate.html"
                     }
                 },
                 strings: bundle.strings,

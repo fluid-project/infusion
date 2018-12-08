@@ -444,7 +444,7 @@ parseloop: // eslint-disable-line indent
     };
 
     /* Returns a "template structure", with globalmap in the root, and a list
-     * of entries {href, template, cutpoints} for each parsed template.
+     * of entries {url, template, cutpoints} for each parsed template.
      */
     fluid.parseTemplates = function (resourceSpec, templateList, opts) {
         var togo = [];
@@ -452,15 +452,15 @@ parseloop: // eslint-disable-line indent
         togo.globalmap = {};
         for (var i = 0; i < templateList.length; ++i) {
             var resource = resourceSpec[templateList[i]];
-            var lastslash = resource.href.lastIndexOf("/");
-            var baseURL = lastslash === -1 ? "" : resource.href.substring(0, lastslash + 1);
+            var lastslash = resource.url.lastIndexOf("/");
+            var baseURL = lastslash === -1 ? "" : resource.url.substring(0, lastslash + 1);
 
             var template = fluid.parseTemplate(resource.resourceText, baseURL,
                 opts.scanStart && i === 0, resource.cutpoints, opts);
             if (i === 0) {
                 fluid.aggregateMMap(togo.globalmap, template.globalmap);
             }
-            template.href = resource.href;
+            template.url = resource.url;
             template.baseURL = baseURL;
             template.resourceKey = resource.resourceKey;
 

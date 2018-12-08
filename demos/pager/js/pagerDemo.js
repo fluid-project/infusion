@@ -29,7 +29,7 @@ var demo = demo || {};
         },
         resources: {
             users: {
-                href: "data/pager.json",
+                url: "data/pager.json",
                 options: {
                     dataType: "json"
                 }
