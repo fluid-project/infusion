@@ -34,7 +34,12 @@ var example = example || {};
                     "fa": "fa",
                     "fr": "fr"
                 },
-                langSegIndex: 6
+                langSegIndex: {
+                    expander: {
+                        funcName: "example.prefsEditor.getLangSegIndex",
+                        args: ["{example.prefsEditor}.options.localizationOpts.enactor.langMap"]
+                    }
+                }
             },
             panel: {
                 controlValues: {
@@ -61,5 +66,31 @@ var example = example || {};
             }
         }
     });
+
+    /**
+     * Used as an expander to find the langSegIndex. For most implementations this would actually refer to 1, which
+     * is the default value; meaning a scheme such as this would not be required. However, the way this example is
+     * constructed and expected to run, the langSegIndex is at the end of the path. Because we don't know ahead of time
+     * where how the example will be served, we don't know the full path and must dynamically calculate the index.
+     *
+     * @param {Object} langMap - a mapping of language code to URL path resource.
+     *
+     * @return {Integer} - The lagSegIndex. Defaults to 1 if none of the values from the langMap are found in the
+     *                     current location pathname.
+     */
+    example.prefsEditor.getLangSegIndex = function (langMap) {
+        var langVals = fluid.values(langMap);
+        var pathSegs = location.pathname.split("/");
+        var index = "1";
+
+        fluid.each(langVals, function (langVal) {
+            var foundIndex = pathSegs.lastIndexOf(langVal);
+            if (foundIndex >= 0) {
+                index = foundIndex;
+            }
+        });
+
+        return index;
+    };
 
 })(jQuery, fluid);

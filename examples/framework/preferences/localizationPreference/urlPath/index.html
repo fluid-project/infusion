@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
 
-        <title>Editor de preferencias: Preferencia de localización</title>
+        <title>Preferences Editor: Localization Preference</title>
         <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/version.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/keycode.js"></script>
@@ -55,7 +55,7 @@
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/LocalizationSchemas.js"></script>
 
-        <script type="text/javascript" src="../js/localization.js"></script>
+        <script type="text/javascript" src="js/localization.js"></script>
     </head>
 
     <body class="fl-focus">
@@ -89,7 +89,7 @@
         </div>
         <!-- END markup for Preferences Editor -->
 
-        <h1>Hola Mundo!</h1>
+        <h1>Hello World!</h1>
 
         <script type="text/javascript">
             var prefsEditor = example.prefsEditor(".flc-prefsEditor-separatedPanel", {
@@ -97,8 +97,7 @@
                     "templatePrefix": "../../../../../src/framework/preferences/html",
                     "messagePrefix": "../../../../../src/framework/preferences/messages"
                 },
-                template: "../html/prefsEditor.html",
-                defaultLocale: "es"
+                template: "html/prefsEditor.html"
             });
         </script>
     </body>
