@@ -190,7 +190,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.textSize"
                     },
-                    messageBase: "{messageLoader}.resources.textSize.resourceText",
+                    messageBase: "{messageLoader}.resources.textSize.parsed",
                     resources: {
                         template: "{templateLoader}.resources.textSize"
                     },
@@ -210,7 +210,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.lineSpace"
                     },
-                    messageBase: "{messageLoader}.resources.lineSpace.resourceText",
+                    messageBase: "{messageLoader}.resources.lineSpace.parsed",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
                     },
@@ -231,7 +231,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.textFont"
                     },
-                    messageBase: "{messageLoader}.resources.textFont.resourceText",
+                    messageBase: "{messageLoader}.resources.textFont.parsed",
                     resources: {
                         template: "{templateLoader}.resources.textFont"
                     }
@@ -247,7 +247,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.theme"
                     },
-                    messageBase: "{messageLoader}.resources.contrast.resourceText",
+                    messageBase: "{messageLoader}.resources.contrast.parsed",
                     resources: {
                         template: "{templateLoader}.resources.contrast"
                     }
@@ -262,7 +262,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.toc"
                     },
-                    messageBase: "{messageLoader}.resources.layoutControls.resourceText",
+                    messageBase: "{messageLoader}.resources.layoutControls.parsed",
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
                     }
@@ -277,7 +277,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.inputs"
                     },
-                    messageBase: "{messageLoader}.resources.enhanceInputs.resourceText",
+                    messageBase: "{messageLoader}.resources.enhanceInputs.parsed",
                     resources: {
                         template: "{templateLoader}.resources.enhanceInputs"
                     }

@@ -1521,43 +1521,6 @@
 
         });
 
-        var destructiveCalls = 0;
-
-        var destructiveCountingFunction = function () {
-            ++destructiveCalls;
-            fluid.fail("A terrible callback which tries to destroy the world");
-        };
-
-        var resourceSpec2 = {
-            properties: {
-                url: "../data/testProperties.properties",
-                options: {
-                    success: destructiveCountingFunction,
-                    async: false
-                }
-            },
-            json: {
-                url: "../data/testProperties.json",
-                options: {
-                    success: destructiveCountingFunction,
-                    async: false
-                }
-            }
-        };
-
-        jqUnit.asyncTest("fetchResources callback tests", function () {
-            function callback() {
-                jqUnit.assert("Call to overall callback");
-                fluid.failureEvent.removeListener("jqUnit"); // restore the original jqUnit test failing listener
-                jqUnit.start();
-            }
-            jqUnit.expect(2);
-            fluid.failureEvent.addListener(fluid.identity, "jqUnit"); // temporarily displace jqUnit's test failing listener
-            fluid.fetchResources(resourceSpec2, callback);
-
-            jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
-        });
-
         var resourceSpec3 = {
             data: {
                 url: "../data/testPerformance.json"

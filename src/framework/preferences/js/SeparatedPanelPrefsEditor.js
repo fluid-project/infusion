@@ -110,7 +110,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         msgResolver: {
                             type: "fluid.messageResolver",
                             options: {
-                                messageBase: "{messageLoader}.resources.prefsEditor.resourceText"
+                                messageBase: "{messageLoader}.resources.prefsEditor.parsed"
                             }
                         }
                     }

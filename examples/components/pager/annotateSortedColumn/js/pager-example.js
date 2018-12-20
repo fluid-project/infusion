@@ -26,15 +26,13 @@ var example = example || {};
         var resources = {
             users: {
                 url: "../shared/data/pager.json",
-                options: {
-                    dataType: "json"
-                }
+                dataType: "json"
             }
         };
 
         function initPager(resourceSpecs) {
 
-            var model = resourceSpecs.users.resourceText;
+            var model = resourceSpecs.users.parsed;
             var columnDefs = [
                 {
                     key: "user-link",

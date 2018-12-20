@@ -36,7 +36,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.fetchResources(resourceSpecs, function () {
             jqUnit.assertUndefined("No fetch error", resourceSpecs.objects.fetchError);
-            jqUnit.assertValue("Request completed", resourceSpecs.objects.completeTime);
+            jqUnit.assertValue("Request completed", resourceSpecs.objects.resourceText);
             jqUnit.start();
         });
     });

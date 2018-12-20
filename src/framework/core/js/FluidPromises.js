@@ -22,10 +22,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.promise = function () {
         var that = {
+            // TODO: We probably can and should replace these will actual events, especially once we optimise out
+            // "byId" and perhaps also experiment with whether Object.defineProperty creates less garbage than that-ism
             onResolve: [],
             onReject: []
-            // disposition
-            // value
+            // disposition: "resolve"/"reject"
+            // value: Any
         };
         that.then = function (onResolve, onReject) {
             if (onResolve) {
@@ -94,9 +96,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /* Chains the resolution methods of one promise (target) so that they follow those of another (source).
+    /** Chains the resolution methods of one promise (target) so that they follow those of another (source).
      * That is, whenever source resolves, target will resolve, or when source rejects, target will reject, with the
      * same payloads in each case.
+     * @param {Promise} source - The promise that the target promise will subscribe to
+     * @param {Promise} target - The promise to which notifications will be forwarded from the source
      */
     fluid.promise.follow = function (source, target) {
         source.then(target.resolve, target.reject);

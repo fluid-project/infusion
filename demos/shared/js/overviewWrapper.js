@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.fetchResources(resources, function (resourceSpecs) {
-            var bundle = JSON.parse(resourceSpecs.bundle.resourceText);
+            var bundle = JSON.parse(resourceSpecs.bundle.parsed);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: {
                     template: {

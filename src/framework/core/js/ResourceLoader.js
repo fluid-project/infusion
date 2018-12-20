@@ -27,17 +27,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.resourceLoader", {
         gradeNames: ["fluid.component"],
         listeners: {
-            "onCreate.loadResources": {
-                listener: "fluid.resourceLoader.loadResources",
-                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
+            "onCreate.loadResources": "fluid.resourceLoader.loadResources"
+        },
+        members: {
+            resourceFetcher: {
+                expander: {
+                    funcName: "fluid.resourceLoader.makeResourceFetcher",
+                    args: ["{that}", "{that}.options.resourceSpecs", "{that}.options.resourceOptions",
+                        "{that}.resolveResources"]
+                }
             }
         },
-        defaultLocale: null,
-        locale: null,
-        terms: {},  // Must be supplied by integrators
-        resources: {},  // Must be supplied by integrators
+        // defaultLocale: "en", // May be supplied by integrators
+        // locale: "en", // May be supplied by integrators
+        terms: {},  // May be supplied by integrators
         resourceOptions: {},
-        // Unsupported, non-API option
+        resources: {},  // Must be supplied by integrators
         invokers: {
             transformURL: {
                 funcName: "fluid.stringTemplate",
@@ -45,7 +50,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             resolveResources: {
                 funcName: "fluid.resourceLoader.resolveResources",
-                args: "{that}"
+                args: ["{that}.options.resources", "{that}.options.locale", "{that}.options.defaultLocale",
+                    "{that}.options.resourceOptions", "{that}.transformURL"]
             }
         },
         events: {
@@ -53,22 +59,35 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.resourceLoader.resolveResources = function (that) {
-        return fluid.transform(that.options.resources, function (record) {
+    fluid.resourceLoader.makeResourceFetcher = function (that, resourceSpecs, resourceOptions, resolveResources) {
+        var resolved = resolveResources();
+        var fetcher = fluid.makeResourceFetcher(fluid.copy(resolved), null, resourceOptions);
+        // Note that we beat the existing completion listener in the fetcher by "sheer luck"
+        fluid.each(fetcher.resourceSpecs, function (resourceSpec, key) {
+            resourceSpec.promise.then(function () {
+                that.resources[key] = resourceSpec;
+            });
+        });
+        return fetcher;
+    };
+
+    fluid.resourceLoader.resolveResources = function (resources, locale, defaultLocale, resourceOptions, transformURL) {
+        return fluid.transform(resources, function (record) {
             var userSpec = typeof(record) === "string" ? {url: record} : record;
-            var resourceSpec = $.extend(true, {}, {
-                defaultLocale: that.options.defaultLocale,
-                locale: that.options.locale,
-                options: that.options.resourceOptions}, userSpec);
-            resourceSpec.url = that.transformURL(resourceSpec.url);
-            return $.extend(resourceSpec, fluid.filterKeys(that.options, ["defaultLocale", "locale"]));
+            var resourceSpec = $.extend(true, {}, resourceOptions, {
+                defaultLocale: defaultLocale,
+                locale: locale}, userSpec);
+            resourceSpec.url = transformURL(resourceSpec.url);
+            return resourceSpec;
         });
     };
 
-    fluid.resourceLoader.loadResources = function (that, resources) {
-        fluid.fetchResources(resources, function () {
-            that.resources = resources;
-            that.events.onResourcesLoaded.fire(resources);
+    fluid.resourceLoader.loadResources = function (that) {
+        var completionPromise = that.resourceFetcher.fetchAll();
+        completionPromise.then(function () {
+            that.events.onResourcesLoaded.fire(that.resources);
+        }, function (error) {
+            fluid.log("Failure loading resources for component at path " + fluid.dumpComponentPath(that) + ": ", error);
         });
     };
 

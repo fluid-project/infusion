@@ -408,7 +408,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return (reca.completeOnInit ? 1 : 0) - (recb.completeOnInit ? 1 : 0);
     };
 
-
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
      * @param {Object} mrec The global model transaction record for the init transaction. This is a hash indexed by component id
      * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `complete`.
@@ -1059,8 +1058,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return updates;
     };
 
-    /* The main entry point for enlisting a model component in the initial transaction. Positioned as a "fake member"
-     * which evalutes to null. Calls fluid.enlistModelComponent to register record in instantiator.modelTransactions.init
+    /** The main entry point for enlisting a model component in the initial transaction. Positioned as a "fake member"
+     * which evalutes to null. Calls `fluid.enlistModelComponent` to register record in instantiator.modelTransactions.init
+     * @param {Component} that - The `fluid.modelComponent` which is about to initialise
+     * @param {Object} optionsModel - Reference into `{that}.options.model`
+     * @param {Object} optionsML - Reference into `{that}.options.modelListeners`
+     * @param {Object} optionsMR - Reference into `{that}.options.modelRelay`
+     * @param {Applier} applier - Reference into `{that}.applier`
+     * @return {Null} A dummy `null` value which will initialise the `{that}.modelRelay` member
      */
     fluid.establishModelRelay = function (that, optionsModel, optionsML, optionsMR, applier) {
         var shadow = fluid.shadowForComponent(that);
@@ -1109,19 +1114,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return null;
     };
 
-    fluid.resolveModelSkeleton = function (shadows) {
-        var instantiator = fluid.globalInstantiator;
+    fluid.establishModelRelayWorkflow = function (shadows, treeTransaction) {
         var modelComponents = shadows.filter(function (shadow) {
             return fluid.componentHasGrade(shadow.that, "fluid.modelComponent");
         });
-        if (modelComponents.length > 0) {
+        modelComponents.forEach(function (shadow) {
+            fluid.getForComponent(shadow.that, "modelRelay"); // invoke fluid.establishModelRelay and enlist each component
+        });
+        treeTransaction.modelComponents = modelComponents;
+    };
+
+    fluid.operateInitialTransactionWorkflow = function (shadows, treeTransaction) {
+        var instantiator = fluid.globalInstantiator;
+
+        if (treeTransaction.modelComponents.length > 0) {
             fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
-                modelComponents.forEach(function (shadow) {
-                    fluid.getForComponent(shadow.that, "modelRelay"); // invoke fluid.establishModelRelay and enlist each component
-                });
                 fluid.operateInitialTransaction(instantiator.modelTransactions.init);
                 // Do this afterwards so that model listeners can be fired by concludeComponentInit
-                modelComponents.forEach(function (shadow) {
+                treeTransaction.modelComponents.forEach(function (shadow) {
                     var that = shadow.that;
                     fluid.mergeModelListeners(that, that.options.modelListeners);
                     shadow.initModelEvent = function () {
@@ -1139,6 +1149,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+
+    fluid.initModelEvent = function (that, applier, trans, listeners) {
+        fluid.notifyModelChanges(listeners, "ADD", trans.oldHolder, fluid.emptyHolder, null, trans, applier, that);
+    };
+
+    fluid.notifyInitModel = function (shadow) {
+        if (shadow.initModelEvent) {
+            shadow.initModelEvent();
+            delete shadow.initModelEvent;
+        }
+    };
+
     // supported, PUBLIC API grade
     fluid.defaults("fluid.modelComponent", {
         gradeNames: ["fluid.component"],
@@ -1148,8 +1170,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         workflows: {
             global: {
-                resolveModelSkeleton: {
-                    funcName: "fluid.resolveModelSkeleton"
+                establishModelRelay: {
+                    funcName: "fluid.establishModelRelayWorkflow"
+                },
+                operateInitialTransaction: {
+                    funcName: "fluid.operateInitialTransactionWorkflow",
+                    priority: "after:establishModelRelay",
+                    waitIO: true
                 }
             },
             local: {
@@ -1554,10 +1581,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         applier.composeSegments = function () {
             return applier.options.resolverSetConfig.parser.compose.apply(null, arguments);
         };
-    };
-
-    fluid.initModelEvent = function (that, applier, trans, listeners) {
-        fluid.notifyModelChanges(listeners, "ADD", trans.oldHolder, fluid.emptyHolder, null, trans, applier, that);
     };
 
     // A standard "empty model" for the purposes of comparing initial state during the primordial transaction

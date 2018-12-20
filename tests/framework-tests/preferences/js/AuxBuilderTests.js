@@ -691,7 +691,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             max: 2
                         },
                         step: 0.1,
-                        messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
+                        messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.parsed",
                         resources: {
                             template: "templateLoader.resources.fluid_prefs_panel_textSize"
                         }
@@ -839,7 +839,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 step: 0.1,
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.parsed",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"
                                 }
@@ -858,7 +858,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_otherTextSize.resourceText",
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_otherTextSize.parsed",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_otherTextSize"
                                 }
@@ -932,7 +932,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     links: "prefsEditor.model.preferences.fluid_prefs_emphasizeLinks",
                                     inputsLarger: "prefsEditor.model.preferences.fluid_prefs_inputsLarger"
                                 },
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_oneForManyPrefs.resourceText",
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_oneForManyPrefs.parsed",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_oneForManyPrefs"
                                 }
@@ -1006,7 +1006,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 step: 0.1,
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.parsed",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"
                                 }
@@ -1374,16 +1374,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "components": {
                 "combinedBoth": {
                     options: {
-                        messageBase: "{messageLoader}.resources.combinedBoth.resourceText",
+                        messageBase: "{messageLoader}.resources.combinedBoth.parsed",
                         components: {
                             "fluid_prefs_subPanel1": {
                                 "options": {
-                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel1.resourceText"
+                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel1.parsed"
                                 }
                             },
                             "fluid_prefs_subPanel2": {
                                 options: {
-                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel2.resourceText"
+                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel2.parsed"
                                 }
                             }
                         }

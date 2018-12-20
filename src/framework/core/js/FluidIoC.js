@@ -152,6 +152,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
+    fluid.resourceFromRecord = function (resourceRec, name, that) {
+        var resourceFetcher = fluid.getForComponent(that, "resourceFetcher");
+        var promise = resourceFetcher.resourceSpecs[name].promise;
+        if (!promise.disposition) {
+            var transRec = fluid.treeTransactionForComponent(that);
+            transRec.pendingIO.push(promise);
+            return promise;
+        } else if (promise.disposition === "resolve") {
+            return promise.value;
+        } else {
+            fluid.fail("Request for resource with name " + name + " for component " + fluid.dumpComponentPath(that)
+                + " which failed to be fetched with error ", promise.value);
+        }
+    };
+
+    /** Produce a "strategy" object which mechanises the work of converting a block of options material into a
+     * a live piece of component machinery to be mounted onto the component - e.g. an invoker, event, member or resource
+     * @param {Component} that - The component currently instantiating
+     * @param {Object} options - The component's currently evaluating options structure
+     * @param {Strategy} optionsStrategy - A "strategy" function which can drive further evaluation of the options structure
+     * @param {String} recordPath - A single path segment into the options structure which indexes the options records to be consumed
+     * @param {Function} recordMaker - A function converting an evaluated block of options into the material to be mounted,
+     * e.g. `fluid.invokerFromRecord`. Signature to this function is (Object options, String key, Component that).
+     * @param {String} prefix - Any prefix to be added to the path into options in order to generate the path into the final mounted material
+     * @param {Object} [exceptions] - Hack for FLUID-5668. Some exceptions to not undergo "flood" initialisation during `initter` since they
+     * self-initialise by some customised scheme
+     * @return {RecordStrategy} - A structure with two function members -
+     *    {Strategy} strategy: A upstream function strategy by which evaluation of the mounted material can itself be driven
+     *    {Function} initter: A function which can be used to trigger final "flood" initialisation of all material which has not so far been
+     *    referenced.
+     */
     fluid.recordStrategy = function (that, options, optionsStrategy, recordPath, recordMaker, prefix, exceptions) {
         prefix = prefix || [];
         return {
@@ -501,14 +532,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.popActivity();
     };
 
-    /* Return the active tree transaction that is responsible for a currently creating component - since these are
-     * currently synchronous, we can just retrieve the currently active one.
-     */
-    fluid.treeTransactionForComponent = function (/* that */) {
-        var instantiator = fluid.globalInstantiator;
-        return instantiator.treeTransactions[instantiator.currentTreeTransaction];
-    };
-
     /* Evaluate the `distributeOptions` block in the options of a component, and mount the distribution in the appropriate
      * shadow for components yet to be constructed, or else apply it immediately to the merge blocks of any target
      * which is currently in evaluation.
@@ -689,9 +712,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var options = that.options;
         var strategy = shadow.mergeOptions.strategy;
         var optionsStrategy = fluid.mountStrategy(["options"], options, strategy);
+
         shadow.invokerStrategy = fluid.recordStrategy(that, options, strategy, "invokers", fluid.invokerFromRecord);
+
         shadow.eventStrategyBlock = fluid.recordStrategy(that, options, strategy, "events", fluid.eventFromRecord, ["events"]);
-        var eventStrategy = fluid.mountStrategy(["events"], that, shadow.eventStrategyBlock.strategy, ["events"]);
+        var eventStrategy = fluid.mountStrategy(["events"], that, shadow.eventStrategyBlock.strategy);
+
         shadow.memberStrategy = fluid.recordStrategy(that, options, strategy, "members", fluid.memberFromRecord, null, {model: true, modelRelay: true});
         // TODO: this is all hugely inefficient since we query every scheme for every path, whereas
         // we should know perfectly well what kind of scheme there will be for a path, especially once we have resolved
@@ -700,6 +726,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             optionsStrategy, shadow.invokerStrategy.strategy, shadow.memberStrategy.strategy, eventStrategy]};
 
         fluid.computeDynamicGrades(that, shadow, strategy, shadow.mergeOptions.mergeBlocks);
+        if (shadow.contextHash["fluid.resourceLoader"]) {
+            shadow.resourceStrategyBlock = fluid.recordStrategy(that, options, strategy, "resourceSpecs", fluid.resourceFromRecord, ["resources"]);
+            var resourceStrategy = fluid.mountStrategy(["resources"], that, shadow.resourceStrategyBlock.strategy);
+            shadow.getConfig.strategies.push(resourceStrategy);
+            that.resources = {};
+        }
+
         fluid.distributeOptions(that, strategy);
         if (shadow.contextHash["fluid.resolveRoot"]) {
             var memberName;
@@ -1353,13 +1386,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.popActivity();
     };
 
-    fluid.notifyInitModel = function (shadow) {
-        if (shadow.initModelEvent) {
-            shadow.initModelEvent();
-            delete shadow.initModelEvent;
-        }
-    };
-
     fluid.concludeComponentInit = function (shadow) {
         var that = shadow.that;
         if (fluid.isDestroyed(that)) {
@@ -1768,7 +1794,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (transRec.breakAt !== "shells") {
             shadows.forEach(fluid.instantiateEvents);
 
-            transRec.workflows.global.fire(shadows);
+            // TODO: We will need to break up this which was a brilliantly compact firing and instead turn it into a
+            // promise sequence
+            transRec.workflows.global.fire(shadows, transRec);
 
             shadows.reverse();
             if (transRec.breakAt === "observation") {
@@ -1852,6 +1880,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var firstShadow = fluid.commitPotentiaePhase(transRec, instantiator);
                 togo = togo || firstShadow;
             }
+            // TODO: need to break this up HERE - we may get a promise instead of a component, and the rest of the
+            // upcoming workflow will need to be stashed up in tasks - however the exception handling is correct
+            // and does need to cancel here and now.
             --transRec.commitDepth;
             if (transRec.commitDepth === 0) {
                 instantiator.currentTreeTransaction = null;
@@ -1913,6 +1944,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return instantiator.parseEL(shadow.path);
     };
 
+    /**
+     * Returns the current tree transaction which a constructing component is enlisted in. This currently just returns
+     * the one current tree transaction if there is one - in future the system will support multiple concurrent transactions
+     * @return {TreeTransaction} The tree transaction.
+     */
+    fluid.treeTransactionForComponent = function (/* that */) {
+        var instantiator = fluid.globalInstantiator;
+        if (!instantiator.currentTreeTransaction) {
+            fluid.fail("Tree transaction requested when none is active");
+        } else {
+            return instantiator.treeTransactions[instantiator.currentTreeTransaction];
+        }
+    };
+
     /** Begin a fresh transaction against the global component tree. Any further calls to `fluid.registerPotentia`,
      * `fluid.construct` or `fluid.destroy` may be contextualised by this transaction, and then committed as a single
      * unit via `fluid.commitPotentiae` or cancelled via `fluid.cancelTreeTransaction`.
@@ -1934,7 +1979,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             commitDepth: 0, // Depth of nested "commitPotentiae" calls
             pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
             restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
-            deferredDistributions: [] // distributeOptions may decide to defer application of a distribution for FLUID-6193
+            deferredDistributions: [], // distributeOptions may decide to defer application of a distribution for FLUID-6193
+            pendingIO: [] // list of outstanding promises from workflow in progress
         }, transactionOptions);
         return transactionId;
     };

@@ -321,7 +321,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.tableOfContents.levels.fetchResources = function (that) {
         fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.resourceText);
+            that.container.append(that.options.resources.template.parsed);
             that.refreshView();
         });
     };

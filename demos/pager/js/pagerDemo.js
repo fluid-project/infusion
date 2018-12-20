@@ -30,9 +30,7 @@ var demo = demo || {};
         resources: {
             users: {
                 url: "data/pager.json",
-                options: {
-                    dataType: "json"
-                }
+                dataType: "json"
             }
         },
         invokers: {
@@ -48,7 +46,7 @@ var demo = demo || {};
                 container: "{that}.container",
                 createOnEvent: "onDataReady",
                 options: {
-                    dataModel: "{demo.pager}.options.resources.users.resourceText",
+                    dataModel: "{demo.pager}.options.resources.users.parsed",
                     model: {
                         pageSize: 20
                     },

@@ -439,7 +439,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": "fluid.prefs.prefsEditorConnections",
                 "options.resources.template": "{templateLoader}.resources.%prefKey",
-                "options.messageBase": "{messageLoader}.resources.%prefKey.resourceText"
+                "options.messageBase": "{messageLoader}.resources.%prefKey.parsed"
             },
             panelModel: {
                 "%internalModelName": "{prefsEditor}.model.preferences.%externalModelName"
@@ -449,7 +449,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             subPanel: {
                 "container": "{%compositePanel}.dom.%prefKey",
-                "options.messageBase": "{messageLoader}.resources.%prefKey.resourceText"
+                "options.messageBase": "{messageLoader}.resources.%prefKey.parsed"
             },
             enactor: {
                 "container": "{uiEnhancer}.container"
