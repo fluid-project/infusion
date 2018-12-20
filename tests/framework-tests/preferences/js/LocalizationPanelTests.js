@@ -36,14 +36,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             template: {
                 href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-localization.html"
             }
-        },
-        classnameMap: {
-            "localization": {
-                "en": "fl-localization-en",
-                "es": "fl-localization-es",
-                "fa": "fl-localization-fa",
-                "fr": "fl-localization-fr"
-            }
         }
     });
 
@@ -64,14 +56,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.localizationTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
-            expectedNumOfOptions: 4,
+            expectedNumOfOptions: 5,
             defaultValue: "en",
             newValue: "fr"
         },
         modules: [{
             name: "Test the localization settings panel",
             tests: [{
-                expect: 9,
+                expect: 15,
                 name: "Test the rendering of the localization panel",
                 sequence: [{
                     event: "{fluid.tests.localizationPanelTests localization}.events.afterRender",
@@ -94,19 +86,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.localizationTester.testDefault = function (that, expectedNumOfOptions, expectedLocale) {
-        var options = that.container.find("option");
+        var selectOptions = that.container.find("option");
         var messageBase = that.options.messageBase;
-        jqUnit.assertEquals("There are " + expectedNumOfOptions + " locales in the control", expectedNumOfOptions, options.length);
-        jqUnit.assertEquals("The first locale is " + expectedLocale, expectedLocale, options.filter(":selected").val());
+        jqUnit.assertEquals("There are " + expectedNumOfOptions + " locales in the control", expectedNumOfOptions, selectOptions.length);
+        selectOptions.each(function (index, elm) {
+            elm = $(elm);
+            jqUnit.assertEquals("The language option at index: " + index + " has the correct value", that.options.controlValues.localization[index], elm.val());
+            var stringArrayIndex = that.options.stringArrayIndex.localization[index];
+            jqUnit.assertEquals("The language option at index: " + index + " has the correct text", messageBase[stringArrayIndex], elm.text());
+        });
+
+        jqUnit.assertEquals("The selected locale is " + expectedLocale, expectedLocale, selectOptions.filter(":selected").val());
         jqUnit.assertEquals("The label text is " + messageBase.label, messageBase.label, that.locate("label").text());
         jqUnit.assertEquals("The description text is " + messageBase.description, messageBase.description, that.locate("localizationDescr").text());
-
-        fluid.each(options, function (option) {
-            var css = that.options.classnameMap.localization[option.value];
-            if (css) {
-                jqUnit.assertTrue("The option has appropriate css applied", $(option).hasClass(css));
-            }
-        });
     };
 
     $(document).ready(function () {

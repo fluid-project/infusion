@@ -23,17 +23,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.enactor.localizationEnactor", {
         gradeNames: ["fluid.prefs.enactor.localization"],
         model: {
-            value: "en"
-        }
+            lang: "default"
+        },
+        langMap: {
+            en: "",
+            fr: "fr-ca"
+        },
+        pathnames: {
+            original: "/about/",
+            english: "/about/",
+            french: "/fr-ca/about/"
+        },
+        localizationScheme: "urlPath",
+        langSegIndex: 1
     });
+
+    fluid.tests.prefs.enactor.localizationEnactor.pathname = function (that, pathname) {
+        if (fluid.isValue(pathname)) {
+            that.options.recordedPathname = pathname;
+        } else {
+            return that.options.recordedPathname || that.options.pathnames.original;
+        }
+    };
 
     fluid.defaults("fluid.tests.localizationTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             localization: {
                 type: "fluid.tests.prefs.enactor.localizationEnactor",
-                container: ".flc-localization",
-                createOnEvent: "{localizationTester}.events.onTestCaseStart"
+                createOnEvent: "{localizationTester}.events.onTestCaseStart",
+                options: {
+                    invokers: {
+                        pathname: {
+                            funcName: "fluid.tests.prefs.enactor.localizationEnactor.pathname",
+                            args: ["{that}", "{arguments}.0"]
+                        }
+                    }
+                }
             },
             localizationTester: {
                 type: "fluid.tests.localizationTester"
@@ -46,8 +72,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.localization",
             tests: [{
-                expect: 6,
-                name: "Set localization",
+                expect: 13,
+                name: "Localization",
                 sequence: [{
                     listener: "jqUnit.assert",
                     event: "{localizationTests localization}.events.onCreate",
@@ -55,107 +81,143 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 {
                     func: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: "en"}]
+                    args: ["Init", "{localization}", {
+                        lang: "default",
+                        urlPathname: "{localization}.options.pathnames.original"
+                    }]
                 },
                 {
                     func: "{localization}.applier.change",
-                    args: ["value", "fr"]
+                    args: ["lang", "en"]
                 },
                 {
                     changeEvent: "{localization}.applier.modelChanged",
-                    spec: {path: "value", priority: "last:testing"},
+                    spec: {path: "lang", priority: "last:testing"},
                     listener: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: "fr"}]
+                    // The setPathname function isn't called because the URL hasn't changed. That is why the
+                    // expectedPathname is the same as before.
+                    args: ["English", "{localization}", {
+                        lang: "en",
+                        urlPathname: "{localization}.options.pathnames.english"
+                    }]
                 },
                 {
                     func: "{localization}.applier.change",
-                    args: ["value", "es"]
+                    args: ["lang", "fr"]
                 },
                 {
-                    event: "{localization}.events.onLocalizationChangeRequested",
-                    listener: "jqUnit.assertEquals",
-                    args: ["Event arguments are as expected", "es", "{arguments}.0"]
+                    changeEvent: "{localization}.applier.modelChanged",
+                    spec: {path: "lang", priority: "last:testing"},
+                    listener: "fluid.tests.localizationTester.assertLocale",
+                    args: ["French", "{localization}", {
+                        lang: "fr",
+                        urlPathname: "{localization}.options.pathnames.french"
+                    }, "{localization}.options.pathnames.french"]
                 },
                 {
-                    funcName: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: "es"}]
+                    func: "{localization}.applier.change",
+                    args: ["lang", "default"]
                 },
                 {
-                    funcName: "fluid.tests.localizationTester.reset",
-                    args: ["{localization}"]
+                    changeEvent: "{localization}.applier.modelChanged",
+                    spec: {path: "lang", priority: "last:testing"},
+                    listener: "fluid.tests.localizationTester.assertLocale",
+                    args: ["Set to Default", "{localization}", {
+                        lang: "default",
+                        urlPathname: "{localization}.options.pathnames.french"
+                    }]
                 },
                 {
-                    func: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: ""}]
+                    func: "{localization}.applier.change",
+                    args: ["lang", "en"]
+                },
+                {
+                    changeEvent: "{localization}.applier.modelChanged",
+                    spec: {path: "lang", priority: "last:testing"},
+                    listener: "fluid.tests.localizationTester.assertLocale",
+                    args: ["Set back to English", "{localization}", {
+                        lang: "en",
+                        urlPathname: "{localization}.options.pathnames.english"
+                    }, "{localization}.options.pathnames.english"]
+                },
+                {
+                    func: "{localization}.applier.change",
+                    args: ["lang", "es"]
+                },
+                {
+                    changeEvent: "{localization}.applier.modelChanged",
+                    spec: {path: "lang", priority: "last:testing"},
+                    listener: "fluid.tests.localizationTester.assertLocale",
+                    args: ["Unsupported Language", "{localization}", {
+                        lang: "es",
+                        urlPathname: "{localization}.options.pathnames.english"
+                    }]
                 }]
             }]
         }]
     });
 
-    fluid.tests.localizationTester.assertLocale = function (that, expectedModel) {
-        jqUnit.assertDeepEq("The model value is set correctly: " + expectedModel.value, expectedModel, that.model);
+    fluid.tests.localizationTester.assertLocale = function (prefix, that, expectedModel, setPathname) {
+        jqUnit.assertDeepEq(prefix + ": The model property is set correctly: " + expectedModel.lang, expectedModel, that.model);
+        var message = setPathname ? ": The correct URL pathname is set" : ": The pathname is not set.";
+        jqUnit.assertEquals(prefix + message, setPathname, that.options.recordedPathname);
+        //reset recordedPathname
+        that.options.recordedPathname = undefined;
     };
+
+    /*********************************************************************************
+     *Tests for referencing a global fluid.prefs.enactor.localization via model relay
+     ********************************************************************************/
 
     fluid.defaults("fluid.tests.localizationExistingTests", {
         gradeNames: ["fluid.test.testEnvironment"],
+        events: {
+            onLocalizationReady: null
+        },
         components: {
-            localization: {
-                type: "fluid.tests.prefs.enactor.localizationEnactor",
-                container: ".flc-localization-existing",
-                createOnEvent: "{localizationTester}.events.onTestCaseStart"
+            testComponent: {
+                type: "fluid.modelComponent",
+                createOnEvent: "onLocalizationReady",
+                options: {
+                    model: {
+                        lang: "{localization}.model.lang"
+                    }
+                }
             },
-            localizationTester: {
+            tester: {
                 type: "fluid.tests.localizationExistingTester"
             }
         }
     });
 
+    fluid.tests.localizationExistingTests.initLocalization = function (that) {
+        that.localization = fluid.prefs.enactor.localization();
+        that.events.onDestroy.addListener(that.localization.destroy, "destroyLocalization");
+        that.events.onLocalizationReady.fire();
+    };
+
     fluid.defaults("fluid.tests.localizationExistingTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "fluid.prefs.enactor.localization",
+            name: "Global Localization",
             tests: [{
-                expect: 5,
-                name: "Set localization when existing localization present",
+                expect: 1,
+                name: "Model Relay",
                 sequence: [{
-                    listener: "jqUnit.assert",
-                    event: "{localizationExistingTests localization}.events.onCreate",
-                    args: ["The localization enactor was created"]
-                },
-                {
-                    func: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: "en"}]
-                },
-                {
-                    func: "{localization}.applier.change",
-                    args: ["value", "fr"]
-                },
-                {
-                    changeEvent: "{localization}.applier.modelChanged",
-                    spec: {path: "value", priority: "last:testing"},
-                    func: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: "fr"}]
-                },
-                {
-                    func: "{localization}.applier.change",
-                    args: ["value", "es"]
-                },
-                {
-                    event: "{localization}.events.onLocalizationChangeRequested",
-                    listener: "jqUnit.assertEquals",
-                    args: ["Event arguments are as expected", "es", "{arguments}.0"]
-                },
-                {
-                    funcName: "fluid.tests.localizationTester.assertLocale",
-                    args: ["{localization}", {value: "es"}]
+                    funcName: "fluid.tests.localizationExistingTests.initLocalization",
+                    args: ["{localizationExistingTests}"]
+                }, {
+                    func: "{localizationExistingTests}.localization.applier.change",
+                    args: ["lang", "en"]
+                }, {
+                    changeEvent: "{testComponent}.applier.modelChanged",
+                    spec: {path: "lang", priority: "last:testing"},
+                    func: "jqUnit.assertDeepEq",
+                    args: ["The model relay to the global localization component should have updated the test component's model", {lang: "en"}, "{testComponent}.model"]
                 }]
             }]
         }]
     });
-
-    fluid.tests.localizationTester.reset = function (that) {
-        that.model.value = "";
-    };
 
     $(document).ready(function () {
         fluid.test.runTests([

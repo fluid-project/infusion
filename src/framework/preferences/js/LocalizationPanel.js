@@ -25,7 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.localization": {
-                "model.value": "default",
+                "model.value": "value",
                 "controlValues.localization": "enum"
             }
         },
@@ -41,7 +41,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["header"],
         stringArrayIndex: {
-            localization: ["localization-en", "localization-es", "localization-fa", "localization-fr"]
+            localization: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"]
         },
         protoTree: {
             label: {messagekey: "label"},
@@ -49,19 +49,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             localization: {
                 optionnames: "${{that}.msgLookup.localization}",
                 optionlist: "${{that}.options.controlValues.localization}",
-                selection: "${value}",
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.prefs.selectDecorator",
-                    options: {
-                        styles: "{that}.options.classnameMap.localization"
-                    }
-                }
+                selection: "${value}"
             }
         },
-        classnameMap: null, // must be supplied by implementors
         controlValues: {
-            localization: ["en", "es", "fa", "fr"]
+            localization: ["default", "en", "fr", "es", "fa"]
         }
     });
 

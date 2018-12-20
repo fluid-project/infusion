@@ -32,12 +32,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "message": "%messagePrefix/prefsEditor.json",
             localization: {
                 "type": "fluid.prefs.localization",
-                "classes": {
-                    "en": "fl-localization-en",
-                    "es": "fl-localization-es",
-                    "fa": "fl-localization-fa",
-                    "fr": "fl-localization-fr"
-                },
                 "enactor": {
                     "type": "fluid.prefs.enactor.localization",
                     "classes": "@localization.classes"
@@ -45,7 +39,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.localization",
                     "container": ".flc-prefsEditor-localization",  // the css selector in the template where the panel is rendered
-                    "classnameMap": {"localization": "@localization.classes"},
                     "template": "%templatePrefix/PrefsEditorTemplate-localization.html",
                     "message": "%messagePrefix/localization.json"
                 }
@@ -64,8 +57,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         schema: {
             "fluid.prefs.localization": {
                 "type": "string",
-                "default": "en",
-                "enum": ["en", "fa", "fr", "es"]
+                "default": "default",
+                "enum": ["default", "en", "en_CA", "en_US", "fr", "es", "fa"]
             }
         }
     });

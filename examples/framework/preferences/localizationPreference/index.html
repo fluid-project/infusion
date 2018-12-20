@@ -10,13 +10,11 @@
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
 
-        <title>Preferences Editor: Captions Preference</title>
-        <script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
+        <title>Preferences Editor: Localization Preference</title>
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/version.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
         <script type="text/javascript" src="../../../../src/lib/url-polyfill/js/url-polyfill.js"></script>
-
 
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
@@ -46,16 +44,18 @@
         <script type="text/javascript" src="../../../../src/framework/preferences/js/ArrowScrolling.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/CaptionsPanel.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/LocalizationPanel.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/CaptionsEnactor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/LocalizationEnactor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../../src/components/switch/js/Switch.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/CaptionsSchemas.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/LocalizationSchemas.js"></script>
+
+        <script type="text/javascript" src="js/localization.js"></script>
     </head>
 
     <body class="fl-focus">
@@ -89,28 +89,15 @@
         </div>
         <!-- END markup for Preferences Editor -->
 
-        <main class="fl-centered">
-            <iframe id="existing-iframe-example"
-                width="560" height="315"
-                src="https://www.youtube.com/embed/SjnXy0Iplvs"
-                frameborder="0"
-                style="border: solid 4px #37474F"
-                allow="autoplay; encrypted-media" allowfullscreen>
-            </iframe>
-        </main>
+        <h1>Hello World!</h1>
 
         <script type="text/javascript">
-            var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                build: {
-                    gradeNames: ["fluid.prefs.auxSchema.captions"],
-                    auxiliarySchema: {
-                        "terms": {
-                            "templatePrefix": "../../../../src/framework/preferences/html",
-                            "messagePrefix": "../../../../src/framework/preferences/messages"
-                        },
-                        template: "html/prefsEditor.html"
-                    }
-                }
+            var prefsEditor = example.prefsEditor(".flc-prefsEditor-separatedPanel", {
+                terms: {
+                    "templatePrefix": "../../../../src/framework/preferences/html",
+                    "messagePrefix": "../../../../src/framework/preferences/messages"
+                },
+                template: "html/prefsEditor.html"
             });
         </script>
     </body>
