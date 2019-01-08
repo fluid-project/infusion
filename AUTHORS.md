@@ -6,7 +6,7 @@ This is the list of Infusion copyright holders. It does not list all individual 
 copyright to an institution, only made a minor changes, or their contributions no longer appear in the codebase.
 Please see the version control system's revision history for details on contributions.
 
-Copyright 2007-2018
+Copyright 2007-2019
 
 * Dinuka De Silva
 * John Kremer
