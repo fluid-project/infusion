@@ -1,5 +1,5 @@
 /*
-Copyright 2016 OCAD University
+Copyright 2016-2019 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one of these

@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2017 OCAD University
+Copyright 2010-2019 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2015 Raising the Floor - International
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2011-2015 OCAD University
+Copyright 2011-2019 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
