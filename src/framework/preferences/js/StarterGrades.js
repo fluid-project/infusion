@@ -157,6 +157,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
+                    tocMessage: "{uiEnhancer}.options.tocMessage",
                     model: {
                         toc: "{uiEnhancer}.model.toc"
                     }

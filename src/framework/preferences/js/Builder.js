@@ -29,7 +29,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
                     gradeNames: ["fluid.prefs.assembler.prefsEd", "fluid.viewComponent"],
                     componentGrades: "{that}.options.constructedGrades",
-                    loaderGrades: "{that}.options.auxSchema.loaderGrades"
+                    loaderGrades: "{that}.options.auxSchema.loaderGrades",
+                    defaultLocale: "{that}.options.auxSchema.defaultLocale",
+                    enhancer: {
+                        defaultLocale: "{that}.options.auxSchema.defaultLocale"
+                    }
                 }]
             }
         },
@@ -170,6 +174,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "{that}.options.terms",
                 removeSource: true,
                 target: "{that prefsEditorLoader}.options.terms"
+            },
+            "prefsEdAssembler.prefsEditorLoader.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                target: "{that prefsEditorLoader}.options.defaultLocale"
+            },
+            "prefsEdAssembler.uiEnhancer.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                target: "{that uiEnhancer}.options.defaultLocale"
             },
             "prefsEdAssembler.prefsEditor": {
                 source: "{that}.options.prefsEditor",

@@ -55,7 +55,8 @@ var demo = demo || {};
             },
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json"
                 }
             },
 
@@ -91,6 +92,7 @@ var demo = demo || {};
             tableOfContents: {
                 enactor: {
                     tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json",
                     ignoreForToC: {
                         "overviewPanel": ".flc-overviewPanel"
                     }

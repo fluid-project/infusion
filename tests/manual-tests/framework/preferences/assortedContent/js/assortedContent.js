@@ -27,7 +27,8 @@ var assortedContent = assortedContent || {};
                         "default": "assortedContent-theme-basic"
                     }
                 },
-                tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html"
+                tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+                tocMessage: "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
             }
         });
 

@@ -25,11 +25,11 @@ var example = example || {};
     var pathToMessages = "../../../../src/framework/preferences/messages";
 
     /**
-     * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
-     * three versions of the component, as well as by the UI Enhancer present in the Preview
-     * itself.
+     * The UI Enhancer's Table of Contents uses a template and message bundle. These path variables are used by all
+     * three versions of the component, as well as by the UI Enhancer present in the Preview itself.
      */
     var pathToTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
+    var pathToTocMessage = "../../../../src/framework/preferences/messages/tableOfContents-enactor.json";
 
     /**
      * Initialize a settings store for the page.
@@ -44,10 +44,11 @@ var example = example || {};
      * @param {String} customThemeName - The name of the custom theme.
      */
     example.initPageEnhancer = function (customThemeName) {
-        fluid.pageEnhancer({
+        return fluid.pageEnhancer({
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                 tocTemplate: pathToTocTemplate,
+                tocMessage: pathToTocMessage,
                 classnameMap: {
                     theme: {
                         "default": customThemeName

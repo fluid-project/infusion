@@ -32,6 +32,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
             "message": "%messagePrefix/prefsEditor.json",
+            "defaultLocale": "en",
             "textSize": {
                 "type": "fluid.prefs.textSize",
                 "enactor": {
@@ -116,7 +117,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "type": "fluid.prefs.tableOfContents",
                 "enactor": {
                     "type": "fluid.prefs.enactor.tableOfContents",
-                    "tocTemplate": "../../components/tableOfContents/html/TableOfContents.html"
+                    "tocTemplate": "../../components/tableOfContents/html/TableOfContents.html",
+                    "tocMessage": "../../framework/preferences/messages/tableOfContents-enactor.json"
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.layoutControls",

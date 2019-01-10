@@ -35,6 +35,7 @@ var demo = demo || {};
      * itself.
      */
     var pathToTocTemplate = "../../../../../src/components/tableOfContents/html/TableOfContents.html";
+    var pathToTocMessage = "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json";
 
     /*
      * Initialize PrefsEditor global settings store.
@@ -51,6 +52,7 @@ var demo = demo || {};
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                 tocTemplate: pathToTocTemplate,
+                tocMessage: pathToTocMessage,
                 classnameMap: {
                     theme: {
                         "default": customThemeName
