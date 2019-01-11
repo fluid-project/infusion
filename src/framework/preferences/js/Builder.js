@@ -49,7 +49,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         constructedGrades: {
             expander: {
                 func: "fluid.prefs.builder.constructGrades",
-                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
+                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "terms", "aliases"]]
             }
         },
         mappedDefaults: "{primaryBuilder}.options.schema.properties",
@@ -146,7 +146,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.messageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: [
+                            "{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels",
+                            "{fluid.prefs.assembler.prefsEd}.options.componentGrades.aliases",
+                            "fluid.prefs.uiEnhancerRelay"
+                        ]
                     },
                     events: {
                         onReady: "{fluid.prefs.assembler.prefsEd}.events.onPrefsEditorReady"
