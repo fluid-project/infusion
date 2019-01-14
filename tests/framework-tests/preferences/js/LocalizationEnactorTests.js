@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OCAD University
+Copyright 2018-2019 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -38,12 +38,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         langSegIndex: 1
     });
 
-    fluid.tests.prefs.enactor.localizationEnactor.pathname = function (that, pathname) {
-        if (fluid.isValue(pathname)) {
-            that.options.recordedPathname = pathname;
-        } else {
-            return that.options.recordedPathname || that.options.pathnames.original;
-        }
+    fluid.tests.prefs.enactor.localizationEnactor.getPathname = function (that) {
+        return that.options.recordedPathname || that.options.pathnames.original;
+    };
+
+    fluid.tests.prefs.enactor.localizationEnactor.setPathname = function (that, pathname) {
+        that.options.recordedPathname = pathname;
     };
 
     fluid.defaults("fluid.tests.localizationTests", {
@@ -54,8 +54,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 createOnEvent: "{localizationTester}.events.onTestCaseStart",
                 options: {
                     invokers: {
-                        pathname: {
-                            funcName: "fluid.tests.prefs.enactor.localizationEnactor.pathname",
+                        getPathname: {
+                            funcName: "fluid.tests.prefs.enactor.localizationEnactor.getPathname",
+                            args: ["{that}"]
+                        },
+                        setPathname: {
+                            funcName: "fluid.tests.prefs.enactor.localizationEnactor.setPathname",
                             args: ["{that}", "{arguments}.0"]
                         }
                     }

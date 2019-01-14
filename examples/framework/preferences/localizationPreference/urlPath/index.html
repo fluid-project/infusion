@@ -54,6 +54,7 @@
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/LocalizationSchemas.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/preferences/js/LocalizationPrefsEditor.js"></script>
 
         <script type="text/javascript" src="js/localization.js"></script>
     </head>
@@ -92,12 +93,21 @@
         <h1>Hello World!</h1>
 
         <script type="text/javascript">
-            var prefsEditor = example.prefsEditor(".flc-prefsEditor-separatedPanel", {
-                terms: {
-                    "templatePrefix": "../../../../../src/framework/preferences/html",
-                    "messagePrefix": "../../../../../src/framework/preferences/messages"
+            fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
+                build: {
+                    gradeNames: ["fluid.prefs.auxSchema.localization"],
+                    auxiliarySchema: {
+                        terms: {
+                            "templatePrefix": "../../../../../src/framework/preferences/html",
+                            "messagePrefix": "../../../../../src/framework/preferences/messages"
+                        },
+                        template: "html/prefsEditor.html"
+                    }
                 },
-                template: "html/prefsEditor.html"
+                prefsEditor: {
+                    gradeNames: ["example.prefs.localization"],
+
+                }
             });
         </script>
     </body>

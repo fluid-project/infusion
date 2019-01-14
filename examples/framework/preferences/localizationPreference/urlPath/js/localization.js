@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OCAD University
+Copyright 2018-2019 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -15,70 +15,38 @@ var example = example || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.localization"],
-        auxiliarySchema: {
-            "namespace": "example.prefs.localization"
-        }
-    });
-
-    fluid.defaults("example.prefsEditor", {
-        gradeNames: ["example.prefs.localization.prefsEditor"],
-        localizationOpts: {
-            enactor: {
-                localizationScheme: "urlPath",
-                langMap: {
-                    "default": null,
-                    "en": "",
-                    "es": "es",
-                    "fa": "fa",
-                    "fr": "fr"
-                },
-                langSegIndex: {
-                    expander: {
-                        funcName: "example.prefsEditor.getLangSegIndex",
-                        args: ["{example.prefsEditor}.options.localizationOpts.enactor.langMap"]
-                    }
-                }
-            },
-            panel: {
-                controlValues: {
-                    localization: ["default", "en", "fr", "es", "fa"]
-                }
-            }
+    fluid.defaults("example.prefs.localization", {
+        gradeNames: ["fluid.prefs.constructed.localizationConfig"],
+        localizationScheme: "urlPath",
+        locales: ["default", "en", "fr", "es", "fa"],
+        langMap: {
+            "default": null,
+            "en": "",
+            "es": "es",
+            "fa": "fa",
+            "fr": "fr"
         },
-        distributeOptions: {
-            "example.localization.defaultLocale": {
-                source: "{that}.options.defaultLocale",
-                target: "{that prefsEditorLoader}.options.defaultLocale"
-            },
-            "example.localization.localizationEnactor": {
-                source: "{that}.options.localizationOpts.enactor",
-                target: "{that uiEnhancer fluid.prefs.enactor.localization}.options"
-            },
-            "example.localization.localizationPanel": {
-                source: "{that}.options.localizationOpts.panel",
-                target: "{that prefsEditor fluid.prefs.panel.localization}.options"
-            },
-            "example.localization.template": {
-                source: "{that}.options.template",
-                target: "{that prefsEditorLoader > templateLoader}.options.resources.prefsEditor"
+        langSegIndex: {
+            expander: {
+                funcName: "example.prefs.localization.getLangSegIndex",
+                args: ["{that}.options.langMap"]
             }
         }
     });
 
     /**
-     * Used as an expander to find the langSegIndex. For most implementations this would actually refer to 1, which
-     * is the default value; meaning a scheme such as this would not be required. However, the way this example is
-     * constructed and expected to run, the langSegIndex is at the end of the path. Because we don't know ahead of time
-     * where how the example will be served, we don't know the full path and must dynamically calculate the index.
+     * Used as an expander to find the `langSegIndex`. For most implementations this would actually refers to 1 and is
+     * the default `langSegIndex` set in the component's defaults. Meaning a scheme such as this would not be required.
+     * However, the way this example is constructed and expected to run, the `langSegIndex` is at the end of the path.
+     * Because we don't know ahead of time how this example will be served, we don't know the full path and must
+     * dynamically calculate the index.
      *
      * @param {Object} langMap - a mapping of language code to URL path resource.
      *
-     * @return {Integer} - The lagSegIndex. Defaults to 1 if none of the values from the langMap are found in the
-     *                     current location pathname.
+     * @return {Integer} - The `lagSegIndex`. Defaults to 1 if none of the values from the langMap are found in the
+     *                     current location's pathname.
      */
-    example.prefsEditor.getLangSegIndex = function (langMap) {
+    example.prefs.localization.getLangSegIndex = function (langMap) {
         var langVals = fluid.values(langMap);
         var pathSegs = location.pathname.split("/");
         var index = "1";

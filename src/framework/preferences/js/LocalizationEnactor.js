@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OCAD University
+Copyright 2018-2019 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -43,8 +43,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         gradeNames: "fluid.prefs.enactor.localization.urlPathLocale",
                         priority: "after:inPanel"
                     }
-                },
-                defaultGradeNames: "fluid.prefs.enactor.localization.no-op"
+                }
             }
         }
     });
@@ -67,7 +66,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 changePath: "urlPathname",
                 value: {
                     expander: {
-                        func: "{that}.pathname"
+                        func: "{that}.getPathname"
                     }
                 },
                 source: "initialURLPathname"
@@ -80,29 +79,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "langToURLPath"
             },
             urlPathname: {
-                funcName: "{that}.pathname",
+                funcName: "{that}.setPathname",
                 args: ["{change}.value"],
                 excludeSource: ["init", "initialURLPathname"],
                 namespace: "setURLPathname"
             }
         },
         invokers: {
-            pathname: "fluid.prefs.enactor.localization.urlPathLocale.pathname"
+            getPathname: "fluid.prefs.enactor.localization.urlPathLocale.getPathname",
+            setPathname: "fluid.prefs.enactor.localization.urlPathLocale.setPathname"
         }
     });
 
     /**
-     * A simple wrapper around the location.pathname setter/getter property.
+     * A simple wrapper around the location.pathname getter.
      *
-     * @param {String} pathname - (Optional) pathname to set. If not supplied the current pathname will be returned
      * @return {String} - If the `pathname` argument is not provided, the current pathname is returned
      */
-    fluid.prefs.enactor.localization.urlPathLocale.pathname = function (pathname) {
-        if (fluid.isValue(pathname)) {
-            location.pathname = pathname;
-        } else {
-            return location.pathname;
-        }
+    fluid.prefs.enactor.localization.urlPathLocale.getPathname = function () {
+        return location.pathname;
+    };
+
+    /**
+     * A simple wrapper around the location.pathname setter.
+     *
+     * @param {String} pathname - The pathname to set.
+     */
+    fluid.prefs.enactor.localization.urlPathLocale.setPathname = function (pathname) {
+        location.pathname = pathname;
     };
 
     /**

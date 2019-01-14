@@ -43,6 +43,7 @@
             "./js/SelfVoicingSchemas.js",
             "./js/SyllabificationSchemas.js",
             "./js/LocalizationSchemas.js",
+            "./js/LocalizationPrefsEditor.js",
             "./js/WordSpaceSchemas.js",
             "./js/Builder.js"
         ],
