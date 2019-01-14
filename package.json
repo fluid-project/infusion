@@ -28,7 +28,7 @@
         "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
         "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
         "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
-        "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html --report-dir reports --temp-directory coverage",
+        "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html",
         "buildDists": "grunt buildDists",
         "buildStylus": "grunt buildStylus",
         "loadDependencies": "grunt loadDependencies"
@@ -42,7 +42,7 @@
     "devDependencies": {
         "eslint-config-fluid": "1.3.0",
         "gpii-grunt-lint-all": "1.0.5",
-        "gpii-testem": "2.1.5",
+        "gpii-testem": "2.1.7",
         "grunt": "1.0.2",
         "grunt-contrib-clean": "2.0.0",
         "grunt-contrib-compress": "1.4.3",
@@ -52,7 +52,7 @@
         "grunt-contrib-uglify": "4.0.0",
         "grunt-contrib-watch": "1.1.0",
         "grunt-modulefiles": "0.4.0",
-        "grunt-shell": "2.1.0",
+        "grunt-shell": "3.0.1",
         "hypher": "0.2.5",
         "@fluid-project/hyphenation-patterns": "0.2.2-dev.20181115T221631Z.b2d0651",
         "jquery": "3.3.1",
@@ -63,13 +63,13 @@
         "jquery.scrollto": "2.1.2",
         "lodash": "4.17.11",
         "ncp": "2.0.0",
-        "normalize.css": "8.0.0",
-        "nyc": "13.0.1",
-        "opensans-webkit": "1.0.1",
-        "rimraf": "2.6.2",
+        "normalize.css": "8.0.1",
+        "nyc": "13.1.0",
+        "opensans-webkit": "1.1.0",
+        "rimraf": "2.6.3",
         "roboto-fontface": "0.10.0",
-        "sinon": "6.3.3",
-        "testem": "2.9.3",
-        "url-polyfill": "1.1.0"
+        "sinon": "7.2.2",
+        "testem": "2.14.0",
+        "url-polyfill": "1.1.3"
     }
 }
