@@ -69,7 +69,7 @@
         "rimraf": "2.6.3",
         "roboto-fontface": "0.10.0",
         "sinon": "7.2.2",
-        "testem": "2.14.0",
+        "testem": "2.12.0",
         "url-polyfill": "1.1.3"
     }
 }
