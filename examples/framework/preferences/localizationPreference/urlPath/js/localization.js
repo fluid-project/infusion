@@ -16,8 +16,9 @@ var example = example || {};
     "use strict";
 
     fluid.defaults("example.prefs.localization", {
-        gradeNames: ["fluid.prefs.constructed.localizationConfig"],
+        gradeNames: ["fluid.prefs.constructed.localizationPrefsEditorConfig"],
         localizationScheme: "urlPath",
+        localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
         locales: ["default", "en", "fr", "es", "fa"],
         langMap: {
             "default": null,

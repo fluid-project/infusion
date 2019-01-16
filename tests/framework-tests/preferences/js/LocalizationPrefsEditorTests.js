@@ -32,8 +32,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.localizationPrefsEditor", {
-        gradeNames: ["fluid.tests.prefs.localization.prefsEditor", "fluid.prefs.constructed.localizationConfig"],
+        gradeNames: ["fluid.tests.prefs.localization.prefsEditor", "fluid.prefs.constructed.localizationPrefsEditorConfig"],
         localizationScheme: "urlPath",
+        localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
         locales: ["default", "en", "en-ca", "fr", "es", "fa"],
         langMap: {
             "default": null,
@@ -65,6 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             localizationScheme: "urlPath",
+            localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
             locales: ["default", "en", "en-ca", "fr", "es", "fa"],
             langMap: {
                 "default": null,
@@ -78,9 +80,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             defaultLocale: "fr"
         },
         modules: [{
-            name: "fluid.prefs.constructed.localizationConfig",
+            name: "fluid.prefs.constructed.localizationPrefsEditorConfig",
             tests: [{
-                expect: 6,
+                expect: 7,
                 name: "Options Distributions",
                 sequence: [{
                     // Init
@@ -102,6 +104,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "The localization panel's control values are set",
                         "{that}.options.testOpts.locales",
                         "{localizationPrefsEditor}.prefsEditorLoader.prefsEditor.fluid_prefs_panel_localization.options.controlValues.localization"
+                    ]
+                }, {
+                    // `localeNames` distributed to localization  panel
+                    func: "jqUnit.assertDeepEq",
+                    args: [
+                        "The localization panel's localization options have been set",
+                        "{that}.options.testOpts.localeNames",
+                        "{localizationPrefsEditor}.prefsEditorLoader.prefsEditor.fluid_prefs_panel_localization.options.stringArrayIndex.localization"
                     ]
                 }, {
                     // `localizationScheme` distributed to localization enactor

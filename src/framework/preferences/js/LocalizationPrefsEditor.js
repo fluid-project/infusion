@@ -21,43 +21,47 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     *******************************************************************************/
 
     // Fine-tune the starter aux schema and add localization preference
-    fluid.defaults("fluid.prefs.constructed.localizationConfig", {
+    fluid.defaults("fluid.prefs.constructed.localizationPrefsEditorConfig", {
         gradeNames: ["fluid.contextAware"],
         contextAwareness: {
             localeChange: {
                 checks: {
                     urlPath: {
-                        contextValue: "{localizationConfig}.options.localizationScheme",
+                        contextValue: "{localizationPrefsEditorConfig}.options.localizationScheme",
                         equals: "urlPath",
-                        gradeNames: "fluid.prefs.constructed.localizationConfig.urlPathLocale"
+                        gradeNames: "fluid.prefs.constructed.localizationPrefsEditorConfig.urlPathLocale"
                     }
                 }
             }
         },
         distributeOptions: {
             // When FLUID-6322 is complete, the default locale will be specifiable directly from the aux schema
-            "example.localization.defaultLocale": {
+            "prefsEditor.localization.defaultLocale": {
                 source: "{that}.options.defaultLocale",
                 target: "{that prefsEditorLoader}.options.defaultLocale"
             },
-            "example.localization.enactor.localizationScheme": {
+            "prefsEditor.localization.enactor.localizationScheme": {
                 source: "{that}.options.localizationScheme",
                 target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.localizationScheme"
             },
-            "example.localization.panel.locales": {
+            "prefsEditor.localization.panel.locales": {
                 source: "{that}.options.locales",
                 target: "{that prefsEditor fluid.prefs.panel.localization}.options.controlValues.localization"
+            },
+            "prefsEditor.localization.panel.localeNames": {
+                source: "{that}.options.localeNames",
+                target: "{that prefsEditor fluid.prefs.panel.localization}.options.stringArrayIndex.localization"
             }
         }
     });
 
-    fluid.defaults("fluid.prefs.constructed.localizationConfig.urlPathLocale", {
+    fluid.defaults("fluid.prefs.constructed.localizationPrefsEditorConfig.urlPathLocale", {
         distributeOptions: {
-            "example.localization.enactor.langMap": {
+            "prefsEditor.localization.enactor.langMap": {
                 source: "{that}.options.langMap",
                 target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.langMap"
             },
-            "example.localization.enactor.langSegIndex": {
+            "prefsEditor.localization.enactor.langSegIndex": {
                 source: "{that}.options.langSegIndex",
                 target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.langSegIndex"
             }
