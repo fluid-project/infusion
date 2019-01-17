@@ -27,19 +27,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         langMap: {
             en: "",
-            fr: "fr-ca"
+            "en-US": "en-US",
+            fr: "fr-CA"
         },
         pathnames: {
-            original: "/about/",
-            english: "/about/",
-            french: "/fr-ca/about/"
+            default: "/about/",
+            english: "/about/en-US/",
+            french: "/about/fr-CA/"
         },
         localizationScheme: "urlPath",
-        langSegIndex: 1
+        langSegIndex: 2
     });
 
     fluid.tests.prefs.enactor.localizationEnactor.getPathname = function (that) {
-        return that.options.recordedPathname || that.options.pathnames.original;
+        return that.options.recordedPathname || that.options.pathnames["default"];
     };
 
     fluid.tests.prefs.enactor.localizationEnactor.setPathname = function (that, pathname) {
@@ -76,7 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.localization",
             tests: [{
-                expect: 13,
+                expect: 10,
                 name: "Localization",
                 sequence: [{
                     listener: "jqUnit.assert",
@@ -86,26 +87,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     func: "fluid.tests.localizationTester.assertLocale",
                     args: ["Init", "{localization}", {
-                        lang: "default",
-                        urlPathname: "{localization}.options.pathnames.original"
+                        lang: "default"
                     }]
                 },
                 {
+                    // Change to en-US
                     func: "{localization}.applier.change",
-                    args: ["lang", "en"]
+                    args: ["lang", "en-US"]
                 },
                 {
                     changeEvent: "{localization}.applier.modelChanged",
                     spec: {path: "lang", priority: "last:testing"},
                     listener: "fluid.tests.localizationTester.assertLocale",
-                    // The setPathname function isn't called because the URL hasn't changed. That is why the
-                    // expectedPathname is the same as before.
                     args: ["English", "{localization}", {
-                        lang: "en",
-                        urlPathname: "{localization}.options.pathnames.english"
-                    }]
+                        lang: "en-US",
+                        urlLangSeg: "en-US"
+                    }, "{localization}.options.pathnames.english"]
                 },
                 {
+                    // Change to fr
                     func: "{localization}.applier.change",
                     args: ["lang", "fr"]
                 },
@@ -115,10 +115,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.localizationTester.assertLocale",
                     args: ["French", "{localization}", {
                         lang: "fr",
-                        urlPathname: "{localization}.options.pathnames.french"
+                        urlLangSeg: "fr-CA"
                     }, "{localization}.options.pathnames.french"]
                 },
                 {
+                    // Change to en
+                    func: "{localization}.applier.change",
+                    args: ["lang", "en"]
+                },
+                {
+                    changeEvent: "{localization}.applier.modelChanged",
+                    spec: {path: "lang", priority: "last:testing"},
+                    listener: "fluid.tests.localizationTester.assertLocale",
+                    args: ["English", "{localization}", {
+                        lang: "en",
+                        urlLangSeg: ""
+                    }, "{localization}.options.pathnames.default"]
+                },
+                {
+                    // Change to default
                     func: "{localization}.applier.change",
                     args: ["lang", "default"]
                 },
@@ -128,23 +143,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.localizationTester.assertLocale",
                     args: ["Set to Default", "{localization}", {
                         lang: "default",
-                        urlPathname: "{localization}.options.pathnames.french"
+                        urlLangSeg: ""
                     }]
                 },
                 {
-                    func: "{localization}.applier.change",
-                    args: ["lang", "en"]
-                },
-                {
-                    changeEvent: "{localization}.applier.modelChanged",
-                    spec: {path: "lang", priority: "last:testing"},
-                    listener: "fluid.tests.localizationTester.assertLocale",
-                    args: ["Set back to English", "{localization}", {
-                        lang: "en",
-                        urlPathname: "{localization}.options.pathnames.english"
-                    }, "{localization}.options.pathnames.english"]
-                },
-                {
+                    // Change to es
                     func: "{localization}.applier.change",
                     args: ["lang", "es"]
                 },
@@ -154,19 +157,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.localizationTester.assertLocale",
                     args: ["Unsupported Language", "{localization}", {
                         lang: "es",
-                        urlPathname: "{localization}.options.pathnames.english"
+                        urlLangSeg: ""
                     }]
                 }]
             }]
         }]
     });
 
-    fluid.tests.localizationTester.assertLocale = function (prefix, that, expectedModel, setPathname) {
+    fluid.tests.localizationTester.assertLocale = function (prefix, that, expectedModel, pathname) {
         jqUnit.assertDeepEq(prefix + ": The model property is set correctly: " + expectedModel.lang, expectedModel, that.model);
-        var message = setPathname ? ": The correct URL pathname is set" : ": The pathname is not set.";
-        jqUnit.assertEquals(prefix + message, setPathname, that.options.recordedPathname);
-        //reset recordedPathname
-        that.options.recordedPathname = undefined;
+
+        if (pathname) {
+            jqUnit.assertEquals(prefix + ": The correct URL pathname is set", pathname, that.options.recordedPathname);
+        }
     };
 
     /*********************************************************************************

@@ -37,7 +37,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
         locales: ["default", "en", "en-ca", "fr", "es", "fa"],
         langMap: {
-            "default": null,
             "en": "",
             "en-ca": "en-Ca",
             "es": "es",
@@ -69,7 +68,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
             locales: ["default", "en", "en-ca", "fr", "es", "fa"],
             langMap: {
-                "default": null,
                 "en": "",
                 "en-ca": "en-Ca",
                 "es": "es",

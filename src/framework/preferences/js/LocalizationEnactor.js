@@ -35,7 +35,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             localeChange: {
                 checks: {
                     inPanel: {
-                        contextValue: "{iframeRenderer}"
+                        contextValue: "{iframeRenderer}.id",
+                        // The following undefined grade is needed to prevent the `urlPath` check from supplying its
+                        // grade even when the `inPanel` check passes.
+                        gradeNames: "fluid.prefs.enactor.localization.inPanel"
                     },
                     urlPath: {
                         contextValue: "{localization}.options.localizationScheme",
@@ -57,35 +60,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *******************************************************************************/
     fluid.defaults("fluid.prefs.enactor.localization.urlPathLocale", {
         langMap: {}, // must be supplied by integrator
-        langSegIndex: 1,
-        model: {
-            urlPathname: undefined
-        },
-        listeners: {
-            "onCreate.setURLPath": {
-                changePath: "urlPathname",
-                value: {
-                    expander: {
-                        func: "{that}.getPathname"
-                    }
-                },
-                source: "initialURLPathname"
+        langSegValues: {
+            expander: {
+                funcName: "fluid.values",
+                args: ["{that}.options.langMap"]
             }
         },
+        // langSegIndex: 1, should be supplied by the integrator. Will default to 1 in `fluid.prefs.enactor.localization.urlPathLocale.updatePathname`
+        modelRelay: [{
+            target: "urlLangSeg",
+            singleTransform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInput: "{that}.model.lang",
+                match: "{that}.options.langMap"
+            }
+        }],
         modelListeners: {
-            lang: {
-                funcName: "fluid.prefs.enactor.localization.urlPathLocale.changeLocale",
-                args: ["{that}", "{change}.value", "{that}.options.langMap", "{that}.options.langSegIndex"],
-                namespace: "langToURLPath"
-            },
-            urlPathname: {
-                funcName: "{that}.setPathname",
+            urlLangSeg: {
+                funcName: "{that}.updatePathname",
                 args: ["{change}.value"],
-                excludeSource: ["init", "initialURLPathname"],
-                namespace: "setURLPathname"
+                namespace: "updateURLPathname"
             }
         },
         invokers: {
+            updatePathname: {
+                funcName: "fluid.prefs.enactor.localization.urlPathLocale.updatePathname",
+                args: ["{that}", "{arguments}.0", "{that}.options.langSegValues", "{that}.options.langSegIndex"]
+            },
             getPathname: "fluid.prefs.enactor.localization.urlPathLocale.getPathname",
             setPathname: "fluid.prefs.enactor.localization.urlPathLocale.setPathname"
         }
@@ -115,42 +116,41 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * to manually, navigate to a localized page when a language preference hasn't been set.
      *
      * @param {Component} that - an instance of `fluid.prefs.enactor.localization.urlPathLocale`
-     * @param {String} lang - a language code for the requested language
-     * @param {Object} langMap - a mapping of language code to URL path resource. This handles cases where the format
-     *                           is different, or if the primary language is served from the root.
-     * @param {Integer} langSegIndex - An optional index into the path where the language resource identifier is held.
+     * @param {String} urlLangSeg - a language value used in the URL pathname
+     * @param {Object} langSegValues - An array of the potential `urlLangSeg` values that can be set.
+     * @param {Integer} langSegIndex - (Optional) An index into the path where the language resource identifier is held.
      *                                 By default this value is 1, which represents the first path segment.
      */
-    fluid.prefs.enactor.localization.urlPathLocale.changeLocale = function (that, lang, langMap, langSegIndex) {
+    fluid.prefs.enactor.localization.urlPathLocale.updatePathname = function (that, urlLangSeg, langSegValues, langSegIndex) {
 
-        // Do nothing when the default language is chosen.
-        if (lang === "default") {
-            return;
-        }
+        if (fluid.isValue(urlLangSeg)) {
+            langSegIndex = langSegIndex || 1;
+            var pathname = that.getPathname();
+            var pathSegs = pathname.split("/");
 
-        langSegIndex = langSegIndex || 1;
-        var pathname = that.model.urlPathname;
-        var pathSegs = pathname.split("/");
-        var currentLang = pathSegs[langSegIndex];
-        var hasLang = currentLang && fluid.values(langMap).indexOf(currentLang) >= 0;
-        var newLangSeg = langMap[lang];
+            var currentLang = pathSegs[langSegIndex];
+            var hasLang = !!currentLang && langSegValues.indexOf(currentLang) >= 0;
 
-        if (hasLang) {
-            if (newLangSeg) {
-                pathSegs[langSegIndex] = newLangSeg;
-            } else {
-                if (langSegIndex === pathSegs.length - 1) {
-                    pathSegs[langSegIndex] = "";
+            if (hasLang) {
+                if (urlLangSeg) {
+                    pathSegs[langSegIndex] = urlLangSeg;
                 } else {
-                    pathSegs.splice(langSegIndex, 1);
+                    if (langSegIndex === pathSegs.length - 1) {
+                        pathSegs.pop();
+                    } else {
+                        pathSegs.splice(langSegIndex, 1);
+                    }
                 }
+            } else if (urlLangSeg) {
+                pathSegs.splice(langSegIndex, 0, urlLangSeg);
             }
-        } else if (newLangSeg) {
-            pathSegs.splice(langSegIndex, 0, newLangSeg);
-        }
 
-        var newPathname = pathSegs.join("/");
-        that.applier.change("urlPathname", newPathname, "ADD", "changeLocale");
+            var newPathname = pathSegs.join("/");
+
+            if (newPathname !== pathname) {
+                that.setPathname(newPathname);
+            }
+        }
     };
 
 })(jQuery, fluid_3_0_0);

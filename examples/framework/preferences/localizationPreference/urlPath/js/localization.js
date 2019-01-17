@@ -21,8 +21,7 @@ var example = example || {};
         localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
         locales: ["default", "en", "fr", "es", "fa"],
         langMap: {
-            "default": null,
-            "en": "",
+            "en": "en",
             "es": "es",
             "fa": "fa",
             "fr": "fr"
@@ -36,9 +35,9 @@ var example = example || {};
     });
 
     /**
-     * Used as an expander to find the `langSegIndex`. For most implementations this would actually refers to 1 and is
+     * Used as an expander to find the `langSegIndex`. For most implementations this would actually refer to 1; which is
      * the default `langSegIndex` set in the component's defaults. Meaning a scheme such as this would not be required.
-     * However, the way this example is constructed and expected to run, the `langSegIndex` is at the end of the path.
+     * However, the way this example is constructed, the `langSegIndex` is at the end of the path.
      * Because we don't know ahead of time how this example will be served, we don't know the full path and must
      * dynamically calculate the index.
      *
@@ -50,9 +49,13 @@ var example = example || {};
     example.prefs.localization.getLangSegIndex = function (langMap) {
         var langVals = fluid.values(langMap);
         var pathSegs = location.pathname.split("/");
-        var index = "1";
+        var index = 1;
+
+        // Add an empty string to capture the case where no language has been set in the URL.
+        langVals.unshift("");
 
         fluid.each(langVals, function (langVal) {
+            // we use `lastIndexOf` because we know the language code is set at the end of the URL in this example
             var foundIndex = pathSegs.lastIndexOf(langVal);
             if (foundIndex >= 0) {
                 index = foundIndex;
