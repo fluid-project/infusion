@@ -33,8 +33,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             localization: {
                 "type": "fluid.prefs.localization",
                 "enactor": {
-                    "type": "fluid.prefs.enactor.localization",
-                    "classes": "@localization.classes"
+                    "type": "fluid.prefs.enactor.localization"
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.localization",
