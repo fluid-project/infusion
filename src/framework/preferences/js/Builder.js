@@ -49,7 +49,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         constructedGrades: {
             expander: {
                 func: "fluid.prefs.builder.constructGrades",
-                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "terms", "aliases"]]
+                args: [
+                    "{that}.options.auxSchema",
+                    [
+                        "enactors",
+                        "messages",
+                        "panels",
+                        "initialModel",
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ]
+                ]
             }
         },
         mappedDefaults: "{primaryBuilder}.options.schema.properties",
@@ -101,7 +114,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     components: {
                         uiEnhancer: {
                             options: {
-                                gradeNames: ["{fluid.prefs.assembler.uie}.options.componentGrades.enactors"]
+                                gradeNames: [
+                                    "{fluid.prefs.assembler.uie}.options.componentGrades.enactors",
+                                    "{fluid.prefs.assembler.prefsEd}.options.componentGrades.aliases_enhancer"
+                                ]
                             }
                         }
                     }
@@ -148,7 +164,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     prefsEditor: {
                         gradeNames: [
                             "{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels",
-                            "{fluid.prefs.assembler.prefsEd}.options.componentGrades.aliases",
+                            "{fluid.prefs.assembler.prefsEd}.options.componentGrades.aliases_prefsEditor",
                             "fluid.prefs.uiEnhancerRelay"
                         ]
                     },

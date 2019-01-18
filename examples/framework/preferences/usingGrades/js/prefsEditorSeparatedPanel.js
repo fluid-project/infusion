@@ -42,6 +42,8 @@ var example = example || {};
      * Initialize UI Enhancer for the page. This function is used by the two full-page
      * Preferences Editor pages as well as by the example page itself.
      * @param {String} customThemeName - The name of the custom theme.
+     *
+     * @return {Component} - An instance of the fluid.pageEnhancer
      */
     example.initPageEnhancer = function (customThemeName) {
         return fluid.pageEnhancer({

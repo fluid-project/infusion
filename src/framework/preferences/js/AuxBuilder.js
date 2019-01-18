@@ -142,12 +142,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.constructAliases = function (auxSchema, flattenedPrefKey, aliases) {
         aliases = fluid.makeArray(aliases);
 
-        var model = {};
+        var prefsEditorModel = {};
+        var enhancerModel = {};
         fluid.each(aliases, function (alias) {
-            model[alias] = "{that}.model.preferences." + flattenedPrefKey;
+            prefsEditorModel[alias] = "{that}.model.preferences." + flattenedPrefKey;
+            enhancerModel[alias] = "{that}.model." + flattenedPrefKey;
         });
 
-        fluid.prefs.addAtPath(auxSchema, ["aliases", "model", "preferences"], model);
+        fluid.prefs.addAtPath(auxSchema, ["aliases_prefsEditor", "model", "preferences"], prefsEditorModel);
+        fluid.prefs.addAtPath(auxSchema, ["aliases_enhancer", "model"], enhancerModel);
     };
 
     fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults) {
@@ -454,7 +457,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             terms: {
                 gradeNames: ["fluid.component"]
             },
-            aliases: {
+            aliases_prefsEditor: {
+                gradeNames: ["fluid.modelComponent"]
+            },
+            aliases_enhancer: {
                 gradeNames: ["fluid.modelComponent"]
             }
         },
