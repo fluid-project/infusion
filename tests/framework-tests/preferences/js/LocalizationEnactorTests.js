@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.enactor.localizationEnactor", {
         gradeNames: ["fluid.prefs.enactor.localization"],
         model: {
-            lang: "default"
+            lang: ""
         },
         langMap: {
             en: "",
@@ -87,7 +87,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     func: "fluid.tests.localizationTester.assertLocale",
                     args: ["Init", "{localization}", {
-                        lang: "default"
+                        lang: ""
                     }]
                 },
                 {
