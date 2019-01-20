@@ -35,7 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.prefs.localization.prefsEditor", "fluid.prefs.constructed.localizationPrefsEditorConfig"],
         localizationScheme: "urlPath",
         localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
-        locales: ["default", "en", "en-ca", "fr", "es", "fa"],
+        locales: ["", "en", "en-ca", "fr", "es", "fa"],
         langMap: {
             "en": "",
             "en-ca": "en-Ca",
@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOpts: {
             localizationScheme: "urlPath",
             localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
-            locales: ["default", "en", "en-ca", "fr", "es", "fa"],
+            locales: ["", "en", "en-ca", "fr", "es", "fa"],
             langMap: {
                 "en": "",
                 "en-ca": "en-Ca",
