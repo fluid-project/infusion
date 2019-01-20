@@ -56,8 +56,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         schema: {
             "fluid.prefs.localization": {
                 "type": "string",
-                "default": "default",
-                "enum": ["default", "en", "en_CA", "en_US", "fr", "es", "fa"]
+                "default": "",
+                "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa"]
             }
         }
     });

@@ -19,7 +19,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.constructed.localizationPrefsEditorConfig"],
         localizationScheme: "urlPath",
         localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
-        locales: ["default", "en", "fr", "es", "fa"],
+        locales: ["", "en", "fr", "es", "fa"],
         langMap: {
             "en": "en",
             "es": "es",
