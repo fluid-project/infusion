@@ -9,6 +9,7 @@
         "svg/infusion/infusion-crossout-diag-dotted-line.svg",
         "svg/infusion/infusion-font-style.svg",
         "svg/infusion/infusion-indicator-arrow-triangle.svg",
+        "svg/infusion/infusion-language.svg",
         "svg/infusion/infusion-line-space.svg",
         "svg/infusion/infusion-line-space-condensed.svg",
         "svg/infusion/infusion-line-space-expanded.svg",
@@ -51,7 +52,8 @@
             "infusion-word-space": "0xE014",
             "infusion-word-space-condensed": "0xE015",
             "infusion-word-space-expanded": "0xE016",
-            "infusion-syllabification": "0xE017"
+            "infusion-syllabification": "0xE017",
+            "infusion-language": "0xE018"
         },
         "templateOptions": {
             "classPrefix": "fl-icon-"

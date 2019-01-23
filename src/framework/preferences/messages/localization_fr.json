@@ -1,0 +1,11 @@
+{
+    "localization-default": "Pas de préférence",
+    "localization-en": "English",
+    "localization-en_CA": "English (Canada)",
+    "localization-en_US": "English (USA)",
+    "localization-es": "Español",
+    "localization-fa": "فارسی",
+    "localization-fr": "Français",
+    "label": "Localisation",
+    "description": "Ajuster la localisation ou la langue"
+}
