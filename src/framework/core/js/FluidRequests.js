@@ -285,14 +285,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var togo = fluid.promise();
         resourceSpec.jqXHR = $.ajax(resourceSpec.options).then(function (data, textStatus, jqXHR) {
             resourceSpec.jqXHR = jqXHR; // This is advertised to be the same object but it is not
-            togo.resolve(jqXHR.responseText);
+            fluid.invokeLater(function () {
+                togo.resolve(jqXHR.responseText);
+            });
         }, function (jqXHR, textStatus, errorThrown) {
             resourceSpec.jqXHR = jqXHR;
-            togo.reject({
-                isError: true,
-                status: jqXHR.status,
-                textStatus: jqXHR.textStatus,
-                errorThrown: errorThrown
+            // Always resolve later to bypass jQuery's shitty exception handlers
+            fluid.invokeLater(function () {
+                togo.reject({
+                    isError: true,
+                    status: jqXHR.status,
+                    textStatus: jqXHR.textStatus,
+                    errorThrown: errorThrown
+                });
             });
         });
         return togo;

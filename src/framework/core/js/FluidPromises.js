@@ -142,6 +142,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             strategy: strategy,
             options: options, // available to be supplied to each listener
             returns: [],
+            sequenceStarted: false,
             promise: fluid.promise() // the final return value
         };
     };
@@ -163,6 +164,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.promise.resumeSequence = function (that) {
+        that.sequenceStarted = true;
         if (that.index === that.sources.length) {
             that.promise.resolve(that.strategy.resolveResult(that));
         } else {

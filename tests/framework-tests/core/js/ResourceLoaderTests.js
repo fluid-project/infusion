@@ -119,7 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.UI(".flc-container");
     });
 
-    /** FLUID-6202: testing real cause of fault, synchrony in FluidRequests.js **/
+    /** FLUID-6202: Boiling on resourcesLoaded event **/
 
     fluid.defaults("fluid.tests.FLUID6202parent2", {
         gradeNames: "fluid.component",
@@ -148,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.asyncTest("FLUID-6202: Forced instantiation of resource loaders with cached content", function () {
+    jqUnit.asyncTest("FLUID-6202: Boiling on resourcesLoaded event", function () {
         jqUnit.expect(1);
         var restart = function () {
             jqUnit.assert("Composite event has fired");

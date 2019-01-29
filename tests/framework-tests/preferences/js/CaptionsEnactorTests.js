@@ -137,8 +137,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 createOnEvent: "onYTPlayerReady"
             },
             youTubePlayerTester: {
-                type: "fluid.tests.youTubePlayerTester",
-                createOnEvent: "onYTPlayerReady"
+                type: "fluid.tests.youTubePlayerTester"
             }
         }
     });
@@ -291,7 +290,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             captionsTester: {
                 type: "fluid.tests.captionsTester",
-                createOnEvent: "onYTPlayerReady",
                 options: {
                     events: {
                         onTestCaseStart: "{captionsTests}.events.onTestCaseStart"

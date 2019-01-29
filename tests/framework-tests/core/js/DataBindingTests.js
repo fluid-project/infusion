@@ -599,7 +599,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    fluid.setLogging(true);
 
     fluid.defaults("fluid.tests.fluid3674head", {
         gradeNames: ["fluid.modelComponent", "fluid.tests.changer", "fluid.tests.changeRecorder"],
@@ -764,6 +763,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         jqUnit.assertDeepEq("Model skeleton has settled to expected values", expected, values);
         fluid.tests.assertTransactionsConcluded();
+    });
+
+    /** FLUID-4982: Simple case of initial model value sourced from asynchronous fetch **/
+
+    fluid.defaults("fluid.tests.fluid4982simple", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            initModel: {
+                url: "../data/initModel.json"
+            }
+        },
+        model: "{that}.resources.initModel"
+    });
+
+    jqUnit.asyncTest("FLUID-4982 simple asynchronously fetched model", function () {
+        jqUnit.expect(2);
+        var checkIt = function (component) {
+            jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
+            jqUnit.assertValue("Expected model value resolved ASYNCHROUWNOUSLY", 42, component.model.initValue);
+            jqUnit.start();
+        };
+        fluid.tests.fluid4982simple({
+            listeners: {
+                "onCreate.checkIt": checkIt
+            }
+        });
     });
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/

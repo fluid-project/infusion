@@ -2773,7 +2773,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4290 - createOnEvent sequence corruption test **/
 
     fluid.defaults("fluid.tests.createOnEvent", {
-        gradeNames: ["fluid.component"],
+        gradeNames: "fluid.component",
         events: {
             afterRender: null
         },
@@ -2804,6 +2804,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(1);
         fluid.tests.createOnEvent();
         jqUnit.assert("Component successfully constructed");
+    });
+
+    /** FLUID-6367 - createOnEvent during onCreate **/
+
+    fluid.defaults("fluid.tests.FLUID6367head", {
+        gradeNames: "fluid.component",
+        listeners: {
+            onCreate: "fluid.tests.FLUID6367create"
+        },
+        events: {
+            createIt: null
+        },
+        components: {
+            child: {
+                type: "fluid.component",
+                createOnEvent: "createIt"
+            }
+        }
+    });
+
+    fluid.tests.FLUID6367create = function (that) {
+        that.events.createIt.fire();
+        // Note that these flags are not intended to be inspected by ordinary users - at least, they should not
+        // be expected to resolve the difference between "constructed" and "treeConstructed"
+        jqUnit.assertEquals("Subcomponent should be fully constructed", "treeConstructed", that.child.lifecycleStatus);
+    };
+
+    jqUnit.test("FLUID-6367 test: createOnEvent during onCreate", function () {
+        jqUnit.expect(1);
+        fluid.tests.FLUID6367head();
     });
 
     /** Tree circularity tests (early detection of stack overflow) **/
@@ -5052,7 +5082,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.oneFluid6148Partial = function (name, options, expected) {
         var paths = ["options.unnecessaryValue", "noted"];
-        var transactionId = fluid.beginTreeTransaction(options);
+        var transactionId = fluid.beginTreeTransaction(options).transactionId;
         fluid.construct("FLUID6148partial-instance", {
             type: "fluid.tests.FLUID6148partial"
         }, {transactionId: transactionId});

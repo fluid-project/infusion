@@ -2816,9 +2816,13 @@ var fluid = fluid || fluid_3_0_0;
             componentId: id,
             records: [userRecord]
         };
-        var transactionId = fluid.registerPotentia(potentia);
-        var shadow = fluid.commitPotentiae(transactionId);
-        return shadow.that;
+        var transRec = fluid.registerPotentia(potentia);
+        var togo = fluid.commitPotentiae(transRec.transactionId).that;
+        // This registration MUST go last otherwise we mask the catch->reject handler in bindDeferredComponent
+        transRec.promise.then(null, function (e) { // TODO: Should only throw synchronous exceptions from here
+            throw e;
+        });
+        return togo;
     };
 
     // ******* SELECTOR ENGINE *********
