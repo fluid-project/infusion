@@ -281,29 +281,49 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return resourceText;
     };
     */
-    fluid.resourceLoader.loaders.jQueryAjax = function (resourceSpec) {
+    fluid.resourceLoader.loaders.XHR = function (resourceSpec) {
         var togo = fluid.promise();
-        resourceSpec.jqXHR = $.ajax(resourceSpec.options).then(function (data, textStatus, jqXHR) {
-            resourceSpec.jqXHR = jqXHR; // This is advertised to be the same object but it is not
+        var xhr = resourceSpec.xhr = new XMLHttpRequest();
+        var sendSuccess = function () {
             fluid.invokeLater(function () {
-                togo.resolve(jqXHR.responseText);
+                var response = !xhr.responseType || xhr.responseType === "text" ? xhr.responseText : xhr.response;
+                togo.resolve(response);
             });
-        }, function (jqXHR, textStatus, errorThrown) {
-            resourceSpec.jqXHR = jqXHR;
-            // Always resolve later to bypass jQuery's shitty exception handlers
+        };
+        var sendError = function () {
             fluid.invokeLater(function () {
                 togo.reject({
                     isError: true,
-                    status: jqXHR.status,
-                    textStatus: jqXHR.textStatus,
-                    errorThrown: errorThrown
+                    status: xhr.status,
+                    textStatus: xhr.textStatus
                 });
             });
+        };
+        xhr.addEventListener("load", function () {
+            var isSuccess = xhr.status >= 200 && xhr.status < 300 || xhr.status === 304;
+            isSuccess ? sendSuccess() : sendError();
         });
+        xhr.addEventListener("error", sendError);
+        var options = $.extend({async: true}, resourceSpec.options);
+        xhr.open(options.method || "GET", resourceSpec.url, options.async, options.username, options.password);
+        fluid.resourceLoader.loaders.XHR.copyProps.forEach(function (prop) {
+            if (fluid.isValue(options.prop)) {
+                xhr[prop] = options.prop;
+            }
+        });
+        fluid.each(options.requestHeaders, function (value, key) {
+            var values = fluid.makeArray(value);
+            values.forEach(function (oneValue) {
+                xhr.setRequestHeader(key, oneValue);
+            });
+        });
+        xhr.send();
         return togo;
     };
 
-    fluid.resourceLoader.loaders.url = fluid.resourceLoader.loaders.jQueryAjax;
+    fluid.resourceLoader.loaders.XHR.copyProps = ["contentType", "responseType", "timeout"];
+
+    fluid.resourceLoader.loaders.url = fluid.resourceLoader.loaders.XHR;
 
     fluid.resourceLoader.loaders.resourceText = function (resourceSpec) {
         return resourceSpec.resourceText;
