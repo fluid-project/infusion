@@ -161,4 +161,88 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-4982: Overlapping, asynchronous component construction **/
+
+    fluid.defaults("fluid.tests.FLUID4982.overlapMocks", {
+        gradeNames: "fluid.test.mockXHR",
+        mocks: {
+            first: {
+                url: "/first",
+                delay: 200,
+                body: "first"
+            },
+            second: {
+                url: "/second",
+                delay: 400,
+                body: "second"
+            },
+            failed: {
+                url: "/notfound",
+                delay: 100,
+                status: 404
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID4982base", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        model: "{that}.resources.initModel",
+        members: {
+            creationPromise: "@expand:fluid.promise()"
+        },
+        listeners: {
+            "onCreate.resolveCreation": "{that}.creationPromise.resolve",
+            "afterDestroy.resolveDestruction": "fluid.tests.FLUID4982destroy"
+        }
+    });
+
+    fluid.tests.FLUID4982destroy = function (that) {
+        if (!that.creationPromise.disposition) {
+            that.creationPromise.reject(that.resourceFetcher.completionPromise.value);
+        }
+    };
+
+    fluid.defaults("fluid.tests.FLUID4982first", {
+        gradeNames: "fluid.tests.FLUID4982base",
+        resources: {
+            initModel: {
+                url: "/second"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID4982second", {
+        gradeNames: "fluid.tests.FLUID4982base",
+        resources: {
+            initModel: {
+                url: "/first"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID4982failed", {
+        gradeNames: "fluid.tests.FLUID4982base",
+        resources: {
+            initModel: {
+                url: "/notfound"
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-4982: Overlapping creation of asynchronous components", function () {
+        var mocks = fluid.tests.FLUID4982.overlapMocks();
+        var failed = fluid.tests.FLUID4982failed();
+        var first = fluid.tests.FLUID4982first();
+        var second = fluid.tests.FLUID4982second();
+        var promise = fluid.promise.sequence([first.creationPromise, second.creationPromise]);
+        promise.then(function () {
+            jqUnit.assertEquals("First component model resolved", "second", first.model);
+            jqUnit.assertEquals("Second component model resolved", "first", second.model);
+            jqUnit.assertTrue("Failed component has been destroyed", fluid.isDestroyed(failed));
+            jqUnit.assertEquals("Status code recoverable from failed component", 404, failed.creationPromise.value.status);
+            mocks.destroy();
+            jqUnit.start();
+        });
+    });
+
 })();

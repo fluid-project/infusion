@@ -157,7 +157,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var resourceSpec = resourceFetcher.resourceSpecs[name];
         var promise = fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher);
         if (!promise.disposition) {
-            var transRec = fluid.treeTransactionForComponent(that);
+            var transRec = fluid.currentTreeTransaction();
             transRec.pendingIO.push(promise);
             return promise;
         } else if (promise.disposition === "resolve") {
@@ -559,7 +559,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (context === "/" || context === "that") {
                 fluid.distributeOptionsOne(that, record, targetRef, selector, context);
             } else {
-                var transRec = fluid.treeTransactionForComponent(that);
+                var transRec = fluid.currentTreeTransaction();
                 transRec.deferredDistributions.push({that: that, record: record, targetRef: targetRef, selector: selector, context: context});
             }
         });
@@ -845,6 +845,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return path ? fluid.pathUtil.composeSegments.apply(null, path) : "** no path registered for component **";
     };
 
+    fluid.dumpComponentAndPath = function (that) {
+        return "component " + fluid.dumpThat(that) + " at path " + fluid.dumpComponentPath(that);
+    };
+
     fluid.resolveContext = function (context, that, fast) {
         if (context === "that") {
             return that;
@@ -891,7 +895,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.triggerMismatchedPathError = function (parsed, parentThat) {
         var ref = fluid.renderContextReference(parsed);
         fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
-            parsed.context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.dumpComponentPath(parentThat) + " component: " , parentThat);
+            parsed.context + " from " + fluid.dumpComponentAndPath(parentThat));
     };
 
     fluid.makeStackFetcher = function (parentThat, localRecord, fast) {
@@ -981,11 +985,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             lifecycleStatus: "constructed",
             pathToComponent: {},
             idToShadow: {},
-            modelTransactions: {init: {}}, // a map of transaction id to map of component id to records of components enlisted in a current model initialisation transaction
-            treeTransactions: {}, // a map of transaction id to: {
-                // pendingPotentia: an array of the segs for pathToPotentia which remain to be handled
-            // }
-            // any instantiation in progress. In the current framework, these are still synchronous - in future, there will be a backlink from the shadow
+            modelTransactions: {}, // a map of transaction id to map of component id to records of components enlisted in a current model initialisation transaction
+            treeTransactions: {}, // a map of transaction id to TreeTransaction - see fluid.beginTreeTransaction for initial values
+            // any tree instantiation in progress. This is primarily read in order to enlist in bindDeferredComponent.
             currentTreeTransactionId: null,
             composePath: fluid.model.composePath, // For speed, we declare that no component's name may contain a period
             composeSegments: fluid.model.composeSegments,
@@ -1620,7 +1622,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // The midpoint of fluid.operateCreatePotentia. We have just created the shell, and will now investigate any subcomponents
     // and push any immediate ones discovered into potentia records at deeper paths.
-    fluid.processComponentShell = function (potentia, shell) {
+    fluid.processComponentShell = function (potentia, shell, transRec) {
         var instantiator = fluid.globalInstantiator;
         var shadow = instantiator.idToShadow[shell.id];
         shadow.potentia = potentia;
@@ -1653,7 +1655,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 });
             }
         });
-        var transRec = fluid.treeTransactionForComponent(shell);
         if (transRec.deferredDistributions.length) { // Resolve FLUID-6193 in potentia world by enqueueing deferred distributions
             transRec.pendingPotentiae.creates.push({
                 type: "distributeOptions",
@@ -1741,7 +1742,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else if (lightMerge.type) {
             shell = fluid.initComponentShell(potentia, lightMerge);
             if (shell) {
-                fluid.processComponentShell(potentia, shell);
+                fluid.processComponentShell(potentia, shell, transRec);
             }
         } else {
             fluid.fail("Unrecognised material in place of subcomponent " + memberName + " - could not recognise the records ",
@@ -1753,7 +1754,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             segs: potentia.segs
         });
         fluid.popActivity();
-        return shell ? instantiator.idToShadow[shell.id] : null;
+        if (shell) {
+            return instantiator.idToShadow[shell.id];
+        }
     };
 
     fluid.operateDestroyPotentia = function (transRec, potentia, instantiator) {
@@ -1786,8 +1789,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.waitPendingIOTask = function (transRec) {
+        var instantiator = fluid.globalInstantiator;
+        var suspendCurrentTransaction = function () {
+            instantiator.currentTreeTransactionId = null;
+        };
+        var resumeCurrentTransaction = function () {
+            instantiator.currentTreeTransactionId = transRec.transactionId;
+        };
+        var bracketIO = function (sequence) {
+            return [suspendCurrentTransaction].concat(sequence).concat([resumeCurrentTransaction]);
+        };
         return function () {
-            return transRec.pendingIO.length ? fluid.promise.sequence(transRec.pendingIO) : null;
+            return transRec.pendingIO.length ? fluid.promise.sequence(bracketIO(transRec.pendingIO)) : null;
         };
     };
 
@@ -1905,6 +1918,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 transRec.promise.reject(e);
             }
         });
+        // instantiator.currentTreeTransactionId = null;
         return togo;
     };
 
@@ -1952,17 +1966,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Returns the current tree transaction which a constructing component is enlisted in. This currently just returns
-     * the one current tree transaction if there is one - in future the system will support multiple concurrent transactions
-     * @return {TreeTransaction} The tree transaction.
+     * Returns the current tree transaction which a constructing component is enlisted in. This may be undefined
+     * if the transaction has concluded.
+     * @return {TreeTransaction|Undefined} The tree transaction.
      */
-    fluid.treeTransactionForComponent = function (/* that */) {
+    fluid.currentTreeTransaction = function () {
         var instantiator = fluid.globalInstantiator;
-        if (!instantiator.currentTreeTransactionId) {
-            fluid.fail("Tree transaction requested when none is active");
-        } else {
-            return instantiator.treeTransactions[instantiator.currentTreeTransactionId];
-        }
+        return instantiator.treeTransactions[instantiator.currentTreeTransactionId];
     };
 
     /** Begin a fresh transaction against the global component tree. Any further calls to `fluid.registerPotentia`,
@@ -1978,7 +1988,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.beginTreeTransaction = function (transactionOptions) {
         var instantiator = fluid.globalInstantiator;
         if (instantiator.currentTreeTransactionId) {
-            fluid.fail("Infusion does not yet support more than one concurrent tree transaction");
+            fluid.fail("Attempt to start new tree transaction when transaction " + instantiator.currentTreeTransactionId + " is already active");
         }
         var transactionId = instantiator.currentTreeTransactionId = fluid.allocateGuid();
         var transRec = $.extend({
@@ -1988,7 +1998,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
             deferredDistributions: [], // distributeOptions may decide to defer application of a distribution for FLUID-6193,
             cancelled: false,
-            firstComponent: null,
+            initModelTransaction: {},
             pendingIO: [] // list of outstanding promises from workflow in progress
         }, transactionOptions);
         transRec.promise = transRec.rootSequencer.promise;
@@ -2000,16 +2010,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         };
 
-        var onException = function (e) {
+        var onException = function () {
             if (!transRec.cancelled) {
-                fluid.tryCatch(function () {
-                    delete transRec.sequencer;
-                    fluid.cancelTreeTransaction(transactionId, instantiator);
-                    onConclude();
-                }, null, function () {
-                // Throw any error to top level - in future we will have per-component onError or some other kind of signal
-                    throw e;
-                });
+                delete transRec.sequencer;
+                fluid.cancelTreeTransaction(transactionId, instantiator);
+                onConclude();
             }
         };
         transRec.promise.then(onConclude, onException);
@@ -2054,6 +2059,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 transRec.pendingPotentiae = transRec.restoreRecords;
                 transRec.restoreRecords = fluid.blankPotentiaList();
                 transRec.cancelled = true;
+                transRec.initModelTransaction = {};
                 fluid.commitPotentiae(transactionId, true);
             } catch (e) {
                 fluid.log(fluid.logLevel.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");

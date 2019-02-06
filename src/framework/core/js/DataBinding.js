@@ -338,8 +338,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Enlist this model component as part of the "initial transaction" wave - note that "special transaction" init
     // is indexed by component, not by applier, and has special record type (completeOnInit + initModel), not transaction
     fluid.enlistModelComponent = function (that) {
-        var instantiator = fluid.getInstantiator(that);
-        var enlist = instantiator.modelTransactions.init[that.id];
+        var initModelTransaction = fluid.currentTreeTransaction().initModelTransaction;
+        var enlist = initModelTransaction[that.id];
         if (!enlist) {
             var shadow = fluid.shadowForComponent(that);
             enlist = {
@@ -347,7 +347,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 applier: fluid.getForComponent(that, "applier"),
                 completeOnInit: shadow.modelComplete
             };
-            instantiator.modelTransactions.init[that.id] = enlist;
+            initModelTransaction[that.id] = enlist;
         }
         return enlist;
     };
@@ -355,7 +355,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.clearTransactions = function () {
         var instantiator = fluid.globalInstantiator;
         fluid.clear(instantiator.modelTransactions);
-        instantiator.modelTransactions.init = {};
     };
 
     fluid.failureEvent.addListener(fluid.clearTransactions, "clearTransactions", "before:fail");
@@ -408,6 +407,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return (reca.completeOnInit ? 1 : 0) - (recb.completeOnInit ? 1 : 0);
     };
 
+    fluid.dereferenceInitModel = function (that, initModel) {
+        if (fluid.isPromise(initModel)) {
+            if (initModel.disposition === "resolve") {
+                return initModel.value;
+            } else {
+                fluid.fail("Received an unresolved promise as initial model value for " + fluid.dumpComponentAndPath(that)
+                    + " promise state is ", initModel);
+            }
+        } else {
+            return initModel;
+        }
+    };
+
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
      * @param {Object} mrec The global model transaction record for the init transaction. This is a hash indexed by component id
      * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `complete`.
@@ -421,9 +433,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             transRec[recel.that.applier.applierId] = {transaction: transac};
             return transac;
         });
-        // TODO: This sort has very little effect in any current test (can be replaced by no-op - see FLUID-5339) - but
-        // at least can't be performed in reverse order ("FLUID-3674 event coordination test" will fail) - need more cases
-
         // Compute the graph of init transaction relays for FLUID-6234 - one day we will have to do better than this, since there
         // may be finer structure than per-component - it may be that each piece of model area participates in this relation
         // differently. But this will require even more ambitious work such as fragmenting all the initial model values along
@@ -450,7 +459,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (recel.completeOnInit) {
                 fluid.initModelEvent(that, that.applier, transac, that.applier.listeners.sortedListeners);
             } else {
-                fluid.each(recel.initModels, function (initModel) {
+                fluid.each(recel.initModels, function (oneInitModel) {
+                    var initModel = fluid.dereferenceInitModel(that, oneInitModel);
                     transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
                     fluid.clearLinkCounts(transRec, true);
                 });
@@ -1059,7 +1069,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** The main entry point for enlisting a model component in the initial transaction. Positioned as a "fake member"
-     * which evalutes to null. Calls `fluid.enlistModelComponent` to register record in instantiator.modelTransactions.init
+     * which evalutes to null. Calls `fluid.enlistModelComponent` to register record in treeTransaction.initModelTransaction
      * @param {Component} that - The `fluid.modelComponent` which is about to initialise
      * @param {Object} optionsModel - Reference into `{that}.options.model`
      * @param {Object} optionsML - Reference into `{that}.options.modelListeners`
@@ -1125,11 +1135,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.operateInitialTransactionWorkflow = function (shadows, treeTransaction) {
-        var instantiator = fluid.globalInstantiator;
-
         if (treeTransaction.modelComponents.length > 0) {
             fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
-                fluid.operateInitialTransaction(instantiator.modelTransactions.init);
+                fluid.operateInitialTransaction(treeTransaction.initModelTransaction);
                 // Do this afterwards so that model listeners can be fired by concludeComponentInit
                 treeTransaction.modelComponents.forEach(function (shadow) {
                     var that = shadow.that;
@@ -1141,7 +1149,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     };
                 });
                 // NB: Don't call fluid.concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
-                instantiator.modelTransactions.init = {};
+                treeTransaction.initModelTransaction = {};
             }, function (e) {
                 fluid.clearTransactions();
                 throw e;

@@ -771,7 +771,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
         resources: {
             initModel: {
-                url: "../data/initModel.json"
+                url: "../data/initModel.json",
+                dataType: "json"
             }
         },
         model: "{that}.resources.initModel"
@@ -781,7 +782,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(2);
         var checkIt = function (component) {
             jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
-            jqUnit.assertValue("Expected model value resolved ASYNCHROUWNOUSLY", 42, component.model.initValue);
+            jqUnit.assertEquals("Expected model value resolved ASYNCHROUWNOUSLY", 42, component.model.initValue);
             jqUnit.start();
         };
         fluid.tests.fluid4982simple({
