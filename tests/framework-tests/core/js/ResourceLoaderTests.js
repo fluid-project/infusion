@@ -234,7 +234,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var failed = fluid.tests.FLUID4982failed();
         var first = fluid.tests.FLUID4982first();
         var second = fluid.tests.FLUID4982second();
-        var promise = fluid.promise.sequence([first.creationPromise, second.creationPromise]);
+        var promise = fluid.promise.sequence([failed.creationPromise, first.creationPromise, second.creationPromise]);
         promise.then(function () {
             jqUnit.assertEquals("First component model resolved", "second", first.model);
             jqUnit.assertEquals("Second component model resolved", "first", second.model);
