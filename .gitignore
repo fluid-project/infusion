@@ -19,3 +19,4 @@ package-lock.json
 report.tap
 coverage
 reports
+src/lib/fonts

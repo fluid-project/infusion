@@ -20,10 +20,11 @@
     "main": "./src/module/fluid.js",
     "scripts": {
         "prepare": "npm run loadDependencies && npm run buildStylus",
-        "prepublishOnly": "npm run buildDists",
+        "prepublishOnly": "npm run buildDists && npm run test:browserBundles",
         "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
         "test": "npm run test:browser && npm run test:node",
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
+        "test:browserBundles": "node node_modules/testem/testem.js ci --file tests/bundle-tests/testem.js",
         "test:node": "node node_modules/nyc/bin/nyc.js node tests/node-tests/basic-node-tests.js",
         "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
         "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
