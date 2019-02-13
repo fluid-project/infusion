@@ -7,7 +7,20 @@ require("gpii-testem");
 
 fluid.defaults("fluid.tests.bundle.testem", {
     gradeNames: ["gpii.testem.coverage"],
-    testPages:  ["tests/bundle-tests/all-bundle-tests.html"],
+    testPages:  [
+        "tests/bundle-tests/infusion-all.html",
+        "tests/bundle-tests/infusion-all-min.html",
+        "tests/bundle-tests/infusion-all-no-jquery.html",
+        "tests/bundle-tests/infusion-all-no-jquery-min.html",
+        "tests/bundle-tests/infusion-framework.html",
+        "tests/bundle-tests/infusion-framework-min.html",
+        "tests/bundle-tests/infusion-framework-no-jquery.html",
+        "tests/bundle-tests/infusion-framework-no-jquery-min.html",
+        "tests/bundle-tests/infusion-uio.html",
+        "tests/bundle-tests/infusion-uio-min.html",
+        "tests/bundle-tests/infusion-uio-no-jquery.html",
+        "tests/bundle-tests/infusion-uio-no-jquery-min.html"
+    ],
     sourceDirs: {
         src: "%infusion/src"
     },
@@ -15,7 +28,7 @@ fluid.defaults("fluid.tests.bundle.testem", {
         tests:   "%infusion/tests"
     },
     testemOptions: {
-        skip: "PhantomJS,Opera,Safari",
+        launch: "Headless Chrome",
         disable_watching: true,
         tap_quiet_logs: true
     }
