@@ -61,6 +61,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         components: {
             levels: {
                 type: "fluid.tableOfContents.levels",
+                // This is a createOnEvent markup since the parent acquires its model state from the DOM on startup
+                // and it is currently too irritating to express this via expanders until we implement proxies for FLUID-6372
                 createOnEvent: "onCreate",
                 container: "{tableOfContents}.dom.tocContainer",
                 options: {
@@ -319,16 +321,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return tree;
     };
 
-    fluid.tableOfContents.levels.fetchResources = function (that) {
-        fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.parsed);
-            that.refreshView();
-        });
-    };
-
-
     fluid.defaults("fluid.tableOfContents.levels", {
-        gradeNames: ["fluid.rendererComponent"],
+        gradeNames: ["fluid.rendererComponent", "fluid.resourceLoader"],
         produceTree: "fluid.tableOfContents.levels.produceTree",
         strings: {
             tocHeader: "Table of Contents"
@@ -358,14 +352,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
         },
-        listeners: {
-            "onCreate.fetchResources": "fluid.tableOfContents.levels.fetchResources"
-        },
         resources: {
             template: {
                 url: "../html/TableOfContents.html"
             }
         },
+        renderOnInit: true,
         rendererFnOptions: {
             noexpand: true
         },

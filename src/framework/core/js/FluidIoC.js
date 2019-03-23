@@ -1825,13 +1825,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.invokeGlobalFunction(workflow.funcName, [shadows, transRec]);
                 });
             });
-            sequence.push(fluid.waitPendingIOTask(transRec));
+//             sequence.push(fluid.waitPendingIOTask(transRec));
 
             var revShadows = fluid.makeArray(shadows).reverse();
             if (transRec.breakAt === "observation") {
                 sequence.push(fluid.localWorkflowToTask(fluid.concludeComponentObservation, revShadows));
             } else {
                 transRec.workflows.local.forEach(function (workflow) {
+                    if (workflow.waitIO) {
+                        sequence.push(fluid.waitPendingIOTask(transRec));
+                    }
                     var workflowFunc = fluid.getGlobalValue(workflow.funcName);
                     sequence.push(fluid.localWorkflowToTask(workflowFunc, revShadows));
                 });

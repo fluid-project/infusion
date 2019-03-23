@@ -118,8 +118,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         },
         workflows: {
             local: {
-                initRendererShadow: {
-                    funcName: "fluid.initRendererShadow",
+                initRendererComponent: {
+                    funcName: "fluid.initRendererFromShadow",
                     priority: "before:notifyInitModel"
                 }
             }
@@ -138,13 +138,12 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             autoBind: true
         },
         events: {
-            onResourcesFetched: null,
             prepareModelForRender: null,
             onRenderTree: null,
             afterRender: null
         },
         listeners: {
-            onCreate: {
+            "onCreate.renderOnInit": {
                 funcName: "fluid.rendererComponent.renderOnInit",
                 args: ["{that}.options.renderOnInit", "{that}"],
                 priority: "last"
@@ -205,15 +204,16 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             that.options.protoTree;
     };
 
-    fluid.initRendererShadow = function (shadow) {
+    fluid.initRendererFromShadow = function (shadow) {
         if (fluid.componentHasGrade(shadow.that, "fluid.rendererComponent")) {
             fluid.initRendererComponent(shadow.that);
         }
     };
 
     fluid.initRendererComponent = function (that) {
-        fluid.fetchResources(that.options.resources, that.events.onResourcesFetched.fire); // TODO: deal with asynchrony
-
+        // Cater for more modern components that mix in resourceLoader, as well as uses in the prefs framework which
+        // fetch resources and inject them using a TemplateLoader higher in the tree in which case this is a no-op
+        fluid.getForComponent(that, "resources.template");
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
 
         if (!rendererOptions.messageSource && that.options.strings) {
@@ -231,9 +231,9 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
 
-        if (that.options.resources && that.options.resources.template) {
+        if (that.resources && that.resources.template) {
             rendererFnOptions.templateSource = function () { // TODO: don't obliterate, multitemplates, etc.
-                return that.options.resources.template.resourceText;
+                return that.resources.template.resourceText;
             };
         }
 

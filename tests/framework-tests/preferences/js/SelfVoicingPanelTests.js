@@ -60,7 +60,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 7,
                 name: "Test the rendering of the speak panel",
                 sequence: [{
-                    event: "{testEnvironment speak}.events.onResourcesFetched",
+                    event: "{testEnvironment speak}.events.onCreate",
                     listener: "fluid.identity"
                 },  {
                     func: "{speak}.refreshView"

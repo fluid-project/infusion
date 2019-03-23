@@ -14,7 +14,115 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function () {
     "use strict";
 
-    jqUnit.module("PrefsEditor ResourceLoader Tests");
+    jqUnit.module("fetchResources Tests");
+
+    fluid.registerNamespace("fluid.tests.fetchResources");
+
+    jqUnit.asyncTest("Basic fetch tests", function () {
+
+        var resourceSpecs = {
+            objects: {
+                url: "../data/objects.json",
+                options: {
+                    dataType: "text"
+                }
+            },
+            intake: {
+                url: "../data/intake.json",
+                options: {
+                    dataType: "text"
+                }
+            }
+        };
+
+        fluid.fetchResources(resourceSpecs, function () {
+            jqUnit.assertUndefined("No fetch error", resourceSpecs.objects.fetchError);
+            jqUnit.assertValue("Request completed", resourceSpecs.objects.resourceText);
+            jqUnit.start();
+        });
+    });
+
+    fluid.tests.fetchResources.resourceSpecsWithOverride = {
+        messages1: { // test exact long locale
+            url: "../data/messages1.json",
+            locale: "en_ZA"
+        },
+        messages2: { // test fallback to lang locale
+            url: "../data/messages2.json",
+            locale: "fr_CH"
+        },
+        messages3: { // test language default
+            url: "../data/messages3.json"
+        },
+        messages4: { // test cross-language default fallback
+            url: "../data/messages1.json",
+            locale: "gr"
+        },
+        messages5: { // test locale and default locale identical - FLUID-5662
+            url: "../data/messages4.json",
+            locale: "en",
+            defaultLocale: "en"
+        }
+    };
+
+    fluid.tests.fetchResources.expected = {
+        messages1: "marking",
+        messages2: "moi",
+        messages3: "lower",
+        messages4: "grading",
+        messages5: "Sherlock"
+    };
+
+    fluid.tests.fetchResources.resourceSpecsWithoutOverride = {
+        messages1: { // test exact long locale
+            url: "../data/messages1.json",
+            locale: "en_ZA",
+            defaultLocale: "en"
+        },
+        messages2: { // test fallback to lang locale
+            url: "../data/messages2.json",
+            locale: "fr_CH",
+            defaultLocale: "en"
+        },
+        messages3: { // test language default
+            url: "../data/messages3.json",
+            defaultLocale: "en"
+        },
+        messages4: { // test cross-language default fallback
+            url: "../data/messages1.json",
+            locale: "gr",
+            defaultLocale: "en"
+        },
+        messages5: { // test locale and default locale identical - FLUID-5662
+            url: "../data/messages4.json",
+            locale: "en",
+            defaultLocale: "en"
+        }
+    };
+
+    fluid.tests.fetchResources.testLocalizedResourceSpecs = function (message, resourceSpecCollection, fetchResourcesOptions) {
+        jqUnit.asyncTest(message, function () {
+            var callback = function (resourceSpecs) {
+                fluid.each(resourceSpecs, function (resourceSpec, key) {
+                    jqUnit.assertValue("Should have resolved resource", resourceSpec.resourceText);
+                    jqUnit.assertTrue("Should have found expected text",
+                        resourceSpec.resourceText.indexOf(fluid.tests.fetchResources.expected[key]) !== -1);
+                });
+                jqUnit.start();
+            };
+            jqUnit.expect(2 * Object.keys(fluid.tests.fetchResources.expected).length);
+
+            fluid.fetchResources(resourceSpecCollection, callback, fetchResourcesOptions);
+        });
+    };
+
+    fluid.tests.fetchResources.testLocalizedResourceSpecs("Localisation tests - defaultLocale override option",
+        fluid.tests.fetchResources.resourceSpecsWithOverride, {defaultLocale: "en"});
+    fluid.tests.fetchResources.testLocalizedResourceSpecs("Localisation tests - no defaultLocale override option",
+        fluid.tests.fetchResources.resourceSpecsWithoutOverride);
+
+
+    jqUnit.module("ResourceLoader Tests");
 
     fluid.registerNamespace("fluid.tests.resourceLoader");
 
@@ -234,7 +342,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var failed = fluid.tests.FLUID4982failed();
         var first = fluid.tests.FLUID4982first();
         var second = fluid.tests.FLUID4982second();
-        var promise = fluid.promise.sequence([failed.creationPromise, first.creationPromise, second.creationPromise]);
+        var rejection = fluid.promise();
+        failed.creationPromise.then(null, function (err) {
+            rejection.resolve(err);
+        });
+        var promise = fluid.promise.sequence([rejection, first.creationPromise, second.creationPromise]);
         promise.then(function () {
             jqUnit.assertEquals("First component model resolved", "second", first.model);
             jqUnit.assertEquals("Second component model resolved", "first", second.model);

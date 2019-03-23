@@ -17,9 +17,9 @@
             "./js/ModelTransformationTransforms.js",
             "./js/jquery.keyboard-a11y.js",
             "./js/FluidView.js",
-            "./js/FluidRequests.js",
             "./js/MessageResolver.js",
             "./js/ResourceLoader.js",
+            "./js/ResourceLoader-browser.js",
             "./js/NewViewSupport.js",
             "./js/MutationObserver.js",
             "./js/TextNodeParser.js"

@@ -191,8 +191,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: "{prefsEditor}.model.preferences.textSize"
                     },
                     messageBase: "{messageLoader}.resources.textSize.parsed",
-                    resources: {
-                        template: "{templateLoader}.resources.textSize"
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.textSize"
+                        }
                     },
                     step: 0.1,
                     range: {
@@ -211,8 +213,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: "{prefsEditor}.model.preferences.lineSpace"
                     },
                     messageBase: "{messageLoader}.resources.lineSpace.parsed",
-                    resources: {
-                        template: "{templateLoader}.resources.lineSpace"
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.lineSpace"
+                        }
                     },
                     step: 0.1,
                     range: {
@@ -232,8 +236,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: "{prefsEditor}.model.preferences.textFont"
                     },
                     messageBase: "{messageLoader}.resources.textFont.parsed",
-                    resources: {
-                        template: "{templateLoader}.resources.textFont"
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.textFont"
+                        }
                     }
                 }
             },
@@ -248,8 +254,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: "{prefsEditor}.model.preferences.theme"
                     },
                     messageBase: "{messageLoader}.resources.contrast.parsed",
-                    resources: {
-                        template: "{templateLoader}.resources.contrast"
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.contrast"
+                        }
                     }
                 }
             },
@@ -263,8 +271,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: "{prefsEditor}.model.preferences.toc"
                     },
                     messageBase: "{messageLoader}.resources.layoutControls.parsed",
-                    resources: {
-                        template: "{templateLoader}.resources.layoutControls"
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.layoutControls"
+                        }
                     }
                 }
             },
@@ -278,8 +288,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: "{prefsEditor}.model.preferences.inputs"
                     },
                     messageBase: "{messageLoader}.resources.enhanceInputs.parsed",
-                    resources: {
-                        template: "{templateLoader}.resources.enhanceInputs"
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.enhanceInputs"
+                        }
                     }
                 }
             }

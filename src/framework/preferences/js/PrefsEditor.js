@@ -323,8 +323,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "modelChange"
             }]
         },
-        resources: {
-            template: "{templateLoader}.resources.prefsEditor"
+        members: {
+            resources: {
+                template: "{templateLoader}.resources.prefsEditor"
+            }
         },
         autoSave: false
     });
@@ -453,7 +455,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.locate("cancel").click(that.cancel);
         };
 
-        that.container.append(that.options.resources.template.resourceText);
+        that.container.append(that.resources.template.resourceText);
         bindHandlers(that);
 
         var fetchPromise = that.fetch();

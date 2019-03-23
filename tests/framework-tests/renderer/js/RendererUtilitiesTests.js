@@ -566,9 +566,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         events: {
                             afterRender: "{fluid5279}.events.afterAttributesRendered"
                         },
-                        resources: {
-                            template: {
-                                resourceText: "<div></div>"
+                        members: {
+                            resources: {
+                                template: {
+                                    resourceText: "<div></div>"
+                                }
                             }
                         }
                     }
@@ -577,9 +579,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: {
                 audio: "available"
             },
-            resources: {
-                template: {
-                    resourceText: "<div></div>"
+            members: {
+                resources: {
+                    template: {
+                        resourceText: "<div></div>"
+                    }
                 }
             },
             events: {
@@ -621,9 +625,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         modelListeners: {
                             "audio": "{that}.refreshView"
                         },
-                        resources: {
-                            template: {
-                                resourceText: "<div></div>"
+                        members: {
+                            resources: {
+                                template: {
+                                    resourceText: "<div></div>"
+                                }
                             }
                         }
                     }
@@ -632,9 +638,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: {
                 audio: "available"
             },
-            resources: {
-                template: {
-                    resourceText: "<div></div>"
+            members: {
+                resources: {
+                    template: {
+                        resourceText: "<div></div>"
+                    }
                 }
             }
         });
@@ -1719,6 +1727,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             resolverGetConfig: fluid.model.escapedGetConfig,
             resolverSetConfig: fluid.model.escapedSetConfig
         });
+
         jqUnit.test("FLUID-4935: resolverSetConfig propagation to changeApplierOptions.resolverSetConfig option", function () {
             var customSetConfigRendererComponent = fluid.tests.customSetConfigRendererComponent(".FLUID-4935");
             var escaped = customSetConfigRendererComponent.locate("escaped");
@@ -1737,10 +1746,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Test setup for FLUID-5048
          */
         fluid.defaults("fluid.tests.fluid5048.mediaSettings", {
-            gradeNames: ["fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent", "fluid.resourceLoader"],
             model: {
                 show: false
             },
+            renderOnInit: true,
             selectors: {
                 show: ".flc-videoPlayer-media-show"
             },
@@ -1751,17 +1761,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             protoTree: {
                 show: "${show}"
-            },
-            listeners: {
-                onCreate: "fluid.tests.fluid5048.mediaSettings.fetchResources"
             }
         });
-
-        fluid.tests.fluid5048.mediaSettings.fetchResources = function (that) {
-            fluid.fetchResources(that.options.resources, function () {
-                that.refreshView();
-            });
-        };
 
         fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
             gradeNames: ["fluid.tests.fluid5048.mediaSettings"]

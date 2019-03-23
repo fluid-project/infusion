@@ -2760,6 +2760,7 @@ var fluid = fluid || fluid_3_0_0;
                 },
                 concludeComponentInit: {
                     funcName: "fluid.concludeComponentInit",
+                    waitIO: true,
                     priority: "last"
                 }
             }
@@ -2806,7 +2807,11 @@ var fluid = fluid || fluid_3_0_0;
             type: type
         };
         var upDefaults = fluid.defaults(type);
-        fluid.each(upDefaults.argumentMap, function (index, name) {
+        // TODO: We only support these two signatures now, probably abolish argumentMap if it weren't for "graded functions"
+        // Or else write a proper mergePolicy for argumentMaps
+        var argMap = fluid.defaults(upDefaults.argumentMap.container !== undefined ?
+            "fluid.viewComponent" : "fluid.component").argumentMap;
+        fluid.each(argMap, function (index, name) {
             var arg = initArgs[index];
             userRecord[name] = name === "options" ? fluid.expandCompact(arg, true) : arg;
         });

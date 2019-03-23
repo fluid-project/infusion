@@ -10,7 +10,7 @@
 
         <script src="js/infusion-1.5.js"></script>
         <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
-        <script language="JavaScript" type="text/javascript">
+        <script language="JavaScript">
             jQuery.noConflict();
         </script>
 
@@ -78,7 +78,7 @@
             </ul>
         </main>
 
-        <script type="text/javascript">
+        <script>
             // initialize the list using a prior version of Infusion
             fluid.reorderList("#list-priorVersion");
             $("#priorVersionNumber").text(fluid.version);

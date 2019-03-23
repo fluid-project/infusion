@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 7,
                 name: "Test the rendering of the captions panel",
                 sequence: [{
-                    event: "{testEnvironment captions}.events.onResourcesFetched",
+                    event: "{testEnvironment captions}.events.onCreate",
                     listener: "fluid.identity"
                 },  {
                     func: "{captions}.refreshView"

@@ -233,7 +233,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
-            "onCreate.appendTemplate": "fluid.prefs.appendTemplate({that}.container, {that}.options.resources.template.resourceText)",
+            "onCreate.appendTemplate": "fluid.prefs.appendTemplate({that}.container, {that}.resources.template.resourceText)",
             "onCreate.initSubPanels": "{that}.events.initSubPanels",
             "onCreate.hideInactive": {
                 func: "{that}.hideInactive",
@@ -253,7 +253,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             combineResources: {
                 funcName: "fluid.prefs.compositePanel.combineTemplates",
-                args: ["{that}.options.resources", "{that}.options.selectors"]
+                args: ["{that}.resources", "{that}.options.selectors"]
             },
             surfaceSubpanelRendererSelectors: {
                 funcName: "fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors",

@@ -17,6 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.panels.utils");
 
     fluid.defaults("fluid.tests.panels.utils.defaultTestPanel", {
+        gradeNames: "fluid.resourceLoader",
         strings: {},
         testMessages: {},
         parentBundle: {
@@ -28,12 +29,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.panels.utils.injectTemplates", {
-        listeners: {
-            "onCreate.getTemplate": {
-                funcName: "fluid.fetchResources",
-                args: ["{that}.options.resources", "{that}.refreshView"]
-            }
-        }
+        gradeNames: "fluid.resourceLoader",
+        renderOnInit: true
     });
 
     fluid.tests.panels.utils.checkModel = function (path, newModel, expectedValue) {
