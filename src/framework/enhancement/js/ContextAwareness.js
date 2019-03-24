@@ -198,7 +198,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Context awareness for the browser environment
 
     fluid.contextAware.isBrowser = function () {
-        return typeof(window) !== "undefined" && window.document;
+        return typeof(window) !== "undefined" && !!window.document;
     };
 
     fluid.contextAware.makeChecks({

@@ -359,7 +359,7 @@ module.exports = function (grunt) {
             sources: {
                 md: [ "*.md", "!./src/**/lib/**/*.md", "!./demos/**/lib/**/*.md", "!./tests/**/lib/**/*.md"],
                 js: ["*.js", "!./src/**/lib/**/*.js", "!./demos/**/lib/**/*.js", "!./dist/**/*.js", "!./tests/**/lib/**/*.js", "!./tests/**/infusion-1.5.js"],
-                json: ["*.json", "./.nycrc", "!./src/**/lib/**/*.json", "!./dist/**/*.json"],
+                json: ["*.json", "./.nycrc", "./src/thirdPartyDependencies.json", "!./src/lib/**/*.json", "!./dist/**/*.json"],
                 other: ["./.*"]
             }
         },

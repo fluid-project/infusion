@@ -106,6 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.assertAriaForToggleButton = function (button, buttonName, controlsId, state) {
         fluid.tests.prefs.assertAriaForButton(button, buttonName, controlsId);
         jqUnit.assertEquals(buttonName + " button has correct aria-pressed", state, button.attr("aria-pressed"));
+        jqUnit.assertEquals(buttonName + " button has correct aria-expanded", state, button.attr("aria-expanded"));
     };
 
     fluid.tests.prefs.assertAria = function (that, state) {
@@ -116,7 +117,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.assertAriaForToggleButton(toggleButton, "Hide/show", panelId, state);
         jqUnit.assertEquals("Panel has the group role", "group", panel.attr("role"));
         jqUnit.assertEquals("Panel has the correct aria-label", that.options.strings.panelLabel, panel.attr("aria-label"));
-        jqUnit.assertEquals("Panel has correct aria-expanded", state, panel.attr("aria-expanded"));
     };
 
     fluid.tests.prefs.testSeparatedPanel = function (separatedPanel) {

@@ -131,7 +131,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             options: {
                                 gradeNames: ["{pageEnhancer}.uiEnhancer.options.userGrades"],
                                 jQuery: "{iframeRenderer}.jQuery",
-                                tocTemplate: "{pageEnhancer}.uiEnhancer.options.tocTemplate"
+                                tocTemplate: "{pageEnhancer}.uiEnhancer.options.tocTemplate",
+                                inSeparatedPanel: true
                             }
                         }
                     }
