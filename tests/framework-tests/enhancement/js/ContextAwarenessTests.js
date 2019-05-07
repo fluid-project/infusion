@@ -141,18 +141,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             food: {
                 defaultGradeNames: "food.carrots"
             },
+            weakest: {
+                defaultGradeNames: "weakest.priority",
+                priority: "last"
+            },
             urgency: {
-                defaultGradeNames: "urgency.high",
+                defaultGradeNames: "above.food",
                 priority: "before:food" // Note that stronger grades appear to the LEFT in defaults - even though we consider merging to morally occur from left to right
+            },
+            strongest: {
+                defaultGradeNames: "strongest.priority",
+                priority: "first"
             }
         }
     });
 
     jqUnit.test("contextAware multiple blocks with priority", function () {
         var that = fluid.tests.contextAware.multiple();
-        var indexFood = that.options.gradeNames.indexOf("food.carrots");
-        var indexUrgency = that.options.gradeNames.indexOf("urgency.high");
-        jqUnit.assertTrue("Context awareness gradenames must appear in priority order ", indexFood !== -1 && indexUrgency !== -1 && indexUrgency < indexFood);
+        var expectedOrder = ["strongest.priority", "above.food", "food.carrots", "weakest.priority"];
+        var foundGrades = that.options.gradeNames.filter(function (gradeName) {
+            return expectedOrder.indexOf(gradeName) !== -1;
+        });
+        jqUnit.assertDeepEq("Context awareness gradenames must appear in priority order ", expectedOrder, foundGrades);
     });
 
     fluid.tests.contextAware.isResolvable = function (typeName) {

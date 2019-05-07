@@ -1457,9 +1457,9 @@ var fluid = fluid || fluid_3_0_0;
      * @return {Array} An array of the same elements supplied to `records`, sorted into priority order. The supplied argument `records` will not be modified.
      */
     fluid.parsePriorityRecords = function (records, name) {
-        var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement, index) {
+        var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement) {
             $.extend(newElement, oldElement);
-            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, name);
+            newElement.priority = fluid.parsePriority(oldElement.priority, 0, false, name);
         });
         fluid.sortByPriority(array);
         return array;
