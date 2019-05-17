@@ -270,9 +270,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 };
             }
         });
-        var dataTypeOnly = $.isEmptyObject(fluid.censorKeys(resourceSpec, ["dataType"]));
-        if (!loader && !dataTypeOnly) {
-            fluid.fail("Couldn't locate resource loader for resource spec ", resourceSpec);
+        if (!loader) {
+            fluid.fail("Couldn't locate resource loader for resource spec ", resourceSpec,
+                "; it should have had one of the fields ", Object.keys(fluid.resourceLoader.loaders) + " filled out");
         }
         return loader;
     };
@@ -292,12 +292,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.registerNamespace("fluid.resourceLoader.parsers");
 
-    fluid.resourceLoader.parsers.html = function (resourceText, options) {
-        return fluid.htmlParser.parse(resourceText, options.resourceSpec.parseOptions);
-    };
-
     fluid.resourceLoader.parsers.json = function (resourceText) {
-        return JSON.parse(resourceText);
+        return fluid.dataSource.parseJSON(resourceText);
     };
 
 

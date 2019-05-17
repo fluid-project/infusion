@@ -300,9 +300,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         listeners: {
             "onCreate.resolveCreation": "{that}.creationPromise.resolve",
-            "afterDestroy.resolveDestruction": "fluid.tests.FLUID4982destroy"
+            "afterDestroy.resolveDestruction": "fluid.tests.FLUID4982destroy",
+            "onDestroy.recordEvent": {
+                funcName: "fluid.tests.FLUID4982recordEvent",
+                args: ["{that}", "onDestroyCalled"]
+            },
+            "afterDestroy.recordEvent": {
+                funcName: "fluid.tests.FLUID4982recordEvent",
+                args: ["{that}", "afterDestroyCalled"]
+            }
         }
     });
+
+    fluid.tests.FLUID4982recordEvent = function (component, memberName) {
+        component[memberName] = true;
+    };
 
     fluid.tests.FLUID4982destroy = function (that) {
         if (!that.creationPromise.disposition) {
@@ -338,6 +350,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.asyncTest("FLUID-4982: Overlapping creation of asynchronous components", function () {
+        jqUnit.expect(6);
         var mocks = fluid.tests.FLUID4982.overlapMocks();
         var failed = fluid.tests.FLUID4982failed();
         var first = fluid.tests.FLUID4982first();
@@ -352,6 +365,62 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Second component model resolved", "first", second.model);
             jqUnit.assertTrue("Failed component has been destroyed", fluid.isDestroyed(failed));
             jqUnit.assertEquals("Status code recoverable from failed component", 404, failed.creationPromise.value.status);
+            jqUnit.assertTrue("onDestroy called for failed component", true, failed.onDestroyCalled);
+            jqUnit.assertTrue("afterDestroy called for failed component", true, failed.onDestroyCalled);
+            mocks.destroy();
+            jqUnit.start();
+        });
+    });
+
+    /** FLUID-4982: Partially filled out resource blocks **/
+
+    fluid.defaults("fluid.tests.FLUID4982incomplete", {
+        gradeNames: "fluid.tests.FLUID4982base",
+        resources: {
+            initModel: {
+                dataType: "json"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-4982: Improperly filled resource blocks", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework exception mentioning valid options on incomplete resource block", function () {
+            fluid.tests.FLUID4982incomplete();
+        }, ["resource loader", "url"]);
+    });
+
+    /** FLUID-4982: Recoverable async failure on loading invalid JSON **/
+
+    fluid.defaults("fluid.tests.FLUID4982.badJSONMocks", {
+        gradeNames: "fluid.test.mockXHR",
+        mocks: {
+            badJSON: {
+                url: "/badJSON",
+                delay: 100,
+                body: "{ open with ]"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID4982badJSON", {
+        gradeNames: "fluid.tests.FLUID4982base",
+        resources: {
+            initModel: {
+                dataType: "json",
+                url: "/badJSON"
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-4982: Recoverable async failure on bad JSON parse", function () {
+        jqUnit.expect(4);
+        var mocks = fluid.tests.FLUID4982.badJSONMocks();
+        var failed = fluid.tests.FLUID4982badJSON();
+        failed.creationPromise.then(null, function (err) {
+            jqUnit.assertTrue("Failed component has been destroyed", fluid.isDestroyed(failed));
+            jqUnit.assertTrue("Message recoverable from failed component", err.message.indexOf("JSON") !== -1);
+            jqUnit.assertTrue("onDestroy called for failed component", true, failed.onDestroyCalled);
+            jqUnit.assertTrue("afterDestroy called for failed component", true, failed.onDestroyCalled);
             mocks.destroy();
             jqUnit.start();
         });

@@ -45,9 +45,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             try {
                 togo.resolve(JSON.parse(string));
             } catch (err) {
-                togo.reject({
-                    message: err
-                });
+                togo.reject(err);
             }
         }
         return togo;
