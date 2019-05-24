@@ -37,7 +37,7 @@ fluid.resourceLoader.loaders.url = function (resourceSpec) {
     var lib = resourceSpec.url.startsWith("https") ? https : http;
     // TODO: Unify with kettle.dataSource.URL.handle.http once i) components are cheap enough we can have them everywhere,
     // ii) infusion, kettle and others are reorganised into a monorepo
-    var request = lib.get(resourceSpec.url, function (response) {
+    var request = lib.get(resourceSpec.url, resourceSpec.options, function (response) {
         if (fluid.resourceLoader.isErrorStatus(response.statusCode)) {
             promise.reject({
                 isError: true,

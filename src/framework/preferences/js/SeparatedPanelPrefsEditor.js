@@ -437,10 +437,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * allowing for pre-loading of a subset of resources. This is required for the lazyLoading workflow
      * for the "fluid.prefs.separatedPanel.lazyLoad".
      *
-     * @param {Object} that - the component
-     * @param {Object} resources - all of the resourceSpecs to load, including preload and others.
+     * @param {fluid.resourceLoader} that - the resourceLoader, augmented with the preload workflow
+     * @param {resourceSpecs} resources - all of the resourceSpecs to load, including preload and others.
      *                             see: fluid.fetchResources
-     * @param {Array|String} toPreload - a String or an String[]s corresponding to the names
+     * @param {String|String[]} toPreload - a String or an String[]s corresponding to the names
      *                                   of the resources, supplied in the resource argument, that
      *                                   should be loaded. Only these resources will be loaded.
      */
