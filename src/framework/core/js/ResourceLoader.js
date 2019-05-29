@@ -283,6 +283,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return parsed;
     };
 
+    fluid.fetchResources.fireFetched = function (parsed, options) {
+        options.resourceSpec.fetchEvent.fire(parsed);
+        return parsed;
+    };
+
     /** Prepare the `options` member of a `resourceSpec` by copying in the top-level element with the matching pathKey
      * TODO: Determine why on earth we still do this
      */
@@ -304,20 +309,44 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String} key - The key by which the `resourceSpec` is index in its `resourceSpecs` structure
      */
     fluid.fetchResources.subscribeOneResource = function (resourceSpec, key) {
-        if (resourceSpec.event) {
+        if (resourceSpec.transformEvent) {
             fluid.fail("Cannot subscribe resource ", resourceSpec, " which has already been subscribed for I/O");
         }
-        resourceSpec.event = fluid.makeEventFirer({name: "Transform chain for resource \"" + key + "\""});
-        resourceSpec.event.addListener(fluid.fetchResources.noteParsed, "parsed", "last");
+        resourceSpec.transformEvent = fluid.makeEventFirer({name: "Transform chain for resource \"" + key + "\""});
+        resourceSpec.transformEvent.addListener(fluid.fetchResources.noteParsed, "parsed", "last");
         var parser = fluid.resourceLoader.resolveResourceParser(resourceSpec);
-        resourceSpec.event.addListener(parser, "parser", "before:parsed");
-        resourceSpec.event.addListener(fluid.fetchResources.noteResourceText, "resourceText", "before:parser");
-        resourceSpec.event.addListener(fluid.fetchResources.resolveLoaderTask(resourceSpec, resourceSpec.loader.loader),
+        resourceSpec.transformEvent.addListener(parser, "parser", "before:parsed");
+        resourceSpec.transformEvent.addListener(fluid.fetchResources.noteResourceText, "resourceText", "before:parser");
+        resourceSpec.transformEvent.addListener(fluid.fetchResources.resolveLoaderTask(resourceSpec, resourceSpec.loader.loader),
             "loader", "before:resourceText");
+        resourceSpec.fetchEvent = fluid.makeEventFirer({name: "Fetch event for resources \"" + key + "\""});
+
+        resourceSpec.transformEvent.addListener(fluid.fetchResources.fireFetched, "fireFetched", "after:parsed");
         fluid.fetchResources.prepareRequestOptions(resourceSpec);
         resourceSpec.promise = fluid.promise();
         resourceSpec.launched = false;
     };
+
+    fluid.fetchResources.FetchOne = function (resourceSpec, resourceFetcher, segments) {
+        this.resourceFetcher = resourceFetcher;
+        this.resourceSpec = resourceSpec;
+        var thisSegments = this.segments = segments || [];
+        var thisPromise = this.promise = fluid.promise();
+        fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher).then(function (value) {
+            thisPromise.resolve(fluid.model.getSimple(value, thisSegments));
+        }, thisPromise.reject);
+    };
+
+    fluid.fetchResources.FetchOne.prototype.resolvePathSegment = function (seg) {
+        return new fluid.fetchResources.FetchOne(this.resourceSpec, this.resourceFetcher, this.segments.concat(fluid.makeArray(seg)));
+    };
+
+// Note: This strange style of applying JSDoc comments is described at https://stackoverflow.com/questions/23095975/jsdoc-object-methods-with-method-or-property
+    /** The lightweight `resourceFetcher` component (not an Infusion component or a class) coordinating the fetch process
+     * designated by a `resourceSpecs` structure.
+     * @name ResourceFetcher
+     * @class
+     */
 
     /** Construct a lightweight `resourceFetcher` component (not an Infusion component) coordinating the fetch process
      * designated by a `resourceSpecs` structure.
@@ -333,14 +362,51 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var that = {
             options: fluid.copy(options || {})
         };
+        /**
+         * @name ResourceFetcher#fetchAll
+         * @method
+         * @see fluid.fetchResources.fetchAll
+         * @return {Promise} The `completionPromise` for the fetcher which will yield the full state of fetched `resourceSpecs`
+         * in either success or failure
+         */
         that.fetchAll = function () {
             return fluid.fetchResources.fetchAll(that);
         };
+        /**
+         * @name ResourceFetcher#fetchOneResource
+         * @method
+         * @see fluid.fetchResources.fetchOneResource
+         * @param {String} key - The key within this fetcher's `resourceSpecs` for the resource to be fetched
+         * @return {Promise} A promise for the resolution of the resourceSpec's fetched value
+         */
+        that.fetchOneResource = function (key) {
+            return fluid.fetchResources.fetchOneResource(that.resourceSpecs[key], that);
+        };
+        /**
+         * @name ResourceFetcher.completionPromise
+         * @member {Promise} The `completionPromise` for the fetcher which will yield the full state of fetched `resourceSpecs`
+         * in either success or failure
+         */
         that.completionPromise = fluid.promise();
+        /**
+         * @name ResourceFetcher.resourceSpecs
+         * @member {ResourceSpecs} The fully elaborated `resourceSpecs` structure that will be queried to fetch resources.
+         * This should be considered as somewhat volatile and members such as, e.g., `locale` could be updated in order
+         * to dynamically relocalise resources
+         */
         that.resourceSpecs = fluid.fetchResources.explodeForLocales(that, resourceSpecs);
 
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             fluid.fetchResources.subscribeOneResource(resourceSpec, key);
+            resourceSpec.refetch = function () {
+                fluid.each(that.resourceSpecs, function (oneResourceSpec) {
+                    delete oneResourceSpec.resourceText;
+                    delete oneResourceSpec.parsed;
+                    delete oneResourceSpec.promise;
+                });
+                fluid.fetchResources.explodeForLocales(that, that.resourceSpecs);
+                return fluid.fetchResources.fireTransformEvent(resourceSpec, that);
+            };
         });
 
         that.completionPromise.then(callback, callback);
@@ -362,6 +428,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return resourceFetcher.completionPromise;
     };
 
+    fluid.fetchResources.fireTransformEvent = function (resourceSpec, resourceFetcher) {
+        return fluid.promise.fireTransformEvent(resourceSpec.transformEvent, null, {
+            resourceSpec: resourceSpec,
+            resourceFetcher: resourceFetcher
+        });
+    };
+
     /** Trigger the fetching of a single `resourceSpec` from a `resourceFetcher`. This is invoked, for example,
      * by the core framework on encountering a reference out from the main component's options demanding a value
      * dependent on the asynchronously resolved `resource` value.
@@ -373,10 +446,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.fetchResources.fetchOneResource = function (resourceSpec, resourceFetcher) {
         if (!resourceSpec.launched) {
             resourceSpec.launched = true;
-            var transformPromise = fluid.promise.fireTransformEvent(resourceSpec.event, null, {
-                resourceSpec: resourceSpec,
-                resourceFetcher: resourceFetcher
-            });
+            var transformPromise = fluid.fetchResources.fireTransformEvent(resourceSpec, resourceFetcher);
             fluid.promise.follow(transformPromise, resourceSpec.promise);
             // Add these at the last possible moment so that individual resource disposition can beat them
             // TODO: Convert all these to "new firers"
@@ -515,7 +585,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.resourceLoader", {
         gradeNames: ["fluid.component"],
         listeners: {
-            "onCreate.loadResources": "fluid.resourceLoader.loadResources"
+            "onCreate.loadResources": "fluid.resourceLoader.loadResources",
+            "onDestroy.destroyResourceEvents": "fluid.resourceLoader.destroyResourceEvents"
         },
         members: {
             resourceFetcher: {
@@ -542,15 +613,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         events: {
-            onResourcesLoaded: null
+            onResourcesLoaded: null,
+            onResourceError: null
         }
     });
 
     /** Constructs a `fluid.resourceLoader' component's own `resourceFetcher` machine. Given that component options
      * are immutable, it takes a copy of the supplied `resourceSpecs` option (taken from the `resources` top-level
      * component option) before passing them to the fetcher which would otherwise corrupt them
-     * @param {fluid.resourceLoader} that - The resourceLoader component for which the fetcher is to be constructed (
-     * (currently used to target the delivery of the delivered `that.resources` members)
+     * @param {fluid.resourceLoader} that - The resourceLoader component for which the fetcher is to be constructed
+     * (currently used to target the delivery of the delivered `that.resources` members, and relay resource errors)
      * @param {ResourceFetcherOptions} resourceOptions - Options governing the entire resource fetcher (currently
      * just `defaultLocale`)
      * @param {Function} resolveResources - A function yielding a `resourceSpecs` structure ready for use. By default this has interpolated
@@ -564,6 +636,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(fetcher.resourceSpecs, function (resourceSpec, key) {
             resourceSpec.promise.then(function () {
                 that.resources[key] = resourceSpec;
+            }, function (err) {
+                that.events.onResourceError.fire(err);
             });
         });
         return fetcher;
@@ -598,6 +672,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // Note that if the failure was for a resource demanded during startup, this component will already have
             // been destroyed
             fluid.log("Failure loading resources for component at path " + fluid.dumpComponentPath(that) + ": ", error);
+        });
+    };
+
+    fluid.resourceLoader.destroyResourceEvents = function (that) {
+        fluid.each(that.resourceFetcher.resourceSpecs, function (resourceSpec) {
+            resourceSpec.transformEvent.destroy();
+            resourceSpec.fetchEvent.destroy();
         });
     };
 

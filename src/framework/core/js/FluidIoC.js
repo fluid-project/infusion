@@ -155,17 +155,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.resourceFromRecord = function (resourceRec, name, that) {
         var resourceFetcher = fluid.getForComponent(that, "resourceFetcher");
         var resourceSpec = resourceFetcher.resourceSpecs[name];
-        var promise = fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher);
+        var oneFetcher = new fluid.fetchResources.FetchOne(resourceSpec, resourceFetcher);
+        var promise = oneFetcher.resourceSpec.promise;
         if (!promise.disposition) {
             var transRec = fluid.currentTreeTransaction();
             transRec.pendingIO.push(promise);
-            return promise;
-        } else if (promise.disposition === "resolve") {
-            return promise.value;
-        } else {
-            fluid.fail("Request for resource with name " + name + " for component " + fluid.dumpComponentPath(that)
-                + " which failed to be fetched with error ", promise.value);
-        }
+        } // No error handling here since the error handler added in workflows will abort the whole transaction
+        return oneFetcher;
     };
 
     /** Produce a "strategy" object which mechanises the work of converting a block of options material into a

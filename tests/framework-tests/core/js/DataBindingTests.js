@@ -792,6 +792,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-4982: Localised model with initial asynchronous fetch followed by mid-life relocalisation **/
+
+    fluid.defaults("fluid.tests.fluid4982loc", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                url: "../data/messages1.json",
+                locale: "en",
+                dataType: "json"
+            }
+        },
+        model: {
+            messages: "{that}.resources.messages"
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-4982 localised fetch model with mid-life relocalisation", function () {
+        jqUnit.expect(3);
+        var checkIt2 = function (component) {
+            jqUnit.assertEquals("Relocalised model fetched", "These courses will require a lot of marking", component.model.messages.courses);
+            jqUnit.start();
+        };
+        var checkIt = function (component) {
+            jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
+            jqUnit.assertEquals("Localised model fetched", "These courses will require a lot of grading", component.model.messages.courses);
+            // Dynamically update locale by bashing on the resourceFetcher's records
+            var resourceSpec = component.resourceFetcher.resourceSpecs.messages;
+            resourceSpec.locale = "en_ZA";
+            resourceSpec.fetchEvent.addListener(function () {
+                checkIt2(component);
+            });
+            // Trigger a refetch of the resource which will automatically updated the linked model
+            resourceSpec.refetch();
+        };
+        fluid.tests.fluid4982loc({
+            listeners: {
+                "onCreate.checkIt": checkIt,
+                "onResourceError.failTest": function (err) {
+                    jqUnit.fail("Failure fetching resource: " + err);
+                }
+            }
+        });
+    });
+
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 
     fluid.defaults("fluid.tests.allChangeRecorder", {

@@ -407,17 +407,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return (reca.completeOnInit ? 1 : 0) - (recb.completeOnInit ? 1 : 0);
     };
 
-    fluid.dereferenceInitModel = function (that, initModel) {
-        if (fluid.isPromise(initModel)) {
-            if (initModel.disposition === "resolve") {
-                return initModel.value;
-            } else {
-                fluid.fail("Received an unresolved promise as initial model value for " + fluid.dumpComponentAndPath(that)
-                    + " promise state is ", initModel);
-            }
-        } else {
-            return initModel;
+    fluid.subscribeResourceModelUpdates = function (that, segs, resourceSpec) {
+        var resourceUpdateListener = function (value) {
+            var trans = that.applier.initiate();
+            trans.change(segs, null, "DELETE");
+            trans.change(segs, value);
+            trans.commit();
+        };
+        resourceSpec.fetchEvent.addListener(resourceUpdateListener);
+        fluid.recordListener(resourceSpec, resourceUpdateListener, fluid.shadowForComponent(that));
+    };
+
+    fluid.appendResourceInitModel = function (that, applier, initModels) {
+        if (applier.resourceMap.length) {
+            var resourceInitModel = {};
+            applier.resourceMap.forEach(function (resourceMapEntry) {
+                var promise = resourceMapEntry.fetchOne.promise;
+                if (promise.disposition !== "resolve") { // This represents a design failure - should never occur
+                    fluid.fail("Error when computing initial model which depends on resource which has not loaded - disposition is " + promise.disposition);
+                }
+                var value = promise.value;
+                if (resourceMapEntry.segs.length === 0) {
+                    resourceInitModel = fluid.copy(value);
+                } else {
+                    fluid.model.setSimple(resourceInitModel, resourceMapEntry.segs, value);
+                }
+                fluid.subscribeResourceModelUpdates(that, resourceMapEntry.segs, resourceMapEntry.fetchOne.resourceSpec);
+            });
+            initModels.push(resourceInitModel);
         }
+        return initModels;
     };
 
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
@@ -459,9 +478,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (recel.completeOnInit) {
                 fluid.initModelEvent(that, that.applier, transac, that.applier.listeners.sortedListeners);
             } else {
-                fluid.each(recel.initModels, function (oneInitModel) {
-                    var initModel = fluid.dereferenceInitModel(that, oneInitModel);
-                    transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
+                var initModels = fluid.appendResourceInitModel(that, that.applier, recel.initModels);
+                fluid.each(initModels, function (oneInitModel) {
+                    transac.fireChangeRequest({type: "ADD", segs: [], value: oneInitModel});
                     fluid.clearLinkCounts(transRec, true);
                 });
                 // Ensure that the model can be read as early as possible through non-model interactions resolved via {that}.model
@@ -982,7 +1001,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * This is called in two situations: A) parsing the `model` configuration option for a model component, and B) parsing the
      * `transform` member (perhaps derived from `singleTransform`) of a `modelRelay` block for a model component. It calls itself
      * recursively as it progresses through the model document material with updated `segs`
-     * @param {Component} that - The component holding the model document
+     * @param {fluid.modelComponent} that - The component holding the model document
      * @param {Any} modelRec - The model document specification to be parsed
      * @param {String[]} segs - The array of string path segments from the root of the entire model document to the point of current parsing
      * @param {Object} options - Configuration options (mutable) governing this parse. This is primarily used to hand as the 5th argument to
@@ -1003,6 +1022,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var parsed = fluid.parseValidModelReference(that, "model reference from model (implicit relay)", modelRec, true);
             if (parsed.nonModel) {
                 value = fluid.getForComponent(parsed.that, parsed.segs);
+                if (value instanceof fluid.fetchResources.FetchOne) {
+                    that.applier.resourceMap.push({segs: fluid.makeArray(segs), fetchOne: value});
+                    // We don't support compositing of resource references since we couldn't apply this if their
+                    // value changes
+                    return null;
+                }
             } else {
                 ++options.refCount; // This count is used from within fluid.makeTransformPackage
                 fluid.connectModelRelay(that, segs, parsed.that, parsed.modelSegs, options);
@@ -1011,7 +1036,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             value = modelRec;
         } else if (modelRec.expander && fluid.isPlainObject(modelRec.expander)) {
             value = fluid.expandOptions(modelRec, that);
-        } else {
+        } else { // It is a plain Object or Array container
             value = fluid.freshContainer(modelRec);
             fluid.each(modelRec, function (innerValue, key) {
                 segs.push(key);
@@ -1070,11 +1095,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** The main entry point for enlisting a model component in the initial transaction. Positioned as a "fake member"
      * which evalutes to null. Calls `fluid.enlistModelComponent` to register record in treeTransaction.initModelTransaction
-     * @param {Component} that - The `fluid.modelComponent` which is about to initialise
+     * @param {fluid.modelComponent} that - The `fluid.modelComponent` which is about to initialise
      * @param {Object} optionsModel - Reference into `{that}.options.model`
      * @param {Object} optionsML - Reference into `{that}.options.modelListeners`
      * @param {Object} optionsMR - Reference into `{that}.options.modelRelay`
-     * @param {Applier} applier - Reference into `{that}.applier`
+     * @param {fluid.changeApplier} applier - Reference into `{that}.applier`
      * @return {Null} A dummy `null` value which will initialise the `{that}.modelRelay` member
      */
     fluid.establishModelRelay = function (that, optionsModel, optionsML, optionsMR, applier) {
@@ -1643,6 +1668,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             transListeners: fluid.makeEventFirer({name: "External change listeners for " + name}),
             options: options,
             modelChanged: {},
+            resourceMap: [], // list of records containing {segs: segs, fetchOne: fluid.fetchResources.FetchOne}
             preCommit: fluid.makeEventFirer({name: "preCommit event for " + name}),
             postCommit: fluid.makeEventFirer({name: "postCommit event for " + name})
         });
