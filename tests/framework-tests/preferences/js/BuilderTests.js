@@ -302,7 +302,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     resources: {
-                        prefsEditor: { 
+                        prefsEditor: {
                             url: "%templatePrefix/SeparatedPanelPrefsEditor.html"
                         }
                     }
