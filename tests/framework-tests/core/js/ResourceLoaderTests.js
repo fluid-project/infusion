@@ -389,6 +389,86 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, ["resource loader", "url"]);
     });
 
+    /** FLUID-4982: Overriding primary resourceLoader blocks with promise or dataSource sources */
+
+    fluid.defaults("fluid.tests.fluid4982overrideBase", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        model: {
+            messages: "{that}.resources.messages"
+        },
+        members: {
+            creationPromise: "@expand:fluid.promise()"
+        },
+        listeners: {
+            "onCreate.resolveCreation": "{that}.creationPromise.resolve"
+        },
+        resources: {
+            messages: {
+                dataType: "json",
+                locale: "fr",
+                url: "../data/messages2.json"
+            }
+        },
+        components: {
+            dataSource: {
+                type: "fluid.dataSource.URL",
+                options: {
+                    url: "../data/messages3_en.json"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid4982overrideDerived", {
+        gradeNames: "fluid.tests.fluid4982overrideBase",
+        resources: {
+            messages: {
+                dataSource: "{that}.dataSource",
+                // Make sure the ResourceLoader does not attempt to parse the DataSource output as JSON which is already parsed
+                dataType: "none"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid4982overridePromise", {
+        gradeNames: "fluid.tests.fluid4982overrideBase",
+        invokers: {
+            fetchMessages: "fluid.tests.fluid4982fetchMessages"
+        },
+        resources: {
+            messages: {
+                promiseFunc: "{that}.fetchMessages",
+                promiseArgs: "../data/messages3_en.json"
+            }
+        }
+    });
+
+    fluid.tests.fluid4982fetchMessages = function (pathname) {
+        return fluid.dataSource.URL.handle.http(null, new URL(pathname, document.location));
+    };
+
+    fluid.tests.fluid4982OverrideFixtures = [{
+        grade: "fluid.tests.fluid4982overrideBase",
+        expected: "Après moi, le déluge!"
+    }, {
+        grade: "fluid.tests.fluid4982overrideDerived",
+        expected: "upper, middle, lower"
+    }, , {
+        grade: "fluid.tests.fluid4982overridePromise",
+        expected: "upper, middle, lower"
+    }];
+
+    fluid.tests.fluid4982OverrideFixtures.forEach(function (fixture) {
+        jqUnit.asyncTest("FLUID-4982: Overriding resourceLoader block for " + fixture.grade, function () {
+            jqUnit.expect(1);
+            var base = fluid.invokeGlobalFunction(fixture.grade);
+            base.creationPromise.then(function () {
+                jqUnit.assertEquals("Loaded localised message", fixture.expected, base.model.messages.courses);
+                jqUnit.start();
+            });
+        });
+    });
+
     /** FLUID-4982: Recoverable async failure on loading invalid JSON **/
 
     fluid.defaults("fluid.tests.FLUID4982.badJSONMocks", {

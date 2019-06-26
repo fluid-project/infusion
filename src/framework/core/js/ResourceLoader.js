@@ -141,7 +141,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
 
             resourceSpec.loader = fluid.resourceLoader.resolveResourceLoader(resourceSpec);
-            if (resourceSpec.locale) {
+            if (resourceSpec.locale && !resourceSpec.loader.loader.noPath) {
                 var pathKey = resourceSpec.loader.pathKey;
                 resourceSpec.localeExploded = fluid.explodeLocalisedName(resourceSpec[pathKey], resourceSpec.locale, resourceSpec.defaultLocale);
                 resourceSpec.localeExplodedSpecs = fluid.transform(resourceSpec.localeExploded, function (oneExploded) {
@@ -460,18 +460,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return resourceSpec.promise;
     };
 
-    fluid.registerNamespace("fluid.resourceLoader");
-
-    // Note: duplicate of kettle.dataSource.URL.isErrorStatus
-    /** Given an HTTP status code as returned by node's `http.IncomingMessage` class (or otherwise), determine whether it corresponds to
-     * an error status. This performs a simple-minded check to see if it a number outside the range [200, 300).
-     * @param {Number} statusCode The HTTP status code to be tested
-     * @return {Boolean} `true` if the status code represents an error status
-     */
-    fluid.resourceLoader.isErrorStatus = function (statusCode) {
-        return statusCode < 200 || statusCode >= 300;
-    };
-
     fluid.registerNamespace("fluid.resourceLoader.loaders");
 
     /** A function accepting a resourceSpec and yielding its fetched value
@@ -489,6 +477,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * can be looked up (in practice this will be "url" or "path")
      */
 
+    fluid.resourceLoader.sanitizeResourceSpec = function (resourceSpec) {
+        return fluid.transform(resourceSpec, function (value) {
+            if (fluid.isComponent(value)) {
+                return "<Component>";
+            } else {
+                return value;
+            }
+        });
+    };
+
     /** Given a resourceSpec, look up an appropriate `OneResourceLoader` function for fetching its value based on
      * inspecting the contents of `fluid.resourceLoader.loaders` for a matching processor for the duck typing field.
      * If no loader can be located, an exception will be thrown
@@ -497,19 +495,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * duck typing field
      */
     fluid.resourceLoader.resolveResourceLoader = function (resourceSpec) {
-        var loader = fluid.find(fluid.resourceLoader.loaders, function (loader, key) {
-            if (resourceSpec[key]) {
-                return {
+        var loaders = [];
+        fluid.each(fluid.resourceLoader.loaders, function (loader, key) {
+            if (fluid.isValue(resourceSpec[key])) {
+                loaders.push({
                     loader: loader,
                     pathKey: key
-                };
+                });
             }
         });
-        if (!loader) {
-            fluid.fail("Couldn't locate resource loader for resource spec ", resourceSpec,
-                "; it should have had one of the fields ", Object.keys(fluid.resourceLoader.loaders) + " filled out");
+        if (loaders.length === 0) {
+            fluid.fail("Couldn't locate resource loader for resource spec ", fluid.resourceLoader.sanitizeResourceSpec(resourceSpec),
+                "; it should have one of the fields ", Object.keys(fluid.resourceLoader.loaders) + " filled out");
+        } else if (loaders.length > 1) {
+            fluid.fail("Resource spec ", fluid.resourceLoader.sanitizeResourceSpec(resourceSpec),
+                " is ambiguous because it has fields for multiple resource loaders filled out: at most one of the fields ",
+                fluid.getMembers(loaders, "pathKey"), " can be used");
         }
-        return loader;
+        return loaders[0];
     };
 
     /** A no-op `OneResourceLoader` which simply returns a pre-specified `resourceText`. Useful in the case the
@@ -521,25 +524,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return resourceSpec.resourceText;
     };
 
+    fluid.resourceLoader.loaders.resourceText.noPath = true;
+
     /** A generalised 'promise' `OneResourceLoader` that allows some arbitrary asynchronous process to be
-     * interpolated into the loader. It returns the value of the field `promise` which is intended to yield
-     * the successful or unsuccessful resource value
-     * @param {ResourceSpec} resourceSpec - A `ResourceSpec` for which the `promise` field has already been filled in to hold
+     * interpolated into the loader. It returns the value of the field `promiseFunc` interpreted as a promise
+     * invoked with arguments `promiseArg` which is intended to yield the successful or unsuccessful resource value
+     * @param {ResourceSpec} resourceSpec - A `ResourceSpec` for which the `promiseFunc` field has already been filled in to hold
      * a promise
      * @return {Promise} The resourceSpec's `promise` field
      */
-    fluid.resourceLoader.loaders.promise = function (resourceSpec) {
-        return resourceSpec.promise;
+    fluid.resourceLoader.loaders.promiseFunc = function (resourceSpec) {
+        return resourceSpec.promiseFunc.apply(null, fluid.makeArray(resourceSpec.promiseArgs));
     };
+
+    fluid.resourceLoader.loaders.promiseFunc.noPath = true;
 
     /** A `OneResourceLoader` which queries the `get` method of a DataSource in order to enact the required I/O
      * @param {ResourceSpec} resourceSpec - A `ResourceSpec` for which the `dataSource` field has already been filled in to hold
      * a reference to a `dataSource`, and perhaps also its `directModel` field.
      * @return {Promise} The resourceSpec's `promise` field
      */
-    fluid.resourceLoader.loaders.promise = function (resourceSpec) {
+    fluid.resourceLoader.loaders.dataSource = function (resourceSpec) {
+        fluid.getForComponent(resourceSpec.dataSource, "get");
         return resourceSpec.dataSource.get(resourceSpec.directModel, resourceSpec.options);
     };
+
+    fluid.resourceLoader.loaders.dataSource.noPath = true;
 
     fluid.registerNamespace("fluid.resourceLoader.parsers");
 
@@ -570,6 +580,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.dataSource.parseJSON(resourceText);
     };
 
+    // Note: near-copy of fluid.invokersMergePolicy
+    fluid.resourcesMergePolicy = function (target, source) {
+        target = target || {};
+        fluid.each(source, function (oneResource, name) {
+            if (!oneResource) {
+                target[name] = oneResource;
+                return;
+            } else if (fluid.isPrimitive(oneResource)) {
+                oneResource = {url: oneResource};
+            }
+            var oneR = target[name];
+            if (!oneR) {
+                oneR = target[name] = {};
+            }
+            for (var key in fluid.resourceLoader.loaders) {
+                if (key in oneResource) {
+                    for (var key2 in fluid.resourceLoader.loaders) {
+                        delete oneR[key2];
+                    }
+                }
+            }
+            $.extend(oneR, oneResource);
+        });
+        return target;
+    };
 
     /*** The top-level grade fluid.resourceLoader itself ***/
 
@@ -587,6 +622,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onCreate.loadResources": "fluid.resourceLoader.loadResources",
             "onDestroy.destroyResourceEvents": "fluid.resourceLoader.destroyResourceEvents"
+        },
+        mergePolicy: {
+            resources: fluid.resourcesMergePolicy
         },
         members: {
             resourceFetcher: {
@@ -644,15 +682,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // TODO: This function needs to be eliminated and transformURL moved into the body of makeResourceFetcher next
-    // to explodeForLocales, where it can make use of the `pathKey`. Then we can move the obstrusive `terms` definition
+    // to explodeForLocales, where it can make use of the `pathKey`. Then we can move the obtrusive `terms` definition
     // out of top level. Unfortunately it is used explicitly within the fluid.prefs.separatedPanel.lazyLoad
     // which we need to unpick since its workflow can now probably be substantially simplified.
     fluid.resourceLoader.resolveResources = function (resources, locale, defaultLocale, resourceOptions, transformURL) {
         return fluid.transform(resources, function (record) {
-            var userSpec = typeof(record) === "string" ? {url: record} : record;
             var resourceSpec = $.extend(true, {}, resourceOptions, {
                 defaultLocale: defaultLocale,
-                locale: locale}, userSpec);
+                locale: locale}, record);
             resourceSpec.url = transformURL(resourceSpec.url);
             return resourceSpec;
         });

@@ -1999,6 +1999,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
             deferredDistributions: [], // distributeOptions may decide to defer application of a distribution for FLUID-6193,
             cancelled: false,
+            cancellationError: null,
             initModelTransaction: {},
             pendingIO: [] // list of outstanding promises from workflow in progress
         }, transactionOptions);
@@ -2011,10 +2012,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         };
 
-        var onException = function () {
+        var onException = function (err) {
             if (!transRec.cancelled) {
                 delete transRec.sequencer;
-                fluid.cancelTreeTransaction(transactionId, instantiator);
+                fluid.cancelTreeTransaction(transactionId, instantiator, err);
                 onConclude();
             }
         };
@@ -2051,9 +2052,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Cancel the transaction with the supplied transaction id. This cancellation will undo any actions journalled in
      * the transaction's `restoreRecords` by a further call to `fluid.commitPotentiae`.
      * @param {String} transactionId - The id of the transaction to be cancelled
+     * @param {Instantiator} instantiator - The current instantiator
      */
-    fluid.cancelTreeTransaction = function (transactionId) {
-        var instantiator = fluid.globalInstantiator;
+    fluid.cancelTreeTransaction = function (transactionId, instantiator) {
         var transRec = instantiator.treeTransactions[transactionId];
         if (transRec) {
             try {

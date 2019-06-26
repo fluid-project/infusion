@@ -246,11 +246,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.template = {
-        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html"
+        "template": {
+            url: "%templatePrefix/SeparatedPanelPrefsEditor.html"
+        }
     };
 
     fluid.tests.message = {
-        "message": "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
+        "message": {
+            url: "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
+        }
     };
 
     fluid.tests.terms = {
@@ -265,8 +269,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",
-                "template": "templates/textSize",
-                "message": "messages/textSize"
+                "template": {
+                    url: "templates/textSize"
+                },
+                "message": {
+                    url: "messages/textSize"
+                }
             }
         }
     };
@@ -294,7 +302,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     resources: {
-                        prefsEditor: "%templatePrefix/SeparatedPanelPrefsEditor.html"
+                        prefsEditor: { 
+                            url: "%templatePrefix/SeparatedPanelPrefsEditor.html"
+                        }
                     }
                 }
             }

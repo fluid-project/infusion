@@ -67,14 +67,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    fluid.url.makeRelPath = function (parsed, index) {
-        var togo = fluid.kettle.collapseSegs(parsed.pathInfo, index);
-        if (parsed.extension) {
-            togo += "." + parsed.extension;
-        }
-        return togo;
-    };
-
     /* Canonicalise IN PLACE the supplied segment array derived from parsing a
      * pathInfo structure. Warning, this destructively modifies the argument.
      */
@@ -137,6 +129,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return (parseRel.host || parseRel.protocol || parseRel.directory.charAt(0) === "/");
     };
 
+    /* TODO: utility is unused **/
     fluid.url.computeRelativePrefix = function (outerLocation, iframeLocation, relPath) {
         if (fluid.url.isAbsoluteUrl(relPath)) {
             return relPath;

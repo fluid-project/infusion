@@ -16,8 +16,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 "use strict";
 
 var fs = require("fs"),
+    urlModule = require("url"),
     http = require("http"),
     https = require("https");
+
+fluid.resourceLoader.UrlClass = urlModule.URL;
 
 fluid.resourceLoader.loaders.path = function (resourceSpec) {
     var resourcePath = fluid.module.resolvePath(resourceSpec.path);
@@ -38,7 +41,7 @@ fluid.resourceLoader.loaders.url = function (resourceSpec) {
     // TODO: Unify with kettle.dataSource.URL.handle.http once i) components are cheap enough we can have them everywhere,
     // ii) infusion, kettle and others are reorganised into a monorepo
     var request = lib.get(resourceSpec.url, resourceSpec.options, function (response) {
-        if (fluid.resourceLoader.isErrorStatus(response.statusCode)) {
+        if (fluid.dataSource.URL.isErrorStatus(response.statusCode)) {
             promise.reject({
                 isError: true,
                 status: response.statusCode,
@@ -60,3 +63,5 @@ fluid.resourceLoader.loaders.url = function (resourceSpec) {
     });
     return promise;
 };
+
+/** TODO: port the rest of kettle.dataSource up here **/
