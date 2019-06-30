@@ -298,7 +298,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.FLUID4982base", {
         gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
-        model: "{that}.resources.initModel",
+        model: "{that}.resources.initModel.parsed",
         members: {
             creationPromise: "@expand:fluid.promise()"
         },
@@ -398,7 +398,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid4982overrideBase", {
         gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
         model: {
-            messages: "{that}.resources.messages"
+            messages: "{that}.resources.messages.parsed"
         },
         members: {
             creationPromise: "@expand:fluid.promise()"

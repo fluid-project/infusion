@@ -337,8 +337,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         this.resourceSpec = resourceSpec;
         var thisSegments = this.segments = segments || [];
         var thisPromise = this.promise = fluid.promise();
-        fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher).then(function (value) {
-            thisPromise.resolve(fluid.model.getSimple(value, thisSegments));
+        fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher).then(function () {
+            thisPromise.resolve(fluid.model.getSimple(resourceSpec, thisSegments));
         }, thisPromise.reject);
     };
 

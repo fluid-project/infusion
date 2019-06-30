@@ -775,7 +775,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 dataType: "json"
             }
         },
-        model: "{that}.resources.initModel"
+        model: "{that}.resources.initModel.parsed"
     });
 
     jqUnit.asyncTest("FLUID-4982 simple asynchronously fetched model", function () {
@@ -804,7 +804,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         model: {
-            messages: "{that}.resources.messages"
+            messages: "{that}.resources.messages.parsed"
         }
     });
 
