@@ -75,7 +75,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "{that}.options.previewEnhancer",
                 target: "{that enhancer}.options"
             },
-            "fullPreviw.preview": {
+            "fullPreview.preview": {
                 source: "{that}.options.preview",
                 target: "{that preview}.options"
             },

@@ -105,7 +105,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {ResourceFetcher} A lightweight component (not an Infusion component) coordinating the I/O process
      */
     fluid.fetchResources = function (resourceSpecs, callback, options) {
-        var that = fluid.makeResourceFetcher(resourceSpecs, callback, options);
+        var that = fluid.makeResourceFetcher(resourceSpecs, callback, options, fluid.identity);
         that.fetchAll();
         return that;
     };
@@ -137,20 +137,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 resourceSpec.defaultLocale = resourceFetcher.options.defaultLocale;
             }
             if (resourceSpec.locale === undefined) {
-                resourceSpec.locale = resourceSpec.defaultLocale;
+                resourceSpec.locale = resourceFetcher.options.locale || resourceSpec.defaultLocale;
             }
+            resourceSpec.dataType = resourceSpec.dataType || resourceFetcher.options.dataType;
 
             resourceSpec.loader = fluid.resourceLoader.resolveResourceLoader(resourceSpec);
-            if (resourceSpec.locale && !resourceSpec.loader.loader.noPath) {
+            if (!resourceSpec.loader.loader.noPath) {
                 var pathKey = resourceSpec.loader.pathKey;
-                resourceSpec.localeExploded = fluid.explodeLocalisedName(resourceSpec[pathKey], resourceSpec.locale, resourceSpec.defaultLocale);
-                resourceSpec.localeExplodedSpecs = fluid.transform(resourceSpec.localeExploded, function (oneExploded) {
-                    var togo = {
-                        loader: resourceSpec.loader
-                    };
-                    togo[pathKey] = oneExploded;
-                    return togo;
-                }, fluid.fetchResources.prepareRequestOptions);
+                var path = resourceSpec[pathKey];
+                var resolvedPath = resourceSpec[pathKey] = resourceFetcher.transformResourceURL(path);
+                if (resourceSpec.locale) {
+                    resourceSpec.localeExploded = fluid.explodeLocalisedName(resolvedPath, resourceSpec.locale, resourceSpec.defaultLocale);
+                    resourceSpec.localeExplodedSpecs = fluid.transform(resourceSpec.localeExploded, function (oneExploded) {
+                        var togo = {
+                            loader: resourceSpec.loader
+                        };
+                        togo[pathKey] = oneExploded;
+                        return togo;
+                    }, fluid.fetchResources.prepareRequestOptions);
+                }
             }
         });
         return resourceSpecs;
@@ -354,13 +359,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * during the fetch process, with numerous extra fields filled in within each `resourceSpec`.
      * @param {Function} callback - An old-fashioned callback to be notified of the condition of the complete status
      * of the supplied `resourceSpecs` in either success or failure
-     * @param {ResourceFetcherOptions} options - Options governing the entire fetch process (currently just a `defaultLocale`)
+     * @param {ResourceFetcherOptions} options - Options governing the entire fetch process (Can include
+     * `locale, `defaultLocale`, `dataType`)
+     * @param {Function} transformResourceURL - A function {String -> String} which maps URL/path entries in resource
+     * specs, possibly by interpolating term values
      * @return {ResourceFetcher} The constructed resourceFetcher, ready to have individual resources fetched by
      * an invocation of `fetchOneResource` or the entire set triggered via `fetchAll`
      */
-    fluid.makeResourceFetcher = function (resourceSpecs, callback, options) {
+    fluid.makeResourceFetcher = function (resourceSpecs, callback, options, transformResourceURL) {
         var that = {
-            options: fluid.copy(options || {})
+            options: fluid.copy(options || {}),
+            transformResourceURL: transformResourceURL
         };
         /**
          * @name ResourceFetcher#fetchAll
@@ -630,24 +639,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             resourceFetcher: {
                 expander: {
                     funcName: "fluid.resourceLoader.makeResourceFetcher",
-                    args: ["{that}", "{that}.options.resourceOptions", "{that}.resolveResources"]
+                    args: ["{that}", "{that}.options.resourceOptions", "{that}.transformResourceURL"]
                 }
-            }
+            }/*,
+            // These arrive dynamically by means of the framework's workflow function
+            resources: {}
+            */
         },
-        // defaultLocale: "en", // May be supplied by integrators
-        // locale: "en", // May be supplied by integrators
-        terms: {},  // May be supplied by integrators
-        resourceOptions: {},
+        resourceOptions: {
+            // defaultLocale: "en", // May be supplied by integrators
+            // locale: "en", // May be supplied by integrators
+            // dataType: "json" // May be supplied by integrators
+            terms: {}  // May be supplied by integrators
+        },
         resources: {},  // Must be supplied by integrators
         invokers: {
-            transformURL: {
+            transformResourceURL: {
                 funcName: "fluid.stringTemplate",
-                args: ["{arguments}.0", "{that}.options.terms"]
-            },
-            resolveResources: {
-                funcName: "fluid.resourceLoader.resolveResources",
-                args: ["{that}.options.resources", "{that}.options.locale", "{that}.options.defaultLocale",
-                    "{that}.options.resourceOptions", "{that}.transformURL"]
+                args: ["{arguments}.0", "{that}.options.resourceOptions.terms"]
             }
         },
         events: {
@@ -662,14 +671,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {fluid.resourceLoader} that - The resourceLoader component for which the fetcher is to be constructed
      * (currently used to target the delivery of the delivered `that.resources` members, and relay resource errors)
      * @param {ResourceFetcherOptions} resourceOptions - Options governing the entire resource fetcher (currently
-     * just `defaultLocale`)
-     * @param {Function} resolveResources - A function yielding a `resourceSpecs` structure ready for use. By default this has interpolated
-     * URLs within the specification.
+     * `locale`, `defaultLocale` and `terms`)
+     * @param {Function} transformResourceURL - A function {String -> String} which maps URL/path entries in resource
+     * specs, possibly by interpolating term values
      * @return {ResourceFetcher} The ResourceFetcher ready to be attached to the ResourceLoader's top level
      */
-    fluid.resourceLoader.makeResourceFetcher = function (that, resourceOptions, resolveResources) {
-        var resolved = resolveResources();
-        var fetcher = fluid.makeResourceFetcher(fluid.copy(resolved), null, resourceOptions);
+    fluid.resourceLoader.makeResourceFetcher = function (that, resourceOptions, transformResourceURL) {
+        var fetcher = fluid.makeResourceFetcher(fluid.copy(that.options.resources), null, resourceOptions, transformResourceURL);
+        fetcher.ownerComponentId = that.id; // For debuggability
+        fetcher.ownerComponentPath = fluid.pathForComponent(that);
         // Note that we beat the existing completion listener in the fetcher by "sheer luck"
         fluid.each(fetcher.resourceSpecs, function (resourceSpec, key) {
             resourceSpec.promise.then(function () {
@@ -679,20 +689,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
         });
         return fetcher;
-    };
-
-    // TODO: This function needs to be eliminated and transformURL moved into the body of makeResourceFetcher next
-    // to explodeForLocales, where it can make use of the `pathKey`. Then we can move the obtrusive `terms` definition
-    // out of top level. Unfortunately it is used explicitly within the fluid.prefs.separatedPanel.lazyLoad
-    // which we need to unpick since its workflow can now probably be substantially simplified.
-    fluid.resourceLoader.resolveResources = function (resources, locale, defaultLocale, resourceOptions, transformURL) {
-        return fluid.transform(resources, function (record) {
-            var resourceSpec = $.extend(true, {}, resourceOptions, {
-                defaultLocale: defaultLocale,
-                locale: locale}, record);
-            resourceSpec.url = transformURL(resourceSpec.url);
-            return resourceSpec;
-        });
     };
 
     /** On construction of the resourceLoader, kick off the process of fetching all the resources configured within

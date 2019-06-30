@@ -394,14 +394,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     },
                     preloadResources: "prefsEditor",
                     listeners: {
-                        "onCreate.loadResources": {
+                        "onCreate.loadResources": { // Override of framework's definition
                             listener: "fluid.prefs.separatedPanel.lazyLoad.preloadResources",
-                            args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "{that}.options.preloadResources"]
+                            args: ["{that}", "{that}.options.preloadResources"]
                         },
                         "{separatedPanel}.events.onLazyLoad": {
                             listener: "fluid.resourceLoader.loadResources",
-                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}],
-                            namespace: "loadResources"
+                            args: "{that}"
                         }
                     }
                 }
@@ -438,25 +437,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * for the "fluid.prefs.separatedPanel.lazyLoad".
      *
      * @param {fluid.resourceLoader} that - the resourceLoader, augmented with the preload workflow
-     * @param {resourceSpecs} resources - all of the resourceSpecs to load, including preload and others.
-     *                             see: fluid.fetchResources
      * @param {String|String[]} toPreload - a String or an String[]s corresponding to the names
      *                                   of the resources, supplied in the resource argument, that
      *                                   should be loaded. Only these resources will be loaded.
      */
-    fluid.prefs.separatedPanel.lazyLoad.preloadResources = function (that, resources, toPreload) {
+    fluid.prefs.separatedPanel.lazyLoad.preloadResources = function (that, toPreload) {
         toPreload = fluid.makeArray(toPreload);
-        var preloadResources = {};
-
-        fluid.each(toPreload, function (resourceName) {
-            preloadResources[resourceName] = resources[resourceName];
+        var resourceFetcher = that.resourceFetcher;
+        var preloadPromises = toPreload.map(function (onePreload) {
+            return fluid.fetchResources.fetchOneResource(resourceFetcher.resourceSpecs[onePreload], resourceFetcher);
         });
-
-        // This portion of code was copied from fluid.resourceLoader.loadResources
-        // and will likely need to track any changes made there.
-        fluid.fetchResources(preloadResources, function () {
-            that.resources = preloadResources;
-            that.events.onResourcesPreloaded.fire(preloadResources);
+        var preloadAllPromise = fluid.promise.sequence(preloadPromises);
+        preloadAllPromise.then(function () {
+            that.events.onResourcesPreloaded.fire(that.resources);
         });
     };
 

@@ -666,8 +666,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
         jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
 
-        jqUnit.assertDeepEq("Munging options for terms should be passed down to the template loader", terms, prefsEditor.prefsEditorLoader.templateLoader.options.terms);
-        jqUnit.assertDeepEq("Munging options for terms should be passed down to the message loader", terms, prefsEditor.prefsEditorLoader.messageLoader.options.terms);
+        jqUnit.assertDeepEq("Munging options for terms should be passed down to the template loader", terms, prefsEditor.prefsEditorLoader.templateLoader.options.resourceOptions.terms);
+        jqUnit.assertDeepEq("Munging options for terms should be passed down to the message loader", terms, prefsEditor.prefsEditorLoader.messageLoader.options.resourceOptions.terms);
         jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
 
         fluid.each(loaderGrades, function (loaderGrade) {

@@ -2973,6 +2973,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.invokeFunc = function (deliverer, source, options) {
         var expander = source.expander;
         var args = fluid.makeArray(expander.args);
+        var whichFuncEntry = expander.func ? "func" : (expander.funcName ? "funcName" : null);
         expander.args = args; // head off case where args is an EL reference which resolves to an array
         if (options.recurse) { // only available in the path from fluid.expandOptions - this will be abolished in the end
             args = options.recurse([], args);
@@ -2980,13 +2981,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             expander = fluid.expandImmediate(expander, options.contextThat, options.localRecord);
             args = expander.args;
         }
-        var funcEntry = expander.func || expander.funcName;
+        var funcEntry = expander[whichFuncEntry];
         var func = (options.expandSource ? options.expandSource(funcEntry) : funcEntry) || fluid.recordToApplicable(expander, options.contextThat);
         if (typeof(func) === "string") {
             func = fluid.getGlobalValue(func);
         }
         if (!func) {
-            fluid.fail("Error in expander record ", expander, ": " + funcEntry + " could not be resolved to a function for component ", options.contextThat);
+            fluid.fail("Error in expander record ", source.expander, ": " + source.expander[whichFuncEntry] + " could not be resolved to a function for component ", options.contextThat);
         }
         return func.apply(null, args);
     };

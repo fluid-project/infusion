@@ -128,9 +128,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.resourceLoader", {
         gradeNames: ["fluid.resourceLoader"],
-        defaultLocale: "en",
-        terms: {
-            prefix: "../data"
+        resourceOptions: {
+            defaultLocale: "en",
+            terms: {
+                prefix: "../data"
+            }
         },
         resources: {
             template1: "%prefix/testTemplate1.html",
@@ -173,8 +175,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             templateLoader: {
                 type: "fluid.resourceLoader",
                 options: {
-                    terms: {
-                        prefix: "../data"
+                    resourceOptions: {
+                        terms: {
+                            prefix: "../data"
+                        }
                     },
                     resources: {
                         template1: "%prefix/testTemplate1.html"

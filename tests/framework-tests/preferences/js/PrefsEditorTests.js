@@ -781,8 +781,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The locale value in the initial model has been set properly", locale, prefsEditorLoader.initialModel.preferences.locale);
         jqUnit.assertEquals("The locale value in the settings has been set properly", locale, prefsEditorLoader.settings.preferences.locale);
         jqUnit.assertEquals("The locale value in the initial model has been passed to the prefs editor", locale, prefsEditorLoader.prefsEditor.initialModel.preferences.locale);
-        jqUnit.assertEquals("The default locale value in the message loader has been set properly", defaultLocale, prefsEditorLoader.messageLoader.options.defaultLocale);
-        jqUnit.assertEquals("The locale value in the message loader has been set properly", locale, prefsEditorLoader.messageLoader.options.locale);
+        jqUnit.assertEquals("The default locale value in the message loader has been set properly", defaultLocale, prefsEditorLoader.messageLoader.options.resourceOptions.defaultLocale);
+        jqUnit.assertEquals("The locale value in the message loader has been set properly", locale, prefsEditorLoader.messageLoader.options.resourceOptions.locale);
     };
 
     fluid.test.runTests([
