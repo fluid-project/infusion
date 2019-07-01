@@ -442,7 +442,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         resources: {
             messages: {
                 promiseFunc: "{that}.fetchMessages",
-                promiseArgs: "../data/messages3_en.json"
+                promiseArgs: "../data/messages1_en.json"
             }
         }
     });
@@ -459,7 +459,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: "upper, middle, lower"
     }, , {
         grade: "fluid.tests.fluid4982overridePromise",
-        expected: "upper, middle, lower"
+        expected: "These courses will require a lot of grading"
     }];
 
     fluid.tests.fluid4982OverrideFixtures.forEach(function (fixture) {

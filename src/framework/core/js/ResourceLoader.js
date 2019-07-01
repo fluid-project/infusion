@@ -332,6 +332,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         resourceSpec.launched = false;
     };
 
+    /** @name fluid.fetchResources.FetchOne
+     * @class
+     * @member {Promise} promise - A promise for the resolved value nested within the resource indirected by the path segments
+     * @member {ResourceSpec} resourceSpec - The resourceSpec designating the resource
+     */
+
+    /** A utility class (in the prototypal sense) to aid resolution of trailing path segments into an asynchronously
+     * fetched resource. It returns a self-trundling series of instances that consume successive path segments until
+     * the final value is dereferenced. From this instance, the members `promise`
+     * @param {ResourceSpec} resourceSpec - The resourceSpec holding the resource that will be dereferenced into
+     * @param {ResourceFetcher} resourceFetcher - The overall resourceFetcher governing the owning component's resources
+     * @param {String[]} segments - The array of path segments to be resolved into the resource once it loads
+     */
     fluid.fetchResources.FetchOne = function (resourceSpec, resourceFetcher, segments) {
         this.resourceFetcher = resourceFetcher;
         this.resourceSpec = resourceSpec;
@@ -536,11 +549,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.resourceLoader.loaders.resourceText.noPath = true;
 
     /** A generalised 'promise' `OneResourceLoader` that allows some arbitrary asynchronous process to be
-     * interpolated into the loader. It returns the value of the field `promiseFunc` interpreted as a promise
-     * invoked with arguments `promiseArg` which is intended to yield the successful or unsuccessful resource value
+     * interpolated into the loader. The function `promiseFunc` is invoked with
+     * arguments `promiseArg` yielding a promise representing successful or unsuccessful loading of the resource value
      * @param {ResourceSpec} resourceSpec - A `ResourceSpec` for which the `promiseFunc` field has already been filled in to hold
-     * a promise
-     * @return {Promise} The resourceSpec's `promise` field
+     * a function returning a promise
+     * @return {Promise} The result of invoking `promiseFunc` with `promiseArgs`
      */
     fluid.resourceLoader.loaders.promiseFunc = function (resourceSpec) {
         return resourceSpec.promiseFunc.apply(null, fluid.makeArray(resourceSpec.promiseArgs));
