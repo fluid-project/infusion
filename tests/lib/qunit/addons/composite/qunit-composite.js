@@ -83,7 +83,7 @@ function initIframe() {
 			// Pass all test details through to the main page
 			var message = ( moduleName ? moduleName + ": " : "" ) + testName + ": " + ( data.message || ( data.result ? "okay" : "failed" ) );
 			if (QUnit.config.current) { // AMB last-ditch to prevent exceptions due to mistiming between composite and base QUnit
-			    expect( ++count );
+			    QUnit.expect( ++count ); // AMB fix for FLUID-6368 no longer use QUnit globals
 			    QUnit.push( data.result, data.actual, data.expected, message );
 			} else {
 			    console.log("Error coordinating QUnit-composite - assertion issued outside test context");

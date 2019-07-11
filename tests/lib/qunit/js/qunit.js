@@ -755,7 +755,8 @@ config = {
 // Export global variables, unless an 'exports' object exists,
 // in that case we assume we're in CommonJS (dealt with on the bottom of the script)
 if ( typeof exports === "undefined" ) {
-	extend( window, QUnit.constructor.prototype );
+  // AMB next line commented out for FLUID-6368, do not pollute global namespace  
+  //	extend( window, QUnit.constructor.prototype );
 
 	// Expose QUnit object
 	window.QUnit = QUnit;

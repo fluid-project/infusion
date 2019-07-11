@@ -164,8 +164,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.slidingPanel.setAriaStates = function (that, isShowing) {
-        that.locate("toggleButton").attr("aria-pressed", isShowing);
-        that.locate("panel").attr("aria-expanded", isShowing);
+        that.locate("toggleButton").attr({
+            "aria-pressed": isShowing,
+            "aria-expanded": isShowing
+        });
     };
 
 })(jQuery, fluid_3_0_0);

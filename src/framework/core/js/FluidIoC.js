@@ -670,12 +670,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.computeDynamicComponentKey = function (recordKey, sourceKey) {
         return recordKey + (sourceKey === 0 ? "" : "-" + sourceKey); // TODO: configurable name strategies
     };
+    // Hacked resolution of FLUID-6371 - we can't add a listener because this version of the framework doesn't
+    // support multiple records as subcomponents, and there may have been a total options injection
+    fluid.hasDynamicComponentCount = function (shadow, key) {
+        var hypos = key.indexOf("-");
+        if (hypos !== -1) {
+            var recordKey = key.substring(0, hypos);
+            return shadow.dynamicComponentCount !== undefined && shadow.dynamicComponentCount[recordKey] !== undefined;
+        }
+    };
+
+    fluid.clearDynamicParentRecord = function (shadow, key) {
+        if (fluid.hasDynamicComponentCount(shadow, key)) {
+            var holder = fluid.get(shadow.that, ["options", "components"]);
+            if (holder) {
+                delete holder[key];
+            }
+        }
+    };
 
     fluid.registerDynamicRecord = function (that, recordKey, sourceKey, record, toCensor) {
         var key = fluid.computeDynamicComponentKey(recordKey, sourceKey);
-        var cRecord = fluid.copy(record);
-        delete cRecord[toCensor];
-        fluid.set(that.options, ["components", key], cRecord);
+        var recordCopy = fluid.copy(record);
+        delete recordCopy[toCensor];
+        fluid.set(that.options, ["components", key], recordCopy);
         return key;
     };
 
@@ -1045,18 +1063,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.fail("Cannot record non-component with value ", component, " at path \"" + name + "\" of parent ", parent);
             }
         };
-        that.clearConcreteComponent = function (record) {
+        that.clearConcreteComponent = function (destroyRec) {
             // Clear injected instance of this component from all other paths - historically we didn't bother
             // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
-            fluid.each(record.childShadow.injectedPaths, function (troo, injectedPath) {
+            fluid.each(destroyRec.childShadow.injectedPaths, function (troo, injectedPath) {
                 var parentPath = fluid.model.getToTailPath(injectedPath);
                 var otherParent = that.pathToComponent[parentPath];
-                that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), record.child);
+                that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), destroyRec.child);
             });
-            fluid.clearDistributions(record.childShadow);
-            fluid.clearListeners(record.childShadow);
-            fluid.fireEvent(record.child, "afterDestroy", [record.child, record.name, record.component]);
-            delete that.idToShadow[record.child.id];
+            fluid.clearDistributions(destroyRec.childShadow);
+            fluid.clearListeners(destroyRec.childShadow);
+            fluid.clearDynamicParentRecord(destroyRec.shadow, destroyRec.name);
+            fluid.fireEvent(destroyRec.child, "afterDestroy", [destroyRec.child, destroyRec.name, destroyRec.component]);
+            delete that.idToShadow[destroyRec.child.id];
         };
         that.clearComponent = function (component, name, child, options, nested, path) {
             // options are visitor options for recursive driving
@@ -1086,7 +1105,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, that.parseEL(childPath));
                 fluid.doDestroy(child, name, component); // call "onDestroy", null out events and invokers, setting lifecycleStatus to "destroyed"
-                options.destroyRecs.push({child: child, childShadow: childShadow, name: name, component: component});
+                options.destroyRecs.push({child: child, childShadow: childShadow, name: name, component: component, shadow: shadow});
             } else {
                 fluid.remove_if(childShadow.injectedPaths, function (troo, path) {
                     return path === childPath;
@@ -1801,7 +1820,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    fluid.event.dispatchListener = function (that, listener, eventName, eventSpec, indirectArgs) {
+    fluid.event.dispatchListener = function (that, listener, eventName, eventSpec, wrappedArgs) {
         if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE && !fluid.isArrayable(eventSpec.args)) {
             eventSpec.args = fluid.makeArray(eventSpec.args);
         }
@@ -1815,9 +1834,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     {eventName: eventName, that: that});
             }
 
-            var args = indirectArgs ? arguments[0] : arguments, finalArgs;
+            var args = wrappedArgs ? arguments[0] : arguments, finalArgs;
             localRecord.arguments = args;
             if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE) {
+                // In theory something more exotic happens here, and in makeInvoker - where "source" is an array we want to
+                // keep its base reference stable since Function.apply will fork it sufficiently, but we really need to
+                // clone each structured argument. Implies that expandImmediateImpl needs to be split in two, and operate
+                // reference by "segs" rather than by "holder"
                 fluid.expandImmediateImpl(dispatchPre, expandOptions);
                 finalArgs = dispatchPre.source;
             } else {
