@@ -105,6 +105,7 @@ module.exports = function (grunt) {
                 "src/lib/jquery/plugins",
                 "src/lib/jquery/ui/js",
                 "src/lib/normalize",
+                "src/lib/open-dyslexic",
                 "src/lib/opensans",
                 "src/lib/roboto",
                 "src/lib/url-polyfill",
@@ -249,6 +250,11 @@ module.exports = function (grunt) {
                 }, {
                     src: "node_modules/opensans-webkit/fonts/OpenSans-*.woff",
                     dest: "src/lib/opensans/fonts/",
+                    expand: true,
+                    flatten: true
+                }, {
+                    src: "node_modules/open-dyslexic/woff/OpenDyslexic-*.woff",
+                    dest: "src/lib/open-dyslexic/fonts/",
                     expand: true,
                     flatten: true
                 }, {

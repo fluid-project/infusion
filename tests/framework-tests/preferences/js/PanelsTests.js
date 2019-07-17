@@ -1007,6 +1007,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textFont-comic": "Comic Sans",
             "textFont-arial": "Arial",
             "textFont-verdana": "Verdana",
+            "textFont-open-dyslexic": "Open Dyslexic",
             "textFontLabel": "text style",
             "textFontDescr": "Change the font used"
         },
@@ -1024,7 +1025,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             }
         }
     });
@@ -1062,14 +1064,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.textFontTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
-            expectedNumOfOptions: 5,
+            expectedNumOfOptions: 6,
             defaultValue: "default",
             newValue: "comic"
         },
         modules: [{
             name: "Test the text font settings panel",
             tests: [{
-                expect: 9,
+                expect: 10,
                 name: "Test the rendering of the text font panel",
                 sequence: [{
                     listener: "fluid.tests.textFontPanel.testDefault",

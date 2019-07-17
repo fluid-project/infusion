@@ -54,7 +54,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             },
             "theme": {
                 "default": "fl-theme-prefsEditor-default",
