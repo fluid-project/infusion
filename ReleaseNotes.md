@@ -12,6 +12,7 @@ Currently the contents of this file represent a placeholder for future Infusion 
 
 * Preference framework
   * Updated look of on/off toggles
+  * Added [OpenDyslexic 3](https://opendyslexic.org/) (licensed under the [SIL Open Font License](https://opensource.org/licenses/OFL-1.1)) as an option to the Text Style panel 
 
 ### Removal of Deprecated Features
 
