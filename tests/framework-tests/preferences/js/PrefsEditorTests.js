@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Initialization: The first theme is default", "default", themeValues[0]);
 
         var fontValues = prefsEditor.textFont.options.controlValues.textFont;
-        jqUnit.assertEquals("Initialization: There are 5 font values in font style adjuster", 5, fontValues.length);
+        jqUnit.assertEquals("Initialization: There are 6 font values in font style adjuster", 6, fontValues.length);
         jqUnit.assertTrue("Initialization: There is a default font value", fontValues.indexOf("default") !== -1);
 
         jqUnit.assertEquals("Initialization: The onPrefsEditorRefresh event has been called once", 1, prefsEditor.refreshCount);

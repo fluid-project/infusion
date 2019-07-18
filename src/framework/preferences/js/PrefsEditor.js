@@ -441,6 +441,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // called once markup is applied to the document containing tab component roots
     fluid.prefs.prefsEditor.finishInit = function (that) {
+        console.log(that);
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");
             if (saveButton.length > 0) {
