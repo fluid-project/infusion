@@ -25,7 +25,7 @@ fluid.defaults("fluid.tests.testem", {
         tests:   "%infusion/tests"
     },
     testemOptions: {
-        skip: "PhantomJS,Opera,Safari,Headless Chrome",
+        skip: "PhantomJS,Opera,Safari,Chrome",
         disable_watching: true,
         tap_quiet_logs: true
     }
