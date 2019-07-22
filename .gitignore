@@ -5,6 +5,7 @@
 /src/components/switch/css/*.css
 /src/framework/preferences/css/*.css
 /.bundle/
+/.nyc_output/
 /.vagrant/
 /src/lib/hypher/
 /src/lib/jquery/

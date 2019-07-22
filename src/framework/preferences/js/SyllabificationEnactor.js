@@ -142,7 +142,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
-     * Only disconnect the observer is the state is set to false.
+     * Only disconnect the observer if the state is set to false.
      * This corresponds to the syllabification's `enabled` model path being set to false.
      *
      * @param {Component} that - an instance of `fluid.mutationObserver`
@@ -222,6 +222,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         var src = fluid.stringTemplate(pattern, that.options.terms);
+        var existingLang = fluid.get(that, ["hyphenatorSRCs", src]);
+
+        if (existingLang) {
+            fluid.promise.follow(existingLang, promise);
+            return promise;
+        }
+
         var injectPromise = that.injectScript(src);
         injectPromise.then(function () {
             hyphenator = fluid.getGlobalValue(globalPath);
@@ -233,9 +240,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 textStatus,
                 errorThrown
             );
-            // If the pattern file could not be loaded resolve the promise with out a hyphenator (undefined).
+            // If the pattern file could not be loaded, resolve the promise without a hyphenator (undefined).
             promise.resolve();
         });
+
+        fluid.set(that, ["hyphenatorSRCs", src], promise);
         return promise;
     };
 
