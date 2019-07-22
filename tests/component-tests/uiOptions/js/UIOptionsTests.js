@@ -91,11 +91,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            localized: {
+                fr: {
+                    "tocHeader": "Table des matières"
+                }
+            }
+        },
         modules: [{
             name: "UI Options Locale Tests",
             tests: [{
                 name: "UIO defaultLocale tests",
-                expect: 16,
+                expect: 17,
                 sequence: [{
                     event: "{prefsEditorBaseTest prefsEditorLoader > messageLoader}.events.onResourcesLoaded",
                     listener: "jqUnit.assertEquals",
@@ -113,6 +120,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     funcName: "jqUnit.assertEquals",
                     args: ["defaultLocale is properly propagated to the toc messageLoader", "fr", "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.options.defaultLocale"]
+                },
+                {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["The localized messages are loaded correctly", "{that}.options.testOpts.localized.fr", "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.resources.tocMessage.resourceText"]
                 }]
             }]
         }]
