@@ -27,7 +27,9 @@ fluid.defaults("fluid.tests.testem", {
     testemOptions: {
         skip: "PhantomJS,Opera,Safari,Chrome",
         disable_watching: true,
-        tap_quiet_logs: true
+        tap_quiet_logs: true,
+        // Set to headless browser mode without need to set environment variable in CLI
+        browser_args: "@expand:gpii.testem.constructBrowserArgs({that}.options.headlessBrowserArgs)"
     }
 });
 
