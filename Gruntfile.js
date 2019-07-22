@@ -573,9 +573,7 @@ module.exports = function (grunt) {
             "lint",
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
-            "verifyDistJS",
-            "verifyDistCSS",
-            "verifyDistFonts",
+            "verifyDistFiles",
             "buildStylus" // put back stylus files needed for development
         ];
         grunt.task.run(tasks);
@@ -698,6 +696,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylusDist", "clean:ciArtifacts"]);
     grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
+
+    grunt.registerTask("verifyDistFiles", ["verifyDistJS","verifyDistCSS","verifyDistFonts"]);
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
