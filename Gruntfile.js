@@ -167,7 +167,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: "build/",
-                    src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**"],
+                    src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**", "src/lib/open-dyslexic/**", "src/lib/opensans/**"],
                     dest: "dist/assets/"
                 }]
             },
@@ -575,13 +575,14 @@ module.exports = function (grunt) {
             "cleanForDist",
             "verifyDistJS",
             "verifyDistCSS",
+            "verifyDistFonts",
             "buildStylus" // put back stylus files needed for development
         ];
         grunt.task.run(tasks);
     });
 
-    /** Verifies that directory "contains the files in fileList
-    * logs a report
+    /** Verifies that directory contains the files in fileList and
+    * returns a report for further processing
     * @param {String} dir - base directory expected to contain files
     * @param {Array} fileList - array of string filenames to check; may include
     * full paths and thereby search subdirectories of dir
@@ -624,16 +625,31 @@ module.exports = function (grunt) {
     */
     var processVerifyFilesReport = function (report) {
         if (report.missingFiles > 0) {
-            grunt.log.subhead("Verification failed".red);
+            grunt.log.error("Verification failed".red);
             grunt.fail.fatal(report.missingFiles + " out of " + report.expectedFiles + " expected files not found");
         } else {
-            grunt.log.subhead("Verification passed".green);
+            grunt.log.ok("Verification passed".green);
             grunt.log.oklns("All expected files were present");
         }
     };
 
+    /** Common function for use by Grunt tasks verifying files
+     *
+     *
+     * @param {String} message - message to be displayed when running the verify files tasks
+     * @param {Array} expectedFilenames - array of expected file names
+     * @param {String} fileDir - base directory expected to contain files
+     */
+    var verifyFilesTaskFunc = function (message, expectedFilenames, fileDir) {
+        grunt.log.subhead(message);
+        var report = verifyFiles(fileDir, expectedFilenames);
+        displayVerifyFilesReport(report);
+        processVerifyFilesReport(report);
+
+    };
+
     grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
-        grunt.log.subhead("Verifying that expected distribution JS files are present in /dist directory");
+        var message = "Verifying that expected distribution JS files are present in /dist directory";
         var expectedFilenames = [];
         var distributions = grunt.config.get("distributions");
         _.forEach(distributions, function (value, distribution) {
@@ -642,14 +658,11 @@ module.exports = function (grunt) {
             expectedFilenames.push(jsFilename, mapFilename);
         });
 
-        var report = verifyFiles("dist", expectedFilenames);
-
-        displayVerifyFilesReport(report);
-        processVerifyFilesReport(report);
+        verifyFilesTaskFunc(message, expectedFilenames, "dist");
     });
 
     grunt.registerTask("verifyDistCSS", "Verifies that the expected /dist/ CSS files were created", function () {
-        grunt.log.subhead("Verifying that expected distribution CSS files are present in /dist/assets directory");
+        var message = "Verifying that expected distribution CSS files are present in /dist/ directory";
         var expectedFilenames = [];
         var preferencesStylusFiles = grunt.file.expand("src/framework/preferences/css/stylus/*.styl");
         _.forEach(preferencesStylusFiles, function (stylusFile) {
@@ -658,12 +671,29 @@ module.exports = function (grunt) {
             // Remove /stylus from the path, since dist/assets won't have it
             expectedFilenames.push(cssFilename.replace("/stylus", ""), minifiedCSSFilename.replace("/stylus", ""));
         });
+        verifyFilesTaskFunc(message, expectedFilenames, "dist/assets");
+    });
 
-        var report = verifyFiles("dist/assets", expectedFilenames);
+    grunt.registerTask("verifyDistFonts", "Verifies that the expected /dist/ font files were created", function () {
+        var expectedFonts = {
+            openDyslexic: {
+                cwd: "src/lib/open-dyslexic/fonts",
+                pattern: "*.woff",
+                message: "Verify opendyslexic font files are present in /dist/ directory",
+                distDirectory: "dist/assets/src/lib/open-dyslexic/fonts"
+            },
+            openSans: {
+                cwd: "src/lib/opensans/fonts",
+                pattern: "*.woff",
+                message: "Verify opensans font files are present in /dist/ directory",
+                distDirectory: "dist/assets/src/lib/opensans/fonts"
+            }
+        };
 
-        displayVerifyFilesReport(report);
-        processVerifyFilesReport(report);
-
+        _.forEach(expectedFonts, function (expectedFont) {
+            var expectedFontFiles = grunt.file.expand({cwd: expectedFont.cwd}, expectedFont.pattern);
+            verifyFilesTaskFunc(expectedFont.message, expectedFontFiles, expectedFont.distDirectory);
+        });
     });
 
     grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylusDist", "clean:ciArtifacts"]);
