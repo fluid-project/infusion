@@ -167,7 +167,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: "build/",
-                    src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**", "src/lib/open-dyslexic/**", "src/lib/opensans/**"],
+                    src: ["src/framework/preferences/fonts/**", "src/framework/preferences/images/**", "src/lib/open-dyslexic/**", "src/lib/opensans/**"],
                     dest: "dist/assets/"
                 }]
             },
