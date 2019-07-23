@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016, 2018 OCAD University
+Copyright 2013-2019 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -28,27 +28,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "uio.uiEnhancer.tocTemplate": {
                 source: "{that}.options.tocTemplate",
-                target: "{that uiEnhancer}.options.tocTemplate"
+                target: "{that uiEnhancer > tableOfContents}.options.tocTemplate"
+            },
+            "uio.uiEnhancer.tocMessage": {
+                source: "{that}.options.tocMessage",
+                target: "{that uiEnhancer > tableOfContents}.options.tocMessage"
             },
             "uio.uiEnhancer.ignoreForToC": {
                 source: "{that}.options.ignoreForToC",
-                target: "{that uiEnhancer}.options.ignoreForToC"
-            },
-            "uio.localization.defaultLocale": {
-                source: "{that}.options.defaultLocale",
-                target: "{that prefsEditorLoader}.options.defaultLocale"
-            }
-        },
-        enhancer: {
-            distributeOptions: {
-                "uio.enhancer.tableOfContents.tocTemplate": {
-                    source: "{that}.options.tocTemplate",
-                    target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
-                },
-                "uio.enhancer.tableOfContents.ignoreForToC": {
-                    source: "{that}.options.ignoreForToC",
-                    target: "{that > fluid.prefs.enactor.tableOfContents}.options.ignoreForToC"
-                }
+                target: "{that uiEnhancer > tableOfContents}.options.ignoreForToC"
             }
         }
     });

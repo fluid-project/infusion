@@ -317,7 +317,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "preferences": [{
                 listener: "fluid.prefs.prefsEditor.handleAutoSave",
                 args: ["{that}"],
-                namespace: "autoSave"
+                namespace: "autoSave",
+                excludeSource: ["init"]
             }, {
                 listener: "{that}.events.modelChanged.fire",
                 args: ["{change}.value"],
