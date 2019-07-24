@@ -476,10 +476,31 @@ module.exports = function (grunt) {
                 }
             }
         },
-        distVerifications: {
-            js: {},
-            css: {},
-            fonts: {}
+        verifyDistFiles: {
+            js: {
+                getFilesFunc: function () {
+                    return getDistJSFiles();
+                },
+                distDirectory: "dist"
+            },
+            css: {
+                getFilesFunc: function () {
+                    return getDistCSSFiles();
+                },
+                distDirectory: "dist/assets"
+            },
+            openDyslexic_font: {
+                getFilesFunc: function () {
+                    return getDistOpenDyslexicFiles();
+                },
+                distDirectory: "dist/assets/src/lib/open-dyslexic/fonts"
+            },
+            openSans_font: {
+                getFilesFunc: function () {
+                    return getDistOpenSansFiles();
+                },
+                distDirectory: "dist/assets/src/lib/opensans/fonts"
+            }
         }
     });
 
@@ -673,18 +694,18 @@ module.exports = function (grunt) {
         });        
         return expectedFilenames;
     };
+    
+    var getDistOpenDyslexicFiles = function () {        
+        var expectedFilenames = grunt.file.expand({cwd: "src/lib/open-dyslexic/fonts"}, 
+        "*.woff");
+        return expectedFilenames;
+    };
 
-    grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
-        var message = "Verifying that expected distribution JS files are present in /dist directory";
-        var expectedFilenames = getDistJSFiles();
-        verifyFilesTaskFunc(message, expectedFilenames, "dist");
-    });
-
-    grunt.registerTask("verifyDistCSS", "Verifies that the expected /dist/ CSS files were created", function () {
-        var message = "Verifying that expected distribution CSS files are present in /dist/ directory";
-        var expectedFilenames = getDistCSSFiles();
-        verifyFilesTaskFunc(message, expectedFilenames, "dist/assets");
-    });
+    var getDistOpenSansFiles = function () {        
+        var expectedFilenames = grunt.file.expand({cwd: "src/lib/opensans/fonts"}, 
+        "*.woff");
+        return expectedFilenames;
+    };
 
     grunt.registerTask("verifyDistFonts", "Verifies that the expected /dist/ font files were created", function () {
         var expectedFonts = {
@@ -708,10 +729,13 @@ module.exports = function (grunt) {
         });
     });
 
+    grunt.registerMultiTask("verifyDistFiles", "Verify distribution files", function () {
+        var message = "Verifying " + this.target + " files are in /dist";
+        verifyFilesTaskFunc(message, this.data.getFilesFunc(), this.data.distDirectory);        
+    });
+
     grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylusDist", "clean:ciArtifacts"]);
     grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
-
-    grunt.registerTask("verifyDistFiles", ["verifyDistJS","verifyDistCSS","verifyDistFonts"]);
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
