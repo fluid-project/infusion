@@ -475,6 +475,11 @@ module.exports = function (grunt) {
                     compress: true
                 }
             }
+        },
+        distVerifications: {
+            js: {},
+            css: {},
+            fonts: {}
         }
     });
 
@@ -646,8 +651,7 @@ module.exports = function (grunt) {
 
     };
 
-    grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
-        var message = "Verifying that expected distribution JS files are present in /dist directory";
+    var getDistJSFiles = function () {
         var expectedFilenames = [];
         var distributions = grunt.config.get("distributions");
         _.forEach(distributions, function (value, distribution) {
@@ -655,6 +659,12 @@ module.exports = function (grunt) {
             var mapFilename = jsFilename + ".map";
             expectedFilenames.push(jsFilename, mapFilename);
         });
+        return expectedFilenames;
+    };
+
+    grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
+        var message = "Verifying that expected distribution JS files are present in /dist directory";
+        var expectedFilenames = getDistJSFiles();
 
         verifyFilesTaskFunc(message, expectedFilenames, "dist");
     });
