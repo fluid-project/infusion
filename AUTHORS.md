@@ -9,7 +9,6 @@ Please see the version control system's revision history for details on contribu
 Copyright 2007-2019
 
 * Dinuka De Silva
-* John Kremer
 * Lucendo Development Ltd.
 * OCAD University
 * Raising the Floor - International
