@@ -36,7 +36,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.uiEnhancer.starterEnactors"],
             // The UI Enhancer's Table of Contents uses an HTML template. This tells the component
             // where to find that template.
-            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+            tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
         }
     });
 })();

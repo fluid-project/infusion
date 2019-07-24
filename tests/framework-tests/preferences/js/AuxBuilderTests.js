@@ -250,10 +250,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.prefs.expandSchemaComponents
      *******************************************************************************/
 
-    fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, primarySchema, expectedOutput) {
+    fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, index, primarySchema, expectedOutput) {
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var panelModelOptions = fluid.get(fluid.tests.elementCommonOptions, "panelModel");
-        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
+        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, alias, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
     };
 
@@ -279,6 +279,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.expandSchemaComponentsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        mergePolicy: {
+            "testOptions.expectedOutput": "noexpand"
+        },
         testOptions: {
             auxSchema: {
                 "contrast": {
@@ -373,6 +376,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
+                aliases_enhancer: {
+                    model: {
+                        "contrast": "{that}.model.fluid_prefs_contrast"
+                    }
+                },
+                aliases_prefsEditor: {
+                    model: {
+                        preferences: {
+                            "contrast": "{that}.model.preferences.fluid_prefs_contrast"
+                        }
+                    }
+                },
                 templateLoader: {
                     resources: {
                         "fluid_tests_prefs_panel_contrast": "templates/contrast"
@@ -387,6 +402,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     members: {
                         initialModel: {
                             preferences: {
+                                "contrast": "default",
                                 "fluid_prefs_contrast": "default"
                             }
                         }
@@ -401,7 +417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Component expander based on schema",
                 type: "test",
                 func: "fluid.tests.testExpandSchemaComponents",
-                args: ["{that}.options.testOptions.auxSchema", "panels", "{that}.options.testOptions.auxSchema.contrast.type", "{that}.options.testOptions.auxSchema.contrast.panel",
+                args: ["{that}.options.testOptions.auxSchema", "panels", "{that}.options.testOptions.auxSchema.contrast.type", "contrast", "{that}.options.testOptions.auxSchema.contrast.panel",
                     "{that}.options.testOptions.index", "{that}.options.testOptions.primarySchema", "{that}.options.testOptions.expectedOutput"]
             }]
         }]
@@ -651,6 +667,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
+        aliases_enhancer: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {}
+        },
+        aliases_prefsEditor: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {
+                preferences: {}
+            }
+        },
         messageLoader: {
             gradeNames: ["fluid.resourceLoader"],
             resources: {}
@@ -699,6 +725,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 }
+            }
+        },
+        aliases_enhancer: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {}
+        },
+        aliases_prefsEditor: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {
+                preferences: {}
             }
         },
         templateLoader: {
@@ -868,6 +904,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
+                aliases_enhancer: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {}
+                },
+                aliases_prefsEditor: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {
+                        preferences: {}
+                    }
+                },
                 templateLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
@@ -942,6 +988,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
+                aliases_enhancer: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {}
+                },
+                aliases_prefsEditor: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {
+                        preferences: {}
+                    }
+                },
                 templateLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
@@ -1014,6 +1070,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 }
                             }
                         }
+                    }
+                },
+                aliases_enhancer: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {}
+                },
+                aliases_prefsEditor: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {
+                        preferences: {}
                     }
                 },
                 templateLoader: {

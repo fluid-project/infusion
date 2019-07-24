@@ -42,13 +42,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent"],
+        defaultLocale: "en",
         invokers: {
             updateModel: {
                 func: "{that}.applier.change",
                 args: ["", "{arguments}.0"]
             }
         },
-        userGrades: "@expand:fluid.prefs.filterEnhancerGrades({that}.options.gradeNames)"
+        userGrades: "@expand:fluid.prefs.filterEnhancerGrades({that}.options.gradeNames)",
+
+        distributeOptions: {
+            "uiEnhancer.messageLoader.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                target: "{that messageLoader}.options.defaultLocale"
+            },
+            // TODO: This needs to be improved as it is static and should be dynamic. Unfortunately the resource loader
+            //       accepts the locale as an option instead of a model value.
+            "uiEnhancer.messageLoader.locale": {
+                source: "{that}.options.locale",
+                target: "{that messageLoader}.model.locale"
+            }
+        }
     });
 
     // Make this a standalone grade since options merging can't see 2 levels deep into merging
@@ -72,7 +86,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // This just the options that we are clear safely represent user options - naturally this all has
     // to go when we refactor UIEnhancer
     fluid.prefs.filterEnhancerOptions = function (options) {
-        return fluid.filterKeys(options, ["classnameMap", "fontSizeMap", "tocTemplate", "components"]);
+        return fluid.filterKeys(options, ["classnameMap", "fontSizeMap", "tocTemplate", "tocMessage", "components"]);
     };
 
     /********************************************************************************

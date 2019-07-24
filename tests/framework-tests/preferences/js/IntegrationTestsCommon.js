@@ -93,7 +93,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer({
                 uiEnhancer: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
                 }
             });
             var savedSelections;
@@ -172,6 +173,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         uiEnhancer: {
             gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.prefs.initialModel.starter"],
             tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+            tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json",
             classnameMap: {
                 "textFont": {
                     "default": "fl-font-times"

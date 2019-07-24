@@ -34,6 +34,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "message": "%messagePrefix/prefsEditor.json",
             localization: {
                 "type": "fluid.prefs.localization",
+                "alias": "locale",
                 "enactor": {
                     "type": "fluid.prefs.enactor.localization"
                 },

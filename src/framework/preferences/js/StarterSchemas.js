@@ -34,8 +34,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
             "message": "%messagePrefix/prefsEditor.json",
+            "defaultLocale": "en",
             "textSize": {
                 "type": "fluid.prefs.textSize",
+                "alias": "textSize",
                 "enactor": {
                     "type": "fluid.prefs.enactor.textSize"
                 },
@@ -48,6 +50,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "textFont": {
                 "type": "fluid.prefs.textFont",
+                "alias": "textFont",
                 "classes": {
                     "default": "",
                     "times": "fl-font-times",
@@ -69,6 +72,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "lineSpace": {
                 "type": "fluid.prefs.lineSpace",
+                "alias": "lineSpace",
                 "enactor": {
                     "type": "fluid.prefs.enactor.lineSpace",
                     "fontSizeMap": {
@@ -90,6 +94,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "contrast": {
                 "type": "fluid.prefs.contrast",
+                "alias": "theme",
                 "classes": {
                     "default": "fl-theme-prefsEditor-default",
                     "bw": "fl-theme-bw",
@@ -116,9 +121,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "tableOfContents": {
                 "type": "fluid.prefs.tableOfContents",
+                "alias": "toc",
                 "enactor": {
                     "type": "fluid.prefs.enactor.tableOfContents",
-                    "tocTemplate": "../../components/tableOfContents/html/TableOfContents.html"
+                    "tocTemplate": "../../components/tableOfContents/html/TableOfContents.html",
+                    "tocMessage": "../../framework/preferences/messages/tableOfContents-enactor.json"
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.layoutControls",
@@ -129,6 +136,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "enhanceInputs": {
                 "type": "fluid.prefs.enhanceInputs",
+                "alias": "inputs",
                 "enactor": {
                     "type": "fluid.prefs.enactor.enhanceInputs",
                     "cssClass": "fl-input-enhanced"

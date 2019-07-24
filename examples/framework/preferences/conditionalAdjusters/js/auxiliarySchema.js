@@ -49,6 +49,7 @@ var example = example || {};
             },
             speak: {
                 type: "example.speakText",
+                alias: "speakText",
                 enactor: {
                     type: "example.enactors.speak"
                 },
@@ -61,6 +62,7 @@ var example = example || {};
             },
             vol: {
                 type: "example.volume",
+                alias: "volume",
                 enactor: {
                     type: "example.enactors.vol"
                 },
@@ -73,6 +75,7 @@ var example = example || {};
             },
             wpm: {
                 type: "example.wordsPerMinute",
+                alias: "wpm",
                 enactor: {
                     type: "example.enactors.wpm"
                 },
@@ -85,6 +88,7 @@ var example = example || {};
             },
             incSize: {
                 type: "example.increaseSize",
+                alias: "increaseSize",
                 enactor: {
                     type: "example.enactors.incSize"
                 },
@@ -97,6 +101,7 @@ var example = example || {};
             },
             cursor: {
                 type: "example.cursorSize",
+                alias: "cursorSize",
                 enactor: {
                     type: "example.enactors.cursor"
                 },
@@ -109,6 +114,7 @@ var example = example || {};
             },
             magFactor: {
                 type: "example.magnification",
+                alias: "magnification",
                 enactor: {
                     type: "example.enactors.magFactor"
                 },
@@ -121,6 +127,7 @@ var example = example || {};
             },
             magPos: {
                 type: "example.magnifierPosition",
+                alias: "magnifierPosition",
                 enactor: {
                     type: "example.enactors.magPos"
                 },

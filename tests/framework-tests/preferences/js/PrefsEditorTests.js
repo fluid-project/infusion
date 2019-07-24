@@ -37,7 +37,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "body",
                 priority: "first",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.starterEnactors"]
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
                 }
             }
         },
