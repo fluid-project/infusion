@@ -478,28 +478,38 @@ module.exports = function (grunt) {
         },
         verifyDistFiles: {
             js: {
-                getFilesFunc: function () {
+                getDistFilesFunc: function () {
                     return getDistJSFiles();
                 },
                 distDirectory: "dist"
             },
             css: {
-                getFilesFunc: function () {
-                    return getDistCSSFiles();
-                },
-                distDirectory: "dist/assets"
+                files: [
+                    {
+                        expand: true,
+                        src: ["*.styl"],
+                        cwd: "src/framework/preferences/css/stylus/",
+                        dest: "dist/assets/src/framework/preferences/css/stylus/",
+                        rename: function (dest, src) {                                                        
+                            var replaced = dest.replace("/css/stylus/", "/css/") + src.replace("styl", "css");
+                            console.log(replaced);
+                            return replaced;
+                        }
+                    }
+                ]
             },
-            openDyslexic_font: {
-                getFilesFunc: function () {
-                    return getDistOpenDyslexicFiles();
-                },
-                distDirectory: "dist/assets/src/lib/open-dyslexic/fonts"
-            },
-            openSans_font: {
-                getFilesFunc: function () {
-                    return getDistOpenSansFiles();
-                },
-                distDirectory: "dist/assets/src/lib/opensans/fonts"
+            fonts: {    
+                files: [{
+                    expand: true,
+                    src: ["*.woff"],                    
+                    cwd: "src/lib/opensans/fonts/",
+                    dest: "dist/assets/src/lib/opensans/fonts/"
+                }, {
+                    expand: true,
+                    src: ["*.woff"],                    
+                    cwd: "src/lib/open-dyslexic/fonts/",
+                    dest: "dist/assets/src/lib/open-dyslexic/fonts/"
+                }]
             }
         }
     });
@@ -612,18 +622,19 @@ module.exports = function (grunt) {
     * full paths and thereby search subdirectories of dir
     * @return {Object} A report structure for further processing.
     */
-    var verifyFiles = function (dir, fileList) {
+    var verifyFiles = function (fileList) {
         var report = {
             fileList: {},
             missingFiles: 0,
             expectedFiles: fileList.length
         };
         _.forEach(fileList, function (fileName) {
-            var fileExists = grunt.file.exists(dir, fileName);
+            
+            var fileExists = grunt.file.exists(fileName);
             if (!fileExists) {
                 report.missingFiles = report.missingFiles + 1;
             }
-            report.fileList[dir + "/" + fileName] = {"present": fileExists};
+            report.fileList[fileName] = {"present": fileExists};
         });
 
         return report;
@@ -664,9 +675,9 @@ module.exports = function (grunt) {
      * @param {Array} expectedFilenames - array of expected file names
      * @param {String} fileDir - base directory expected to contain files
      */
-    var verifyFilesTaskFunc = function (message, expectedFilenames, fileDir) {
+    var verifyFilesTaskFunc = function (message, expectedFilenames) {
         grunt.log.subhead(message);
-        var report = verifyFiles(fileDir, expectedFilenames);
+        var report = verifyFiles(expectedFilenames);
         displayVerifyFilesReport(report);
         processVerifyFilesReport(report);
 
@@ -683,55 +694,14 @@ module.exports = function (grunt) {
         return expectedFilenames;
     };
 
-    var getDistCSSFiles = function () {
-        var expectedFilenames = [];
-        var preferencesStylusFiles = grunt.file.expand("src/framework/preferences/css/stylus/*.styl");
-        _.forEach(preferencesStylusFiles, function (stylusFile) {
-            var cssFilename = stylusFile.replace(".styl", ".css");
-            var minifiedCSSFilename = stylusFile.replace(".styl", ".min.css");
-            // Remove /stylus from the path, since dist/assets won't have it
-            expectedFilenames.push(cssFilename.replace("/stylus", ""), minifiedCSSFilename.replace("/stylus", ""));
-        });        
-        return expectedFilenames;
-    };
-    
-    var getDistOpenDyslexicFiles = function () {        
-        var expectedFilenames = grunt.file.expand({cwd: "src/lib/open-dyslexic/fonts"}, 
-        "*.woff");
-        return expectedFilenames;
-    };
-
-    var getDistOpenSansFiles = function () {        
-        var expectedFilenames = grunt.file.expand({cwd: "src/lib/opensans/fonts"}, 
-        "*.woff");
-        return expectedFilenames;
-    };
-
-    grunt.registerTask("verifyDistFonts", "Verifies that the expected /dist/ font files were created", function () {
-        var expectedFonts = {
-            openDyslexic: {
-                cwd: "src/lib/open-dyslexic/fonts",
-                pattern: "*.woff",
-                message: "Verify opendyslexic font files are present in /dist/ directory",
-                distDirectory: "dist/assets/src/lib/open-dyslexic/fonts"
-            },
-            openSans: {
-                cwd: "src/lib/opensans/fonts",
-                pattern: "*.woff",
-                message: "Verify opensans font files are present in /dist/ directory",
-                distDirectory: "dist/assets/src/lib/opensans/fonts"
-            }
-        };
-
-        _.forEach(expectedFonts, function (expectedFont) {
-            var expectedFontFiles = grunt.file.expand({cwd: expectedFont.cwd}, expectedFont.pattern);
-            verifyFilesTaskFunc(expectedFont.message, expectedFontFiles, expectedFont.distDirectory);
-        });
-    });
-
     grunt.registerMultiTask("verifyDistFiles", "Verify distribution files", function () {
-        var message = "Verifying " + this.target + " files are in /dist";
-        verifyFilesTaskFunc(message, this.data.getFilesFunc(), this.data.distDirectory);        
+        var message = "Verifying all \"" + this.target + "\" files are in /dist";    
+        var expectedFiles = [];
+        _.forEach(this.files, function (file) {            
+            expectedFiles.push(file.dest);
+        });
+        
+        verifyFilesTaskFunc(message, expectedFiles);        
     });
 
     grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylusDist", "clean:ciArtifacts"]);
