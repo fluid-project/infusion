@@ -662,15 +662,7 @@ module.exports = function (grunt) {
         return expectedFilenames;
     };
 
-    grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
-        var message = "Verifying that expected distribution JS files are present in /dist directory";
-        var expectedFilenames = getDistJSFiles();
-
-        verifyFilesTaskFunc(message, expectedFilenames, "dist");
-    });
-
-    grunt.registerTask("verifyDistCSS", "Verifies that the expected /dist/ CSS files were created", function () {
-        var message = "Verifying that expected distribution CSS files are present in /dist/ directory";
+    var getDistCSSFiles = function () {
         var expectedFilenames = [];
         var preferencesStylusFiles = grunt.file.expand("src/framework/preferences/css/stylus/*.styl");
         _.forEach(preferencesStylusFiles, function (stylusFile) {
@@ -678,7 +670,19 @@ module.exports = function (grunt) {
             var minifiedCSSFilename = stylusFile.replace(".styl", ".min.css");
             // Remove /stylus from the path, since dist/assets won't have it
             expectedFilenames.push(cssFilename.replace("/stylus", ""), minifiedCSSFilename.replace("/stylus", ""));
-        });
+        });        
+        return expectedFilenames;
+    };
+
+    grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
+        var message = "Verifying that expected distribution JS files are present in /dist directory";
+        var expectedFilenames = getDistJSFiles();
+        verifyFilesTaskFunc(message, expectedFilenames, "dist");
+    });
+
+    grunt.registerTask("verifyDistCSS", "Verifies that the expected /dist/ CSS files were created", function () {
+        var message = "Verifying that expected distribution CSS files are present in /dist/ directory";
+        var expectedFilenames = getDistCSSFiles();
         verifyFilesTaskFunc(message, expectedFilenames, "dist/assets");
     });
 
