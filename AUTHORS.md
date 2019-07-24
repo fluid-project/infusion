@@ -14,7 +14,6 @@ Copyright 2007-2019
 * OCAD University
 * Raising the Floor - International
 * Raising the Floor - US
-* Stanislav Shterev
 * University of California, Berkeley
 * University of Cambridge
 * University of Toronto
