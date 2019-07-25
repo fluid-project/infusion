@@ -144,6 +144,11 @@ module.exports = function (grunt) {
         processVerifyFilesReport(report);
     };
 
+    var verifyFilesListCSSRenameFunc = function (dest, src) {
+        var replaced = dest + src.replace("styl", "css");
+        return replaced;
+    };
+
     /** verifyFilesListFunc for building a file list of all expected distribution .js and .map files
      * @return {Array} expectedFileNames - the array of expected file names (strings)
      */
@@ -577,11 +582,15 @@ module.exports = function (grunt) {
                         expand: true,
                         src: ["*.styl"],
                         cwd: "src/framework/preferences/css/stylus/",
-                        dest: "dist/assets/src/framework/preferences/css/stylus/",
-                        rename: function (dest, src) {
-                            var replaced = dest.replace("/css/stylus/", "/css/") + src.replace("styl", "css");
-                            return replaced;
-                        }
+                        dest: "dist/assets/src/framework/preferences/css/",
+                        rename: verifyFilesListCSSRenameFunc
+                    },
+                    {
+                        expand: true,
+                        src: ["*.styl"],
+                        cwd: "src/components/switch/css/stylus/",
+                        dest: "dist/assets/src/components/switch/css/",
+                        rename: verifyFilesListCSSRenameFunc
                     }
                 ]
             }
