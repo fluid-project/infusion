@@ -22,11 +22,11 @@
         "prepare": "npm run loadDependencies && npm run buildStylus",
         "prepublishOnly": "npm run buildDists",
         "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
-        "test": "npm run test:browser && npm run test:node",
-        "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
+        "test": "cross-env HEADLESS=true npm run test:browser && npm run test:node",
+        "test:browser": "cross-env HEADLESS=true node node_modules/testem/testem.js ci --file tests/testem.js",
         "test:node": "node node_modules/nyc/bin/nyc.js node tests/node-tests/basic-node-tests.js",
-        "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
-        "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
+        "test:vagrant": "cross-env HEADLESS=true vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
+        "test:vagrantBrowser": "cross-env HEADLESS=true vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
         "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html",
         "buildDists": "grunt buildDists",
@@ -40,6 +40,7 @@
         "fluid-resolve": "1.3.0"
     },
     "devDependencies": {
+        "cross-env": "5.2.0",
         "eslint-config-fluid": "1.3.0",
         "gpii-grunt-lint-all": "1.0.5",
         "gpii-testem": "2.1.7",
