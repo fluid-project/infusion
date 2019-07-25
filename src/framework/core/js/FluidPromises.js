@@ -1,8 +1,8 @@
 /*!
  Copyright 2011 unscriptable.com / John Hann
- Copyright 2014 Lucendo Development Ltd.
- Copyright 2014 Raising the Floor - US
- Copyright 2014-2016 Raising the Floor - International
+ Copyright The Infusion copyright holders
+ See the AUTHORS.md file at the top-level directory of this distribution and at
+ https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
  License MIT
 */
