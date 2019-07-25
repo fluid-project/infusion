@@ -477,16 +477,28 @@ module.exports = function (grunt) {
             }
         },
         verifyDistFiles: {
+            fonts: {
+                files: [{
+                    expand: true,
+                    src: ["*.woff"],
+                    cwd: "src/lib/opensans/fonts/",
+                    dest: "dist/assets/src/lib/opensans/fonts/"
+                }, {
+                    expand: true,
+                    src: ["*.woff"],
+                    cwd: "src/lib/open-dyslexic/fonts/",
+                    dest: "dist/assets/src/lib/open-dyslexic/fonts/"
+                }]
+            },
             js: {
                 verifyFilesListFunc: function () {
-                    var expectedFilenames = [];
                     var distributions = grunt.config.get("distributions");
-                    _.forEach(distributions, function (value, distribution) {
+                    var expectedFilenames = _.flatten(_.map(distributions, function (value, distribution) {
                         var jsFilename = "infusion-" + distribution + ".js";
                         var mapFilename = jsFilename + ".map";
                         var distDirectory = "dist/";
-                        expectedFilenames.push(distDirectory + jsFilename, distDirectory + mapFilename);
-                    });
+                        return [distDirectory + jsFilename, distDirectory + mapFilename];
+                    }));
                     return expectedFilenames;
                 }
             },
@@ -503,19 +515,6 @@ module.exports = function (grunt) {
                         }
                     }
                 ]
-            },
-            fonts: {
-                files: [{
-                    expand: true,
-                    src: ["*.woff"],
-                    cwd: "src/lib/opensans/fonts/",
-                    dest: "dist/assets/src/lib/opensans/fonts/"
-                }, {
-                    expand: true,
-                    src: ["*.woff"],
-                    cwd: "src/lib/open-dyslexic/fonts/",
-                    dest: "dist/assets/src/lib/open-dyslexic/fonts/"
-                }]
             }
         }
     });
@@ -688,12 +687,12 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask("verifyDistFiles", "Verify distribution files", function () {
         var message = "Verifying all \"" + this.target + "\" files are in /dist";
-        var expectedFiles = [];
+        var expectedFiles;
 
         // If the target uses the standard Grunt file options
         if (this.files.length > 1) {
-            _.forEach(this.files, function (file) {
-                expectedFiles.push(file.dest);
+            expectedFiles = _.map(this.files, function (file) {
+                return file.dest;
             });
 
         // If the target has specified a custom function for generating the list of files to check
