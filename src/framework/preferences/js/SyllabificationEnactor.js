@@ -129,10 +129,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.enactor.syllabification.parse",
                 args: ["{that}", "{arguments}.0"]
             },
+            createHyphenator: {
+                funcName: "fluid.prefs.enactor.syllabification.createHyphenator",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            },
             getHyphenator: {
                 funcName: "fluid.prefs.enactor.syllabification.getHyphenator",
                 args: ["{that}", "{arguments}.0"]
             },
+            getPattern: "fluid.prefs.enactor.syllabification.getPattern",
             hyphenateNode: {
                 funcName: "fluid.prefs.enactor.syllabification.hyphenateNode",
                 args: ["{arguments}.0", "{arguments}.1", "{that}.options.markup.separator"]
@@ -203,7 +208,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * if it hasn't already been loaded. If the pattern file cannot be loaded, the onError event is fired.
      *
      * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
-     * @param {Object} pattern - the `file` path to source the pattern file from.
+     * @param {Object} pattern - the `file path` to source the pattern file from.
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
      *
@@ -216,18 +221,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var hyphenator = fluid.getGlobalValue(globalPath);
 
         // If the pattern file has already been loaded, return the hyphenator.
+        // This could happen if the pattern file is statically linked to the page.
         if (hyphenator) {
             promise.resolve(hyphenator);
             return promise;
         }
 
         var src = fluid.stringTemplate(pattern, that.options.terms);
-        var existingLang = fluid.get(that, ["hyphenatorSRCs", src]);
-
-        if (existingLang) {
-            fluid.promise.follow(existingLang, promise);
-            return promise;
-        }
 
         var injectPromise = that.injectScript(src);
         injectPromise.then(function () {
@@ -244,64 +244,74 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             promise.resolve();
         });
 
-        fluid.set(that, ["hyphenatorSRCs", src], promise);
         return promise;
     };
 
     /**
-     * Retrieves a promise for the appropriate hyphenator. If a hyphenator has not already been created, it will attempt
-     * to create one and assign the related promise to the `hyphenators` member for future retrieval.
+     * Assembles an Object containing the information for locating the pattern file. If a pattern for the specific
+     * requested language code cannot be located, it will attempt to locate a fall back, by looking for a pattern
+     * supporting the generic language code. If no pattern can be found, `undefined` is returned as the `src` value.
      *
-     * When creating a hyphenator, it first checks if there is configuration for the specified `lang`. If that fails,
-     * it attempts to fall back to a less specific localization.
      *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
+     * @param {String} patterns - an object mapping language codes to file paths for the pattern files
      *
-     * @return {Promise} - returns a promise. If a hyphenator is successfully created, it is resolved with it.
-     *                     Otherwise, it resolves with undefined.
+     * @return {Object} - returns on Object containing the {"lang": "resolvedLanguageCode", src: "pattern/file/path"}
      */
+    fluid.prefs.enactor.syllabification.getPattern = function (lang, patterns) {
+        var src = patterns[lang];
+
+        if (!src) {
+            lang = lang.split("-")[0];
+            src = patterns[lang];
+        }
+
+        return {
+            lang: lang,
+            src: src
+        };
+    };
+
+    // /**
+    //  * Retrieves a promise for the appropriate hyphenator. If a hyphenator has not already been created, it will attempt
+    //  * to create one and assign the related promise to the `hyphenators` member for future retrieval.
+    //  *
+    //  * When creating a hyphenator, it first checks if there is configuration for the specified `lang`. If that fails,
+    //  * it attempts to fall back to a less specific localization.
+    //  *
+    //  * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+    //  * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
+    //  *                        `patterns`) option.
+    //  *
+    //  * @return {Promise} - returns a promise. If a hyphenator is successfully created, it is resolved with it.
+    //  *                     Otherwise, it resolves with undefined.
+    //  */
     fluid.prefs.enactor.syllabification.getHyphenator = function (that, lang) {
         var promise = fluid.promise();
+        var hyphenatorPromise;
+
         if (!lang) {
             promise.resolve();
             return promise;
         }
-        lang = lang.toLowerCase();
 
-        // Use an existing hyphenator if available
-        var existing = that.hyphenators[lang];
-        if (existing) {
-            return existing;
-        }
+        var pattern = that.getPattern(lang.toLowerCase(), that.options.patterns);
 
-        // Attempt to create an appropriate hyphenator
-        var hyphenatorPromise;
-        var pattern = that.options.patterns[lang];
-
-        if (pattern) {
-            hyphenatorPromise = fluid.prefs.enactor.syllabification.createHyphenator(that, pattern, lang);
-            fluid.promise.follow(hyphenatorPromise, promise);
-            that.hyphenators[lang] = hyphenatorPromise;
+        if (!pattern.src) {
+            hyphenatorPromise = promise;
+            promise.resolve();
             return promise;
         }
 
-        var langSegs = lang.split("-");
-        pattern = that.options.patterns[langSegs[0]];
-
-        if (pattern) {
-            hyphenatorPromise = fluid.prefs.enactor.syllabification.createHyphenator(that, pattern, langSegs[0]);
-            fluid.promise.follow(hyphenatorPromise, promise);
-        } else {
-            hyphenatorPromise = promise;
-            // If there no available patterns to match the specified language, resolve the promise with out a
-            // hyphenator (undefined).
-            promise.resolve();
+        if (that.hyphenators[pattern.src]) {
+            return that.hyphenators[pattern.src];
         }
 
-        that.hyphenators[lang] = hyphenatorPromise;
-        that.hyphenators[langSegs[0]] = hyphenatorPromise;
+        hyphenatorPromise = that.createHyphenator(pattern.src, pattern.lang);
+        fluid.promise.follow(hyphenatorPromise, promise);
+        that.hyphenators[pattern.src] = hyphenatorPromise;
+
         return promise;
     };
 
@@ -389,6 +399,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             cs: "%patternPrefix/cs.js",
             da: "%patternPrefix/da.js",
             de: "%patternPrefix/de.js",
+            el: "%patternPrefix/el-monoton.js",
             "el-monoton": "%patternPrefix/el-monoton.js",
             "el-polyton": "%patternPrefix/el-polyton.js",
             en: "%patternPrefix/en-us.js",
@@ -409,7 +420,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             lt: "%patternPrefix/lt.js",
             lv: "%patternPrefix/lv.js",
             ml: "%patternPrefix/ml.js",
+            nb: "%patternPrefix/nb-no.js",
             "nb-no": "%patternPrefix/nb-no.js",
+            no: "%patternPrefix/nb-no.js",
             nl: "%patternPrefix/nl.js",
             or: "%patternPrefix/or.js",
             pa: "%patternPrefix/pa.js",
