@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 University of Toronto
-Copyright 2010-2017 OCAD University
+Copyright 2010-2019 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2015 Raising the Floor - International
 
@@ -38,7 +38,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "body",
                 priority: "first",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.starterEnactors"]
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
                 }
             }
         },

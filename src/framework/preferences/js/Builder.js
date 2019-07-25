@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2015 OCAD University
+Copyright 2013-2019 OCAD University
 Copyright 2015-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -29,7 +29,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
                     gradeNames: ["fluid.prefs.assembler.prefsEd", "fluid.viewComponent"],
                     componentGrades: "{that}.options.constructedGrades",
-                    loaderGrades: "{that}.options.auxSchema.loaderGrades"
+                    loaderGrades: "{that}.options.auxSchema.loaderGrades",
+                    defaultLocale: "{that}.options.auxSchema.defaultLocale",
+                    enhancer: {
+                        defaultLocale: "{that}.options.auxSchema.defaultLocale"
+                    }
                 }]
             }
         },
@@ -45,7 +49,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         constructedGrades: {
             expander: {
                 func: "fluid.prefs.builder.constructGrades",
-                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
+                args: [
+                    "{that}.options.auxSchema",
+                    [
+                        "enactors",
+                        "messages",
+                        "panels",
+                        "initialModel",
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ]
+                ]
             }
         },
         mappedDefaults: "{primaryBuilder}.options.schema.properties",
@@ -97,7 +114,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     components: {
                         uiEnhancer: {
                             options: {
-                                gradeNames: ["{fluid.prefs.assembler.uie}.options.componentGrades.enactors"]
+                                gradeNames: [
+                                    "{fluid.prefs.assembler.uie}.options.componentGrades.enactors",
+                                    "{fluid.prefs.assembler.prefsEd}.options.componentGrades.aliases_enhancer"
+                                ]
                             }
                         }
                     }
@@ -142,7 +162,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.messageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: [
+                            "{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels",
+                            "{fluid.prefs.assembler.prefsEd}.options.componentGrades.aliases_prefsEditor",
+                            "fluid.prefs.uiEnhancerRelay"
+                        ]
                     },
                     events: {
                         onReady: "{fluid.prefs.assembler.prefsEd}.events.onPrefsEditorReady"
@@ -170,6 +194,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "{that}.options.terms",
                 removeSource: true,
                 target: "{that prefsEditorLoader}.options.terms"
+            },
+            "prefsEdAssembler.prefsEditorLoader.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                target: "{that prefsEditorLoader}.options.defaultLocale"
+            },
+            "prefsEdAssembler.uiEnhancer.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                target: "{that uiEnhancer}.options.defaultLocale"
             },
             "prefsEdAssembler.prefsEditor": {
                 source: "{that}.options.prefsEditor",

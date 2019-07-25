@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2017 OCAD University
+Copyright 2013-2019 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -158,6 +158,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
+                    tocMessage: "{uiEnhancer}.options.tocMessage",
                     model: {
                         toc: "{uiEnhancer}.model.toc"
                     }

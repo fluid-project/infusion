@@ -1,5 +1,5 @@
 /*
-Copyright 2014-2017 OCAD University
+Copyright 2014-2019 OCAD University
 Copyright 2015 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -55,7 +55,8 @@ var demo = demo || {};
             },
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json"
                 }
             },
 
@@ -91,6 +92,7 @@ var demo = demo || {};
             tableOfContents: {
                 enactor: {
                     tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json",
                     ignoreForToC: {
                         "overviewPanel": ".flc-overviewPanel"
                     }
