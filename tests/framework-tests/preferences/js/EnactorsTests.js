@@ -1,5 +1,7 @@
 /*
-Copyright 2013-2017 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -437,6 +439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".flc-tableOfContents",
                 options: {
                     tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../data/tableOfContents-enactor.json",
                     model: {
                         toc: false
                     }
@@ -448,11 +451,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.checkTocLevels = function (that, expectedTocLevels) {
+    fluid.tests.checkTocHeader = function (expectedTocHeader) {
+        jqUnit.assertEquals("Table of contents has the correct header set", expectedTocHeader, $(".flc-toc-header").text());
+    };
+
+    fluid.tests.checkTocLevels = function (expectedTocLevels) {
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
     };
 
-    fluid.tests.makeTocVisibilityChecker = function (that, expectedTocLevels, tocContainer, isShown) {
+    fluid.tests.makeTocVisibilityChecker = function (expectedTocLevels, tocContainer, isShown) {
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
         jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
     };
@@ -462,29 +469,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOptions: {
             tocContainer: ".flc-toc-tocContainer",
             expectedNoTocLevels: 0,
-            expectedTocLevelsAtTrue: 1
+            expectedTocLevelsAtTrue: 1,
+            expectedTocHeader: "ToC"
         },
         modules: [{
             name: "Test table of contents enactor",
             tests: [{
-                expect: 5,
+                expect: 6,
                 name: "Test in order: default, toc is on, toc is off",
                 sequence: [{
                     func: "fluid.tests.checkTocLevels",
-                    args: ["{toc}", "{that}.options.testOptions.expectedNoTocLevels"]
+                    args: ["{that}.options.testOptions.expectedNoTocLevels"]
                 }, {
                     func: "{toc}.applier.change",
                     args: ["toc", true]
                 }, {
                     listener: "fluid.tests.makeTocVisibilityChecker",
-                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
+                    args: ["{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
                     event: "{toc}.events.afterTocRender"
+                }, {
+                    func: "fluid.tests.checkTocHeader",
+                    args: ["{that}.options.testOptions.expectedTocHeader"]
                 }, {
                     func: "{toc}.applier.change",
                     args: ["toc", false]
                 }, {
                     func: "fluid.tests.makeTocVisibilityChecker",
-                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false]
+                    args: ["{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false]
                 }]
             }]
         }]

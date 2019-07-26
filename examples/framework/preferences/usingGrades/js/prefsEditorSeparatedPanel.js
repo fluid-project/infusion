@@ -1,6 +1,7 @@
 /*
-Copyright 2011-2015 OCAD University
-Copyright 2011 Lucendo Development Ltd.
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -25,11 +26,11 @@ var example = example || {};
     var pathToMessages = "../../../../src/framework/preferences/messages";
 
     /**
-     * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
-     * three versions of the component, as well as by the UI Enhancer present in the Preview
-     * itself.
+     * The UI Enhancer's Table of Contents uses a template and message bundle. These path variables are used by all
+     * three versions of the component, as well as by the UI Enhancer present in the Preview itself.
      */
     var pathToTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
+    var pathToTocMessage = "../../../../src/framework/preferences/messages/tableOfContents-enactor.json";
 
     /**
      * Initialize a settings store for the page.
@@ -42,12 +43,15 @@ var example = example || {};
      * Initialize UI Enhancer for the page. This function is used by the two full-page
      * Preferences Editor pages as well as by the example page itself.
      * @param {String} customThemeName - The name of the custom theme.
+     *
+     * @return {Component} - An instance of the fluid.pageEnhancer
      */
     example.initPageEnhancer = function (customThemeName) {
-        fluid.pageEnhancer({
+        return fluid.pageEnhancer({
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                 tocTemplate: pathToTocTemplate,
+                tocMessage: pathToTocMessage,
                 classnameMap: {
                     theme: {
                         "default": customThemeName

@@ -22,13 +22,13 @@
             it makes reference to the individual JavaScript files instead of using
             the built single concatenated JavaScript file. However in a context
             where the built file is available these could all be replaced by a reference to it.
-            e.g. From NPM - "../../../../dist/infusion-all.js"
+            e.g. From NPM - "../../../../dist/infusion-uio.js"
             e.g. From a Custom Build - "../../../../infusion-custom.js"
         -->
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/version.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/keycode.js"></script>
-        
+
         <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidPromises.js"></script>
@@ -104,7 +104,8 @@
                         gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                         // The UI Enhancer's Table of Contents uses an HTML template. This tells the component
                         // where to find that template.
-                        tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                        tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                        tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
                     }
                 });
 

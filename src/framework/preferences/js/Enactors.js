@@ -1,6 +1,7 @@
 /*
-Copyright 2013-2016 OCAD University
-Copyright 2015 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -438,27 +439,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         tocTemplate: null,  // must be supplied by implementors
+        tocMessage: null,  // must be supplied by implementors
         components: {
+            // TODO: When FLUID-6312 and FLUID-6300 are addressed, make sure that this message loader is updated when
+            //       the locale is changed. It should also trigger the table of contents to re-render with the
+            //       correct message bundle applied.
+            messageLoader: {
+                type: "fluid.resourceLoader",
+                options: {
+                    resourceOptions: {
+                        dataType: "json"
+                    },
+                    events: {
+                        onResourcesLoaded: "{fluid.prefs.enactor.tableOfContents}.events.onMessagesLoaded"
+                    }
+                }
+            },
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{fluid.prefs.enactor.tableOfContents}.container",
                 createOnEvent: "onCreateTOCReady",
                 options: {
-                    components: {
-                        levels: {
-                            type: "fluid.tableOfContents.levels",
-                            options: {
-                                resources: {
-                                    template: {
-                                        forceCache: true,
-                                        url: "{fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
-                                    }
-                                }
-                            }
-                        }
-                    },
                     listeners: {
                         "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
+                    },
+                    strings: {
+                        tocHeader: "{messageLoader}.resources.tocMessage.resourceText.tocHeader"
                     }
                 }
             }
@@ -470,9 +476,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         events: {
-            onCreateTOCReady: null,
             afterTocRender: null,
-            onLateRefreshRelay: null
+            onCreateTOC: null,
+            onMessagesLoaded: null,
+            onCreateTOCReady: {
+                events: {
+                    onCreateTOC: "onCreateTOC",
+                    onMessagesLoaded: "onMessagesLoaded"
+                }
+            }
         },
         modelListeners: {
             toc: {
@@ -485,6 +497,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "tocEnactor.tableOfContents.ignoreForToC": {
                 source: "{that}.options.ignoreForToC",
                 target: "{that tableOfContents}.options.ignoreForToC"
+            },
+            "tocEnactor.tableOfContents.tocTemplate": {
+                source: "{that}.options.tocTemplate",
+                target: "{that > tableOfContents > levels}.options.resources.template.url"
+            },
+            "tocEnactor.messageLoader.tocMessage": {
+                source: "{that}.options.tocMessage",
+                target: "{that messageLoader}.options.resources.tocMessage"
             }
         }
     });
@@ -494,7 +514,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
-                that.events.onCreateTOCReady.fire();
+                that.events.onCreateTOC.fire();
             }
         } else if (that.tableOfContents) {
             that.tableOfContents.hide();
