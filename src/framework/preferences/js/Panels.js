@@ -912,7 +912,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["header"],
         stringArrayIndex: {
-            textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana"]
+            textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana", "textFont-open-dyslexic"]
         },
         protoTree: {
             label: {messagekey: "textFontLabel"},
@@ -932,7 +932,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         classnameMap: null, // must be supplied by implementors
         controlValues: {
-            textFont: ["default", "times", "comic", "arial", "verdana"]
+            textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
         }
     });
 

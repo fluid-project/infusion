@@ -56,7 +56,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     "times": "fl-font-times",
                     "comic": "fl-font-comic-sans",
                     "arial": "fl-font-arial",
-                    "verdana": "fl-font-verdana"
+                    "verdana": "fl-font-verdana",
+                    "open-dyslexic": "fl-font-open-dyslexic"
                 },
                 "enactor": {
                     "type": "fluid.prefs.enactor.textFont",
@@ -190,7 +191,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.textFont": {
                 "type": "string",
                 "default": "default",
-                "enum": ["default", "times", "comic", "arial", "verdana"]
+                "enum": ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
             }
         }
     });

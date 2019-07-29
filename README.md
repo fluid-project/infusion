@@ -210,6 +210,7 @@ grunt custom --name="myPackage"
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
 * normalize
+* open-dyslexic
 * opensans
 * roboto
 * url-polyfill
