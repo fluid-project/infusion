@@ -75,7 +75,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             }
         },
         "contrast": {
@@ -121,7 +122,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             }
         },
         "contrast": {
@@ -141,7 +143,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             }
         }, {
             "type": "fluid.prefs.enactor.contrast",
@@ -165,7 +168,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             },
             "template": "templates/textFont"
         }, {

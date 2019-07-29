@@ -4,6 +4,7 @@
     "textFont-comic": "Comic Sans",
     "textFont-arial": "Arial",
     "textFont-verdana": "Verdana",
+    "textFont-open-dyslexic": "Open Dyslexic",
     "textFontLabel": "estilo de texto",
     "textFontDescr": "Cambiar la fuente utilizada"
 }
