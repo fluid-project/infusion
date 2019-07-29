@@ -51,17 +51,6 @@ fontFaces = {
 
 build-fonts-Enactors(textFont, textFontFaces) {
 
-    for fontName in textFont {
-        font = textFont[fontName].fontFamily;
-        
-        {fontName},
-        {fontName} * {
-            &:not([class*='icon']) {
-                font-family: unquote(font) !important;
-            }
-        }
-    }    
-
     // Build any necessary @font-face definitions
     for fontFamilyName in textFontFaces {
         fontDirectory = textFontFaces[fontFamilyName].fontDirectory
@@ -77,4 +66,15 @@ build-fonts-Enactors(textFont, textFontFaces) {
             }
             }
         }
+
+    for fontName in textFont {
+        font = textFont[fontName].fontFamily;
+        
+        {fontName},
+        {fontName} * {
+            &:not([class*='icon']) {
+                font-family: unquote(font) !important;
+            }
+        }
+    }    
 }
