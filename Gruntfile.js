@@ -126,7 +126,7 @@ module.exports = function (grunt) {
             grunt.fail.fatal(report.missingFiles + " out of " + report.expectedFiles + " expected files not found");
         } else {
             grunt.log.ok("Verification passed".green);
-            grunt.log.oklns("All expected files were present");
+            grunt.log.oklns(report.expectedFiles + " out of " + report.expectedFiles + " expected files were present");
         }
     };
 
@@ -146,6 +146,11 @@ module.exports = function (grunt) {
 
     var verifyFilesListCSSRenameFunc = function (dest, src) {
         var replaced = dest + src.replace("styl", "css");
+        return replaced;
+    };
+
+    var verifyFilesListMinifiedCSSRenameFunc = function (dest, src) {
+        var replaced = dest + src.replace("styl", "min.css");
         return replaced;
     };
 
@@ -571,6 +576,11 @@ module.exports = function (grunt) {
                     src: ["*.woff"],
                     cwd: "src/lib/open-dyslexic/fonts/",
                     dest: "dist/assets/src/lib/open-dyslexic/fonts/"
+                }, {
+                    expand: true,
+                    src: ["*.woff"],
+                    cwd: "src/framework/preferences/fonts/",
+                    dest: "dist/assets/src/framework/preferences/fonts/"
                 }]
             },
             js: {
@@ -588,9 +598,23 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         src: ["*.styl"],
+                        cwd: "src/framework/preferences/css/stylus/",
+                        dest: "dist/assets/src/framework/preferences/css/",
+                        rename: verifyFilesListMinifiedCSSRenameFunc
+                    },
+                    {
+                        expand: true,
+                        src: ["*.styl"],
                         cwd: "src/components/switch/css/stylus/",
                         dest: "dist/assets/src/components/switch/css/",
                         rename: verifyFilesListCSSRenameFunc
+                    },
+                    {
+                        expand: true,
+                        src: ["*.styl"],
+                        cwd: "src/components/switch/css/stylus/",
+                        dest: "dist/assets/src/components/switch/css/",
+                        rename: verifyFilesListMinifiedCSSRenameFunc
                     }
                 ]
             }
