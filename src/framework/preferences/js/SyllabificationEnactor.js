@@ -40,7 +40,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             separator: ".flc-syllabification-separator"
         },
         strings: {
-            languageUnavailable: "Syllabification not available for %lang"
+            languageUnavailable: "Syllabification not available for %lang",
+            patternLoadError: "The pattern file %src could not be loaded."
         },
         markup: {
             separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>"
@@ -146,7 +147,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.enactor.syllabification.hyphenateNode",
                 args: ["{arguments}.0", "{arguments}.1", "{that}.options.markup.separator"]
             },
-            injectScript: "fluid.prefs.enactor.syllabification.injectScript"
+            injectScript: {
+                this: "$",
+                method: "ajax",
+                args: [{
+                    url: "{arguments}.0",
+                    dataType: "script",
+                    cache: true
+                }]
+            }
         }
     });
 
@@ -187,27 +196,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Injects a script into the document.
-     *
-     * @param {String} src - the URL of the script to inject
-     *
-     * @return {Promise} - A promise that is resolved on successfully loading the script, or rejected if the load fails.
-     */
-    fluid.prefs.enactor.syllabification.injectScript = function (src) {
-        var promise = fluid.promise();
-
-        $.ajax({
-            url: src,
-            dataType: "script",
-            success: promise.resolve,
-            error: promise.reject,
-            cache: true
-        });
-
-        return promise;
-    };
-
-    /**
      * Creates a hyphenator instance making use of the pattern supplied by the path; which is injected into the Document
      * if it hasn't already been loaded. If the pattern file cannot be loaded, the onError event is fired.
      *
@@ -239,13 +227,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         injectPromise.then(function () {
             hyphenator = fluid.getGlobalValue(globalPath);
             promise.resolve(hyphenator);
-        }, function (jqXHR, textStatus, errorThrown) {
-            that.events.onError.fire(
-                "The pattern file \"" + src + "\" could not be loaded.",
-                jqXHR,
-                textStatus,
-                errorThrown
-            );
+        }, function () {
+            var errorMessage = fluid.stringTemplate(that.options.strings.patternLoadError, {src: src});
+            // Pass along arguments fired for the rejection, but with our errorMessage as the first argument
+            var args = [errorMessage].concat(fluid.values(arguments));
+            that.events.onError.fire.apply(null, args);
+
+            //TODO: A promise rejection would be more appropriate. However, we need to know when all of the hyphenators
+            //      have attempted to load and apply syllabification. The current promise utility,
+            //      fluid.promise.sequence, will reject the whole sequence if a promise is rejected, and prevent us from
+            //      knowing if all of the hyphenators have been attempted. We should be able to improve this
+            //      implementation once https://issues.fluidproject.org/browse/FLUID-5938 has been resolved.
+            //
             // If the pattern file could not be loaded, resolve the promise without a hyphenator (undefined).
             promise.resolve();
         });

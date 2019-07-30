@@ -19,24 +19,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.prefs.enactor.syllabification");
 
     /**************************************************************************
-     * fluid.prefs.enactor.syllabification.injectScript tests
-     **************************************************************************/
-
-    // We only test the success condition because when a failure occurs, the server may return a 404 error page.
-    // If that happens, the browser attempts to interpret the HTML document as a script and throws the following error:
-    // Uncaught SyntaxError: Unexpected token <
-    jqUnit.asyncTest("Test fluid.prefs.enactor.syllabification.injectScript", function () {
-        var injectionPromise = fluid.prefs.enactor.syllabification.injectScript("../js/SyllabificationInjectedScript.js");
-        injectionPromise.then(function () {
-            jqUnit.assertTrue("The promise resolved and the injected script is accessible", fluid.tests.prefs.enactor.syllabification.scriptInjected);
-            jqUnit.start();
-        }, function () {
-            jqUnit.fail("The injection promise was rejected.");
-            jqUnit.start();
-        });
-    });
-
-    /**************************************************************************
      * fluid.prefs.enactor.syllabification.getPattern tests
      **************************************************************************/
 
