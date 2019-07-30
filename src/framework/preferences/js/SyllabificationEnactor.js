@@ -105,6 +105,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         members: {
+            // `hyphenators` is a mapping of strings, representing the source paths of pattern files, to Promises
+            // linked to the resolutions of loading and initially applying those syllabification patterns.
             hyphenators: {}
         },
         modelListeners: {
@@ -210,7 +212,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * if it hasn't already been loaded. If the pattern file cannot be loaded, the onError event is fired.
      *
      * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
-     * @param {Object} pattern - the `file path` to source the pattern file from.
+     * @param {Object} pattern - the `file path` to the pattern file. The path may include a string template token to
+     *                           resolve a portion of its path from. The token will be resolved from the component's
+     *                           `terms` option. (e.g. "%patternPrefix/en-us.js");
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
      *
@@ -257,7 +261,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
-     * @param {String} patterns - an object mapping language codes to file paths for the pattern files
+     * @param {Object} patterns - an object mapping language codes to file paths for the pattern files. For example:
+     *                            {"en": "./patterns/en-us.js"}
      *
      * @return {Object} - returns on Object containing the {"lang": "resolvedLanguageCode", src: "pattern/file/path"}
      */
@@ -275,21 +280,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    // /**
-    //  * Retrieves a promise for the appropriate hyphenator. If a hyphenator has not already been created, it will attempt
-    //  * to create one and assign the related promise to the `hyphenators` member for future retrieval.
-    //  *
-    //  * When creating a hyphenator, it first checks if there is configuration for the specified `lang`. If that fails,
-    //  * it attempts to fall back to a less specific localization.
-    //  *
-    //  * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
-    //  * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
-    //  *                        `patterns`) option.
-    //  *
-    //  * @return {Promise} - returns a promise. If a hyphenator is successfully created, it is resolved with it.
-    //  *                     Otherwise, it resolves with undefined.
-    //  */
+    /**
+     * Retrieves a promise for the appropriate hyphenator. If a hyphenator has not already been created, it will attempt
+     * to create one and assign the related promise to the `hyphenators` member for future retrieval.
+     *
+     * When creating a hyphenator, it first checks if there is configuration for the specified `lang`. If that fails,
+     * it attempts to fall back to a less specific localization.
+     *
+     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
+     *                        `patterns`) option.
+     *
+     * @return {Promise} - returns a promise. If a hyphenator is successfully created, it is resolved with it.
+     *                     Otherwise, it resolves with undefined.
+     */
     fluid.prefs.enactor.syllabification.getHyphenator = function (that, lang) {
+        //TODO: For all of the instances where an empty promise is resolved, a promise rejection would be more
+        //      appropriate. However, we need to know when all of the hyphenators have attempted to load and apply
+        //      syllabification. The current promise utility, fluid.promise.sequence, will reject the whole sequence if
+        //      a promise is rejected, and prevent us from knowing if all of the hyphenators have been attempted. We
+        //      should be able to improve this implementation once https://issues.fluidproject.org/browse/FLUID-5938 has
+        //      been resolved.
         var promise = fluid.promise();
         var hyphenatorPromise;
 
