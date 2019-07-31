@@ -247,6 +247,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * Information about a pattern, including the resolved language code and the file path to the pattern file.
+     *  {"lang": "resolvedLanguageCode", src: "pattern/file/path"}
+     *
+     * @typedef {Object} PatternInfo
+     */
+
+    /**
      * Assembles an Object containing the information for locating the pattern file. If a pattern for the specific
      * requested language code cannot be located, it will attempt to locate a fall back, by looking for a pattern
      * supporting the generic language code. If no pattern can be found, `undefined` is returned as the `src` value.
@@ -254,10 +261,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
-     * @param {Object} patterns - an object mapping language codes to file paths for the pattern files. For example:
+     * @param {Object.<String, String>} patterns - an object mapping language codes to file paths for the pattern files. For example:
      *                            {"en": "./patterns/en-us.js"}
      *
-     * @return {Object} - returns on Object containing the {"lang": "resolvedLanguageCode", src: "pattern/file/path"}
+     * @return {PatternInfo} - returns a PatternInfo Object for the resolved language code. If a pattern file is not
+     *                         available for the language, the `src` property will be `undefined`.
      */
     fluid.prefs.enactor.syllabification.getPattern = function (lang, patterns) {
         var src = patterns[lang];
