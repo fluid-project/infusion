@@ -248,9 +248,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Information about a pattern, including the resolved language code and the file path to the pattern file.
-     *  {"lang": "resolvedLanguageCode", src: "pattern/file/path"}
      *
      * @typedef {Object} PatternInfo
+     * @property {String} lang - The resolved language code
+     * @property {String|Undefined} src - The file path to the pattern file for the resolved language. If no pattern
+     *                                    file is available, the value should be `undefined`.
      */
 
     /**
