@@ -1,6 +1,7 @@
 /*
-Copyright 2013-2017 OCAD University
-Copyright 2016 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -925,7 +926,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["header"],
         stringArrayIndex: {
-            textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana"]
+            textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana", "textFont-open-dyslexic"]
         },
         protoTree: {
             label: {messagekey: "textFontLabel"},
@@ -945,7 +946,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         classnameMap: null, // must be supplied by implementors
         controlValues: {
-            textFont: ["default", "times", "comic", "arial", "verdana"]
+            textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
         }
     });
 

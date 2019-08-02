@@ -1,7 +1,7 @@
 /*
-Copyright 2008-2009 University of Toronto
-Copyright 2011-2015 OCAD University
-Copyright 2011 Lucendo Development Ltd.
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -47,8 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiEnhancer",
                 container: ".flt-customizedEnactors",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.customizedEnactors"],
-                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                    gradeNames: ["fluid.uiEnhancer.customizedEnactors"]
                 }
             },
             styleElementsTester: {
@@ -108,7 +107,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "body",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../data/tableOfContents-enactor.json"
                 }
             },
             settingsTester: {
@@ -194,6 +194,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                     tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../data/tableOfContents-enactor.json",
                     classnameMap: {
                         "textFont": {
                             "default": "fl-font-default"

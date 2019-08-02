@@ -1,9 +1,7 @@
 /*
-Copyright 2009 University of Toronto
-Copyright 2010-2017 OCAD University
-Copyright 2011 Lucendo Development Ltd.
-Copyright 2012-2014 Raising the Floor - US
-Copyright 2015 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -316,7 +314,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "preferences": [{
                 listener: "fluid.prefs.prefsEditor.handleAutoSave",
                 args: ["{that}"],
-                namespace: "autoSave"
+                namespace: "autoSave",
+                excludeSource: ["init"]
             }, {
                 listener: "{that}.events.modelChanged.fire",
                 args: ["{change}.value"],

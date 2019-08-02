@@ -1,6 +1,7 @@
 /*
-Copyright 2013-2015 OCAD University
-Copyright 2015 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -229,6 +230,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    fluid.tests.assertConstructedDefaults = function (builder, grades) {
+        grades = fluid.makeArray(grades);
+        fluid.each(grades, function (grade) {
+            var constructedGrade = fluid.get(builder, ["options", "constructedGrades", grade]);
+            var auxSchemaConfig = fluid.get(builder, ["options", "auxSchema", grade]);
+            fluid.tests.assertDefaults(constructedGrade, auxSchemaConfig);
+        });
+    };
+
+    fluid.tests.assertConstructedAliases = function (builder, aliasGrades) {
+        aliasGrades = fluid.makeArray(aliasGrades);
+        fluid.each(aliasGrades, function (aliasGrade) {
+            var constructedGrade = fluid.get(builder, ["options", "constructedGrades", aliasGrade]);
+            var constructedDefaults = fluid.defaults(constructedGrade);
+            var auxSchemaConfig = fluid.get(builder, ["options", "auxSchema", aliasGrade]);
+            jqUnit.assertDeepEq("The model setup is correct", constructedDefaults.model[0], auxSchemaConfig.model);
+        });
+    };
+
     fluid.tests.assembleAuxSchema = function (namespace, auxObjs) {
         var auxSchema = {
             namespace: namespace
@@ -287,6 +307,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
+    fluid.tests.defaultLocale = {
+        "defaultLocale": "en-CA"
+    };
+
+    fluid.tests.expectedOpts = {
+        uie: {
+            gradeNames: ["fluid.prefs.assembler.uie"]
+        },
+        prefsEditor: {
+            gradeNames: ["fluid.prefs.assembler.prefsEd"]
+        },
+        prefsEditorWithLocale: {
+            gradeNames: ["fluid.prefs.assembler.prefsEd"],
+            defaultLocale: "en-CA",
+            enhancer: {
+                defaultLocale: "en-CA"
+            }
+        }
+    };
+
     fluid.defaults("fluid.tests.builder", {
         gradeNames: ["fluid.test.testEnvironment"],
         testOpts: {
@@ -316,37 +356,70 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.empty", [fluid.tests.prefs])
                 }
             },
+            builderDefaultLocale: {
+                type: "fluid.prefs.builder",
+                options: {
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.defaultLocale", [
+                        fluid.tests.prefs,
+                        fluid.tests.defaultLocale
+                    ])
+                }
+            },
             builderEnactors: {
                 type: "fluid.prefs.builder",
                 options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.enactorsOnly", [fluid.tests.prefs, fluid.tests.enactors])
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.enactorsOnly", [
+                        fluid.tests.prefs,
+                        fluid.tests.enactors
+                    ])
                 }
             },
             builderPanels: {
                 type: "fluid.prefs.builder",
                 options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.panelsOnly", [fluid.tests.prefs, fluid.tests.panels]),
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.panelsOnly", [
+                        fluid.tests.prefs,
+                        fluid.tests.panels
+                    ]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
             builderPanelsAndMessages: {
                 type: "fluid.prefs.builder",
                 options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.builderPanelsAndMessages", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.message, fluid.tests.terms]),
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.builderPanelsAndMessages", [
+                        fluid.tests.prefs,
+                        fluid.tests.panels,
+                        fluid.tests.message,
+                        fluid.tests.terms
+                    ]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
             builderPanelsAndTemplates: {
                 type: "fluid.prefs.builder",
                 options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.builderPanelsAndTemplates", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.template, fluid.tests.terms]),
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.builderPanelsAndTemplates", [
+                        fluid.tests.prefs,
+                        fluid.tests.panels,
+                        fluid.tests.template,
+                        fluid.tests.terms
+                    ]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
             builderAll: {
                 type: "fluid.prefs.builder",
                 options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.all", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.enactors, fluid.tests.message, fluid.tests.template, fluid.tests.terms]),
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.all", [
+                        fluid.tests.prefs,
+                        fluid.tests.defaultLocale,
+                        fluid.tests.panels,
+                        fluid.tests.enactors,
+                        fluid.tests.message,
+                        fluid.tests.template,
+                        fluid.tests.terms
+                    ]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
@@ -367,33 +440,77 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - empty",
             tests: [{
-                expect: 14,
+                expect: 18,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEmpty}", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
+                args: [
+                    "{builderEmpty}",
+                    [
+                        "enactors",
+                        "messages",
+                        "panels",
+                        "initialModel",
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ]
+                ]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEmpty}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
+                args: ["{builderEmpty}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
             }, {
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEmpty}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
+                args: ["{builderEmpty}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
+            }]
+        }, {
+            name: "fluid.prefs.builder - defaultLocale",
+            tests: [{
+                expect: 18,
+                name: "not created",
+                func: "fluid.tests.testNotCreated",
+                args: [
+                    "{builderEmpty}",
+                    [
+                        "enactors",
+                        "messages",
+                        "panels",
+                        "initialModel",
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ]
+                ]
+            }, {
+                expect: 2,
+                name: "assembledUIEGrade",
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderEmpty}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
+            }, {
+                expect: 4,
+                name: "assembledPrefsEditorGrade",
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderDefaultLocale}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditorWithLocale]
             }]
         }, {
             name: "fluid.prefs.builder - only enactors",
             tests: [{
-                expect: 4,
-                name: "enactors",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
+                expect: 7,
+                name: "constructed grades",
+                func: "fluid.tests.assertConstructedDefaults",
+                args: ["{builderEnactors}", ["enactors", "initialModel"]]
             }, {
-                expect: 3,
-                name: "initialModel",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.constructedGrades.initialModel", "{builderEnactors}.options.auxSchema.initialModel"]
+                expect: 2,
+                name: "constructed alias grades",
+                func: "fluid.tests.assertConstructedAliases",
+                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
             }, {
                 expect: 6,
                 name: "not created",
@@ -403,35 +520,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
+                args: ["{builderEnactors}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
             }, {
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
+                args: ["{builderEnactors}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
             }]
         }, {
             name: "fluid.prefs.builder - only panels",
             tests: [{
-                expect: 4,
-                name: "panels",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.constructedGrades.panels", "{builderPanels}.options.auxSchema.panels"]
+                expect: 13,
+                name: "constructed grades",
+                func: "fluid.tests.assertConstructedDefaults",
+                args: ["{builderPanels}", ["panels", "initialModel", "templateLoader", "messageLoader"]]
             }, {
-                expect: 3,
-                name: "initialModel",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.constructedGrades.initialModel", "{builderPanels}.options.auxSchema.initialModel"]
-            }, {
-                expect: 3,
-                name: "templateLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.constructedGrades.templateLoader", "{builderPanels}.options.auxSchema.templateLoader"]
-            }, {
-                expect: 3,
-                name: "messageLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.constructedGrades.messageLoader", "{builderPanels}.options.auxSchema.messageLoader"]
+                expect: 2,
+                name: "constructed alias grades",
+                func: "fluid.tests.assertConstructedAliases",
+                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
             }, {
                 expect: 6,
                 name: "not created",
@@ -441,40 +548,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
+                args: ["{builderPanels}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
             }, {
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
+                args: ["{builderPanels}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
             }]
         }, {
             name: "fluid.prefs.builder - panels & messages",
             tests: [{
-                expect: 4,
-                name: "panels",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.panels", "{builderPanelsAndMessages}.options.auxSchema.panels"]
+                expect: 16,
+                name: "constructed grades",
+                func: "fluid.tests.assertConstructedDefaults",
+                args: ["{builderPanelsAndMessages}", ["panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
             }, {
-                expect: 3,
-                name: "messageLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.messageLoader", "{builderPanelsAndMessages}.options.auxSchema.messageLoader"]
-            }, {
-                expect: 3,
-                name: "terms",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.terms", "{builderPanelsAndMessages}.options.auxSchema.terms"]
-            }, {
-                expect: 3,
-                name: "initialModel",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.initialModel", "{builderPanelsAndMessages}.options.auxSchema.initialModel"]
-            }, {
-                expect: 3,
-                name: "templateLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.templateLoader", "{builderPanelsAndMessages}.options.auxSchema.templateLoader"]
+                expect: 2,
+                name: "constructed alias grades",
+                func: "fluid.tests.assertConstructedAliases",
+                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
             }, {
                 expect: 2,
                 name: "not created",
@@ -484,40 +576,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
+                args: ["{builderPanelsAndMessages}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
             }, {
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
+                args: ["{builderPanelsAndMessages}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
             }]
         }, {
             name: "fluid.prefs.builder - panels & templates",
             tests: [{
-                expect: 4,
-                name: "panels",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.panels", "{builderPanelsAndTemplates}.options.auxSchema.panels"]
+                expect: 16,
+                name: "constructed grades",
+                func: "fluid.tests.assertConstructedDefaults",
+                args: ["{builderPanelsAndTemplates}", ["panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
             }, {
-                expect: 3,
-                name: "terms",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.terms", "{builderPanelsAndTemplates}.options.auxSchema.terms"]
-            }, {
-                expect: 3,
-                name: "initialModel",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.initialModel", "{builderPanelsAndTemplates}.options.auxSchema.initialModel"]
-            }, {
-                expect: 3,
-                name: "templateLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.templateLoader", "{builderPanelsAndTemplates}.options.auxSchema.templateLoader"]
-            }, {
-                expect: 3,
-                name: "messageLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.messageLoader", "{builderPanelsAndTemplates}.options.auxSchema.messageLoader"]
+                expect: 2,
+                name: "constructed alias grades",
+                func: "fluid.tests.assertConstructedAliases",
+                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
             }, {
                 expect: 2,
                 name: "not created",
@@ -527,55 +604,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
+                args: ["{builderPanelsAndTemplates}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
             }, {
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
+                args: ["{builderPanelsAndTemplates}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
             }]
         }, {
             name: "fluid.prefs.builder - all",
             tests: [{
-                expect: 4,
-                name: "panels",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.panels", "{builderAll}.options.auxSchema.panels"]
+                expect: 20,
+                name: "constructed grades",
+                func: "fluid.tests.assertConstructedDefaults",
+                args: ["{builderAll}", ["panels", "enactors", "initialModel", "templateLoader", "messageLoader", "terms"]]
             }, {
-                expect: 3,
-                name: "messageLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.messageLoader", "{builderAll}.options.auxSchema.messageLoader"]
-            }, {
-                expect: 4,
-                name: "enactors",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]
-            }, {
-                expect: 3,
-                name: "initialModel",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.initialModel", "{builderAll}.options.auxSchema.initialModel"]
-            }, {
-                expect: 3,
-                name: "templateLoader",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
-            }, {
-                expect: 3,
-                name: "terms",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.terms", "{builderAll}.options.auxSchema.terms"]
+                expect: 2,
+                name: "constructed alias grades",
+                func: "fluid.tests.assertConstructedAliases",
+                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
+                args: ["{builderAll}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
             }, {
-                expect: 2,
+                expect: 4,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
+                args: ["{builderAll}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditorWithLocale]
             }]
         }]
     });

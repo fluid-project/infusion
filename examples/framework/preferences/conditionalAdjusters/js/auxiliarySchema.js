@@ -1,5 +1,7 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -47,6 +49,7 @@ var example = example || {};
             },
             speak: {
                 type: "example.speakText",
+                alias: "speakText",
                 enactor: {
                     type: "example.enactors.speak"
                 },
@@ -59,6 +62,7 @@ var example = example || {};
             },
             vol: {
                 type: "example.volume",
+                alias: "volume",
                 enactor: {
                     type: "example.enactors.vol"
                 },
@@ -71,6 +75,7 @@ var example = example || {};
             },
             wpm: {
                 type: "example.wordsPerMinute",
+                alias: "wpm",
                 enactor: {
                     type: "example.enactors.wpm"
                 },
@@ -83,6 +88,7 @@ var example = example || {};
             },
             incSize: {
                 type: "example.increaseSize",
+                alias: "increaseSize",
                 enactor: {
                     type: "example.enactors.incSize"
                 },
@@ -95,6 +101,7 @@ var example = example || {};
             },
             cursor: {
                 type: "example.cursorSize",
+                alias: "cursorSize",
                 enactor: {
                     type: "example.enactors.cursor"
                 },
@@ -107,6 +114,7 @@ var example = example || {};
             },
             magFactor: {
                 type: "example.magnification",
+                alias: "magnification",
                 enactor: {
                     type: "example.enactors.magFactor"
                 },
@@ -119,6 +127,7 @@ var example = example || {};
             },
             magPos: {
                 type: "example.magnifierPosition",
+                alias: "magnifierPosition",
                 enactor: {
                     type: "example.enactors.magPos"
                 },

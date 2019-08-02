@@ -1,5 +1,7 @@
 /*
-Copyright 2011-2014, 2018 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -36,10 +38,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.uiOptions.customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
+    fluid.tests.uiOptions.customizedTocMessage = "../../../../src/framework/preferences/messages/tableOfContents-enactor.json";
 
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorCustomToc", {
         gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
-        tocTemplate: fluid.tests.uiOptions.customizedTocTemplate
+        tocTemplate: fluid.tests.uiOptions.customizedTocTemplate,
+        tocMessage: fluid.tests.uiOptions.customizedTocMessage
     });
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTester", {
@@ -48,19 +52,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "UI Options Tests",
             tests: [{
                 name: "Pass in customized toc template",
-                expect: 2,
+                expect: 4,
                 sequence: [{
                     "event": "{prefsEditorCustomTocTest testPrefsEditorCustomToc}.events.onReady",
                     "listener": "fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates",
-                    "args": ["{testPrefsEditorCustomToc}", fluid.tests.uiOptions.customizedTocTemplate]
+                    "args": ["{testPrefsEditorCustomToc}", fluid.tests.uiOptions.customizedTocTemplate,  fluid.tests.uiOptions.customizedTocMessage]
                 }]
             }]
         }]
     });
 
-    fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates = function (prefsEditorComponent, expectedTocTemplate) {
-        jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer", expectedTocTemplate, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
-        jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", expectedTocTemplate, prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+    fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates = function (prefsEditorComponent, expectedTocTemplate, expectedTocMessage) {
+        // template
+        jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer",
+            expectedTocTemplate, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+        jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", expectedTocTemplate,
+            prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+
+        // message bundle
+        jqUnit.assertEquals("The toc message is applied properly to the pageEnhancer",
+            expectedTocMessage, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
+        jqUnit.assertEquals("The toc message is applied properly to iframeEnhancer", expectedTocMessage,
+            prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
     };
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTest", {
@@ -78,20 +91,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorLocalized", {
         gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
-        defaultLocale: "fr"
+        defaultLocale: "fr",
+        tocMessage: fluid.tests.uiOptions.customizedTocMessage
     });
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            localized: {
+                fr: {
+                    "tocHeader": "Table des matières"
+                }
+            }
+        },
         modules: [{
             name: "UI Options Locale Tests",
             tests: [{
                 name: "UIO defaultLocale tests",
-                expect: 15,
+                expect: 17,
                 sequence: [{
-                    event: "{prefsEditorBaseTest prefsEditor messageLoader}.events.onResourcesLoaded",
+                    event: "{prefsEditorBaseTest prefsEditorLoader > messageLoader}.events.onResourcesLoaded",
                     listener: "jqUnit.assertEquals",
-                    args: ["defaultLocale is properly propagated to messageLoader", "fr", "{prefsEditor}.prefsEditorLoader.messageLoader.options.resourceOptions.defaultLocale"]
+                    args: ["defaultLocale is properly propagated to messageLoader", "fr",
+                        "{prefsEditor}.prefsEditorLoader.messageLoader.options.resourceOptions.defaultLocale"]
                 },
                 {
                     event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
@@ -101,6 +123,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     funcName: "fluid.tests.uiOptions.prefsEditorLocalizedTester.verifySlidingPanelMessages",
                     args: ["{prefsEditor}", "prefsEditor", "Préférences de l'utilisateur"]
+                },
+                {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["defaultLocale is properly propagated to the toc messageLoader", "fr",
+                        "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.options.resourceOptions.defaultLocale"]
+                },
+                {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["The localized messages are loaded correctly", "{that}.options.testOpts.localized.fr",
+                        "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.resources.tocMessage.parsed"]
                 }]
             }]
         }]
@@ -137,10 +169,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.each(prefsEditor.prefsEditorLoader.messageLoader.resources, function (panel, key) {
             if (fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key]) {
                 var actualMessageValue = panel.parsed[fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].path];
-                jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualMessageValue);
+                jqUnit.assertEquals("Panel " + key + " localized message loaded correctly",
+                    fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualMessageValue);
 
                 var actualRenderedValue = prefsEditor.prefsEditorLoader.prefsEditor[key].locate("label").text();
-                jqUnit.assertEquals("Panel " + key + " localized message rendererd correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualRenderedValue);
+                jqUnit.assertEquals("Panel " + key + " localized message rendererd correctly",
+                    fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualRenderedValue);
             }
         });
     };

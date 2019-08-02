@@ -14,9 +14,58 @@ fonts = {
     ".fl-font-comic-sans": {
         fontFamily: "Comic Sans MS, sans-serif"
     }
+    ".fl-font-open-dyslexic": {
+        fontFamily: "OpenDyslexic, sans-serif"
+    }
 }
 
-build-fonts-Enactors(textFont) {
+// Defines any @font-face definitions needed by the enactors
+fontFaces = {
+    openDyslexic: {
+        fontDirectory: "../../../lib/open-dyslexic/fonts/"
+        fontFamily: "OpenDyslexic"
+        definitions: {
+            normal: {
+                filename:"OpenDyslexic-Regular.woff"
+                fontWeight: normal
+                fontStyle: normal
+                },
+            bold: {
+                filename:"OpenDyslexic-Bold.woff"
+                fontWeight: 600
+                fontStyle: normal
+            },
+            italic: {            
+                filename:"OpenDyslexic-Italic.woff"
+                fontWeight: normal
+                fontStyle: italic
+            },
+            boldItalic: {
+                filename:"OpenDyslexic-BoldItalic.woff"
+                fontWeight: 600
+                fontStyle: italic
+            }
+        }
+    }
+}
+
+build-fonts-Enactors(textFont, textFontFaces) {
+
+    // Build any necessary @font-face definitions
+    for fontFamilyName in textFontFaces {
+        fontDirectory = textFontFaces[fontFamilyName].fontDirectory
+        fontFamily = textFontFaces[fontFamilyName].fontFamily
+        fontFamilyDefs = textFontFaces[fontFamilyName].definitions;
+        for def in fontFamilyDefs {                
+                fontDef = textFontFaces[fontFamilyName][definitions][def]
+                @font-face {
+                    font-family: fontFamily;
+                    src: url(fontDirectory + fontDef.filename);
+                    font-weight: fontDef.fontWeight;
+                    font-style: fontDef.fontStyle;
+            }
+            }
+        }
 
     for fontName in textFont {
         font = textFont[fontName].fontFamily;
@@ -27,5 +76,5 @@ build-fonts-Enactors(textFont) {
                 font-family: unquote(font) !important;
             }
         }
-    }
+    }    
 }

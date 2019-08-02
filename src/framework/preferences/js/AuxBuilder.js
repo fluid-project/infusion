@@ -1,5 +1,7 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -133,15 +135,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return !!primarySchema;
     };
 
-    fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults) {
+    fluid.prefs.flattenName = function (name) {
+        var regexp = new RegExp("\\.", "g");
+        return name.replace(regexp,  "_");
+    };
+
+    fluid.prefs.constructAliases = function (auxSchema, flattenedPrefKey, aliases) {
+        aliases = fluid.makeArray(aliases);
+
+        var prefsEditorModel = {};
+        var enhancerModel = {};
+        fluid.each(aliases, function (alias) {
+            prefsEditorModel[alias] = "{that}.model.preferences." + flattenedPrefKey;
+            enhancerModel[alias] = "{that}.model." + flattenedPrefKey;
+        });
+
+        fluid.prefs.addAtPath(auxSchema, ["aliases_prefsEditor", "model", "preferences"], prefsEditorModel);
+        fluid.prefs.addAtPath(auxSchema, ["aliases_enhancer", "model"], enhancerModel);
+    };
+
+    fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults) {
         var componentOptions = fluid.copy(componentConfig) || {};
         var components = {};
         var initialModel = {};
 
         var componentName = fluid.prefs.removeKey(componentOptions, "type");
-        var regexp = new RegExp("\\.", "g");
-        var memberName = componentName.replace(regexp,  "_");
-        var flattenedPrefKey = prefKey.replace(regexp,  "_");
+        var memberName = fluid.prefs.flattenName(componentName);
+        var flattenedPrefKey = fluid.prefs.flattenName(prefKey);
 
         if (componentName) {
 
@@ -171,6 +191,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             externalModelName: flattenedPrefKey
                         });
                         fluid.set(initialModel, ["members", "initialModel", "preferences", flattenedPrefKey], prefSchema["default"]);
+
+                        if (alias) {
+                            fluid.set(initialModel, ["members", "initialModel", "preferences", alias], prefSchema["default"]);
+                        }
                     } else {
                         fluid.set(opts, internalPath, prefSchema[primaryPath]);
                     }
@@ -187,6 +211,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.prefs.addAtPath(auxSchema, ["templateLoader", "resources"], templates);
             fluid.prefs.addAtPath(auxSchema, ["messageLoader", "resources"], messages);
             fluid.prefs.addAtPath(auxSchema, "initialModel", initialModel);
+
+            fluid.prefs.constructAliases(auxSchema, flattenedPrefKey, alias);
         }
 
         return auxSchema;
@@ -246,7 +272,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             // thisCompositeOptions.panels can be in two forms:
             // 1. an array of names of panels that should always be rendered;
-            // 2. an object that describes what panels should be always rendered,
+            // 2. an object that describes what panels should always be rendered,
             //    and what panels should be rendered when a preference is turned on
             // The loop below is only needed for processing the latter.
             if (fluid.isPlainObject(thisCompositeOptions.panels) && !fluid.isArrayable(thisCompositeOptions.panels)) {
@@ -372,16 +398,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         fluid.each(auxSchema, function (category, prefName) {
             // TODO: Replace this cumbersome scheme with one based on an extensible lookup to handlers
+
             var type = "panel";
             // Ignore the subpanels that are only for composing composite panels
             if (category[type] && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "panels", category.type, category[type], fluid.get(indexes, type),
+                fluid.prefs.expandSchemaComponents(auxSchema, "panels", category.type, category.alias, category[type], fluid.get(indexes, type),
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
 
             type = "enactor";
             if (category[type]) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "enactors", category.type, category[type], fluid.get(indexes, type),
+                fluid.prefs.expandSchemaComponents(auxSchema, "enactors", category.type, category.alias, category[type], fluid.get(indexes, type),
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
 
@@ -430,6 +457,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             terms: {
                 gradeNames: ["fluid.component"]
+            },
+            aliases_prefsEditor: {
+                gradeNames: ["fluid.modelComponent"]
+            },
+            aliases_enhancer: {
+                gradeNames: ["fluid.modelComponent"]
             }
         },
         elementCommonOptions: {

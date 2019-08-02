@@ -12,6 +12,7 @@ Currently the contents of this file represent a placeholder for future Infusion 
 
 * Preference framework
   * Updated look of on/off toggles
+  * Added the [OpenDyslexic 3](https://opendyslexic.org/) font as an option to the Text Style panel
 
 ### Removal of Deprecated Features
 
@@ -93,6 +94,7 @@ categorized by license:
 
 * [Lato font v2.015](http://www.latofonts.com)
 * [Love Ya Like A Sister font](https://fonts.google.com/specimen/Love+Ya+Like+A+Sister)
+* [OpenDyslexic 3](https://opendyslexic.org/)
 
 ### zlib/libpng License
 
