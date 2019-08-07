@@ -41,7 +41,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         strings: {
             languageUnavailable: "Syllabification not available for %lang",
-            patternLoadError: "The pattern file %src could not be loaded."
+            patternLoadError: "The pattern file %src could not be loaded. %errorMsg"
         },
         markup: {
             separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>"
@@ -227,11 +227,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         injectPromise.then(function () {
             hyphenator = fluid.getGlobalValue(globalPath);
             promise.resolve(hyphenator);
-        }, function () {
-            var errorMessage = fluid.stringTemplate(that.options.strings.patternLoadError, {src: src});
-            // Pass along arguments fired for the rejection, but with our errorMessage as the first argument
-            var args = [errorMessage].concat(fluid.values(arguments));
-            that.events.onError.fire.apply(null, args);
+        }, function (error) {
+            var errorInfo = {
+                src: src,
+                errorMsg: typeof(error) === "string" ? error : ""
+            };
+
+            var errorMessage = fluid.stringTemplate(that.options.strings.patternLoadError, errorInfo);
+            fluid.log(fluid.logLevel.WARN, errorMessage);
+            that.events.onError.fire(errorMessage);
 
             //TODO: A promise rejection would be more appropriate. However, we need to know when all of the hyphenators
             //      have attempted to load and apply syllabification. The current promise utility,
