@@ -11,6 +11,6 @@
     ],
     "reporter": "none",
     "report-dir": "reports",
-    "temp-directory": "coverage",
+    "temp-dir": "coverage",
     "clean": false
 }

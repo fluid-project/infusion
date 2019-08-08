@@ -302,16 +302,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Options to configure the SpeechSynthesis Utterance with.
      * See: https://w3c.github.io/speech-api/speechapi.html#utterance-attributes
-     *  {
-     *      text: "", // the text to Synthesize
-     *      lang: "", // the language of the synthesized text
-     *      voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
-     *      volume: 1, // a Floating point number between 0 and 1
-     *      rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
-     *      pitch: 1, // a Floating point number from 0 to 2
-     *   }
      *
      * @typedef {Object} UtteranceOpts
+     * @property {String} text - The text to Synthesize
+     * @property {String} lang - The BCP 47 language code for the synthesized text
+     * @property {WebSpeechSynthesis} voice - If not set, will use the default one provided by the browser
+     * @property {Float} volume - A Floating point number between 0 and 1
+     * @property {Float} rate - A Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
+     * @property {Float} pitch - A Floating point number from 0 to 2
      */
 
     /**

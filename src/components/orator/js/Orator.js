@@ -84,7 +84,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         modelListeners: {
             "enabled": {
-                listener: "{tts}.cancel",
+                listener: "fluid.orator.cancelWhenDisabled",
+                args: ["{tts}.cancel", "{change}.value"],
                 namespace: "orator.clearSpeech"
             }
         },
@@ -110,6 +111,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             namespace: "selectionReaderOpts"
         }]
     });
+
+    // TODO: When https://issues.fluidproject.org/browse/FLUID-6393 has been addressed, it will be possible to remove
+    //       this function and directly configure the modelListener to only trigger when a false value is passed.
+    fluid.orator.cancelWhenDisabled = function (cancelFn, state) {
+        if (!state) {
+            cancelFn();
+        }
+    };
 
     fluid.orator.handlePlayToggle = function (that, state) {
         that.events[state ? "play" : "pause"].fire();
@@ -487,20 +496,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Positional information about a word parsed from the text in a {DomElement}. This can be used for mappings between
      * a synthesizer's speech boundary and the word's location within the DOM.
-     * The structure of each data point is as follows:
-     *  {
-     *      blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
-     *      startOffset: {Integer}, // the start offset of the current `word` relative to the closest
-     *                             // enclosing DOM element
-     *      endOffset: {Integer}, // the end offset of the current `word` relative to the closest
-     *                           // enclosing DOM element
-     *      node: {DomNode}, // the current child node being parsed
-     *      childIndex: {Integer}, // the index of the child node being parsed relative to its parent
-     *      parentNode: {DomElement}, // the parent DOM node
-     *      word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
-     *   }
      *
      * @typedef {Object} DomWordMap
+     * @property {Integer} blockIndex - The index into the entire block of text being parsed from the DOM
+     * @property {Integer} startOffset - The start offset of the current `word` relative to the closest
+     *                                   enclosing DOM element
+     * @property {Integer} endOffset - The end offset of the current `word` relative to the closest
+     *                                 enclosing DOM element
+     * @property {DomNode} node - The current child node being parsed
+     * @property {Integer} childIndex - The index of the child node being parsed relative to its parent
+     * @property {DomElement} parentNode - The parent DOM node
+     * @property {String} word - The text, `word`, parsed from the node. It may contain only whitespace.
      */
 
     /**
