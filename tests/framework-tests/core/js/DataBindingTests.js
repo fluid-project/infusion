@@ -815,13 +815,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
             jqUnit.assertEquals("Localised model fetched", "These courses will require a lot of grading", component.model.messages.courses);
             // Dynamically update locale by bashing on the resourceFetcher's records
-            var resourceSpec = component.resourceFetcher.resourceSpecs.messages;
-            resourceSpec.locale = "en_ZA";
-            resourceSpec.fetchEvent.addListener(function () {
+            var resourceFetcher = component.resourceFetcher;
+            resourceFetcher.options.locale = "en_ZA";
+            resourceFetcher.resourceSpecs.messages.onFetched.addListener(function () {
                 checkIt2(component);
             });
-            // Trigger a refetch of the resource which will automatically updated the linked model
-            resourceSpec.refetch();
+            // Trigger a refetch of the resources which will automatically update the linked model
+            resourceFetcher.refetchAll();
         };
         fluid.tests.fluid4982loc({
             listeners: {

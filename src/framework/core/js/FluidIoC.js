@@ -770,6 +770,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     potentia: The original potentia record as supplied to registerPotentia
     //     childComponents: Hash of key names to subcomponents
     //     lightMergeComponents, lightMergeDynamicComponents: signalling between fluid.processComponentShell and fluid.concludeComponentObservation
+    //     modelSourcedDynamicComponents: signalling between fluid.processComponentShell and fluid.initModel
 
     fluid.shadowForComponent = function (component) {
         var instantiator = fluid.getInstantiator(component);
@@ -1643,13 +1644,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.fail("Cannot process dynamicComponents records ", subcomponentRecords, " without a \"sources\" or \"createOnEvent\" entry");
             }
             if (lightMerge.sources) {
-                var sources = fluid.expandOptions(lightMerge.sources, shell);
-                fluid.each(sources, function (source, sourceKey) {
-                    var localRecord = $.extend({}, potentia.localRecord, {"source": source, "sourcePath": sourceKey});
-                    var dynamicKey = fluid.computeDynamicComponentKey(key, sourceKey);
-                    var freshLightMerge = fluid.copy(lightMerge);
-                    fluid.registerConcreteSubPotentia(freshLightMerge, dynamicKey, potentia.componentDepth, shell, localRecord);
-                });
+                var sourcesParsed = fluid.parseValidModelReference(shell, "dynamicComponents source", lightMerge.sources, true);
+                if (sourcesParsed.nonModel) {
+                    var sources = fluid.getForComponent(sourcesParsed.that, sourcesParsed.segs);
+                    fluid.each(sources, function (source, sourceKey) {
+                        var localRecord = $.extend({}, potentia.localRecord, {"source": source, "sourcePath": sourceKey});
+                        var dynamicKey = fluid.computeDynamicComponentKey(key, sourceKey);
+                        var freshLightMerge = fluid.copy(lightMerge);
+                        fluid.registerConcreteSubPotentia(freshLightMerge, dynamicKey, potentia.componentDepth, shell, localRecord);
+                    });
+                } else {
+                    fluid.set(shadow, ["modelSourcedDynamicComponents", key], {
+                        sourcesParsed: sourcesParsed
+                    });
+                }
             }
         });
         if (transRec.deferredDistributions.length) { // Resolve FLUID-6193 in potentia world by enqueueing deferred distributions

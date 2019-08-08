@@ -400,8 +400,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             args: ["{that}", "{that}.options.preloadResources"]
                         },
                         "{separatedPanel}.events.onLazyLoad": {
-                            listener: "fluid.resourceLoader.loadResources",
-                            args: "{that}"
+                            listener: "{that}.resourceFetcher.fetchAll"
                         }
                     }
                 }

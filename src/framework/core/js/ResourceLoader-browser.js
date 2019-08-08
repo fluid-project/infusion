@@ -44,6 +44,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.resourceLoader.loaders.XHR = function (resourceSpec) {
         var togo = fluid.promise();
         var xhr = resourceSpec.xhr = new XMLHttpRequest();
+        togo.then(null, null, xhr.abort);
         var sendSuccess = function () {
             fluid.invokeLater(function () {
                 var response = !xhr.responseType || xhr.responseType === "text" ? xhr.responseText : xhr.response;

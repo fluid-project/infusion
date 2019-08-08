@@ -1495,7 +1495,7 @@ https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
         });
 
 
-        var resourceSpec = {
+        var sourceResourceSpec = {
             properties: {
                 url: "../data/testProperties.properties"
             },
@@ -1505,7 +1505,7 @@ https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
         };
         var calls = 0;
 
-        fluid.fetchResources(resourceSpec, function () {
+        fluid.fetchResources(sourceResourceSpec, function (resourceSpec) {
             jqUnit.test("Properties file parsing", function () {
                 ++calls; // Test FLUID-3361
                 jqUnit.assertEquals("Just one call to fetchResources callback", 1, calls);

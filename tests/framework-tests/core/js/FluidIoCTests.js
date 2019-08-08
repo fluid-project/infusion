@@ -3680,6 +3680,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Subcomponent has designated option", 42, that.dynamic.sub1.options.answer);
     });
 
+    /** FLUID-6390 - Lensed components as a hash **/
+
+    fluid.defaults("fluid.tests.fluid6390child", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: {
+                element1: {
+                    value: 42
+                },
+                element2: {
+                    value: 43
+                }
+            }
+        },
+        dynamicComponents: {
+            arenaComponents: {
+                sources: "{that}.model.arena",
+                type: "fluid.tests.fluid6390child",
+                options: {
+                    model: {
+                        arenaValue: "{source}.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390assertModelValues = function (message, that, expected) {
+        var values = fluid.getMembers(that, ["model", "arenaValue"]);
+        jqUnit.assertDeepEq(message, expected, values);
+    };
+/* In progress
+    jqUnit.test("FLUID-6390: Lensed components as a hash", function () {
+        var that = fluid.tests.fluid6390root();
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        jqUnit.assertEquals("Two model-driven subcomponents created", 2, children.length);
+        fluid.tests.fluid6390assertModelValues("Initial model values are correct", that, [42, 43]);
+        that.applier.change("arena.element3.value", 44);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with new component", that, [42, 43, 44]);
+        that.applier.change("arena.element1.value", 1);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with forward relay", that, [1, 43, 44]);
+        var component3 = that["arenaComponents-element3"];
+        jqUnit.assertTrue("Fetched component via fluid.componentForModelPath", fluid.isComponent(component3));
+        component3.applier.change("arenaValue", 3);
+        jqUnit.assertEquals("Model value propagated through backward relay", 3, that.model.arena.element3.value);
+        var component2 = that["arenaComponents-element2"];
+        component2.destroy();
+        var expectedFinalArena = {
+            element1: {
+                value: 1
+            },
+            element3: {
+                value: 3
+            }
+        };
+        jqUnit.assertDeepEq("Relay of component destruction back to deletion of source model", expectedFinalArena, that.model.arena);
+    });
+*/
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
 
     fluid.defaults("fluid.tests.fluid5029root", {

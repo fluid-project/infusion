@@ -37,10 +37,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 holder.record.push({reject: val + arg});
             });
         };
+        holder.addCancelListener = function (arg) {
+            holder.promise.then(null, null, function (val) {
+                holder.record.push({cancel: val + arg});
+            });
+        };
         holder.addListeners = function (arg) {
             var argVal = arg === undefined ? "" : arg;
             holder.addResolveListener(argVal);
             holder.addRejectListener(argVal);
+            holder.addCancelListener(argVal);
         };
         return holder;
     };
@@ -62,6 +68,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Rejected promise just fires reject", [{
             reject: "rejected"
         }], holder2.record);
+        var holder3 = fluid.tests.makeStandardTrackingPromise();
+        holder3.promise.cancel("cancelled");
+        jqUnit.assertDeepEq("Cancelled promise just fires cancel", [{
+            cancel: "cancelled"
+        }], holder3.record);
     });
 
     jqUnit.test("Backward resolution tests", function () {
@@ -77,15 +88,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Rejected promise fires reject on registration", [{
             reject: "rejected"
         }], holder2.record);
+        var holder3 = fluid.tests.makeTrackingPromise();
+        holder3.promise.cancel("cancelled");
+        holder3.addListeners();
+        jqUnit.assertDeepEq("Cancelled promise fires cancel on registration", [{
+            cancel: "cancelled"
+        }], holder3.record);
     });
+
+    fluid.tests.executePromiseResolutions = function (resolve1, resolve2) {
+        var holder = fluid.promise();
+        holder[resolve1]();
+        holder[resolve2]();
+        return holder;
+    };
 
     fluid.tests.testConflictedPromise = function (resolve1, resolve2) {
         jqUnit.expectFrameworkDiagnostic("Double resolution of promises - " + resolve1 + ", " + resolve2,
             function () {
-                var holder = fluid.promise();
-                holder[resolve1]();
-                holder[resolve2]();
+                fluid.tests.executePromiseResolutions(resolve1, resolve2);
             }, "already");
+    };
+
+    fluid.tests.testNoopPromise = function (resolve1, resolve2) {
+        jqUnit.expect(0);
+        var promise = fluid.tests.executePromiseResolutions(resolve1, resolve2);
+        var fail = function () {
+            jqUnit.fail("Received resolution from cancelled promise");
+        };
+        promise.then(fail, fail);
+    };
+
+    fluid.tests.testActivePromise = function (resolve1, resolve2) {
+        jqUnit.expect(1);
+        var promise = fluid.tests.executePromiseResolutions(resolve1, resolve2);
+        var count = 0;
+        var countIt = function () {
+            ++count;
+        };
+        promise.then(countIt, countIt);
+        jqUnit.assertEquals("One callback should have been invoked", 1, count);
     };
 
     jqUnit.test("Conflicted resolution tests", function () {
@@ -93,6 +135,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.testConflictedPromise("resolve", "reject");
         fluid.tests.testConflictedPromise("resolve", "resolve");
         fluid.tests.testConflictedPromise("reject", "reject");
+    });
+
+    jqUnit.test("Cancellation resolution tests", function () {
+        jqUnit.expect(0);
+        fluid.tests.testNoopPromise("cancel", "resolve");
+        fluid.tests.testNoopPromise("cancel", "reject");
+        fluid.tests.testActivePromise("resolve", "cancel");
+        fluid.tests.testActivePromise("reject", "cancel");
     });
 
     fluid.tests.makeMultipleListenerPromise = function () {

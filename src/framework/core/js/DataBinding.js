@@ -411,7 +411,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             trans.change(segs, value);
             trans.commit();
         };
-        resourceSpec.fetchEvent.addListener(resourceUpdateListener);
+        resourceSpec.onFetched.addListener(resourceUpdateListener);
         fluid.recordListener(resourceSpec, resourceUpdateListener, fluid.shadowForComponent(that));
     };
 
@@ -473,6 +473,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var that = recel.that;
             var transac = transacs[that.id];
             if (recel.completeOnInit) {
+                // TODO: This is really not right, this notification should happen at the local workflow point along
+                // with everything else that got created in this transaction
                 fluid.initModelEvent(that, that.applier, transac, that.applier.listeners.sortedListeners);
             } else {
                 var initModels = fluid.appendResourceInitModel(that, that.applier, recel.initModels);
@@ -494,7 +496,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.parseModelReference = function (that, ref) {
         var parsed = fluid.parseContextReference(ref);
-        parsed.segs = that.applier.parseEL(parsed.path);
+        parsed.segs = fluid.pathUtil.parseEL(parsed.path);
         return parsed;
     };
 
@@ -1153,6 +1155,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelComponents.forEach(function (shadow) {
             fluid.getForComponent(shadow.that, "modelRelay"); // invoke fluid.establishModelRelay and enlist each component
         });
+        // TODO: We can't cache this since components will arrive in a multi-phased way!
         treeTransaction.modelComponents = modelComponents;
     };
 

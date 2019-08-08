@@ -37,7 +37,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        fluid.fetchResources(resourceSpecs, function () {
+        fluid.fetchResources(resourceSpecs, function (resourceSpecs) {
             jqUnit.assertUndefined("No fetch error", resourceSpecs.objects.fetchError);
             jqUnit.assertValue("Request completed", resourceSpecs.objects.resourceText);
             jqUnit.start();
@@ -143,30 +143,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             template4: "../data/testTemplate4.html"
         },
         listeners: {
-            onResourcesLoaded: "fluid.tests.resourceLoader.testTemplateLoader"
+            onResourcesLoaded: "fluid.tests.resourceLoader.testTemplateLoader({arguments}.0, {that})"
         }
     });
 
-    fluid.tests.resourceLoader.testTemplateLoader = function (resources) {
-        // The template with a templating path of prefixTerm + name
-        jqUnit.assertEquals("The template1 url has been set correctly", "../data/testTemplate1.html", resources.template1.url);
-        jqUnit.assertEquals("The content of the template1 has been loaded correctly", "<div>Test Template 1</div>", $.trim(resources.template1.resourceText));
+    fluid.registerNamespace("fluid.tests.resourceLoader.expected");
 
-        // The template with a full path
-        jqUnit.assertEquals("The template2 url has been set correctly", "../data/testTemplate2.html", resources.template2.url);
-        jqUnit.assertEquals("The content of the template2 has been loaded correctly", "<div>Test Template 2</div>", $.trim(resources.template2.resourceText));
+    fluid.tests.resourceLoader.expected.en = {
+        template1: "<div>Test Template 1</div>",
+        template2: "<div>Test Template 2</div>",
+        template3: "<div>Test Template 3 Localised</div>",
+        template4: "<div>Test Template 4 Localised</div>"
+    };
 
-        // The localised template with a templating path of prefixTerm + name
-        jqUnit.assertEquals("The content of the template3 has been loaded correctly", "<div>Test Template 3 Localised</div>", $.trim(resources.template3.resourceText));
+    fluid.tests.resourceLoader.expected.fr = {
+        template1: "<div>Test Template 1</div>",
+        template2: "<div>Test Template 2</div>",
+        template3: "<div>Test Template 3 Localised</div>",
+        template4: "<div>Gabarit de Test 4 Localisé</div>"
+    };
 
-        // The localised template with a full path
-        jqUnit.assertEquals("The content of the template4 has been loaded correctly", "<div>Test Template 4 Localised</div>", $.trim(resources.template4.resourceText));
+    fluid.tests.resourceLoader.assertTemplatesLoaded = function (resources, locale) {
+        fluid.each(fluid.tests.resourceLoader.expected[locale], function (expected, key) {
+            jqUnit.assertEquals("The content of " + key + " has been loaded correctly in locale " + locale, expected,
+                resources[key].resourceText.trim());
+        });
+    };
 
-        jqUnit.start();
+    fluid.tests.resourceLoader.testTemplateLoader = function (resources, resourceLoader) {
+        var resourceFetcher = resourceLoader.resourceFetcher;
+        var locale = resourceFetcher.options.locale || resourceFetcher.options.defaultLocale;
+        fluid.tests.resourceLoader.assertTemplatesLoaded(resources, locale);
+        if (locale === "en") {
+            resourceFetcher.options.locale = "fr";
+            resourceFetcher.refetchAll();
+        } else {
+            jqUnit.start();
+        }
     };
 
     jqUnit.asyncTest("Test Resource Loader", function () {
-        jqUnit.expect(6);
+        jqUnit.expect(8);
         fluid.tests.resourceLoader();
     });
 

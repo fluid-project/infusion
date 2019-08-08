@@ -22,34 +22,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.promise = function () {
         var that = {
-            // TODO: We probably can and should replace these will actual events, especially once we optimise out
+            // TODO: We probably can and should replace these with actual events, especially once we optimise out
             // "byId" and perhaps also experiment with whether Object.defineProperty creates less garbage than that-ism
             onResolve: [],
-            onReject: []
+            onReject: [],
+            onCancel: []
             // disposition: "resolve"/"reject"
             // value: Any
         };
-        that.then = function (onResolve, onReject) {
-            if (onResolve) {
-                if (that.disposition === "resolve") {
-                    onResolve(that.value);
-                } else {
-                    that.onResolve.push(onResolve);
-                }
-            }
-            if (onReject) {
-                if (that.disposition === "reject") {
-                    onReject(that.value);
-                } else {
-                    that.onReject.push(onReject);
-                }
-            }
+        that.then = function (onResolve, onReject, onCancel) {
+            fluid.promise.pushHandler(that, onResolve, "onResolve", "resolve");
+            fluid.promise.pushHandler(that, onReject, "onReject", "reject");
+            fluid.promise.pushHandler(that, onCancel, "onCancel", "cancel");
             return that;
         };
         that.resolve = function (value) {
             if (that.disposition) {
-                fluid.fail("Error: resolving promise ", that,
-                    " which has already received \"" + that.disposition + "\"");
+                if (that.disposition !== "cancel") {
+                    fluid.fail("Error: resolving promise ", that,
+                        " which has already received \"" + that.disposition + "\"");
+                }
             } else {
                 that.complete("resolve", that.onResolve, value);
             }
@@ -57,12 +49,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         that.reject = function (reason) {
             if (that.disposition) {
-                fluid.fail("Error: rejecting promise ", that,
-                    "which has already received \"" + that.disposition + "\"");
+                if (that.disposition !== "cancel") {
+                    fluid.fail("Error: rejecting promise ", that,
+                        "which has already received \"" + that.disposition + "\"");
+                }
             } else {
                 that.complete("reject", that.onReject, reason);
             }
             return that;
+        };
+        that.cancel = function (reason) {
+            if (!that.disposition) {
+                that.complete("cancel", that.onCancel, reason);
+            }
         };
         // PRIVATE, NON-API METHOD
         that.complete = function (which, queue, arg) {
@@ -71,8 +70,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             for (var i = 0; i < queue.length; ++i) {
                 queue[i](arg);
             }
+            delete that.onResolve;
+            delete that.onReject;
+            delete that.onCancel;
         };
         return that;
+    };
+
+    fluid.promise.pushHandler = function (promise, handler, eventName, disposition) {
+        if (handler) {
+            if (promise.disposition) {
+                if (promise.disposition === disposition) {
+                    handler(promise.value);
+                }
+            } else {
+                promise[eventName].push(handler);
+            }
+        }
     };
 
     /* Any object with a member <code>then</code> of type <code>function</code> passes this test.
