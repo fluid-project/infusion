@@ -16,25 +16,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    fluid.registerNamespace("fluid.prefs.enactor.syllabification");
+    fluid.registerNamespace("fluid.tests.prefs.enactor.syllabification");
 
     /**************************************************************************
-     * fluid.prefs.enactor.syllabification.injectScript tests
+     * fluid.prefs.enactor.syllabification.getPattern tests
      **************************************************************************/
 
-    // We only test the success condition because when a failure occurs, the server may return a 404 error page.
-    // If that happens, the browser attempts to interpret the HTML document as a script and throws the following error:
-    // Uncaught SyntaxError: Unexpected token <
-    jqUnit.asyncTest("Test fluid.prefs.enactor.syllabification.injectScript", function () {
-        var injectionPromise = fluid.prefs.enactor.syllabification.injectScript("../js/SyllabificationInjectedScript.js");
-        injectionPromise.then(function () {
-            jqUnit.assertTrue("The promise resolved and the injected script is accessible", fluid.tests.prefs.enactor.syllabification.scriptInjected);
-            jqUnit.start();
-        }, function () {
-            jqUnit.fail("The injection promise was rejected.");
-            jqUnit.start();
+    fluid.tests.prefs.enactor.syllabification.patterns = {
+        en: "path/to/en.js",
+        "en-us": "path/to/en-us.js"
+    };
+
+    jqUnit.test("Test fluid.prefs.enactor.syllabification.getPattern", function () {
+
+        // Test matching language codes
+        fluid.each(fluid.tests.prefs.enactor.syllabification.patterns, function (src, lang) {
+            var expected = {
+                lang: lang,
+                src: src
+            };
+            var actual = fluid.prefs.enactor.syllabification.getPattern(lang, fluid.tests.prefs.enactor.syllabification.patterns);
+            jqUnit.assertDeepEq("The pattern for '" + lang + "' should be returned correctly", expected, actual);
+        });
+
+        // Test fallback
+        var langToFallback = "en-ca";
+        var expectedFallbackPattern = {
+            lang: "en",
+            src: "path/to/en.js"
+        };
+        var fallback = fluid.prefs.enactor.syllabification.getPattern(langToFallback, fluid.tests.prefs.enactor.syllabification.patterns);
+        jqUnit.assertDeepEq("The fallback language pattern for '" + langToFallback + "' should be returned correctly", expectedFallbackPattern,  fallback);
+
+        // Test unavailable language patterns
+        var unavailablePatterns = {
+            "fr-ca": {
+                lang: "fr",
+                src: undefined
+            },
+            "fr": {
+                lang: "fr",
+                src: undefined
+            }
+        };
+        fluid.each(unavailablePatterns, function (expected, lang) {
+            var actual = fluid.prefs.enactor.syllabification.getPattern(lang, fluid.tests.prefs.enactor.syllabification.patterns);
+            jqUnit.assertDeepEq("The unavailable pattern for '" + lang + "' should be returned in the correct format", expected, actual);
         });
     });
+
+    fluid.prefs.enactor.syllabification.getPattern = function (lang, patterns) {
+        var src = patterns[lang];
+
+        if (!src) {
+            lang = lang.split("-")[0];
+            src = patterns[lang];
+        }
+
+        return {
+            lang: lang,
+            src: src
+        };
+    };
 
     /*******************************************************************************
      * IoC Unit tests for fluid.prefs.enactor.syllabification
