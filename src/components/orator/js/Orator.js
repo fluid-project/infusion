@@ -84,7 +84,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         modelListeners: {
             "enabled": {
-                listener: "{tts}.cancel",
+                listener: "fluid.orator.cancelWhenDisabled",
+                args: ["{tts}.cancel", "{change}.value"],
                 namespace: "orator.clearSpeech"
             }
         },
@@ -110,6 +111,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             namespace: "selectionReaderOpts"
         }]
     });
+
+    fluid.orator.cancelWhenDisabled = function (cancelFn, state) {
+        if (!state) {
+            cancelFn();
+        }
+    };
 
     fluid.orator.handlePlayToggle = function (that, state) {
         if (state) {
