@@ -43,7 +43,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Object} that - The component itself.
      * @param {Array} messagecodes - One or more message codes to look up templates for.
-     * @return {Object} - An object that contains`template` and `resolveFunc` members (see above).
+     * @return {Object} - An object that contains `template` and `resolveFunc` members (see above).
      *
      */
     fluid.messageResolver.lookup = function (that, messagecodes) {
@@ -78,9 +78,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "[Message string for key " + messagecodes[0] + " not found]";
     };
 
-
     // unsupported, NON-API function
     fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
+        // Use this strategy to fake up the possibility of indirecting into a dynamically reloaded resource (e.g.
+        // via relocalisation) without having to push it through a component model
+        if (messageBase instanceof fluid.fetchResources.FetchOne) {
+            messageBase = fluid.fetchResources.resolveFetchOne(messageBase);
+        };
         for (var i = 0; i < messagecodes.length; ++i) {
             var code = messagecodes[i];
             var message = messageBase[code];

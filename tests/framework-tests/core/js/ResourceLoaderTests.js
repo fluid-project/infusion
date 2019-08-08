@@ -492,6 +492,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-4982: Accessing resources via MessageResolver on startup **/
+
+    fluid.defaults("fluid.tests.fluid4982messageResolver", {
+        gradeNames: "fluid.resourceLoader",
+        resources: {
+            messages: {
+                dataType: "json",
+                locale: "fr",
+                url: "../data/messages2.json"
+            }
+        },
+        components: {
+            messageResolver: {
+                type: "fluid.messageResolver",
+                options: {
+                    messageBase: "{fluid4982messageResolver}.resources.messages.parsed",
+                    listeners: {
+                        "onCreate.resolveMessage": "fluid.tests.fluid4982resolveMessage"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid4982resolveMessage = function (messageResolver) {
+        var resolved = messageResolver.resolve("courses");
+        jqUnit.assertEquals("Loaded localised message from resolver", "Après moi, le déluge!", resolved);
+        jqUnit.start();
+    };
+
+    jqUnit.asyncTest("FLUID-4982: Use of startup resource from messageLoader", function () {
+        jqUnit.expect(1);
+        fluid.tests.fluid4982messageResolver();
+    });
+
     /** FLUID-4982: Recoverable async failure on loading invalid JSON **/
 
     fluid.defaults("fluid.tests.FLUID4982.badJSONMocks", {

@@ -247,14 +247,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var incomplete = fluid.find_if(resourceSpecs, function (resourceSpec) {
             return !resourceSpec.promise.disposition;
         });
-        console.log("CheckCompletion result " + incomplete);
         if (!incomplete) {
-            console.log("Found complete");
             // Close over this since it might get re-initialised
             var completionPromise = resourceFetcher.completionPromise;
             // Always defer notification in an anti-Zalgo scheme to ease problems like FLUID-6202
             fluid.invokeLater(function () {
-                console.log("Resolved completion promise");
                 completionPromise.resolve(resourceSpecs);
             });
         }
@@ -353,15 +350,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String[]} segments - The array of path segments to be resolved into the resource once it loads
      */
     fluid.fetchResources.FetchOne = function (resourceSpec, resourceFetcher, segments) {
-        this.resourceFetcher = resourceFetcher;
-        this.resourceSpec = resourceSpec;
-        var thisSegments = this.segments = segments || [];
-        var thisPromise = this.promise = fluid.promise();
+        var FetchOne = this;
+        FetchOne.resourceFetcher = resourceFetcher;
+        FetchOne.resourceSpec = resourceSpec;
+        FetchOne.segments = segments || [];
+        var thisPromise = FetchOne.promise = fluid.promise();
         fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher).then(function () {
-            thisPromise.resolve(fluid.model.getSimple(resourceSpec, thisSegments));
+            thisPromise.resolve(fluid.fetchResources.resolveFetchOne(FetchOne));
         }, thisPromise.reject);
     };
 
+    /** Resolve the referenced resource value inside a FetchOne holder. Note that this value will only be
+     * resolvable once the parent resource has loaded.
+     * @param {fluid.fetchResources.FetchOne} FetchOne - The FetchOne holder referencing an asynchronously available resource
+     * @return {Any} The indirected resource value
+     */
+    fluid.fetchResources.resolveFetchOne = function (FetchOne) {
+        return fluid.model.getSimple(FetchOne.resourceSpec, FetchOne.segments);
+    };
+
+    /** Invoked by the framework when indirection into the unfetched resource is required
+     * @param {String} seg - The path segment to be indirected into the resource
+     * @return {fluid.fetchResources.FetchOne} A further FetchOne instance indirected further by the supplied path segment
+     */
     fluid.fetchResources.FetchOne.prototype.resolvePathSegment = function (seg) {
         return new fluid.fetchResources.FetchOne(this.resourceSpec, this.resourceFetcher, this.segments.concat(fluid.makeArray(seg)));
     };
@@ -384,7 +395,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
          * in either success or failure
          */
         resourceFetcher.completionPromise = fluid.promise();
-        console.log("fluid.initResourceFetcher constructed completionPromise");
         fluid.fetchResources.explodeForLocales(resourceFetcher);
     };
 
@@ -474,7 +484,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.fetchResources.refetchAll = function (resourceFetcher) {
         resourceFetcher.completionPromise.cancel();
         delete resourceFetcher.completionPromise;
-        console.log("refetchAll: deleted completionPromise");
         fluid.each(resourceFetcher.resourceSpecs, function (oneResourceSpec) {
             oneResourceSpec.promise.cancel();
             fluid.fetchResources.mutableResourceSpecFields.forEach(function (field) {
