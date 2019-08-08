@@ -84,7 +84,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         modelListeners: {
             "enabled": {
-                listener: "{tts}.cancel",
+                listener: "fluid.orator.cancelWhenDisabled",
+                args: ["{tts}.cancel", "{change}.value"],
                 namespace: "orator.clearSpeech"
             }
         },
@@ -110,6 +111,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             namespace: "selectionReaderOpts"
         }]
     });
+
+    // TODO: When https://issues.fluidproject.org/browse/FLUID-6393 has been addressed, it will be possible to remove
+    //       this function and directly configure the modelListener to only trigger when a false value is passed.
+    fluid.orator.cancelWhenDisabled = function (cancelFn, state) {
+        if (!state) {
+            cancelFn();
+        }
+    };
 
     fluid.orator.handlePlayToggle = function (that, state) {
         if (state) {
