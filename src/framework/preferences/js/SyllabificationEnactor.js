@@ -234,8 +234,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             };
 
             var errorMessage = fluid.stringTemplate(that.options.strings.patternLoadError, errorInfo);
-            fluid.log(fluid.logLevel.WARN, errorMessage);
-            that.events.onError.fire(errorMessage);
+            fluid.log(fluid.logLevel.WARN, errorMessage, error);
+            that.events.onError.fire(errorMessage, error);
 
             //TODO: A promise rejection would be more appropriate. However, we need to know when all of the hyphenators
             //      have attempted to load and apply syllabification. The current promise utility,
