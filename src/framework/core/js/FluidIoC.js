@@ -1618,6 +1618,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    fluid.registerSourcedDynamicComponents = function (potentia, shell, sources, lightMerge, key) {
+        fluid.each(sources, function (source, sourceKey) {
+            var localRecord = $.extend({}, potentia.localRecord, {"source": source, "sourcePath": sourceKey});
+            var dynamicKey = fluid.computeDynamicComponentKey(key, sourceKey);
+            var freshLightMerge = fluid.copy(lightMerge);
+            fluid.registerConcreteSubPotentia(freshLightMerge, dynamicKey, potentia.componentDepth, shell, localRecord);
+        });
+    };
+
     // The midpoint of fluid.operateCreatePotentia. We have just created the shell, and will now investigate any subcomponents
     // and push any immediate ones discovered into potentia records at deeper paths.
     fluid.processComponentShell = function (potentia, shell, transRec) {
@@ -1644,19 +1653,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.fail("Cannot process dynamicComponents records ", subcomponentRecords, " without a \"sources\" or \"createOnEvent\" entry");
             }
             if (lightMerge.sources) {
-                var sourcesParsed = fluid.parseValidModelReference(shell, "dynamicComponents source", lightMerge.sources, true);
-                if (sourcesParsed.nonModel) {
-                    var sources = fluid.getForComponent(sourcesParsed.that, sourcesParsed.segs);
-                    fluid.each(sources, function (source, sourceKey) {
-                        var localRecord = $.extend({}, potentia.localRecord, {"source": source, "sourcePath": sourceKey});
-                        var dynamicKey = fluid.computeDynamicComponentKey(key, sourceKey);
-                        var freshLightMerge = fluid.copy(lightMerge);
-                        fluid.registerConcreteSubPotentia(freshLightMerge, dynamicKey, potentia.componentDepth, shell, localRecord);
-                    });
+                var sources;
+                if (fluid.isIoCReference(lightMerge.sources)) {
+                    var sourcesParsed = fluid.parseValidModelReference(shell, "dynamicComponents source", lightMerge.sources, true);
+                    if (sourcesParsed.nonModel) {
+                        sources = fluid.getForComponent(sourcesParsed.that, sourcesParsed.segs);
+                        fluid.registerSourcedDynamicComponents(potentia, shell, sources, lightMerge, key);
+                    } else {
+                        fluid.set(shadow, ["modelSourcedDynamicComponents", key], {
+                            sourcesParsed: sourcesParsed
+                        });
+                    }
                 } else {
-                    fluid.set(shadow, ["modelSourcedDynamicComponents", key], {
-                        sourcesParsed: sourcesParsed
-                    });
+                    sources = fluid.expandImmediate(lightMerge.sources, shell, potentia.localRecord);
+                    fluid.registerSourcedDynamicComponents(potentia, shell, sources, lightMerge, key);
                 }
             }
         });

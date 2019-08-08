@@ -417,6 +417,11 @@ var fluid = fluid || fluid_3_0_0;
             fluid.isArrayable(totest) ? "array" : "object";
     };
 
+    /** Determine whether the supplied value is an IoC reference. The test is passed if the value is a string whose
+     * first character is "{" and has closing "}" character somewhere in the string
+     * @param {Any} ref - The value to be tested
+     * @return {Boolean} `true` if the supplied value is an IoC reference
+     */
     fluid.isIoCReference = function (ref) {
         return typeof(ref) === "string" && ref.charAt(0) === "{" && ref.indexOf("}") > 0;
     };

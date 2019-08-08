@@ -3588,11 +3588,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5022: Dynamic component creation", function () {
-        var head = fluid.tests.fluid5022head();
+    fluid.defaults("fluid.tests.fluid5022literal", {
+        dynamicComponents: {
+            dynamic: {
+                sources: [2, 3]
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5022expander", {
+        dynamicComponents: {
+            dynamic: {
+                sources: {
+                    expander: {
+                        func: "fluid.identity",
+                        args: "{that}.options.values"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5022test = function (headGrades) {
+        var head = fluid.tests.fluid5022head({
+            gradeNames: fluid.makeArray(headGrades)
+        });
         jqUnit.assertEquals("Constructed 2 components", 2, head.count);
         jqUnit.assertEquals("First component source transmitted: ", 2, head.dynamic.options.source);
         jqUnit.assertEquals("Second component source transmitted: ", 3, head["dynamic-1"].options.source);
+    };
+
+    fluid.tests.fluid5022fixtures = [{
+        name: "FLUID-5022: Dynamic component creation from referenced array source"
+    }, {
+        name: "FLUID-5022: Dynamic component creation from literal array",
+        headGrades: "fluid.tests.fluid5022literal"
+    },  {
+        name: "FLUID-5022: Dynamic component creation from expander",
+        headGrades: "fluid.tests.fluid5022expander"
+    }];
+
+    fluid.tests.fluid5022fixtures.forEach(function (oneFixture) {
+        jqUnit.test(oneFixture.name, function () {
+            fluid.tests.fluid5022test(oneFixture.headGrades);
+        });
     });
 
     fluid.defaults("fluid.tests.fluid5022eventHead", {

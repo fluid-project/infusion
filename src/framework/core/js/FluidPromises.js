@@ -27,7 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             onResolve: [],
             onReject: [],
             onCancel: []
-            // disposition: "resolve"/"reject"
+            // disposition: "resolve"/"reject"/"cancel"
             // value: Any
         };
         that.then = function (onResolve, onReject, onCancel) {
