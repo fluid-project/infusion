@@ -889,28 +889,52 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * An object containing specified offset scales: "edge" and "pointer" offsets to account for the room needed for a
+     * control element to be correctly positioned.
+     *
+     * @typedef {Object} OffsetScale
+     * @property {Float} edge - The minimum distance between the button and the viewport's edges
+     * @property {Float} pointer - The distance between the button and the coordinates the DOMRect refers too. This
+     *                                provides space for an arrow to point from the button.
+     */
+
+    /**
+     * An object containing the sizes of the top and left margins.
+     *
+     * @typedef {Object} MarginInfo
+     * @property {Float} top - The size of margin-top
+     * @property {Float} left - The size of margin-left
+     */
+
+    /**
+     * Coordinates for absolutely positioning a DOM Element.
+     *
+     * @typedef {Object} ControlPosition
+     * @property {Float} top - The `top` pixel coordinate relative to the top/left corner
+     * @property {Float} left - The `left` pixel coordinate relative to the top/left corner
+     * @property {Integer} location - For location constants see: fluid.orator.selectionReader.location
+     */
+
+    /**
      * Returns a position object containing coordinates for absolutely positioning the play button
      * relative to a passed in rect. By default it will be placed above the rect unless there is a collision with the
      * top of the window. In which case it will be placed below. This will be captured in the "location" propertied,
      * and is specified by a constant (See: fluid.orator.selectionReader.location).
      *
-     * In addition to collision detection wth the top of the window, collision detection for the left and right edges of
-     * the window are also taken into account. However, the position will not be flipped, but will be translated
+     * In addition to collision detection with the top of the window, collision detection for the left and right edges
+     * of the window are also taken into account. However, the position will not be flipped, but will be translated
      * slightly to ensure that the item being placed is displayed on screen. These calculations are facilitated through
      * an offsetScale object passed in.
      *
-     * @param {Object} rect - A DOMRect object, used to calculate placement against. Specifically the "top", "bottom",
+     * @param {DOMRect} rect - A DOMRect object, used to calculate placement against. Specifically, the "top", "bottom",
      *                        and "left" properties may be used for positioning.
-     * @param {Object} margin - An object containing the sizes of the top and left margins:
-     *                          {top: {Number}, left: {Number}}
+     * @param {MarginInfo} margin - Margin sizes
      * @param {Float} fontSize - The base font to multiple the offset against
-     * @param {Object} offsetScale - (Optional) an object containing specified offsets: "edge" and "pointer". The "edge"
-     *                               offset refers to the minimum distance between the button and the window edges. The
-     *                               "pointer" offset refers to the distance between the button and the coordinates the
-     *                               DOMRect refers too. This is provides space for an arrow to point from the button.
-     *                               Offsets all default to 1.
+     * @param {OffsetScale} offsetScale - (Optional) an object containing specified offsets: "edge" and "pointer".
+     *                                    Offsets all default to 1 and are multiplied with the fontSize for determining
+     *                                    the final offset value.
      *
-     * @return {Object} - An object containing the coordinates for positioning the play button.
+     * @return {ControlPosition} - An object containing the coordinates for positioning the play button.
      *                    It takes the form {top: Float, left: Float, location: Integer}
      *                    For location constants see: fluid.orator.selectionReader.location
      */
