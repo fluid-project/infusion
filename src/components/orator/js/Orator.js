@@ -946,7 +946,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
 
         var position = {
-            top: rect.top + scrollTop - margin.top,
+            top: scrollTop - margin.top,
             left: Math.min(
                 Math.max(rect.left + scrollLeft - margin.left, edgeOffset + scrollLeft),
                 (document.documentElement.clientWidth + scrollLeft - margin.left - edgeOffset)
@@ -954,9 +954,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
 
         if (rect.top < edgeOffset) {
+            position.top = position.top + rect.bottom;
             position.location = fluid.orator.selectionReader.location.BOTTOM;
         } else {
-            position.top = position.top - pointerOffset;
+            position.top = position.top + rect.top - pointerOffset;
             position.location = fluid.orator.selectionReader.location.TOP;
         }
 

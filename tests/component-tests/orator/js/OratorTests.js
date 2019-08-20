@@ -814,7 +814,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             rect: {left: 40},
             expected: {
                 location: fluid.orator.selectionReader.location.BOTTOM,
-                top: 20,
+                top: 40,
                 left: 40
             }
         }, {
