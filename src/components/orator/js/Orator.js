@@ -764,7 +764,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // similar to em values as it will be multiplied by the container's font-size
         offsetScale: {
             edge: 3,
-            pointer: 2.5
+            pointer: 3
         },
         events: {
             onSelectionChanged: null,
@@ -889,53 +889,80 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * An object containing specified offset scales: "edge" and "pointer" offsets to account for the room needed for a
+     * control element to be correctly positioned.
+     *
+     * @typedef {Object} OffsetScale
+     * @property {Float} edge - The minimum distance between the button and the viewport's edges
+     * @property {Float} pointer - The distance between the button and the coordinates the DOMRect refers too. This
+     *                                provides space for an arrow to point from the button.
+     */
+
+    /**
+     * An object containing the sizes of the top and left margins.
+     *
+     * @typedef {Object} MarginInfo
+     * @property {Float} top - The size of margin-top
+     * @property {Float} left - The size of margin-left
+     */
+
+    /**
+     * Coordinates for absolutely positioning a DOM Element.
+     *
+     * @typedef {Object} ControlPosition
+     * @property {Float} top - The `top` pixel coordinate relative to the top/left corner
+     * @property {Float} left - The `left` pixel coordinate relative to the top/left corner
+     * @property {Integer} location - For location constants see: fluid.orator.selectionReader.location
+     */
+
+    /**
      * Returns a position object containing coordinates for absolutely positioning the play button
      * relative to a passed in rect. By default it will be placed above the rect unless there is a collision with the
      * top of the window. In which case it will be placed below. This will be captured in the "location" propertied,
      * and is specified by a constant (See: fluid.orator.selectionReader.location).
      *
-     * In addition to collision detection wth the top of the window, collision detection for the left and right edges of
-     * the window are also taken into account. However, the position will not be flipped, but will be translated
+     * In addition to collision detection with the top of the window, collision detection for the left and right edges
+     * of the window are also taken into account. However, the position will not be flipped, but will be translated
      * slightly to ensure that the item being placed is displayed on screen. These calculations are facilitated through
      * an offsetScale object passed in.
      *
-     * @param {Object} rect - A DOMRect object, used to calculate placement against. Specifically the "top", "bottom",
+     * @param {DOMRect} rect - A DOMRect object, used to calculate placement against. Specifically, the "top", "bottom",
      *                        and "left" properties may be used for positioning.
-     * @param {Float} fontSize - the base font to multiple the offset against
-     * @param {Object} offsetScale - (Optional) an object containing specified offsets: "edge" and "pointer". The "edge"
-     *                               offset refers to the minimum distance between the button and the window edges. The
-     *                               "pointer" offset refers to the distance between the button and the coordinates the
-     *                               DOMRect refers too. This is provides space for an arrow to point from the button.
-     *                               Offsets all default to 1.
-     * @param {Object} wndw - (Optional) Mainly this is provided for testing to allow mocking of the Window's scroll
-     *                        offsets.
+     * @param {MarginInfo} margin - Margin sizes
+     * @param {Float} fontSize - The base font to multiple the offset against
+     * @param {OffsetScale} offsetScale - (Optional) an object containing specified offsets: "edge" and "pointer".
+     *                                    Offsets all default to 1 and are multiplied with the fontSize for determining
+     *                                    the final offset value.
      *
-     * @return {Object} - An object containing the coordinates for positioning the play button.
+     * @return {ControlPosition} - An object containing the coordinates for positioning the play button.
      *                    It takes the form {top: Float, left: Float, location: Integer}
      *                    For location constants see: fluid.orator.selectionReader.location
      */
-    fluid.orator.selectionReader.calculatePosition = function (rect, fontSize, offsetScale, wndw) {
-        var position = {};
+    fluid.orator.selectionReader.calculatePosition = function (rect, margin, fontSize, offsetScale) {
         var edgeOffset = fontSize * (fluid.get(offsetScale, "edge") || 1);
         var pointerOffset = fontSize * (fluid.get(offsetScale, "pointer") || 1);
-        wndw = wndw || window;
+
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+
+        var position = {
+            top: scrollTop - margin.top,
+            left: Math.min(
+                Math.max(rect.left + scrollLeft - margin.left, edgeOffset + scrollLeft),
+                (document.documentElement.clientWidth + scrollLeft - margin.left - edgeOffset)
+            )
+        };
 
         if (rect.top < edgeOffset) {
-            position.top = rect.bottom + wndw.pageYOffset;
+            position.top = position.top + rect.bottom;
             position.location = fluid.orator.selectionReader.location.BOTTOM;
         } else {
-            position.top = rect.top + wndw.pageYOffset - pointerOffset;
+            position.top = position.top + rect.top - pointerOffset;
             position.location = fluid.orator.selectionReader.location.TOP;
         }
 
-        position.left = Math.min(
-            Math.max(rect.left + wndw.pageXOffset, edgeOffset + wndw.pageXOffset),
-            (document.documentElement.clientWidth + wndw.pageXOffset - edgeOffset)
-        );
-
         return position;
     };
-
 
     fluid.orator.selectionReader.renderControlState = function (that, control) {
         var text = that.options.strings[that.model.play ? "stop" : "play"];
@@ -947,7 +974,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var selectionRange = window.getSelection().getRangeAt(0);
             var rect = selectionRange.getClientRects()[0];
             var fontSize = parseFloat(that.container.css("font-size"));
-            var position = fluid.orator.selectionReader.calculatePosition(rect, fontSize, that.options.offsetScale);
+            var margin = {
+                top: parseFloat(that.container.css("margin-top")),
+                left: parseFloat(that.container.css("margin-left"))
+            };
+
+            var position = fluid.orator.selectionReader.calculatePosition(rect, margin, fontSize, that.options.offsetScale);
             var control = $(that.options.markup.control);
             control.addClass(that.options.styles.control);
             fluid.orator.selectionReader.renderControlState(that, control);
