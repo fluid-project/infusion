@@ -98,7 +98,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Coerces any value to a promise
      * @param {Any} promiseOrValue - The value to be coerced
-     * @return {Promise} - If the supplied value is already a promise, it is returned unchanged. Otherwise a fresh promise is created with the value as resolution and returned
+     * @return {Promise} - If the supplied value is already a promise, it is returned unchanged.
+     * Otherwise a fresh promise is created with the value as resolution and returned
      */
     fluid.toPromise = function (promiseOrValue) {
         if (fluid.isPromise(promiseOrValue)) {
@@ -141,10 +142,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /* General skeleton for all sequential promise algorithms, e.g. transform, reduce, sequence, etc.
+    /** Construct a `sequencer` which is a general skeleton structure for all sequential promise algorithms,
+     * e.g. transform, reduce, sequence, etc.
      * These accept a variable "strategy" pair to customise the interchange of values and final return
+     * @param {Array} sources - Array of values, promises, or tasks
+     * @param {Object} options - Algorithm-static options structure to be supplied to any task function discovered within
+     * `sources`
+     * @param {fluid.promise.strategy} strategy - A pair of function members `invokeNext` and `resolveResult` which determine the particular
+     * sequential promise algorithm to be operated.
+     * @return {fluid.promise.sequencer} A `sequencer` structure which will operate the algorithm and holds its state.
      */
-
     fluid.promise.makeSequencer = function (sources, options, strategy) {
         if (!fluid.isArrayable(sources)) {
             fluid.fail("fluid.promise sequence algorithms must be supplied an array as source");
@@ -272,7 +279,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *     filterTransforms {Array}: An array of listener namespaces. If this field is set, only the transform elements whose listener namespaces listed in this array will be applied.
      * @return {fluid.promise} A promise which will yield either the final transformed value, or the response of the first transform which fails.
      */
-
     fluid.promise.fireTransformEvent = function (event, payload, options) {
         options = options || {};
         var listeners = options.reverse ? fluid.makeArray(event.sortedListeners).reverse() :

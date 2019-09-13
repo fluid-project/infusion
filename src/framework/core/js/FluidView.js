@@ -19,15 +19,42 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    /** Invoke the supplied function on the supplied arguments
+     * @param {Object} options - A structure encoding a function invocation
+     * @param {Function} options.func - The function to be invoked
+     * @param {Array} options.args - The arguments on which the function is to be invoked
+     * @return {Any} The return value from the function invocation
+     */
+    fluid.apply = function (options) {
+        return options.func.apply(null, options.args);
+    };
+
+    // A "proto-viewComponent" which simply defines a DOM binder and is agnostic as to how its container is defined
+    fluid.defaults("fluid.baseViewComponent", {
+        gradeNames: "fluid.component",
+        invokers: {
+            locate: { // We use this peculiar form of definition since the current implementation of makeInvoker can't
+                      // cope with a variable function, and the DOM binder instance is historically mutable
+                funcName: "fluid.apply",
+                args: {
+                    func: "{that}.dom.locate",
+                    args: "{arguments}"
+                }
+            }
+        },
+        members: {
+            dom: "@expand:fluid.createDomBinder({that}.container, {that}.options.selectors)"
+        }
+    });
+
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.modelComponent"],
+        gradeNames: ["fluid.modelComponent", "fluid.baseViewComponent"],
         argumentMap: {
             container: 0,
             options: 1
         },
         members: {
-            container: "@expand:fluid.containerForViewComponent({that}, {that}.options.container)",
-            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors, {that}.container)"
+            container: "@expand:fluid.containerForViewComponent({that}, {that}.options.container)"
         }
     });
 
@@ -219,21 +246,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var container = fluid.container(containerSpec);
         fluid.expectFilledSelector(container, "Error instantiating viewComponent at path \"" + fluid.pathForComponent(that));
         return container;
-    };
-
-    /**
-     * Creates a new DOM Binder instance for the specified component and mixes it in.
-     *
-     * @param {Object} that - The component instance to attach the new DOM Binder to.
-     * @param {Object} selectors - a collection of named jQuery selectors
-     * @return {Object} - The DOM for the component.
-     */
-    // Note that whilst this is not a properly public function, it has been bound to in a few stray places such as Undo.js and
-    // Panels.js - until we can finally reform these sites we need to keep this signature stable as well as the bizarre side-effects
-    fluid.initDomBinder = function (that, selectors/*, container */) {
-        that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
-        that.locate = that.dom.locate;
-        return that.dom;
     };
 
     // DOM Utilities.

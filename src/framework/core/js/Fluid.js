@@ -2001,6 +2001,36 @@ var fluid = fluid || fluid_3_0_0;
         });
     };
 
+    // Key structure: [["local"|"global"], workflowName] to {priority, workflowOptions, gradeName, index}/workflowEntry
+    fluid.workflowCache = {};
+    // Key structure: [["local"|"global"]] to sorted array of workflowEntry
+    fluid.workflowCacheSorted = {};
+
+    fluid.resortWorkflows = function (workflowType) {
+        var thisCache = fluid.workflowCache[workflowType];
+        var parsed = fluid.parsePriorityRecords(thisCache, workflowType + " workflows");
+        parsed.forEach(function (oneParsed, index) {
+            thisCache[oneParsed.namespace].index = index;
+        });
+        fluid.workflowCacheSorted[workflowType] = parsed;
+    };
+
+    fluid.indexOneWorkflows = function (gradeName, workflowType, workflows) {
+        fluid.each(workflows, function (oneWorkflow, workflowKey) {
+            fluid.model.setSimple(fluid.workflowCache, [workflowType, workflowKey], {
+                priority: oneWorkflow.priority,
+                gradeName: gradeName,
+                workflowOptions: oneWorkflow
+            });
+            fluid.resortWorkflows(workflowType);
+        });
+    };
+
+    fluid.indexGradeWorkflows = function (gradeName, options) {
+        fluid.indexOneWorkflows(gradeName, "local", fluid.getImmediate(options, ["workflows", "local"]));
+        fluid.indexOneWorkflows(gradeName, "global", fluid.getImmediate(options, ["workflows", "global"]));
+    };
+
     // unsupported, NON-API function
     fluid.rawDefaults = function (componentName) {
         var entry = fluid.defaultsStore[componentName];
@@ -2013,7 +2043,11 @@ var fluid = fluid || fluid_3_0_0;
             {componentName: componentName, options: options});
         var optionsCopy = fluid.expandCompact ? fluid.expandCompact(options) : fluid.copy(options);
         fluid.annotateListeners(componentName, optionsCopy);
+        // TODO: consider moving workflows outside fluid.defaults system entirely since we special-case them so much
+        fluid.indexGradeWorkflows(componentName, optionsCopy);
+        delete optionsCopy.workflows;
         var callerInfo = fluid.getCallerInfo && fluid.getCallerInfo(6);
+        fluid.freezeRecursive(optionsCopy);
         fluid.defaultsStore[componentName] = {
             options: optionsCopy,
             callerInfo: callerInfo

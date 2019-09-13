@@ -286,7 +286,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Default renderer for the edit mode view.
      *
-     * @param {Object} that - The component itself.
+     * @param {fluid.inlineEdit} that - The fluid.inlineEdit component itself.
      * @return {Object} An object containing:
      *  - container The edit container containing the edit field
      *  - field The styled edit field
@@ -572,12 +572,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Render the display mode view.
      *
-     * @param {Object} that - The component itself.
-     * @param {Object} edit - Function to invoke the edit mode
+     * @param {fluid.inlineEdit} that - The component itself.
+     * @param {Function} edit - Function to invoke the edit mode
      * @param {Object} model - Model data to display.
+     * @param {Function} locator - DOM locator function - throwaway to force evaluation for use by downstream functions
      * @return {jQuery} The display container containing the display text and textEditbutton for display mode view.
      */
-    fluid.inlineEdit.defaultDisplayModeRenderer = function (that, edit, model) {
+    fluid.inlineEdit.defaultDisplayModeRenderer = function (that, edit, model/*, locator */) {
         var styles = that.options.styles;
 
         var displayModeWrapper = fluid.inlineEdit.setupDisplayModeContainer(styles);
@@ -727,7 +728,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             displayModeRenderer: {
                 expander: {
                     func: "{that}.options.displayModeRenderer",
-                    args: ["{that}", "{that}.edit", "{that}.model"]
+                    args: ["{that}", "{that}.edit", "{that}.model", "{that}.locate"]
                 }
             }
         },
@@ -947,7 +948,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // "source" distributions are silly and dangerous in any case, but they have become fairly widely used, together with the expectation that the
             // material from "defaults" can be broadcast too. But clearly material that is from base grade defaults is unwelcome to be distributed.
             // This seems to imply that we've got no option but to start supporting "provenance" in options and defaults - highly expensive.
-            exclusions: ["workflows", "members.inlineEdits", "members.modelRelay", "container", "members.container", "members.dom", "members.applier", "members.model", "selectors.editables", "events"],
+            exclusions: ["workflows", "invokers.locate", "members.inlineEdits", "members.modelRelay", "container", "members.container", "members.dom", "members.applier", "members.model", "selectors.editables", "events"],
             removeSource: true,
             target: "{that > fluid.inlineEdit}.options"
         },

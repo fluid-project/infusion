@@ -173,7 +173,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (that.container.length === 0) {
             fluid.fail("resetDomBinder got no elements in DOM for container searching for selector " + that.container.selector);
         }
-        fluid.initDomBinder(that, that.options.selectors);
+        that.dom = fluid.createDomBinder(that.container, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
 
