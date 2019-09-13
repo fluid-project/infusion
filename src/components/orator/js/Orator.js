@@ -265,7 +265,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             utteranceOnMark: null,
             utteranceOnPause: null,
             utteranceOnResume: null,
-            utteranceOnStart: null
+            utteranceOnStart: null,
+            onStop: "{fluid.textToSpeech}.events.onStop"
         },
         utteranceEventMap: {
             onboundary: "utteranceOnBoundary",
@@ -284,7 +285,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             parseQueueLength: 0,
             parseIndex: null,
-            ttsBoundary: null
+            ttsBoundary: null,
+            adjustedBoundary: null,
+            boundaryShift: 0
         },
         modelRelay: [{
             target: "parseIndex",
@@ -293,7 +296,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             singleTransform: {
                 type: "fluid.transforms.free",
                 func: "fluid.orator.domReader.getClosestIndex",
-                args: ["{that}", "{that}.model.ttsBoundary"]
+                args: ["{that}", "{that}.model.adjustedBoundary"]
             }
         }],
         members: {
@@ -350,7 +353,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             queueSpeech: {
                 funcName: "fluid.orator.domReader.queueSpeech",
-                args: ["{that}", "{arguments}.0", true, "{arguments}.1"]
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
             },
             isWord: "fluid.textNodeParser.isWord"
         },
@@ -361,19 +364,93 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         listeners: {
+            // "onQueueSpeech.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["onQueueSpeech", "{arguments}"]
+            // },
+            // "onReadFromDOM.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["onReadFromDOM", "{arguments}"]
+            // },
+            // "utteranceOnEnd.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["utteranceOnEnd", "{arguments}"]
+            // },
+            // "utteranceOnBoundary.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["utteranceOnBoundary", "{arguments}"]
+            // },
+            // "utteranceOnError.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["utteranceOnError", "{arguments}"]
+            // },
+            // "utteranceOnMark.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["utteranceOnMark", "{arguments}"]
+            // },
+            // "utteranceOnPause.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["utteranceOnPause", "{arguments}"]
+            // },
+            // "utteranceOnResume.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["utteranceOnResume", "{arguments}"]
+            // },
+            // "utteranceOnStart.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["utteranceOnStart", "{arguments}"]
+            // },
+            // "onStop.log": {
+            //     priority: "first",
+            //     this: "console",
+            //     method: "log",
+            //     args: ["onStop", "{arguments}"]
+            // },
             "onQueueSpeech.removeExtraWhiteSpace": "fluid.orator.domReader.removeExtraWhiteSpace",
             "onQueueSpeech.queueSpeech": {
                 func: "{fluid.textToSpeech}.queueSpeech",
                 args: ["{arguments}.0", "{arguments}.1.interrupt", "{arguments}.1"],
                 priority: "after:removeExtraWhiteSpace"
             },
-            "utteranceOnEnd.resetParseQueue": {
+            "onStop.resetParseQueue": {
                 listener: "{that}.resetParseQueue"
             },
-            "utteranceOnEnd.removeHighlight": {
+            "onStop.removeHighlight": {
                 listener: "{that}.removeHighlight",
                 priority: "after:resetParseQueue"
             },
+            "onStop.updateTTSModel": {
+                changePath: "tts",
+                value: {
+                    speaking: false,
+                    paused: false
+                }
+            },
+            // "utteranceOnEnd.resetParseQueue": {
+            //     listener: "{that}.resetParseQueue"
+            // },
+            // "utteranceOnEnd.removeHighlight": {
+            //     listener: "{that}.removeHighlight",
+            //     priority: "after:resetParseQueue"
+            // },
             "utteranceOnEnd.updateTTSModel": {
                 changePath: "tts",
                 value: {
@@ -403,16 +480,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             },
             "utteranceOnBoundary.setCurrentBoundary": {
-                changePath: "ttsBoundary",
-                value: "{arguments}.0.charIndex",
-                source: "utteranceOnBoundary"
+                listener: "fluid.orator.domReader.setCurrentBoundary",
+                args: ["{that}", "{arguments}"]
             },
+            // "utteranceOnBoundary.setCurrentBoundary": {
+            //     changePath: "ttsBoundary",
+            //     value: "{arguments}.0.charIndex",
+            //     source: "utteranceOnBoundary"
+            // },
             "onDestroy.detachRange": {
                 "this": "{that}.range",
                 method: "detach"
             }
         }
     });
+
+    fluid.orator.domReader.setCurrentBoundary = function (that, boundary) {
+        console.log("boundary event args:", boundary);
+        boundary = boundary[0].charIndex;
+        var currentBoundary = that.model.ttsBoundary || 0;
+        if (currentBoundary >= boundary) {
+            that.applier.change("boundaryShift", currentBoundary, "ADD", "utteranceOnBoundary");
+        }
+        that.applier.change("ttsBoundary", boundary, "ADD", "utteranceOnBoundary");
+        that.applier.change("adjustedBoundary", boundary + that.model.boundaryShift, "ADD", "utteranceOnBoundary");
+        console.log("currentBoundar:", currentBoundary, "incoming boundary:", boundary, "boundaryShift:", that.model.boundaryShift, "adjustedBoundary:", boundary + that.model.boundaryShift);
+    };
 
     fluid.orator.domReader.play = function (that, resumeFn) {
         if (that.model.tts.enabled) {
@@ -468,9 +561,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @return {Promise} - A promise for the final resolved text
      */
-    fluid.orator.domReader.queueSpeech = function (that, text, interrupt, options) {
+    fluid.orator.domReader.queueSpeech = function (that, text, options) {
         options = options || {};
-        options.interrupt = interrupt || options.interrupt;
         // map events
         fluid.orator.domReader.mapUtteranceEvents(that, options, that.options.utteranceEventMap);
 
@@ -515,7 +607,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Takes in a textnode and separates the contained words into DomWordMaps that are added to the parseQueue.
      * Typically this handles parsed data passed along by a Parser's (`fluid.textNodeParser`) `onParsedTextNode` event.
      * Empty nodes are skipped and the subsequent text is analyzed to determine if it should be appended to the
-     * previous DomWordMap in the parseQueue. For example: when the syllabification separator is tag is inserted
+     * previous DomWordMap in the parseQueue. For example: when the syllabification separator tag is inserted
      * between words.
      *
      * @param {Component} that - an instance of `fluid.orator.domReader`
@@ -582,12 +674,40 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {String} - The parsed text combined into a String.
      */
     fluid.orator.domReader.parsedToString = function (parsed) {
-        var words = fluid.transform(parsed, function (block) {
-            return block.word;
+        var strings = [];
+        var currentLang;
+        var index = -1;
+
+        fluid.each(parsed, function (block) {
+            if (!currentLang || currentLang !== block.lang) {
+                currentLang = block.lang;
+                index++;
+                strings.push({
+                    string: block.word,
+                    lang: block.lang
+                });
+            } else {
+                strings[index].string = strings[index].string + block.word;
+            }
         });
 
-        return words.join("");
+        return strings;
     };
+    // /**
+    //  * Combines the parsed text into a String.
+    //  *
+    //  * @param {DomWordMap[]} parsed - An array of {DomWordMap} objects containing the position mappings from a parsed
+    //  *                                {DomElement}.
+    //  *
+    //  * @return {String} - The parsed text combined into a String.
+    //  */
+    // fluid.orator.domReader.parsedToString = function (parsed) {
+    //     var words = fluid.transform(parsed, function (block) {
+    //         return block.word;
+    //     });
+    //
+    //     return words.join("");
+    // };
 
     /**
      * Parses the DOM element into data points to use for highlighting the text, and queues the text into the self
@@ -603,7 +723,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (elm.length) {
             that.resetParseQueue();
             that.parser.parse(elm[0]);
-            that.queueSpeech(that.parsedToString(that.parseQueue));
+            // that.queueSpeech(that.parsedToString(that.parseQueue));
+            var strings = that.parsedToString(that.parseQueue);
+            fluid.each(strings, function (block, index) {
+                var interrupt = !!index; // only interrupt on the first string
+                that.queueSpeech(block.string, {lang: block.lang, interrupt: interrupt});
+            });
         }
     };
 
