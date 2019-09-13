@@ -146,7 +146,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "onCreate.queue": {
                             "this": "{fluid.textToSpeech}.queue",
                             method: "push",
-                            args: ["{that}"]
+                            args: ["{that}.utterance"]
+                        },
+                        "onCreate.speak": {
+                            listener: "{textToSpeech}.speak",
+                            args: ["{that}.utterance"]
                         },
                         "onEnd.destroy": {
                             func: "{that}.destroy",
@@ -211,15 +215,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             speak: {
                 func: "{that}.invokeSpeechSynthesisFunc",
-                args: ["speak", "{that}.queue.0.utterance"]
+                args: ["speak", "{arguments}.0"]
             },
             invokeSpeechSynthesisFunc: "fluid.textToSpeech.invokeSpeechSynthesisFunc"
         },
         listeners: {
-            "onSpeechQueued.speak": {
-                func: "{that}.speak",
-                priority: "last"
-            },
             "utteranceOnStart.speaking": {
                 changePath: "speaking",
                 value: true,
