@@ -959,6 +959,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // unsupported, NON-API function
     fluid.doDestroy = function (that, name, parent) {
+        if (that.lifecycleStatus === "destroyed") {
+            fluid.fail("Cannot destroy component " + fluid.dumpComponentAndPath(that) + " which has already been destroyed");
+        }
         fluid.fireEvent(that, "onDestroy", [that, name || "", parent]);
         that.lifecycleStatus = "destroyed";
         for (var key in that.events) {
@@ -1901,9 +1904,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var pendingPotentiae = transRec.pendingPotentiae;
         pendingPotentiae.destroys.forEach(function (potentia) {
             if (!potentia.applied) {
-                fluid.operateDestroyPotentia(transRec, potentia);
+                // flag this first in case destroy synchronously schedules a further destroy and hence re-entry into
+                // fluid.commitPotentiae and hence this function
                 potentia.applied = true;
                 --pendingPotentiae.activeCount;
+                fluid.operateDestroyPotentia(transRec, potentia);
             }
         });
         transRec.outputShadows = [];
@@ -1949,7 +1954,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.promise.resumeSequence(rootSequencer);
         }
         fluid.tryCatch(function commitPotentiae() {
-            while (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
+            if (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
                 var firstShadow = fluid.commitPotentiaePhase(transRec, sequencer);
                 togo = togo || firstShadow;
             }

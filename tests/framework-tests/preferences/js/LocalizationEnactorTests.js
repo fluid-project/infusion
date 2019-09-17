@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     /*********************************************************************************
-     *Tests for referencing a global fluid.prefs.enactor.localization via model relay
+     * Tests for referencing a global fluid.prefs.enactor.localization via model relay
      ********************************************************************************/
 
     fluid.defaults("fluid.tests.localizationExistingTests", {

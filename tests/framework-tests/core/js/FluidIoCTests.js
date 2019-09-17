@@ -5288,6 +5288,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /** Justin's theme: Test destruction of free component during onDestroy listener **/
+    // Discovered in "Localization Enactor Tests" where fluid.tests.localizationExistingTests both instantiates and
+    // destroys a free component. In fact the stack overflow failure was masked since the destructor had actually
+    // executed and the stack overflow exception was just converted into a transaction promise rejection that was unobserved
+
+    fluid.defaults("fluid.tests.FLUID6148destructors", {
+        gradeNames: "fluid.component",
+        listeners: {
+            "onCreate.constructIt": "fluid.tests.FLUID6148destructors.construct",
+            "onDestroy.destroyIt": "fluid.tests.FLUID6148destructors.destroy"
+        }
+        /** Still worse, we could write the following, which will presumably always be forbidden since it might execute
+        as late as "observation" which is at the end of local workflows
+        members: {
+            freeComponent: "@expand:fluid.component()"
+        }
+        */
+    });
+
+    fluid.tests.FLUID6148destructors.construct = function (that) {
+        // Truly awful practice but there is little we can do to effectively forbid it
+        that.freeComponent = fluid.component();
+    };
+
+    fluid.tests.FLUID6148destructors.destroy = function (that) {
+        var transRec = fluid.currentTreeTransaction();
+        transRec.promise.then(function () {
+            jqUnit.assert("Transaction should conclude normally");
+        }, function (err) {
+            jqUnit.fail("Destruction transaction should have concluded normally, instead got " + err);
+        });
+        that.freeComponent.destroy();
+        jqUnit.assertUndefined("Opened transaction should not have rejected already", transRec.promise.disposition);
+    };
+
+    jqUnit.test("FLUID-6148: Chained destructors", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.FLUID6148destructors();
+        that.destroy();
+    });
+
+
     /** FLUID-5614: Merging of "double deep trees" **/
 
     fluid.tests.push = function (array, value) {
