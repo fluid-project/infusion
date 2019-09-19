@@ -266,7 +266,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             utteranceOnPause: null,
             utteranceOnResume: null,
             utteranceOnStart: null,
-            onStop: "{fluid.textToSpeech}.events.onStop"
+            onStop: null
         },
         utteranceEventMap: {
             onboundary: "utteranceOnBoundary",
@@ -663,11 +663,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.resetParseQueue();
             that.parser.parse(elm[0]);
 
-            fluid.each(that.parseQueue, function (parsedBlock, index) {
+            var queueSpeechPromises = fluid.transform(that.parseQueue, function (parsedBlock, index) {
                 var interrupt = !index; // only interrupt on the first string
                 var text = that.parsedToString(parsedBlock);
-                that.queueSpeech(text, {lang: parsedBlock[0].lang, interrupt: interrupt});
+                return that.queueSpeech(text, {lang: parsedBlock[0].lang, interrupt: interrupt});
             });
+
+            fluid.promise.sequence(queueSpeechPromises).then(that.events.onStop.fire);
         }
     };
 

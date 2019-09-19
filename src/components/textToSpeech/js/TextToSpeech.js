@@ -143,20 +143,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "onPause.relay": "{textToSpeech}.events.utteranceOnPause.fire",
                         "onResume.relay": "{textToSpeech}.events.utteranceOnResume.fire",
                         "onStart.relay": "{textToSpeech}.events.utteranceOnStart.fire",
+                        "onCreate.followPromise": {
+                            funcName: "fluid.promise.follow",
+                            args: ["{that}.promise", "{that}.options.onSpeechQueuePromise"]
+                        },
                         "onCreate.queue": {
                             "this": "{fluid.textToSpeech}.queue",
                             method: "push",
-                            args: ["{that}"]
+                            args: ["{that}"],
+                            priority: "after:followPromise"
                         },
                         "onCreate.speak": {
                             listener: "{textToSpeech}.speak",
-                            args: ["{that}.utterance"]
+                            args: ["{that}.utterance"],
+                            priority: "after:queue"
                         },
                         "onEnd.destroy": {
                             func: "{that}.destroy",
                             priority: "last"
                         }
                     },
+                    onSpeechQueuePromise: "{arguments}.2",
                     utterance: "{arguments}.0"
                 }
             }
@@ -333,8 +340,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // The setTimeout is needed for Safari to fully cancel out the previous speech.
         // Without this the synthesizer gets confused and may play multiple utterances at once.
         setTimeout(function () {
-            that.events.onSpeechQueued.fire(utteranceOpts, interrupt);
-            promise.resolve(text);
+            that.events.onSpeechQueued.fire(utteranceOpts, interrupt, promise);
         }, 100);
         return promise;
     };
@@ -343,7 +349,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // Safari does not fire the onend event from an utterance when the speech synthesis is cancelled.
         // Manually triggering the onEnd event for each utterance as we empty the queue, before calling cancel.
         while (that.queue.length) {
-            var utterance = that.queue.shift();
+            var utterance = that.queue[0];
             utterance.events.onEnd.fire();
         }
 
@@ -363,6 +369,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 expander: {
                     funcName: "fluid.textToSpeech.utterance.construct",
                     args: ["{that}", "{that}.options.utteranceEventMap", "{that}.options.utterance"]
+                }
+            },
+            promise: {
+                expander: {
+                    funcName: "fluid.promise"
                 }
             }
         },
@@ -399,7 +410,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onBoundary.updateModel": {
                 changePath: "boundary",
                 value: "{arguments}.0.charIndex"
-            }
+            },
+            "onEnd.resolvePromise": "{that}.promise.resolve",
+            "onError.rejectPromise": "{that}.promise.reject"
         }
     });
 
