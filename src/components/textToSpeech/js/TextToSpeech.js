@@ -42,7 +42,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     * Adds a lister to a window event for each event defined on the component.
     * The name must match a valid window event.
     *
-    * @param {Component} that - the component itself
+    * @param {Component} that - an instance of `fluid.window`
     */
     fluid.window.bindEvents = function (that) {
         fluid.each(that.options.events, function (type, eventName) {
@@ -321,13 +321,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Assembles the utterance options and fires onSpeechQueued which will kick off the creation of an utterance
      * component. If "interrupt" is true, this utterance will replace any existing ones.
      *
-     * @param {Component} that - the component
+     * @param {Component} that - an instance of `fluid.textToSpeech`
      * @param {String} text - the text to be synthesized
      * @param {Boolean} interrupt - used to indicate if this text should be queued or replace existing utterances
-     * @param {UtteranceOpts} options - options to configure the SpeechSynthesis utterance with. It is merged on top of the
-     *                           utteranceOpts from the component's model.
+     * @param {UtteranceOpts} options - options to configure the {SpeechSynthesisUtterance} with. It is merged on top of
+     *                                  the `utteranceOpts` from the component's model.
      *
-     * @return {Promise} - returns a promise that is resolved after the onSpeechQueued event has fired.
+     * @return {Promise} - returns a promise that is resolved/rejected from the related `fluid.textToSpeech.utterance`
+     *                     instance.
      */
     fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
         var promise = fluid.promise();
@@ -345,6 +346,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
+    /**
+     * Manually fires the `onEnd` event of each remaining `fluid.textToSpeech.utterance` component in the queue. This
+     * is required because if the SpeechSynthesis is cancelled remaining {SpeechSynthesisUtterance} are ignored and do
+     * not fire their `onend` event.
+     *
+     * @param  {Component} that - an instance of `fluid.textToSpeech`
+     */
     fluid.textToSpeech.cancel = function (that) {
         // Safari does not fire the onend event from an utterance when the speech synthesis is cancelled.
         // Manually triggering the onEnd event for each utterance as we empty the queue, before calling cancel.
@@ -421,11 +429,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * event provided in the utteranceEventMap, any corresponding event binding passed in directly through the
      * utteranceOpts will be rebound as component event listeners with the "external" namespace.
      *
-     * @param {Component} that - the component
-     * @param {Object} utteranceEventMap - a mapping from SpeechSynthesisUtterance events to component events.
-     * @param {UtteranceOpts} utteranceOpts - options to configure the SpeechSynthesis utterance with.
+     * @param {Component} that - an instance of `fluid.textToSpeech.utterance`
+     * @param {Object} utteranceEventMap - a mapping from {SpeechSynthesisUtterance} events to component events.
+     * @param {UtteranceOpts} utteranceOpts - options to configure the {SpeechSynthesisUtterance} with.
      *
-     * @return {SpeechSynthesisUtterance} - returns the created SpeechSynthesisUtterance object
+     * @return {SpeechSynthesisUtterance} - returns the created {SpeechSynthesisUtterance} object
      */
     fluid.textToSpeech.utterance.construct = function (that, utteranceEventMap, utteranceOpts) {
         var utterance = new SpeechSynthesisUtterance();
