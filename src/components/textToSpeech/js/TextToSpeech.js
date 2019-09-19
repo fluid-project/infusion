@@ -146,7 +146,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "onCreate.queue": {
                             "this": "{fluid.textToSpeech}.queue",
                             method: "push",
-                            args: ["{that}.utterance"]
+                            args: ["{that}"]
                         },
                         "onCreate.speak": {
                             listener: "{textToSpeech}.speak",

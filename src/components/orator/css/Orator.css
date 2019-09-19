@@ -151,7 +151,7 @@
     color: #000000;
     background-color: #EED400;
     /* Used to make the background appear larger so that it stands out in a block of text */
-    outline: 0.2rem solid #EED400;
+    padding: 0.2rem 0;
 }
 
 
