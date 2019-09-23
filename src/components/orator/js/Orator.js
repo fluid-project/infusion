@@ -384,7 +384,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "utteranceOnEnd.resetParseIndex": {
                 changePath: "",
                 value: {
-                    parseIndex: null,
+                    parseIndex: null
                 },
                 source: "utteranceOnEnd"
             },
@@ -608,7 +608,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     lastQueue.push(lastParsed);
                     that.applier.change("", {
                         parseQueueCount: that.parseQueue.length,
-                        parseItemCount: that.model.parseItemCount + 1,
+                        parseItemCount: that.model.parseItemCount + 1
                     }, "ADD", "addToParseQueue");
                     parsed.blockIndex += word.length;
                 }
