@@ -139,9 +139,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.memberFromRecord = function (memberrecs, name, that) {
+        var shadow = fluid.shadowForComponent(that);
         var togo;
         for (var i = 0; i < memberrecs.length; ++i) { // memberrecs is the special "fluid.mergingArray" type which is not Arrayable
-            var expanded = fluid.expandImmediate(memberrecs[i], that);
+            var expanded = fluid.expandImmediate(memberrecs[i], that, shadow.localRecord);
             if (!fluid.isPlainObject(togo)) { // poor man's "merge" algorithm to hack FLUID-5668 for now
                 togo = expanded;
             } else {
@@ -681,7 +682,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.collectDistributedGrades(rec);
             }
             if (rec.rawDynamic.length > 0) {
-                var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localDynamic);
+                var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localRecord);
                 if (typeof(expanded) === "function") {
                     expanded = expanded();
                 }
@@ -707,7 +708,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.computeComponentAccessor = function (that, localRecord) {
         var instantiator = fluid.globalInstantiator;
         var shadow = fluid.shadowForComponent(that);
-        shadow.localDynamic = localRecord; // for signalling to dynamic grades from dynamic components
+        shadow.localRecord = localRecord;
         // TODO: Presumably we can now simply resolve this from within the shadow potentia itself
         var options = that.options;
         var strategy = shadow.mergeOptions.strategy;
@@ -764,6 +765,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     that {Component} The component itself
     //     contextHash {String to Boolean} Map of context names which this component matches
     //     mergePolicy, mergeOptions: Machinery for last phase of options merging
+    //     localRecord: The "local record" of special contexts for local resolution, e.g. {arguments}, {source}, etc.
     //     invokerStrategy, eventStrategyBlock, memberStrategy, getConfig: Junk required to operate the accessor
     //     listeners: Listeners registered during this component's construction, to be cleared during clearListeners
     //     distributions, collectedClearer: Managing options distributions
@@ -1297,6 +1299,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return recordKey + (sourceKey === 0 ? "" : "-" + sourceKey); // TODO: configurable name strategies
     };
 
+    fluid.concludeAnyTransaction = function () {
+        var instantiator = fluid.globalInstantiator;
+        var transactionId = instantiator.currentTreeTransactionId;
+        if (transactionId) {
+            var transRec = instantiator.treeTransactions[transactionId];
+            transRec.promise.then(null, function (e) {
+                throw e;
+            });
+            fluid.commitPotentiae(transactionId);
+        }
+    };
+
     fluid.bindDeferredComponent = function (that, componentName, lightMerge, dynamicComponent) {
         var eventName = lightMerge.createOnEvent;
         var event = fluid.isIoCReference(eventName) ? fluid.expandOptions(eventName, that) : that.events[eventName];
@@ -1304,13 +1318,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent ", that, " since event specification " +
                 eventName + " could not be expanded to an event - got ", event);
         }
-        var instantiator = fluid.globalInstantiator;
         var shadow = fluid.shadowForComponent(that);
         if (dynamicComponent) {
             fluid.set(shadow, ["dynamicComponentCount", componentName], 0);
         }
         var constructListener = function () {
-            var transactionId = instantiator.currentTreeTransactionId || fluid.beginTreeTransaction().transactionId;
             var key = dynamicComponent ?
                 fluid.computeDynamicComponentKey(componentName, shadow.dynamicComponentCount[componentName]++) : componentName;
             var localRecord = {
@@ -1320,23 +1332,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
              {componentName: componentName, that: that, eventName: eventName});
             var freshLightMerge = fluid.copy(lightMerge);
             delete freshLightMerge.createOnEvent;
-            fluid.registerConcreteSubPotentia(freshLightMerge, key, 0, that, localRecord, transactionId);
+            fluid.registerConcreteSubPotentia(freshLightMerge, key, 0, that, localRecord);
             fluid.popActivity();
         };
         event.addListener(constructListener);
         fluid.recordListener(event, constructListener, shadow);
-        var concludeListener = function () {
-            var transactionId = instantiator.currentTreeTransactionId;
-            if (transactionId) {
-                var transRec = instantiator.treeTransactions[transactionId];
-                transRec.promise.then(null, function (e) {
-                    throw e;
-                });
-                fluid.commitPotentiae(transactionId);
-            }
-        };
-        event.addListener(concludeListener, "fluid-componentConstruction", "last:transaction");
-        fluid.recordListener(event, concludeListener, shadow);
+        event.addListener(fluid.concludeAnyTransaction, "fluid-componentConstruction", "last:transaction");
+        fluid.recordListener(event, fluid.concludeAnyTransaction, shadow);
     };
 
     fluid.markSubtree = function (instantiator, that, path, state) {
@@ -1624,13 +1626,62 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    fluid.registerSourcedDynamicComponents = function (potentia, shell, sources, lightMerge, key) {
+    fluid.registerSourcedDynamicComponent = function (potentia, shell, source, sourceKey, lightMerge, key, localRecordContributor) {
+        var localRecord = $.extend({}, potentia.localRecord, {"source": source, "sourcePath": sourceKey});
+        (localRecordContributor || fluid.identity)(localRecord, source, sourceKey);
+        var dynamicKey = fluid.computeDynamicComponentKey(key, sourceKey);
+        var freshLightMerge = fluid.copy(lightMerge);
+        fluid.registerConcreteSubPotentia(freshLightMerge, dynamicKey, potentia.componentDepth, shell, localRecord);
+    };
+
+    fluid.registerSourcedDynamicComponents = function (potentia, shell, sources, lightMerge, key, localRecordContributor) {
         fluid.each(sources, function (source, sourceKey) {
-            var localRecord = $.extend({}, potentia.localRecord, {"source": source, "sourcePath": sourceKey});
-            var dynamicKey = fluid.computeDynamicComponentKey(key, sourceKey);
-            var freshLightMerge = fluid.copy(lightMerge);
-            fluid.registerConcreteSubPotentia(freshLightMerge, dynamicKey, potentia.componentDepth, shell, localRecord);
+            fluid.registerSourcedDynamicComponent(potentia, shell, source, sourceKey, lightMerge, key, localRecordContributor);
         });
+    };
+
+    fluid.lensedComponentModelListener = function (that, key, segs, value) {
+        var shadow = fluid.shadowForComponent(that);
+        var sourceKey = segs[segs.length - 1];
+        var expectedMemberName = fluid.computeDynamicComponentKey(key, sourceKey);
+        var currentComponent = that[expectedMemberName];
+        if (value !== undefined && !currentComponent) {
+            var lightMerge = shadow.lightMergeDynamicComponents[key];
+            var parentRecord = shadow.modelSourcedDynamicComponents[key];
+            fluid.registerSourcedDynamicComponent(shadow.potentia, that, value, sourceKey, lightMerge, key,
+                parentRecord.localRecordContributor);
+        } else if (value === undefined && currentComponent) {
+            currentComponent.destroy();
+        }
+    };
+
+    fluid.lensedComponentDefToBlock = function (key, sourcesParsed) {
+        var fromModelPath = sourcesParsed.segs.slice(1);
+        var modelListener = {
+            path: {
+                context: sourcesParsed.context,
+                segs: fromModelPath.concat(["*"])
+            },
+            excludeSource: "init",
+            funcName: "fluid.lensedComponentModelListener",
+            args: ["{that}", key, "{change}.path", "{change}.value"]
+        };
+        var modelListeners = {};
+        modelListeners["lensedComponents-" + key] = modelListener;
+        return {
+            modelListeners: modelListeners
+        };
+    };
+
+    fluid.addLensedComponentBlocks = function (lensedComponentBlocks, potentia, shadow) {
+        var merged = fluid.extend.apply(null, [true, {}].concat(lensedComponentBlocks));
+        // cf. defaultValueMerge in fluid.mergeComponentOptions
+        shadow.mergeOptions.mergeBlocks.push(fluid.generateExpandBlock({
+            options: merged,
+            recordType: "lensedComponents",
+            priority: fluid.mergeRecordTypes.lensedComponents
+        }, shadow.that, shadow.mergePolicy, potentia.localRecord));
+        shadow.mergeOptions.updateBlocks();
     };
 
     // The midpoint of fluid.operateCreatePotentia. We have just created the shell, and will now investigate any subcomponents
@@ -1652,6 +1703,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
         var dynamicComponents = fluid.driveStrategy(shell.options, "dynamicComponents", mergeOptions.strategy);
+        var lensedComponentBlocks = [];
         fluid.each(dynamicComponents, function (subcomponentRecords, key) {
             fluid.checkSubcomponentRecords(subcomponentRecords, fluid.dynamicComponentRecordExpected);
             var lightMerge = fluid.lightMergeComponentRecord(shadow, "lightMergeDynamicComponents", key, subcomponentRecords);
@@ -1669,6 +1721,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         fluid.set(shadow, ["modelSourcedDynamicComponents", key], {
                             sourcesParsed: sourcesParsed
                         });
+                        lensedComponentBlocks.push(fluid.lensedComponentDefToBlock(key, sourcesParsed));
+                        // Construction will now be handled after fluid.initModelTransaction in DataBinding.js
                     }
                 } else {
                     sources = fluid.expandImmediate(lightMerge.sources, shell, potentia.localRecord);
@@ -1676,6 +1730,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         });
+        if (lensedComponentBlocks.length) {
+            fluid.addLensedComponentBlocks(lensedComponentBlocks, potentia, shadow);
+        }
         if (transRec.deferredDistributions.length) { // Resolve FLUID-6193 in potentia world by enqueueing deferred distributions
             transRec.pendingPotentiae.creates.push({
                 type: "distributeOptions",
@@ -1795,6 +1852,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    fluid.lookupWorkflowStage = function (workflowName) {
+        if (!workflowName) {
+            return fluid.workflowCacheSorted.length;
+        } else if (workflowName === "shells") {
+            return 0;
+        } else {
+            var found = fluid.find_if(fluid.workflowCacheSorted, function (workflowEntry) {
+                return workflowEntry.workflowName === workflowName;
+            });
+            if (found) {
+                return found.index + 1;
+            } else {
+                fluid.fail("Unknown workflow name " + workflowName + " supplied as \"breakAt\" for tree transaction: "
+                    + ": valid names are " + fluid.getMembers(fluid.workflowCacheSorted, "workflowName").join(", "));
+            }
+        }
+    };
+
     fluid.evaluateWorkflows = function (shadows, workflowType) {
         var togo = [];
         fluid.workflowCacheSorted[workflowType].forEach(function (workflowRecord) {
@@ -1810,6 +1885,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
         return togo;
+    };
+
+    fluid.findWorkflowShadows = function (shadows, blockStart, blockEnd, workflowRecord) {
+        var workflowShadows = [];
+        for (var i = blockStart; i < blockEnd; ++i) {
+            if (fluid.componentHasGrade(shadows[i].that, workflowRecord.gradeName)) {
+                if (workflowRecord.workflowType === "global") {
+                    workflowShadows.push(shadows[i]);
+                } else {
+                    workflowShadows.unshift(shadows[i]);
+                }
+            }
+        }
+        return workflowShadows;
     };
 
     fluid.waitPendingIOTask = function (transRec) {
@@ -1828,57 +1917,59 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    fluid.localWorkflowToTask = function (func, shadows) {
-        return function () {
-            shadows.forEach(func);
-        };
-    };
-
-    /** Conclude one phase of workflow actions on an array of freshly constructed component shells.
-     * @param {TreeTransaction} transRec - The tree transaction in progress
-     * @param {fluid.promise.sequencer} sequencer - The sequencer to accumulate workflow actions generated during this phase
-     * @return {Component|Undefined} The first component constructed during this phase, if any - used to return the value
-     * of free component constructions
-     */
-    fluid.concludePotentiaePhase = function (transRec, sequencer) {
-        var shadows = transRec.outputShadows;
-        var togo = shadows[0]; // We need to track the first created shadow to support constructing free components
-        // Note that we have big semantic problems breaking at shells now that shells may idiomatically arrive after
-        // model stabilisation!
-        if (transRec.breakAt !== "shells") {
-            shadows.forEach(fluid.instantiateEvents);
-            var sequence = sequencer.sources;
-
-            var globalWorkflows = fluid.evaluateWorkflows(shadows, "global");
-            globalWorkflows.forEach(function (workflowRecord) {
+    fluid.enqueueWorkflowBlock = function (transRec, shadows, workflowStart, workflowEnd, blockStart, blockEnd, sequencer) {
+        var workQueued = false;
+        transRec.lastWorkflowShadow = Math.max(transRec.lastWorkflowShadow, blockEnd);
+        fluid.forEachInRange(fluid.workflowCacheSorted, workflowStart, workflowEnd, function (workflowRecord, workflowIndex) {
+            if (workflowIndex === 0) {
+                for (var i = blockStart; i < blockEnd; ++i) {
+                    fluid.instantiateEvents(shadows[i]);
+                }
+            }
+            var workflowShadows = fluid.findWorkflowShadows(shadows, blockStart, blockEnd, workflowRecord);
+            transRec.maximumWorkflowStage = Math.max(transRec.maximumWorkflowStage, workflowIndex + 1);
+            if (workflowShadows.length > 0) {
                 var workflow = workflowRecord.workflowOptions;
+                var workflowFunc = fluid.getGlobalValue(workflow.funcName);
+                var sequence = sequencer.sources;
                 if (workflow.waitIO) {
                     sequence.push(fluid.waitPendingIOTask(transRec));
                 }
-                sequence.push(function () {
-                    fluid.invokeGlobalFunction(workflow.funcName, [workflowRecord.shadows, transRec]);
-                });
-            });
-//             sequence.push(fluid.waitPendingIOTask(transRec));
-
-            var revShadows = fluid.makeArray(shadows).reverse();
-            // TODO: incorporate into index limiting system - note that breaking at observation is also unlikely
-            // to be helpful in a future proxy world where observation may never conclude
-            if (transRec.breakAt === "observation") {
-                sequence.push(fluid.localWorkflowToTask(fluid.concludeComponentObservation, revShadows));
-            } else {
-                var localWorkflows = fluid.evaluateWorkflows(shadows, "local");
-                localWorkflows.forEach(function (workflowRecord) {
-                    var workflow = workflowRecord.workflowOptions;
-                    if (workflow.waitIO) {
-                        sequence.push(fluid.waitPendingIOTask(transRec));
-                    }
-                    var workflowFunc = fluid.getGlobalValue(workflow.funcName);
-                    sequence.push(fluid.localWorkflowToTask(workflowFunc, revShadows));
-                });
+                if (workflowRecord.workflowType === "global") {
+                    sequence.push(function () {
+                        workflowFunc(workflowShadows, transRec);
+                    });
+                } else {
+                    sequence.push(function () {
+                        workflowShadows.forEach(workflowFunc);
+                    });
+                }
+                workQueued = true;
             }
+        });
+        return workQueued;
+    };
+
+    /** Enqueue one phase of workflow actions on an array of freshly constructed component shells. This embodies `ModelComponentQix` -
+     * By preference, we enqueue the action on any freshly constructed shells of bringing them to the same state of readiness of the
+     * most advanced component. If there are no such, we continue bringing the array of all shadows up to the maximum required
+     * level. Only one of these actions will be enqueued per call to this function - the driver in fluid.commitPotentiae will redispatch
+     * here repeatedly until no further work is enqueued.
+     * @param {TreeTransaction} transRec - The tree transaction in progress
+     * @param {fluid.promise.sequencer} sequencer - The sequencer to accumulate workflow actions generated during this phase
+     * @return {Boolean} `true` if any actions were enqueued
+     */
+    fluid.applyWorkflowPhase = function (transRec, sequencer) {
+        var shadows = transRec.outputShadows;
+        // Bring any freshly created shadows to the same level as the most currently advanced
+        if (shadows.length > transRec.lastWorkflowShadow && transRec.maximumWorkflowStage > 0) {
+            return fluid.enqueueWorkflowBlock(transRec, shadows, 0, transRec.maximumWorkflowStage,
+                transRec.lastWorkflowShadow, shadows.length, sequencer);
+        } else if (transRec.maximumWorkflowStage < transRec.workflowStageBreak) {
+            // They must all be level - bring the level of all shadows to final level
+            return fluid.enqueueWorkflowBlock(transRec, shadows, transRec.maximumWorkflowStage, transRec.workflowStageBreak,
+                0, shadows.length, sequencer);
         }
-        return togo;
     };
 
     // Tightly bound to commitPotentiaePhase - broken out as a function so that we can call it from
@@ -1897,10 +1988,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * component creations.
      * @param {TreeTransaction} transRec - The tree transaction in progress
      * @param {fluid.promise.sequencer} sequencer - The sequencer to accumulate workflow actions generated during this phase
-     * @return {Component|Undefined} The first component constructed during this phase, if any - used to return the value
-     * of free component constructions
      */
-    fluid.commitPotentiaePhase = function (transRec, sequencer) {
+    fluid.commitPotentiaePhase = function (transRec) {
         var pendingPotentiae = transRec.pendingPotentiae;
         pendingPotentiae.destroys.forEach(function (potentia) {
             if (!potentia.applied) {
@@ -1911,7 +2000,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.operateDestroyPotentia(transRec, potentia);
             }
         });
-        transRec.outputShadows = [];
         for (var i = 0; i < pendingPotentiae.creates.length; ++i) {
             var potentia = pendingPotentiae.creates[i]; // not "forEach" since further elements will accumulate during construction
             if (!potentia.applied) {
@@ -1928,7 +2016,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         }
-        return fluid.concludePotentiaePhase(transRec, sequencer);
     };
 
     fluid.isPopulatedPotentiaList = function (potentiaList) {
@@ -1939,14 +2026,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * as well as any further potentiae which become enqueued through construction of these, potentially in multiple phases
      * @param {String} transactionId - The id of the tree transaction to be committed - this must already have been started
      * with `fluid.beginTreeTransaction`.
-     * @return {Shadow|Undefined} The shadow record for the first component to be constructed during the transaction, if any.
+     * @return {Shadow|Undefined} The shadow record for the first component to be constructed during the transaction phase, if any.
      */
-// TODO: Couldn't we get away with a single flat sequencer rather than nesting one per call to commitPotentiae?
-// TODO: Isn't there a risk that any of these sequences accidentally conclude synchronously?
     fluid.commitPotentiae = function (transactionId) {
         var instantiator = fluid.globalInstantiator;
         var transRec = instantiator.treeTransactions[transactionId];
-        var togo;
+        var lastWorkflowShadow = transRec.lastWorkflowShadow;
         var rootSequencer = transRec.rootSequencer;
         var sequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
         rootSequencer.sources.push(sequencer.promise);
@@ -1955,19 +2040,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         fluid.tryCatch(function commitPotentiae() {
             if (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
-                var firstShadow = fluid.commitPotentiaePhase(transRec, sequencer);
-                togo = togo || firstShadow;
+                fluid.commitPotentiaePhase(transRec);
             }
-            if (!sequencer.sequenceStarted) {
-                fluid.promise.resumeSequence(sequencer);
+            var workflowEnqueued = fluid.applyWorkflowPhase(transRec, sequencer);
+            if (workflowEnqueued) { // Redispatch to ourselves if any workflow work was enqueued
+                sequencer.sources.push(function () {
+                    fluid.commitPotentiae(transactionId);
+                });
             }
+            fluid.promise.resumeSequence(sequencer);
         }, function (e) {
             if (!transRec.promise.disposition) {
                 transRec.promise.reject(e);
             }
         });
-        // instantiator.currentTreeTransactionId = null;
-        return togo;
+        // instantiator.currentTreeTransactionId = null; // TODO: make sure this can be put back
+        return transRec.outputShadows[lastWorkflowShadow];
     };
 
     /** Push the supplied potentia onto a potentia list structure (as dispensed from `fluid.blankPotentiaList()`).
@@ -2013,6 +2101,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return instantiator.parseEL(shadow.path);
     };
 
+    /** @typedef {Object} TreeTransaction
+     *    @property {String} transactionId - The id of this transaction (in the form allocated by `fluid.allocateGuid`)
+     *    @property {Number} workflowStageBreak - The index of any workflow stage that component elaboration is to break at
+     *    @property {Number} maximumWorkflowStage - The maximum workflow index that any component has so far reached
+     * ...
+     */
+
     /**
      * Returns the current tree transaction which a constructing component is enlisted in. This may be undefined
      * if the transaction has concluded.
@@ -2029,8 +2124,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} [transactionOptions] - [optional] A set of options configuring this tree transaction. This may include fields
      *     {String} breakAt - one of the values:
      *         `shells`: signifying that this transaction should pause as soon as all component shells are constructed (see FLUID-4925)
-     *         `observation`: signifying that this transaction should pause once the observation process of all components is concluded - that is,
+     *         `concludeComponentObservation`: signifying that this transaction should pause once the observation process of all components is concluded - that is,
      *               that all component options, members and invokers are evaluated.
+     *         ... or the name of any other local or global workflow attached to a grade registered into the system
      * @return {TreeTransaction} The freshly allocated tree transaction.
      */
     fluid.beginTreeTransaction = function (transactionOptions) {
@@ -2041,6 +2137,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var transactionId = instantiator.currentTreeTransactionId = fluid.allocateGuid();
         var transRec = $.extend({
             transactionId: transactionId,
+            outputShadows: [], // All shadows output during this transaction
+            workflowStageBreak: undefined, // Any stage which was requested component processing should break at
+            lastWorkflowShadow: 0, // The last index of a shadow which has entered workflow
+            maximumWorkflowStage: 0, // The maximum workflow stage so far attained by any component
             rootSequencer: fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy()),
             pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
             restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
@@ -2067,8 +2167,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         };
         transRec.promise.then(onConclude, onException);
-
         instantiator.treeTransactions[transactionId] = transRec;
+
+        try {
+            transRec.workflowStageBreak = fluid.lookupWorkflowStage(transRec.breakAt);
+        } catch (e) {
+            transRec.promise.reject(e);
+        }
+
         return transRec;
     };
 
@@ -2110,6 +2216,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 transRec.restoreRecords = fluid.blankPotentiaList();
                 transRec.cancelled = true;
                 transRec.initModelTransaction = {};
+                transRec.outputShadows = [];
+                transRec.lastWorkflowShadow = 0;
+                transRec.maximumWorkflowStage = 0;
                 fluid.commitPotentiae(transactionId, true);
             } catch (e) {
                 fluid.log(fluid.logLevel.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
@@ -2337,8 +2446,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         return function invokeInvoker() {
             if (fluid.defeatLogging === false) {
-                fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from path %path holding component %that",
-                    {name: name, record: invokerec, path: fluid.dumpComponentPath(that), that: that});
+                fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record holding component %that",
+                    {name: name, record: invokerec, that: that});
             }
             var togo, finalArgs;
             if (that.lifecycleStatus === "destroyed") {

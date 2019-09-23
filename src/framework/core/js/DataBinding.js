@@ -514,14 +514,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * whether it occured within the `model` block itself. In this case, references to non-model material are not a failure and will simply be resolved
      * (by the caller) onto their targets (as constants). Otherwise, this function will issue a failure on discovering a reference to non-model material.
      * @return {Object} - A structure holding:
-     *    that {Component} The component whose model is the target of the reference. This may end up being constructed as part of the act of resolving the reference
-     *    applier {Component} The changeApplier for the component <code>that</code>. This may end up being constructed as part of the act of resolving the reference
-     *    modelSegs {String[]} An array of path segments into the model of the component
+     *    that {Component|Any} The component whose model is the target of the reference. This may end up being constructed as part of the act of resolving the reference.
+     * in the case of a reference to "local record" material such as {arguments} or {source}, `that` may exceptionally be a non-component.
+     *    applier {ChangeApplier|Undefined} The changeApplier for the component <code>that</code>. This may end up being constructed as part of the act of resolving the reference
+     *    modelSegs {String[]|Undefined} An array of path segments into the model of the component if this is a model reference
      *    path {String} the value of <code>modelSegs</code> encoded as an EL path (remove client uses of this in time)
      *    nonModel {Boolean} Set if <code>implicitRelay</code> was true and the reference was not into a model (modelSegs/path will not be set in this case)
      *    segs {String[]} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
      */
     fluid.parseValidModelReference = function (that, name, ref, implicitRelay) {
+        var localRecord = fluid.shadowForComponent(that).localRecord;
         var reject = function () {
             var failArgs = ["Error in " + name + ": ", ref].concat(fluid.makeArray(arguments));
             fluid.fail.apply(null, failArgs);
@@ -562,11 +564,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         var contextTarget, target; // resolve target component, which defaults to "that"
         if (parsed.context) {
-            contextTarget = fluid.resolveContext(parsed.context, that);
-            if (!contextTarget) {
-                reject(" context must be a reference to an existing component");
+            // cf. logic in fluid.makeStackFetcher
+            if (localRecord && parsed.context in localRecord) {
+                // It's a "source" reference for a lensed component
+                if (parsed.context === "source" && localRecord.sourceModelReference) {
+                    target = localRecord.sourceModelReference.that;
+                    parsed.modelSegs = localRecord.sourceModelReference.modelSegs.concat(parsed.segs);
+                    parsed.nonModel = false;
+                } else { // It's an ordinary reference to localRecord material - TODO: tests for FLUID-5912
+                    target = localRecord[parsed.context];
+                }
+            } else {
+                contextTarget = fluid.resolveContext(parsed.context, that);
+                if (!contextTarget) {
+                    reject(" context must be a reference to an existing component");
+                }
+                target = parsed.contextSegs ? fluid.getForComponent(contextTarget, parsed.contextSegs) : contextTarget;
             }
-            target = parsed.contextSegs ? fluid.getForComponent(contextTarget, parsed.contextSegs) : contextTarget;
         } else {
             target = that;
         }
@@ -1020,7 +1034,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (fluid.isIoCReference(modelRec)) {
             var parsed = fluid.parseValidModelReference(that, "model reference from model (implicit relay)", modelRec, true);
             if (parsed.nonModel) {
-                value = fluid.getForComponent(parsed.that, parsed.segs);
+                value = fluid.isComponent(parsed.that) ? fluid.getForComponent(parsed.that, parsed.segs) : fluid.getImmediate(parsed.that, parsed.segs);
                 if (value instanceof fluid.fetchResources.FetchOne) {
                     that.applier.resourceMap.push({segs: fluid.makeArray(segs), fetchOne: value});
                     // We don't support compositing of resource references since we couldn't apply this if their
@@ -1141,45 +1155,77 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
 
+        function concludeTreeTransaction(transaction) {
+            if (!transaction.sources.init) {
+                fluid.concludeAnyTransaction();
+            }
+        }
+
         applier.preCommit.addListener(updateRelays);
         applier.preCommit.addListener(commitRelays);
         applier.postCommit.addListener(concludeTransaction);
+        applier.postCommit.addListener(concludeTreeTransaction);
 
         return null;
     };
 
-    fluid.establishModelRelayWorkflow = function (shadows, treeTransaction) {
-        var modelComponents = shadows.filter(function (shadow) {
-            return fluid.componentHasGrade(shadow.that, "fluid.modelComponent");
-        });
-        modelComponents.forEach(function (shadow) {
+    fluid.establishModelRelayWorkflow = function (shadows) {
+        shadows.forEach(function (shadow) {
             fluid.getForComponent(shadow.that, "modelRelay"); // invoke fluid.establishModelRelay and enlist each component
         });
-        // TODO: We can't cache this since components will arrive in a multi-phased way!
-        treeTransaction.modelComponents = modelComponents;
+    };
+
+    fluid.destroyLensedComponentSource = function (that) {
+        var shadow = fluid.shadowForComponent(that);
+        var sourceModelReference = shadow.localRecord.sourceModelReference;
+        if (sourceModelReference && !fluid.isDestroyed(sourceModelReference.that)) {
+            sourceModelReference.that.applier.change(sourceModelReference.modelSegs, null, "DELETE");
+        }
+    };
+
+    fluid.constructLensedComponents = function (shadow, sourcesParsed, dynamicComponentKey) {
+        var lightMerge = shadow.lightMergeDynamicComponents[dynamicComponentKey];
+        var sources = fluid.getImmediate(shadow.that.model, sourcesParsed.modelSegs);
+        var localRecordContributor = shadow.modelSourcedDynamicComponents[dynamicComponentKey].localRecordContributor =
+            function (localRecord, source, sourceKey) {
+                localRecord.sourceModelReference = {
+                    that: sourcesParsed.that,
+                    modelSegs: sourcesParsed.modelSegs.concat([sourceKey])
+                };
+            };
+        fluid.lightMergeRecords.pushRecord(lightMerge, {
+            options: {
+                listeners: {
+                    afterDestroy: "fluid.destroyLensedComponentSource"
+                }
+            }
+        });
+        fluid.registerSourcedDynamicComponents(shadow.potentia, shadow.that, sources, lightMerge, dynamicComponentKey,
+            localRecordContributor);
     };
 
     fluid.operateInitialTransactionWorkflow = function (shadows, treeTransaction) {
-        if (treeTransaction.modelComponents.length > 0) {
-            fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
-                fluid.operateInitialTransaction(treeTransaction.initModelTransaction);
-                // Do this afterwards so that model listeners can be fired by concludeComponentInit
-                treeTransaction.modelComponents.forEach(function (shadow) {
-                    var that = shadow.that;
-                    fluid.mergeModelListeners(that, that.options.modelListeners);
-                    shadow.initModelEvent = function () {
-                        var trans = that.applier.initiate(null, "init");
-                        fluid.initModelEvent(that, that.applier, trans, that.applier.transListeners.sortedListeners);
-                        trans.commit();
-                    };
+        fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
+            fluid.operateInitialTransaction(treeTransaction.initModelTransaction);
+            // Do this afterwards so that model listeners can be fired by concludeComponentInit
+            shadows.forEach(function (shadow) {
+                var that = shadow.that;
+                fluid.mergeModelListeners(that, that.options.modelListeners);
+                shadow.initModelEvent = function () {
+                    var trans = that.applier.initiate(null, "init");
+                    fluid.initModelEvent(that, that.applier, trans, that.applier.transListeners.sortedListeners);
+                    trans.commit();
+                };
+                fluid.each(shadow.modelSourcedDynamicComponents, function (componentRecord, key) {
+                    fluid.constructLensedComponents(shadow, componentRecord.sourcesParsed, key);
                 });
-                // NB: Don't call fluid.concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
-                treeTransaction.initModelTransaction = {};
-            }, function (e) {
-                fluid.clearTransactions();
-                throw e;
-            }, fluid.identity);
-        }
+            });
+            // NB: Don't call fluid.concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
+            treeTransaction.initModelTransaction = {};
+        }, function (e) {
+            fluid.clearTransactions();
+            throw e;
+        }, fluid.identity);
     };
 
 

@@ -67,6 +67,14 @@ var fluid = fluid || fluid_3_0_0;
 
     var activityParser = /(%\w+)/g;
 
+    fluid.renderActivityArgument = function (arg) {
+        if (fluid.isComponent(arg)) {
+            return fluid.dumpComponentAndPath(arg);
+        } else {
+            return arg;
+        }
+    };
+
     // Renders a single activity element in a form suitable to be sent to a modern browser's console
     // unsupported, non-API function
     fluid.renderOneActivity = function (activity, nowhile) {
@@ -78,7 +86,7 @@ var fluid = fluid || fluid_3_0_0;
             if (match) {
                 var key = match[1].substring(1);
                 togo.push(message.substring(index, match.index));
-                togo.push(activity.args[key]);
+                togo.push(fluid.renderActivityArgument(activity.args[key]));
                 index = activityParser.lastIndex;
             }
             else {
@@ -565,6 +573,19 @@ var fluid = fluid || fluid_3_0_0;
             }
         }
         return togo;
+    };
+
+    /** Variety of Array.forEach which iterates over an array range
+     * @param {Arrayable} array - The array to be iterated over
+     * @param {Integer} start - The array index to start iterating at
+     * @param {Integer} end - The limit of the array index for the iteration
+     * @param {Function} func - A function accepting (value, key) for each iterated
+     * object.
+     */
+    fluid.forEachInRange = function (array, start, end, func) {
+        for (var i = start; i < end; ++i) {
+            func(array[i], i);
+        }
     };
 
     /** Better jQuery.each which works on hashes as well as having the arguments the right way round.
@@ -2001,34 +2022,38 @@ var fluid = fluid || fluid_3_0_0;
         });
     };
 
-    // Key structure: [["local"|"global"], workflowName] to {priority, workflowOptions, gradeName, index}/workflowEntry
+    // Key structure: [["local"|"global"], workflowName] to {workflowType, priority, workflowOptions, gradeName, index}===workflowEntry
     fluid.workflowCache = {};
-    // Key structure: [["local"|"global"]] to sorted array of workflowEntry
-    fluid.workflowCacheSorted = {};
+    // Sorted array of workflowEntry
+    fluid.workflowCacheSorted = [];
 
-    fluid.resortWorkflows = function (workflowType) {
+    fluid.resortWorkflows = function (workflowType, baseIndex) {
         var thisCache = fluid.workflowCache[workflowType];
         var parsed = fluid.parsePriorityRecords(thisCache, workflowType + " workflows");
         parsed.forEach(function (oneParsed, index) {
-            thisCache[oneParsed.namespace].index = index;
+            thisCache[oneParsed.namespace].index = index + baseIndex;
         });
-        fluid.workflowCacheSorted[workflowType] = parsed;
+        return parsed;
     };
 
-    fluid.indexOneWorkflows = function (gradeName, workflowType, workflows) {
+    fluid.indexOneWorkflows = function (gradeName, workflowType, workflows, baseIndex) {
         fluid.each(workflows, function (oneWorkflow, workflowKey) {
             fluid.model.setSimple(fluid.workflowCache, [workflowType, workflowKey], {
+                workflowType: workflowType,
+                workflowName: workflowKey,
                 priority: oneWorkflow.priority,
                 gradeName: gradeName,
                 workflowOptions: oneWorkflow
             });
-            fluid.resortWorkflows(workflowType);
         });
+        return fluid.resortWorkflows(workflowType, baseIndex);
     };
 
     fluid.indexGradeWorkflows = function (gradeName, options) {
-        fluid.indexOneWorkflows(gradeName, "local", fluid.getImmediate(options, ["workflows", "local"]));
-        fluid.indexOneWorkflows(gradeName, "global", fluid.getImmediate(options, ["workflows", "global"]));
+        var sortedGlobal = fluid.indexOneWorkflows(gradeName, "global", fluid.getImmediate(options, ["workflows", "global"]), 0);
+        var globalWorkflowCount = sortedGlobal.length;
+        var sortedLocal = fluid.indexOneWorkflows(gradeName, "local", fluid.getImmediate(options, ["workflows", "local"]), globalWorkflowCount);
+        fluid.workflowCacheSorted = sortedGlobal.concat(sortedLocal);
     };
 
     // unsupported, NON-API function
@@ -2440,19 +2465,6 @@ var fluid = fluid || fluid_3_0_0;
         return options.target;
     };
 
-    // unsupported, NON-API function
-    fluid.simpleGingerBlock = function (source, recordType) {
-        var block = {
-            target: source,
-            simple: true,
-            strategy: fluid.concreteTrundler,
-            initter: fluid.identity,
-            recordType: recordType,
-            priority: fluid.mergeRecordTypes[recordType]
-        };
-        return block;
-    };
-
     /** Construct the core of the `mergeOptions` structure responsible for evaluating merged options.
      * This will eventually be housed in the shadow as `shadow.mergeOptions`.
      * The main entry point is `fluid.mergeComponentOptions` which will add other elements such as `mergeBlocks`
@@ -2520,8 +2532,9 @@ var fluid = fluid || fluid_3_0_0;
     fluid.mergeRecordTypes = {
         defaults:           1000,
         defaultValueMerge:  900,
-        subcomponentRecord: 800,
-        user:               700,
+        lensedComponents:    800,
+        subcomponentRecord: 700,
+        user:               600,
         distribution:       100 // and above
     };
 

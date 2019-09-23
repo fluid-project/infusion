@@ -3751,10 +3751,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid6390assertModelValues = function (message, that, expected) {
-        var values = fluid.getMembers(that, ["model", "arenaValue"]);
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        var values = fluid.getMembers(children, ["model", "arenaValue"]);
         jqUnit.assertDeepEq(message, expected, values);
     };
-/* In progress
+
     jqUnit.test("FLUID-6390: Lensed components as a hash", function () {
         var that = fluid.tests.fluid6390root();
         var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
@@ -3780,7 +3781,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         jqUnit.assertDeepEq("Relay of component destruction back to deletion of source model", expectedFinalArena, that.model.arena);
     });
-*/
+
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
 
     fluid.defaults("fluid.tests.fluid5029root", {
@@ -5203,8 +5204,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-6148: Partial evaluation tests", function () {
         jqUnit.expect(6);
         fluid.tests.oneFluid6148Partial("shell construction",       {breakAt: "shells"},       [undefined, undefined]);
-        fluid.tests.oneFluid6148Partial("observation construction", {breakAt: "observation"},  [42, undefined]);
+        fluid.tests.oneFluid6148Partial("observation construction", {breakAt: "concludeComponentObservation"},  [42, undefined]);
         fluid.tests.oneFluid6148Partial("full construction",        null,                      [42, true]);
+    });
+
+    jqUnit.test("FLUID-6148: Failed lookup of breakAt doesn't corrupt framework", function () {
+        jqUnit.expectFrameworkDiagnostic("Failed lookup gives diagnostic", function () {
+            var transaction = fluid.beginTreeTransaction({breakAt: "unknown workflow"});
+            transaction.promise.then(null, function (err) {
+                throw err;
+            });
+        }, "concludeComponentObservation");
     });
 
     /** Test cleanup even of perversely constructed components **/
@@ -5329,6 +5339,61 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.destroy();
     });
 
+    /** Test to check for double inversion of notification order with onCreate createOnEvent **/
+
+    fluid.defaults("fluid.tests.FLUID6148notate", {
+        gradeNames: "fluid.component",
+        listeners: {
+            "onCreate.note": {
+                funcName: "fluid.tests.FLUID6148note",
+                args: ["{fluid.tests.FLUID6148create}", "{that}"],
+                // Note that if this priority is not supplied, the order will not be as expected since component
+                // creation via "onCreate" itself will not be fully enqueued
+                priority: "after:fluid-componentConstruction"
+            }
+        }
+    });
+
+    fluid.tests.FLUID6148note = function (noteHolder, created) {
+        var createdPath = fluid.pathForComponent(created);
+        createdPath.shift();
+        noteHolder.createOrder.push(createdPath.join("."));
+    };
+
+    fluid.defaults("fluid.tests.FLUID6148create", {
+        gradeNames: "fluid.tests.FLUID6148notate",
+        members: {
+            createOrder: []
+        },
+        components: {
+            child1: {
+                type: "fluid.tests.FLUID6148notate",
+                createOnEvent: "onCreate",
+                options: {
+                    components: {
+                        child2: {
+                            type: "fluid.tests.FLUID6148notate",
+                            options: {
+                                components: {
+                                    child3: {
+                                        type: "fluid.tests.FLUID6148notate",
+                                        createOnEvent: "onCreate"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6148: Chained onCreate", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID6148create();
+        var expected = ["child1.child2.child3", "child1.child2", "child1", ""];
+        jqUnit.assertDeepEq("Components created in expected order", expected, that.createOrder);
+    });
 
     /** FLUID-5614: Merging of "double deep trees" **/
 
