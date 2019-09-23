@@ -850,7 +850,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
                 args: ["{that}"]
             },
-            "onSelectionChanged.updateText": "{that}.getSelectedText",
+            "onSelectionChanged.stop": "{that}.stop",
+            "onSelectionChanged.updateText": {
+                listener: "{that}.getSelectedText",
+                priority: "after:stop"
+            },
             "utteranceOnEnd.stop": {
                 changePath: "play",
                 value: false,
@@ -864,10 +868,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{change}.value"],
                 namespace: "render"
             },
-            "text": {
-                func: "{that}.stop",
-                namespace: "stopPlayingWhenTextChanges"
-            },
+            // "text": {
+            //     func: "{that}.stop",
+            //     namespace: "stopPlayingWhenTextChanges"
+            // },
             "play": [{
                 func: "fluid.orator.selectionReader.queueSpeech",
                 args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
@@ -952,7 +956,60 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {String} - the text from the current selection
      */
     fluid.orator.selectionReader.getSelectedText = function () {
-        return window.getSelection().toString();
+        var selection = window.getSelection();
+        return selection.toString();
+        // return window.getSelection().toString();
+    };
+
+    /**
+     * This is a rough implementation of parsing the selection into text and lang code. It needs to be hooked up to the
+     * component and cleaned up.
+     *
+     * @param  {[type]} range    [description]
+     * @param  {[type]} startElm [description]
+     * @param  {[type]} state    [description]
+     * @return {[type]}          [description]
+     */
+    fluid.orator.selectionReader.parseRange = function (range, startElm, state) {
+        var parsed = [];
+        var elm = startElm || range.commonAncestorContainer;
+        elm = elm.nodeType === Node.ELEMENT_NODE ? elm : elm.parentElement;
+        state = state || {};
+        var lang = $(elm).closest("[lang]").attr("lang");
+
+        for (var i = 0; i < elm.childNodes.length; i++) {
+            var node = elm.childNodes[i];
+
+            state.start = state.start || node === range.startContainer;
+            state.end = state.end || node === range.endContainer;
+
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                var subParsed = fluid.orator.selectionReader.parseRange(range, node, state);
+                if (parsed.length && parsed[parsed.length - 1].lang === subParsed[0].lang) {
+                    parsed[parsed.length - 1].text += subParsed.shift().text;
+                }
+                parsed = parsed.concat(subParsed);
+                // parsed = parsed.concat(textNodes(range, node, state));
+            } else if (node.nodeType === Node.TEXT_NODE && state.start) {
+                var startOffset = node === range.startContainer ? range.startOffset : 0;
+                var endOffset = node === range.endContainer ? range.endOffset : undefined;
+
+                if (parsed.length && parsed[parsed.length - 1].lang === lang) {
+                    parsed[parsed.length - 1].text += node.textContent.slice(startOffset, endOffset);
+                } else {
+                    parsed.push({
+                        text: node.textContent.slice(startOffset, endOffset),
+                        lang: lang
+                    });
+                }
+                // console.log(node.textContent.slice(startOffset, endOffset), "lang:", lang);
+            }
+
+            if (state.end) {
+                break;
+            }
+        }
+        return parsed;
     };
 
     fluid.orator.selectionReader.location = {
