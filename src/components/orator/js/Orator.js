@@ -545,6 +545,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     /**
+     * Retrieves the active parseQueue array to be used when updating from the latest parsed text node. Will increment
+     * the parseQueue with an new array if one doesn't already exist or if the language has changed.
+     *
+     * @param {Component} that - an instance of `fluid.orator.domReader`
+     * @param {String} lang - a valid BCP 47 language code.
+     *
+     * @return {Array} - the parseQueue array to update with the latest parsed text node.
+     */
+    fluid.orator.domReader.retrieveActiveQueue = function (that, lang) {
+        var lastQueue = that.parseQueue[that.parseQueue.length - 1];
+
+        if (!lastQueue ||  (lastQueue.length && lastQueue[0].lang !== lang)) {
+            lastQueue = [];
+            that.parseQueue.push(lastQueue);
+            that.applier.change("parseQueueCount", that.parseQueue.length, "ADD", "retrieveActiveQueue");
+        }
+
+        return lastQueue;
+    };
+
+    /**
      * Takes in a textnode and separates the contained words into DomWordMaps that are added to the parseQueue.
      * Typically this handles parsed data passed along by a Parser's (`fluid.textNodeParser`) `onParsedTextNode` event.
      * Empty nodes are skipped and the subsequent text is analyzed to determine if it should be appended to the
@@ -557,27 +578,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} childIndex - the index of the text node within its parent's set of child nodes
      */
     fluid.orator.domReader.addToParseQueue = function (that, textNode, lang, childIndex) {
-        var lastQueue;
-        if (that.parseQueue.length) {
-            lastQueue = that.parseQueue[that.parseQueue.length - 1];
-        } else {
-            lastQueue = [];
-            that.parseQueue.push(lastQueue);
-        }
-
-        var lastParsed;
-        if (lastQueue.length) {
-            lastParsed = lastQueue[lastQueue.length - 1];
-        } else {
-            lastParsed = {};
-        }
-
-        // if not already a new parsedQueue and the language has changed, increment to a new parsedQueue
-        if (lastParsed.node && lastParsed.lang !== lang) {
-            lastQueue = [];
-            that.parseQueue.push(lastQueue);
-            lastParsed = {};
-        }
+        var activeQueue = fluid.orator.domReader.retrieveActiveQueue(that, lang);
+        var lastParsed = activeQueue[activeQueue.length - 1] || {};
 
         var words = textNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
         var parsed = {
@@ -605,11 +607,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 parsed.endOffset = parsed.startOffset + word.length;
                 if (currentIsWord || word && lastIsWord) {
                     lastParsed = fluid.copy(parsed);
-                    lastQueue.push(lastParsed);
-                    that.applier.change("", {
-                        parseQueueCount: that.parseQueue.length,
-                        parseItemCount: that.model.parseItemCount + 1
-                    }, "ADD", "addToParseQueue");
+                    activeQueue.push(lastParsed);
+                    that.applier.change("parseItemCount", that.model.parseItemCount + 1, "ADD", "addToParseQueue");
                     parsed.blockIndex += word.length;
                 }
                 parsed.startOffset = parsed.endOffset;
