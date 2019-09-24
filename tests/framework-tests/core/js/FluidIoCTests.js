@@ -3719,13 +3719,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Subcomponent has designated option", 42, that.dynamic.sub1.options.answer);
     });
 
+    /** FLUID-5912 - {arguments} within members and models **/
+
+    fluid.defaults("fluid.tests.fluid5912root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                createOnEvent: "createIt",
+                type: "fluid.modelComponent",
+                options: {
+                    members: {
+                        argument0: "{arguments}.0"
+                    },
+                    model: {
+                        argument1: "{arguments}.1"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5912:  {arguments} within members and models", function () {
+        var that = fluid.tests.fluid5912root();
+        that.events.createIt.fire(42, 43);
+        jqUnit.assertEquals("Argument value transmitted to member", 42, that.dynamic.argument0);
+        jqUnit.assertEquals("Argument value transmitted to model", 43, that.dynamic.model.argument1);
+    });
+
     /** FLUID-6390 - Lensed components as a hash **/
 
     fluid.defaults("fluid.tests.fluid6390child", {
         gradeNames: "fluid.modelComponent"
     });
 
-    fluid.defaults("fluid.tests.fluid6390root", {
+    fluid.defaults("fluid.tests.fluid6390hashRoot", {
         gradeNames: "fluid.modelComponent",
         model: {
             arena: {
@@ -3757,7 +3787,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("FLUID-6390: Lensed components as a hash", function () {
-        var that = fluid.tests.fluid6390root();
+        var that = fluid.tests.fluid6390hashRoot();
         var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
         jqUnit.assertEquals("Two model-driven subcomponents created", 2, children.length);
         fluid.tests.fluid6390assertModelValues("Initial model values are correct", that, [42, 43]);
@@ -3765,6 +3795,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.fluid6390assertModelValues("Model values are correct with new component", that, [42, 43, 44]);
         that.applier.change("arena.element1.value", 1);
         fluid.tests.fluid6390assertModelValues("Model values are correct with forward relay", that, [1, 43, 44]);
+        that.applier.change("arena.element1", null, "DELETE");
+        fluid.tests.fluid6390assertModelValues("Model deletion relayed to component deletion", that, [43, 44]);
         var component3 = that["arenaComponents-element3"];
         jqUnit.assertTrue("Fetched component via fluid.componentForModelPath", fluid.isComponent(component3));
         component3.applier.change("arenaValue", 3);
@@ -3772,14 +3804,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var component2 = that["arenaComponents-element2"];
         component2.destroy();
         var expectedFinalArena = {
-            element1: {
-                value: 1
-            },
             element3: {
                 value: 3
             }
         };
         jqUnit.assertDeepEq("Relay of component destruction back to deletion of source model", expectedFinalArena, that.model.arena);
+    });
+
+    fluid.defaults("fluid.tests.fluid6390booleanRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            shouldComponentExist: 1
+        },
+        dynamicComponents: {
+            conditionalComponent: {
+                source: "{that}.model.shouldComponentExist",
+                type: "fluid.component"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6390: Lensed components from a boolean", function () {
+        var that = fluid.tests.fluid6390booleanRoot();
+        jqUnit.assertTrue("Conditional component should have been constructed", fluid.isComponent(that.conditionalComponent));
+        that.conditionalComponent.destroy();
+        jqUnit.assertEquals("Destruction of component should have unset model value", false, that.model.shouldComponentExist);
+        jqUnit.assertUndefined("Conditional component should not have been reconstructed", that.conditionalComponent);
+        that.applier.change("shouldComponentExist", true);
+        jqUnit.assertTrue("Conditional component should have been reconstructed", fluid.isComponent(that.conditionalComponent));
+        jqUnit.assertEquals("Model flag should not have been unset", true, that.model.shouldComponentExist);
+        that.applier.change("shouldComponentExist", false);
+        jqUnit.assertUndefined("Conditional component should have been destroyed", that.conditionalComponent);
+        jqUnit.assertEquals("Model flag should not have been reset", false, that.model.shouldComponentExist);
     });
 
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/

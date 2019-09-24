@@ -258,8 +258,8 @@ var fluid = fluid || fluid_3_0_0;
     // TODO: rescued from kettleCouchDB.js - clean up in time
     fluid.expect = function (name, target, members) {
         fluid.transform(fluid.makeArray(members), function (key) {
-            if (typeof target[key] === "undefined") {
-                fluid.fail(name + " missing required parameter " + key);
+            if (target[key] === undefined) {
+                fluid.fail(name + " missing required member " + key);
             }
         });
     };

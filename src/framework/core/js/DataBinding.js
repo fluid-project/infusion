@@ -571,7 +571,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     target = localRecord.sourceModelReference.that;
                     parsed.modelSegs = localRecord.sourceModelReference.modelSegs.concat(parsed.segs);
                     parsed.nonModel = false;
-                } else { // It's an ordinary reference to localRecord material - TODO: tests for FLUID-5912
+                } else { // It's an ordinary reference to localRecord material - FLUID-5912 case
                     target = localRecord[parsed.context];
                 }
             } else {
@@ -1175,33 +1175,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    fluid.destroyLensedComponentSource = function (that) {
+    fluid.destroyLensedComponentSource = function (that, isBoolean) {
         var shadow = fluid.shadowForComponent(that);
         var sourceModelReference = shadow.localRecord.sourceModelReference;
         if (sourceModelReference && !fluid.isDestroyed(sourceModelReference.that)) {
-            sourceModelReference.that.applier.change(sourceModelReference.modelSegs, null, "DELETE");
+            sourceModelReference.that.applier.change(sourceModelReference.modelSegs, false, isBoolean ? "ADD" : "DELETE");
         }
     };
 
     fluid.constructLensedComponents = function (shadow, sourcesParsed, dynamicComponentKey) {
         var lightMerge = shadow.lightMergeDynamicComponents[dynamicComponentKey];
         var sources = fluid.getImmediate(shadow.that.model, sourcesParsed.modelSegs);
-        var localRecordContributor = shadow.modelSourcedDynamicComponents[dynamicComponentKey].localRecordContributor =
+        var shadowRecord = shadow.modelSourcedDynamicComponents[dynamicComponentKey];
+        var localRecordContributor = shadowRecord.localRecordContributor =
             function (localRecord, source, sourceKey) {
                 localRecord.sourceModelReference = {
                     that: sourcesParsed.that,
-                    modelSegs: sourcesParsed.modelSegs.concat([sourceKey])
+                    modelSegs: sourcesParsed.modelSegs.concat(shadowRecord.isBoolean ? [] : [sourceKey])
                 };
             };
         fluid.lightMergeRecords.pushRecord(lightMerge, {
             options: {
                 listeners: {
-                    afterDestroy: "fluid.destroyLensedComponentSource"
+                    afterDestroy: {
+                        funcName: "fluid.destroyLensedComponentSource",
+                        args: ["{that}", shadowRecord.isBoolean]
+                    }
                 }
             }
         });
-        fluid.registerSourcedDynamicComponents(shadow.potentia, shadow.that, sources, lightMerge, dynamicComponentKey,
-            localRecordContributor);
+        fluid.registerSourcedDynamicComponentsTriage(shadow.potentia, shadow.that, sources, lightMerge, dynamicComponentKey,
+            shadowRecord.isBoolean, localRecordContributor);
     };
 
     fluid.operateInitialTransactionWorkflow = function (shadows, treeTransaction) {

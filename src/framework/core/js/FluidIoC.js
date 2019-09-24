@@ -1486,6 +1486,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             lightMerge.type = record.type || lightMerge.type;
             lightMerge.createOnEvent = record.createOnEvent || lightMerge.createOnEvent;
+            lightMerge.source = record.source || lightMerge.source;
             lightMerge.sources = record.sources || lightMerge.sources;
             if (lightMerge.isInjected) {
                 lightMerge.toMerge = [record];
@@ -1606,7 +1607,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.componentRecordExpected = fluid.arrayToHash(["type", "options", "container", "createOnEvent"]);
-    fluid.dynamicComponentRecordExpected = $.extend({}, fluid.componentRecordExpected, fluid.arrayToHash(["sources"]));
+    fluid.dynamicComponentRecordExpected = $.extend({}, fluid.componentRecordExpected, fluid.arrayToHash(["source", "sources"]));
 
     fluid.checkComponentRecord = function (localRecord, expected) {
         if (!fluid.isInjectedComponentRecord(localRecord)) {
@@ -1640,31 +1641,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    fluid.lensedComponentModelListener = function (that, key, segs, value) {
+    fluid.lensedComponentModelListener = function (that, key, segs, value, isBoolean) {
+        var isEmptyValue = function (value) {
+            return isBoolean ? !value : value === undefined;
+        };
         var shadow = fluid.shadowForComponent(that);
-        var sourceKey = segs[segs.length - 1];
+        var sourceKey = isBoolean ? 0 : segs[segs.length - 1];
         var expectedMemberName = fluid.computeDynamicComponentKey(key, sourceKey);
         var currentComponent = that[expectedMemberName];
-        if (value !== undefined && !currentComponent) {
+        if (!isEmptyValue(value) && !currentComponent) {
             var lightMerge = shadow.lightMergeDynamicComponents[key];
             var parentRecord = shadow.modelSourcedDynamicComponents[key];
             fluid.registerSourcedDynamicComponent(shadow.potentia, that, value, sourceKey, lightMerge, key,
                 parentRecord.localRecordContributor);
-        } else if (value === undefined && currentComponent) {
+        } else if (isEmptyValue(value) && currentComponent) {
             currentComponent.destroy();
         }
     };
 
-    fluid.lensedComponentDefToBlock = function (key, sourcesParsed) {
+    fluid.lensedComponentDefToBlock = function (key, sourcesParsed, isBoolean) {
         var fromModelPath = sourcesParsed.segs.slice(1);
         var modelListener = {
             path: {
                 context: sourcesParsed.context,
-                segs: fromModelPath.concat(["*"])
+                segs: fromModelPath.concat(isBoolean ? [] : ["*"])
             },
             excludeSource: "init",
             funcName: "fluid.lensedComponentModelListener",
-            args: ["{that}", key, "{change}.path", "{change}.value"]
+            args: ["{that}", key, "{change}.path", "{change}.value", isBoolean]
         };
         var modelListeners = {};
         modelListeners["lensedComponents-" + key] = modelListener;
@@ -1682,6 +1686,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             priority: fluid.mergeRecordTypes.lensedComponents
         }, shadow.that, shadow.mergePolicy, potentia.localRecord));
         shadow.mergeOptions.updateBlocks();
+    };
+
+    fluid.expectExactlyOne = function (failStart, target, members) {
+        var found = 0;
+        members.forEach(function (member) {
+            if (target[member] !== undefined) {
+                ++found;
+            }
+        });
+        if (found !== 1) {
+            fluid.fail.apply(null, failStart.concat([" must contain exactly one member out of " + members.join(", ")]));
+        }
+    };
+
+    fluid.registerSourcedDynamicComponentsTriage = function (potentia, shell, sourceOrSources, lightMerge, key, isBoolean, localRecordContributor) {
+        if (isBoolean) {
+            fluid.registerSourcedDynamicComponent(potentia, shell, sourceOrSources, 0, lightMerge, key, localRecordContributor);
+        } else {
+            fluid.registerSourcedDynamicComponents(potentia, shell, sourceOrSources, lightMerge, key, localRecordContributor);
+        }
     };
 
     // The midpoint of fluid.operateCreatePotentia. We have just created the shell, and will now investigate any subcomponents
@@ -1707,26 +1731,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(dynamicComponents, function (subcomponentRecords, key) {
             fluid.checkSubcomponentRecords(subcomponentRecords, fluid.dynamicComponentRecordExpected);
             var lightMerge = fluid.lightMergeComponentRecord(shadow, "lightMergeDynamicComponents", key, subcomponentRecords);
-            if (!lightMerge.sources && !lightMerge.createOnEvent) {
-                fluid.fail("Cannot process dynamicComponents records ", subcomponentRecords, " without a \"sources\" or \"createOnEvent\" entry");
-            }
-            if (lightMerge.sources) {
+            fluid.expectExactlyOne(["dynamicComponents records ", subcomponentRecords], lightMerge,
+                ["source", "sources", "createOnEvent"]);
+            if (lightMerge.sources !== undefined || lightMerge.source !== undefined) {
+                var recordSources = lightMerge.sources, isBoolean = false;
+                if (lightMerge.source !== undefined) {
+                    recordSources = lightMerge.source;
+                    isBoolean = true;
+                }
                 var sources;
-                if (fluid.isIoCReference(lightMerge.sources)) {
-                    var sourcesParsed = fluid.parseValidModelReference(shell, "dynamicComponents source", lightMerge.sources, true);
+                if (fluid.isIoCReference(recordSources)) {
+                    var sourcesParsed = fluid.parseValidModelReference(shell, "dynamicComponents source", recordSources, true);
                     if (sourcesParsed.nonModel) {
                         sources = fluid.getForComponent(sourcesParsed.that, sourcesParsed.segs);
-                        fluid.registerSourcedDynamicComponents(potentia, shell, sources, lightMerge, key);
+                        fluid.registerSourcedDynamicComponentsTriage(potentia, shell, sources, lightMerge, key, null, isBoolean);
                     } else {
                         fluid.set(shadow, ["modelSourcedDynamicComponents", key], {
-                            sourcesParsed: sourcesParsed
+                            sourcesParsed: sourcesParsed,
+                            isBoolean: isBoolean
                         });
-                        lensedComponentBlocks.push(fluid.lensedComponentDefToBlock(key, sourcesParsed));
+                        lensedComponentBlocks.push(fluid.lensedComponentDefToBlock(key, sourcesParsed, isBoolean));
                         // Construction will now be handled after fluid.initModelTransaction in DataBinding.js
                     }
                 } else {
-                    sources = fluid.expandImmediate(lightMerge.sources, shell, potentia.localRecord);
-                    fluid.registerSourcedDynamicComponents(potentia, shell, sources, lightMerge, key);
+                    sources = fluid.expandImmediate(recordSources, shell, potentia.localRecord); // it still might be an expander
+                    fluid.registerSourcedDynamicComponentsTriage(potentia, shell, sources, lightMerge, key, null, isBoolean);
                 }
             }
         });
