@@ -202,6 +202,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.textToSpeech.queueSpeech",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
+            queueSpeechSequence: {
+                funcName: "fluid.textToSpeech.queueSpeechSequence",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            },
             cancel: {
                 funcName: "fluid.textToSpeech.cancel",
                 args: ["{that}"]
@@ -344,6 +348,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.events.onSpeechQueued.fire(utteranceOpts, interrupt, promise);
         }, 100);
         return promise;
+    };
+
+    fluid.textToSpeech.queueSpeechSequence = function (that, speeches, interrupt) {
+        var sequence = fluid.transform(speeches, function (speech, index) {
+            console.log("speech:", speech);
+            var toInterrupt = interrupt && !index; // only interrupt on the first string
+            return that.queueSpeech(speech.text, interrupt, speech.options);
+        });
+        return fluid.promise.sequence(sequence);
     };
 
     /**

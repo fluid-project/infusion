@@ -833,6 +833,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             enabled: true,
             showUI: false,
             play: false,
+            textSelected: false,
             text: ""
         },
         // similar to em values as it will be multiplied by the container's font-size
@@ -850,11 +851,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
                 args: ["{that}"]
             },
-            "onSelectionChanged.stop": "{that}.stop",
-            "onSelectionChanged.updateText": {
-                listener: "{that}.getSelectedText",
-                priority: "after:stop"
-            },
+            "onSelectionChanged.updateSelection": "{that}.getSelection",
+            // "onSelectionChanged.updateText": {
+            //     listener: "{that}.getSelectedText",
+            //     priority: "after:stop"
+            // },
             "utteranceOnEnd.stop": {
                 changePath: "play",
                 value: false,
@@ -868,13 +869,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{change}.value"],
                 namespace: "render"
             },
-            // "text": {
-            //     func: "{that}.stop",
-            //     namespace: "stopPlayingWhenTextChanges"
-            // },
+            "text": {
+                func: "{that}.stop",
+                namespace: "stopPlayingWhenTextChanges"
+            },
             "play": [{
                 func: "fluid.orator.selectionReader.queueSpeech",
-                args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
+                args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeechSequence"],
+                // args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
                 namespace: "queueSpeech"
             }, {
                 func: "fluid.orator.selectionReader.renderControlState",
@@ -897,14 +899,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }],
         invokers: {
-            getSelectedText: {
-                changePath: "text",
-                value: {
-                    expander: {
-                        funcName: "fluid.orator.selectionReader.getSelectedText"
-                    }
-                },
-                source: "getSelectedText"
+            // getSelectedText: {
+            //     changePath: "text",
+            //     value: {
+            //         expander: {
+            //             funcName: "fluid.orator.selectionReader.getSelectedText"
+            //         }
+            //     },
+            //     source: "getSelectedText"
+            // },
+            getSelection: {
+                funcName: "fluid.orator.selectionReader.getSelection",
+                args: ["{that}"]
             },
             play: {
                 changePath: "play",
@@ -929,8 +935,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.orator.selectionReader.queueSpeech = function (that, state, speechFn) {
-        if (state) {
-            speechFn(that.model.text, true, {onend: that.events.utteranceOnEnd.fire});
+        if (state && that.model.enabled && that.model.text) {
+            var parsed = fluid.orator.selectionReader.parseRange(that.selection.getRangeAt(0));
+            var speechPromise = speechFn(parsed, true);
+            
+            speechPromise.then(that.events.utteranceOnEnd.fire);
         }
     };
 
@@ -944,7 +953,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.orator.selectionReader.updateText = function (that, state) {
         if (state) {
-            that.getSelectedText();
+            // that.getSelectedText();
+            that.getSelection();
         } else {
             that.applier.change("text", "", "ADD", "updateText");
         }
@@ -960,6 +970,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return selection.toString();
         // return window.getSelection().toString();
     };
+
+    /**
+     * Retrieves the text from the current selection
+     *
+     * @return {String} - the text from the current selection
+     */
+    fluid.orator.selectionReader.getSelection = function (that) {
+        that.selection = window.getSelection();
+        that.applier.change("text", that.selection.toString(), "ADD", "getSelection");
+        // return selection.toString();
+        // return window.getSelection().toString();
+    };
+
 
     /**
      * This is a rough implementation of parsing the selection into text and lang code. It needs to be hooked up to the
@@ -985,7 +1008,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             if (node.nodeType === Node.ELEMENT_NODE) {
                 var subParsed = fluid.orator.selectionReader.parseRange(range, node, state);
-                if (parsed.length && parsed[parsed.length - 1].lang === subParsed[0].lang) {
+                if (parsed.length && parsed[parsed.length - 1].options.lang === subParsed[0].options.lang) {
                     parsed[parsed.length - 1].text += subParsed.shift().text;
                 }
                 parsed = parsed.concat(subParsed);
@@ -999,7 +1022,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 } else {
                     parsed.push({
                         text: node.textContent.slice(startOffset, endOffset),
-                        lang: lang
+                        options: {
+                            lang: lang
+                        }
                     });
                 }
                 // console.log(node.textContent.slice(startOffset, endOffset), "lang:", lang);
