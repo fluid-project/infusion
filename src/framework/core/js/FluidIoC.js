@@ -1641,6 +1641,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    /** The model listener constributed into a component holding model-sourced dynamic components (lensed components) by
+     * `fluid.lensedComponentDefToBlock`. It observes appearance and disappearance of model material and gears this into
+     * construction or destruction of the corresponding components.
+     * @param {Component} that - The component holding a lensed component definition
+     * @param {String} key - The key of the dynamicComponents record holding the definition
+     * @param {String[]} segs - The path of the incoming change as registered by the model listener
+     * @param {Any} value - The new model value held at path `segs`
+     * @param {Boolean} isBoolean - `true` if this was a definition of a boolean-sourced model component, in which case the relevant
+     *     model path will be one segment shorter (a listener to <path> rather than <path.*>
+     */
     fluid.lensedComponentModelListener = function (that, key, segs, value, isBoolean) {
         var isEmptyValue = function (value) {
             return isBoolean ? !value : value === undefined;
@@ -1659,6 +1669,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /** Convert the definition of a lensed component as found in `dynamicComponents` into the options block that
+     * encodes the model listener managing the creation and destruction of the corresponding components.
+     * @param {String} key - The key for the `dynamicComponents` record
+     * @param {ParsedModelReference} sourcesParsed - The parsed representation of the `source` or `sources` entry in the dynamicComponents record
+     * @param {Boolean} isBoolean - `true` if the source entry was `source` rather than `sources` and this is the encoding of a
+     * boolean-sourced dynamic component
+     * @return {ComponentOptions} A block of component options encoding the required model listener
+     */
     fluid.lensedComponentDefToBlock = function (key, sourcesParsed, isBoolean) {
         var fromModelPath = sourcesParsed.segs.slice(1);
         var modelListener = {
@@ -1677,6 +1695,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
+    /** Add the supplied options blocks to the currently instantiating component's merge blocks with the special record
+     * type "lensedComponents", and resort them ready to evaluate during the upcoming modelComponent workflow
+     * @param {ComponentOptions[]} lensedComponentBlocks - Array of component options as returned from `fluid.lensedComponentsToBlock` - these will be
+     * merged together into a single "expand block" and inserted into the constructing component's blocks
+     * @param {Potentia} potentia - The "create" potentia responsible for the construction of this component
+     * @param {Shadow} shadow - The shadow record for the constructing component
+     */
     fluid.addLensedComponentBlocks = function (lensedComponentBlocks, potentia, shadow) {
         var merged = fluid.extend.apply(null, [true, {}].concat(lensedComponentBlocks));
         // cf. defaultValueMerge in fluid.mergeComponentOptions
@@ -1688,6 +1713,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         shadow.mergeOptions.updateBlocks();
     };
 
+    /** Schematic checking utility which verifies that a supplied record contains exactly one field set (with value other than
+     * `undefined` from a list of options. If zero or more than 1 of the members are found, `fluid.fail` will be invoked with
+     * a diagnostic message.
+     * @param {Object[]} failStart - Array of prefix arguments to be sent to `fluid.fail` in the event of a failure.
+     * @param {Object} target - The object to be checked for populated members
+     * @param {String[]} members - The list of members to check `target` for
+     */
     fluid.expectExactlyOne = function (failStart, target, members) {
         var found = 0;
         members.forEach(function (member) {
@@ -1700,6 +1732,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /** Front entry point for registering one or more dynamic component records based on the discovery of source material.
+     * Depending on whether this is a boolean sourced component (one with `source` set in its record rather than `sources`, and
+     * signalled by `isBoolean` set to true), it will forward to `fluid.registerSourcedDynamicComponent` to register a single
+     * component with key 0 or `fluid.registerSourcedDynamicComponents" to register one for each path in `sourceOrSources`
+     * @param {Potentia} potentia - The create potentia responsible for constructing the component holding the dynamic subcomponents
+     * @param {Component} shell - The constructing component, still at `shell` stage with minimal options populated.
+     * @param {Booleanish|Object|Array} sourceOrSources - The source material for the dynamic components. If `isBoolean` is true, this will be
+     *     a Booleanish value, otherwise a structure encoding for multiple components.
+     * @param {LightMerge} lightMerge - The lightly merged options for the upcoming dynamic subcomponent(s)
+     * @param {String} key - The key of the dynamic component record
+     * @param {Boolean} isBoolean - `true` if this is a boolean sourced dynamic component
+     * @param {Function} localRecordContributor - A function accepting the `localRecord` structure to be registered for the dynamic components, which will
+     *     contribute the `sourceModelReference` member holding the parsed reference to the source model value (if any). This
+     *     function is currently implemented in `fluid.constructLensedComponents` in DataBinding.js
+     */
     fluid.registerSourcedDynamicComponentsTriage = function (potentia, shell, sourceOrSources, lightMerge, key, isBoolean, localRecordContributor) {
         if (isBoolean) {
             fluid.registerSourcedDynamicComponent(potentia, shell, sourceOrSources, 0, lightMerge, key, localRecordContributor);

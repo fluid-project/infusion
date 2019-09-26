@@ -513,7 +513,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Boolean} implicitRelay - <code>true</code> if the reference was being resolved for an implicit model relay - that is,
      * whether it occured within the `model` block itself. In this case, references to non-model material are not a failure and will simply be resolved
      * (by the caller) onto their targets (as constants). Otherwise, this function will issue a failure on discovering a reference to non-model material.
-     * @return {Object} - A structure holding:
+     * @return {ParsedModelReference} - A structure holding:
      *    that {Component|Any} The component whose model is the target of the reference. This may end up being constructed as part of the act of resolving the reference.
      * in the case of a reference to "local record" material such as {arguments} or {source}, `that` may exceptionally be a non-component.
      *    applier {ChangeApplier|Undefined} The changeApplier for the component <code>that</code>. This may end up being constructed as part of the act of resolving the reference
