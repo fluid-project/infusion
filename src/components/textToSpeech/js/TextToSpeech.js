@@ -352,7 +352,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.textToSpeech.queueSpeechSequence = function (that, speeches, interrupt) {
         var sequence = fluid.transform(speeches, function (speech, index) {
-            console.log("speech:", speech);
             var toInterrupt = interrupt && !index; // only interrupt on the first string
             return that.queueSpeech(speech.text, interrupt, speech.options);
         });

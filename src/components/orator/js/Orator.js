@@ -328,7 +328,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             addToParseQueue: {
                 funcName: "fluid.orator.domReader.addToParseQueue",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                args: ["{that}", "{arguments}.0"]
             },
             resetParseQueue: {
                 funcName: "fluid.orator.domReader.resetParseQueue",
@@ -573,23 +573,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * between words.
      *
      * @param {Component} that - an instance of `fluid.orator.domReader`
-     * @param {DomNode} textNode - the text node being parsed
-     * @param {String} lang - a valid BCP 47 language code.
-     * @param {Integer} childIndex - the index of the text node within its parent's set of child nodes
+     * @param {TextNodeData} textNodeData - the parsed information of text node. Typically from `fluid.textNodeParser`
      */
-    fluid.orator.domReader.addToParseQueue = function (that, textNode, lang, childIndex) {
-        var activeQueue = fluid.orator.domReader.retrieveActiveQueue(that, lang);
+    fluid.orator.domReader.addToParseQueue = function (that, textNodeData) {
+        var activeQueue = fluid.orator.domReader.retrieveActiveQueue(that, textNodeData.lang);
         var lastParsed = activeQueue[activeQueue.length - 1] || {};
 
-        var words = textNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
-        var parsed = {
+        var words = textNodeData.node.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
+
+        var parsed = $.extend({}, textNodeData, {
             blockIndex: (lastParsed.blockIndex || 0) + (fluid.get(lastParsed, ["word", "length"]) || 0),
             startOffset: 0,
-            node: textNode,
-            childIndex: childIndex,
-            parentNode: textNode.parentNode,
-            lang: lang
-        };
+            parentNode: textNodeData.node.parentNode
+        });
 
         fluid.each(words, function (word) {
             var lastIsWord = that.isWord(lastParsed.word);
@@ -846,6 +842,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             utteranceOnEnd: null,
             onToggleControl: null
         },
+        components: {
+            parser: {
+                type: "fluid.textNodeParser",
+                options: {
+                    invokers: {
+                        hasTextToRead: "fluid.textNodeParser.hasVisibleText"
+                    }
+                }
+            }
+        },
         listeners: {
             "onCreate.bindEvents": {
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
@@ -936,9 +942,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.orator.selectionReader.queueSpeech = function (that, state, speechFn) {
         if (state && that.model.enabled && that.model.text) {
-            var parsed = fluid.orator.selectionReader.parseRange(that.selection.getRangeAt(0));
+            var parsed = fluid.orator.selectionReader.parseRange(that, that.selection.getRangeAt(0));
             var speechPromise = speechFn(parsed, true);
-            
+
             speechPromise.then(that.events.utteranceOnEnd.fire);
         }
     };
@@ -983,7 +989,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // return window.getSelection().toString();
     };
 
-
     /**
      * This is a rough implementation of parsing the selection into text and lang code. It needs to be hooked up to the
      * component and cleaned up.
@@ -993,32 +998,35 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param  {[type]} state    [description]
      * @return {[type]}          [description]
      */
-    fluid.orator.selectionReader.parseRange = function (range, startElm, state) {
+    fluid.orator.selectionReader.parseRange = function (that, range) {
         var parsed = [];
-        var elm = startElm || range.commonAncestorContainer;
-        elm = elm.nodeType === Node.ELEMENT_NODE ? elm : elm.parentElement;
-        state = state || {};
-        var lang = $(elm).closest("[lang]").attr("lang");
 
-        for (var i = 0; i < elm.childNodes.length; i++) {
-            var node = elm.childNodes[i];
-
-            state.start = state.start || node === range.startContainer;
-            state.end = state.end || node === range.endContainer;
-
-            if (node.nodeType === Node.ELEMENT_NODE) {
-                var subParsed = fluid.orator.selectionReader.parseRange(range, node, state);
-                if (parsed.length && parsed[parsed.length - 1].options.lang === subParsed[0].options.lang) {
-                    parsed[parsed.length - 1].text += subParsed.shift().text;
+        // Handles the case where all of the selection is in a single text node. Don't need to parse in this case.
+        if (range.commonAncestorContainer.nodeType === Node.TEXT_NODE) {
+            parsed.push({
+                text: range.commonAncestorContainer.textContent.slice(range.startOffset, range.endOffset),
+                options: {
+                    lang: $(range.commonAncestorContainer.parentElement).closest("[lang]").attr("lang")
                 }
-                parsed = parsed.concat(subParsed);
-                // parsed = parsed.concat(textNodes(range, node, state));
-            } else if (node.nodeType === Node.TEXT_NODE && state.start) {
-                var startOffset = node === range.startContainer ? range.startOffset : 0;
-                var endOffset = node === range.endContainer ? range.endOffset : undefined;
+            });
+            return parsed;
+        }
 
-                if (parsed.length && parsed[parsed.length - 1].lang === lang) {
-                    parsed[parsed.length - 1].text += node.textContent.slice(startOffset, endOffset);
+        var fromParser = that.parser.parse(range.commonAncestorContainer);
+        var parsedNodes = fluid.getMembers(fromParser, "node");
+        var startIndex  = parsedNodes.indexOf(range.startContainer);
+        var endIndex = parsedNodes.indexOf(range.endContainer);
+
+        if (startIndex >= 0 && endIndex >= 0) {
+            for (var i = startIndex; i <= endIndex; i++) {
+                var startOffset = i === startIndex ? range.startOffset : 0;
+                var endOffset = i === endIndex ? range.endOffset : undefined;
+                var node = fromParser[i].node;
+                var lang = fromParser[i].lang;
+                var lastParsed = parsed[parsed.length - 1];
+
+                if (parsed.length && lastParsed.options.lang === lang) {
+                    lastParsed.text += node.textContent.slice(startOffset, endOffset);
                 } else {
                     parsed.push({
                         text: node.textContent.slice(startOffset, endOffset),
@@ -1027,13 +1035,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     });
                 }
-                // console.log(node.textContent.slice(startOffset, endOffset), "lang:", lang);
-            }
-
-            if (state.end) {
-                break;
             }
         }
+
         return parsed;
     };
 
