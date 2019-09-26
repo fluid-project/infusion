@@ -116,7 +116,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * Note: elements that return `false` to `that.hasTextToRead` are ignored.
      *
-     * @param {fluid.textNodeParser} that - the component instance
+     * @param {fluid.textNodeParser} that
      * @param {jQuery|DomElement} elm - the DOM node to parse
      * @param {String} lang - a valid BCP 47 language code.
      * @param {Event} afterParseEvent - the event to fire after parsing has completed.

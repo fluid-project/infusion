@@ -325,7 +325,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Assembles the utterance options and fires onSpeechQueued which will kick off the creation of an utterance
      * component. If "interrupt" is true, this utterance will replace any existing ones.
      *
-     * @param {Component} that - an instance of `fluid.textToSpeech`
+     * @param {fluid.textToSpeech} that
      * @param {String} text - the text to be synthesized
      * @param {Boolean} interrupt - used to indicate if this text should be queued or replace existing utterances
      * @param {UtteranceOpts} options - options to configure the {SpeechSynthesisUtterance} with. It is merged on top of
@@ -350,6 +350,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
+    /**
+     * Options to configure the SpeechSynthesis Utterance with.
+     * See: https://w3c.github.io/speech-api/speechapi.html#utterance-attributes
+     *
+     * @typedef {Object} Speech
+     * @property {String} text - the text to Synthesize
+     * @property {UtteranceOpts} options - options to configure the {SpeechSynthesisUtterance} with. It is merged on top
+     *                                     of the `utteranceOpts` from the component's model.
+     */
+
+    /**
+     * Queues a {Speech[]}, calling `that.queueSpeech` for each. This is useful for sets of text that should be
+     * synthesized with differing {UtteranceOpts}, but still treated as an atomic unit. For example, if a set of text
+     * includes words from different languages.
+     *
+     * @param  {fluid.textToSpeech} that
+     * @param  {Speech[]} speeches - the set of text to queue as a unit
+     * @param  {Boolean} interrupt - used to indicate if the related text should be queued or replace existing
+     *                               utterances
+     *
+     * @return {Promise} - returns a promise that is resolved/rejected after all of the speeches have finish or any
+     *                     have been rejected.
+     */
     fluid.textToSpeech.queueSpeechSequence = function (that, speeches, interrupt) {
         var sequence = fluid.transform(speeches, function (speech, index) {
             var toInterrupt = interrupt && !index; // only interrupt on the first string
@@ -363,7 +386,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * is required because if the SpeechSynthesis is cancelled remaining {SpeechSynthesisUtterance} are ignored and do
      * not fire their `onend` event.
      *
-     * @param  {Component} that - an instance of `fluid.textToSpeech`
+     * @param  {fluid.textToSpeech} that
      */
     fluid.textToSpeech.cancel = function (that) {
         // Safari does not fire the onend event from an utterance when the speech synthesis is cancelled.
@@ -441,7 +464,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * event provided in the utteranceEventMap, any corresponding event binding passed in directly through the
      * utteranceOpts will be rebound as component event listeners with the "external" namespace.
      *
-     * @param {Component} that - an instance of `fluid.textToSpeech.utterance`
+     * @param {fluid.textToSpeech.utterance} that
      * @param {Object} utteranceEventMap - a mapping from {SpeechSynthesisUtterance} events to component events.
      * @param {UtteranceOpts} utteranceOpts - options to configure the {SpeechSynthesisUtterance} with.
      *
