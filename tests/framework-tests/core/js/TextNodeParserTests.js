@@ -172,21 +172,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             listeners: {
                 "onParsedTextNode.record": {
                     listener: "fluid.tests.textNodeParser.record",
-                    args: ["{that}.record", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                    args: ["{that}.record", "{arguments}.0"]
                 }
             }
         });
 
-        fluid.tests.textNodeParser.record = function (record, childNode, lang, childIndex) {
-            record.push({
-                text: childNode.textContent.trim(),
-                lang: lang,
-                childIndex: childIndex
-            });
+        fluid.tests.textNodeParser.nodeToText = function (textNodeData) {
+            return {
+                text: textNodeData.node.textContent.trim(),
+                lang: textNodeData.lang,
+                childIndex: textNodeData.childIndex
+            }
+        };
+
+        fluid.tests.textNodeParser.record = function (record, textNodeData) {
+            record.push(fluid.tests.textNodeParser.nodeToText(textNodeData));
         };
 
         jqUnit.test("Test fluid.textNodeParser", function () {
-            jqUnit.expect(1);
+            jqUnit.expect(2);
             var that = fluid.tests.textNodeParser({
                 listeners: {
                     "afterParse.test": {
@@ -197,7 +201,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             });
-            that.parse($(".flc-textNodeParser-test"));
+            var parsed = that.parse($(".flc-textNodeParser-test"));
+            parsed = fluid.transform(parsed, fluid.tests.textNodeParser.nodeToText);
+
+            jqUnit.assertDeepEq("The returned parsed TextNodeData[] should be populated correctly.", fluid.tests.textNodeParser.parsed, parsed);
         });
 
     });

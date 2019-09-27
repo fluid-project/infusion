@@ -114,7 +114,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * found. The event is fired with the text node, language and index of the text node in the list of its parent's
      * child nodes..
      *
-     * Note: elements that return `false` to `that.hasTextToRead` are ignored.
+     * Note: elements that return `false` from `that.hasTextToRead` are ignored.
      *
      * @param {fluid.textNodeParser} that
      * @param {jQuery|DomElement} elm - the DOM node to parse
@@ -132,7 +132,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var childNodes = elm.childNodes;
             var elementLang = elm.getAttribute("lang") || lang || that.getLang(elm);;
 
-            fluid.each(childNodes, function (childNode, childIndex) {
+            childNodes.forEach(function (childNode, childIndex) {
                 if (childNode.nodeType === Node.TEXT_NODE) {
                     var textNodeData = {
                         node: childNode,
