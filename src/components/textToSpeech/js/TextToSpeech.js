@@ -61,42 +61,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return !!(window && window.speechSynthesis);
     };
 
-    /**
-     * Ensures that TTS is supported in the browser, including cases where the
-     * feature is detected, but where the underlying audio engine is missing.
-     * For example in VMs on SauceLabs, the behaviour for browsers which report that the speechSynthesis
-     * API is implemented is for the `onstart` event of an utterance to never fire. If we don't receive this
-     * event within a timeout, this API's behaviour is to return a promise which rejects.
-     *
-     * @param {Number} delay - A time in milliseconds to wait for the speechSynthesis to fire its onStart event
-     * by default it is 5000ms (5s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
-     * @return {fluid.promise} - A promise which will resolve if the TTS is supported (the onstart event is fired within the delay period)
-     * or be rejected otherwise.
-     */
-    fluid.textToSpeech.checkTTSSupport = function (delay) {
-        var promise = fluid.promise();
-        if (fluid.textToSpeech.isSupported()) {
-            // MS Edge speech synthesizer won't speak if the text string is blank,
-            // so this must contain actual text
-            var toSpeak = new SpeechSynthesisUtterance("short"); // short text to attempt to speak
-            toSpeak.volume = 0; // mutes the Speech Synthesizer
-            // Same timeout as the timeout in the IoC testing framework
-            var timeout = setTimeout(function () {
-                fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
-                promise.reject();
-            }, delay || 5000);
-            toSpeak.onend = function () {
-                clearTimeout(timeout);
-                fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
-                promise.resolve();
-            };
-            fluid.textToSpeech.invokeSpeechSynthesisFunc("speak", toSpeak);
-        } else {
-            fluid.invokeLater(promise.reject);
-        }
-        return promise;
-    };
-
     /*********************************************************************************************
      * fluid.textToSpeech component
      *********************************************************************************************/
