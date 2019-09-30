@@ -3742,11 +3742,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5912:  {arguments} within members and models", function () {
+    jqUnit.test("FLUID-5912: {arguments} within members and models", function () {
         var that = fluid.tests.fluid5912root();
         that.events.createIt.fire(42, 43);
         jqUnit.assertEquals("Argument value transmitted to member", 42, that.dynamic.argument0);
         jqUnit.assertEquals("Argument value transmitted to model", 43, that.dynamic.model.argument1);
+    });
+
+    /** FLUID-6404 - destroy() of self during onDestroy via createOnEvent **/
+
+    fluid.defaults("fluid.tests.fluid6404root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            dynamic: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    components: {
+                        dynamicChild: {
+                            type: "fluid.component"
+                        }
+                    },
+                    listeners: {
+                        "onDestroy.destroy": "fluid.tests.fluid6404destroy"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6404destroy = function (that) {
+        if (!fluid.isDestroyed(that)) {
+            that.destroy();
+        }
+    };
+
+    fluid.tests.fluid6404verify = function (that) {
+        jqUnit.assertTrue("Dynamic component exists", fluid.isComponent(that.dynamic));
+        jqUnit.assertTrue("Dynamic child exists", fluid.isComponent(that.dynamic.dynamicChild));
+        var dynamic = that.dynamic, dynamicChild = that.dynamic.dynamicChild;
+        var rootPath = fluid.pathForComponent(that);
+        var dynamicPath = rootPath.concat(["dynamic"]);
+        var dynamicChildPath = rootPath.concat(["dynamic", "dynamicChild"]);
+        jqUnit.assertDeepEq("Path for dynamic is correct", dynamicPath, fluid.pathForComponent(dynamic));
+        jqUnit.assertDeepEq("Path for dynamic child is correct", dynamicChildPath, fluid.pathForComponent(dynamicChild));
+        jqUnit.assertEquals("Shadow for dynamic is correct", dynamic, fluid.shadowForComponent(dynamic).that);
+        jqUnit.assertEquals("Shadow for dynamic is correct", dynamicChild, fluid.shadowForComponent(dynamicChild).that);
+        jqUnit.assertEquals("Path lookup for dynamic is correct", dynamic, fluid.componentForPath(dynamicPath));
+        jqUnit.assertEquals("Path lookup for dynamic child is correct", dynamicChild, fluid.componentForPath(dynamicChildPath));
+    };
+
+    jqUnit.test("FLUID-6404: destroy of self during onDestroy", function () {
+        jqUnit.expect(40);
+        var that = fluid.tests.fluid6404root();
+        for (var i = 0; i < 5; ++i) {
+            that.events.createIt.fire();
+            fluid.tests.fluid6404verify(that);
+        }
     });
 
     /** FLUID-6390 - Lensed components as a hash **/

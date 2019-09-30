@@ -2835,7 +2835,7 @@ var fluid = fluid || fluid_3_0_0;
      **/
 
     fluid.isDestroyed = function (that) {
-        return that.lifecycleStatus === "destroyed";
+        return that.lifecycleStatus === "destroyed" || that.lifecycleStatus === "destroying";
     };
 
     // Computes a name for a component appearing at the global root which is globally unique, from its nickName and id

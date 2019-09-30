@@ -962,7 +962,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // unsupported, NON-API function
     fluid.doDestroy = function (that, name, parent) {
         if (that.lifecycleStatus === "destroyed") {
-            fluid.fail("Cannot destroy component " + fluid.dumpComponentAndPath(that) + " which has already been destroyed");
+            fluid.fail("Cannot destroy " + fluid.dumpComponentAndPath(that) + " which has already been destroyed");
         }
         fluid.fireEvent(that, "onDestroy", [that, name || "", parent]);
         that.lifecycleStatus = "destroyed";
@@ -1116,6 +1116,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // only recurse on components which were created in place - if the id record disagrees with the
             // recurse path, it must have been injected
             if (created) {
+                if (fluid.isDestroyed(child)) {
+                    fluid.fail("Cannot destroy component which is already in status ", child.lifecycleStatus);
+                }
+                child.lifecycleStatus = "destroying";
                 fluid.visitComponentChildren(child, function (gchild, gchildname, segs, i) {
                     var parentPath = that.composeSegments.apply(null, segs.slice(0, i));
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
