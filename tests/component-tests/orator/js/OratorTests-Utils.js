@@ -116,10 +116,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selection.addRange(range);
     };
 
+    fluid.tests.orator.selection.selectNodes = function (startNode, endNode, startOffset, endOffset) {
+        var range = document.createRange();
+        var selection = window.getSelection();
+
+        range.setStart(startNode, startOffset);
+        range.setEnd(endNode, endOffset);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
     fluid.tests.orator.selection.collapse = function () {
         var selection = window.getSelection();
         selection.removeAllRanges();
     };
+
+    fluid.tests.orator.selection.getSelectionRange = function () {
+        return window.getSelection().getRangeAt(0);
+    }
 
     /*******************************************************************************
      * Assertions

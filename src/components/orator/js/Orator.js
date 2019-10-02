@@ -685,6 +685,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {fluid.orator.domReader} that
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *                             If the boundary is undefined or out of bounds, `undefined` will be returned.
+     * @param {Integer} parseQueueIndex - The index of into the parseQueue to determine which queue to use for
+     *                                    calculating the boundary positions against.
      *
      * @return {Integer|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
@@ -840,7 +842,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             enabled: true,
             showUI: false,
             play: false,
-            textSelected: false,
             text: ""
         },
         // similar to em values as it will be multiplied by the container's font-size
@@ -889,7 +890,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "play": [{
                 func: "fluid.orator.selectionReader.queueSpeech",
                 args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeechSequence"],
-                // args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
                 namespace: "queueSpeech"
             }, {
                 func: "fluid.orator.selectionReader.renderControlState",
@@ -973,19 +973,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.selectionReader.getSelectedText = function () {
         var selection = window.getSelection();
         return selection.toString();
-        // return window.getSelection().toString();
     };
 
     /**
      * Retrieves the text from the current selection
+     *
+     * @param {fluid.orator.selectionReader} that
      *
      * @return {String} - the text from the current selection
      */
     fluid.orator.selectionReader.getSelection = function (that) {
         that.selection = window.getSelection();
         that.applier.change("text", that.selection.toString(), "ADD", "getSelection");
-        // return selection.toString();
-        // return window.getSelection().toString();
     };
 
     /**
@@ -995,31 +994,59 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param  {Range} range - a Range object representing a selection.
      * @param  {Function} domParser - a parser function to parse Dom Elements into a {TextNodeData[]}
      *
-     * @return {Speech[]}          [description]
+     * @return {Speech[]} - an array of {Speech} objects for configuring SpeechSynthesis Utterances with.
      */
     fluid.orator.selectionReader.parseRange = function (range, domParser) {
-        var parsed = [];
-
         // Handles the case where all of the selection is in a single text node. Don't need to parse in this case.
         if (range.commonAncestorContainer.nodeType === Node.TEXT_NODE) {
-            parsed.push({
+            return [{
                 text: range.commonAncestorContainer.textContent.slice(range.startOffset, range.endOffset),
                 options: {
                     lang: $(range.commonAncestorContainer.parentElement).closest("[lang]").attr("lang")
                 }
-            });
-            return parsed;
+            }];
         }
 
-        var fromParser = domParser(range.commonAncestorContainer);
+        // Handles the case were range.selectNode was called to create the selection
+        if (range.commonAncestorContainer === range.startContainer) {
+            return fluid.orator.selectionReader.parseElement(range.commonAncestorContainer.childNodes[range.startOffset], domParser);
+        }
+
+        return fluid.orator.selectionReader.parseElement(range.commonAncestorContainer, domParser, range);
+    };
+
+    /**
+     * The options for parsing an element into {Speech[]}. It has similar properties to a {Range} and is typically used
+     * for `fluid.orator.selectionReader.parseElement`.
+     * @type {Object} ParseElementOpts
+     * @property {Integer} startOffset - the starting offset of the first text node. Text before will be omitted
+     * @property {Integer} endOffset - the end offset of the last text node. Text after will be omitted.
+     * @property {DomNode} startContainer - the text node to start parsing from.
+     * @property {DomNode} endContainer - the text node to stop parsing at.
+     */
+
+    /**
+     * Parses an element into a {Speech[]}. The supplied domParser is used to do an initial parsing of the element into
+     * a {TextNodeData[]}.
+     *
+     * @param  {DomElement} element - The DOM Element to parse
+     * @param  {Function} domParser - a parser function to parse Dom Elements into a {TextNodeData[]}
+     * @param  {ParseElementOpts} options - (Optional) parsing configuration
+     * @return {Speech[]} - an array of {Speech} objects for configuring SpeechSynthesis Utterances with.
+     */
+    fluid.orator.selectionReader.parseElement = function (element, domParser, options) {
+        options = options || {};
+        var parsed = [];
+
+        var fromParser = domParser(element);
         var parsedNodes = fluid.getMembers(fromParser, "node");
-        var startIndex  = parsedNodes.indexOf(range.startContainer);
-        var endIndex = parsedNodes.indexOf(range.endContainer);
+        var startIndex  = options.startContainer ? parsedNodes.indexOf(options.startContainer) : 0;
+        var endIndex = options.endContainer ? parsedNodes.indexOf(options.endContainer) : parsedNodes.length - 1;
 
         if (startIndex >= 0 && endIndex >= 0) {
             for (var i = startIndex; i <= endIndex; i++) {
-                var startOffset = i === startIndex ? range.startOffset : 0;
-                var endOffset = i === endIndex ? range.endOffset : undefined;
+                var startOffset = i === startIndex ? options.startOffset : 0;
+                var endOffset = i === endIndex ? options.endOffset : undefined;
                 var node = fromParser[i].node;
                 var lang = fromParser[i].lang;
                 var lastParsed = parsed[parsed.length - 1];

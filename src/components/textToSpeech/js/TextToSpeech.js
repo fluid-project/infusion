@@ -101,8 +101,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     listeners: {
                         "onBoundary.relay": "{textToSpeech}.events.utteranceOnBoundary.fire",
-                        "onEnd.relay": "{textToSpeech}.events.utteranceOnEnd.fire",
-                        "onError.relay": "{textToSpeech}.events.utteranceOnError.fire",
+                        "onEnd.relay": {
+                            listener: "{textToSpeech}.events.utteranceOnEnd.fire",
+                            priority: "before:resolvePromise"
+                        },
+                        "onError.relay": {
+                            listener: "{textToSpeech}.events.utteranceOnError.fire",
+                            priority: "before:rejectPromise"
+                        },
                         "onMark.relay": "{textToSpeech}.events.utteranceOnMark.fire",
                         "onPause.relay": "{textToSpeech}.events.utteranceOnPause.fire",
                         "onResume.relay": "{textToSpeech}.events.utteranceOnResume.fire",
@@ -315,7 +321,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Options to configure the SpeechSynthesis Utterance with.
+     * Values to configure the SpeechSynthesis Utterance with.
      * See: https://w3c.github.io/speech-api/speechapi.html#utterance-attributes
      *
      * @typedef {Object} Speech

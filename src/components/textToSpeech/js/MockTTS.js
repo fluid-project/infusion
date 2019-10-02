@@ -77,7 +77,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // override the speak invoker to return the utterance component instead of the SpeechSynthesisUtterance instance
             speak: {
                 func: "{that}.invokeSpeechSynthesisFunc",
-                args: ["speak", "{that}.queue.0"]
+                args: ["speak", {
+                    expander: {
+                        "this": "{that}.queue",
+                        method: "pop"
+                    }
+                }]
             }
         },
         distributeOptions: {
