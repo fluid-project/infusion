@@ -372,6 +372,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         parseIndex: 2,
         parseQueueIndex: 2,
+        boundary: 4,
+        expected: 1
+    }, {
+        parseIndex: 2,
+        parseQueueIndex: 2,
         boundary: 35,
         expected: undefined
     }];
@@ -569,7 +574,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 49,
+                expect: 50,
                 name: "DOM Reading",
                 sequence: [{
                     // Play sequence
@@ -593,6 +598,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "{that}.options.testOptions.expectedSpeechRecord",
                         "{that}.options.testOptions.stoppedModel"
                     ]
+                }, {
+                    // set paused
+                    funcName: "{domReader}.applier.change",
+                    args: ["tts.paused", true, "ADD", "domReaderTests"]
+                }, {
+                    // Boundary event when paused
+                    func: "{domReader}.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: 8}]
+                }, {
+                    func: "jqUnit.assertNull",
+                    args: ["The ttsBoundary model path should be null", "{domReader}.model.ttsBoundary"]
+                }, {
+                    // reset paused state
+                    funcName: "{domReader}.applier.change",
+                    args: ["tts.paused", false, "ADD", "domReaderTests"]
                 }, {
                     // Boundary event with no parseQueue items
                     func: "{domReader}.events.utteranceOnBoundary.fire",
