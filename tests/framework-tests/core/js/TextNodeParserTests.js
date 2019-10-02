@@ -182,7 +182,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 text: textNodeData.node.textContent.trim(),
                 lang: textNodeData.lang,
                 childIndex: textNodeData.childIndex
-            }
+            };
         };
 
         fluid.tests.textNodeParser.record = function (record, textNodeData) {

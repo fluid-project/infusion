@@ -124,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         range.setEnd(endNode, endOffset);
         selection.removeAllRanges();
         selection.addRange(range);
-    }
+    };
 
     fluid.tests.orator.selection.collapse = function () {
         var selection = window.getSelection();
@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.orator.selection.getSelectionRange = function () {
         return window.getSelection().getRangeAt(0);
-    }
+    };
 
     /*******************************************************************************
      * Assertions

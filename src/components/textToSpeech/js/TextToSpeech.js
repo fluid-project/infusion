@@ -295,7 +295,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Assembles the utterance options and fires onSpeechQueued which will kick off the creation of an utterance
      * component. If "interrupt" is true, this utterance will replace any existing ones.
      *
-     * @param {fluid.textToSpeech} that
+     * @param {fluid.textToSpeech} that - an instance of the component
      * @param {String} text - the text to be synthesized
      * @param {Boolean} interrupt - used to indicate if this text should be queued or replace existing utterances
      * @param {UtteranceOpts} options - options to configure the {SpeechSynthesisUtterance} with. It is merged on top of
@@ -335,7 +335,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * synthesized with differing {UtteranceOpts}, but still treated as an atomic unit. For example, if a set of text
      * includes words from different languages.
      *
-     * @param  {fluid.textToSpeech} that
+     * @param  {fluid.textToSpeech} that - an instance of the component
      * @param  {Speech[]} speeches - the set of text to queue as a unit
      * @param  {Boolean} interrupt - used to indicate if the related text should be queued or replace existing
      *                               utterances
@@ -346,7 +346,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.textToSpeech.queueSpeechSequence = function (that, speeches, interrupt) {
         var sequence = fluid.transform(speeches, function (speech, index) {
             var toInterrupt = interrupt && !index; // only interrupt on the first string
-            return that.queueSpeech(speech.text, interrupt, speech.options);
+            return that.queueSpeech(speech.text, toInterrupt, speech.options);
         });
         return fluid.promise.sequence(sequence);
     };
@@ -356,7 +356,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * is required because if the SpeechSynthesis is cancelled remaining {SpeechSynthesisUtterance} are ignored and do
      * not fire their `onend` event.
      *
-     * @param  {fluid.textToSpeech} that
+     * @param  {fluid.textToSpeech} that - an instance of the component
      */
     fluid.textToSpeech.cancel = function (that) {
         // Safari does not fire the onend event from an utterance when the speech synthesis is cancelled.
@@ -434,7 +434,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * event provided in the utteranceEventMap, any corresponding event binding passed in directly through the
      * utteranceOpts will be rebound as component event listeners with the "external" namespace.
      *
-     * @param {fluid.textToSpeech.utterance} that
+     * @param {fluid.textToSpeech.utterance} that - an instance of the component
      * @param {Object} utteranceEventMap - a mapping from {SpeechSynthesisUtterance} events to component events.
      * @param {UtteranceOpts} utteranceOpts - options to configure the {SpeechSynthesisUtterance} with.
      *

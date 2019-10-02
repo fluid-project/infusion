@@ -199,7 +199,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * This is not bound declaratively to ensure that the correct arguments are passed along to the `that.toggle`
      * method.
      *
-     * @param {fluid.orator.controller} that
+     * @param {fluid.orator.controller} that - an instance of the component
      */
     fluid.orator.controller.bindClick = function (that) {
         that.locate("playToggle").click(function () {
@@ -213,7 +213,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * that this method will be used in conjunction with a click handler. In that case, it's most likely that the state
      * will be toggling the existing model value.
      *
-     * @param {fluid.orator.controller} that
+     * @param {fluid.orator.controller} that - an instance of the component
      * @param {String|Array} path - the path, into the model, for the value to toggle
      * @param {Boolean} state - (optional) explicit state to set the model value to
      */
@@ -230,7 +230,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * False - play style removed
      *       - aria-label set to the `play` string
      *
-     * @param {fluid.orator.controller} that
+     * @param {fluid.orator.controller} that - an instance of the component
      * @param {Boolean} state - the state to set the controller to
      */
     fluid.orator.controller.setToggleView = function (that, state) {
@@ -429,11 +429,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Updates the `ttsBoundary` and `parseQueueIndex` model paths based on the provided boundary. Attempts to determine
      * if the supplied boundary is derived from the current queue or if the parseQueueIndex needs to be incremented.
      *
-     * @param  {fluid.orator.domReader} that
+     * @param  {fluid.orator.domReader} that - an instance of the component
      * @param  {Integer} boundary - the incoming boundary, typically from a {SpeechSynthesisUtterance} boundary event.
      *                              This indicates the starting index of the word being Synthesized.
-     * @return {Undefined} - Nothing is ever returned, but a `return;` statement is used to short ciruit the function
-     *                       when the component is paused.
      */
     fluid.orator.domReader.setCurrentBoundary = function (that, boundary) {
         // It is possible that the pause event triggers before all of the boundary events have been received.
@@ -501,13 +499,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * initial text; which then proceeds through the transform chain to arrive at the final text.
      * To change the speech function (e.g for testing) the `onQueueSpeech.queueSpeech` listener can be overridden.
      *
-     * @param {fluid.orator.domReader} that
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {String} text - The text to be synthesized
-     * @param {Boolean} interrupt - Used to indicate if this text should be queued or replace existing utterances.
-     *                              This will be passed along to the listeners in the options; `options.interrupt`.
      * @param {Object} options - (optional) options to configure the utterance with. This will also be interpolated with
-     *                           the interrupt parameter and event mappings. See: `fluid.textToSpeech.queueSpeech` in
-     *                           TextToSpeech.js for an example of utterance options for that speech function.
+     *                           the event mappings. See: `fluid.textToSpeech.queueSpeech` in TextToSpeech.js for an
+     *                           example of utterance options for that speech function.
      *
      * @return {Promise} - A promise for the final resolved text
      */
@@ -557,7 +553,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Retrieves the active parseQueue array to be used when updating from the latest parsed text node. Will increment
      * the parseQueue with a new empty array if one doesn't already exist or if the language has changed.
      *
-     * @param {fluid.orator.domReader} that
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {String} lang - a valid BCP 47 language code.
      *
      * @return {Array} - the parseQueue array to update with the latest parsed text node.
@@ -581,7 +577,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * previous {DomWordMap} in the parseQueue. For example: when the syllabification separator tag is inserted
      * between words.
      *
-     * @param {fluid.orator.domReader} that
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {TextNodeData} textNodeData - the parsed information of text node. Typically from `fluid.textNodeParser`
      */
     fluid.orator.domReader.addToParseQueue = function (that, textNodeData) {
@@ -624,7 +620,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Reset the parseQueue and related model values
      *
-     * @param {fluid.orator.domReader} that
+     * @param {fluid.orator.domReader} that - an instance of the component
      */
     fluid.orator.domReader.resetParseQueue = function (that) {
         that.parseQueue = [];
@@ -658,7 +654,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * voicing engine. The parsed data points are added to the component's `parseQueue`. Once all of the text has been
      * synthesized, the `onStop` event is fired.
      *
-     * @param {fluid.orator.domReader} that
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {String|jQuery|DomElement} elm - The DOM node to read
      */
     fluid.orator.domReader.readFromDOM = function (that, elm) {
@@ -682,7 +678,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns the index of the closest data point from the parseQueue based on the boundary provided.
      *
-     * @param {fluid.orator.domReader} that
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *                             If the boundary is undefined or out of bounds, `undefined` will be returned.
      * @param {Integer} parseQueueIndex - The index of into the parseQueue to determine which queue to use for
@@ -794,7 +790,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Highlights text from the `parseQueue`. Highlights are performed by wrapping the appropriate text in the markup
      * specified at `that.options.markup.highlight`.
      *
-     * @param {fluid.orator.domReader} that
+     * @param {fluid.orator.domReader} that - an instance of the component
      */
     fluid.orator.domReader.highlight = function (that) {
         that.removeHighlight();
@@ -978,9 +974,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Retrieves the text from the current selection
      *
-     * @param {fluid.orator.selectionReader} that
-     *
-     * @return {String} - the text from the current selection
+     * @param {fluid.orator.selectionReader} that - an instance of the component
      */
     fluid.orator.selectionReader.getSelection = function (that) {
         that.selection = window.getSelection();

@@ -989,11 +989,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             options: {lang: "en"}
         }, {
             text: "Language",
-            options: {lang: "en-US"},
+            options: {lang: "en-US"}
         }, {
             text: "\n        ",
             options: {lang: "en"}
-      }]
+        }]
     }, {
         name: "Selected parent element - undefined options",
         selector: ".flc-orator-selectionReader-test",
@@ -1002,7 +1002,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             options: {lang: "en"}
         }, {
             text: "Language",
-            options: {lang: "en-US"},
+            options: {lang: "en-US"}
         }, {
             text: "\n        ",
             options: {lang: "en"}
@@ -1138,8 +1138,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected = [{
             text: "nge ",
             options: {lang: "en"}
-        },
-        {
+        }, {
             text: "Language",
             options: {lang: "en-US"}
         }];
@@ -1247,7 +1246,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     // play
-                    func: "{selectionReader}.play",
+                    func: "{selectionReader}.play"
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Play", "{that}.options.testOpts.expected.textPlay"],
@@ -1255,7 +1254,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     // stop
-                    func: "{selectionReader}.stop",
+                    func: "{selectionReader}.stop"
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Stop", "{that}.options.testOpts.expected.textSelected"],

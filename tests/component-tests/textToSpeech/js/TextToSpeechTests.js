@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
-    
+
     /**
      * Ensures that TTS is supported in the browser, including the following cases:
      * - Feature is not detected
