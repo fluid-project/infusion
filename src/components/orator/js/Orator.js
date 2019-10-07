@@ -420,7 +420,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "utteranceOnBoundary.setCurrentBoundary": {
                 listener: "fluid.orator.domReader.setCurrentBoundary",
-                args: ["{that}", "{arguments}.0.charIndex"]
+                args: ["{that}", "{arguments}.0.charIndex", "{arguments}.0.name"]
             }
         }
     });
@@ -432,11 +432,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param  {fluid.orator.domReader} that - an instance of the component
      * @param  {Integer} boundary - the incoming boundary, typically from a {SpeechSynthesisUtterance} boundary event.
      *                              This indicates the starting index of the word being Synthesized.
+     * @param  {String} boundaryType - Boundary events can fire at the beginning of a "word" or "sentence". This is used
+     *                                 to indicate which one it is related to. From the {SpeechSynthesisUtterance}
+     *                                 boundary event this is found in the `name` property. Currently only `"word"`
+     *                                 boundary events are supported. All others will be ignored.
      */
-    fluid.orator.domReader.setCurrentBoundary = function (that, boundary) {
+    fluid.orator.domReader.setCurrentBoundary = function (that, boundary, boundaryType) {
         // It is possible that the pause event triggers before all of the boundary events have been received.
         // The following check prevents boundary events from updating the model if TTS is paused.
-        if (that.model.tts.paused) {
+        // Also we currently only support "word" boundary events. Some synthesizers also fire boundary events
+        // In those cases, we will get two boundary events for the beginning which will confuse the parseQueueIndex
+        // incrementing algorithm. At the moment we ignore any non-word boundary events. In the future we may also
+        // accept sentence boundary events for potentially highlighting sentences as well.
+        if (that.model.tts.paused || boundaryType !== "word") {
             return;
         }
 
