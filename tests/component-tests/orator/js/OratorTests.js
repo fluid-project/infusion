@@ -574,7 +574,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 50,
+                expect: 51,
                 name: "DOM Reading",
                 sequence: [{
                     // Play sequence
@@ -605,7 +605,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // Boundary event when paused
                     func: "{domReader}.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: 8}]
+                    args: [{charIndex: 8, name: "word"}]
                 }, {
                     func: "jqUnit.assertNull",
                     args: ["The ttsBoundary model path should be null", "{domReader}.model.ttsBoundary"]
@@ -616,7 +616,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // Boundary event with no parseQueue items
                     func: "{domReader}.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: 8}]
+                    args: [{charIndex: 8, name: "word"}]
                 }, {
                     listener: "jqUnit.assertNodeNotExists",
                     args: ["The parseQueue is empty, no highlight should be added", "{domReader}.dom.highlight"],
@@ -639,8 +639,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         parseItemCount: 2
                     }, "ADD", "domReaderTests"]
                 }, {
+                    // boundary event fired for sentence
                     funcName: "{domReader}.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex"}]
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex", name: "sentence"}]
+                }, {
+                    func: "jqUnit.assertNull",
+                    args: ["The ttsBoundary model path should be null", "{domReader}.model.ttsBoundary"]
+                }, {
+                    // boundary event fired for word
+                    funcName: "{domReader}.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex", name: "word"}]
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyMark",
                     args: ["{domReader}.dom.highlight", 2, "{that}.options.testOptions.parseQueue.0.0.word"],
@@ -648,7 +656,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     func: "{domReader}.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.1.blockIndex"}]
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.1.blockIndex", name: "word"}]
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyMark",
                     args: ["{domReader}.dom.highlight", 1, "{that}.options.testOptions.parseQueue.0.1.word"],
