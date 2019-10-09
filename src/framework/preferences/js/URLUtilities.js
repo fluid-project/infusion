@@ -41,7 +41,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.url.parsePathInfoTrim = function (pathInfo) {
         var togo = fluid.url.parsePathInfo(pathInfo);
-        if (togo.pathInfo[togo.pathInfo.length - 1] === "") {
+        if (fluid.peek(togo.pathInfo) === "") {
             togo.pathInfo.length--;
         }
         return togo;

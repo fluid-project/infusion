@@ -24,6 +24,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testMessages: {},
         parentBundle: {
             expander: {
+                // TODO: This is a dangerous technique that will leak the fluid.messageResolver component
+                // We need to add checks that component creators are not used as expander functions
                 funcName: "fluid.messageResolver",
                 args: [{messageBase: "{that}.options.testMessages"}]
             }

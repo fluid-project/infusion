@@ -317,19 +317,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * together with other standard elements.
      * @param {ResourceSpec} resourceSpec - The `resourceSpec` to be subscribed
      * @param {String} key - The key by which the `resourceSpec` is index in its `resourceSpecs` structure
+     * @param {String} ownerComponentId - The id of any component holding the overall ResourceFetcher structure (for debuggability)
      */
-    fluid.fetchResources.subscribeOneResource = function (resourceSpec, key) {
+    fluid.fetchResources.subscribeOneResource = function (resourceSpec, key, ownerComponentId) {
         if (resourceSpec.transformEvent) {
             fluid.fail("Cannot subscribe resource ", resourceSpec, " which has already been subscribed for I/O");
         }
-        resourceSpec.transformEvent = fluid.makeEventFirer({name: "Transform chain for resource \"" + key + "\""});
+        resourceSpec.transformEvent = fluid.makeEventFirer({
+            name: "Transform chain for resource \"" + key + "\"",
+            ownerId: ownerComponentId
+        });
         resourceSpec.transformEvent.addListener(fluid.fetchResources.noteParsed, "parsed", "last");
         var parser = fluid.resourceLoader.resolveResourceParser(resourceSpec);
         resourceSpec.transformEvent.addListener(parser, "parser", "before:parsed");
         resourceSpec.transformEvent.addListener(fluid.fetchResources.noteResourceText, "resourceText", "before:parser");
         resourceSpec.transformEvent.addListener(fluid.fetchResources.resolveLoaderTask(resourceSpec, resourceSpec.loader.loader),
             "loader", "before:resourceText");
-        resourceSpec.onFetched = fluid.makeEventFirer({name: "onFetched event for resources \"" + key + "\""});
+        resourceSpec.onFetched = fluid.makeEventFirer({
+            name: "onFetched event for resources \"" + key + "\"",
+            ownerId: ownerComponentId
+        });
 
         resourceSpec.transformEvent.addListener(fluid.fetchResources.fireFetched, "fireFetched", "after:parsed");
         fluid.fetchResources.prepareRequestOptions(resourceSpec);
@@ -412,10 +419,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * an invocation of `fetchOneResource` or the entire set triggered via `fetchAll`
      */
     fluid.makeResourceFetcher = function (sourceResourceSpecs, callback, options, transformResourceURL) {
+        options = options || {};
         var that = {
             sourceResourceSpecs: sourceResourceSpecs,
-            options: fluid.copy(options || {}),
-            onFetchAll: fluid.makeEventFirer({name: "onFetchAll for resourceFetcher"}),
+            options: fluid.copy(options),
+            onFetchAll: fluid.makeEventFirer({
+                name: "onFetchAll for resourceFetcher",
+                ownerId: options.ownerComponentId
+            }),
             transformResourceURL: transformResourceURL
         };
         /**
@@ -454,7 +465,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.initResourceFetcher(that);
 
         fluid.each(that.resourceSpecs, function (resourceSpec, key) {
-            fluid.fetchResources.subscribeOneResource(resourceSpec, key);
+            fluid.fetchResources.subscribeOneResource(resourceSpec, key, that.options.ownerComponentId);
         });
 
         that.onFetchAll.addListener(function (completionPromise) {
@@ -744,16 +755,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {fluid.resourceLoader} that - The resourceLoader component for which the fetcher is to be constructed
      * (currently used to target the delivery of the delivered `that.resources` members, and relay resource errors)
      * @param {ResourceSpecs} resourceSpecs - The resourceSpecs structure held in `options.resources` of the
-     * @param {ResourceFetcherOptions} resourceOptions - Options governing the entire resource fetcher (currently
+     * @param {ResourceFetcherOptions} userResourceOptions - Options governing the entire resource fetcher (currently
      * `locale`, `defaultLocale` and `terms`)
      * @param {Function} transformResourceURL - A function {String -> String} which maps URL/path entries in resource
      * specs, possibly by interpolating term values
      * @return {ResourceFetcher} The ResourceFetcher ready to be attached to the ResourceLoader's top level
      */
-    fluid.resourceLoader.makeResourceFetcher = function (that, resourceSpecs, resourceOptions, transformResourceURL) {
+    fluid.resourceLoader.makeResourceFetcher = function (that, resourceSpecs, userResourceOptions, transformResourceURL) {
+        var resourceOptions = $.extend({
+            ownerComponentId: that.id, // For debuggability
+            ownerComponentPath: fluid.pathForComponent(that)
+        }, userResourceOptions);
         var fetcher = fluid.makeResourceFetcher(resourceSpecs, null, resourceOptions, transformResourceURL);
-        fetcher.ownerComponentId = that.id; // For debuggability
-        fetcher.ownerComponentPath = fluid.pathForComponent(that);
         // Note that we beat the existing completion listener in the fetcher by "sheer luck"
         fluid.each(fetcher.resourceSpecs, function (resourceSpec, key) {
             resourceSpec.promise.then(function () {

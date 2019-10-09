@@ -314,7 +314,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     funcName: "jqUnit.assertEquals",
                     args: ["The onVideoElementLocated should have fired for each found element", 2, "{captions}.record.onVideoElementLocated.length"]
-                }, {
+                }, { // TODO: This fixture is faulty in that there is no expectation that the components are created synchronously
                     funcName: "fluid.tests.captionsTester.verifyDynamicComponentsCreated",
                     args: ["{captions}", "{that}.options.testOpts.componentNames"]
                 }, {

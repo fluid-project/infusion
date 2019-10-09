@@ -588,6 +588,14 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
+    /** Return the last element of an array. If the array is of length 0, returns `undefined`.
+     * @param {Arrayable} array - The array to be peeked into
+     * @return {Any} start - The last element of the array
+     */
+    fluid.peek = function (array) {
+        return array.length === 0 ? undefined : array[array.length - 1];
+    };
+
     /** Better jQuery.each which works on hashes as well as having the arguments the right way round.
      * @param {Arrayable|Object} source - The container to be iterated over
      * @param {Function} func - A function accepting (value, key) for each iterated
@@ -1164,7 +1172,7 @@ var fluid = fluid || fluid_3_0_0;
             return returnSegs ? {root: root, segs: segs} : root;
         }
         else { // set
-            root[segs[segs.length - 1]] = newValue;
+            root[fluid.peek(segs)] = newValue;
         }
     };
 
@@ -2049,7 +2057,18 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.resortWorkflows(workflowType, baseIndex);
     };
 
+    fluid.clearGradeWorkflows = function (gradeName, workflowType) {
+        var cacheForType = fluid.workflowCache[workflowType];
+        fluid.each(cacheForType, function (oneWorkflow, workflowKey) {
+            if (oneWorkflow.gradeName === gradeName) {
+                delete cacheForType[workflowKey];
+            }
+        });
+    };
+
     fluid.indexGradeWorkflows = function (gradeName, options) {
+        fluid.clearGradeWorkflows(gradeName, "global");
+        fluid.clearGradeWorkflows(gradeName, "local");
         var sortedGlobal = fluid.indexOneWorkflows(gradeName, "global", fluid.getImmediate(options, ["workflows", "global"]), 0);
         var globalWorkflowCount = sortedGlobal.length;
         var sortedLocal = fluid.indexOneWorkflows(gradeName, "local", fluid.getImmediate(options, ["workflows", "local"]), globalWorkflowCount);
@@ -2557,7 +2576,7 @@ var fluid = fluid || fluid_3_0_0;
                     return;
                 }
             }
-            var last = segs[segs.length - 1];
+            var last = fluid.peek(segs);
             delete model[last];
         }
     };
@@ -2826,7 +2845,7 @@ var fluid = fluid || fluid_3_0_0;
      */
     fluid.computeNickName = function (typeName) {
         var segs = fluid.model.parseEL(typeName);
-        return segs[segs.length - 1];
+        return fluid.peek(segs);
     };
 
     /** Returns <code>true</code> if the supplied reference holds a component which has been destroyed

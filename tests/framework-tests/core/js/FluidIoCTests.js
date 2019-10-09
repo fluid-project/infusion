@@ -3804,6 +3804,142 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /** FLUID-6408 - "Hybrid time" **/
+
+    fluid.defaults("fluid.tests.fluid6408root", {
+        gradeNames: "fluid.modelComponent",
+        workflows: {
+            local: {
+                fluid6408workflow: {
+                    funcName: "fluid.tests.fluid6408workflow",
+                    priority: "after:concludeComponentObservation"
+                }
+            }
+        },
+        freeComponent: {
+            expander: { // This will eventually be forbidden
+                func: "fluid.component"
+            }
+        },
+        someLateOption: 42
+    });
+
+    fluid.tests.fluid6408workflow = function (shadow) {
+        jqUnit.assertEquals("Component options should have been fully evaluated", 42, shadow.that.options.someLateOption);
+        fluid.invokeLater(function () {
+            // Clear out the defaults and workflow function to avoid disrupting later tests
+            fluid.defaults("fluid.tests.fluid6408root", {});
+        });
+    };
+
+    jqUnit.test("FLUID-6408: Obnoxious free component disrupts workflow", function () {
+        jqUnit.expect(1);
+        fluid.tests.fluid6408root();
+    });
+
+    fluid.defaults("fluid.tests.fluid6406root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            value: true
+        },
+        dynamicComponents: {
+            dynamic: {
+                // Deliberately don't make this a modelComponent to make the fresh work cycle empty
+                type: "fluid.component",
+                source: "{that}.model",
+                options: {
+                    staticish: 42
+                }
+            }
+        },
+        members: {
+            // This should be what we see, even though it is not a great practice
+            staticish: "{that}.dynamic.options.staticish"
+        }
+    });
+
+    jqUnit.test("FLUID-6406: Progress of workflow", function () {
+        var that = fluid.tests.fluid6406root();
+        jqUnit.assertEquals("Late reference to lensed component value ", 42, that.staticish);
+    });
+
+    /** FLUID-6410 - Failure in hybrid time through 0-element sequence reuse **/
+
+// This currently tests the final branch of the test in fluid.commitPotentiae:
+//         if (!topSequencer || topSequencer.hasStartedConcludeInit || topSequencer.promise.disposition) {
+    fluid.defaults("fluid.tests.fluid6410root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                type: "fluid.modelComponent",
+                createOnEvent: "createIt",
+                options: {
+                    model: 42
+                }
+            }
+        },
+        listeners: {
+            "onCreate.createThem": "fluid.tests.fluid6410createThem"
+        }
+    });
+
+    fluid.tests.fluid6410createThem = function (that) {
+        that.events.createIt.fire();
+        that.events.createIt.fire();
+    };
+
+    jqUnit.test("FLUID-6410: Partial construction through sequence reuse", function () {
+        var that = fluid.tests.fluid6410root();
+        jqUnit.assertValue("First component model constructed", that.dynamic.model);
+        jqUnit.assertValue("Second component model constructed", that["dynamic-1"].model);
+    });
+
+    /** FLUID-6411 - Failure when cleaning up model resource listener **/
+
+    fluid.tests.fluid6411promiseGenerator = function () {
+        return function () {
+            var simplePromise = fluid.promise();
+            simplePromise.resolve("Everything is fine.");
+            return simplePromise;
+        };
+    };
+
+    fluid.defaults("fluid.tests.fluid6411resourceLoader", {
+        gradeNames: ["fluid.resourceLoader", "fluid.modelComponent"],
+        resources: {
+            promiseResource: {
+                promiseFunc: "@expand:fluid.tests.fluid6411promiseGenerator()"
+            }
+        },
+        model: {
+            promiseResource: "{that}.resources.promiseResource.parsed"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6411root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            resourceLoader: {
+                createOnEvent: "createIt",
+                type: "fluid.tests.fluid6411resourceLoader"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6411: Cleanup after resource-based model", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid6411root();
+        that.events.createIt.fire();
+        that.events.createIt.fire();
+        jqUnit.assertEquals("Model resolved from promise for the 2nd time", "Everything is fine.", that.resourceLoader.model.promiseResource);
+    });
+
     /** FLUID-6390 - Lensed components as a hash **/
 
     fluid.defaults("fluid.tests.fluid6390child", {
@@ -5004,7 +5140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var results = fluid.queryIoCSelector(that, fixture.selector, fixture.flat);
         var leaves = fluid.transform(results, function (result) {
             var path = fluid.pathForComponent(result);
-            return path[path.length - 1];
+            return fluid.peek(path);
         });
         jqUnit.assertDeepEq("Expected results for queryIoCSelector", fixture.expected, leaves);
     };
@@ -5441,7 +5577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.fail("Destruction transaction should have concluded normally, instead got " + err);
         });
         that.freeComponent.destroy();
-        jqUnit.assertUndefined("Opened transaction should not have rejected already", transRec.promise.disposition);
+        jqUnit.assertNotEquals("Opened transaction should not have rejected already", "reject", transRec.promise.disposition);
     };
 
     jqUnit.test("FLUID-6148: Chained destructors", function () {

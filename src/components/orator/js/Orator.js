@@ -522,7 +522,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} childIndex - the index of the text node within its parent's set of child nodes
      */
     fluid.orator.domReader.addToParseQueue = function (that, textNode, lang, childIndex) {
-        var lastParsed = that.parseQueue[that.parseQueue.length - 1] || {};
+        var lastParsed = fluid.peek(that.parseQueue) || {};
         var words = textNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
         var parsed = {
             blockIndex: (lastParsed.blockIndex || 0) + (fluid.get(lastParsed, ["word", "length"]) || 0),

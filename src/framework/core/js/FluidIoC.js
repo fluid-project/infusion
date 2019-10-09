@@ -81,7 +81,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (thatStack.length === 0) { // Odd edge case for FLUID-6126 from fluid.computeDistributionPriority
             return [];
         } else {
-            var path = instantiator.idToPath(thatStack[thatStack.length - 1].id);
+            var path = instantiator.idToPath(fluid.peek(thatStack).id);
             var segs = instantiator.parseEL(path);
                 // TODO: we should now have no longer shortness in the stack
             segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
@@ -259,7 +259,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.collectDistributions = function (distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i) {
-        var lastMember = memberNames[memberNames.length - 1];
+        var lastMember = fluid.peek(memberNames);
         if (!fluid.isCollectedDistribution(parentShadow, lastMember, distribution) &&
                 fluid.matchIoCSelector(distribution.selector, thatStack, contextHashes, memberNames, i)) {
             distributedBlocks.push.apply(distributedBlocks, fluid.copy(distribution.blocks));
@@ -294,7 +294,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             contextHashes.push(fluid.gradeNamesToHash(gradeNames));
             thatStack.push(that);
         } else {
-            fluid.registerCollectedClearer(shadows[shadows.length - 1], parentShadow, memberNames[memberNames.length - 1]);
+            fluid.registerCollectedClearer(fluid.peek(shadows), parentShadow, fluid.peek(memberNames));
         }
         var distributedBlocks = [];
         for (var i = 0; i < thatStack.length - 1; ++i) {
@@ -1308,10 +1308,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var transactionId = instantiator.currentTreeTransactionId;
         if (transactionId) {
             var transRec = instantiator.treeTransactions[transactionId];
+            var errorOut;
             transRec.promise.then(null, function (e) {
-                throw e;
+                errorOut = e;
             });
             fluid.commitPotentiae(transactionId);
+            if (errorOut) {
+                throw errorOut;
+            }
         }
     };
 
@@ -1427,7 +1431,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     */
     fluid.pushCreatePotentia = function (potentiaList, path, topush) {
         var existing = potentiaList.pathToPotentia[path];
-        // TODO: Crude approximation to allowing nested transactions
         if (existing && !existing.applied) {
             fluid.lightMergeRecords.pushRecords(existing, topush.records || topush.lightMerge.toMerge);
         } else {
@@ -1660,7 +1663,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return isBoolean ? !value : value === undefined;
         };
         var shadow = fluid.shadowForComponent(that);
-        var sourceKey = isBoolean ? 0 : segs[segs.length - 1];
+        var sourceKey = isBoolean ? 0 : fluid.peek(segs);
         var expectedMemberName = fluid.computeDynamicComponentKey(key, sourceKey);
         var currentComponent = that[expectedMemberName];
         if (!isEmptyValue(value) && !currentComponent) {
@@ -1830,7 +1833,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.preparePathedPotentia = function (potentia, instantiator) {
         var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
         potentia.segs = segs;
-        potentia.memberName = segs[segs.length - 1];
+        potentia.memberName = fluid.peek(segs);
         potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
     };
 
@@ -1992,9 +1995,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var bracketIO = function (sequence) {
             return [suspendCurrentTransaction].concat(sequence).concat([resumeCurrentTransaction]);
         };
-        return function () {
+        var waitIOTask = function () {
             return transRec.pendingIO.length ? fluid.promise.sequence(bracketIO(transRec.pendingIO)) : null;
         };
+        waitIOTask.taskName = "waitIO";
+        return waitIOTask;
     };
 
     fluid.enqueueWorkflowBlock = function (transRec, shadows, workflowStart, workflowEnd, blockStart, blockEnd, sequencer) {
@@ -2016,13 +2021,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     sequence.push(fluid.waitPendingIOTask(transRec));
                 }
                 if (workflowRecord.workflowType === "global") {
-                    sequence.push(function () {
+                    var globalWorkflowTask = function () {
                         workflowFunc(workflowShadows, transRec);
-                    });
+                    };
+                    globalWorkflowTask.taskName = workflowRecord.namespace;
+                    sequence.push(globalWorkflowTask);
                 } else {
-                    sequence.push(function () {
+                    var localWorkflowTask = function () {
+                        if (workflowRecord.namespace === "concludeComponentInit") {
+                            sequencer.hasStartedConcludeInit = true;
+                        }
                         workflowShadows.forEach(workflowFunc);
-                    });
+                    };
+                    localWorkflowTask.taskName = workflowRecord.namespace;
+                    sequence.push(localWorkflowTask);
                 }
                 workQueued = true;
             }
@@ -2043,12 +2055,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var shadows = transRec.outputShadows;
         // Bring any freshly created shadows to the same level as the most currently advanced
         if (shadows.length > transRec.lastWorkflowShadow && transRec.maximumWorkflowStage > 0) {
-            return fluid.enqueueWorkflowBlock(transRec, shadows, 0, transRec.maximumWorkflowStage,
+            fluid.enqueueWorkflowBlock(transRec, shadows, 0, transRec.maximumWorkflowStage,
                 transRec.lastWorkflowShadow, shadows.length, sequencer);
+            return true;
         } else if (transRec.maximumWorkflowStage < transRec.workflowStageBreak) {
             // They must all be level - bring the level of all shadows to final level
-            return fluid.enqueueWorkflowBlock(transRec, shadows, transRec.maximumWorkflowStage, transRec.workflowStageBreak,
-                0, shadows.length, sequencer);
+            for (var workflowStage = transRec.maximumWorkflowStage; workflowStage < transRec.workflowStageBreak; ++workflowStage) {
+                var workQueued = fluid.enqueueWorkflowBlock(transRec, shadows, workflowStage, workflowStage + 1,
+                    0, shadows.length, sequencer);
+                if (workQueued) {
+                    return workQueued;
+                }
+            }
         }
     };
 
@@ -2113,10 +2131,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var transRec = instantiator.treeTransactions[transactionId];
         var lastWorkflowShadow = transRec.lastWorkflowShadow;
         var rootSequencer = transRec.rootSequencer;
-        var sequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
-        rootSequencer.sources.push(sequencer.promise);
-        if (!rootSequencer.sequenceStarted) {
-            fluid.promise.resumeSequence(rootSequencer);
+        var sequencer;
+        var topSequencer = fluid.getImmediate(fluid.peek(rootSequencer.sources), ["sequencer"]);
+        if (!topSequencer || topSequencer.hasStartedConcludeInit || topSequencer.promise.disposition) {
+            sequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
+            sequencer.promise.sequencer = sequencer; // So we can reference it from the stack of sources
+            rootSequencer.sources.push(sequencer.promise);
+        } else {
+            sequencer = topSequencer;
         }
         fluid.tryCatch(function commitPotentiae() {
             if (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
@@ -2128,13 +2150,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.commitPotentiae(transactionId);
                 });
             }
-            fluid.promise.resumeSequence(sequencer);
+            if (!sequencer.sequenceStarted) {
+                fluid.promise.resumeSequence(sequencer);
+            }
+            if (!rootSequencer.sequenceStarted) {
+                fluid.promise.resumeSequence(rootSequencer);
+            }
         }, function (e) {
             if (!transRec.promise.disposition) {
                 transRec.promise.reject(e);
             }
         });
-        // instantiator.currentTreeTransactionId = null; // TODO: make sure this can be put back
         return transRec.outputShadows[lastWorkflowShadow];
     };
 
@@ -2198,6 +2224,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return instantiator.treeTransactions[instantiator.currentTreeTransactionId];
     };
 
+    /** Clear the mutable fields in the supplied tree transaction, either on startup or during cancellation
+     * @param {TreeTransaction} transRec - The tree transaction to be cleared
+     */
+    fluid.clearTreeTransaction = function (transRec) {
+        transRec.rootSequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
+        transRec.restoreRecords = fluid.blankPotentiaList(); // accumulate a list of records to be executed in case the transaction is backed out
+        transRec.initModelTransaction = {};
+        transRec.outputShadows = [];         // All shadows output during this transaction
+        transRec.lastWorkflowShadow = 0;     // The last index of a shadow which has entered workflow
+        transRec.maximumWorkflowStage = 0;   // The maximum workflow stage so far attained by any component
+        transRec.deferredDistributions = []; // distributeOptions may decide to defer application of a distribution for FLUID-6193
+    };
+
     /** Begin a fresh transaction against the global component tree. Any further calls to `fluid.registerPotentia`,
      * `fluid.construct` or `fluid.destroy` may be contextualised by this transaction, and then committed as a single
      * unit via `fluid.commitPotentiae` or cancelled via `fluid.cancelTreeTransaction`.
@@ -2217,19 +2256,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var transactionId = instantiator.currentTreeTransactionId = fluid.allocateGuid();
         var transRec = $.extend({
             transactionId: transactionId,
-            outputShadows: [], // All shadows output during this transaction
             workflowStageBreak: undefined, // Any stage which was requested component processing should break at
-            lastWorkflowShadow: 0, // The last index of a shadow which has entered workflow
-            maximumWorkflowStage: 0, // The maximum workflow stage so far attained by any component
-            rootSequencer: fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy()),
             pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
-            restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
-            deferredDistributions: [], // distributeOptions may decide to defer application of a distribution for FLUID-6193,
             cancelled: false,
             cancellationError: null,
-            initModelTransaction: {},
             pendingIO: [] // list of outstanding promises from workflow in progress
         }, transactionOptions);
+        fluid.clearTreeTransaction(transRec);
         transRec.promise = transRec.rootSequencer.promise;
 
         var onConclude = function () {
@@ -2291,14 +2324,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var transRec = instantiator.treeTransactions[transactionId];
         if (transRec) {
             try {
-                transRec.rootSequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
                 transRec.pendingPotentiae = transRec.restoreRecords;
-                transRec.restoreRecords = fluid.blankPotentiaList();
                 transRec.cancelled = true;
-                transRec.initModelTransaction = {};
-                transRec.outputShadows = [];
-                transRec.lastWorkflowShadow = 0;
-                transRec.maximumWorkflowStage = 0;
+                fluid.clearTreeTransaction(transRec);
                 fluid.commitPotentiae(transactionId, true);
             } catch (e) {
                 fluid.log(fluid.logLevel.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
@@ -2812,7 +2840,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.expandCompactRec = function (segs, target, source) {
         fluid.guardCircularExpansion(segs, segs.length);
-        var pen = segs.length > 0 ? segs[segs.length - 1] : "";
+        var pen = fluid.peek(segs);
         var active = singularRecord[pen];
         if (!active && segs.length > 1) {
             active = singularPenRecord[segs[segs.length - 2]]; // support array of listeners and modelListeners

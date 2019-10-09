@@ -195,7 +195,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             if (cutpoints) {
                 for (var i = 0; i < cutpoints.length; ++i) {
                     var cutstat = cutstatus[i];
-                    if (cutstat.length > 0 && cutstat[cutstat.length - 1] === nestingdepth) {
+                    if (cutstat.length > 0 && fluid.peek(cutstat) === nestingdepth) {
                         cutstat.length--;
                     }
                 }
@@ -207,7 +207,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             var endlump = newLump();
             --nestingdepth;
             endlump.text = "</" + parser.getName() + ">";
-            var oldtop = tagstack[tagstack.length - 1];
+            var oldtop = fluid.peek(tagstack);
             oldtop.close_tag = t.lumps[lumpindex - 1];
             tagstack.length--;
             justended = true;
@@ -224,7 +224,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                 t.firstdocumentindex = lumpindex;
             }
             var headlump = newLump();
-            var stacktop = tagstack[tagstack.length - 1];
+            var stacktop = fluid.peek(tagstack);
             headlump.uplump = stacktop;
             var tagname = parser.getName();
             headlump.tagname = tagname;

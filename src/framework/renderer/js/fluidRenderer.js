@@ -282,7 +282,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
-    fluid.renderer = function (templates, tree, options, fossilsIn) {
+    fluid.oldRenderer = function (templates, tree, options, fossilsIn) {
 
         options = options || {};
         tree = tree || {};
@@ -1408,7 +1408,9 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     };
 
-    jQuery.extend(true, fluid.renderer, renderer);
+    jQuery.extend(true, fluid.oldRenderer, renderer);
+    // Final definition for backwards compatibility - remove with old renderer
+    fluid.renderer = fluid.oldRenderer;
 
     /*
      * This function is unsupported: It is not really intended for use by implementors.
@@ -1464,7 +1466,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.reRender = function (templates, node, tree, options) {
         options = options || {};
-        var renderer = fluid.renderer(templates, tree, options, options.fossils);
+        var renderer = fluid.oldRenderer(templates, tree, options, options.fossils);
         options = renderer.options;
               // Empty the node first, to head off any potential id collisions when rendering
         node = fluid.unwrap(node);

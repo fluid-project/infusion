@@ -200,7 +200,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var pages = that.options.pageStrategy(newModel.pageCount, 0, newModel.pageIndex);
         var pageTree = fluid.transform(pages, pageToComponent(newModel.pageIndex));
         if (pageTree.length > 1) {
-            pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + that.options.strings.last;
+            fluid.peek(pageTree).value = fluid.peek(pageTree).value + that.options.strings.last;
         }
         that.events.onRenderPageLinks.fire(pageTree, newModel);
         that.pageTree = pageTree;

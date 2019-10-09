@@ -412,7 +412,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             trans.commit();
         };
         resourceSpec.onFetched.addListener(resourceUpdateListener);
-        fluid.recordListener(resourceSpec, resourceUpdateListener, fluid.shadowForComponent(that));
+        fluid.recordListener(resourceSpec.onFetched, resourceUpdateListener, fluid.shadowForComponent(that));
     };
 
     fluid.appendResourceInitModel = function (that, applier, initModels) {

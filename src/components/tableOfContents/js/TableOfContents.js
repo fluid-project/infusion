@@ -124,7 +124,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         listeners: {
-            "onCreate.refreshView": "{that}.refreshView"
+            "onCreate.refreshView": {
+                func: "{that}.refreshView",
+                // Make sure we do not try to refresh view until after "levels" subcomponent is constructed
+                priority: "after:fluid-componentConstruction"
+            }
         }
     });
 
@@ -146,7 +150,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (heading.level > level) {
                     var subHeadings = buildModelLevel(headings, level + 1);
                     if (modelLevel.length > 0) {
-                        modelLevel[modelLevel.length - 1].headings = subHeadings;
+                        fluid.peek(modelLevel).headings = subHeadings;
                     } else {
                         modelLevel = modelLevelFn(modelLevel, subHeadings);
                     }

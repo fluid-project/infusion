@@ -222,6 +222,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // until the promise at the preceding position has resolved
     fluid.promise.sequence = function (sources, options) {
         var sequencer = fluid.promise.makeSequencer(sources, options, fluid.promise.makeSequenceStrategy());
+        sequencer.promise.sequencer = sequencer; // An aid to debuggability
         fluid.promise.resumeSequence(sequencer);
         return sequencer.promise;
     };
