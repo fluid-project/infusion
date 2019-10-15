@@ -527,6 +527,82 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.fluid4982messageResolver();
     });
 
+    /** FLUID-6413 I - Elementary failure with asynchronous activities during init transaction **/
+
+    fluid.defaults("fluid.tests.fluid6413child", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                dataType: "json",
+                locale: "fr",
+                url: "../data/messages2.json"
+            }
+        },
+        workflows: {
+        // This replicates the workflow setup in fluid.oldRendererComponent which was used by the old ToC implementation
+            local: {
+                fetchOldResource: {
+                    funcName: "fluid.fluid6143fetchOldResource",
+                    priority: "after:concludeComponentObservation"
+                },
+                waitForOldResource: {
+                    waitIO: true,
+                    funcName: "fluid.identity",
+                    priority: "after:fetchOldResource"
+                }
+            }
+        }
+    });
+
+    fluid.fluid6143fetchOldResource = function (shadow) {
+        fluid.getForComponent(shadow.that, "resources.messages");
+    };
+
+    fluid.defaults("fluid.tests.fluid6413root", {
+        gradeNames: "fluid.modelComponent",
+        model: null,
+        listeners: {
+            "onCreate.updateModel": {
+                funcName: "fluid.tests.fluid6413update",
+                priority: "after:fluid-componentConstruction"
+            }
+        },
+        components: {
+            child: {
+                type: "fluid.tests.fluid6413child",
+                createOnEvent: "onCreate",
+                options: {
+                    model: {
+                        parentModelValue: "{fluid6413root}.model.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6413update = function (that) {
+        // White-box testing - the transaction should not have suspended
+        jqUnit.assertValue("Transaction should be active", fluid.globalInstantiator.currentTreeTransactionId);
+        that.applier.change("value", 42);
+    };
+
+    jqUnit.asyncTest("FLUID-6413: Elementary failure with long init transaction", function () {
+        var transRec = fluid.construct("fluid6413root", {
+            type: "fluid.tests.fluid6413root"
+        }, {
+            returnTransaction: true
+        });
+        jqUnit.assertEquals("Root component should have finished constructing synchronously", "treeConstructed", transRec.outputShadows[0].that.lifecycleStatus);
+        transRec.promise.then(function () {
+            var that = transRec.outputShadows[0].that;
+            jqUnit.assertEquals("Root model onCreate change applied", 42, that.model.value);
+            jqUnit.assertEquals("Child component synced", 42, that.child.model.parentModelValue);
+            jqUnit.assertValue("Got messages", that.child.resources.messages.parsed.courses);
+            fluid.defaults("fluid.tests.fluid6413child", {}); // Clear out workflows
+            jqUnit.start();
+        });
+    });
+
     /** FLUID-4982: Recoverable async failure on loading invalid JSON **/
 
     fluid.defaults("fluid.tests.FLUID4982.badJSONMocks", {

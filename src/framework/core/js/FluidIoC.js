@@ -1986,19 +1986,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.waitPendingIOTask = function (transRec) {
         var instantiator = fluid.globalInstantiator;
-        var suspendCurrentTransaction = function () {
-            instantiator.currentTreeTransactionId = null;
-        };
         var resumeCurrentTransaction = function () {
             instantiator.currentTreeTransactionId = transRec.transactionId;
         };
         var bracketIO = function (sequence) {
-            return [suspendCurrentTransaction].concat(sequence).concat([resumeCurrentTransaction]);
+            return sequence.concat([resumeCurrentTransaction]);
         };
+        var sequence;
         var waitIOTask = function () {
-            return transRec.pendingIO.length ? fluid.promise.sequence(bracketIO(transRec.pendingIO)) : null;
+            return transRec.pendingIO.length ? (sequence = fluid.promise.sequence(bracketIO(transRec.pendingIO))) : null;
         };
         waitIOTask.taskName = "waitIO";
+        waitIOTask.sequence = sequence;
         return waitIOTask;
     };
 
@@ -2031,7 +2030,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         if (workflowRecord.namespace === "concludeComponentInit") {
                             sequencer.hasStartedConcludeInit = true;
                         }
-                        workflowShadows.forEach(workflowFunc);
+                        workflowShadows.forEach(function (shadow) {
+                            workflowFunc(shadow, transRec);
+                        });
                     };
                     localWorkflowTask.taskName = workflowRecord.namespace;
                     sequence.push(localWorkflowTask);
@@ -2129,6 +2130,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.commitPotentiae = function (transactionId) {
         var instantiator = fluid.globalInstantiator;
         var transRec = instantiator.treeTransactions[transactionId];
+        ++transRec.commitDepth;
         var lastWorkflowShadow = transRec.lastWorkflowShadow;
         var rootSequencer = transRec.rootSequencer;
         var sequencer;
@@ -2161,6 +2163,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 transRec.promise.reject(e);
             }
         });
+        --transRec.commitDepth;
+        if (transRec.commitDepth === 0) {
+            instantiator.currentTreeTransactionId = null;
+        }
         return transRec.outputShadows[lastWorkflowShadow];
     };
 
@@ -2258,6 +2264,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             transactionId: transactionId,
             workflowStageBreak: undefined, // Any stage which was requested component processing should break at
             pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
+            commitDepth: 0, // The number of nested calls to fluid.commitPotentiae
             cancelled: false,
             cancellationError: null,
             pendingIO: [] // list of outstanding promises from workflow in progress

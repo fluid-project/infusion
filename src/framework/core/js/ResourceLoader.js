@@ -107,6 +107,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.fetchResources = function (resourceSpecs, callback, options) {
         var that = fluid.makeResourceFetcher(resourceSpecs, callback, options, fluid.identity);
+        that.optionsReady.resolve();
         that.fetchAll();
         return that;
     };
@@ -159,7 +160,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    // Returns an array of settled promises
     /** Accepts an array of ResourceSpecs as exploded by `fluid.fetchResources.explodeForLocales` into a
      * member `localeExplodedSpecs" and sets up I/O to query them for the matching resource. The current implementation
      * will query each exploded spec regardless of error, and the results will be collated by `fluid.fetchResources.condenseExplodedLocales"
@@ -423,6 +423,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var that = {
             sourceResourceSpecs: sourceResourceSpecs,
             options: fluid.copy(options),
+            // We need to gate the launching of any requests on this promise, since resourceFetcher options arising from
+            // models will arrive strictly later during construction.
+            optionsReady: fluid.promise(),
             onFetchAll: fluid.makeEventFirer({
                 name: "onFetchAll for resourceFetcher",
                 ownerId: options.ownerComponentId
@@ -524,15 +527,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.fetchResources.fetchOneResource = function (resourceSpec, resourceFetcher) {
         if (!resourceSpec.launched) {
             resourceSpec.launched = true;
-            var transformPromise = fluid.fetchResources.fireTransformEvent(resourceSpec, resourceFetcher);
-            fluid.promise.follow(transformPromise, resourceSpec.promise);
-            // Add these at the last possible moment so that individual resource disposition can beat them
-            // TODO: Convert all these to "new firers"
-            resourceSpec.promise.then(function () {
-                fluid.fetchResources.checkCompletion(resourceFetcher.resourceSpecs, resourceFetcher);
-            }, function (error) {
-                resourceSpec.fetchError = error;
-                resourceFetcher.completionPromise.reject(error);
+            resourceFetcher.optionsReady.then(function () {
+                var transformPromise = fluid.fetchResources.fireTransformEvent(resourceSpec, resourceFetcher);
+                fluid.promise.follow(transformPromise, resourceSpec.promise);
+                // Add these at the last possible moment so that individual resource disposition can beat them
+                // TODO: Convert all these to "new firers"
+                resourceSpec.promise.then(function () {
+                    fluid.fetchResources.checkCompletion(resourceFetcher.resourceSpecs, resourceFetcher);
+                }, function (error) {
+                    resourceSpec.fetchError = error;
+                    resourceFetcher.completionPromise.reject(error);
+                });
             });
         }
         return resourceSpec.promise;
@@ -554,6 +559,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @member {String} pathKey - The key by which the field in the `resourceSpec` denoting the resource's path
      * can be looked up (in practice this will be "url" or "path")
      */
+
+    /** The resourceLoader's listener to the `resourceLoader` area holding live updatable options (primarily locale)
+     * governing refetching of resources.
+     * @param {ResourceFetcher} resourceFetcher - The resourceLoader's `resourceFetcher` member
+     * @param {ResourceFetcherOptions} modelOptions - The updated value of the modelised resourceFetcher options. These will be
+     * re-overlayed on top of the statically configured options
+     * @param {Boolean} early - `true` if this update results from the early initialisation phase of the `resourceLoader`'s model.
+     * Note that this uses the special `earlyModelResolved` event of the ChangeApplier since we require to contribute back
+     * into the model after resources are loaded, prior to the official model initialisation notification of modelListeners
+     * during later construction.
+     */
+    fluid.resourceLoader.modelUpdated = function (resourceFetcher, modelOptions, early) {
+        resourceFetcher.options = $.extend(true, {}, resourceFetcher.options, modelOptions);
+        if (early) {
+            resourceFetcher.optionsReady.resolve();
+        } else {
+            resourceFetcher.refetchAll();
+        }
+    };
 
     /** Render a resourceSpec into a form where it may be easily read in the console, primarily by censoring any
      * component instances such as DataSources that have been expanded into its definition
@@ -701,7 +725,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.defaults("fluid.resourceLoader", {
-        gradeNames: ["fluid.component"],
+        gradeNames: ["fluid.modelComponent"],
         listeners: {
             /* On construction of the resourceLoader, kick off the process of fetching all the resources configured
              * within its resourceFetcher. Note that some or all of these resources may already have been fetched by
@@ -714,6 +738,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "resourceLoaderCompletion",
                 funcName: "fluid.resourceLoader.subscribeCompletion",
                 args: ["{arguments}.0", "{that}"]
+            },
+            "{that}.applier.earlyModelResolved": {
+                funcName: "fluid.resourceLoader.modelUpdated",
+                args: ["{that}.resourceFetcher", "{arguments}.0.resourceLoader", true]
+            }
+        },
+        modelListeners: {
+            resourceLoader: {
+                namespace: "resourceLoader",
+                funcName: "fluid.resourceLoader.modelUpdated",
+                excludeSource: "init",
+                args: ["{that}.resourceFetcher", "{change}.value"]
             }
         },
         mergePolicy: {

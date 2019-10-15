@@ -488,7 +488,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
-    /** FLUID-3674: New model semantic tests **/
+    /** FLUID-4258: Declarative listener test **/
 
     fluid.tests.recordChange = function (fireRecord, path, value, oldValue) {
         fireRecord.push({path: path, value: value, oldValue: oldValue});
@@ -586,6 +586,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Source guarded change not reported", [], that.fireRecord);
         fluid.tests.assertTransactionsConcluded();
     });
+
+    /** FLUID-3674: New model semantic tests **/
 
     fluid.defaults("fluid.tests.changer", {
         gradeNames: ["fluid.component"],
@@ -686,7 +688,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-3674 event coordination test", function () {
+    jqUnit.test("FLUID-3674 createOnEvent coordination test", function () {
         fluid.tests.assertTransactionsConcluded();
         var that = fluid.tests.fluid3674eventHead();
         that.events.createEvent.fire();
@@ -801,6 +803,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         model: {
+            resourceLoader: {
+                locale: "en"
+            },
             messages: "{that}.resources.messages.parsed"
         }
     });
@@ -814,14 +819,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var checkIt = function (component) {
             jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
             jqUnit.assertEquals("Localised model fetched", "These courses will require a lot of grading", component.model.messages.courses);
-            // Dynamically update locale by bashing on the resourceFetcher's records
-            var resourceFetcher = component.resourceFetcher;
-            resourceFetcher.options.locale = "en_ZA";
-            resourceFetcher.resourceSpecs.messages.onFetched.addListener(function () {
+            component.applier.modelChanged.addListener("messages", function () {
                 checkIt2(component);
             });
-            // Trigger a refetch of the resources which will automatically update the linked model
-            resourceFetcher.refetchAll();
+            // Dynamically update locale via model, which should notify the listener above
+            component.applier.change("resourceLoader.locale", "en_ZA");
         };
         fluid.tests.fluid4982loc({
             listeners: {
@@ -1402,8 +1404,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid5869.root", {
         gradeNames: "fluid.modelComponent",
         model: {
-            sharedValue: 35,
-            reactiveValue: 10
+            sharedValue: 35
         },
         modelListeners: {
             "": "fluid.tests.fluid5869.recreate({that})"
@@ -1442,7 +1443,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5869.recreate = function (that) {
-        that.events.createRelay.fire(); // The aim here is to create a self-reaction during the init transaction of the recreated component
+        // Original comment: The aim here is to create a self-reaction during the init transaction of the recreated component
+        // Note that notification of model listeners now comes strictly *after* the end of the init transaction
+        that.events.createRelay.fire();
     };
 
     jqUnit.test("FLUID-5869: Error when recreating model relay component during transaction", function () {

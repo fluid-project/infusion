@@ -126,7 +126,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onCreate.refreshView": {
                 func: "{that}.refreshView",
-                // Make sure we do not try to refresh view until after "levels" subcomponent is constructed
+                // New for FLUID-6148: Make sure we do not try to refresh view until after "levels" subcomponent is constructed
                 priority: "after:fluid-componentConstruction"
             }
         }
