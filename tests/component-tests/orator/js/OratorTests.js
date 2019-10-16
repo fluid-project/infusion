@@ -767,18 +767,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.orator.selectionReader.positionTests = {
         fontSize: 16,
-        wndw: {
-            pageYOffset: 5,
-            pageXOffset: 5
-        },
         rect: {top: 20, left: 20, bottom: 40},
-        clientWidth: 100,
+        margin: {top: 0, left: 0},
+        documentDefaultStubs: {
+            body: {
+                scrollLeft: 0,
+                scrollTop: 0
+            },
+            documentElement: {
+                clientWidth: 100,
+                scrollLeft: 0,
+                scrollTop: 0
+            }
+        },
         testCases: [{
             name: "default offsetScale",
             expected: {
                 location: fluid.orator.selectionReader.location.TOP,
-                top: 9,
-                left: 25
+                top: 4,
+                left: 20
             }
         }, {
             name: "collision with top edge",
@@ -789,8 +796,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             rect: {left: 40},
             expected: {
                 location: fluid.orator.selectionReader.location.BOTTOM,
-                top: 45,
-                left: 45
+                top: 40,
+                left: 40
             }
         }, {
             name: "collision with left edge",
@@ -801,8 +808,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             rect: {top: 36},
             expected: {
                 location: fluid.orator.selectionReader.location.TOP,
-                top: 17,
-                left: 37
+                top: 12,
+                left: 32
             }
         }, {
             name: "collision with right edge",
@@ -810,12 +817,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 edge: 1,
                 pointer: 1.5
             },
-            clientWidth: 50,
-            rect: {left: 35},
+            documentElement: {
+                clientWidth: 50
+            },
+            rect: {top: 25, left: 35},
             expected: {
                 location: fluid.orator.selectionReader.location.TOP,
                 top: 1,
-                left: 39
+                left: 34
             }
         }, {
             name: "no collisions",
@@ -823,30 +832,86 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 edge: 1.5,
                 pointer: 1.5
             },
-            rect: {top: 30, left: 30},
+            rect: {top: 35, left: 35},
             expected: {
                 location: fluid.orator.selectionReader.location.TOP,
                 top: 11,
                 left: 35
             }
+        }, {
+            name: "body scroll",
+            body: {
+                scrollLeft: 5,
+                scrollTop: 5
+            },
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 9,
+                left: 25
+            }
+        }, {
+            name: "documentElement scroll",
+            documentElement: {
+                scrollLeft: 2,
+                scrollTop: 2
+            },
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 6,
+                left: 22
+            }
+        }, {
+            name: "margin",
+            margin: {
+                top: 2,
+                left: 2
+            },
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 2,
+                left: 18
+            }
+        }, {
+            name: "negative margin",
+            margin: {
+                top: -5,
+                left: -5
+            },
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 9,
+                left: 25
+            }
         }]
+    };
+
+    fluid.tests.orator.selectionReader.positionTests.generateStubs = function (sandbox, stubs, testCase) {
+        fluid.each(stubs, function (toStub, property) {
+            fluid.each(toStub, function (returnVal, stubProp) {
+                sandbox.stub(document[property], stubProp).value(fluid.get(testCase, [property, stubProp]) || returnVal);
+            });
+        });
     };
 
     jqUnit.test("Test fluid.orator.selectionReader.calculatePosition", function () {
         var sandbox = sinon.createSandbox();
         fluid.each(fluid.tests.orator.selectionReader.positionTests.testCases, function (testCase) {
-            sandbox.stub(document.documentElement, "clientWidth")
-                .value(testCase.clientWidth || fluid.tests.orator.selectionReader.positionTests.clientWidth);
+            fluid.tests.orator.selectionReader.positionTests.generateStubs(
+                sandbox,
+                fluid.tests.orator.selectionReader.positionTests.documentDefaultStubs,
+                testCase
+            );
 
             var rect = $.extend({}, fluid.tests.orator.selectionReader.positionTests.rect, testCase.rect);
-            var actual = fluid.orator.selectionReader.calculatePosition(rect,
+            var margin = $.extend({}, fluid.tests.orator.selectionReader.positionTests.margin, testCase.margin);
+            var actual = fluid.orator.selectionReader.calculatePosition(
+                rect,
+                margin,
                 fluid.tests.orator.selectionReader.positionTests.fontSize,
-                testCase.offsetScale,
-                fluid.tests.orator.selectionReader.positionTests.wndw
+                testCase.offsetScale
             );
 
             jqUnit.assertDeepEq("Position object generated for - " + testCase.name, testCase.expected, actual);
-
         });
         sandbox.restore();
     });
