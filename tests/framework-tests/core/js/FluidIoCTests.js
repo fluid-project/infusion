@@ -4031,6 +4031,101 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Model flag should not have been reset", false, that.model.shouldComponentExist);
     });
 
+    /** FLUID-6414 - Dynamic grades via expanders **/
+// Also tests FLUID-6415 corruption in graph structure
+    fluid.defaults("fluid.tests.fluid6414root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: {
+                element1: {
+                    type: "green",
+                    value: 42
+                },
+                element2: {
+                    type: "red",
+                    value: 43
+                },
+                element3: {
+                    type: "green",
+                    value: 44
+                }
+            }
+        },
+        components: {
+            middle: {
+                type: "fluid.tests.fluid6414middle",
+                options: {
+                    model: "{fluid6414root}.model"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414middle", {
+        gradeNames: "fluid.modelComponent",
+        invokers: {
+            resolveElementGrade: "fluid.tests.fluid6414resolve({arguments}.0)"
+        },
+        model: {
+            arena: {}
+        },
+        dynamicComponents: {
+            element: {
+                sources: "{that}.model.arena",
+                type: "@expand:{fluid6414middle}.resolveElementGrade({source}.type)",
+                options: {
+                    model: {
+                        value: "{source}.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414element", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            value: null
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414green", {
+        gradeNames: "fluid.tests.fluid6414element",
+        model: {
+            colour: "green"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414red", {
+        gradeNames: "fluid.tests.fluid6414element",
+        model: {
+            colour: "red"
+        }
+    });
+
+    fluid.tests.fluid6414resolve = function (flatType) {
+        return "fluid.tests.fluid6414" + flatType;
+    };
+
+    jqUnit.test("FLUID-6414: Dynamic grades via expanders", function () {
+        var that = fluid.tests.fluid6414root();
+        fluid.test.assertTransactionsConcluded();
+        var subs = fluid.queryIoCSelector(that, "fluid.tests.fluid6414element");
+        jqUnit.assertEquals("Three components lensed into existence", 3, subs.length);
+        var expectedModels = [{
+            colour: "green",
+            value: 42
+        },{
+            colour: "red",
+            value: 43
+        },{
+            colour: "green",
+            value: 44
+        }];
+        var models = fluid.getMembers(subs, "model");
+        jqUnit.assertDeepEq("Models resolved correctly", expectedModels, models);
+    });
+
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
 
     fluid.defaults("fluid.tests.fluid5029root", {

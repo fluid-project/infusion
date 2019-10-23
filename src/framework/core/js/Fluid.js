@@ -434,6 +434,15 @@ var fluid = fluid || fluid_3_0_0;
         return typeof(ref) === "string" && ref.charAt(0) === "{" && ref.indexOf("}") > 0;
     };
 
+    /** Determine whether the supplied value is a reference or an expander. The test is passed if either fluid.isIoCReference passes
+     * or the value has an "expander" member
+     * @param {Any} ref - The value to be tested
+     * @return {Boolean} `true` if the supplied value is a reference or expander
+     */
+    fluid.isReferenceOrExpander = function (ref) {
+        return ref && (fluid.isIoCReference(ref) || ref.expander);
+    };
+
     fluid.isDOMNode = function (obj) {
       // This could be more sound, but messy:
       // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object

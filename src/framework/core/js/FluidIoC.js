@@ -609,6 +609,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    fluid.flattenGradeName = function (gradeName) {
+        return typeof(gradeName) === "string" ? gradeName : JSON.stringify(gradeName);
+    };
+
     // Apply a batch of freshly acquired plain dynamic grades to the target component and recompute its options
     fluid.applyDynamicGrades = function (rec) {
         rec.oldGradeNames = fluid.makeArray(rec.gradeNames);
@@ -618,7 +622,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         rec.gradeNames.push.apply(rec.gradeNames, newDefaults.gradeNames);
 
         fluid.each(rec.gradeNames, function (gradeName) {
-            if (!fluid.isIoCReference(gradeName)) {
+            if (!fluid.isReferenceOrExpander(gradeName)) {
                 rec.seenGrades[gradeName] = true;
             }
         });
@@ -642,10 +646,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Filter some newly discovered grades into their plain and dynamic queues
     fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
         fluid.each(newGradeNames, function (gradeName) {
-            if (!rec.seenGrades[gradeName]) {
-                if (fluid.isIoCReference(gradeName)) {
+            var flatGradeName = fluid.flattenGradeName(gradeName);
+            if (!rec.seenGrades[flatGradeName]) {
+                if (fluid.isReferenceOrExpander(gradeName)) {
                     rec.rawDynamic.push(gradeName);
-                    rec.seenGrades[gradeName] = true;
+                    rec.seenGrades[flatGradeName] = true;
                 } else if (!fluid.contains(rec.oldGradeNames, gradeName)) {
                     rec.plainDynamic.push(gradeName);
                 }

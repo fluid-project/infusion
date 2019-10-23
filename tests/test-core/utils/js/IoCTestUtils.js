@@ -32,6 +32,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    fluid.test.assertTransactionsConcluded = function () {
+        // White box testing: use knowledge of the ChangeApplier's implementation to determine that all transactions have been cleaned up
+        var instantiator = fluid.globalInstantiator;
+        var anyKeys;
+        var key;
+        for (key in instantiator.modelTransactions) {
+            if (key !== "init") {
+                anyKeys = key;
+            }
+        }
+        for (key in instantiator.modelTransactions.init) {
+            anyKeys = key;
+        }
+
+        jqUnit.assertNoValue("All model transactions concluded", anyKeys);
+    };
+
     fluid.defaults("fluid.test.testEnvironment", {
         gradeNames: ["fluid.component"],
         components: {

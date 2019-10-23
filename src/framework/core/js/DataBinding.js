@@ -287,6 +287,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             index: 0
         };
         vertices.forEach(function (vertex) {
+            delete vertex.lowIndex;
+            delete vertex.tarjanIndex;
+            delete vertex.onStack;
+        });
+        vertices.forEach(function (vertex) {
             if (vertex.tarjanIndex === undefined) {
                 fluid.stronglyConnectedOne(vertex, that);
             }
@@ -431,9 +436,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
      * @param {Object} initModelTransaction The record for the init transaction. This is a hash indexed by component id
      * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `complete`.
+     * @param {String} transId The id of the model transaction corresponding to the init model transaction
      */
-    fluid.operateInitialTransaction = function (initModelTransaction) {
-        var transId = fluid.allocateGuid();
+    fluid.operateInitialTransaction = function (initModelTransaction, transId) {
         var transRec = fluid.getModelTransactionRec(fluid.rootComponent, transId);
         var transac;
         var transacs = fluid.transform(initModelTransaction, function (recel) {
@@ -475,7 +480,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.subscribeResourceModelUpdates(that, resourceMapEntry.segs, resourceMapEntry.fetchOne.resourceSpec);
                 });
                 fluid.each(recel.initModels, function (oneInitModel) {
-                    transac.fireChangeRequest({type: "ADD", segs: [], value: oneInitModel});
+                    if (oneInitModel !== undefined) {
+                        transac.fireChangeRequest({type: "ADD", segs: [], value: oneInitModel});
+                    }
                     fluid.clearLinkCounts(transRec, true);
                 });
                 // Ensure that the model can be read as early as possible through non-model interactions resolved via {that}.model
@@ -1203,8 +1210,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.operateInitialTransactionWorkflow = function (shadows, treeTransaction) {
+        var transId = treeTransaction.initModelTransactionId;
+        if (!transId) {
+            transId = fluid.allocateGuid();
+            treeTransaction.initModelTransactionId = transId;
+        }
         fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
-            fluid.operateInitialTransaction(treeTransaction.initModelTransaction);
+            fluid.operateInitialTransaction(treeTransaction.initModelTransaction, transId);
             // Do this afterwards so that model listeners can be fired by concludeComponentInit
             shadows.forEach(function (shadow) {
                 var that = shadow.that;
@@ -1215,6 +1227,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
         }, function (e) {
             treeTransaction.initModelTransaction = {};
+            treeTransaction.initModelTransactionId = null;
             fluid.clearTransactions();
             throw e;
         }, fluid.identity);
@@ -1239,30 +1252,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var that = oneRec.that,
                     applier = that.applier;
                 trans = transRec[applier.applierId].transaction;
-                var listeners = that.applier.transListeners.sortedListeners;
+                var listeners = applier.transListeners.sortedListeners;
                 var initShadow = fluid.shadowForComponent(that);
                 initShadow.modelComplete = true;
                 var shadowTrans = initShadow.initTransactionId;
                 if (shadowTrans === shadow.initTransactionId) {
                     fluid.notifyModelChanges(listeners, "ADD", trans.oldHolder, fluid.emptyHolder, null, trans, applier, that);
                 } else {
-                    // debugger;
+                    // TODO: See if we can generate a case where this branch is necessary
                     // fluid.notifyModelChanges(listeners, "ADD", trans.newHolder, trans.oldHolder, null, trans, applier, that);
                 }
             });
+            treeTransaction.initModelTransaction = {};
+            treeTransaction.initModelTransactionId = null;
             trans.commit(); // committing one representative transaction will commit them all
             // NB: Don't call concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
-            treeTransaction.initModelTransaction = {};
         }
     };
 
     // supported, PUBLIC API grade
     fluid.defaults("fluid.modelComponent", {
         gradeNames: ["fluid.component"],
-        changeApplierOptions: {
-            relayStyle: true,
-            cullUnchanged: true
-        },
         workflows: {
             global: {
                 enlistModel: {
