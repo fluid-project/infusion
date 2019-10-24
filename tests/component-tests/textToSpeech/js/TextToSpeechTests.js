@@ -232,6 +232,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tts.cancel();
     };
 
+    // Due to https://issues.fluidproject.org/browse/FLUID-6418
     // Need to wrap jqUnit.assertUndefined because the framework will throw an error when trying to resolve
     // {tts}.utterance after it has already been detached.
     fluid.tests.textToSpeech.testUtteranceDetached = function (msg, tts) {
