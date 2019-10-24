@@ -5015,6 +5015,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertUndefined("Bad ginger reference to createOnEvent via direct member", that.reference);
     });
 
+    /*** FLUID-6418 no failure when referring to site of dynamic component during afterDestroy ***/
+
+    fluid.defaults("fluid.tests.fluid6418root", {
+        gradeNames: ["fluid.component"],
+        events: {
+            creationEvent: null
+        },
+        dynamicComponents: {
+            child: {
+                type: "fluid.component",
+                createOnEvent: "creationEvent",
+                options: {
+                    initMember: "{arguments}.0",
+                    listeners: {
+                        "afterDestroy": "fluid.tests.fluid6418verify({fluid6418root}.child)"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6418verify = function (site) {
+        jqUnit.assertUndefined("Dynamic component should have been cleanly removed", site);
+    };
+
+    jqUnit.test("FLUID-6418 - no failure when referring to site of destroyed dynamic component during after destroy", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid6418root();
+        that.events.creationEvent.fire(42);
+        that.child.destroy();
+    });
+
     /** FLUID-5249 tests - globalInstantiator, fluid.resolveRoot and its effects **/
 
     fluid.defaults("fluid.tests.fluid5249root", {
