@@ -194,9 +194,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.textSize"
                     },
-                    messageBase: "{messageLoader}.resources.textSize.resourceText",
-                    resources: {
-                        template: "{templateLoader}.resources.textSize"
+                    messageBase: "{messageLoader}.resources.textSize.parsed",
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.textSize"
+                        }
                     },
                     step: 0.1,
                     range: {
@@ -214,9 +216,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.lineSpace"
                     },
-                    messageBase: "{messageLoader}.resources.lineSpace.resourceText",
-                    resources: {
-                        template: "{templateLoader}.resources.lineSpace"
+                    messageBase: "{messageLoader}.resources.lineSpace.parsed",
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.lineSpace"
+                        }
                     },
                     step: 0.1,
                     range: {
@@ -235,9 +239,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.textFont"
                     },
-                    messageBase: "{messageLoader}.resources.textFont.resourceText",
-                    resources: {
-                        template: "{templateLoader}.resources.textFont"
+                    messageBase: "{messageLoader}.resources.textFont.parsed",
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.textFont"
+                        }
                     }
                 }
             },
@@ -251,9 +257,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.theme"
                     },
-                    messageBase: "{messageLoader}.resources.contrast.resourceText",
-                    resources: {
-                        template: "{templateLoader}.resources.contrast"
+                    messageBase: "{messageLoader}.resources.contrast.parsed",
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.contrast"
+                        }
                     }
                 }
             },
@@ -266,9 +274,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.toc"
                     },
-                    messageBase: "{messageLoader}.resources.layoutControls.resourceText",
-                    resources: {
-                        template: "{templateLoader}.resources.layoutControls"
+                    messageBase: "{messageLoader}.resources.layoutControls.parsed",
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.layoutControls"
+                        }
                     }
                 }
             },
@@ -281,9 +291,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{prefsEditor}.model.preferences.inputs"
                     },
-                    messageBase: "{messageLoader}.resources.enhanceInputs.resourceText",
-                    resources: {
-                        template: "{templateLoader}.resources.enhanceInputs"
+                    messageBase: "{messageLoader}.resources.enhanceInputs.parsed",
+                    members: {
+                        resources: {
+                            template: "{templateLoader}.resources.enhanceInputs"
+                        }
                     }
                 }
             }

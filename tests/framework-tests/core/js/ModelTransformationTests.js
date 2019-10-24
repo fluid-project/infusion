@@ -3842,7 +3842,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.transforms.checkTransformedOptions = function (that) {
         var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), fluid.tests.transforms.modernOptions);
         expected = fluid.censorKeys(expected, ["gradeNames"]);
-        jqUnit.assertLeftHand("Options sucessfully transformed", expected, that.options);
+        jqUnit.assertLeftHand("Options sucessfully transformed", expected, jqUnit.flattenMergedSubcomponentOptions(that.options));
     };
 
     jqUnit.test("fluid.model.transform applied automatically to component options, without IoC", function () {

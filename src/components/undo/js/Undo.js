@@ -99,7 +99,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.defaults("fluid.undo", {
-        gradeNames: ["fluid.component"],
+        gradeNames: ["fluid.baseViewComponent"],
         members: {
             state: fluid.undo.STATE_INITIAL,
             initialModel: {},
@@ -109,12 +109,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 expander: {
                     func: "{that}.options.renderer",
                     args: ["{that}", "{that}.component.container"]
-                }
-            },
-            dom: {
-                expander: {
-                    funcName: "fluid.initDomBinder",
-                    args: ["{that}", "{that}.options.selectors"]
                 }
             }
         },

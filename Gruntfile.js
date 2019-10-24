@@ -199,7 +199,6 @@ module.exports = function (grunt) {
                 "src/lib/roboto",
                 "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
-                "tests/lib/mockjax",
                 "tests/lib/sinon"
             ]
         },
@@ -274,11 +273,6 @@ module.exports = function (grunt) {
                 }, {
                     src: "node_modules/jquery/dist/jquery.js",
                     dest: "src/lib/jquery/core/js/",
-                    expand: true,
-                    flatten: true
-                }, {
-                    src: "node_modules/jquery-mockjax/dist/jquery.mockjax.js",
-                    dest: "tests/lib/mockjax/js/",
                     expand: true,
                     flatten: true
                 }, {

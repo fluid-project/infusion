@@ -78,38 +78,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
-    fluid.defaults("fluid.tests.autoGradedComponent", {
-        gradeNames: ["fluid.viewComponent"],
-        events: {
-            anEvent: null
-        }
-    });
-
     fluid.defaults("fluid.tests.gradedComponent", {
         gradeNames: "fluid.viewComponent",
         events: {
             anEvent: null
         }
     });
-
-    fluid.defaults("fluid.tests.ungradedComponent", {
-        events: {
-            anEvent: null
-        }
-    });
-
-    fluid.tests.gradedComponent = function (container, options) {
-        var that = fluid.initView("fluid.tests.gradedComponent", container, options);
-        return that;
-    };
-
-    fluid.tests.ungradedComponent = function (container, options) {
-        var that = fluid.initView("fluid.tests.ungradedComponent", container, options);
-        return that;
-    };
-
-
-    fluid.tests.gradeTestTypes = ["fluid.tests.gradedComponent", "fluid.tests.autoGradedComponent", "fluid.tests.ungradedComponent"];
 
     function testEvent(message, component) {
         jqUnit.expect(1);
@@ -120,10 +94,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }
 
     jqUnit.test("Grade resolution test", function () {
-        fluid.each(fluid.tests.gradeTestTypes, function (typeName) {
-            var that = fluid.invokeGlobalFunction(typeName, ["#pager-top"]);
-            testEvent("Construction of " + typeName, that);
-        });
+        var typeName = "fluid.tests.gradedComponent";
+        var that = fluid.invokeGlobalFunction(typeName, ["#pager-top"]);
+        testEvent("Construction of " + typeName, that);
     });
 
     fluid.tests.dynamicCounter = function (parent) {

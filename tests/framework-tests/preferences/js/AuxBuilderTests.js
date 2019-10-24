@@ -190,6 +190,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.prefs.schemaExpander
      *******************************************************************************/
 
+// TODO: It is unnecessary for this to use the IoC testing framework, there is no asynchrony
+
     fluid.tests.testSchemaExpander = function (schema, expectedOutput) {
         var output = fluid.prefs.expandSchemaImpl(schema);
         jqUnit.assertDeepEq("The source schema is expanded correctly", expectedOutput, output);
@@ -226,12 +228,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Shared variables by following unit tests
      *******************************************************************************/
 
+// TODO: Why did we take out all the IoC references in these keys?
     fluid.tests.elementCommonOptions = {
         panel: {
             "createOnEvent": "onPrefsEditorMarkupReady",
             "container": "prefsEditor.dom.%prefKey",
             "options.gradeNames": "fluid.prefs.prefsEditorConnections",
-            "options.resources.template": "templateLoader.resources.%prefKey"
+            "options.members.resources.template": "templateLoader.resources.%prefKey"
         },
         panelModel: {
             "%internalModelName": "prefsEditor.model.preferences.%externalModelName"
@@ -373,8 +376,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 controlValues: {
                                     theme: ["default", "bw", "wb", "by", "yb"]
                                 },
-                                resources: {
-                                    template: "templateLoader.resources.fluid_tests_prefs_panel_contrast"
+                                members: {
+                                    resources: {
+                                        template: "templateLoader.resources.fluid_tests_prefs_panel_contrast"
+                                    }
                                 }
                             }
                         }
@@ -723,9 +728,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             max: 2
                         },
                         step: 0.1,
-                        messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
-                        resources: {
-                            template: "templateLoader.resources.fluid_prefs_panel_textSize"
+                        messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.parsed",
+                        members: {
+                            resources: {
+                                template: "templateLoader.resources.fluid_prefs_panel_textSize"
+                            }
                         }
                     }
                 }
@@ -881,9 +888,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 step: 0.1,
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
-                                resources: {
-                                    template: "templateLoader.resources.fluid_prefs_panel_textSize"
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.parsed",
+                                members: {
+                                    resources: {
+                                        template: "templateLoader.resources.fluid_prefs_panel_textSize"
+                                    }
                                 }
                             }
                         },
@@ -900,9 +909,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_otherTextSize.resourceText",
-                                resources: {
-                                    template: "templateLoader.resources.fluid_prefs_panel_otherTextSize"
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_otherTextSize.parsed",
+                                members: {
+                                    resources: {
+                                        template: "templateLoader.resources.fluid_prefs_panel_otherTextSize"
+                                    }
                                 }
                             }
                         }
@@ -984,9 +995,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     links: "prefsEditor.model.preferences.fluid_prefs_emphasizeLinks",
                                     inputsLarger: "prefsEditor.model.preferences.fluid_prefs_inputsLarger"
                                 },
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_oneForManyPrefs.resourceText",
-                                resources: {
-                                    template: "templateLoader.resources.fluid_prefs_panel_oneForManyPrefs"
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_oneForManyPrefs.parsed",
+                                members: {
+                                    resources: {
+                                        template: "templateLoader.resources.fluid_prefs_panel_oneForManyPrefs"
+                                    }
                                 }
                             }
                         }
@@ -1068,9 +1081,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 step: 0.1,
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
-                                resources: {
-                                    template: "templateLoader.resources.fluid_prefs_panel_textSize"
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.parsed",
+                                members: {
+                                    resources: {
+                                        template: "templateLoader.resources.fluid_prefs_panel_textSize"
+                                    }
                                 }
                             }
                         }
@@ -1372,22 +1387,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             "components": {
                 "combinedBoth": {
-                    "type": "fluid.prefs.panel.combinedBoth",
-                    "container": "prefsEditor.dom.combinedBoth",
-                    "createOnEvent": "onPrefsEditorMarkupReady",
+                    type: "fluid.prefs.panel.combinedBoth",
+                    container: "prefsEditor.dom.combinedBoth",
+                    createOnEvent: "onPrefsEditorMarkupReady",
                     options: {
                         gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         extraOption: 1,
-                        resources: {
-                            template: "templateLoader.resources.combinedBoth",
-                            "fluid_prefs_subPanel1": "templateLoader.resources.fluid_prefs_subPanel1",
-                            "fluid_prefs_subPanel2": "templateLoader.resources.fluid_prefs_subPanel2"
+                        members: {
+                            resources: {
+                                template: "templateLoader.resources.combinedBoth",
+                                "fluid_prefs_subPanel1": "templateLoader.resources.fluid_prefs_subPanel1",
+                                "fluid_prefs_subPanel2": "templateLoader.resources.fluid_prefs_subPanel2"
+                            }
                         },
                         selectors: {
                             "fluid_prefs_subPanel1": "#flc-prefs-subPanel1",
                             "fluid_prefs_subPanel2": "#flc-prefs-subPanel2"
                         },
-                        "selectorsToIgnore": ["fluid_prefs_subPanel1", "fluid_prefs_subPanel2"],
+                        selectorsToIgnore: ["fluid_prefs_subPanel1", "fluid_prefs_subPanel2"],
                         model: {
                             "fluid_prefs_subPanel1": "prefsEditor.model.preferences.fluid_prefs_subPanel1",
                             "fluid_prefs_subPanel2": "prefsEditor.model.preferences.fluid_prefs_subPanel2"
@@ -1446,16 +1463,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "components": {
                 "combinedBoth": {
                     options: {
-                        messageBase: "{messageLoader}.resources.combinedBoth.resourceText",
+                        messageBase: "{messageLoader}.resources.combinedBoth.parsed",
                         components: {
                             "fluid_prefs_subPanel1": {
                                 "options": {
-                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel1.resourceText"
+                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel1.parsed"
                                 }
                             },
                             "fluid_prefs_subPanel2": {
                                 options: {
-                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel2.resourceText"
+                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel2.parsed"
                                 }
                             }
                         }
@@ -1647,10 +1664,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         extraOption: 2,
-                        resources: {
-                            template: "templateLoader.resources.combinedBoth2",
-                            "fluid_prefs_subPanel3": "templateLoader.resources.fluid_prefs_subPanel3",
-                            "fluid_prefs_subPanel4": "templateLoader.resources.fluid_prefs_subPanel4"
+                        members: {
+                            resources: {
+                                template: "templateLoader.resources.combinedBoth2",
+                                "fluid_prefs_subPanel3": "templateLoader.resources.fluid_prefs_subPanel3",
+                                "fluid_prefs_subPanel4": "templateLoader.resources.fluid_prefs_subPanel4"
+                            }
                         },
                         selectors: {
                             "fluid_prefs_subPanel3": "#flc-prefs-subPanel3",
@@ -1946,12 +1965,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         renderOnPrefOption: 1,
-                        resources: {
-                            template: "templateLoader.resources.combinedBoth3",
-                            "fluid_prefs_subPanel5": "templateLoader.resources.fluid_prefs_subPanel5",
-                            "fluid_prefs_subPanel6": "templateLoader.resources.fluid_prefs_subPanel6",
-                            "fluid_prefs_subPanel7": "templateLoader.resources.fluid_prefs_subPanel7",
-                            "fluid_prefs_subPanel8": "templateLoader.resources.fluid_prefs_subPanel8"
+                        members: {
+                            resources: {
+                                template: "templateLoader.resources.combinedBoth3",
+                                "fluid_prefs_subPanel5": "templateLoader.resources.fluid_prefs_subPanel5",
+                                "fluid_prefs_subPanel6": "templateLoader.resources.fluid_prefs_subPanel6",
+                                "fluid_prefs_subPanel7": "templateLoader.resources.fluid_prefs_subPanel7",
+                                "fluid_prefs_subPanel8": "templateLoader.resources.fluid_prefs_subPanel8"
+                            }
                         },
                         selectors: {
                             "fluid_prefs_subPanel5": "#flc-prefs-subPanel5",

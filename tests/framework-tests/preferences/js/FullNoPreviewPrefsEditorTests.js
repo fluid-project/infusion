@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.integrationTest("fluid.prefs.fullNoPreview", true);
         fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullNoPreview", "#myPrefsEditor", {
             gradeNames: ["fluid.tests.prefs.mungingIntegration"]
-        });
+        }, 8);
 
     });
 })(jQuery);

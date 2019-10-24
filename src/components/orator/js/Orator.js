@@ -121,11 +121,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.orator.handlePlayToggle = function (that, state) {
-        if (state) {
-            that.play();
-        } else {
-            that.pause();
-        }
+        that.events[state ? "play" : "pause"].fire();
     };
 
     /**********************************************
@@ -257,8 +253,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             highlight: "<mark class=\"flc-orator-highlight fl-orator-highlight\"></mark>"
         },
         events: {
+            play: null,
+            pause: null,
+            readFromDOM: null,
             onQueueSpeech: null,
-            onReadFromDOM: null,
             utteranceOnEnd: null,
             utteranceOnBoundary: null,
             utteranceOnError: null,
@@ -318,10 +316,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         invokers: {
             parsedToString: "fluid.orator.domReader.parsedToString",
-            readFromDOM: {
-                funcName: "fluid.orator.domReader.readFromDOM",
-                args: ["{that}", "{that}.container"]
-            },
             removeHighlight: {
                 funcName: "fluid.orator.domReader.unWrap",
                 args: ["{that}.dom.highlight"]
@@ -338,14 +332,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.domReader.highlight",
                 args: ["{that}"]
             },
-            play: {
-                funcName: "fluid.orator.domReader.play",
-                args: ["{that}", "{fluid.textToSpeech}.resume"]
-            },
-            pause: {
-                funcName: "fluid.orator.domReader.pause",
-                args: ["{that}", "{fluid.textToSpeech}.pause"]
-            },
             queueSpeech: {
                 funcName: "fluid.orator.domReader.queueSpeech",
                 args: ["{that}", "{arguments}.0", "{arguments}.1"]
@@ -360,6 +346,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         listeners: {
+            "play.impl": {
+                funcName: "fluid.orator.domReader.play",
+                args: ["{that}", "{fluid.textToSpeech}.resume"]
+            },
+            "pause.impl": {
+                funcName: "fluid.orator.domReader.pause",
+                args: ["{that}", "{fluid.textToSpeech}.pause"]
+            },
+            "readFromDOM.impl": {
+                funcName: "fluid.orator.domReader.readFromDOM",
+                args: ["{that}", "{that}.container"]
+            },
             "onQueueSpeech.removeExtraWhiteSpace": "fluid.orator.domReader.removeExtraWhiteSpace",
             "onQueueSpeech.queueSpeech": {
                 func: "{fluid.textToSpeech}.queueSpeech",
@@ -468,7 +466,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (that.model.tts.paused) {
                 resumeFn();
             } else if (!that.model.tts.speaking) {
-                that.readFromDOM();
+                that.events.readFromDOM.fire();
             }
         }
     };
@@ -590,7 +588,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.orator.domReader.addToParseQueue = function (that, textNodeData) {
         var activeQueue = fluid.orator.domReader.retrieveActiveQueue(that, textNodeData.lang);
-        var lastParsed = activeQueue[activeQueue.length - 1] || {};
+        var lastParsed = fluid.peek(activeQueue) || {};
 
         var words = textNodeData.node.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
 
@@ -696,6 +694,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
     fluid.orator.domReader.getClosestIndex = function (that, boundary, parseQueueIndex) {
+        // TODO: Model relay rules will not reread volatile material - we must use "that" here
         var parseQueue = that.parseQueue[parseQueueIndex];
 
         if (!fluid.get(parseQueue, "length") || !fluid.isValue(boundary)) {

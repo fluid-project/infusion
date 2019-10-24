@@ -44,6 +44,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var actualOpt = fluid.get(grade, optPath);
             if (optPath === "members") {
                 actualOpt = fluid.transform(actualOpt, fluid.tests.mergeMembers);
+            } else if (optPath === "components") {
+                actualOpt = jqUnit.flattenMergedSubcomponents(actualOpt);
             }
             if (optPath !== "gradeNames") {
                 jqUnit.assertDeepEq("The options at path '" + optPath + "'' is set correctly", opt, actualOpt);
@@ -264,11 +266,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.template = {
-        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html"
+        "template": {
+            url: "%templatePrefix/SeparatedPanelPrefsEditor.html"
+        }
     };
 
     fluid.tests.message = {
-        "message": "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
+        "message": {
+            url: "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
+        }
     };
 
     fluid.tests.terms = {
@@ -283,8 +289,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",
-                "template": "templates/textSize",
-                "message": "messages/textSize"
+                "template": {
+                    url: "templates/textSize"
+                },
+                "message": {
+                    url: "messages/textSize"
+                }
             }
         }
     };
@@ -332,7 +342,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     resources: {
-                        prefsEditor: "%templatePrefix/SeparatedPanelPrefsEditor.html"
+                        prefsEditor: {
+                            url: "%templatePrefix/SeparatedPanelPrefsEditor.html"
+                        }
                     }
                 }
             }
@@ -711,8 +723,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
         jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
 
-        jqUnit.assertDeepEq("Munging options for terms should be passed down to the template loader", terms, prefsEditor.prefsEditorLoader.templateLoader.options.terms);
-        jqUnit.assertDeepEq("Munging options for terms should be passed down to the message loader", terms, prefsEditor.prefsEditorLoader.messageLoader.options.terms);
+        jqUnit.assertDeepEq("Munging options for terms should be passed down to the template loader", terms, prefsEditor.prefsEditorLoader.templateLoader.options.resourceOptions.terms);
+        jqUnit.assertDeepEq("Munging options for terms should be passed down to the message loader", terms, prefsEditor.prefsEditorLoader.messageLoader.options.resourceOptions.terms);
         jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
 
         fluid.each(loaderGrades, function (loaderGrade) {

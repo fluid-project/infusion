@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         orator: {
             gradeNames: ["fluid.tests.orator.mockTTS"],
             domReader: {
-                gradeNames: ["fluid.tests.orator.domReaderStubs"]
+                gradeNames: ["fluid.tests.orator.domReaderRecorder"]
             }
         },
         invokers: {
@@ -72,7 +72,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 27,
                 name: "Init",
                 sequence: [{
-                    func: "fluid.tests.selfVoicingTester.verifySubComponnetNotInitted",
+                    func: "fluid.tests.selfVoicingTester.verifySubComponentNotInitted",
                     args: ["{selfVoicing}", "orator"]
                 }, {
                     func: "{selfVoicing}.toggle",
@@ -144,7 +144,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.selfVoicingTester.verifySubComponnetNotInitted = function (that, subComponentName) {
+    fluid.tests.selfVoicingTester.verifySubComponentNotInitted = function (that, subComponentName) {
         jqUnit.assertUndefined("The \"" + subComponentName + "\" subcomponent should not have been initialized yet.", that[subComponentName]);
     };
 

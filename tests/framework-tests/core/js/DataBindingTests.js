@@ -427,8 +427,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-
     jqUnit.test("FLUID-4633 test - source tracking", function () {
+        fluid.test.assertTransactionsConcluded();
         var that = fluid.tests.FLUID4633root();
         var applier = that.applier;
         // This complex malarky is achieved automatically in the declarative system. The ancient source tracking system used
@@ -448,7 +448,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         applier.change("property1", 3, "ADD", "alternateSource");
         jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
 
-
+        fluid.test.assertTransactionsConcluded();
     });
 
     jqUnit.test("FLUID-4625 test: Over-broad changes", function () {
@@ -471,7 +471,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
-    /** FLUID-3674: New model semantic tests **/
+    /** FLUID-4258: Declarative listener test **/
 
     fluid.tests.recordChange = function (fireRecord, path, value, oldValue) {
         fireRecord.push({path: path, value: value, oldValue: oldValue});
@@ -567,7 +567,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.fireRecord.length = 0;
         that.changeThing2(5);
         jqUnit.assertDeepEq("Source guarded change not reported", [], that.fireRecord);
+        fluid.test.assertTransactionsConcluded();
     });
+
+    /** FLUID-3674: New model semantic tests **/
 
     fluid.defaults("fluid.tests.changer", {
         gradeNames: ["fluid.component"],
@@ -578,7 +581,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    fluid.setLogging(true);
 
     fluid.defaults("fluid.tests.fluid3674head", {
         gradeNames: ["fluid.modelComponent", "fluid.tests.changer", "fluid.tests.changeRecorder"],
@@ -604,7 +606,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-3674 basic model relay test", function () {
-        fluid.begun = true;
         var that = fluid.tests.fluid3674head();
         var expected = {
             innerModel: {
@@ -635,6 +636,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             innerModel: "interior thing"
         };
         jqUnit.assertDeepEq("Propagated change outwards", expected5, that.model);
+        fluid.test.assertTransactionsConcluded();
     });
 
 
@@ -669,7 +671,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-3674 event coordination test", function () {
+    jqUnit.test("FLUID-3674 createOnEvent coordination test", function () {
+        fluid.test.assertTransactionsConcluded();
         var that = fluid.tests.fluid3674eventHead();
         that.events.createEvent.fire();
         var child = that.child;
@@ -680,11 +683,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Propagated change inwards through relay", "exterior thing", child.model);
         child.applier.change("", "interior thing");
         jqUnit.assertDeepEq("Propagated change outwards through relay", {outerModel: "interior thing"}, that.model);
+        fluid.test.assertTransactionsConcluded();
         child.destroy();
         that.applier.change("outerModel", "exterior thing 2");
+        fluid.test.assertTransactionsConcluded();
         jqUnit.assertEquals("No change propagated inwards to destroyed component", "interior thing", child.model);
         child.applier.change("", "interior thing 2");
+        fluid.test.assertTransactionsConcluded();
         jqUnit.assertDeepEq("No change propagated outwards from destroyed component", {outerModel: "exterior thing 2"}, that.model);
+        fluid.test.assertTransactionsConcluded();
     });
 
     /** FLUID-6234: Infer init transaction application order from relay specifications **/
@@ -737,6 +744,78 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return fluid.get(that, path);
         });
         jqUnit.assertDeepEq("Model skeleton has settled to expected values", expected, values);
+        fluid.test.assertTransactionsConcluded();
+    });
+
+    /** FLUID-4982: Simple case of initial model value sourced from asynchronous fetch **/
+
+    fluid.defaults("fluid.tests.fluid4982simple", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            initModel: {
+                url: "../data/initModel.json",
+                dataType: "json"
+            }
+        },
+        model: "{that}.resources.initModel.parsed"
+    });
+
+    jqUnit.asyncTest("FLUID-4982 simple asynchronously fetched model", function () {
+        jqUnit.expect(2);
+        var checkIt = function (component) {
+            jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
+            jqUnit.assertEquals("Expected model value resolved ASYNCHROUWNOUSLY", 42, component.model.initValue);
+            jqUnit.start();
+        };
+        fluid.tests.fluid4982simple({
+            listeners: {
+                "onCreate.checkIt": checkIt
+            }
+        });
+    });
+
+    /** FLUID-4982: Localised model with initial asynchronous fetch followed by mid-life relocalisation **/
+
+    fluid.defaults("fluid.tests.fluid4982loc", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                url: "../data/messages1.json",
+                locale: "en",
+                dataType: "json"
+            }
+        },
+        model: {
+            resourceLoader: {
+                locale: "en"
+            },
+            messages: "{that}.resources.messages.parsed"
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-4982 localised fetch model with mid-life relocalisation", function () {
+        jqUnit.expect(3);
+        var checkIt2 = function (component) {
+            jqUnit.assertEquals("Relocalised model fetched", "These courses will require a lot of marking", component.model.messages.courses);
+            jqUnit.start();
+        };
+        var checkIt = function (component) {
+            jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
+            jqUnit.assertEquals("Localised model fetched", "These courses will require a lot of grading", component.model.messages.courses);
+            component.applier.modelChanged.addListener("messages", function () {
+                checkIt2(component);
+            });
+            // Dynamically update locale via model, which should notify the listener above
+            component.applier.change("resourceLoader.locale", "en_ZA");
+        };
+        fluid.tests.fluid4982loc({
+            listeners: {
+                "onCreate.checkIt": checkIt,
+                "onResourceError.failTest": function (err) {
+                    jqUnit.fail("Failure fetching resource: " + err);
+                }
+            }
+        });
     });
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
@@ -803,26 +882,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.assertTransactionsConcluded = function (that) {
-        // White box testing: use knowledge of the ChangeApplier's implementation to determine that all transactions have been cleaned up
-        var instantiator = fluid.getInstantiator(that);
-        var anyKeys;
-        var key;
-        for (key in instantiator.modelTransactions) {
-            if (key !== "init") {
-                anyKeys = key;
-            }
-        }
-        for (key in instantiator.modelTransactions.init) {
-            anyKeys = key;
-        }
-
-        jqUnit.assertNoValue("All model transactions concluded", anyKeys);
-    };
-
     jqUnit.test("FLUID-5024: Model relay with model transformation", function () {
+        fluid.test.assertTransactionsConcluded();
         var that = fluid.tests.fluid5024head();
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         function expectChanges(message, child1Record, child2Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
@@ -849,7 +912,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             [{path: [], value: {fahrenheit: 68}, oldValue: {fahrenheit: 451}}]);
         jqUnit.assertEquals("Forward transformed value arrived", 68, that.child2.model.fahrenheit);
 
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
     });
 
     /** FLUID-5361 listener order notification test **/
@@ -1324,8 +1387,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid5869.root", {
         gradeNames: "fluid.modelComponent",
         model: {
-            sharedValue: 35,
-            reactiveValue: 10
+            sharedValue: 35
         },
         modelListeners: {
             "": "fluid.tests.fluid5869.recreate({that})"
@@ -1364,7 +1426,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5869.recreate = function (that) {
-        that.events.createRelay.fire(); // The aim here is to create a self-reaction during the init transaction of the recreated component
+        // Original comment: The aim here is to create a self-reaction during the init transaction of the recreated component
+        // Note that notification of model listeners now comes strictly *after* the end of the init transaction
+        that.events.createRelay.fire();
     };
 
     jqUnit.test("FLUID-5869: Error when recreating model relay component during transaction", function () {
@@ -1530,11 +1594,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("FLUID-6195: Exploding model relay rule does not corrupt framework state", function () {
-        jqUnit.expect(1);
+        jqUnit.expect(3);
+        var prePaths = fluid.test.getConstructedPaths();
         try {
             fluid.tests.fluid6195root();
         } catch (e) {
             jqUnit.assert("Received bare exception through model relay", "This relay rule has exploded", e.message);
+            var postPaths = fluid.test.getConstructedPaths();
+            jqUnit.assertDeepEq("No disturbance of constructed paths from failed construction", prePaths, postPaths);
+            fluid.test.assertTransactionsConcluded();
         }
     });
 
@@ -1712,15 +1780,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5045root();
         var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0 second time", expected, that.model);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         that.applier.change("pageIndex", 8);
         var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
@@ -1749,7 +1817,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("pageSize", 20);
         that.applier.change("pageSize", 10);
         that.applier.change("pageIndex", 16);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
         var expected = {
             pageIndex: 16,
             pageCount: 17,

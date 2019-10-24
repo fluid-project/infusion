@@ -18,6 +18,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    fluid.registerNamespace("fluid.test");
+
+    /** Shared utility for tests making assertions about the complete set of paths which currently hold
+     * components. Useful for tests which are checking whether this space has been corrupted by what
+     * should have been a cancelled operation.
+     * @return {Object} A map of `String` to `true`, suitable for checking with jqUnit.assertDeepEq to provide
+     * a readable summary of any changed paths.
+     */
+    fluid.test.getConstructedPaths = function () {
+        return fluid.transform(fluid.globalInstantiator.pathToComponent, function () {
+            return true;
+        });
+    };
+
+    fluid.test.assertTransactionsConcluded = function () {
+        // White box testing: use knowledge of the ChangeApplier's implementation to determine that all transactions have been cleaned up
+        var instantiator = fluid.globalInstantiator;
+        var anyKeys;
+        var key;
+        for (key in instantiator.modelTransactions) {
+            if (key !== "init") {
+                anyKeys = key;
+            }
+        }
+        for (key in instantiator.modelTransactions.init) {
+            anyKeys = key;
+        }
+
+        jqUnit.assertNoValue("All model transactions concluded", anyKeys);
+    };
+
     fluid.defaults("fluid.test.testEnvironment", {
         gradeNames: ["fluid.component"],
         components: {

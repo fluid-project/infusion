@@ -29,10 +29,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * which can render its own container into the DOM on startup, whilst the container remains immutable.
      */
     fluid.defaults("fluid.newViewComponent", {
-        gradeNames: ["fluid.modelComponent"],
+        gradeNames: ["fluid.modelComponent", "fluid.baseViewComponent"],
         members: {
-            // 3rd argument is throwaway to force evaluation of container
-            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors, {that}.container)",
             container: "@expand:fluid.container({that}.options.container)"
         }
     });

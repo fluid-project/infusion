@@ -459,7 +459,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
     };
 
-    fluid.tests.makeTocVisibilityChecker = function (expectedTocLevels, tocContainer, isShown) {
+    fluid.tests.tocVisibilityChecker = function (expectedTocLevels, tocContainer, isShown) {
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
         jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
     };
@@ -484,7 +484,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{toc}.applier.change",
                     args: ["toc", true]
                 }, {
-                    listener: "fluid.tests.makeTocVisibilityChecker",
+                    listener: "fluid.tests.tocVisibilityChecker",
                     args: ["{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
                     event: "{toc}.events.afterTocRender"
                 }, {
@@ -494,7 +494,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{toc}.applier.change",
                     args: ["toc", false]
                 }, {
-                    func: "fluid.tests.makeTocVisibilityChecker",
+                    func: "fluid.tests.tocVisibilityChecker",
                     args: ["{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false]
                 }]
             }]

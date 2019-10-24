@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.overviewPanel.resources = {
         template: {
-            href: "../../../../src/components/overviewPanel/html/overviewPanelTemplate.html"
+            url: "../../../../src/components/overviewPanel/html/overviewPanelTemplate.html"
         }
     };
 

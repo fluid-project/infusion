@@ -269,14 +269,12 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     renderer.invokeFluidDecorator = function (func, args, ID, num, options) {
         var that;
         if (options.parentComponent) {
-            var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
-            fluid.set(parent, ["options", "components", name], {
-                type: func,
-                container: args[0],
-                options: args[1]
-            });
-            that = fluid.initDependent(options.parentComponent, name);
+            that = fluid.constructChild(options.parentComponent, name,
+                $.extend({
+                    type: func,
+                    container: args[0]
+                }, args[1]));
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
@@ -284,7 +282,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
-    fluid.renderer = function (templates, tree, options, fossilsIn) {
+    fluid.oldRenderer = function (templates, tree, options, fossilsIn) {
 
         options = options || {};
         tree = tree || {};
@@ -1410,7 +1408,9 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     };
 
-    jQuery.extend(true, fluid.renderer, renderer);
+    jQuery.extend(true, fluid.oldRenderer, renderer);
+    // Final definition for backwards compatibility - remove with old renderer
+    fluid.renderer = fluid.oldRenderer;
 
     /*
      * This function is unsupported: It is not really intended for use by implementors.
@@ -1466,7 +1466,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.reRender = function (templates, node, tree, options) {
         options = options || {};
-        var renderer = fluid.renderer(templates, tree, options, options.fossils);
+        var renderer = fluid.oldRenderer(templates, tree, options, options.fossils);
         options = renderer.options;
               // Empty the node first, to head off any potential id collisions when rendering
         node = fluid.unwrap(node);
@@ -1546,7 +1546,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         }
         target = fluid.unwrap(target);
         var resourceSpec = {base: {resourceText: template,
-                            href: ".", resourceKey: ".", cutpoints: options.cutpoints}
+                            url: ".", resourceKey: ".", cutpoints: options.cutpoints}
                             };
         var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
         return fluid.reRender(templates, target, tree, options);

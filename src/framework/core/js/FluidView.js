@@ -19,15 +19,42 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    /** Invoke the supplied function on the supplied arguments
+     * @param {Object} options - A structure encoding a function invocation
+     * @param {Function} options.func - The function to be invoked
+     * @param {Array} options.args - The arguments on which the function is to be invoked
+     * @return {Any} The return value from the function invocation
+     */
+    fluid.apply = function (options) {
+        return options.func.apply(null, options.args);
+    };
+
+    // A "proto-viewComponent" which simply defines a DOM binder and is agnostic as to how its container is defined
+    fluid.defaults("fluid.baseViewComponent", {
+        gradeNames: "fluid.component",
+        invokers: {
+            locate: { // We use this peculiar form of definition since the current implementation of makeInvoker can't
+                      // cope with a variable function, and the DOM binder instance is historically mutable
+                funcName: "fluid.apply",
+                args: {
+                    func: "{that}.dom.locate",
+                    args: "{arguments}"
+                }
+            }
+        },
+        members: {
+            dom: "@expand:fluid.createDomBinder({that}.container, {that}.options.selectors)"
+        }
+    });
+
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.modelComponent"],
-        initFunction: "fluid.initView",
+        gradeNames: ["fluid.modelComponent", "fluid.baseViewComponent"],
         argumentMap: {
             container: 0,
             options: 1
         },
-        members: { // Used to allow early access to DOM binder via IoC, but to also avoid triggering evaluation of selectors
-            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors)"
+        members: {
+            container: "@expand:fluid.containerForViewComponent({that}, {that}.options.container)"
         }
     });
 
@@ -35,26 +62,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.dumpSelector = function (selectable) {
         return typeof (selectable) === "string" ? selectable :
             selectable.selector ? selectable.selector : "";
-    };
-
-    // unsupported, NON-API function
-    // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
-    // It preserves the 1.3 and previous framework behaviour for the 1.x releases, but provides a more informative
-    // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
-    // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 2.0
-    fluid.diagnoseFailedView = function (componentName, that, options, args) {
-        if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
-            var container = fluid.wrap(args[1]);
-            var message1 = "Instantiation of view component with type " + componentName + " failed, since ";
-            if (!container) {
-                fluid.fail(message1 + " container argument is empty");
-            }
-            else if (container.length === 0) {
-                fluid.fail(message1 + "selector \"", fluid.dumpSelector(args[1]), "\" did not match any markup in the document");
-            } else {
-                fluid.fail(message1 + " component creator function did not return a value");
-            }
-        }
     };
 
     fluid.checkTryCatchParameter = function () {
@@ -103,6 +110,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {jQuery} - A single-element jQuery container.
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
+        if (!containerSpec) {
+            fluid.fail("fluid.container argument is empty");
+        }
         var selector = containerSpec.selector || containerSpec;
         if (userJQuery) {
             containerSpec = fluid.unwrap(containerSpec);
@@ -117,8 +127,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 containerSpec = container.selector;
             }
             var count = container.length !== undefined ? container.length : 0;
+            var extraMessage = container.selectorName ? " with selector name " + container.selectorName +
+                " in context " + fluid.dumpEl(containerSpec.context) : "";
             fluid.fail((count > 1 ? "More than one (" + count + ") container elements were"
-                    : "No container element was") + " found for selector " + containerSpec);
+                    : "No container element was") + " found for selector " + containerSpec + extraMessage );
         }
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
@@ -144,7 +156,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Object} - The new DOM binder.
      */
     fluid.createDomBinder = function (container, selectors) {
-        // don't put on a typename to avoid confusing primitive visitComponentChildren
         var that = {
             id: fluid.allocateGuid(),
             cache: {}
@@ -231,62 +242,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /**
-     * The central initialiation method called as the first act of every Fluid
-     * component. This function automatically merges user options with defaults,
-     * attaches a DOM Binder to the instance, and configures events.
-     *
-     * @param {String} componentName - The unique "name" of the component, which will be used
-     * to fetch the default options from store. By recommendation, this should be the global
-     * name of the component's creator function.
-     * @param {jQueryable} containerSpec - A specifier for the single root "container node" in the
-     * DOM which will house all the markup for this component.
-     * @param {Object} userOptions - The user configuration options for this component.
-     * @param {Object} localOptions - The local configuration options for this component.  Unsupported, see comments for initLittleComponent.
-     * @return {Object|null} - The newly created component, or `null` id the container does not exist.
-     */
-    fluid.initView = function (componentName, containerSpec, userOptions, localOptions) {
-        var container = fluid.container(containerSpec, true);
-        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
-        if (!container) {
-            return null;
-        }
-        // Need to ensure container is set early, without relying on an IoC mechanism - rethink this with asynchrony
-        var receiver = function (that) {
-            that.container = container;
-        };
-        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}, receiver);
-
-        if (!that.dom) {
-            fluid.initDomBinder(that);
-        }
-        // TODO: cannot afford a mutable container - put this into proper workflow
-        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
-        // if (userJQuery) {
-        //    container = fluid.container(containerSpec, true, userJQuery);
-        // }
-        fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando +
-            (userJQuery ? " user jQuery " + userJQuery.expando : "") + " env: " + $.expando);
-
-        return that;
-    };
-
-    /**
-     * Creates a new DOM Binder instance for the specified component and mixes it in.
-     *
-     * @param {Object} that - The component instance to attach the new DOM Binder to.
-     * @param {Object} selectors - a collection of named jQuery selectors
-     * @return {Object} - The DOM for the component.
-     */
-    fluid.initDomBinder = function (that, selectors) {
-        if (!that.container) {
-            fluid.fail("fluid.initDomBinder called for component with typeName " + that.typeName +
-                " without an initialised container - this has probably resulted from placing \"fluid.viewComponent\" in incorrect position in grade merging order. " +
-                " Make sure to place it to the right of any non-view grades in the gradeNames list to ensure that it overrides properly: resolved gradeNames is ", that.options.gradeNames, " for component ", that);
-        }
-        that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
-        that.locate = that.dom.locate;
-        return that.dom;
+    fluid.containerForViewComponent = function (that, containerSpec) {
+        var container = fluid.container(containerSpec);
+        fluid.expectFilledSelector(container, "Error instantiating viewComponent at path \"" + fluid.pathForComponent(that));
+        return container;
     };
 
     // DOM Utilities.

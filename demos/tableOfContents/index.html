@@ -14,23 +14,24 @@
         <link rel="stylesheet" type="text/css" href="css/tableOfContents.css" />
 
         <!-- Fluid and jQuery Dependencies -->
-        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
-        <script type="text/javascript" src="../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script src="../../src/components/tableOfContents/js/TableOfContents.js"></script>
 
-        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
-        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+        <script src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script src="../shared/js/overviewWrapper.js"></script>
 
     </head>
     <body>
@@ -120,7 +121,7 @@
             </div>
         </main>
 
-        <script type="text/javascript">
+        <script>
             fluid.tableOfContents("body", {
                 ignoreForToC: {
                     trees: ".demo-toc-trees"
@@ -129,7 +130,6 @@
                     record: {
                         resources: {
                             template: {
-                                forceCache: true,
                                 // Path to Table of Contents template
                                 url: "../../src/components/tableOfContents/html/TableOfContents.html"
                             }

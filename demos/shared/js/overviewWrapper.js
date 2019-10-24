@@ -18,17 +18,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var resources = {
         bundle: {
-            href: "json/config.json"
+            url: "json/config.json"
         }
     };
 
     $(document).ready(function () {
         fluid.fetchResources(resources, function (resourceSpecs) {
-            var bundle = JSON.parse(resourceSpecs.bundle.resourceText);
+            var bundle = JSON.parse(resourceSpecs.bundle.parsed);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: {
                     template: {
-                        href: bundle.templateUrl || "../../src/components/overviewPanel/html/overviewPanelTemplate.html"
+                        url: bundle.templateUrl || "../../src/components/overviewPanel/html/overviewPanelTemplate.html"
                     }
                 },
                 strings: bundle.strings,

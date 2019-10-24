@@ -78,7 +78,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         if (!key) {
             var segs = fluid.model.parseEL(EL);
-            key = segs[segs.length - 1];
+            key = fluid.peek(segs);
         }
         return {
             ID: (keyPrefix || "") + key,

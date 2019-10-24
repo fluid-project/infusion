@@ -51,7 +51,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     components: {
                         child3: {
-                            type: "fluid.component",
+                            type: "fluid.modelComponent",
                             createOnEvent: "createIt",
                             options: {
                                 members: {
@@ -116,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         for (var j = 0; j < 5; ++j) {
 
             var now = Date.now();
-            var its = 50000;
+            var its = 1000;
             acc = 0;
 
             for (var i = 0; i < its; ++i) {

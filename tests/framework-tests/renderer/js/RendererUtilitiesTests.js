@@ -22,6 +22,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testRendererUtilities = function () {
 
+        jqUnit.module("Environmental Tests");
+
+        /** withEnvironment tests - eventually to be deprecated **/
+
+        fluid.registerNamespace("fluid.tests.envTests");
+
+        fluid.tests.envTests.config = {
+            viewURLTemplate: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",
+            views: {
+                exhibitions: "_design/exhibitions/_view/browse"
+            }
+        };
+
+        jqUnit.test("Environmental Tests", function () {
+            var urlBuilder = {
+                type: "fluid.stringTemplate",
+                template: "{config}.viewURLTemplate",
+                mapper: {
+                    dbName: "${{params}.db}_exhibitions",
+                    view: "{config}.views.exhibitions"
+                }
+            };
+
+            fluid.withEnvironment({
+                params: {db: "mccord"},
+                config: fluid.tests.envTests.config
+            }, function () {
+                var resolved = fluid.expand(urlBuilder, {fetcher: fluid.makeEnvironmentFetcher()});
+                var required = {
+                    type: "fluid.stringTemplate",
+                    template: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",
+                    mapper: {
+                        dbName: "mccord_exhibitions",
+                        view: "_design/exhibitions/_view/browse"
+                    }
+                };
+                jqUnit.assertDeepEq("Resolved Environment", required, resolved);
+            });
+        });
+
         jqUnit.module("Cutpoint utility tests");
         jqUnit.test("Renderer Utilities Test: selectorsToCutpoints", function () {
             // Single class name, simple cutpoints generation.
@@ -525,9 +565,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         events: {
                             afterRender: "{fluid5279}.events.afterAttributesRendered"
                         },
-                        resources: {
-                            template: {
-                                resourceText: "<div></div>"
+                        members: {
+                            resources: {
+                                template: {
+                                    resourceText: "<div></div>"
+                                }
                             }
                         }
                     }
@@ -536,9 +578,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: {
                 audio: "available"
             },
-            resources: {
-                template: {
-                    resourceText: "<div></div>"
+            members: {
+                resources: {
+                    template: {
+                        resourceText: "<div></div>"
+                    }
                 }
             },
             events: {
@@ -580,9 +624,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         modelListeners: {
                             "audio": "{that}.refreshView"
                         },
-                        resources: {
-                            template: {
-                                resourceText: "<div></div>"
+                        members: {
+                            resources: {
+                                template: {
+                                    resourceText: "<div></div>"
+                                }
                             }
                         }
                     }
@@ -591,9 +637,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: {
                 audio: "available"
             },
-            resources: {
-                template: {
-                    resourceText: "<div></div>"
+            members: {
+                resources: {
+                    template: {
+                        resourceText: "<div></div>"
+                    }
                 }
             }
         });
@@ -1360,7 +1408,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 ]
             };
-            jqUnit.assertCanoniseEqual("Selection explosion", expected, expanded, jqUnit.sortTree);
+            jqUnit.assertCanoniseEqual("Selection explosion", expected, expanded, jqUnit.sortOldRendererComponentTree);
         });
 
         jqUnit.test("FLUID-3844 test: messagekey resolved by expander", function () {
@@ -1398,7 +1446,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var expanded = expander(protoTree);
             jqUnit.assertCanoniseEqual("Message key resolved", holder.model.tabs.here.name,
-                expanded.children[0].children[0].linktext.messagekey.value, jqUnit.sortTree);
+                expanded.children[0].children[0].linktext.messagekey.value, jqUnit.sortOldRendererComponentTree);
         });
 
         fluid.registerNamespace("fluid.tests.FLUID4737");
@@ -1479,9 +1527,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var expanded = expander(protoTree);
             jqUnit.assertCanoniseEqual("Valuebinding should be resolved", "vector.0.index",
-                expanded.children[0].children[0].valuebinding, jqUnit.sortTree);
+                expanded.children[0].children[0].valuebinding, jqUnit.sortOldRendererComponentTree);
             jqUnit.assertCanoniseEqual("Valuebinding should be resolved", "one",
-                 expanded.children[0].children[0].value, jqUnit.sortTree);
+                 expanded.children[0].children[0].value, jqUnit.sortOldRendererComponentTree);
         });
 
         fluid.defaults("fluid.tests.FLUID4537", {
@@ -1587,26 +1635,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             renderOnInit: true
         });
 
+        fluid.tests.FLUID4536.check = function (that) {
+            jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
+            var outerExpando = $.expando;
+            var innerExpando = that.iframeContainer.constructor.expando;
+            jqUnit.assertNotEquals("Inner container uses different jQuery", outerExpando, innerExpando);
+            var child = that.iframeHead.iframeChild;
+            var furtherExpando = child.container.constructor.expando;
+            jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
+            child.locate("checkbox").prop("checked", false).change();
+            jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
+            jqUnit.start();
+        };
+
         jqUnit.asyncTest("FLUID-4536 iframe propagation test", function () {
             jqUnit.expect(4);
             fluid.tests.FLUID4536("#qunit-fixture", {
-                listeners: {
-                    iframeLoad: {
-                        priority: "last",
-                        listener:
-                        function (that) {
-                            jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
-                            var outerExpando = $.expando;
-                            var innerExpando = that.iframeContainer.constructor.expando;
-                            jqUnit.assertNotEquals("Inner container uses different jQuery", outerExpando, innerExpando);
-                            var child = that.iframeHead.iframeChild;
-                            var furtherExpando = child.container.constructor.expando;
-                            jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
-                            child.locate("checkbox").prop("checked", false).change();
-                            jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
-                            jqUnit.start();
-                        }
-                    }
+                distributeOptions: {
+                    record: {
+                        listener: "fluid.tests.FLUID4536.check",
+                        args: "{fluid.tests.FLUID4536}",
+                        namespace: "checkCreation"
+                    },
+                    target: "{that FLUID4536IframeHead}.options.listeners.onCreate"
                 }
             });
         });
@@ -1675,6 +1726,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             resolverGetConfig: fluid.model.escapedGetConfig,
             resolverSetConfig: fluid.model.escapedSetConfig
         });
+
         jqUnit.test("FLUID-4935: resolverSetConfig propagation to changeApplierOptions.resolverSetConfig option", function () {
             var customSetConfigRendererComponent = fluid.tests.customSetConfigRendererComponent(".FLUID-4935");
             var escaped = customSetConfigRendererComponent.locate("escaped");
@@ -1693,10 +1745,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Test setup for FLUID-5048
          */
         fluid.defaults("fluid.tests.fluid5048.mediaSettings", {
-            gradeNames: ["fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent", "fluid.resourceLoader"],
             model: {
                 show: false
             },
+            renderOnInit: true,
             selectors: {
                 show: ".flc-videoPlayer-media-show"
             },
@@ -1707,17 +1760,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             protoTree: {
                 show: "${show}"
-            },
-            listeners: {
-                onCreate: "fluid.tests.fluid5048.mediaSettings.fetchResources"
             }
         });
-
-        fluid.tests.fluid5048.mediaSettings.fetchResources = function (that) {
-            fluid.fetchResources(that.options.resources, function () {
-                that.refreshView();
-            });
-        };
 
         fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
             gradeNames: ["fluid.tests.fluid5048.mediaSettings"]

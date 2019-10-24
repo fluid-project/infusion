@@ -28,6 +28,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    // TODO: Undesirable white-box testing following initial FLUID-5614 implementation. We could move to a model
+    // where all createOnEvent components have shells constructed up front, but need to reflect on implications of this
+    fluid.tests.assertCreateOnEventSubcomponent = function (that, componentName, value) {
+        var lightMerge = fluid.lightMergeRecords(that.options.components[componentName]);
+        jqUnit.assertEquals("The createOnEvent for " + componentName + " should be set", value, lightMerge.createOnEvent);
+    };
+
     fluid.defaults("fluid.tests.subPanel", {
         gradeNames: ["fluid.prefs.panel"],
         renderOnInit: true,
@@ -111,9 +118,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid_prefs_sub1": ["subPanel1", "subPanel1a"],
             "fluid_prefs_sub2": "subPanel2"
         },
-        members: {
-            fireRecord: {}
-        },
         invokers: {
             writeRecord: {
                 funcName: "fluid.tests.compositePanel.writeRecord",
@@ -131,15 +135,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 messagekey: "heading"
             }
         },
-        resources: {
-            template: {
-                resourceText: "<section><h1 class=\"heading\"></h1><article class=\"subPanel1\"></article><article class=\"subPanel2\"></article></section>"
-            },
-            subPanel1: {
-                resourceText: "<h2>subPanel1</h2>"
-            },
-            subPanel2: {
-                resourceText: "<h2>subPanel2</h2>"
+        members: {
+            fireRecord: {},
+            resources: {
+                template: {
+                    resourceText: "<section><h1 class=\"heading\"></h1><article class=\"subPanel1\"></article><article class=\"subPanel2\"></article></section>"
+                },
+                subPanel1: {
+                    resourceText: "<h2>subPanel1</h2>"
+                },
+                subPanel2: {
+                    resourceText: "<h2>subPanel2</h2>"
+                }
             }
         },
         components: {
@@ -218,11 +225,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("The renderOnInit option for subPanel2 should be false", that.subPanel2.options.renderOnInit);
         jqUnit.assertDeepEq("The rules block for subPanel1 should be generated correctly", expectedSubPanel1Rules, that.subPanel1.options.rules);
         jqUnit.assertDeepEq("The rules block for subPanel2 should be generated correctly", expectedSubPanel2Rules, that.subPanel2.options.rules);
-        jqUnit.assertEquals("The resourceText should have been combined correctly", expectedResourceText, that.options.resources.template.resourceText);
+        jqUnit.assertEquals("The resourceText should have been combined correctly", expectedResourceText, that.resources.template.resourceText);
         jqUnit.assertEquals("subPanel1's selectors should be surfaced to the compositePanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
         jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
         jqUnit.assertDeepEq("The repeatingSelectors should have been surfaced correctly", expectedRepeatingSelectors, that.options.rendererFnOptions.subPanelRepeatingSelectors);
-        jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
+        jqUnit.assertCanoniseEqual("The produceTree should have combined the subPanel protoTrees together correctly",
+            expectedTree, that.produceTree(), jqUnit.sortOldRendererComponentTree);
         jqUnit.assertEquals("The markup for the compositePanel should have rendered correctly", that.options.messageBase.heading, that.locate("heading").text());
         that.subPanel1.locate("header").each(function (idx, elm) {
             var actual = $(elm).text();
@@ -231,6 +239,137 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
         jqUnit.assertDeepEq("The model for the subPanel1 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub1, that.subPanel1.model.value);
         jqUnit.assertEquals("The model for the subPanel2 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub2, that.subPanel2.model.value);
+    });
+
+    fluid.defaults("fluid.tests.compositePanel.renderOnPreference", {
+        gradeNames: "fluid.prefs.compositePanel",
+        events: {
+            someEvent: null
+        },
+        members: {
+            resources: {
+                template: {
+                    resourceText: "<div class=\"alwaysPanel1\"></div><div class=\"conditionalPanel1\"></div><div class=\"alwaysPanel2\"></div><div class=\"conditionalPanel2\"></div>"
+                },
+                alwaysPanel1: {
+                    resourceText: "<input type=\"checkbox\" class=\"input\" />"
+                },
+                alwaysPanel2: {
+                    resourceText: "<input type=\"checkbox\" class=\"input\" />"
+                },
+                conditionalPanel1: {
+                    resourceText: "<span class=\"text\"></span>"
+                },
+                conditionalPanel2: {
+                    resourceText: "<span class=\"text\"></span>"
+                }
+            }
+        },
+        selectors: {
+            alwaysPanel1: ".alwaysPanel1",
+            alwaysPanel2: ".alwaysPanel2",
+            conditionalPanel1: ".conditionalPanel1",
+            conditionalPanel2: ".conditionalPanel2"
+        },
+        selectorsToIgnore: ["alwaysPanel1", "alwaysPanel2", "conditionalPanel1", "conditionalPanel2"],
+        model: {
+            some_pref_1: false,
+            some_pref_2: false,
+            some_pref_3: false,
+            some_pref_4: false
+        },
+        messageBase: {
+            text1: "conditionalPanel1",
+            text2: "conditionalPanel2"
+        },
+        components: {
+            alwaysPanel1: {
+                type: "fluid.prefs.panel",
+                container: "{that}.dom.alwaysPanel1",
+                options: {
+                    preferenceMap: {
+                        "some.pref.1": {
+                            "model.value": "value"
+                        }
+                    },
+                    messageBase: {
+                        text: "alwaysPanel1"
+                    },
+                    selectors: {
+                        input: ".input"
+                    },
+                    protoTree: {
+                        input: "${value}"
+                    }
+                }
+            },
+            alwaysPanel2: {
+                type: "fluid.prefs.panel",
+                container: "{that}.dom.alwaysPanel2",
+                options: {
+                    preferenceMap: {
+                        "some.pref.2": {
+                            "model.value": "value"
+                        }
+                    },
+                    messageBase: {
+                        text: "alwaysPanel2"
+                    },
+                    selectors: {
+                        input: ".input"
+                    },
+                    protoTree: {
+                        input: "${value}"
+                    }
+                }
+            },
+            conditionalPanel1: {
+                type: "fluid.prefs.panel",
+                container: "{that}.dom.conditionalPanel1",
+                options: {
+                    renderOnPreference: "some.pref.1",
+                    preferenceMap: {
+                        "some.pref.3": {
+                            "model.value": "value"
+                        }
+                    },
+                    messageBase: {
+                        text1: "conditionalPanel1"
+                    },
+                    selectors: {
+                        text: ".text"
+                    },
+                    protoTree: {
+                        text: {
+                            messagekey: "text1"
+                        }
+                    }
+                }
+            },
+            conditionalPanel2: {
+                type: "fluid.prefs.panel",
+                container: "{that}.dom.conditionalPanel2",
+                options: {
+                    renderOnPreference: "some.pref.2",
+                    preferenceMap: {
+                        "some.pref.4": {
+                            "model.value": "value"
+                        }
+                    },
+                    messageBase: {
+                        text2: "conditionalPanel2"
+                    },
+                    selectors: {
+                        text: ".text"
+                    },
+                    protoTree: {
+                        text: {
+                            messagekey: "text2"
+                        }
+                    }
+                }
+            }
+        }
     });
 
     jqUnit.test("renderOnPreference", function () {
@@ -257,146 +396,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var assertSubPanelLifecycleBindings = function (that, componentName, preference) {
             var pref = fluid.prefs.subPanel.safePrefKey(preference);
             var initEvent = "initOn_" + pref;
-            jqUnit.assertEquals("The createOnEvent for " + componentName + " should be set", initEvent, fluid.get(that, "options.components." + componentName + ".createOnEvent"));
+            fluid.tests.assertCreateOnEventSubcomponent(that, componentName, initEvent);
             jqUnit.assertEquals("The " + initEvent + " event should have been added", null, that.options.events[initEvent]);
             jqUnit.assertTrue("The modelListener for " + pref + " should be added", that.options.modelListeners[pref]);
             jqUnit.assertTrue("The onCreate listener to trigger " + initEvent + " should be added", that.options.listeners["onCreate." + pref]);
         };
 
-        var that = fluid.prefs.compositePanel(".renderOnPreference", {
-            events: {
-                someEvent: null
-            },
-            selectors: {
-                alwaysPanel1: ".alwaysPanel1",
-                alwaysPanel2: ".alwaysPanel2",
-                conditionalPanel1: ".conditionalPanel1",
-                conditionalPanel2: ".conditionalPanel2"
-            },
-            selectorsToIgnore: ["alwaysPanel1", "alwaysPanel2", "conditionalPanel1", "conditionalPanel2"],
-            model: {
-                some_pref_1: false,
-                some_pref_2: false,
-                some_pref_3: false,
-                some_pref_4: false
-            },
-            messageBase: {
-                text1: "conditionalPanel1",
-                text2: "conditionalPanel2"
-            },
-            components: {
-                alwaysPanel1: {
-                    type: "fluid.prefs.panel",
-                    container: "{that}.dom.alwaysPanel1",
-                    options: {
-                        preferenceMap: {
-                            "some.pref.1": {
-                                "model.value": "value"
-                            }
-                        },
-                        messageBase: {
-                            text: "alwaysPanel1"
-                        },
-                        selectors: {
-                            input: ".input"
-                        },
-                        protoTree: {
-                            input: "${value}"
-                        }
-                    }
-                },
-                alwaysPanel2: {
-                    type: "fluid.prefs.panel",
-                    container: "{that}.dom.alwaysPanel2",
-                    options: {
-                        preferenceMap: {
-                            "some.pref.2": {
-                                "model.value": "value"
-                            }
-                        },
-                        messageBase: {
-                            text: "alwaysPanel2"
-                        },
-                        selectors: {
-                            input: ".input"
-                        },
-                        protoTree: {
-                            input: "${value}"
-                        }
-                    }
-                },
-                conditionalPanel1: {
-                    type: "fluid.prefs.panel",
-                    container: "{that}.dom.conditionalPanel1",
-                    options: {
-                        renderOnPreference: "some.pref.1",
-                        preferenceMap: {
-                            "some.pref.3": {
-                                "model.value": "value"
-                            }
-                        },
-                        messageBase: {
-                            text1: "conditionalPanel1"
-                        },
-                        selectors: {
-                            text: ".text"
-                        },
-                        protoTree: {
-                            text: {
-                                messagekey: "text1"
-                            }
-                        }
-                    }
-                },
-                conditionalPanel2: {
-                    type: "fluid.prefs.panel",
-                    container: "{that}.dom.conditionalPanel2",
-                    options: {
-                        renderOnPreference: "some.pref.2",
-                        preferenceMap: {
-                            "some.pref.4": {
-                                "model.value": "value"
-                            }
-                        },
-                        messageBase: {
-                            text2: "conditionalPanel2"
-                        },
-                        selectors: {
-                            text: ".text"
-                        },
-                        protoTree: {
-                            text: {
-                                messagekey: "text2"
-                            }
-                        }
-                    }
-                }
-            },
-            resources: {
-                template: {
-                    resourceText: "<div class=\"alwaysPanel1\"></div><div class=\"conditionalPanel1\"></div><div class=\"alwaysPanel2\"></div><div class=\"conditionalPanel2\"></div>"
-                },
-                alwaysPanel1: {
-                    resourceText: "<input type=\"checkbox\" class=\"input\" />"
-                },
-                alwaysPanel2: {
-                    resourceText: "<input type=\"checkbox\" class=\"input\" />"
-                },
-                conditionalPanel1: {
-                    resourceText: "<span class=\"text\"></span>"
-                },
-                conditionalPanel2: {
-                    resourceText: "<span class=\"text\"></span>"
-                }
-            }
-        });
+        var that = fluid.tests.compositePanel.renderOnPreference(".renderOnPreference");
 
         // component creation
         jqUnit.expect(18);
         assertInitialized(that, "alwaysPanel1");
-        jqUnit.assertEquals("The createOnEvent for alwaysPanel1 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel1.createOnEvent"));
+        fluid.tests.assertCreateOnEventSubcomponent(that, "alwaysPanel1", "initSubPanels");
         assertInitialized(that, "alwaysPanel2");
-        jqUnit.assertEquals("The createOnEvent for alwaysPanel2 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel2.createOnEvent"));
+        fluid.tests.assertCreateOnEventSubcomponent(that, "alwaysPanel2", "initSubPanels");
         assertNotInitialized(that, "conditionalPanel1");
         assertSubPanelLifecycleBindings(that, "conditionalPanel1", "some.pref.1");
         assertNotInitialized(that, "conditionalPanel2");
@@ -493,19 +506,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5201: renderer fluid decorator in a composite panel", function () {
-        jqUnit.expect(1);
-        var that = fluid.prefs.compositePanel(".fluid-5201", {
-            selectors: {
-                sliderTest1: ".flc-tests-panel-sliderTest1"
-            },
-            selectorsToIgnore: ["sliderTest1"],
-            components: {
-                sliderTest1: {
-                    type: "fluid.tests.panel.sliderTest1",
-                    container: "{that}.dom.sliderTest1"
-                }
-            },
+    fluid.defaults("fluid.tests.compositePanel.fluid5201", {
+        gradeNames: "fluid.prefs.compositePanel",
+        selectors: {
+            sliderTest1: ".flc-tests-panel-sliderTest1"
+        },
+        selectorsToIgnore: ["sliderTest1"],
+        components: {
+            sliderTest1: {
+                type: "fluid.tests.panel.sliderTest1",
+                container: "{that}.dom.sliderTest1"
+            }
+        },
+        members: {
             resources: {
                 template: {
                     resourceText: "<ul><li class=\"flc-tests-panel-sliderTest1\"></li></ul>"
@@ -514,9 +527,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 }
             }
-        });
+        }
+    });
 
-        // the first call to refreshView does the initial rendeirng which includes
+
+    jqUnit.test("FLUID-5201: renderer fluid decorator in a composite panel", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.compositePanel.fluid5201(".fluid-5201");
+
+        // the first call to refreshView does the initial rendering which includes
         // putting the component defined by the renderer decorator into the components block
         that.refreshView();
 
@@ -563,21 +582,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5202: rebase valuebinding in renderer selection object", function () {
-        var that = fluid.prefs.compositePanel(".fluid-5202", {
-            selectors: {
-                dropdownTest1: ".flc-tests-panel-dropdownTest1"
-            },
-            selectorsToIgnore: ["dropdownTest1"],
-            model: {
-                "learning_dropdownTest1": "kl"
-            },
-            components: {
-                dropdownTest1: {
-                    type: "fluid.tests.panel.dropdownTest1",
-                    container: "{that}.dom.dropdownTest1"
-                }
-            },
+    fluid.defaults("fluid.tests.compositePanel.fluid5202", {
+        gradeNames: "fluid.prefs.compositePanel",
+        selectors: {
+            dropdownTest1: ".flc-tests-panel-dropdownTest1"
+        },
+        selectorsToIgnore: ["dropdownTest1"],
+        model: {
+            "learning_dropdownTest1": "kl"
+        },
+        components: {
+            dropdownTest1: {
+                type: "fluid.tests.panel.dropdownTest1",
+                container: "{that}.dom.dropdownTest1"
+            }
+        },
+        members: {
             resources: {
                 template: {
                     resourceText: "<ul><li class=\"flc-tests-panel-dropdownTest1\"></li></ul>"
@@ -586,7 +606,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resourceText: "<select class=\"flc-prefsEditor-text-font\" id=\"text-font\"></select>"
                 }
             }
-        });
+        }
+    });
+
+    jqUnit.test("FLUID-5202: rebase valuebinding in renderer selection object", function () {
+        var that = fluid.tests.compositePanel.fluid5202(".fluid-5202");
 
         var expectedTree = {
             "children": [{
@@ -669,21 +693,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5200: rebase parentRelativeID", function () {
-        var that = fluid.prefs.compositePanel(".fluid-5200", {
-            selectors: {
-                radioTest1: ".flc-tests-panel-radioTest1"
-            },
-            selectorsToIgnore: ["radioTest1"],
-            model: {
-                "learning_radioTest1": "maybe"
-            },
-            components: {
-                radioTest1: {
-                    type: "fluid.tests.panel.radioTest1",
-                    container: "{that}.dom.radioTest1"
-                }
-            },
+    fluid.defaults("fluid.tests.compositePanel.fluid5200", {
+        gradeNames: "fluid.prefs.compositePanel",
+        selectors: {
+            radioTest1: ".flc-tests-panel-radioTest1"
+        },
+        selectorsToIgnore: ["radioTest1"],
+        model: {
+            "learning_radioTest1": "maybe"
+        },
+        components: {
+            radioTest1: {
+                type: "fluid.tests.panel.radioTest1",
+                container: "{that}.dom.radioTest1"
+            }
+        },
+        members: {
             resources: {
                 template: {
                     resourceText: "<ul><li class=\"flc-tests-panel-radioTest1\"></li></ul>"
@@ -692,7 +717,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resourceText: "<div class=\"flc-prefsEditor-frequencyRow\"><input type=\"radio\" class=\"flc-prefsEditor-frequencyInput\" name=\"frequency\" id=\"frequency\"/><label for=\"frequency\" class=\"flc-prefsEditor-frequency-label\"></label></div>"
                 }
             }
-        });
+        }
+    });
+
+    jqUnit.test("FLUID-5200: rebase parentRelativeID", function () {
+        var that = fluid.tests.compositePanel.fluid5200(".fluid-5200");
 
         var expectedTree = {
             "children": [{
@@ -845,26 +874,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5203: support multiple text field sliders in one composite panel", function () {
-        jqUnit.expect(4);
-        var that = fluid.prefs.compositePanel(".fluid-5203", {
-            selectors: {
-                slider1: ".flc-tests-panel-slider1",
-                slider2: ".flc-tests-panel-slider2"
+    fluid.defaults("fluid.tests.compositePanel.fluid5203", {
+        gradeNames: "fluid.prefs.compositePanel",
+        selectors: {
+            slider1: ".flc-tests-panel-slider1",
+            slider2: ".flc-tests-panel-slider2"
+        },
+        selectorsToIgnore: ["slider1", "slider2"],
+        components: {
+            slider1: {
+                type: "fluid.tests.panel.slider1",
+                createOnEvent: "initSubPanels",
+                container: "{that}.dom.slider1"
             },
-            selectorsToIgnore: ["slider1", "slider2"],
-            components: {
-                slider1: {
-                    type: "fluid.tests.panel.slider1",
-                    createOnEvent: "initSubPanels",
-                    container: "{that}.dom.slider1"
-                },
-                slider2: {
-                    type: "fluid.tests.panel.slider2",
-                    createOnEvent: "initSubPanels",
-                    container: "{that}.dom.slider2"
-                }
-            },
+            slider2: {
+                type: "fluid.tests.panel.slider2",
+                createOnEvent: "initSubPanels",
+                container: "{that}.dom.slider2"
+            }
+        },
+        members: {
             resources: {
                 template: {
                     resourceText: "<ul><li class=\"flc-tests-panel-slider1\"></li><li class=\"flc-tests-panel-slider2\"></li></ul>"
@@ -876,7 +905,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resourceText: "<div class=\"flc-prefsEditor-min-val\"><input class=\"flc-textfieldSlider-slider\" /><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 }
             }
-        });
+        }
+    });
+
+    jqUnit.test("FLUID-5203: support multiple text field sliders in one composite panel", function () {
+        jqUnit.expect(4);
+        var that = fluid.tests.compositePanel.fluid5203(".fluid-5203");
 
         // the first call to refreshView does the initial rendeirng which includes
         // putting the component defined by the renderer decorator into the components block
@@ -900,21 +934,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* start FLUID-5210 */
 
-    fluid.defaults("fluid.tests.fluid_5210.compositePanel", {
-        gradeNames: ["fluid.prefs.compositePanel"],
+    fluid.defaults("fluid.tests.compositePanel.fluid5210", {
+        gradeNames: "fluid.prefs.compositePanel",
         selectors: {
             originalSelector: ""
         },
         selectorsToIgnore: ["originalSelector"],
-        resources: {
-            template: {
-                resourceText: "<div></div>"
+        members: {
+            resources: {
+                template: {
+                    resourceText: "<div></div>"
+                }
             }
         }
     });
 
     jqUnit.test("FLUID-5210: merge selectorsToIgnore", function () {
-        var that = fluid.tests.fluid_5210.compositePanel(".fluid-5210", {
+        var that = fluid.tests.compositePanel.fluid5210(".fluid-5210", {
             selectors: {
                 newSelector: ""
             },
@@ -1018,7 +1054,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textFont.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textFont.html"
             }
         },
         classnameMap: {
@@ -1062,6 +1098,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
     };
+    fluid.setLogging(true);
 
     fluid.defaults("fluid.tests.textFontTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
@@ -1167,7 +1204,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-contrast.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-contrast.html"
             }
         },
         classnameMap: {
@@ -1325,7 +1362,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize.html"
             }
         }
     });
@@ -1389,7 +1426,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace.html"
             }
         }
     });
@@ -1462,7 +1499,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-layout.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-layout.html"
             }
         }
     });
@@ -1527,7 +1564,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-enhanceInputs.html"
+                url: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-enhanceInputs.html"
             }
         }
     });

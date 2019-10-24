@@ -24,6 +24,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * fluid.fullPreviewPrefsEditor Integration Tests *
          **************************************************/
 
+        // TODO: Note that these tests pass even if the template fails to load
         fluid.tests.prefs.integrationTest("fluid.prefs.fullPreview", false);
 
         fluid.registerNamespace("fluid.tests.prefs.FullPreviewMungingIntegration");
@@ -84,6 +85,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myPrefsEditor", {
             gradeNames: ["fluid.tests.prefs.FullPreviewMungingIntegration"]
-        });
+        }, 9);
     });
 })(jQuery);

@@ -148,7 +148,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             prefsEditorLoader: {
                 type: "fluid.viewComponent",
                 container: "{fluid.prefs.assembler.prefsEd}.container",
-                priority: "last",
                 options: {
                     gradeNames: [
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.terms",
@@ -188,12 +187,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         distributeOptions: {
             "prefsEdAssembler.prefsEditorLoader.loaderGrades": {
                 source: "{that}.options.loaderGrades",
-                removeSource: true,
                 target: "{that > prefsEditorLoader}.options.loaderGrades"
             },
             "prefsEdAssembler.prefsEditorLoader.terms": {
                 source: "{that}.options.terms",
-                removeSource: true,
                 target: "{that prefsEditorLoader}.options.terms"
             },
             "prefsEdAssembler.prefsEditorLoader.defaultLocale": {

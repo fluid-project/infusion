@@ -14,41 +14,42 @@
         <link href="css/listReorderer.css" type="text/css" rel="stylesheet"/>
 
         <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
-        <script type="text/javascript" src="../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/version.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/widget.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/plugin.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/safe-active-element.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/safe-blur.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/scroll-parent.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/position.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/keycode.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/unique-id.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/mouse.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/draggable.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"></script>
+        <script src="../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/version.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/widget.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/plugin.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/safe-active-element.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/safe-blur.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/scroll-parent.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/position.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/keycode.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/unique-id.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/mouse.js"></script>
+        <script src="../../../src/lib/jquery/ui/js/draggable.js"></script>
+        <script src="../../../src/lib/jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"></script>
         
-        <script type="text/javascript" src="../../../src/framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
-        <script type="text/javascript" src="../../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../../src/components/reorderer/js/GeometricManager.js"></script>
-        <script type="text/javascript" src="../../../src/components/reorderer/js/Reorderer.js"></script>
+        <script src="../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script src="../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
+        <script src="../../../src/components/reorderer/js/GeometricManager.js"></script>
+        <script src="../../../src/components/reorderer/js/Reorderer.js"></script>
 
         <!-- required for the Overview Panel -->
-        <script type="text/javascript" src="../../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../../src/framework/core/js/MessageResolver.js"></script>
-        <script type="text/javascript" src="../../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script src="../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../../src/framework/renderer/js/RendererUtilities.js"></script>
 
-        <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
-        <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
+        <script src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script src="../../shared/js/overviewWrapper.js"></script>
     </head>
 
     <body>
@@ -89,7 +90,7 @@
                 </ol>
             </div>
         </section>
-        <script type="text/javascript">
+        <script>
             fluid.reorderList("#demo-selector-listReorderer", {
                 styles: {
                     defaultStyle: "demo-listReorderer-movable-default",
