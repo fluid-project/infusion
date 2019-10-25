@@ -904,11 +904,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var rangeParent = range.startContainer.parentElement;
         var rangeParentRect = rangeParent.getClientRects()[0];
 
-        var position = {
-            top: rangeParent.offsetTop + rangeRect.top - rangeParentRect.top,
-            left: rangeParent.offsetLeft + rangeRect.left - rangeParentRect.left,
-        }
-
         return {
             viewPort: {
                 top: rangeRect.top,
@@ -946,7 +941,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             control.css("top", position.offset.bottom);
             control.removeClass(aboveStyle);
             control.addClass(belowStyle);
+        } else {
+            control.removeClass(belowStyle);
+            control.addClass(aboveStyle);
         }
+    };
+
+    fluid.orator.selectionReader.createControl = function (that) {
+        var control = $(that.options.markup.control);
+        control.addClass(that.options.styles.control);
+        control.click(function () {
+            // wrapped in an empty function so as not to pass along the jQuery event object
+            that.events.onToggleControl.fire();
+        });
+        return control;
     };
 
     fluid.orator.selectionReader.renderControl = function (that, state) {
@@ -955,20 +963,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var controlContainer = selectionRange.startContainer.parentElement.offsetParent || selectionRange.startContainer.parentElement;
             var position = fluid.orator.selectionReader.calculatePosition(selectionRange);
 
-            that.control = $(that.options.markup.control);
-            // start hidden so that we can calculate the, and determine if it should be rendered above or below
-            // before displaying visualy
-            that.control.prop("hidden");
-            that.control.addClass(that.options.styles.control);
+            that.control = that.control || fluid.orator.selectionReader.createControl(that);
+
+            // set the intial position
             that.control.css({
                 top:  position.offset.top,
                 left: position.offset.left
-            });
-            // add the `above` class right away because we need to test it's position before adjusting
-            that.control.addClass(that.options.styles.above);
-            that.control.click(function () {
-                // wrapped in an empty function so as not to pass along the jQuery event object
-                that.events.onToggleControl.fire();
             });
 
             fluid.orator.selectionReader.renderControlState(that, that.control);
@@ -985,15 +985,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // adjust horizontal position for collisions with the viewport edge.
             fluid.orator.selectionReader.adjustForHorizontalCollision(that.control, position);
 
-            // show control now that it is correctly styled
-            that.control.removeProp("hidden");
-
             // cleanup range
             selectionRange.detach();
 
         } else {
             if (that.control) {
-                that.control.remove();
+                that.control.detach();
             }
         }
     };

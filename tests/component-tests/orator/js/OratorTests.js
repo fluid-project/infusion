@@ -857,7 +857,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // test no collision
         fluid.orator.selectionReader.adjustForVerticalCollision(control, fluid.tests.orator.selectionReader.position, belowStyle, aboveStyle);
-        jqUnit.assertTrue("No top collision: The aboveStyle is still applied", control.hasClass(aboveStyle));
+        jqUnit.assertTrue("No top collision: The aboveStyle is applied", control.hasClass(aboveStyle));
         jqUnit.assertFalse("No top collision: The belowStyle is not applied", control.hasClass(belowStyle));
         jqUnit.assertEquals(
             "No top collision: The top css position remains the same",
