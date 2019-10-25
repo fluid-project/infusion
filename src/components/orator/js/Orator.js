@@ -915,7 +915,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 bottom: rangeParent.offsetTop + rangeRect.bottom - rangeParentRect.top,
                 left: rangeParent.offsetLeft + rangeRect.left - rangeParentRect.left
             }
-        }
+        };
     };
 
     fluid.orator.selectionReader.renderControlState = function (that, control) {
@@ -927,11 +927,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         viewPortWidth || document.body.clientWidth;
         var controlMidPoint = parseFloat(control.css("width")) / 2;
         if (controlMidPoint > position.viewPort.left) {
-            var leftOffset = controlMidPoint - position.viewPort.left;
-            control.css("left", position.offset.left + leftOffset);
+            control.css("left", position.offset.left + controlMidPoint - position.viewPort.left);
         } else if (controlMidPoint + position.viewPort.left > viewPortWidth) {
-            var leftOffset = viewPortWidth - position.viewPort.left;
-            control.css("left", position.offset.left - leftOffset);
+            control.css("left", position.offset.left - viewPortWidth + position.viewPort.left);
         }
     };
 

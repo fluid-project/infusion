@@ -789,7 +789,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 top: 20,
                 left: 10,
                 bottom: 30
-            }]
+            }];
         },
         startContainer: {
             parentElement: {
@@ -797,7 +797,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     return [{
                         top: 10,
                         left: 5
-                    }]
+                    }];
                 },
                 offsetTop: 150,
                 offsetLeft: 50
