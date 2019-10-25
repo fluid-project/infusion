@@ -783,155 +783,98 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.orator.selection.collapse();
     });
 
-    fluid.tests.orator.selectionReader.positionTests = {
-        fontSize: 16,
-        rect: {top: 20, left: 20, bottom: 40},
-        margin: {top: 0, left: 0},
-        documentDefaultStubs: {
-            body: {
-                scrollLeft: 0,
-                scrollTop: 0
-            },
-            documentElement: {
-                clientWidth: 100,
-                scrollLeft: 0,
-                scrollTop: 0
-            }
+    fluid.tests.orator.selectionReader.mockRange = {
+        getClientRects: function () {
+            return [{
+                top: 20,
+                left: 10,
+                bottom: 30
+            }]
         },
-        testCases: [{
-            name: "default offsetScale",
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 4,
-                left: 20
+        startContainer: {
+            parentElement: {
+                getClientRects: function () {
+                    return [{
+                        top: 10,
+                        left: 5
+                    }]
+                },
+                offsetTop: 150,
+                offsetLeft: 50
             }
-        }, {
-            name: "collision with top edge",
-            offsetScale: {
-                edge: 2,
-                pointer: 1.5
-            },
-            rect: {left: 40},
-            expected: {
-                location: fluid.orator.selectionReader.location.BOTTOM,
-                top: 40,
-                left: 40
-            }
-        }, {
-            name: "collision with left edge",
-            offsetScale: {
-                edge: 2,
-                pointer: 1.5
-            },
-            rect: {top: 36},
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 12,
-                left: 32
-            }
-        }, {
-            name: "collision with right edge",
-            offsetScale: {
-                edge: 1,
-                pointer: 1.5
-            },
-            documentElement: {
-                clientWidth: 50
-            },
-            rect: {top: 25, left: 35},
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 1,
-                left: 34
-            }
-        }, {
-            name: "no collisions",
-            offsetScale: {
-                edge: 1.5,
-                pointer: 1.5
-            },
-            rect: {top: 35, left: 35},
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 11,
-                left: 35
-            }
-        }, {
-            name: "body scroll",
-            body: {
-                scrollLeft: 5,
-                scrollTop: 5
-            },
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 9,
-                left: 25
-            }
-        }, {
-            name: "documentElement scroll",
-            documentElement: {
-                scrollLeft: 2,
-                scrollTop: 2
-            },
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 6,
-                left: 22
-            }
-        }, {
-            name: "margin",
-            margin: {
-                top: 2,
-                left: 2
-            },
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 2,
-                left: 18
-            }
-        }, {
-            name: "negative margin",
-            margin: {
-                top: -5,
-                left: -5
-            },
-            expected: {
-                location: fluid.orator.selectionReader.location.TOP,
-                top: 9,
-                left: 25
-            }
-        }]
+        }
     };
 
-    fluid.tests.orator.selectionReader.positionTests.generateStubs = function (sandbox, stubs, testCase) {
-        fluid.each(stubs, function (toStub, property) {
-            fluid.each(toStub, function (returnVal, stubProp) {
-                sandbox.stub(document[property], stubProp).value(fluid.get(testCase, [property, stubProp]) || returnVal);
-            });
-        });
+    fluid.tests.orator.selectionReader.position = {
+        viewPort: {
+            top: 20,
+            bottom: 30,
+            left: 10
+        },
+        offset: {
+            top: 160,
+            bottom: 170,
+            left: 55
+        }
     };
 
     jqUnit.test("Test fluid.orator.selectionReader.calculatePosition", function () {
-        var sandbox = fluid.tests.orator.createSandbox({});
-        fluid.each(fluid.tests.orator.selectionReader.positionTests.testCases, function (testCase) {
-            fluid.tests.orator.selectionReader.positionTests.generateStubs(
-                sandbox,
-                fluid.tests.orator.selectionReader.positionTests.documentDefaultStubs,
-                testCase
-            );
+        var actual = fluid.orator.selectionReader.calculatePosition(fluid.tests.orator.selectionReader.mockRange);
 
-            var rect = $.extend({}, fluid.tests.orator.selectionReader.positionTests.rect, testCase.rect);
-            var margin = $.extend({}, fluid.tests.orator.selectionReader.positionTests.margin, testCase.margin);
-            var actual = fluid.orator.selectionReader.calculatePosition(
-                rect,
-                margin,
-                fluid.tests.orator.selectionReader.positionTests.fontSize,
-                testCase.offsetScale
-            );
+        jqUnit.assertDeepEq("The ElementPosition object should be constructed and returned correctly.", fluid.tests.orator.selectionReader.position, actual);
+    });
 
-            jqUnit.assertDeepEq("Position object generated for - " + testCase.name, testCase.expected, actual);
-        });
-        sandbox.restore();
+    jqUnit.test("Test fluid.orator.selectionReader.adjustForHorizontalCollision", function () {
+        var control = $("<div>").css({"width": 10, left: fluid.tests.orator.selectionReader.position.offset.left});
+
+        // test no collision
+        fluid.orator.selectionReader.adjustForHorizontalCollision(control, fluid.tests.orator.selectionReader.position);
+        jqUnit.assertEquals(
+            "No horizontal collision: The left css position remains the same",
+            fluid.tests.orator.selectionReader.position.offset.left,
+            parseFloat(control.css("left"))
+        );
+
+        // test collision left
+        control.css("width", 30);
+        fluid.orator.selectionReader.adjustForHorizontalCollision(control, fluid.tests.orator.selectionReader.position);
+        jqUnit.assertEquals(
+            "Adjusted for left collision: The left css position is updated", 60, parseFloat(control.css("left"))
+        );
+
+        // test collision right
+        control.css("width", 16);
+        fluid.orator.selectionReader.adjustForHorizontalCollision(control, fluid.tests.orator.selectionReader.position, 16);
+        jqUnit.assertEquals(
+            "Adjusted for right collision: The left css position is updated", 49, parseFloat(control.css("left"))
+        );
+    });
+
+    jqUnit.test("Test fluid.orator.selectionReader.adjustForVerticalCollision", function () {
+        var aboveStyle = "above";
+        var belowStyle = "below";
+        var control = $("<div>").css({"height": 15, top: fluid.tests.orator.selectionReader.position.offset.top}).addClass(aboveStyle);
+
+        // test no collision
+        fluid.orator.selectionReader.adjustForVerticalCollision(control, fluid.tests.orator.selectionReader.position, belowStyle, aboveStyle);
+        jqUnit.assertTrue("No top collision: The aboveStyle is still applied", control.hasClass(aboveStyle));
+        jqUnit.assertFalse("No top collision: The belowStyle is not applied", control.hasClass(belowStyle));
+        jqUnit.assertEquals(
+            "No top collision: The top css position remains the same",
+            fluid.tests.orator.selectionReader.position.offset.top,
+            parseFloat(control.css("top"))
+        );
+
+        // test collision
+        control.css("height", 30);
+        fluid.orator.selectionReader.adjustForVerticalCollision(control, fluid.tests.orator.selectionReader.position, belowStyle, aboveStyle);
+        jqUnit.assertFalse("Flip Vertical Position: The aboveStyle is not applied", control.hasClass(aboveStyle));
+        jqUnit.assertTrue("Flip Vertical Position: The belowStyle is applied", control.hasClass(belowStyle));
+        jqUnit.assertEquals(
+            "Flip Vertical Position: The top css position is updated",
+            fluid.tests.orator.selectionReader.position.offset.bottom,
+            parseFloat(control.css("top"))
+        );
     });
 
     /*******************************************************************************
@@ -1010,7 +953,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.selectionReader",
             tests: [{
-                expect: 29,
+                expect: 36,
                 name: "fluid.orator.selectionReader",
                 sequence: [{
                     listener: "fluid.tests.orator.verifySelectionState",
@@ -1047,7 +990,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // click play
                     jQueryTrigger: "click",
-                    element: "{selectionReader}.dom.control"
+                    element: "{selectionReader}.control"
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Replay", "{that}.options.testOpts.expected.textPlay"],

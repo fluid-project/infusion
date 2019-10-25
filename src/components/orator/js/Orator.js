@@ -795,7 +795,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "queueSpeech"
             }, {
                 func: "fluid.orator.selectionReader.renderControlState",
-                args: ["{that}", "{that}.dom.control", "{arguments}.0"],
+                args: ["{that}", "{that}.control", "{arguments}.0"],
+                excludeSource: ["init"],
                 namespace: "renderControlState"
             }],
             "enabled": {
@@ -927,13 +928,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         control.find(that.options.selectors.controlLabel).text(text);
     };
 
-    fluid.orator.selectionReader.adjustForHorizontalCollision = function (control, position) {
+    fluid.orator.selectionReader.adjustForHorizontalCollision = function (control, position, viewPortWidth) {
+        viewPortWidth || document.body.clientWidth;
         var controlMidPoint = parseFloat(control.css("width")) / 2;
         if (controlMidPoint > position.viewPort.left) {
             var leftOffset = controlMidPoint - position.viewPort.left;
             control.css("left", position.offset.left + leftOffset);
-        } else if (controlMidPoint + position.viewPort.left > window.innerWidth) {
-            var leftOffset = window.innerWidth - position.viewPort.left;
+        } else if (controlMidPoint + position.viewPort.left > viewPortWidth) {
+            var leftOffset = viewPortWidth - position.viewPort.left;
             control.css("left", position.offset.left - leftOffset);
         }
     };
@@ -950,7 +952,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.selectionReader.renderControl = function (that, state) {
         if (state) {
             var selectionRange = window.getSelection().getRangeAt(0);
-            var controlContainer = selectionRange.startContainer.parentElement.offsetParent;
+            var controlContainer = selectionRange.startContainer.parentElement.offsetParent || selectionRange.startContainer.parentElement;
             var position = fluid.orator.selectionReader.calculatePosition(selectionRange);
 
             that.control = $(that.options.markup.control);
