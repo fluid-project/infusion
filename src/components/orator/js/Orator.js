@@ -924,10 +924,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.orator.selectionReader.adjustForHorizontalCollision = function (control, position, viewPortWidth) {
-        viewPortWidth || document.body.clientWidth;
+        viewPortWidth = viewPortWidth || document.body.clientWidth;
         var controlMidPoint = parseFloat(control.css("width")) / 2;
+        // check for collision on left side
         if (controlMidPoint > position.viewPort.left) {
             control.css("left", position.offset.left + controlMidPoint - position.viewPort.left);
+        // check for collision on right side
         } else if (controlMidPoint + position.viewPort.left > viewPortWidth) {
             control.css("left", position.offset.left - viewPortWidth + position.viewPort.left);
         }
