@@ -320,7 +320,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid.prefs.contrast": {
                     "type": "string",
                     "default": "default",
-                    "enum": ["default", "bw", "wb", "by", "yb"]
+                    "enum": ["default", "bw", "wb", "by", "yb"],
+                    "enumLabels": [
+                        "contrast-default",
+                        "contrast-bw",
+                        "contrast-wb",
+                        "contrast-by",
+                        "contrast-yb"
+                    ]
                 }
             },
             expectedOutput: {
@@ -372,6 +379,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 },
                                 controlValues: {
                                     theme: ["default", "bw", "wb", "by", "yb"]
+                                },
+                                stringArrayIndex: {
+                                    theme: [
+                                        "contrast-default",
+                                        "contrast-bw",
+                                        "contrast-wb",
+                                        "contrast-by",
+                                        "contrast-yb"
+                                    ]
                                 },
                                 resources: {
                                     template: "templateLoader.resources.fluid_tests_prefs_panel_contrast"

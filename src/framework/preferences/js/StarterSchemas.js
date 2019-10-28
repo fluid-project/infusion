@@ -191,7 +191,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.textFont": {
                 "type": "string",
                 "default": "default",
-                "enum": ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
+                "enum": ["default", "times", "comic", "arial", "verdana", "open-dyslexic"],
+                "enumLabels": [
+                    "textFont-default",
+                    "textFont-times",
+                    "textFont-comic",
+                    "textFont-arial",
+                    "textFont-verdana",
+                    "textFont-open-dyslexic"
+                ]
             }
         }
     });
@@ -202,7 +210,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.contrast": {
                 "type": "string",
                 "default": "default",
-                "enum": ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"]
+                "enum": ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"],
+                "enumLabels": [
+                    "contrast-default",
+                    "contrast-bw",
+                    "contrast-wb",
+                    "contrast-by",
+                    "contrast-yb",
+                    "contrast-lgdg",
+                    "contrast-gw",
+                    "contrast-gd",
+                    "contrast-bbr"
+                ]
             }
         }
     });
