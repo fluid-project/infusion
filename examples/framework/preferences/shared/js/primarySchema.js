@@ -30,14 +30,14 @@ var example = example || {};
             "default": 60,
             "minimum": 0,
             "maximum": 100,
-            "divisibleBy": 5
+            "multipleOf": 5
         },
         "example.wordsPerMinute": {
             "type": "number",
             "default": 180,
             "minimum": 130,
             "maximum": 250,
-            "divisibleBy": 10
+            "multipleOf": 10
         },
         "example.increaseSize": {
             "type": "boolean",
@@ -48,14 +48,14 @@ var example = example || {};
             "default": 2,
             "minimum": 1,
             "maximum": 5,
-            "divisibleBy": 1
+            "multipleOf": 1
         },
         "example.magnification": {
             "type": "number",
             "default": 100,
             "minimum": 100,
             "maximum": 400,
-            "divisibleBy": 10
+            "multipleOf": 10
         },
         "example.magnifierPosition": {
             "type": "string",
