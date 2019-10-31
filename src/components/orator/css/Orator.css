@@ -111,6 +111,10 @@
 }
 
 /* Play above, pointing down */
+.fl-orator-selectionReader-control.fl-orator-selectionReader-above {
+    margin-top: -3rem;
+}
+
 .fl-orator-selectionReader-control.fl-orator-selectionReader-above:after,
 .fl-orator-selectionReader-control.fl-orator-selectionReader-above:before {
     top: 100%
@@ -129,6 +133,10 @@
 }
 
 /* Play below, pointing up */
+.fl-orator-selectionReader-control.fl-orator-selectionReader-below  {
+    margin-top: 0.7rem;
+}
+
 .fl-orator-selectionReader-control.fl-orator-selectionReader-below:after,
 .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
     bottom: 100%
