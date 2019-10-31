@@ -100,37 +100,58 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * The parsed information of text node, including: the node itself, its specified language, and its index within its
+     * parent.
+     *
+     * @typedef {Object} TextNodeData
+     * @property {DomNode} node - The current child node being parsed
+     * @property {Integer} childIndex - The index of the child node being parsed relative to its parent
+     * @property {String} lang - a valid BCP 47 language code
+     */
+
+    /**
      * Recursively parses a DOM element and it's sub elements and fires the `onParsedTextNode` event for each text node
      * found. The event is fired with the text node, language and index of the text node in the list of its parent's
      * child nodes..
      *
-     * Note: elements that return `false` to `that.hasTextToRead` are ignored.
+     * Note: elements that return `false` from `that.hasTextToRead` are ignored.
      *
-     * @param {Component} that - an instance of `fluid.textNodeParser`
+     * @param {fluid.textNodeParser} that - an instance of the component
      * @param {jQuery|DomElement} elm - the DOM node to parse
      * @param {String} lang - a valid BCP 47 language code.
      * @param {Event} afterParseEvent - the event to fire after parsing has completed.
+     *
+     * @return {TextNodeData[]} the array of parsed elements. Only text nodes for elements that have passed the
+     *                          `that.hasTextToRead` check will be included.
      */
     fluid.textNodeParser.parse = function (that, elm, lang, afterParseEvent) {
         elm = fluid.unwrap(elm);
-        lang = lang || that.getLang(elm);
+        var parsed = [];
 
         if (that.hasTextToRead(elm)) {
             var childNodes = elm.childNodes;
-            var elementLang = elm.getAttribute("lang") || lang;
+            var elementLang = elm.getAttribute("lang") || lang || that.getLang(elm);;
 
-            $.each(childNodes, function (childIndex, childNode) {
+            childNodes.forEach(function (childNode, childIndex) {
                 if (childNode.nodeType === Node.TEXT_NODE) {
-                    that.events.onParsedTextNode.fire(childNode, elementLang, childIndex);
+                    var textNodeData = {
+                        node: childNode,
+                        lang: elementLang,
+                        childIndex: childIndex
+                    };
+                    parsed.push(textNodeData);
+                    that.events.onParsedTextNode.fire(textNodeData);
                 } else if (childNode.nodeType === Node.ELEMENT_NODE) {
-                    fluid.textNodeParser.parse(that, childNode, elementLang);
+                    parsed = parsed.concat(fluid.textNodeParser.parse(that, childNode, elementLang));
                 }
             });
         }
 
         if (afterParseEvent) {
-            afterParseEvent(that);
+            afterParseEvent(that, parsed);
         }
+
+        return parsed;
     };
 
 })(jQuery, fluid_3_0_0);

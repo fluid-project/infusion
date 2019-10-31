@@ -222,135 +222,161 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     // fluid.orator.domReader.parse tests
-    fluid.tests.orator.domReader.parsed = [{
-        // 0
-        "blockIndex": 0,
-        "childIndex": 0,
-        "endOffset": 20,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 13,
-        "word": "Reading"
-    }, {
-        // 1
-        "blockIndex": 7,
-        "childIndex": 2,
-        "endOffset": 4,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 3,
-        "word": " "
-    }, {
-        // 2
-        "blockIndex": 8,
-        "childIndex": 0,
-        "endOffset": 4,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 0,
-        "word": "text"
-    }, {
-        // 3
-        "blockIndex": 12,
-        "childIndex": 4,
-        "endOffset": 1,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 0,
-        "word": " "
-    }, {
-        // 4
-        "blockIndex": 13,
-        "childIndex": 4,
-        "endOffset": 5,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 1,
-        "word": "from"
-    }, {
-        // 5
-        "blockIndex": 17,
-        "childIndex": 4,
-        "endOffset": 6,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 5,
-        "word": " "
-    }, {
-        // 6
-        "blockIndex": 18,
-        "childIndex": 0,
-        "endOffset": 3,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 0,
-        "word": "DOM"
-    }, {
-        // 7
-        "blockIndex": 21,
-        "childIndex": 7,
-        "endOffset": 9,
-        "lang": "en-CA",
-        "node": {},
-        "parentNode": {},
-        "startOffset": 0,
-        "word": "\n        "
-    }];
+    fluid.tests.orator.domReader.parsed = [
+        [{
+            // 0
+            "blockIndex": 0,
+            "childIndex": 0,
+            "endOffset": 20,
+            "lang": "en-CA",
+            "node": {},
+            "parentNode": {},
+            "startOffset": 13,
+            "word": "Reading"
+        }, {
+            // 1
+            "blockIndex": 7,
+            "childIndex": 2,
+            "endOffset": 4,
+            "lang": "en-CA",
+            "node": {},
+            "parentNode": {},
+            "startOffset": 3,
+            "word": " "
+        }],
+        [{
+            // 0
+            "blockIndex": 0,
+            "childIndex": 0,
+            "endOffset": 4,
+            "lang": "en-US",
+            "node": {},
+            "parentNode": {},
+            "startOffset": 0,
+            "word": "text"
+        }],
+        [{
+            // 0
+            "blockIndex": 0,
+            "childIndex": 4,
+            "endOffset": 5,
+            "lang": "en-CA",
+            "node": {},
+            "parentNode": {},
+            "startOffset": 1,
+            "word": "from"
+        }, {
+            // 1
+            "blockIndex": 4,
+            "childIndex": 4,
+            "endOffset": 6,
+            "lang": "en-CA",
+            "node": {},
+            "parentNode": {},
+            "startOffset": 5,
+            "word": " "
+        }, {
+            // 2
+            "blockIndex": 5,
+            "childIndex": 0,
+            "endOffset": 3,
+            "lang": "en-CA",
+            "node": {},
+            "parentNode": {},
+            "startOffset": 0,
+            "word": "DOM"
+        }, {
+            // 3
+            "blockIndex": 8,
+            "childIndex": 7,
+            "endOffset": 9,
+            "lang": "en-CA",
+            "node": {},
+            "parentNode": {},
+            "startOffset": 0,
+            "word": "\n        "
+        }]
+    ];
 
     // fluid.orator.domReader.parsedToString tests
-    fluid.tests.orator.domReader.str = "Reading text from DOM\n        ";
+    fluid.tests.orator.domReader.str = ["Reading ", "text", "from DOM\n        "];
 
     jqUnit.test("Test fluid.orator.domReader.parsedToString", function () {
-        var str = fluid.orator.domReader.parsedToString(fluid.tests.orator.domReader.parsed);
-        jqUnit.assertEquals("The parsed text should have been combined to a string", fluid.tests.orator.domReader.str, str);
+        fluid.each(fluid.tests.orator.domReader.parsed, function (parsed, index) {
+            var str = fluid.orator.domReader.parsedToString(parsed);
+            jqUnit.assertEquals("The parsed text should have been combined to a string: " + str, fluid.tests.orator.domReader.str[index], str);
+        });
     });
 
     // fluid.orator.domReader.getClosestIndex tests
     fluid.tests.orator.domReader.closestIndexTestCases = [{
         parseIndex: 0,
         boundary: -1,
+        parseQueueIndex: 0,
         expected: undefined
     }, {
         parseIndex: 0,
         boundary: 0,
+        parseQueueIndex: 0,
         expected: 0
     }, {
         parseIndex: 0,
         boundary: 6,
+        parseQueueIndex: 0,
         expected: 0
     }, {
         parseIndex: 0,
+        parseQueueIndex: 0,
         boundary: 7,
         expected: 1
     }, {
-        parseIndex: 2,
-        boundary: 27,
-        expected: 7
+        parseIndex: 1,
+        parseQueueIndex: 0,
+        boundary: 8,
+        expected: 1
     }, {
-        parseIndex: 5,
+        parseIndex: 0,
+        parseQueueIndex: 0,
+        boundary: 27,
+        expected: undefined
+    }, {
+        parseIndex: 0,
+        parseQueueIndex: 1,
+        boundary: -2,
+        expected: undefined
+    }, {
+        parseIndex: 0,
+        parseQueueIndex: 1,
         boundary: 2,
         expected: 0
     }, {
-        parseIndex: 7,
-        boundary: 18,
-        expected: 6
+        parseIndex: null,
+        parseQueueIndex: 2,
+        boundary: 1,
+        expected: 0
     }, {
-        parseIndex: 7,
-        boundary: 29,
-        expected: 7
+        parseIndex: 0,
+        parseQueueIndex: 2,
+        boundary: 1,
+        expected: 0
     }, {
-        parseIndex: 7,
-        boundary: 30,
-        expected: 7
+        parseIndex: 0,
+        parseQueueIndex: 2,
+        boundary: 4,
+        expected: 1
     }, {
-        parseIndex: 7,
+        parseIndex: 1,
+        parseQueueIndex: 2,
+        boundary: 8,
+        expected: 3
+    }, {
+        parseIndex: 2,
+        parseQueueIndex: 2,
+        boundary: 4,
+        expected: 1
+    }, {
+        parseIndex: 2,
+        parseQueueIndex: 2,
         boundary: 35,
         expected: undefined
     }];
@@ -358,8 +384,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Test fluid.orator.domReader.getClosestIndex", function () {
         fluid.each(fluid.tests.orator.domReader.closestIndexTestCases, function (testCase) {
             var mockThat = {parseQueue: fluid.tests.orator.domReader.parsed, model: {parseIndex: testCase.parseIndex}};
-            var closest = fluid.orator.domReader.getClosestIndex(mockThat, testCase.boundary);
-            jqUnit.assertEquals("Closest index for boundary \"" + testCase.boundary + "\" should be: " + testCase.expected, testCase.expected, closest);
+            var closest = fluid.orator.domReader.getClosestIndex(mockThat, testCase.boundary, testCase.parseQueueIndex);
+            var msg = "Closest index for boundary \"" + testCase.boundary + "\" and parseQueueIndex \"" + testCase.parseQueueIndex + "\" should be: " + testCase.expected;
+            jqUnit.assertEquals(msg, testCase.expected, closest);
         });
     });
 
@@ -441,7 +468,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator.domReader", {
-        // gradeNames: ["fluid.orator.domReader", "fluid.tests.orator.mockTTS"],
         gradeNames: ["fluid.orator.domReader"],
         model: {
             tts: {
@@ -477,7 +503,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             startStopFireRecord: {
                 onStart: 1,
                 onStop: 1,
-                onSpeechQueued: 1
+                onSpeechQueued: 3
             },
             stoppedModel: {
                 speaking: false,
@@ -501,48 +527,57 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expectedSpeechRecord: [{
                 "interrupt": true,
-                "text": "Reading text from DOM"
+                "text": "Reading"
+            }, {
+                "interrupt": false,
+                "text": "text"
+            }, {
+                "interrupt": false,
+                "text": "from DOM"
             }],
             // a mock parseQueue for testing adding and removing the highlight
-            parseQueue: [{
-                "blockIndex": 0,
-                "childIndex": 0,
-                "endOffset": 20,
-                "lang": "en-CA",
-                "node": {},
-                "parentNode": {
-                    expander: {
-                        "this": "{domReader}.container",
-                        method: "get",
-                        args: [0]
-                    }
-                },
-                "startOffset": 13,
-                "word": "Reading"
-            }, {
-                "blockIndex": 8,
-                "childIndex": 0,
-                "endOffset": 4,
-                "lang": "en-CA",
-                "node": {},
-                "parentNode": {
-                    expander: {
-                        func: function (elm) {
-                            return $(elm).children()[1];
-                        },
-                        args: ["{domReader}.container"]
-                    }
-                },
-                "startOffset": 0,
-                "word": "text"
-            }]
+            parseQueue: [
+                [{
+                    "blockIndex": 0,
+                    "childIndex": 0,
+                    "endOffset": 20,
+                    "lang": "en-CA",
+                    "node": {},
+                    "parentNode": {
+                        expander: {
+                            "this": "{domReader}.container",
+                            method: "get",
+                            args: [0]
+                        }
+                    },
+                    "startOffset": 13,
+                    "word": "Reading"
+                }, {
+                    "blockIndex": 8,
+                    "childIndex": 0,
+                    "endOffset": 4,
+                    "lang": "en-CA",
+                    "node": {},
+                    "parentNode": {
+                        expander: {
+                            func: function (elm) {
+                                return $(elm).children()[1];
+                            },
+                            args: ["{domReader}.container"]
+                        }
+                    },
+                    "startOffset": 0,
+                    "word": "text"
+                }]
+            ]
         },
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 43,
+                expect: 51,
                 name: "DOM Reading",
                 sequence: [{
+                    // Play sequence
                     func: "{domReader}.play"
                 }, {
                     func: "fluid.tests.orator.domReaderTester.verifyParseQueue",
@@ -551,7 +586,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
                     args: ["{domReader}", "{that}.options.testOptions.expectedSpeechRecord"],
                     spec: {priority: "last:testing"},
-                    event: "{domReader}.events.utteranceOnEnd"
+                    event: "{domReader}.events.onStop"
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
                     args: ["Self Voicing completed", "{domReader}"]
@@ -564,36 +599,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "{that}.options.testOptions.stoppedModel"
                     ]
                 }, {
+                    // set paused
+                    funcName: "{domReader}.applier.change",
+                    args: ["tts.paused", true, "ADD", "domReaderTests"]
+                }, {
+                    // Boundary event when paused
                     func: "{domReader}.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: 8}]
+                    args: [{charIndex: 8, name: "word"}]
+                }, {
+                    func: "jqUnit.assertNull",
+                    args: ["The ttsBoundary model path should be null", "{domReader}.model.ttsBoundary"]
+                }, {
+                    // reset paused state
+                    funcName: "{domReader}.applier.change",
+                    args: ["tts.paused", false, "ADD", "domReaderTests"]
+                }, {
+                    // Boundary event with no parseQueue items
+                    func: "{domReader}.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: 8, name: "word"}]
                 }, {
                     listener: "jqUnit.assertNodeNotExists",
                     args: ["The parseQueue is empty, no highlight should be added", "{domReader}.dom.highlight"],
                     spec: {priority: "last:testing", path: "ttsBoundary"},
                     changeEvent: "{domReader}.applier.modelChanged"
                 }, {
+                    // reset ttsBoundary
+                    funcName: "{domReader}.applier.change",
+                    args: ["ttsBoundary", null, "ADD", "domReaderTests"]
+                }, {
+                    // Test boundary events with a populated parseQueue
                     // manually add items to parseQueue so that we can more easily test adding and removing the highlight
                     funcName: "fluid.tests.orator.domReaderTester.setParseQueue",
                     args: ["{domReader}", "{that}.options.testOptions.parseQueue"]
                 }, {
+                    // manually update parseQueue related model values
+                    funcName: "{domReader}.applier.change",
+                    args: ["", {
+                        parseQueueCount: 1,
+                        parseItemCount: 2
+                    }, "ADD", "domReaderTests"]
+                }, {
+                    // boundary event fired for sentence
                     funcName: "{domReader}.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.blockIndex"}]
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex", name: "sentence"}]
+                }, {
+                    func: "jqUnit.assertNull",
+                    args: ["The ttsBoundary model path should be null", "{domReader}.model.ttsBoundary"]
+                }, {
+                    // boundary event fired for word
+                    funcName: "{domReader}.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex", name: "word"}]
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyMark",
-                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.0.word"],
+                    args: ["{domReader}.dom.highlight", 2, "{that}.options.testOptions.parseQueue.0.0.word"],
                     spec: {priority: "last:testing", path: "ttsBoundary"},
                     changeEvent: "{domReader}.applier.modelChanged"
                 }, {
                     func: "{domReader}.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: "{that}.options.testOptions.parseQueue.1.blockIndex"}]
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.1.blockIndex", name: "word"}]
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyMark",
-                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.1.word"],
+                    args: ["{domReader}.dom.highlight", 1, "{that}.options.testOptions.parseQueue.0.1.word"],
                     spec: {priority: "last:testing", path: "ttsBoundary"},
                     changeEvent: "{domReader}.applier.modelChanged"
                 }, {
-                    // simulate ending reading
-                    func: "{domReader}.events.utteranceOnEnd.fire"
+                    // simulate finished reading
+                    func: "{domReader}.events.onStop.fire"
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
                     args: ["utteranceOnEnd fired", "{domReader}"],
@@ -620,7 +691,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
                     args: ["{domReader}", "{that}.options.testOptions.expectedSpeechRecord"],
                     spec: {priority: "last:testing"},
-                    event: "{domReader}.events.utteranceOnEnd"
+                    event: "{domReader}.events.onStop"
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
                     args: ["Replayed Self Voicing completed", "{domReader}"]
@@ -729,7 +800,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState = function (testPrefix, that) {
         jqUnit.assertDeepEq(testPrefix + ": The parseQueue should be empty.", [], that.parseQueue);
-        jqUnit.assertEquals(testPrefix + ": The parseQueueLength model value should be 0.", 0, that.model.parseQueueLength);
+        jqUnit.assertEquals(testPrefix + ": The parseQueueCount model value should be 0.", 0, that.model.parseQueueCount);
+        jqUnit.assertEquals(testPrefix + ": The parseItemCount model value should be 0.", 0, that.model.parseItemCount);
         jqUnit.assertNull(testPrefix + ": The parseIndex model value should be null.", that.model.parseIndex);
         jqUnit.assertNull(testPrefix + ": The ttsBoundary model value should be null.", that.model.ttsBoundary);
         jqUnit.assertNodeNotExists(testPrefix + ": All highlights should be removed.", that.locate("highlight"));
@@ -740,14 +812,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected) {
-        jqUnit.assertDeepEq("The parsedQueueLength model value should have been set correctly", expected.length, that.model.parseQueueLength);
+        var expectedItemsCount = fluid.accumulate(expected, function (queue, count) {return queue.length + count;}, 0);
+        jqUnit.assertDeepEq("The parseQueueCount model value should have been set correctly", expected.length, that.model.parseQueueCount);
+        jqUnit.assertDeepEq("The parseItemCount model value should have been set correctly", expectedItemsCount, that.model.parseItemCount);
         jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
     };
 
-    fluid.tests.orator.domReaderTester.verifyMark = function (elm, expectedText) {
+    fluid.tests.orator.domReaderTester.verifyMark = function (elm, expectedHighlightCount, expectedText) {
         jqUnit.assertNodeExists("The highlight should have been added", elm);
-        jqUnit.assertEquals("Only one highlight should be present", 1, elm.length);
-        jqUnit.assertEquals("The correct textnode should be highlighted", elm.text(), expectedText);
+        jqUnit.assertEquals("The expeted number of highlight marks should be present: " + expectedHighlightCount, expectedHighlightCount, elm.length);
+        jqUnit.assertEquals("The correct text should be highlighted", elm.text(), expectedText);
     };
 
     fluid.tests.orator.domReaderTester.verifyRecords = function (that, expectedEvents, expectedSpeechRecord, expectedModel) {
@@ -942,6 +1016,178 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         );
     });
 
+    fluid.tests.orator.selectionReader.parseElementTestCases = [{
+        name: "Selected parent element - empty options",
+        selector: ".flc-orator-selectionReader-test",
+        options: {},
+        expected: [{
+            text: "\n            Selection Test\n            Other Text\n            Change ",
+            options: {lang: "en"}
+        }, {
+            text: "Language",
+            options: {lang: "en-US"}
+        }, {
+            text: "\n        ",
+            options: {lang: "en"}
+        }]
+    }, {
+        name: "Selected parent element - undefined options",
+        selector: ".flc-orator-selectionReader-test",
+        expected: [{
+            text: "\n            Selection Test\n            Other Text\n            Change ",
+            options: {lang: "en"}
+        }, {
+            text: "Language",
+            options: {lang: "en-US"}
+        }, {
+            text: "\n        ",
+            options: {lang: "en"}
+        }]
+    }, {
+        name: "Selected parent element - with options",
+        selector: ".flc-orator-selectionReader-test",
+        options: {
+            startOffset: "6",
+            endOffset: "8",
+            startContainer: ".flc-orator-selectionReader-test-selectionTwo",
+            endContainer: ".flc-orator-selectionReader-test-selectionTwo"
+        },
+        expected: [{
+            text: "Te",
+            options: {lang: "en"}
+        }]
+    }, {
+        name: "Selected element - empty options",
+        selector: ".flc-orator-selectionReader-test-selection",
+        options: {},
+        expected: [{
+            text: "Selection Test",
+            options: {lang: "en"}
+        }]
+    }, {
+        name: "Selected element - undefined options",
+        selector: ".flc-orator-selectionReader-test-selection",
+        expected: [{
+            text: "Selection Test",
+            options: {lang: "en"}
+        }]
+    }, {
+        name: "Selected element - with options",
+        selector: ".flc-orator-selectionReader-test-selection",
+        options: {
+            startOffset: "1",
+            endOffset: "6",
+            startContainer: ".flc-orator-selectionReader-test-selection",
+            endContainer: ".flc-orator-selectionReader-test-selection"
+        },
+        expected: [{
+            text: "elect",
+            options: {lang: "en"}
+        }]
+    }, {
+        name: "Selected element - startContainer not in element",
+        selector: ".flc-orator-selectionReader-test-selection",
+        options: {
+            startContainer: ".flc-orator-selectionReader-test-selectionTwo",
+            endContainer: ".flc-orator-selectionReader-test-selection"
+        },
+        expected: []
+    }, {
+        name: "Selected element - endContainer not in element",
+        selector: ".flc-orator-selectionReader-test-selection",
+        options: {
+            startContainer: ".flc-orator-selectionReader-test-selection",
+            endContainer: ".flc-orator-selectionReader-test-selectionTwo"
+        },
+        expected: []
+    }];
+
+    fluid.tests.orator.selectionReader.selectorToTextNode = function (selector) {
+        if (typeof(selector) === "string") {
+            return $(selector)[0].childNodes[0];
+        }
+    };
+
+    jqUnit.test("Test fluid.orator.selectionReader.parseElement", function () {
+        jqUnit.expect(fluid.tests.orator.selectionReader.parseElementTestCases.length);
+        var parser = fluid.textNodeParser();
+
+        fluid.each(fluid.tests.orator.selectionReader.parseElementTestCases, function (testCase) {
+            var elm = $(testCase.selector)[0];
+            var opts = fluid.copy(testCase.options);
+
+            if (fluid.get(opts, "startContainer")) {
+                opts.startContainer = fluid.tests.orator.selectionReader.selectorToTextNode(opts.startContainer);
+            }
+
+            if (fluid.get(opts, "endContainer")) {
+                opts.endContainer = fluid.tests.orator.selectionReader.selectorToTextNode(opts.endContainer);
+            }
+
+            var result = fluid.orator.selectionReader.parseElement(elm, parser.parse, opts);
+
+            jqUnit.assertDeepEq(testCase.name, testCase.expected, result);
+        });
+    });
+
+    jqUnit.test("Test fluid.orator.selectionReader.parseRange - element selected", function () {
+        var parser = fluid.textNodeParser();
+        var element = $(".flc-orator-selectionReader-test-selection");
+
+        var expected = [{
+            text: "Selection Test",
+            options: {lang: "en"}
+        }];
+
+        // Select Element
+        fluid.tests.orator.selection.selectNode(element);
+        var actual = fluid.orator.selectionReader.parseRange(fluid.tests.orator.selection.getSelectionRange(), parser.parse);
+        jqUnit.assertDeepEq("Speech[] should be generated correctly", expected, actual);
+
+        // clean up
+        fluid.tests.orator.selection.collapse();
+    });
+
+    jqUnit.test("Test fluid.orator.selectionReader.parseRange - text node selected", function () {
+        var parser = fluid.textNodeParser();
+        var node = $(".flc-orator-selectionReader-test-selection")[0].childNodes[0];
+
+        var expected = [{
+            text: "election",
+            options: {lang: "en"}
+        }];
+
+        // Select Element
+        fluid.tests.orator.selection.selectNodes(node, node, 1, 9);
+        var actual = fluid.orator.selectionReader.parseRange(fluid.tests.orator.selection.getSelectionRange(), parser.parse);
+        jqUnit.assertDeepEq("Speech[] should be generated correctly", expected, actual);
+
+        // clean up
+        fluid.tests.orator.selection.collapse();
+    });
+
+    jqUnit.test("Test fluid.orator.selectionReader.parseRange - selection across nodes", function () {
+        var parser = fluid.textNodeParser();
+        var startNode = $(".flc-orator-selectionReader-test-selectionThree")[0].childNodes[0];
+        var endNode = $(".flc-orator-selectionReader-test-selectionFour")[0].childNodes[0];
+
+        var expected = [{
+            text: "nge ",
+            options: {lang: "en"}
+        }, {
+            text: "Language",
+            options: {lang: "en-US"}
+        }];
+
+        // Select Element
+        fluid.tests.orator.selection.selectNodes(startNode, endNode, 3, endNode.textContent.length);
+        var actual = fluid.orator.selectionReader.parseRange(fluid.tests.orator.selection.getSelectionRange(), parser.parse);
+        jqUnit.assertDeepEq("Speech[] should be generated correctly", expected, actual);
+
+        // clean up
+        fluid.tests.orator.selection.collapse();
+    });
+
     /*******************************************************************************
      * IoC unit tests for fluid.orator.selectionReader
      *******************************************************************************/
@@ -1036,8 +1282,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     // play
-                    func: "{selectionReader}.play",
-                    args: ["play", true]
+                    func: "{selectionReader}.play"
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Play", "{that}.options.testOpts.expected.textPlay"],
@@ -1045,8 +1290,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     // stop
-                    func: "{selectionReader}.stop",
-                    args: ["play", true]
+                    func: "{selectionReader}.stop"
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Stop", "{that}.options.testOpts.expected.textSelected"],

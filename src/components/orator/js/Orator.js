@@ -65,10 +65,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     },
                     listeners: {
-                        "utteranceOnEnd.domReaderStop": {
+                        "onStop.domReaderStop": {
                             changePath: "{orator}.model.play",
                             value: false,
-                            source: "domReader.utteranceOnEnd",
+                            source: "domReader.onStop",
                             priority: "after:removeHighlight"
                         }
                     },
@@ -199,7 +199,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * This is not bound declaratively to ensure that the correct arguments are passed along to the `that.toggle`
      * method.
      *
-     * @param {Component} that - an instance of `fluid.orator.controller`
+     * @param {fluid.orator.controller} that - an instance of the component
      */
     fluid.orator.controller.bindClick = function (that) {
         that.locate("playToggle").click(function () {
@@ -209,11 +209,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Used to toggle the state of a model value at a specified path. The new state will be the inverse of the current
-     * boolean value at the specified model path, or can be set explicitly by passing in a 'state' value. It's likely
-     * that this method will be used in conjunction with a click handler. In that case it's most likely that the state
+     * boolean value at the specified model path, or can be set explicitly by passing in a `state` value. It's likely
+     * that this method will be used in conjunction with a click handler. In that case, it's most likely that the state
      * will be toggling the existing model value.
      *
-     * @param {Component} that - an instance of `fluid.orator.controller`
+     * @param {fluid.orator.controller} that - an instance of the component
      * @param {String|Array} path - the path, into the model, for the value to toggle
      * @param {Boolean} state - (optional) explicit state to set the model value to
      */
@@ -230,7 +230,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * False - play style removed
      *       - aria-label set to the `play` string
      *
-     * @param {Component} that - an instance of `fluid.orator.controller`
+     * @param {fluid.orator.controller} that - an instance of the component
      * @param {Boolean} state - the state to set the controller to
      */
     fluid.orator.controller.setToggleView = function (that, state) {
@@ -265,7 +265,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             utteranceOnMark: null,
             utteranceOnPause: null,
             utteranceOnResume: null,
-            utteranceOnStart: null
+            utteranceOnStart: null,
+            onStop: null
         },
         utteranceEventMap: {
             onboundary: "utteranceOnBoundary",
@@ -282,28 +283,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 speaking: false,
                 enabled: true
             },
-            parseQueueLength: 0,
+            parseQueueIndex: 0,
             parseIndex: null,
-            ttsBoundary: null
+            ttsBoundary: null,
+            parseQueueCount: 0,
+            parseItemCount: 0
         },
         modelRelay: [{
             target: "parseIndex",
             backward: "never",
+            excludeSource: ["utteranceOnPause"],
             namespace: "getClosestIndex",
             singleTransform: {
                 type: "fluid.transforms.free",
                 func: "fluid.orator.domReader.getClosestIndex",
-                args: ["{that}", "{that}.model.ttsBoundary"]
+                args: ["{that}", "{that}.model.ttsBoundary", "{that}.model.parseQueueIndex"]
             }
         }],
         members: {
-            parseQueue: [],
-            range: {
-                expander: {
-                    this: "document",
-                    method: "createRange"
-                }
-            }
+            parseQueue: []
         },
         components: {
             parser: {
@@ -330,7 +328,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             addToParseQueue: {
                 funcName: "fluid.orator.domReader.addToParseQueue",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                args: ["{that}", "{arguments}.0"]
             },
             resetParseQueue: {
                 funcName: "fluid.orator.domReader.resetParseQueue",
@@ -338,7 +336,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             highlight: {
                 funcName: "fluid.orator.domReader.highlight",
-                args: ["{that}", "{arguments}.0"]
+                args: ["{that}"]
             },
             play: {
                 funcName: "fluid.orator.domReader.play",
@@ -350,14 +348,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             queueSpeech: {
                 funcName: "fluid.orator.domReader.queueSpeech",
-                args: ["{that}", "{arguments}.0", true, "{arguments}.1"]
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
             },
             isWord: "fluid.textNodeParser.isWord"
         },
         modelListeners: {
-            "highlight": {
+            "parseIndex": {
                 listener: "{that}.highlight",
-                path: ["parseIndex", "parseQueueLength"]
+                namespace: "highlight",
+                excludeSource: ["init", "utteranceOnEnd", "resetParseQueue"]
             }
         },
         listeners: {
@@ -367,52 +366,102 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{arguments}.0", "{arguments}.1.interrupt", "{arguments}.1"],
                 priority: "after:removeExtraWhiteSpace"
             },
-            "utteranceOnEnd.resetParseQueue": {
+            "onStop.resetParseQueue": {
                 listener: "{that}.resetParseQueue"
             },
-            "utteranceOnEnd.removeHighlight": {
+            "onStop.removeHighlight": {
                 listener: "{that}.removeHighlight",
                 priority: "after:resetParseQueue"
             },
-            "utteranceOnEnd.updateTTSModel": {
+            "onStop.updateTTSModel": {
                 changePath: "tts",
                 value: {
                     speaking: false,
                     paused: false
-                }
+                },
+                source: "onStop"
+            },
+            "utteranceOnEnd.resetParseIndex": {
+                changePath: "",
+                value: {
+                    parseIndex: null
+                },
+                source: "utteranceOnEnd"
             },
             "utteranceOnStart.updateTTSModel": {
                 changePath: "tts",
                 value: {
                     speaking: true,
                     paused: false
-                }
+                },
+                source: "utteranceOnStart"
             },
             "utteranceOnPause.updateTTSModel": {
                 changePath: "tts",
                 value: {
                     speaking: true,
                     paused: true
-                }
+                },
+                source: "utteranceOnPause"
+            },
+            // needed to prevent the parseQueueIndex from incrementing when the resume is called, instead of continuing on.
+            "utteranceOnPause.resetBoundary": {
+                changePath: "ttsBoundary",
+                value: null,
+                source: "utteranceOnPause"
             },
             "utteranceOnResume.updateTTSModel": {
                 changePath: "tts",
                 value: {
                     speaking: true,
                     paused: false
-                }
+                },
+                source: "utteranceOnResume"
             },
             "utteranceOnBoundary.setCurrentBoundary": {
-                changePath: "ttsBoundary",
-                value: "{arguments}.0.charIndex",
-                source: "utteranceOnBoundary"
-            },
-            "onDestroy.detachRange": {
-                "this": "{that}.range",
-                method: "detach"
+                listener: "fluid.orator.domReader.setCurrentBoundary",
+                args: ["{that}", "{arguments}.0.charIndex", "{arguments}.0.name"]
             }
         }
     });
+
+    /**
+     * Updates the `ttsBoundary` and `parseQueueIndex` model paths based on the provided boundary. Attempts to determine
+     * if the supplied boundary is derived from the current queue or if the parseQueueIndex needs to be incremented.
+     *
+     * @param  {fluid.orator.domReader} that - an instance of the component
+     * @param  {Integer} boundary - the incoming boundary, typically from a {SpeechSynthesisUtterance} boundary event.
+     *                              This indicates the starting index of the word being Synthesized.
+     * @param  {String} boundaryType - Boundary events can fire at the beginning of a "word" or "sentence". This is used
+     *                                 to indicate which one it is related to. From the {SpeechSynthesisUtterance}
+     *                                 boundary event this is found in the `name` property. Currently only `"word"`
+     *                                 boundary events are supported. All others will be ignored.
+     */
+    fluid.orator.domReader.setCurrentBoundary = function (that, boundary, boundaryType) {
+        // It is possible that the pause event triggers before all of the boundary events have been received.
+        // The following check prevents boundary events from updating the model if TTS is paused.
+        // Also we currently only support "word" boundary events. Some synthesizers also fire boundary events
+        // In those cases, we will get two boundary events for the beginning which will confuse the parseQueueIndex
+        // incrementing algorithm. At the moment we ignore any non-word boundary events. In the future we may also
+        // accept sentence boundary events for potentially highlighting sentences as well.
+        if (that.model.tts.paused || boundaryType !== "word") {
+            return;
+        }
+
+        var currentBoundary = fluid.isValue(that.model.ttsBoundary) ? that.model.ttsBoundary : -1;
+        var parseQueueIndex;
+
+        if (currentBoundary < boundary) {
+            parseQueueIndex = that.model.parseQueueIndex;
+        } else {
+            parseQueueIndex = that.model.parseQueueIndex + 1;
+        }
+
+        that.applier.change("", {
+            "ttsBoundary": boundary,
+            "parseQueueIndex": parseQueueIndex
+        }, "ADD", "setCurrentBoundary");
+    };
 
     fluid.orator.domReader.play = function (that, resumeFn) {
         if (that.model.tts.enabled) {
@@ -456,21 +505,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Operates the core "transforming promise workflow" for queuing an utterance. The initial listener is provided the
      * initial text; which then proceeds through the transform chain to arrive at the final text.
-     * To change the speech function (e.g for testing) the onQueueSpeech.queueSpeech listener can be overridden.
+     * To change the speech function (e.g for testing) the `onQueueSpeech.queueSpeech` listener can be overridden.
      *
-     * @param {Component} that - an instance of `fluid.orator.domReader`
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {String} text - The text to be synthesized
-     * @param {Boolean} interrupt - Used to indicate if this text should be queued or replace existing utterances.
-     *                              This will be passed along to the listeners in the options; `options.interrupt`.
      * @param {Object} options - (optional) options to configure the utterance with. This will also be interpolated with
-     *                           the interrupt parameter and event mappings. See: fluid.textToSpeech.queueSpeech in
-     *                           TextToSpeech.js for an example of utterance options for that speech function.
+     *                           the event mappings. See: `fluid.textToSpeech.queueSpeech` in TextToSpeech.js for an
+     *                           example of utterance options for that speech function.
      *
      * @return {Promise} - A promise for the final resolved text
      */
-    fluid.orator.domReader.queueSpeech = function (that, text, interrupt, options) {
+    fluid.orator.domReader.queueSpeech = function (that, text, options) {
         options = options || {};
-        options.interrupt = interrupt || options.interrupt;
         // map events
         fluid.orator.domReader.mapUtteranceEvents(that, options, that.options.utteranceEventMap);
 
@@ -479,7 +525,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Unwraps the contents of the element by removing the tag surrounding the content and placing the content
-     * as a node within the element's parent. The parent is also normalized to combine any adjacent textnodes.
+     * as a node within the element's parent. The parent is also normalized to combine any adjacent text nodes.
      *
      * @param {String|jQuery|DomElement} elm - element to unwrap
      */
@@ -490,7 +536,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var parent = elm.parent();
             // Remove the element, but place its contents within the parent.
             elm.contents().unwrap();
-            // Normalize the parent to cleanup textnodes
+            // Normalize the parent to cleanup text nodes
             parent[0].normalize();
         }
     };
@@ -512,28 +558,47 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     /**
-     * Takes in a textnode and separates the contained words into DomWordMaps that are added to the parseQueue.
+     * Retrieves the active parseQueue array to be used when updating from the latest parsed text node. Will increment
+     * the parseQueue with a new empty array if one doesn't already exist or if the language has changed.
+     *
+     * @param {fluid.orator.domReader} that - an instance of the component
+     * @param {String} lang - a valid BCP 47 language code.
+     *
+     * @return {Array} - the parseQueue array to update with the latest parsed text node.
+     */
+    fluid.orator.domReader.retrieveActiveQueue = function (that, lang) {
+        var lastQueue = that.parseQueue[that.parseQueue.length - 1];
+
+        if (!lastQueue ||  (lastQueue.length && lastQueue[0].lang !== lang)) {
+            lastQueue = [];
+            that.parseQueue.push(lastQueue);
+            that.applier.change("parseQueueCount", that.parseQueue.length, "ADD", "retrieveActiveQueue");
+        }
+
+        return lastQueue;
+    };
+
+    /**
+     * Takes in a text node and separates the contained words into {DomWordMaps} that are added to the `parseQueue`.
      * Typically this handles parsed data passed along by a Parser's (`fluid.textNodeParser`) `onParsedTextNode` event.
      * Empty nodes are skipped and the subsequent text is analyzed to determine if it should be appended to the
-     * previous DomWordMap in the parseQueue. For example: when the syllabification separator is tag is inserted
+     * previous {DomWordMap} in the parseQueue. For example: when the syllabification separator tag is inserted
      * between words.
      *
-     * @param {Component} that - an instance of `fluid.orator.domReader`
-     * @param {DomNode} textNode - the text node being parsed
-     * @param {String} lang - a valid BCP 47 language code.
-     * @param {Integer} childIndex - the index of the text node within its parent's set of child nodes
+     * @param {fluid.orator.domReader} that - an instance of the component
+     * @param {TextNodeData} textNodeData - the parsed information of text node. Typically from `fluid.textNodeParser`
      */
-    fluid.orator.domReader.addToParseQueue = function (that, textNode, lang, childIndex) {
-        var lastParsed = that.parseQueue[that.parseQueue.length - 1] || {};
-        var words = textNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
-        var parsed = {
+    fluid.orator.domReader.addToParseQueue = function (that, textNodeData) {
+        var activeQueue = fluid.orator.domReader.retrieveActiveQueue(that, textNodeData.lang);
+        var lastParsed = activeQueue[activeQueue.length - 1] || {};
+
+        var words = textNodeData.node.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
+
+        var parsed = $.extend({}, textNodeData, {
             blockIndex: (lastParsed.blockIndex || 0) + (fluid.get(lastParsed, ["word", "length"]) || 0),
             startOffset: 0,
-            node: textNode,
-            childIndex: childIndex,
-            parentNode: textNode.parentNode,
-            lang: lang
-        };
+            parentNode: textNodeData.node.parentNode
+        });
 
         fluid.each(words, function (word) {
             var lastIsWord = that.isWord(lastParsed.word);
@@ -551,8 +616,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 parsed.endOffset = parsed.startOffset + word.length;
                 if (currentIsWord || word && lastIsWord) {
                     lastParsed = fluid.copy(parsed);
-                    that.parseQueue.push(lastParsed);
-                    that.applier.change("parseQueueLength", that.parseQueue.length, "ADD", "addToParseQueue");
+                    activeQueue.push(lastParsed);
+                    that.applier.change("parseItemCount", that.model.parseItemCount + 1, "ADD", "addToParseQueue");
                     parsed.blockIndex += word.length;
                 }
                 parsed.startOffset = parsed.endOffset;
@@ -561,15 +626,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Empty the parseQueue and related model values
-     * @param {Component} that - an instance of `fluid.orator.domReader`
+     * Reset the parseQueue and related model values
+     *
+     * @param {fluid.orator.domReader} that - an instance of the component
      */
     fluid.orator.domReader.resetParseQueue = function (that) {
         that.parseQueue = [];
         that.applier.change("", {
-            parseQueueLength: 0,
+            parseQueueIndex: 0,
             parseIndex: null,
-            ttsBoundary: null
+            ttsBoundary: null,
+            parseQueueCount: 0,
+            parseItemCount: 0
         }, "ADD", "resetParseQueue");
     };
 
@@ -591,9 +659,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Parses the DOM element into data points to use for highlighting the text, and queues the text into the self
-     * voicing engine. The parsed data points are added to the component's `parseQueue`
+     * voicing engine. The parsed data points are added to the component's `parseQueue`. Once all of the text has been
+     * synthesized, the `onStop` event is fired.
      *
-     * @param {Component} that - an instance of `fluid.orator.domReader`
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {String|jQuery|DomElement} elm - The DOM node to read
      */
     fluid.orator.domReader.readFromDOM = function (that, elm) {
@@ -603,24 +672,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (elm.length) {
             that.resetParseQueue();
             that.parser.parse(elm[0]);
-            that.queueSpeech(that.parsedToString(that.parseQueue));
+
+            var queueSpeechPromises = fluid.transform(that.parseQueue, function (parsedBlock, index) {
+                var interrupt = !index; // only interrupt on the first string
+                var text = that.parsedToString(parsedBlock);
+                return that.queueSpeech(text, {lang: parsedBlock[0].lang, interrupt: interrupt});
+            });
+
+            fluid.promise.sequence(queueSpeechPromises).then(that.events.onStop.fire);
         }
     };
 
     /**
      * Returns the index of the closest data point from the parseQueue based on the boundary provided.
      *
-     * @param {Component} that - an instance of `fluid.orator.domReader`
+     * @param {fluid.orator.domReader} that - an instance of the component
      * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *                             If the boundary is undefined or out of bounds, `undefined` will be returned.
+     * @param {Integer} parseQueueIndex - The index of into the parseQueue to determine which queue to use for
+     *                                    calculating the boundary positions against.
      *
      * @return {Integer|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
-    fluid.orator.domReader.getClosestIndex = function (that, boundary) {
-        var parseQueue = that.parseQueue;
+    fluid.orator.domReader.getClosestIndex = function (that, boundary, parseQueueIndex) {
+        var parseQueue = that.parseQueue[parseQueueIndex];
 
-        if (!parseQueue.length || !fluid.isValue(boundary)) {
+        if (!fluid.get(parseQueue, "length") || !fluid.isValue(boundary)) {
             return undefined;
         };
 
@@ -703,31 +781,40 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.orator.domReader.setRangeEnd = function (range, node, end) {
+        var ranges = fluid.makeArray(range);
         if (end <= node.length) {
             range.setEnd(node, end);
         } else {
+            var nextRange = document.createRange();
             var nextTextNode = fluid.orator.domReader.getNextTextNode(node);
-            fluid.orator.domReader.setRangeEnd(range, nextTextNode, end - node.length);
+            nextRange.selectNode(nextTextNode);
+            nextRange.setStart(nextTextNode, 0);
+            ranges = ranges.concat(fluid.orator.domReader.setRangeEnd(nextRange, nextTextNode, end - node.length));
         }
+        return ranges;
     };
 
     /**
-     * Highlights text from the parseQueue. Highlights are performed by wrapping the appropriate text in the markup
-     * specified by `that.options.markup.highlight`.
+     * Highlights text from the `parseQueue`. Highlights are performed by wrapping the appropriate text in the markup
+     * specified at `that.options.markup.highlight`.
      *
-     * @param {Component} that - an instance of `fluid.orator.domReader`
+     * @param {fluid.orator.domReader} that - an instance of the component
      */
     fluid.orator.domReader.highlight = function (that) {
         that.removeHighlight();
 
-        if (that.model.parseQueueLength && fluid.isValue(that.model.parseIndex)) {
-            var data = that.parseQueue[that.model.parseIndex];
+        if (that.model.parseQueueCount && fluid.isValue(that.model.parseIndex)) {
+            var data = that.parseQueue[that.model.parseQueueIndex][that.model.parseIndex];
             var rangeNode = data.parentNode.childNodes[data.childIndex];
 
-            that.range.selectNode(rangeNode);
-            that.range.setStart(rangeNode, data.startOffset);
-            fluid.orator.domReader.setRangeEnd (that.range, rangeNode, data.endOffset);
-            that.range.surroundContents($(that.options.markup.highlight)[0]);
+            var startRange = document.createRange();
+            startRange.selectNode(rangeNode);
+            startRange.setStart(rangeNode, data.startOffset);
+            var ranges = fluid.orator.domReader.setRangeEnd (startRange, rangeNode, data.endOffset);
+            fluid.each(ranges, function (range) {
+                range.surroundContents($(that.options.markup.highlight)[0]);
+                range.detach(); // removes the range
+            });
         }
     };
 
@@ -763,16 +850,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             onSelectionChanged: null,
-            utteranceOnEnd: null,
+            onStop: null,
             onToggleControl: null
+        },
+        components: {
+            parser: {
+                type: "fluid.textNodeParser",
+                options: {
+                    invokers: {
+                        hasTextToRead: "fluid.textNodeParser.hasVisibleText"
+                    }
+                }
+            }
         },
         listeners: {
             "onCreate.bindEvents": {
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
                 args: ["{that}"]
             },
-            "onSelectionChanged.updateText": "{that}.getSelectedText",
-            "utteranceOnEnd.stop": {
+            "onSelectionChanged.updateSelection": "{that}.getSelection",
+            "onStop.stop": {
                 changePath: "play",
                 value: false,
                 source: "stopMethod"
@@ -791,7 +888,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "play": [{
                 func: "fluid.orator.selectionReader.queueSpeech",
-                args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeech"],
+                args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeechSequence"],
                 namespace: "queueSpeech"
             }, {
                 func: "fluid.orator.selectionReader.renderControlState",
@@ -815,14 +912,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }],
         invokers: {
-            getSelectedText: {
-                changePath: "text",
-                value: {
-                    expander: {
-                        funcName: "fluid.orator.selectionReader.getSelectedText"
-                    }
-                },
-                source: "getSelectedText"
+            getSelection: {
+                funcName: "fluid.orator.selectionReader.getSelection",
+                args: ["{that}"]
             },
             play: {
                 changePath: "play",
@@ -840,6 +932,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    // TODO: When https://issues.fluidproject.org/browse/FLUID-6393 has been addressed, it will be possible to remove
+    //       this function and directly configure the modelListener to only trigger when a false value is passed.
     fluid.orator.selectionReader.stopSpeech = function (state, cancelFn) {
         if (state) {
             cancelFn();
@@ -847,8 +941,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.orator.selectionReader.queueSpeech = function (that, state, speechFn) {
-        if (state) {
-            speechFn(that.model.text, true, {onend: that.events.utteranceOnEnd.fire});
+        if (state && that.model.enabled && that.model.text) {
+            var parsed = fluid.orator.selectionReader.parseRange(that.selection.getRangeAt(0), that.parser.parse);
+            var speechPromise = speechFn(parsed, true);
+
+            speechPromise.then(that.events.onStop.fire);
         }
     };
 
@@ -862,7 +959,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.orator.selectionReader.updateText = function (that, state) {
         if (state) {
-            that.getSelectedText();
+            that.getSelection();
         } else {
             that.applier.change("text", "", "ADD", "updateText");
         }
@@ -874,7 +971,98 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {String} - the text from the current selection
      */
     fluid.orator.selectionReader.getSelectedText = function () {
-        return window.getSelection().toString();
+        var selection = window.getSelection();
+        return selection.toString();
+    };
+
+    /**
+     * Retrieves the text from the current selection
+     *
+     * @param {fluid.orator.selectionReader} that - an instance of the component
+     */
+    fluid.orator.selectionReader.getSelection = function (that) {
+        that.selection = window.getSelection();
+        that.applier.change("text", that.selection.toString(), "ADD", "getSelection");
+    };
+
+    /**
+     * Parses a selection into a {Speech[]}. If the selection includes multiple text nodes, the supplied domParser is
+     * used to do an initial parsing into a {TextNodeData[]}.
+     *
+     * @param  {Range} range - a Range object representing a selection.
+     * @param  {Function} domParser - a parser function to parse Dom Elements into a {TextNodeData[]}
+     *
+     * @return {Speech[]} - an array of {Speech} objects for configuring SpeechSynthesis Utterances with.
+     */
+    fluid.orator.selectionReader.parseRange = function (range, domParser) {
+        // Handles the case where all of the selection is in a single text node. Don't need to parse in this case.
+        if (range.commonAncestorContainer.nodeType === Node.TEXT_NODE) {
+            return [{
+                text: range.commonAncestorContainer.textContent.slice(range.startOffset, range.endOffset),
+                options: {
+                    lang: $(range.commonAncestorContainer.parentElement).closest("[lang]").attr("lang")
+                }
+            }];
+        }
+
+        // Handles the case were range.selectNode was called to create the selection
+        if (range.commonAncestorContainer === range.startContainer) {
+            return fluid.orator.selectionReader.parseElement(range.commonAncestorContainer.childNodes[range.startOffset], domParser);
+        }
+
+        return fluid.orator.selectionReader.parseElement(range.commonAncestorContainer, domParser, range);
+    };
+
+    /**
+     * The options for parsing an element into {Speech[]}. It has similar properties to a {Range} and is typically used
+     * for `fluid.orator.selectionReader.parseElement`.
+     * @type {Object} ParseElementOpts
+     * @property {Integer} startOffset - the starting offset of the first text node. Text before will be omitted
+     * @property {Integer} endOffset - the end offset of the last text node. Text after will be omitted.
+     * @property {DomNode} startContainer - the text node to start parsing from.
+     * @property {DomNode} endContainer - the text node to stop parsing at.
+     */
+
+    /**
+     * Parses an element into a {Speech[]}. The supplied domParser is used to do an initial parsing of the element into
+     * a {TextNodeData[]}.
+     *
+     * @param  {DomElement} element - The DOM Element to parse
+     * @param  {Function} domParser - a parser function to parse Dom Elements into a {TextNodeData[]}
+     * @param  {ParseElementOpts} options - (Optional) parsing configuration
+     * @return {Speech[]} - an array of {Speech} objects for configuring SpeechSynthesis Utterances with.
+     */
+    fluid.orator.selectionReader.parseElement = function (element, domParser, options) {
+        options = options || {};
+        var parsed = [];
+
+        var fromParser = domParser(element);
+        var parsedNodes = fluid.getMembers(fromParser, "node");
+        var startIndex  = options.startContainer ? parsedNodes.indexOf(options.startContainer) : 0;
+        var endIndex = options.endContainer ? parsedNodes.indexOf(options.endContainer) : parsedNodes.length - 1;
+
+        if (startIndex >= 0 && endIndex >= 0) {
+            for (var i = startIndex; i <= endIndex; i++) {
+                var startOffset = i === startIndex ? options.startOffset : 0;
+                var endOffset = i === endIndex ? options.endOffset : undefined;
+                var node = fromParser[i].node;
+                var lang = fromParser[i].lang;
+                var lastParsed = parsed[parsed.length - 1];
+
+                if (parsed.length && lastParsed.options.lang === lang) {
+                    lastParsed.text += node.textContent.slice(startOffset, endOffset);
+                } else {
+                    parsed.push({
+                        text: node.textContent.slice(startOffset, endOffset),
+                        options: {
+                            lang: lang
+                        }
+                    });
+                }
+            }
+        }
+
+        return parsed;
     };
 
     /**

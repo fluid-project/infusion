@@ -63,7 +63,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "onParsedTextNode.syllabify": {
                 listener: "{that}.apply",
-                args: ["{arguments}.0", "{arguments}.1"]
+                args: ["{arguments}.0.node", "{arguments}.0.lang"]
             },
             "onNodeAdded.syllabify": {
                 listener: "{that}.parse",
