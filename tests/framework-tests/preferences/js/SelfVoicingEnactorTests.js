@@ -69,7 +69,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
-                expect: 27,
+                expect: 28,
                 name: "Init",
                 sequence: [{
                     func: "fluid.tests.selfVoicingTester.verifySubComponentNotInitted",

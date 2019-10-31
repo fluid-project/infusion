@@ -28,7 +28,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         preferenceMap: {
             "fluid.prefs.localization": {
                 "model.value": "value",
-                "controlValues.localization": "enum"
+                "controlValues.localization": "enum",
+                "stringArrayIndex.localization": "enumLabels"
             }
         },
         mergePolicy: {
@@ -42,9 +43,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             localizationDescr: ".flc-prefsEditor-localization-descr"
         },
         selectorsToIgnore: ["header"],
-        stringArrayIndex: {
-            localization: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"]
-        },
         protoTree: {
             label: {messagekey: "label"},
             localizationDescr: {messagekey: "description"},
@@ -53,9 +51,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 optionlist: "${{that}.options.controlValues.localization}",
                 selection: "${value}"
             }
-        },
-        controlValues: {
-            localization: ["default", "en", "fr", "es", "fa"]
         }
     });
 

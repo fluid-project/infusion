@@ -1066,6 +1066,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "verdana": "fl-font-verdana",
                 "open-dyslexic": "fl-font-open-dyslexic"
             }
+        },
+        stringArrayIndex: {
+            textFont: [
+                "textFont-default",
+                "textFont-times",
+                "textFont-comic",
+                "textFont-arial",
+                "textFont-verdana",
+                "textFont-open-dyslexic"
+            ]
+        },
+        controlValues: {
+            textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
         }
     });
 
@@ -1219,6 +1232,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "gw": "fl-theme-gw",
                 "bbr": "fl-theme-bbr"
             }
+        },
+        stringArrayIndex: {
+            theme: [
+                "contrast-default",
+                "contrast-bw",
+                "contrast-wb",
+                "contrast-by",
+                "contrast-yb",
+                "contrast-lgdg",
+                "contrast-gw",
+                "contrast-gd",
+                "contrast-bbr"
+            ]
+        },
+        controlValues: {
+            theme: ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"]
         }
     });
 

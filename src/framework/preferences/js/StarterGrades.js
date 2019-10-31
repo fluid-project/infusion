@@ -244,6 +244,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         resources: {
                             template: "{templateLoader}.resources.textFont"
                         }
+                    },
+                    stringArrayIndex: {
+                        textFont: [
+                            "textFont-default",
+                            "textFont-times",
+                            "textFont-comic",
+                            "textFont-arial",
+                            "textFont-verdana",
+                            "textFont-open-dyslexic"
+                        ]
+                    },
+                    controlValues: {
+                        textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
                     }
                 }
             },
@@ -262,6 +275,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         resources: {
                             template: "{templateLoader}.resources.contrast"
                         }
+                    },
+                    stringArrayIndex: {
+                        theme: [
+                            "contrast-default",
+                            "contrast-bw",
+                            "contrast-wb",
+                            "contrast-by",
+                            "contrast-yb",
+                            "contrast-lgdg",
+                            "contrast-gw",
+                            "contrast-gd",
+                            "contrast-bbr"
+                        ]
+                    },
+                    controlValues: {
+                        theme: ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"]
                     }
                 }
             },

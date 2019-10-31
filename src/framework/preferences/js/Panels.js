@@ -891,7 +891,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
-                "step": "divisibleBy"
+                "step": "multipleOf"
             }
         },
         panelOptions: {
@@ -911,7 +911,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         preferenceMap: {
             "fluid.prefs.textFont": {
                 "model.value": "value",
-                "controlValues.textFont": "enum"
+                "controlValues.textFont": "enum",
+                "stringArrayIndex.textFont": "enumLabels"
             }
         },
         mergePolicy: {
@@ -925,9 +926,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             textFontDescr: ".flc-prefsEditor-text-font-descr"
         },
         selectorsToIgnore: ["header"],
-        stringArrayIndex: {
-            textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana", "textFont-open-dyslexic"]
-        },
         protoTree: {
             label: {messagekey: "textFontLabel"},
             textFontDescr: {messagekey: "textFontDescr"},
@@ -944,10 +942,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
-        classnameMap: null, // must be supplied by implementors
-        controlValues: {
-            textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
-        }
+        classnameMap: null // must be supplied by implementors
     });
 
     /*********************************
@@ -964,7 +959,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
-                "step": "divisibleBy"
+                "step": "multipleOf"
             }
         },
         panelOptions: {
@@ -984,7 +979,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         preferenceMap: {
             "fluid.prefs.contrast": {
                 "model.value": "value",
-                "controlValues.theme": "enum"
+                "controlValues.theme": "enum",
+                "stringArrayIndex.theme": "enumLabels"
             }
         },
         listeners: {
@@ -1001,22 +997,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         selectorsToIgnore: ["header"],
         styles: {
             defaultThemeLabel: "fl-prefsEditor-themePicker-defaultThemeLabel"
-        },
-        stringArrayIndex: {
-            theme: [
-                "contrast-default",
-                "contrast-bw",
-                "contrast-wb",
-                "contrast-by",
-                "contrast-yb",
-                "contrast-lgdg",
-                "contrast-gw",
-                "contrast-gd",
-                "contrast-bbr"
-            ]
-        },
-        controlValues: {
-            theme: ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"]
         }
     });
 

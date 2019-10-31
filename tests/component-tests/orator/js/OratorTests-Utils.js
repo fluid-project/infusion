@@ -103,6 +103,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Assertions
      *******************************************************************************/
 
+    // assert that the element is actually in the document, not detached
+    fluid.tests.orator.assertNodeInDOM = function (msg, elm) {
+        jqUnit.okWithPrefix($.contains(document, fluid.unwrap(elm)), msg);
+    };
+
+    // assert that the element is not in the document, may be detached
+    fluid.tests.orator.assertNodeNotInDOM = function (msg, elm) {
+        jqUnit.okWithPrefix(!$.contains(document, fluid.unwrap(elm)), msg);
+    };
+
     fluid.tests.orator.verifyControllerState = function (controller, state) {
         var toggleButton = controller.locate("playToggle");
         jqUnit.assertEquals("The model state should be set correctly", state, controller.model.playing);
@@ -116,12 +126,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq(testPrefix + ": The model should be set correctly.", expectedModel, that.model);
 
         if (expectedModel.showUI) {
-            jqUnit.assertNodeExists(testPrefix + ": The selection control should be present", that.options.selectors.control);
+            fluid.tests.orator.assertNodeInDOM(testPrefix + ": The selection control should be present", that.control);
+            jqUnit.assertFalse(testPrefix + ": The selection control should not be hidden", that.control.prop("hidden"));
 
             var expectedText = that.options.strings[that.model.play ? "stop" : "play"];
-            jqUnit.assertEquals(testPrefix + ": The selection control label should have the correct text", expectedText, that.locate("controlLabel").text());
+            var labelText = that.control.find(that.options.selectors.controlLabel).text();
+            jqUnit.assertEquals(testPrefix + ": The selection control label should have the correct text", expectedText, labelText);
         } else {
-            jqUnit.assertNodeNotExists(testPrefix + ": The selection control should not be present", that.options.selectors.control);
+            fluid.tests.orator.assertNodeNotInDOM(testPrefix + ": The selection control should not be present", that.control);
         }
     };
 

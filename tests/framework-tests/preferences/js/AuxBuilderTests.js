@@ -323,7 +323,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid.prefs.contrast": {
                     "type": "string",
                     "default": "default",
-                    "enum": ["default", "bw", "wb", "by", "yb"]
+                    "enum": ["default", "bw", "wb", "by", "yb"],
+                    "enumLabels": [
+                        "contrast-default",
+                        "contrast-bw",
+                        "contrast-wb",
+                        "contrast-by",
+                        "contrast-yb"
+                    ]
                 }
             },
             expectedOutput: {
@@ -375,6 +382,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 },
                                 controlValues: {
                                     theme: ["default", "bw", "wb", "by", "yb"]
+                                },
+                                stringArrayIndex: {
+                                    theme: [
+                                        "contrast-default",
+                                        "contrast-bw",
+                                        "contrast-wb",
+                                        "contrast-by",
+                                        "contrast-yb"
+                                    ]
                                 },
                                 members: {
                                     resources: {
@@ -630,7 +646,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "default": 1,
             "minimum": 1,
             "maximum": 2,
-            "divisibleBy": 0.1
+            "multipleOf": 0.1
         },
         "fluid.prefs.emphasizeLinks": {
             "type": "boolean",
@@ -1525,7 +1541,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
-                "model.step": "divisibleBy" // to test that model paths without the "default" keyword are mapped correctly.
+                "model.step": "multipleOf" // to test that model paths without the "default" keyword are mapped correctly.
             }
         }
     });
@@ -1563,7 +1579,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "default": false,
             "minimum": 20,
             "maximum": 100,
-            "divisibleBy": 0.1
+            "multipleOf": 0.1
         },
         "fluid.prefs.subPanel4": {
             "type": "boolean",
