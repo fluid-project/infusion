@@ -1102,7 +1102,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "default": 1,
                 "min": 1,
                 "max": 2,
-                "divisibleBy": 0.1
+                "multipleOf": 0.1
             }
         }
     });

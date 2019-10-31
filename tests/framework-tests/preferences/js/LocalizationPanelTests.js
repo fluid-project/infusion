@@ -38,6 +38,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             template: {
                 href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-localization.html"
             }
+        },
+        stringArrayIndex: {
+            localization: [
+                "localization-default",
+                "localization-en",
+                "localization-fr",
+                "localization-es",
+                "localization-fa"
+            ]
+        },
+        controlValues: {
+            localization: ["default", "en", "fr", "es", "fa"]
         }
     });
 

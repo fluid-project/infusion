@@ -167,7 +167,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "default": 1,
                 "minimum": 0.5,
                 "maximum": 2,
-                "divisibleBy": 0.1
+                "multipleOf": 0.1
             }
         }
     });
@@ -180,7 +180,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "default": 1,
                 "minimum": 0.7,
                 "maximum": 2,
-                "divisibleBy": 0.1
+                "multipleOf": 0.1
             }
         }
     });
@@ -191,7 +191,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.textFont": {
                 "type": "string",
                 "default": "default",
-                "enum": ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
+                "enum": ["default", "times", "comic", "arial", "verdana", "open-dyslexic"],
+                "enumLabels": [
+                    "textFont-default",
+                    "textFont-times",
+                    "textFont-comic",
+                    "textFont-arial",
+                    "textFont-verdana",
+                    "textFont-open-dyslexic"
+                ]
             }
         }
     });
@@ -202,7 +210,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.contrast": {
                 "type": "string",
                 "default": "default",
-                "enum": ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"]
+                "enum": ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"],
+                "enumLabels": [
+                    "contrast-default",
+                    "contrast-bw",
+                    "contrast-wb",
+                    "contrast-by",
+                    "contrast-yb",
+                    "contrast-lgdg",
+                    "contrast-gw",
+                    "contrast-gd",
+                    "contrast-bbr"
+                ]
             }
         }
     });

@@ -73,7 +73,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "default": 1,
                 "minimum": 0.7,
                 "maximum": 2,
-                "divisibleBy": 0.1
+                "multipleOf": 0.1
             }
         }
     });
