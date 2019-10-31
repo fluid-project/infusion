@@ -17,66 +17,40 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /*******************************************************************************
-     * Starter auxiliary schema grade
+     * Starter auxiliary schema grades
      *
      * Contains the settings for 7 preferences: text size, line space, text font,
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
-    fluid.defaults("fluid.prefs.auxSchema.starter", {
+    fluid.defaults("fluid.prefs.auxSchema.textSize", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.separatedPanel"],
-            "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
-                "messagePrefix": "../../framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
-            },
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
-            "defaultLocale": "en",
-            "textSize": {
-                "type": "fluid.prefs.textSize",
-                "alias": "textSize",
-                "enactor": {
-                    "type": "fluid.prefs.enactor.textSize"
+            textSize: {
+                type: "fluid.prefs.textSize",
+                alias: "textSize",
+                enactor: {
+                    type: "fluid.prefs.enactor.textSize"
                 },
-                "panel": {
-                    "type": "fluid.prefs.panel.textSize",
-                    "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                    "message": "%messagePrefix/textSize.json",
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize.html"
+                panel: {
+                    type: "fluid.prefs.panel.textSize",
+                    container: ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
+                    message: "%messagePrefix/textSize.json",
+                    template: "%templatePrefix/PrefsEditorTemplate-textSize.html"
                 }
-            },
-            "textFont": {
-                "type": "fluid.prefs.textFont",
-                "alias": "textFont",
-                "classes": {
-                    "default": "",
-                    "times": "fl-font-times",
-                    "comic": "fl-font-comic-sans",
-                    "arial": "fl-font-arial",
-                    "verdana": "fl-font-verdana",
-                    "open-dyslexic": "fl-font-open-dyslexic"
-                },
-                "enactor": {
-                    "type": "fluid.prefs.enactor.textFont",
-                    "classes": "@textFont.classes"
-                },
-                "panel": {
-                    "type": "fluid.prefs.panel.textFont",
-                    "container": ".flc-prefsEditor-text-font",  // the css selector in the template where the panel is rendered
-                    "classnameMap": {"textFont": "@textFont.classes"},
-                    "template": "%templatePrefix/PrefsEditorTemplate-textFont.html",
-                    "message": "%messagePrefix/textFont.json"
-                }
-            },
-            "lineSpace": {
-                "type": "fluid.prefs.lineSpace",
-                "alias": "lineSpace",
-                "enactor": {
-                    "type": "fluid.prefs.enactor.lineSpace",
-                    "fontSizeMap": {
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.lineSpace", {
+        gradeNames: ["fluid.prefs.auxSchema"],
+        auxiliarySchema: {
+            lineSpace: {
+                type: "fluid.prefs.lineSpace",
+                alias: "lineSpace",
+                enactor: {
+                    type: "fluid.prefs.enactor.lineSpace",
+                    fontSizeMap: {
                         "xx-small": "9px",
                         "x-small": "11px",
                         "small": "13px",
@@ -86,17 +60,52 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "xx-large": "30px"
                     }
                 },
-                "panel": {
-                    "type": "fluid.prefs.panel.lineSpace",
-                    "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                    "message": "%messagePrefix/lineSpace.json",
-                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace.html"
+                panel: {
+                    type: "fluid.prefs.panel.lineSpace",
+                    container: ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
+                    message: "%messagePrefix/lineSpace.json",
+                    template: "%templatePrefix/PrefsEditorTemplate-lineSpace.html"
                 }
-            },
-            "contrast": {
-                "type": "fluid.prefs.contrast",
-                "alias": "theme",
-                "classes": {
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.textFont", {
+        gradeNames: ["fluid.prefs.auxSchema"],
+        auxiliarySchema: {
+            textFont: {
+                type: "fluid.prefs.textFont",
+                alias: "textFont",
+                classes: {
+                    "default": "",
+                    "times": "fl-font-times",
+                    "comic": "fl-font-comic-sans",
+                    "arial": "fl-font-arial",
+                    "verdana": "fl-font-verdana",
+                    "open-dyslexic": "fl-font-open-dyslexic"
+                },
+                enactor: {
+                    type: "fluid.prefs.enactor.textFont",
+                    classes: "@textFont.classes"
+                },
+                panel: {
+                    type: "fluid.prefs.panel.textFont",
+                    container: ".flc-prefsEditor-text-font",  // the css selector in the template where the panel is rendered
+                    classnameMap: {"textFont": "@textFont.classes"},
+                    template: "%templatePrefix/PrefsEditorTemplate-textFont.html",
+                    message: "%messagePrefix/textFont.json"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.contrast", {
+        gradeNames: ["fluid.prefs.auxSchema"],
+        auxiliarySchema: {
+            contrast: {
+                type: "fluid.prefs.contrast",
+                alias: "theme",
+                classes: {
                     "default": "fl-theme-prefsEditor-default",
                     "bw": "fl-theme-bw",
                     "wb": "fl-theme-wb",
@@ -108,48 +117,72 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     "bbr": "fl-theme-bbr"
 
                 },
-                "enactor": {
-                    "type": "fluid.prefs.enactor.contrast",
-                    "classes": "@contrast.classes"
+                enactor: {
+                    type: "fluid.prefs.enactor.contrast",
+                    classes: "@contrast.classes"
                 },
-                "panel": {
-                    "type": "fluid.prefs.panel.contrast",
-                    "container": ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
-                    "classnameMap": {"theme": "@contrast.classes"},
-                    "template": "%templatePrefix/PrefsEditorTemplate-contrast.html",
-                    "message": "%messagePrefix/contrast.json"
-                }
-            },
-            "tableOfContents": {
-                "type": "fluid.prefs.tableOfContents",
-                "alias": "toc",
-                "enactor": {
-                    "type": "fluid.prefs.enactor.tableOfContents",
-                    "tocTemplate": "../../components/tableOfContents/html/TableOfContents.html",
-                    "tocMessage": "../../framework/preferences/messages/tableOfContents-enactor.json"
-                },
-                "panel": {
-                    "type": "fluid.prefs.panel.layoutControls",
-                    "container": ".flc-prefsEditor-layout-controls",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-layout.html",
-                    "message": "%messagePrefix/tableOfContents.json"
-                }
-            },
-            "enhanceInputs": {
-                "type": "fluid.prefs.enhanceInputs",
-                "alias": "inputs",
-                "enactor": {
-                    "type": "fluid.prefs.enactor.enhanceInputs",
-                    "cssClass": "fl-input-enhanced"
-                },
-                "panel": {
-                    "type": "fluid.prefs.panel.enhanceInputs",
-                    "container": ".flc-prefsEditor-enhanceInputs",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-enhanceInputs.html",
-                    "message": "%messagePrefix/enhanceInputs.json"
+                panel: {
+                    type: "fluid.prefs.panel.contrast",
+                    container: ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
+                    classnameMap: {"theme": "@contrast.classes"},
+                    template: "%templatePrefix/PrefsEditorTemplate-contrast.html",
+                    message: "%messagePrefix/contrast.json"
                 }
             }
         }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.tableOfContents", {
+        gradeNames: ["fluid.prefs.auxSchema"],
+        auxiliarySchema: {
+            tableOfContents: {
+                type: "fluid.prefs.tableOfContents",
+                alias: "toc",
+                enactor: {
+                    type: "fluid.prefs.enactor.tableOfContents",
+                    tocTemplate: "../../components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../framework/preferences/messages/tableOfContents-enactor.json"
+                },
+                panel: {
+                    type: "fluid.prefs.panel.layoutControls",
+                    container: ".flc-prefsEditor-layout-controls",  // the css selector in the template where the panel is rendered
+                    template: "%templatePrefix/PrefsEditorTemplate-layout.html",
+                    message: "%messagePrefix/tableOfContents.json"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.enhanceInputs", {
+        gradeNames: ["fluid.prefs.auxSchema"],
+        auxiliarySchema: {
+            enhanceInputs: {
+                type: "fluid.prefs.enhanceInputs",
+                alias: "inputs",
+                enactor: {
+                    type: "fluid.prefs.enactor.enhanceInputs",
+                    cssClass: "fl-input-enhanced"
+                },
+                panel: {
+                    type: "fluid.prefs.panel.enhanceInputs",
+                    container: ".flc-prefsEditor-enhanceInputs",  // the css selector in the template where the panel is rendered
+                    template: "%templatePrefix/PrefsEditorTemplate-enhanceInputs.html",
+                    message: "%messagePrefix/enhanceInputs.json"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter", {
+        gradeNames: [
+            "fluid.prefs.auxSchema",
+            "fluid.prefs.auxSchema.textSize",
+            "fluid.prefs.auxSchema.lineSpace",
+            "fluid.prefs.auxSchema.textFont",
+            "fluid.prefs.auxSchema.contrast",
+            "fluid.prefs.auxSchema.tableOfContents",
+            "fluid.prefs.auxSchema.enhanceInputs"
+        ]
     });
 
     /*******************************************************************************

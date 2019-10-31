@@ -26,7 +26,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema", {
         gradeNames: ["fluid.component"],
         auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.separatedPanel"]
+            "loaderGrades": ["fluid.prefs.separatedPanel"],
+            "namespace": "fluid.prefs.constructed",
+            "terms": {
+                "templatePrefix": "../../framework/preferences/html",
+                "messagePrefix": "../../framework/preferences/messages"
+            },
+            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+            "message": "%messagePrefix/prefsEditor.json",
+            "defaultLocale": "en"
         }
     });
 

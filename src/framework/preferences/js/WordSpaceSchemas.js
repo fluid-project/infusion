@@ -17,23 +17,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /*******************************************************************************
-    * Starter auxiliary schema grade
+    * Auxiliary schema grade
     *
     * Contains the settings for the word space preference
     *******************************************************************************/
 
-    // Fine-tune the starter aux schema and add word space preference
     fluid.defaults("fluid.prefs.auxSchema.wordSpace", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            "namespace": "fluid.prefs.constructed",
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html/",
-                "messagePrefix": "../../framework/preferences/messages/"
-            },
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
-
             wordSpace: {
                 type: "fluid.prefs.wordSpace",
                 enactor: {

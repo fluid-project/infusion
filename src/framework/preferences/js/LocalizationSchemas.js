@@ -17,21 +17,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /*******************************************************************************
-    * Starter auxiliary schema grade
+    * Auxiliary schema grade
     *
     * Contains the settings for the localization preference
     *******************************************************************************/
 
-    // Fine-tune the starter aux schema and add localization preference
     fluid.defaults("fluid.prefs.auxSchema.localization", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html/",
-                "messagePrefix": "../../framework/preferences/messages/"
-            },
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
             localization: {
                 "type": "fluid.prefs.localization",
                 "alias": "locale",
