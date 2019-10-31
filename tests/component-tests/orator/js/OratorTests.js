@@ -800,10 +800,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }];
                 },
                 offsetTop: 150,
-                offsetLeft: 50
+                offsetLeft: 50,
+                offsetParent: {
+                    tagName: "div",
+                    offsetTop: 0,
+                    offsetLeft: 0,
+                    clientTop: 0,
+                    clientLeft: 0
+                }
             }
         }
     };
+
+    fluid.tests.orator.selectionReader.mockRangeBody = $.extend(true, {}, fluid.tests.orator.selectionReader.mockRange, {
+        startContainer: {
+            parentElement: {
+                offsetParent: {
+                    tagName: "body"
+                }
+            }
+        }
+    });
+
+
+    fluid.tests.orator.selectionReader.mockRangeBodyOuterBorder = $.extend(true, {}, fluid.tests.orator.selectionReader.mockRangeBody, {
+        startContainer: {
+            parentElement: {
+                offsetParent: {
+                    clientTop: 16,
+                    clientLeft: 16
+                }
+            }
+        }
+    });
+
+    fluid.tests.orator.selectionReader.mockRangeBodyInnerBorder = $.extend(true, {}, fluid.tests.orator.selectionReader.mockRangeBodyOuterBorder, {
+        startContainer: {
+            parentElement: {
+                offsetParent: {
+                    offsetTop: -16,
+                    offsetLeft: -16
+                }
+            }
+        }
+    });
 
     fluid.tests.orator.selectionReader.position = {
         viewPort: {
@@ -818,10 +858,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    jqUnit.test("Test fluid.orator.selectionReader.calculatePosition", function () {
-        var actual = fluid.orator.selectionReader.calculatePosition(fluid.tests.orator.selectionReader.mockRange);
+    fluid.tests.orator.selectionReader.positionBorder = {
+        viewPort: {
+            top: 20,
+            bottom: 30,
+            left: 10
+        },
+        offset: {
+            top: 144,
+            bottom: 154,
+            left: 39
+        }
+    };
 
+    jqUnit.test("Test fluid.orator.selectionReader.calculatePosition", function () {
+        // offsetParent is not the body
+        var actual = fluid.orator.selectionReader.calculatePosition(fluid.tests.orator.selectionReader.mockRange);
         jqUnit.assertDeepEq("The ElementPosition object should be constructed and returned correctly.", fluid.tests.orator.selectionReader.position, actual);
+
+        // offsetParent is the body
+        var actualBody = fluid.orator.selectionReader.calculatePosition(fluid.tests.orator.selectionReader.mockRangeBody);
+        jqUnit.assertDeepEq("The ElementPosition object should be constructed and returned correctly when the offsetParent is the body.", fluid.tests.orator.selectionReader.position, actualBody);
+
+        // offsetParent is the body, inner border
+        var actualBodyInnerBorder = fluid.orator.selectionReader.calculatePosition(fluid.tests.orator.selectionReader.mockRangeBodyInnerBorder);
+        jqUnit.assertDeepEq("The ElementPosition object should be constructed and returned correctly when the offsetParent is the body - inner border calculation.", fluid.tests.orator.selectionReader.position, actualBodyInnerBorder);
+
+        // offsetParent is the body, outter border
+        var actualBodyOuterBorder = fluid.orator.selectionReader.calculatePosition(fluid.tests.orator.selectionReader.mockRangeBodyOuterBorder);
+        jqUnit.assertDeepEq("The ElementPosition object should be constructed and returned correctly when the offsetParent is the body - outer border calculation.", fluid.tests.orator.selectionReader.positionBorder, actualBodyOuterBorder);
     });
 
     jqUnit.test("Test fluid.orator.selectionReader.adjustForHorizontalCollision", function () {
@@ -954,7 +1019,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "fluid.orator.selectionReader",
             tests: [{
                 expect: 36,
-                name: "fluid.orator.selectionReader",
+                name: "Selection Reader work flow",
                 sequence: [{
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Init", "{that}.options.testOpts.expected.noSelection"],

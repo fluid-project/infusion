@@ -903,6 +903,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var rangeRect = range.getClientRects()[0];
         var rangeParent = range.startContainer.parentElement;
         var rangeParentRect = rangeParent.getClientRects()[0];
+        var offsetParent = rangeParent.offsetParent;
+        var bodyBorderAdjustment = {
+            top: 0,
+            left: 0
+        }
+
+        // If the offset parent is the `body` element and it is positioned, if there is a border set
+        // on the `body` it may affect the offset value returned. In some browsers the outer edge of the
+        // border is used to calculate the offset, in others it is the inner edge. The algorithm below can calculate
+        // a needed adjustment value by comparing the offsetParent's offset and client values. In the case where the
+        // Outer edge of the border is used, the offset is 0. In cases where the inner edge is used, the offset is a
+        // negative value. The difference in the absolute value of the offset and the client values, is the amount
+        // that the positioning needs to be adjusted for.
+        if (offsetParent && offsetParent.tagName.toLowerCase() === "body") {
+            bodyBorderAdjustment.top = Math.abs(offsetParent.offsetTop) - offsetParent.clientTop;
+            bodyBorderAdjustment.left = Math.abs(offsetParent.offsetLeft) - offsetParent.clientLeft;
+        }
 
         return {
             viewPort: {
@@ -911,9 +928,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 left: rangeRect.left
             },
             offset: {
-                top: rangeParent.offsetTop + rangeRect.top - rangeParentRect.top,
-                bottom: rangeParent.offsetTop + rangeRect.bottom - rangeParentRect.top,
-                left: rangeParent.offsetLeft + rangeRect.left - rangeParentRect.left
+                top: rangeParent.offsetTop + rangeRect.top - rangeParentRect.top + bodyBorderAdjustment.top,
+                bottom: rangeParent.offsetTop + rangeRect.bottom - rangeParentRect.top + bodyBorderAdjustment.top,
+                left: rangeParent.offsetLeft + rangeRect.left - rangeParentRect.left + bodyBorderAdjustment.left
             }
         };
     };
