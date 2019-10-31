@@ -97,16 +97,15 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                    build: {
-                        gradeNames: [
+                    schema: {
+                        auxiliarySchemas: [
                             "fluid.prefs.auxSchema.starter", // this will add the starter set
                             "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor
                             "fluid.prefs.auxSchema.wordSpace", // this will add the word space adjuster and enactor
                             "demo.prefsEditor.auxSchema.syllabification", // this will add the syllabification adjuster and enactor
                             "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
                             "demo.prefsEditor.progressiveEnhancement" // progressive enhancement - may add selfVoicing
-                        ],
-                        primarySchema: demo.prefsEditor.primarySchema
+                        ]
                     }
                 });
             });

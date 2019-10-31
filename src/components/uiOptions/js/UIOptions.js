@@ -15,13 +15,46 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    // Gradename to invoke "fluid.uiOptions.prefsEditor"
-    fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.starter"]
-    });
+    // // Gradename to invoke "fluid.uiOptions.prefsEditor"
+    // fluid.prefs.builder({
+    //     gradeNames: ["fluid.prefs.auxSchema.starter"]
+    // });
+    //
+    // fluid.defaults("fluid.uiOptions.prefsEditor", {
+    //     gradeNames: ["fluid.prefs.constructed.prefsEditor"],
+    //     lazyLoad: false,
+    //     distributeOptions: {
+    //         "uio.separatedPanel.lazyLoad": {
+    //             record: "{that}.options.lazyLoad",
+    //             target: "{that separatedPanel}.options.lazyLoad"
+    //         },
+    //         "uio.uiEnhancer.tocTemplate": {
+    //             source: "{that}.options.tocTemplate",
+    //             target: "{that uiEnhancer > tableOfContents}.options.tocTemplate"
+    //         },
+    //         "uio.uiEnhancer.tocMessage": {
+    //             source: "{that}.options.tocMessage",
+    //             target: "{that uiEnhancer > tableOfContents}.options.tocMessage"
+    //         },
+    //         "uio.uiEnhancer.ignoreForToC": {
+    //             source: "{that}.options.ignoreForToC",
+    //             target: "{that uiEnhancer > tableOfContents}.options.ignoreForToC"
+    //         }
+    //     }
+    // });
 
     fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.prefs.constructed.prefsEditor"],
+        gradeNames: ["fluid.prefs.create"],
+        schema: {
+            auxiliarySchemas: [
+                "fluid.prefs.auxSchema.textSize",
+                "fluid.prefs.auxSchema.lineSpace",
+                "fluid.prefs.auxSchema.textFont",
+                "fluid.prefs.auxSchema.contrast",
+                "fluid.prefs.auxSchema.tableOfContents",
+                "fluid.prefs.auxSchema.enhanceInputs"
+            ]
+        },
         lazyLoad: false,
         distributeOptions: {
             "uio.separatedPanel.lazyLoad": {

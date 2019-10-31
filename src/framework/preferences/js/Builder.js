@@ -20,9 +20,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.registerNamespace("fluid.prefs");
 
     fluid.defaults("fluid.prefs.builder", {
-        gradeNames: ["fluid.component", "fluid.prefs.auxBuilder"],
+        gradeNames: ["fluid.component", "fluid.prefs.auxBuilder", "{that}.applyAuxiliarySchemaGrades"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
+        },
+        invokers: {
+            applyAuxiliarySchemaGrades: {
+                funcName: "fluid.identity",
+                args: ["{that}.options.auxiliarySchemas"]
+            }
         },
         assembledPrefsEditorGrade: {
             expander: {
@@ -80,11 +86,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
+
         distributeOptions: {
             "builder.primaryBuilder.primarySchema": {
                 source: "{that}.options.primarySchema",
                 removeSource: true,
                 target: "{that > primaryBuilder}.options.primarySchema"
+            },
+            "builder.auxiliarySchema.loaderGrades": {
+                source: "{that}.options.loaderGrades",
+                removeSource: true,
+                target: "{that}.options.auxiliarySchema.loaderGrades"
+            },
+            "builder.auxiliarySchema.terms": {
+                source: "{that}.options.terms",
+                removeSource: true,
+                target: "{that}.options.auxiliarySchema.terms"
+            },
+            "builder.auxiliarySchema.prefsEditorTemplate": {
+                source: "{that}.options.prefsEditorTemplate",
+                removeSource: true,
+                target: "{that}.options.auxiliarySchema.template"
+            },
+            "builder.auxiliarySchema.prefsEditorMessage": {
+                source: "{that}.options.prefsEditorMessage",
+                removeSource: true,
+                target: "{that}.options.auxiliarySchema.message"
+            },
+            "builder.auxiliarySchema.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                removeSource: true,
+                target: "{that}.options.auxiliarySchema.defaultLocale"
             }
         }
     });
@@ -244,10 +276,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*
      * A one-stop-shop function to build and instantiate a prefsEditor from a schema.
      */
-    fluid.prefs.create = function (container, options) {
-        options = options || {};
-        var builder = fluid.prefs.builder(options.build);
-        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
+    // fluid.prefs.create = function (container, options) {
+    //     options = options || {};
+    //     var builder = fluid.prefs.builder(options.build);
+    //     return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
+    // };
+
+    fluid.defaults("fluid.prefs.create", {
+        gradeNames: ["fluid.viewComponent", "{that}.getGradeFromSchema"],
+        invokers: {
+            getGradeFromSchema: {
+                funcName: "fluid.prefs.getGradeFromSchema",
+                args: ["{that}.options.schema"]
+            }
+        },
+        schema: {}
+    });
+
+    fluid.prefs.getGradeFromSchema = function (options) {
+        var builder = fluid.prefs.builder(options);
+        return builder.options.assembledPrefsEditorGrade;
     };
 
 })(jQuery, fluid_3_0_0);

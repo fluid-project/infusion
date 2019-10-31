@@ -21,12 +21,15 @@ var demo = demo || {};
     fluid.registerNamespace("demo.prefsEditor");
 
     // add extra prefs to the starter primary schemas
-    demo.prefsEditor.primarySchema = {
-        "demo.prefs.simplify": {
-            "type": "boolean",
-            "default": false
+    fluid.defaults("demo.schemas.simplify", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "demo.prefs.simplify": {
+                "type": "boolean",
+                "default": false
+            }
         }
-    };
+    });
 
     fluid.contextAware.makeChecks({
         "fluid.supportsTTS": "fluid.textToSpeech.isSupported"

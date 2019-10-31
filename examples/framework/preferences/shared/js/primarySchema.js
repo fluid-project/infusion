@@ -16,52 +16,92 @@ var example = example || {};
     "use strict";
 
     /**
-     * This Primary Schema defines preferences shared by all of the Preferences Framework examples.
+     * These Primary Schemas define preferences shared by all of the Preferences Framework examples.
      * Each example only uses some of these preferences, as specified by the example's auxiliary schema.
      */
 
-    example.primarySchema = {
-        "example.speakText": {
-            "type": "boolean",
-            "default": false
-        },
-        "example.volume": {
-            "type": "number",
-            "default": 60,
-            "minimum": 0,
-            "maximum": 100,
-            "multipleOf": 5
-        },
-        "example.wordsPerMinute": {
-            "type": "number",
-            "default": 180,
-            "minimum": 130,
-            "maximum": 250,
-            "multipleOf": 10
-        },
-        "example.increaseSize": {
-            "type": "boolean",
-            "default": false
-        },
-        "example.cursorSize": {
-            "type": "number",
-            "default": 2,
-            "minimum": 1,
-            "maximum": 5,
-            "multipleOf": 1
-        },
-        "example.magnification": {
-            "type": "number",
-            "default": 100,
-            "minimum": 100,
-            "maximum": 400,
-            "multipleOf": 10
-        },
-        "example.magnifierPosition": {
-            "type": "string",
-            "default": "left",
-            "enum": ["centre", "left", "right", "top", "bottom"]
+    fluid.defaults("example.schemas.speakText", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "example.speakText": {
+                "type": "boolean",
+                "default": false
+            }
         }
-    };
+    });
+
+    fluid.defaults("example.schemas.volume", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "example.volume": {
+                "type": "number",
+                "default": 60,
+                "minimum": 0,
+                "maximum": 100,
+                "multipleOf": 5
+            }
+        }
+    });
+
+    fluid.defaults("example.schemas.wordsPerMinute", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "example.wordsPerMinute": {
+                "type": "number",
+                "default": 180,
+                "minimum": 130,
+                "maximum": 250,
+                "multipleOf": 10
+            }
+        }
+    });
+
+    fluid.defaults("example.schemas.increaseSize", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "example.increaseSize": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    });
+
+    fluid.defaults("example.schemas.cursorSize", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "example.cursorSize": {
+                "type": "number",
+                "default": 2,
+                "minimum": 1,
+                "maximum": 5,
+                "multipleOf": 1
+            }
+        }
+    });
+
+    fluid.defaults("example.schemas.magnification", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "example.magnification": {
+                "type": "number",
+                "default": 100,
+                "minimum": 100,
+                "maximum": 400,
+                "multipleOf": 10
+            }
+        }
+    });
+
+    fluid.defaults("example.schemas.magnifierPosition", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "example.magnifierPosition": {
+                "type": "string",
+                "default": "left",
+                "enum": ["centre", "left", "right", "top", "bottom"],
+                "enumLabels": ["magPos-centre", "magPos-left", "magPos-right", "magPos-top", "magPos-bottom"]
+            }
+        }
+    });
 
 })();
