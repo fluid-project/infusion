@@ -848,11 +848,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             play: false,
             text: ""
         },
-        // similar to em values as it will be multiplied by the container's font-size
-        offsetScale: {
-            edge: 3,
-            pointer: 3
-        },
         events: {
             onSelectionChanged: null,
             onStop: null,
@@ -897,7 +892,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "queueSpeech"
             }, {
                 func: "fluid.orator.selectionReader.renderControlState",
-                args: ["{that}", "{that}.dom.control", "{arguments}.0"],
+                args: ["{that}", "{that}.control", "{arguments}.0"],
+                excludeSource: ["init"],
                 namespace: "renderControlState"
             }],
             "enabled": {
@@ -1069,87 +1065,62 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return parsed;
     };
 
-    fluid.orator.selectionReader.location = {
-        TOP: 0,
-        RIGHT: 1,
-        BOTTOM: 2,
-        LEFT: 3
-    };
-
     /**
-     * An object containing specified offset scales: "edge" and "pointer" offsets to account for the room needed for a
-     * control element to be correctly positioned.
+     * Coordinates for an element, includes both viewPort and Document coordinates.
      *
-     * @typedef {Object} OffsetScale
-     * @property {Float} edge - The minimum distance between the button and the viewport's edges
-     * @property {Float} pointer - The distance between the button and the coordinates the DOMRect refers too. This
-     *                                provides space for an arrow to point from the button.
+     * @typedef {Object} ElementPosition
+     * @property {Object} viewPort - the coordinates relative to the viewPort
+     * @property {Float} viewPort.top - The `top` pixel coordinate relative to the top edge of the viewPort
+     * @property {Float} viewPort.left - The `left` pixel coordinate relative to the left edge of the viewPort
+     * @property {Object} offset - the coordinates relative to the offset parent (closest positioned ancestor)
+     * @property {Float} offset.top - The `top` pixel coordinate relative to the offset parent
+     * @property {Float} offset.left - The `left` pixel coordinate relative to the offset parent
      */
 
     /**
-     * An object containing the sizes of the top and left margins.
+     * Returns a position object containing coordinates of the provided range. These can be used to position other
+     * elements in relation to it.
      *
-     * @typedef {Object} MarginInfo
-     * @property {Float} top - The size of margin-top
-     * @property {Float} left - The size of margin-left
+     * @param {Range} range - A Range object for which to calculate the position of.
+     *
+     * @return {ElementPosition} - An object containing the coordinates of the provided `range`.
      */
-
-    /**
-     * Coordinates for absolutely positioning a DOM Element.
-     *
-     * @typedef {Object} ControlPosition
-     * @property {Float} top - The `top` pixel coordinate relative to the top/left corner
-     * @property {Float} left - The `left` pixel coordinate relative to the top/left corner
-     * @property {Integer} location - For location constants see: fluid.orator.selectionReader.location
-     */
-
-    /**
-     * Returns a position object containing coordinates for absolutely positioning the play button
-     * relative to a passed in rect. By default it will be placed above the rect unless there is a collision with the
-     * top of the window. In which case it will be placed below. This will be captured in the "location" propertied,
-     * and is specified by a constant (See: fluid.orator.selectionReader.location).
-     *
-     * In addition to collision detection with the top of the window, collision detection for the left and right edges
-     * of the window are also taken into account. However, the position will not be flipped, but will be translated
-     * slightly to ensure that the item being placed is displayed on screen. These calculations are facilitated through
-     * an offsetScale object passed in.
-     *
-     * @param {DOMRect} rect - A DOMRect object, used to calculate placement against. Specifically, the "top", "bottom",
-     *                        and "left" properties may be used for positioning.
-     * @param {MarginInfo} margin - Margin sizes
-     * @param {Float} fontSize - The base font to multiple the offset against
-     * @param {OffsetScale} offsetScale - (Optional) an object containing specified offsets: "edge" and "pointer".
-     *                                    Offsets all default to 1 and are multiplied with the fontSize for determining
-     *                                    the final offset value.
-     *
-     * @return {ControlPosition} - An object containing the coordinates for positioning the play button.
-     *                    It takes the form {top: Float, left: Float, location: Integer}
-     *                    For location constants see: fluid.orator.selectionReader.location
-     */
-    fluid.orator.selectionReader.calculatePosition = function (rect, margin, fontSize, offsetScale) {
-        var edgeOffset = fontSize * (fluid.get(offsetScale, "edge") || 1);
-        var pointerOffset = fontSize * (fluid.get(offsetScale, "pointer") || 1);
-
-        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
-
-        var position = {
-            top: scrollTop - margin.top,
-            left: Math.min(
-                Math.max(rect.left + scrollLeft - margin.left, edgeOffset + scrollLeft),
-                (document.documentElement.clientWidth + scrollLeft - margin.left - edgeOffset)
-            )
+    fluid.orator.selectionReader.calculatePosition = function (range) {
+        // use getClientRects()[0] instead of getBoundingClientRect() because in cases where more than one rect
+        // is returned we only want the first one, not the aggregation of all of them.
+        var rangeRect = range.getClientRects()[0];
+        var rangeParent = range.startContainer.parentElement;
+        var rangeParentRect = rangeParent.getClientRects()[0];
+        var offsetParent = rangeParent.offsetParent;
+        var bodyBorderAdjustment = {
+            top: 0,
+            left: 0
         };
 
-        if (rect.top < edgeOffset) {
-            position.top = position.top + rect.bottom;
-            position.location = fluid.orator.selectionReader.location.BOTTOM;
-        } else {
-            position.top = position.top + rect.top - pointerOffset;
-            position.location = fluid.orator.selectionReader.location.TOP;
+        // If the offset parent is the `body` element and it is positioned, if there is a border set
+        // on the `body` it may affect the offset value returned. In some browsers the outer edge of the
+        // border is used to calculate the offset, in others it is the inner edge. The algorithm below can calculate
+        // a needed adjustment value by comparing the offsetParent's offset and client values. In the case where the
+        // Outer edge of the border is used, the offset is 0. In cases where the inner edge is used, the offset is a
+        // negative value. The difference in the absolute value of the offset and the client values, is the amount
+        // that the positioning needs to be adjusted for.
+        if (offsetParent && offsetParent.tagName.toLowerCase() === "body") {
+            bodyBorderAdjustment.top = Math.abs(offsetParent.offsetTop) - offsetParent.clientTop;
+            bodyBorderAdjustment.left = Math.abs(offsetParent.offsetLeft) - offsetParent.clientLeft;
         }
 
-        return position;
+        return {
+            viewPort: {
+                top: rangeRect.top,
+                bottom: rangeRect.bottom,
+                left: rangeRect.left
+            },
+            offset: {
+                top: rangeParent.offsetTop + rangeRect.top - rangeParentRect.top + bodyBorderAdjustment.top,
+                bottom: rangeParent.offsetTop + rangeRect.bottom - rangeParentRect.top + bodyBorderAdjustment.top,
+                left: rangeParent.offsetLeft + rangeRect.left - rangeParentRect.left + bodyBorderAdjustment.left
+            }
+        };
     };
 
     fluid.orator.selectionReader.renderControlState = function (that, control) {
@@ -1157,39 +1128,75 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         control.find(that.options.selectors.controlLabel).text(text);
     };
 
+    fluid.orator.selectionReader.adjustForHorizontalCollision = function (control, position, viewPortWidth) {
+        viewPortWidth = viewPortWidth || document.body.clientWidth;
+        var controlMidPoint = parseFloat(control.css("width")) / 2;
+        // check for collision on left side
+        if (controlMidPoint > position.viewPort.left) {
+            control.css("left", position.offset.left + controlMidPoint - position.viewPort.left);
+        // check for collision on right side
+        } else if (controlMidPoint + position.viewPort.left > viewPortWidth) {
+            control.css("left", position.offset.left - viewPortWidth + position.viewPort.left);
+        }
+    };
+
+    fluid.orator.selectionReader.adjustForVerticalCollision = function (control, position, belowStyle, aboveStyle) {
+        var controlHeight = parseFloat(control.css("height"));
+        if (controlHeight > position.viewPort.top) {
+            control.css("top", position.offset.bottom);
+            control.removeClass(aboveStyle);
+            control.addClass(belowStyle);
+        } else {
+            control.removeClass(belowStyle);
+            control.addClass(aboveStyle);
+        }
+    };
+
+    fluid.orator.selectionReader.createControl = function (that) {
+        var control = $(that.options.markup.control);
+        control.addClass(that.options.styles.control);
+        control.click(function () {
+            // wrapped in an empty function so as not to pass along the jQuery event object
+            that.events.onToggleControl.fire();
+        });
+        return control;
+    };
+
     fluid.orator.selectionReader.renderControl = function (that, state) {
         if (state) {
             var selectionRange = window.getSelection().getRangeAt(0);
-            var rect = selectionRange.getClientRects()[0];
-            var fontSize = parseFloat(that.container.css("font-size"));
-            var margin = {
-                top: parseFloat(that.container.css("margin-top")),
-                left: parseFloat(that.container.css("margin-left"))
-            };
+            var controlContainer = selectionRange.startContainer.parentElement.offsetParent || selectionRange.startContainer.parentElement;
+            var position = fluid.orator.selectionReader.calculatePosition(selectionRange);
 
-            var position = fluid.orator.selectionReader.calculatePosition(rect, margin, fontSize, that.options.offsetScale);
-            var control = $(that.options.markup.control);
-            control.addClass(that.options.styles.control);
-            fluid.orator.selectionReader.renderControlState(that, control);
+            that.control = that.control || fluid.orator.selectionReader.createControl(that);
 
-            control.css({
-                top:  position.top,
-                left: position.left
+            // set the intial position
+            that.control.css({
+                top:  position.offset.top,
+                left: position.offset.left
             });
 
-            var positionClass = that.options.styles[position.location === fluid.orator.selectionReader.location.TOP ? "above" : "below"];
-            control.addClass(positionClass);
-            control.click(function () {
-                // wrapped in an empty function so as not to pass along the jQuery event object
-                that.events.onToggleControl.fire();
-            });
-            control.appendTo(that.container);
+            fluid.orator.selectionReader.renderControlState(that, that.control);
+            that.control.appendTo(controlContainer);
+
+            // check if there is space to display above, if not move to below selection
+            fluid.orator.selectionReader.adjustForVerticalCollision(
+                that.control,
+                position,
+                that.options.styles.below,
+                that.options.styles.above
+            );
+
+            // adjust horizontal position for collisions with the viewport edge.
+            fluid.orator.selectionReader.adjustForHorizontalCollision(that.control, position);
 
             // cleanup range
             selectionRange.detach();
 
         } else {
-            that.locate("control").remove();
+            if (that.control) {
+                that.control.detach();
+            }
         }
     };
 
