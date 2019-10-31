@@ -907,7 +907,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var bodyBorderAdjustment = {
             top: 0,
             left: 0
-        }
+        };
 
         // If the offset parent is the `body` element and it is positioned, if there is a border set
         // on the `body` it may affect the offset value returned. In some browsers the outer edge of the
