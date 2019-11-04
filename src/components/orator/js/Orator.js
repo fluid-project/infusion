@@ -307,9 +307,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             parser: {
                 type: "fluid.textNodeParser",
                 options: {
-                    invokers: {
-                        hasTextToRead: "fluid.textNodeParser.hasVisibleText"
-                    },
                     listeners: {
                         "onParsedTextNode.addToParseQueue": "{domReader}.addToParseQueue"
                     }
@@ -855,12 +852,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         components: {
             parser: {
-                type: "fluid.textNodeParser",
-                options: {
-                    invokers: {
-                        hasTextToRead: "fluid.textNodeParser.hasVisibleText"
-                    }
-                }
+                type: "fluid.textNodeParser"
             }
         },
         listeners: {
