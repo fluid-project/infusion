@@ -55,37 +55,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Determines if there is text in an element that should be read.
      * Will return false in the following conditions:
      * - elm is falsey (undefined, null, etc.)
-     * - elm's offsetHeight is 0 (e.g. display none set on itself or its parent)
+     * - elm's offsetParent is falsey, unless elm is the `body` element
      * - elm has no text or only whitespace
+     * - elm or an ancestor has "aria-hidden=true", unless the `acceptAriaHidden` parameter is set
      *
      * NOTE: Text added by pseudo elements (e.g. :before, :after) are not considered.
-     * NOTE: This method is not supported in IE 11 because innerText returns the text for some hidden elements
+     * NOTE: This method is not supported in IE 11 because innerText returns the text for some hidden elements,
      *       that is inconsistent with modern browsers.
      *
      * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
+     * @param {Boolean} acceptAriaHidden - if set, will return `true` even if the `elm` or one of its ancestors has
+     *                                    `aria-hidden="true"`.
      *
      * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
-     *                     (See rules above)
+     *                     (See conditions in description above)
      */
-    fluid.textNodeParser.hasTextToRead = function (elm) {
+    fluid.textNodeParser.hasTextToRead = function (elm, acceptAriaHidden) {
         elm = fluid.unwrap(elm);
 
         return elm &&
-               !!elm.offsetHeight &&
-               fluid.textNodeParser.isWord(elm.innerText);
-    };
-
-    /**
-     * Similar to `fluid.textNodeParser.hasTextToRead` except adds the following condition:
-     * - elm or its parent has `aria-hidden="true"` set.
-     *
-     * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
-     *
-     * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
-     *                     (See rules above)
-     */
-    fluid.textNodeParser.hasVisibleText = function (elm) {
-        return fluid.textNodeParser.hasTextToRead(elm) && !$(elm).closest("[aria-hidden=\"true\"]").length;
+               (elm.tagName.toLowerCase() === "body" || elm.offsetParent) &&
+               fluid.textNodeParser.isWord(elm.innerText) &&
+               (acceptAriaHidden || !$(elm).closest("[aria-hidden=\"true\"]").length);
     };
 
     /**
