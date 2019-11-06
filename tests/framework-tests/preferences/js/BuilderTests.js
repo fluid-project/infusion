@@ -428,7 +428,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - empty",
             tests: [{
-                expect: 18,
+                expect: 12,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
                 args: [
@@ -438,9 +438,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "messages",
                         "panels",
                         "initialModel",
-                        "templateLoader",
-                        "messageLoader",
-                        "terms",
                         "aliases_prefsEditor",
                         "aliases_enhancer"
                     ]
@@ -459,7 +456,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             name: "fluid.prefs.builder - defaultLocale",
             tests: [{
-                expect: 18,
+                expect: 12,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
                 args: [
@@ -469,9 +466,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "messages",
                         "panels",
                         "initialModel",
-                        "templateLoader",
-                        "messageLoader",
-                        "terms",
                         "aliases_prefsEditor",
                         "aliases_enhancer"
                     ]
@@ -500,10 +494,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertConstructedAliases",
                 args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
             }, {
-                expect: 6,
+                expect: 4,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEnactors}", ["messages", "panels", "terms"]]
+                args: ["{builderEnactors}", ["messages", "panels"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
@@ -528,10 +522,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertConstructedAliases",
                 args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
             }, {
-                expect: 6,
+                expect: 4,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderPanels}", ["message", "enactors", "terms"]]
+                args: ["{builderPanels}", ["message", "enactors"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
@@ -819,38 +813,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.prefs.create", function () {
-        var pref_defaultNamespace = fluid.prefs.create(".prefs_defaultNamespace", {
-            build: {
-                gradeNames: ["fluid.prefs.auxSchema.starter"],
-                auxiliarySchema: {
-                    "namespace": "",
-                    "loaderGrades": ["fluid.prefs.fullNoPreview"],
-                    "terms": {
-                        "templatePrefix": "../../../../src/framework/preferences/html",
-                        "messagePrefix": "../../../../src/framework/preferences/messages"
-                    }
-                }
-            }
+        var prefsEditor = fluid.prefs.create(".prefs_defaultNamespace", {
+            auxiliarySchemas: ["fluid.prefs.auxSchema.starter"]
         });
-        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_defaultNamespace.options, "fluid.prefs.assembler.prefsEd"));
-        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_defaultNamespace.typeName, "fluid.prefs.created_"));
-
-        var namespace = "fluid.test.namespace";
-        var pref_customNamespace = fluid.prefs.create(".prefs_customNamespace", {
-            build: {
-                gradeNames: ["fluid.prefs.auxSchema.starter"],
-                auxiliarySchema: {
-                    "namespace": namespace,
-                    "loaderGrades": ["fluid.prefs.fullNoPreview"],
-                    "terms": {
-                        "templatePrefix": "../../../../src/framework/preferences/html",
-                        "messagePrefix": "../../../../src/framework/preferences/messages"
-                    }
-                }
-            }
-        });
-        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_customNamespace.options, "fluid.prefs.assembler.prefsEd"));
-        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_customNamespace.typeName, namespace));
+        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.prefsEd"));
+        var constructedGradeName = prefsEditor.options.gradeNames[prefsEditor.options.gradeNames.length - 1];
+        jqUnit.assertTrue("The prefsEditor grade should use the generated namespace", startsWith(constructedGradeName, "fluid.prefs.created_"));
+        jqUnit.assertTrue("The enhancer subcomponent should be instantiated", prefsEditor.enhancer);
+        jqUnit.assertTrue("The store subcomponent should be instantiated", prefsEditor.store);
+        jqUnit.assertTrue("The prefsEditorLoader subcomponent should be instantiated", prefsEditor.prefsEditorLoader);
     });
 
     /***********************
