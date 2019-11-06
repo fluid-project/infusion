@@ -195,4 +195,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Successfully constructed component with this-ist listener", that);
     });
 
+    /** Self-rendering and unrendering **/
+
+    fluid.defaults("fluid.tests.selfRenderLensed", {
+        gradeNames: "fluid.viewComponent",
+        model: {
+            arena: ["a", "b", "c"]
+        },
+        selectors: {
+            element: ".flc-tests-self-render-element"
+        },
+        dynamicComponents: {
+            elements: {
+                type: "fluid.tests.selfRenderElement",
+                sources: "{that}.model.arena",
+                options: {
+                    parentContainer: "{selfRenderLensed}.container",
+                    model: {
+                        text: "{source}"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.selfRenderElement", {
+        gradeNames: "fluid.containerRenderingView",
+        markup: {
+            container: "<div class=\"flc-tests-self-render-element\">%text</div>"
+        },
+        invokers: {
+            renderMarkup: {
+                funcName: "fluid.stringTemplate",
+                args: ["{that}.options.markup.container", {
+                    text: "{that}.model.text"
+                }]
+            }
+        }
+    });
+
+    jqUnit.test("Self-rendering and unrendering of lensed components", function () {
+        var that = fluid.tests.selfRenderLensed(".flc-tests-self-rendering");
+        var elements = that.locate("element");
+        jqUnit.assertEquals("Three elements should have been rendered", 3, elements.length);
+        var texts = fluid.transform(elements, function (element) {
+            return element.textContent;
+        });
+        jqUnit.assertDeepEq("The element texts should be those derived from the model", that.model.arena, texts);
+        that.applier.change("arena", null, "DELETE");
+        elements = that.locate("element");
+        jqUnit.assertEquals("Elements should have been removed", 0, elements.length);
+    });
+
 })();

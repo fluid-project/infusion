@@ -1767,6 +1767,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         triggerChangeRequest("path2");
     });
 
+    /** FLUID-6424: Notifying modelListeners of relay material on init **/
+
+    fluid.defaults("fluid.tests.fluid6424root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 65
+        },
+        modelRelay: {
+            target: {
+                target: "target",
+                singleTransform: {
+                    type: "fluid.transforms.free",
+                    args: ["{that}.model.source"],
+                    func: "fluid.identity"
+                }
+            }
+        },
+        modelListeners: {
+            target: "fluid.tests.fluid6424test({change}.value)"
+        }
+    });
+
+    fluid.tests.fluid6424test = function (target) {
+        jqUnit.assertEquals("Received relayed value on init", 65, target);
+    };
+
+    jqUnit.test("FLUID-6424: Notify of relay material on init", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid6424root();
+        jqUnit.assertEquals("Correct initial value resolved", 65, that.model.target);
+    });
+
+
     /** FLUID-5045: model transformation documents contextualised by IoC expressions for model relay **/
 
     // This tests replicates the setup for the Pager's model which historically was implemented using (and drove the

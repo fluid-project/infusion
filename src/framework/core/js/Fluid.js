@@ -3036,7 +3036,6 @@ var fluid = fluid || fluid_3_0_0;
      *
      * @param {Object} originalObject - An object.
      * @return {Object} A representation of the original object that only contains top-level sub-elements whose keys are EL Paths.
-     *
      */
     // unsupported, non-API function
     fluid.flattenObjectPaths = function (originalObject) {
@@ -3064,10 +3063,9 @@ var fluid = fluid || fluid_3_0_0;
      * "%deep.path.to.value".  Returns a new string with the tokens replaced by the specified values.  Keys and values
      * can be of any data type that can be coerced into a string.
      *
-     * @param {String} template - A string (can be HTML) that contains tokens embedded into it.
-     * @param {Object} values - A collection of token keys and values.
-     * @return {String} A string whose tokens have been replaced with values.
-     *
+     * @param {String} template - A string that contains placeholders for tokens of the form `%token` embedded into it.
+     * @param {Object.<String.String>} values - A map of token names to the values which should be interpolated.
+     * @return {String} The text of `template` whose tokens have been interpolated with values.
      */
     fluid.stringTemplate = function (template, values) {
         var flattenedValues = fluid.flattenObjectPaths(values);

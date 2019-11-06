@@ -1408,8 +1408,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     };
 
-    jQuery.extend(true, fluid.oldRenderer, renderer);
     // Final definition for backwards compatibility - remove with old renderer
+    $.extend(fluid.oldRenderer, fluid.renderer, renderer);
     fluid.renderer = fluid.oldRenderer;
 
     /*

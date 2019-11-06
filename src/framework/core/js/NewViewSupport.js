@@ -46,6 +46,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                          replace the contents).
      */
     fluid.newViewComponent.addToParent = function (parentContainer, elm, method) {
+        if (!parentContainer) {
+            fluid.fail("fluid.containerRenderingView needs to have \"parentContainer\" option supplied");
+        }
         method = method || "append";
         $(parentContainer)[method](elm);
     };
@@ -58,7 +61,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.newViewComponent"],
         container: "@expand:{that}.renderContainer()",
         // The DOM element which this component should inject its markup into on startup
-        parentContainer: "fluid.notImplemented", // must be overridden
+        parentContainer: null, // must be overridden
         injectionType: "append",
         invokers: {
             renderMarkup: "fluid.identity({that}.options.markup.container)",
@@ -67,8 +70,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.newViewComponent.addToParent",
                 args: ["{that}.options.parentContainer", "{arguments}.0", "{that}.options.injectionType"]
             }
+        },
+        workflows: {
+            global: {
+                // This workflow function is necessary since otherwise the natural evaluation order of lensed components
+                // during local workflow will evaluate them in reverse order
+                evaluateContainers: {
+                    funcName: "fluid.renderer.evaluateContainers",
+                    priority: "last"
+                }
+            }
+        },
+        listeners: {
+            "onDestroy.clearInjectedMarkup": {
+                "this": "{that}.container",
+                method: "remove",
+                args: []
+            }
         }
     });
+
+    fluid.registerNamespace("fluid.renderer");
+
+    fluid.renderer.evaluateContainers = function (shadows) {
+        shadows.forEach(function (shadow) {
+            fluid.getForComponent(shadow.that, "container");
+        });
+    };
 
     /**
      * Renders the components markup and inserts it into the parent container based on the addToParent method

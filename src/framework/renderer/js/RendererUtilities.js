@@ -364,7 +364,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                     expanded.push({children: expandrow});
                 }
             }
-            else if (expandrow !== fluid.renderer.NO_COMPONENT) {
+            else if (expandrow !== fluid.oldRenderer.NO_COMPONENT) {
                 expanded.push(expandrow);
             }
         });
@@ -717,5 +717,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             return expandEntry(entry);
         };
     };
+
+    // Final definition for backwards compatibility - remove with old renderer
+    jQuery.extend(fluid.renderer, fluid.oldRenderer);
 
 })(jQuery, fluid_3_0_0);
