@@ -510,17 +510,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.auxSchema");
 
-    fluid.tests.isEmptyExpandedAuxSchema = function (expandedAuxSchema) {
-        var schemaKeys = fluid.keys(expandedAuxSchema);
+    fluid.tests.assertIsEmptyExpandedAuxSchema = function (expandedAuxSchema) {
+        var schemaKeys = fluid.keys(expandedAuxSchema).sort();
+        var expectedKeys = [
+            "loaderGrades",
+            "namespace",
+            "terms",
+            "templateLoader",
+            "messageLoader"
+        ].sort();
 
-        return expandedAuxSchema.namespace && expandedAuxSchema.loaderGrades && schemaKeys.length === 2;
+        jqUnit.assertDeepEq("Only namespace and loaderGrades are in the expanded aux schema", expectedKeys, schemaKeys);
     };
 
     fluid.tests.testEmpty = function (expandedAuxSchema) {
         var namespace = fluid.get(expandedAuxSchema, "namespace");
 
         jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", namespace.indexOf("fluid.prefs.created_") === 0);
-        jqUnit.assertTrue("Only namespace and loaderGrades are in the expanded aux schema", fluid.tests.isEmptyExpandedAuxSchema(expandedAuxSchema));
+        fluid.tests.assertIsEmptyExpandedAuxSchema(expandedAuxSchema);
     };
 
     fluid.tests.testAuxBuilder = function (expandedSchema, expectedExpandedSchema) {
@@ -699,11 +706,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messageLoader: {
             gradeNames: ["fluid.resourceLoader"],
-            resources: {}
+            resources: {
+                "prefsEditor": "%messagePrefix/prefsEditor.json"
+            }
         },
         templateLoader: {
             gradeNames: ["fluid.resourceLoader"],
-            resources: {}
+            resources: {
+                "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html"
+            }
+        },
+        terms: {
+            gradeNames: ["fluid.component"],
+            terms: {
+                "messagePrefix": "../../framework/preferences/messages",
+                "templatePrefix": "../../framework/preferences/html"
+            }
         }
     };
 
@@ -760,13 +778,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         templateLoader: {
             gradeNames: ["fluid.resourceLoader"],
             resources: {
-                "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html"
+                "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
+                "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html"
             }
         },
         messageLoader: {
             gradeNames: ["fluid.resourceLoader"],
             resources: {
-                "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json"
+                "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json",
+                "prefsEditor": "%messagePrefix/prefsEditor.json"
             }
         },
         terms: {
@@ -938,14 +958,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-                        "fluid_prefs_panel_otherTextSize": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html"
+                        "fluid_prefs_panel_otherTextSize": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html",
+                        "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json",
-                        "fluid_prefs_panel_otherTextSize": "%messagePrefix/PrefsEditorTemplate-otherTextSize.json"
+                        "fluid_prefs_panel_otherTextSize": "%messagePrefix/PrefsEditorTemplate-otherTextSize.json",
+                        "prefsEditor": "%messagePrefix/prefsEditor.json"
                     }
                 },
                 terms: {
@@ -1021,13 +1043,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
-                        "fluid_prefs_panel_oneForManyPrefs": "%templatePrefix/PrefsEditorTemplate-linksControls.html"
+                        "fluid_prefs_panel_oneForManyPrefs": "%templatePrefix/PrefsEditorTemplate-linksControls.html",
+                        "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
-                        "fluid_prefs_panel_oneForManyPrefs": "%messagePrefix/PrefsEditorTemplate-linksControls.json"
+                        "fluid_prefs_panel_oneForManyPrefs": "%messagePrefix/PrefsEditorTemplate-linksControls.json",
+                        "prefsEditor": "%messagePrefix/prefsEditor.json"
                     }
                 },
                 terms: {
