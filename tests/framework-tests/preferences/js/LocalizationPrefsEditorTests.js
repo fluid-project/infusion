@@ -34,7 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.localizationPrefsEditor", {
-        gradeNames: ["fluid.tests.prefs.localization.prefsEditor", "fluid.prefs.constructed.localizationPrefsEditorConfig"],
+        gradeNames: ["fluid.tests.prefs.localization.prefsEditor", "fluid.prefs.localizationPrefsEditorConfig"],
         localizationScheme: "urlPath",
         localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
         locales: ["", "en", "en-ca", "fr", "es", "fa"],
@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             defaultLocale: "fr"
         },
         modules: [{
-            name: "fluid.prefs.constructed.localizationPrefsEditorConfig",
+            name: "fluid.prefs.localizationPrefsEditorConfig",
             tests: [{
                 expect: 7,
                 name: "Options Distributions",

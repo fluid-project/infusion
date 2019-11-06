@@ -16,14 +16,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function (fluid) {
     "use strict";
 
-    /*******************************************************************************
-    * Starter auxiliary schema grade
-    *
-    * Contains the settings for the localization preference
-    *******************************************************************************/
-
-    // Fine-tune the starter aux schema and add localization preference
-    fluid.defaults("fluid.prefs.constructed.localizationPrefsEditorConfig", {
+    fluid.defaults("fluid.prefs.localizationPrefsEditorConfig", {
         gradeNames: ["fluid.contextAware"],
         contextAwareness: {
             localeChange: {
@@ -31,7 +24,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     urlPath: {
                         contextValue: "{localizationPrefsEditorConfig}.options.localizationScheme",
                         equals: "urlPath",
-                        gradeNames: "fluid.prefs.constructed.localizationPrefsEditorConfig.urlPathLocale"
+                        gradeNames: "fluid.prefs.localizationPrefsEditorConfig.urlPathLocale"
                     }
                 }
             }
@@ -52,7 +45,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.constructed.localizationPrefsEditorConfig.urlPathLocale", {
+    fluid.defaults("fluid.prefs.localizationPrefsEditorConfig.urlPathLocale", {
         distributeOptions: {
             "prefsEditor.localization.enactor.langMap": {
                 source: "{that}.options.langMap",

@@ -97,7 +97,15 @@
         <!-- END markup for Preference Editor -->
 
         <script type="text/javascript">
-            example.initPrefsEditor(".flc-prefsEditor-separatedPanel");
+            fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
+                schema: {
+                    auxiliarySchemas: ["example.auxSchema"],
+                    terms: {
+                        "templatePrefix": "../shared/html",
+                        "messagePrefix": "../shared/messages"
+                    }
+                }
+            });
         </script>
 
         <div class="overview">

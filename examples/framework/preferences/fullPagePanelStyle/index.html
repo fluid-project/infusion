@@ -62,41 +62,46 @@
 
         <script>
             fluid.prefs.create(".flc-prefsEditor-panelStyle", {
-                build: {
-                    gradeNames: ["fluid.prefs.auxSchema.starter"],
-                    auxiliarySchema: {
-                        "loaderGrades": ["fluid.prefs.fullNoPreview"],
-                        "terms": {
-                            "templatePrefix": "../../../../src/framework/preferences/html/",
-                            "messagePrefix": "../../../../src/framework/preferences/messages/"
-                        },
-                        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-                        "tableOfContents": {
-                            "enactor": {
-                                "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html"
-                            }
+                schema: {
+                    auxiliarySchemas: [
+                        "fluid.prefs.auxSchema.textSize",
+                        "fluid.prefs.auxSchema.lineSpace",
+                        "fluid.prefs.auxSchema.textFont",
+                        "fluid.prefs.auxSchema.contrast",
+                        "fluid.prefs.auxSchema.tableOfContents",
+                        "fluid.prefs.auxSchema.enhanceInputs"
+                    ],
+                    loaderGrades: ["fluid.prefs.fullNoPreview"],
+                    terms: {
+                        templatePrefix: "../../../../src/framework/preferences/html/",
+                        messagePrefix: "../../../../src/framework/preferences/messages/"
+                    },
+                    prefsEditorTemplate: "%templatePrefix/SeparatedPanelPrefsEditor.html"
+                },
+                tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                prefsEditor: {
+                    gradeNames: ["fluid.prefs.arrowScrolling"],
+                    model: {
+                        preferences: "{prefsEditorLoader}.model.preferences",
+                        panelIndex: "{prefsEditorLoader}.model.panelIndex",
+                        panelMaxIndex: "{prefsEditorLoader}.model.panelMaxIndex",
+                        local: {
+                            panelIndex: "{that}.model.panelIndex"
                         }
+                    },
+                    autoSave: true,
+                    modelListeners: {
+                        "panelIndex": [{
+                            listener: "fluid.prefs.prefsEditor.handleAutoSave",
+                            args: ["{that}"],
+                            namespace: "autoSavePanelIndex"
+                        }]
                     }
                 },
-                prefsEditor: {
-                    prefsEditor: {
-                        gradeNames: ["fluid.prefs.arrowScrolling"],
-                        model: {
-                            preferences: "{prefsEditorLoader}.model.preferences",
-                            panelIndex: "{prefsEditorLoader}.model.panelIndex",
-                            panelMaxIndex: "{prefsEditorLoader}.model.panelMaxIndex",
-                            local: {
-                                panelIndex: "{that}.model.panelIndex"
-                            }
-                        },
-                        autoSave: true,
-                        modelListeners: {
-                            "panelIndex": [{
-                                listener: "fluid.prefs.prefsEditor.handleAutoSave",
-                                args: ["{that}"],
-                                namespace: "autoSavePanelIndex"
-                            }]
-                        },
+                distributeOptions: {
+                    "fullPagePanelStyle.tocTemplate": {
+                        source: "{that}.options.tocTemplate",
+                        target: "{that uiEnhancer > tableOfContents}.options.tocTemplate"
                     }
                 }
             });

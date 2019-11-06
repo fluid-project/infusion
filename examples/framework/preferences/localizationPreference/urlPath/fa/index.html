@@ -93,19 +93,14 @@
         <h1>سلام دنیا!</h1>
 
         <script type="text/javascript">
-            fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                build: {
-                    gradeNames: ["fluid.prefs.auxSchema.localization"],
-                    auxiliarySchema: {
-                        terms: {
-                            "templatePrefix": "../../../../../../src/framework/preferences/html",
-                            "messagePrefix": "../../../../../../src/framework/preferences/messages"
-                        },
-                        template: "../html/prefsEditor.html"
-                    }
-                },
-                prefsEditor: {
-                    gradeNames: ["example.prefs.localization"],
+            example.prefs.localization.prefsEditor(".flc-prefsEditor-separatedPanel", {
+                gradeNames: ["fluid.prefs.create"],
+                schema: {
+                    terms: {
+                        "templatePrefix": "../../../../../../src/framework/preferences/html",
+                        "messagePrefix": "../../../../../../src/framework/preferences/messages"
+                    },
+                    prefsEditorTemplate: "../html/prefsEditor.html",
                     defaultLocale: "fa"
                 }
             });

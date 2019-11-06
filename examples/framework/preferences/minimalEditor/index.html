@@ -38,7 +38,7 @@
 
         <script type="text/javascript" src="schemas/primary.js"></script>
         <script type="text/javascript" src="schemas/auxiliary.js"></script>
-        <script type="text/javascript" src="js/prefsEditor.js"></script>
+        <script type="text/javascript" src="js/panel.js"></script>
     </head>
 
     <body>
@@ -58,7 +58,11 @@
         <div id="preferencesEditor"></div>
 
         <script type="text/javascript">
-            awesomeCars.prefs.init("#preferencesEditor");
+            fluid.prefs.create("#preferencesEditor", {
+                schema: {
+                    auxiliarySchemas: ["awesomeCars.prefs.auxSchema"]
+                }
+            });
         </script>
 
    </body>
