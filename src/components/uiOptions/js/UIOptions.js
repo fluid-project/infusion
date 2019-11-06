@@ -17,16 +17,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.uiOptions.prefsEditor", {
         gradeNames: ["fluid.prefs.create"],
-        schema: {
-            auxiliarySchemas: [
-                "fluid.prefs.auxSchema.textSize",
-                "fluid.prefs.auxSchema.lineSpace",
-                "fluid.prefs.auxSchema.textFont",
-                "fluid.prefs.auxSchema.contrast",
-                "fluid.prefs.auxSchema.tableOfContents",
-                "fluid.prefs.auxSchema.enhanceInputs"
-            ]
-        },
+        auxiliarySchemas: [
+            "fluid.prefs.auxSchema.textSize",
+            "fluid.prefs.auxSchema.lineSpace",
+            "fluid.prefs.auxSchema.textFont",
+            "fluid.prefs.auxSchema.contrast",
+            "fluid.prefs.auxSchema.tableOfContents",
+            "fluid.prefs.auxSchema.enhanceInputs"
+        ],
         lazyLoad: false,
         distributeOptions: {
             "uio.separatedPanel.lazyLoad": {

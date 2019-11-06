@@ -276,21 +276,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*
      * A one-stop-shop function to build and instantiate a prefsEditor from a schema.
      */
-    // fluid.prefs.create = function (container, options) {
-    //     options = options || {};
-    //     var builder = fluid.prefs.builder(options.build);
-    //     return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
-    // };
-
     fluid.defaults("fluid.prefs.create", {
         gradeNames: ["fluid.viewComponent", "{that}.getGradeFromSchema"],
         invokers: {
             getGradeFromSchema: {
                 funcName: "fluid.prefs.getGradeFromSchema",
-                args: ["{that}.options.schema"]
+                args: [{
+                    auxiliarySchemas: "{that}.options.auxiliarySchemas",
+                    defaultLocale: "{that}.options.defaultLocale",
+                    loaderGrades: "{that}.options.loaderGrades",
+                    prefsEditorMessage: "{that}.options.prefsEditorMessage",
+                    prefsEditorTemplate: "{that}.options.prefsEditorTemplate",
+                    primarySchema: "{that}.options.primarySchema",
+                    terms: "{that}.options.terms"
+                }]
             }
-        },
-        schema: {}
+        }
     });
 
     fluid.prefs.getGradeFromSchema = function (options) {

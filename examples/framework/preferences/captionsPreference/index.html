@@ -100,15 +100,13 @@
         </main>
 
         <script type="text/javascript">
-            var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                schema: {
-                    auxiliarySchemas: ["fluid.prefs.auxSchema.captions"],
-                    terms: {
-                        "templatePrefix": "../../../../src/framework/preferences/html",
-                        "messagePrefix": "../../../../src/framework/preferences/messages"
-                    },
-                    template: "html/prefsEditor.html"
-                }
+            fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
+                auxiliarySchemas: ["fluid.prefs.auxSchema.captions"],
+                terms: {
+                    "templatePrefix": "../../../../src/framework/preferences/html",
+                    "messagePrefix": "../../../../src/framework/preferences/messages"
+                },
+                prefsEditorTemplate: "html/prefsEditor.html"
             });
         </script>
     </body>

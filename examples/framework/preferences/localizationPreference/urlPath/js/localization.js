@@ -69,16 +69,14 @@ var example = example || {};
 
     fluid.defaults("example.prefs.localization.prefsEditor", {
         gradeNames: ["fluid.prefs.create", "example.prefs.localization"],
-        schema: {
-            auxiliarySchemas: [
-                "fluid.prefs.auxSchema.localization"
-            ],
-            terms: {
-                "templatePrefix": "../../../../../src/framework/preferences/html",
-                "messagePrefix": "../../../../../src/framework/preferences/messages"
-            },
-            prefsEditorTemplate: "html/prefsEditor.html"
-        }
+        auxiliarySchemas: [
+            "fluid.prefs.auxSchema.localization"
+        ],
+        terms: {
+            "templatePrefix": "../../../../../src/framework/preferences/html",
+            "messagePrefix": "../../../../../src/framework/preferences/messages"
+        },
+        prefsEditorTemplate: "html/prefsEditor.html"
     });
 
 })(jQuery, fluid);
