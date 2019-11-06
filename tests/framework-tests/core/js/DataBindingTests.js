@@ -1606,8 +1606,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
-     * double relay and longer "transform" form of relay specification */
+    /** FLUID-6424: Notifying modelListeners of relay material on init **/
+
+    fluid.defaults("fluid.tests.fluid6424root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 65
+        },
+        modelRelay: {
+            target: {
+                target: "target",
+                singleTransform: {
+                    type: "fluid.transforms.free",
+                    args: ["{that}.model.source"],
+                    func: "fluid.identity"
+                }
+            }
+        },
+        modelListeners: {
+            target: "fluid.tests.fluid6424test({change}.value)"
+        }
+    });
+
+    fluid.tests.fluid6424test = function (target) {
+        jqUnit.assertEquals("Received relayed value on init", 65, target);
+    };
+
+    jqUnit.test("FLUID-6424: Notify of relay material on init", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid6424root();
+        jqUnit.assertEquals("Correct initial value resolved", 65, that.model.target);
+    });
+
+    /** FLUID-5024: Demonstrate resolving a set of model references which is cyclic in components (although not in values),
+     * as well as double relay and longer "transform" form of relay specification */
 
     fluid.defaults("fluid.tests.fluid5024cycleHead", {
         gradeNames: ["fluid.component"],
@@ -1827,7 +1859,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Model allows last page", expected, that.model);
     });
 
-    // FLUID-5270: The model is not transformed when the "modelRelay" option is defined in the target component
+    /** FLUID-5270: The model is not transformed when the "modelRelay" option is defined in the target component **/
+
     fluid.defaults("fluid.tests.fluid5270OnSource", {
         gradeNames: ["fluid.modelComponent"],
         model: {
@@ -1881,7 +1914,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the target component", expectedValue, thatOnTarget.sub.model.fahrenheit);
     });
 
-    // FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly
+    /** FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly **/
+
     fluid.defaults("fluid.tests.fluid5293", {
         gradeNames: ["fluid.modelComponent"],
         model: {
@@ -1993,7 +2027,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
     });
 
-    // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value to be missing
+    /* FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option
+     * causes the source array value to be missing */
 
     fluid.defaults("fluid.tests.fluid5368root", {
         gradeNames: ["fluid.modelComponent"],
@@ -2035,7 +2070,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
     });
 
-    // FLUID-5371: Model relay directives "forward" and "backward"
+    /* FLUID-5371: Model relay directives "forward" and "backward" */
 
     fluid.defaults("fluid.tests.fluid5371root", {
         gradeNames: ["fluid.modelComponent"],
@@ -2810,7 +2845,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "settling");
     });
 
-    // FLUID-5885: Correct context for indirect model relay
+    /* FLUID-5885: Correct context for indirect model relay */
 
     fluid.defaults("fluid.tests.fluid5885root", {
         gradeNames: "fluid.modelComponent",
@@ -2837,7 +2872,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.innerModel.applier.change("pressed", true);
     });
 
-    // FLUID-6158
+    /* FLUID-6158: fluid.modelPairToChanges */
 
     fluid.tests.modelPairToChanges = [
         {

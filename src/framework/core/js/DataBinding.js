@@ -1113,6 +1113,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return updates;
     };
 
+    fluid.concludeModelTransaction = function (transaction) {
+        var instantiator = fluid.globalInstantiator;
+        fluid.model.notifyExternal(instantiator.modelTransactions[transaction.id]);
+        delete instantiator.modelTransactions[transaction.id];
+    };
+
     /** The main entry point for enlisting a model component in the initial transaction. Positioned as a "fake member"
      * which evalutes to null. Calls `fluid.enlistModelComponent` to register record in treeTransaction.initModelTransaction
      * @param {fluid.modelComponent} that - The `fluid.modelComponent` which is about to initialise
@@ -1157,21 +1163,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         function concludeTransaction(transaction, applier, code) {
             if (code !== "relay") {
-                fluid.model.notifyExternal(instantiator.modelTransactions[transaction.id]);
-                delete instantiator.modelTransactions[transaction.id];
-            }
-        }
-
-        function concludeTreeTransaction(transaction) {
-            if (!transaction.sources.init) {
-                fluid.concludeAnyTransaction();
+                fluid.concludeModelTransaction(transaction);
             }
         }
 
         applier.preCommit.addListener(updateRelays);
         applier.preCommit.addListener(commitRelays);
         applier.postCommit.addListener(concludeTransaction);
-        applier.postCommit.addListener(concludeTreeTransaction);
+        applier.postCommit.addListener(fluid.concludeAnyTransaction);
 
         return null;
     };
@@ -1247,7 +1246,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!shadow.modelComplete) {
             var initModelTransaction = treeTransaction.initModelTransaction;
             var transRec = fluid.getModelTransactionRec(fluid.rootComponent, shadow.initTransactionId);
-            var trans;
+            var trans = Object.values(initModelTransaction)[0].transaction;
+            treeTransaction.initModelTransaction = {};
+            treeTransaction.initModelTransactionId = null;
+            trans.commit(); // committing one representative transaction will commit them all
+            // NB: Don't call concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
             fluid.each(initModelTransaction, function (oneRec) {
                 var that = oneRec.that,
                     applier = that.applier;
@@ -1263,10 +1266,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     // fluid.notifyModelChanges(listeners, "ADD", trans.newHolder, trans.oldHolder, null, trans, applier, that);
                 }
             });
-            treeTransaction.initModelTransaction = {};
-            treeTransaction.initModelTransactionId = null;
-            trans.commit(); // committing one representative transaction will commit them all
-            // NB: Don't call concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
+            fluid.concludeModelTransaction(trans);
         }
     };
 
@@ -1815,7 +1815,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
          */
         that.initiate = function (localSource, globalSources, transactionId) {
             localSource = globalSources === "init" ? null : (localSource || "local"); // supported values for localSource are "local" and "relay" - globalSource of "init" defeats defaulting of localSource to "local"
-            var defeatPost = localSource === "relay"; // defeatPost is supplied for all non-top-level transactions
+            // defeatPost is supplied for all non-top-level transactions as well as init transactions, which commit separately in notifyInitModelWorkflow
+            var defeatPost = localSource === "relay" || globalSources === "init";
             var trans = {
                 instanceId: fluid.allocateGuid(), // for debugging only - the representative of this transction on this applier
                 id: transactionId || fluid.allocateGuid(), // The global transaction id across all appliers - allocate here if this is the starting point
@@ -1823,6 +1824,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     resolverSetConfig: options.resolverSetConfig, // here to act as "options" in applyHolderChangeRequest
                     resolverGetConfig: options.resolverGetConfig
                 },
+                /** Method for internal use only - we "reset" a transaction after we have committed changes to relay documents and are ready for
+                 * a fresh round of propagation.
+                 */
                 reset: function () {
                     trans.oldHolder = holder;
                     trans.newHolder = { model: fluid.copy(holder.model) };
@@ -1830,6 +1834,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     trans.changeRecord.unchanged = 0; // just for type consistency - we don't use these values in the ChangeApplier
                     trans.changeRecord.changeMap = {};
                 },
+                /** Commit this transaction. The argument `code` is for internal use only, and takes the value "relay" when
+                 * we are committing changes to relay documents partway through a full transaction.
+                 * @param {String} [code] - Optional, internal use argument indicating the purpose of the commit. Can take the value "relay".
+                 */
                 commit: function (code) {
                     that.preCommit.fire(trans, that, code);
                     if (trans.changeRecord.changes > 0) {
@@ -1871,11 +1879,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Calculates the changes between the model values 'value' and
-     * 'oldValue' and returns an array of change records. The optional
-     * argument 'changePathPrefix' is prepended to the change path of
-     * each record (this is useful for generating change records to be
-     * applied at a non-root path in a model). The returned array of
+     * Calculates the changes between the model values 'value' and 'oldValue' and returns an array of change records.
+     * The optional argument 'changePathPrefix' is prepended to the change path of each record (this is useful for
+     * generating change records to be applied at a non-root path in a model). The returned array of
      * change records may be used with fluid.fireChanges().
      *
      * @param {Any} value - Model value to compare.
@@ -1902,11 +1908,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * This function implements recursive processing for
-     * fluid.modelPairToChanges(). It builds an array of change
-     * records, accumulated in the 'changes' argument, by walking the
-     * 'changeMap' structure and 'value' model value. As we walk down
-     * the model, our path from the root of the model is recorded in
+     * This function implements recursive processing for fluid.modelPairToChanges(). It builds an array of change
+     * records, accumulated in the 'changes' argument, by walking the 'changeMap' structure and 'value' model value.
+     * As we walk down the model, our path from the root of the model is recorded in
      * the 'changeSegs' argument.
      *
      * @param {Any} value - Model value
