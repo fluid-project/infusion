@@ -57,24 +57,9 @@
         <script src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script src="../../../../../src/framework/preferences/js/Builder.js"></script>
-
-        <script src="js/prefsEditorFullPageSchema.js"></script>
     </head>
 
     <body>
-        <!-- The page-wide UI Enhancer needs to be initialized right away -->
-        <script type="text/javascript">
-            $(document).ready(function () {
-                demo.initFullWithPreview("#myPrefsEditor", {
-                    prefsEditor: {
-                        preview: {
-                            templateUrl: "../shared/html/prefsEditorPreview.html"
-                        }
-                    }
-                });
-            });
-        </script>
-
         <aside class="instructions-container">
             <div class="instructions-content">
                 <h2>Description</h2>
@@ -103,5 +88,39 @@
             <div id="myPrefsEditor"></div>
         </main>
 
+        <script type="text/javascript">
+            fluid.prefs.create("#myPrefsEditor", {
+                schema: {
+                    auxiliarySchemas: [
+                        "fluid.prefs.auxSchema.textSize",
+                        "fluid.prefs.auxSchema.lineSpace",
+                        "fluid.prefs.auxSchema.textFont",
+                        "fluid.prefs.auxSchema.contrast",
+                        "fluid.prefs.auxSchema.tableOfContents",
+                        "fluid.prefs.auxSchema.enhanceInputs"
+                    ],
+                    "loaderGrades": ["fluid.prefs.fullPreview"],
+                    "terms": {
+                        "templatePrefix": "../../../../../src/framework/preferences/html/",
+                        "messagePrefix": "../../../../../src/framework/preferences/messages/"
+                    },
+                    "prefsEditorTemplate": "%templatePrefix/FullPreviewPrefsEditor.html"
+                },
+                prefsEditor: {
+                    preview: {
+                        templateUrl: "../shared/html/prefsEditorPreview.html"
+                    }
+                },
+                distributeOptions: {
+                    "fullPreview.tocEnactor": {
+                        record: {
+                            "tocTemplate": "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+                            "tocMessage": "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
+                        },
+                        target: "{that uiEnhancer > tableOfContents}.options"
+                    }
+                }
+            });
+        </script>
     </body>
 </html>
