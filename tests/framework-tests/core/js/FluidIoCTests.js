@@ -4619,6 +4619,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 
+    /** FLUID-5117: Return value from expander in listener is corrupted **/
+
     fluid.defaults("fluid.tests.fluid5117", {
         gradeNames: ["fluid.component"],
         inputObject: {
@@ -4639,12 +4641,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5117.init = function (that, retrievedObject) {
-        that.options.outputObject = retrievedObject;
+        that.outputObject = retrievedObject;
     };
 
-    jqUnit.test("FLUID-5117: Function that uses an expander as an argument have the expander itself in the resolved expander return", function () {
+    jqUnit.test("FLUID-5117: Function that uses an expander as an argument includes the expander itself in the resolved expander return", function () {
         var that = fluid.tests.fluid5117();
-        jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.options.outputObject);
+        jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.outputObject);
     });
 
 

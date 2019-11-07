@@ -157,7 +157,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }, {
             "type": "fluid.prefs.enactor.tableOfContents",
-            "random": undefined,
             "template": "the-location-of-toc-template"
         }],
         "panels": [{
@@ -260,7 +259,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, index, primarySchema, expectedOutput) {
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var panelModelOptions = fluid.get(fluid.tests.elementCommonOptions, "panelModel");
-        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, alias, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
+        var output = fluid.prefs.expandSchemaComponents(fluid.copy(auxSchema), type, prefKey, alias, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
     };
 
@@ -658,7 +657,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.auxSchema.expectedEnactors = {
+    fluid.tests.auxSchema.expectedEnactors = fluid.freezeRecursive({
         "namespace": fluid.tests.auxSchema.customizedNamespace,
         "loaderGrades": ["fluid.prefs.separatedPanel"],
         "textSize": {
@@ -710,9 +709,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.resourceLoader"],
             resources: {}
         }
-    };
+    });
 
-    fluid.tests.auxSchema.expectedPanels = {
+    fluid.tests.auxSchema.expectedPanels = fluid.freezeRecursive({
         "namespace": fluid.tests.auxSchema.customizedNamespace,
         "loaderGrades": ["fluid.prefs.separatedPanel"],
         "textSize": {
@@ -793,7 +792,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         }
-    };
+    });
 
     fluid.defaults("fluid.tests.auxBuilderTest", {
         gradeNames: ["fluid.test.testEnvironment"],

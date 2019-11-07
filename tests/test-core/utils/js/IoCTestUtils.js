@@ -487,7 +487,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var listener = fluid.test.decodeListener(testCaseState, fixture);
         var listenerId = fluid.allocateGuid();
         var that = fluid.test.makeBinder(listener, function (wrapped) {
-            var spec = fixture.path === undefined ? fixture.spec : {path: fixture.path};
+            var spec = fixture.path === undefined ? fluid.copy(fixture.spec) : {path: fixture.path};
             if (spec === undefined || spec.path === undefined) {
                 fluid.fail("Error in changeEvent fixture ", fixture,
                    ": could not find path specification named \"path\" or \"spec\"");
@@ -757,7 +757,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.test.processTestCaseHolder = function (testCaseState) {
-        var modules = fluid.makeArray(testCaseState.testCaseHolder.options.modules);
+        var modules = fluid.makeArray(testCaseState.modules);
         if (modules.length === 0) {
             fluid.fail("Error in test case environment ", testCaseState, ": no modules found in options.modules");
         }
@@ -815,7 +815,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             testCaseState.expand = fluid.test.makeExpander(testCaseHolder);
             testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
             if (testCaseHolder.options.moduleSource) {
-                testCaseHolder.options.modules = fluid.test.expandModuleSource(testCaseHolder.options.moduleSource, testCaseState, testCaseHolder);
+                testCaseState.modules = fluid.test.expandModuleSource(testCaseHolder.options.moduleSource, testCaseState, testCaseHolder);
+            } else {
+                testCaseState.modules = testCaseHolder.options.modules;
             }
             fluid.test.processTestCaseHolder(testCaseState);
         });

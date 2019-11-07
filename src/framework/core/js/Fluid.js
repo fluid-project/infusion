@@ -2379,7 +2379,7 @@ var fluid = fluid || fluid_3_0_0;
             }
 
             var oldTarget;
-            if (name in target) { // bail out if our work has already been done
+            if (name in target || options.fullyEvaluated) { // bail out if our work has already been done
                 oldTarget = target[name];
                 if (!options.evaluateFully) { // see notes on this hack in "initter" - early attempt to deal with FLUID-4930
                     return oldTarget;
@@ -2440,8 +2440,9 @@ var fluid = fluid || fluid_3_0_0;
                     fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
                 }
             }
-            if (oldTarget === undefined && newSources.length === 0) {
-                delete target[name]; // remove the evaluation marker - nothing to evaluate
+            if (oldTarget === undefined && newSources.length === 0 && target[name] === fluid.inEvaluationMarker) {
+                target[name] = undefined;
+                // delete target[name]; // remove the evaluation marker - nothing to evaluate
             }
             return thisTarget;
         };
@@ -2513,6 +2514,7 @@ var fluid = fluid || fluid_3_0_0;
             // in the strategy API to express when full evaluation is required - and the "flooding API" is not standardised. See FLUID-4930
             options.evaluateFully = true;
             fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);
+            options.fullyEvaluated = true;
         };
         fluid.makeMergeStrategy(options);
         return options;

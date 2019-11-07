@@ -182,9 +182,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.recordStrategy = function (that, options, optionsStrategy, recordPath, recordMaker, prefix, exceptions) {
         prefix = prefix || [];
+        var fullyEvaluated = false;
         return {
             strategy: function (target, name, i) {
-                if (i !== 1) { // Strange hack added for forgotten reason
+                if (i !== 1 || fullyEvaluated) { // i !== -1 is strange hack added for forgotten reason
                     return;
                 }
                 var record = fluid.driveStrategy(options, [recordPath, name], optionsStrategy);
@@ -203,6 +204,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         fluid.getForComponent(that, prefix.concat([name]));
                     }
                 }
+                fullyEvaluated = true;
             }
         };
     };
@@ -1144,7 +1146,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (!nested) {
                 delete component[name]; // there may be no entry - if creation is not concluded
                 // Do actual destruction for the whole tree here, including "afterDestroy" and deleting shadows
-                fluid.each(options.destroyRecs, that.clearConcreteComponent);
+                options.destroyRecs.forEach(that.clearConcreteComponent);
             }
         };
         return that;
@@ -1248,8 +1250,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.fabricateDestroyMethod = function (that) {
         return function () {
+            var currentTrans = fluid.currentTreeTransaction();
             var shadow = fluid.shadowForComponent(that);
-            fluid.destroy(shadow.path);
+            var transRec = fluid.destroy(shadow.path);
+            if (!currentTrans) {
+                transRec.promise.then(null, function (e) {
+                    throw e;
+                });
+            }
         };
     };
 
@@ -1398,6 +1406,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         shadow.memberStrategy.initter();
         shadow.invokerStrategy.initter();
+
+        fluid.freezeRecursive(that.options);
 
         fluid.each(shadow.lightMergeComponents, function (lightMerge, key) {
             if (lightMerge.createOnEvent) {
