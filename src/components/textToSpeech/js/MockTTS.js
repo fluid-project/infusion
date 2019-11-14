@@ -76,8 +76,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             // override the speak invoker to return the utterance component instead of the SpeechSynthesisUtterance instance
             speak: {
-                func: "{that}.invokeSpeechSynthesisFunc",
-                args: ["speak", "{that}.queue.0"]
+                funcName: "fluid.mock.textToSpeech.speakOverride",
+                args: ["{that}"]
             }
         },
         distributeOptions: {
@@ -86,6 +86,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             namespace: "utteranceMock"
         }
     });
+
+    fluid.mock.textToSpeech.speakOverride = function (that) {
+        var utterance = that.queue[that.queue.length - 1];
+        that.invokeSpeechSynthesisFunc("speak", utterance);
+    };
 
     fluid.mock.textToSpeech.invokeStub = function (that, method, args) {
         args = fluid.makeArray(args);

@@ -45,54 +45,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * fluid.textNodeParser.hasTextToRead Tests
          ****************************************************************/
 
-        fluid.tests.textNodeParser.assertTextToRead = function (textToReadFn, testCases) {
+        fluid.tests.textNodeParser.assertTextToRead = function (testCases) {
             // The innerText method called in fluid.textNodeParser.hasTextToRead returns text from some hidden elements
             // that modern browsers do not.
             if ($.browser.msie) {
                 jqUnit.assert("Tests were not run because innerText works differently on IE 11 and is used for a feature not supported in IE");
             } else {
-                // test trueCase
-                fluid.each(testCases.trueCase, function (selector) {
-                    jqUnit.assertTrue("\"" + selector + "\" should have text to read.", textToReadFn($(selector)));
+                var checkAriaHidden = true;
+                var hasTextNoAriaHiddenCheck =  testCases.hasTextToRead.concat(testCases.ariaHidden);
+                var noTextWithAriaHiddenCheck = testCases.noTextToRead.concat(testCases.ariaHidden);
+
+                // test has text to read
+                fluid.each(testCases.hasTextToRead, function (selector) {
+                    jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), checkAriaHidden));
+                });
+                fluid.each(hasTextNoAriaHiddenCheck, function (selector) {
+                    jqUnit.assertTrue("acceptAriaHidden = true - \"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
                 });
 
-                // test falseCase
-                fluid.each(testCases.falseCase, function (selector) {
-                    jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", textToReadFn($(selector)));
+                // test no text to read
+                fluid.each(noTextWithAriaHiddenCheck, function (selector) {
+                    jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector)));
+                });
+                fluid.each(testCases.noTextToRead, function (selector) {
+                    jqUnit.assertFalse("acceptAriaHidden = true - \"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
                 });
             }
         };
 
         fluid.tests.textNodeParser.hasTextToReadTestCases = {
-            "trueCase": [
-                ".flc-textNodeParser-test-checkDOMText"
-            ],
-            "falseCase": [
-                ".flc-textNodeParser-test-checkDOMText-noNode",
-                ".flc-textNodeParser-test-checkDOMText-empty",
-                ".flc-textNodeParser-test-checkDOMText-script",
-                ".flc-textNodeParser-test-checkDOMText-nestedScript"
-            ]
-        };
-
-        jqUnit.test("Test fluid.textNodeParser.hasTextToRead", function () {
-            fluid.tests.textNodeParser.assertTextToRead(fluid.textNodeParser.hasTextToRead, fluid.tests.textNodeParser.hasTextToReadTestCases);
-        });
-
-        /****************************************************************
-         * fluid.textNodeParser.hasTextToRead Tests
-         ****************************************************************/
-
-        fluid.tests.textNodeParser.hasVisibleTextToReadTestCases = {
-            "trueCase": [
+            "hasTextToRead": [
+                "body",
                 ".flc-textNodeParser-test-checkDOMText",
                 ".flc-textNodeParser-test-checkDOMText-ariaHiddenFalse",
                 ".flc-textNodeParser-test-checkDOMText-ariaHiddenFalse-nested",
                 ".flc-textNodeParser-test-checkDOMText-hiddenA11y",
                 ".flc-textNodeParser-test-checkDOMText-hiddenA11y-nested",
-                ".flc-textNodeParser-test-checkDOMText-visible"
+                ".flc-textNodeParser-test-checkDOMText-visible",
+                ".flc-textNodeParser-test-checkDOMText-floatParent",
+                ".flc-textNodeParser-test-checkDOMText-fixedParent",
+                ".flc-textNodeParser-test-checkDOMText-absoluteParent"
             ],
-            "falseCase": [
+            "noTextToRead": [
                 ".flc-textNodeParser-test-checkDOMText-noNode",
                 ".flc-textNodeParser-test-checkDOMText-none",
                 ".flc-textNodeParser-test-checkDOMText-none-nested",
@@ -100,17 +94,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ".flc-textNodeParser-test-checkDOMText-visHidden-nested",
                 ".flc-textNodeParser-test-checkDOMText-hidden",
                 ".flc-textNodeParser-test-checkDOMText-hidden-nested",
-                ".flc-textNodeParser-test-checkDOMText-ariaHiddenTrue",
-                ".flc-textNodeParser-test-checkDOMText-ariaHiddenTrue-nested",
                 ".flc-textNodeParser-test-checkDOMText-nestedNone",
                 ".flc-textNodeParser-test-checkDOMText-empty",
                 ".flc-textNodeParser-test-checkDOMText-script",
                 ".flc-textNodeParser-test-checkDOMText-nestedScript"
+            ],
+            "ariaHidden": [
+                ".flc-textNodeParser-test-checkDOMText-ariaHiddenTrue",
+                ".flc-textNodeParser-test-checkDOMText-ariaHiddenTrue-nested"
             ]
         };
 
-        jqUnit.test("Test fluid.textNodeParser.hasVisibleText", function () {
-            fluid.tests.textNodeParser.assertTextToRead(fluid.textNodeParser.hasVisibleText, fluid.tests.textNodeParser.hasTextToReadTestCases);
+        jqUnit.test("Test fluid.textNodeParser.hasTextToRead", function () {
+            fluid.tests.textNodeParser.assertTextToRead(fluid.tests.textNodeParser.hasTextToReadTestCases);
         });
 
         /****************************************************************
@@ -172,21 +168,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             listeners: {
                 "onParsedTextNode.record": {
                     listener: "fluid.tests.textNodeParser.record",
-                    args: ["{that}.record", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                    args: ["{that}.record", "{arguments}.0"]
                 }
             }
         });
 
-        fluid.tests.textNodeParser.record = function (record, childNode, lang, childIndex) {
-            record.push({
-                text: childNode.textContent.trim(),
-                lang: lang,
-                childIndex: childIndex
-            });
+        fluid.tests.textNodeParser.nodeToText = function (textNodeData) {
+            return {
+                text: textNodeData.node.textContent.trim(),
+                lang: textNodeData.lang,
+                childIndex: textNodeData.childIndex
+            };
+        };
+
+        fluid.tests.textNodeParser.record = function (record, textNodeData) {
+            record.push(fluid.tests.textNodeParser.nodeToText(textNodeData));
         };
 
         jqUnit.test("Test fluid.textNodeParser", function () {
-            jqUnit.expect(1);
+            jqUnit.expect(2);
             var that = fluid.tests.textNodeParser({
                 listeners: {
                     "afterParse.test": {
@@ -197,7 +197,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             });
-            that.parse($(".flc-textNodeParser-test"));
+            var parsed = that.parse($(".flc-textNodeParser-test"));
+            parsed = fluid.transform(parsed, fluid.tests.textNodeParser.nodeToText);
+
+            jqUnit.assertDeepEq("The returned parsed TextNodeData[] should be populated correctly.", fluid.tests.textNodeParser.parsed, parsed);
         });
 
     });
