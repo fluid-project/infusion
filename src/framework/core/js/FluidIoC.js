@@ -808,8 +808,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // The EL segment resolver strategy for resolving concrete members
     fluid.concreteStrategy = function (component, thisSeg, index, segs) {
         var atval = component[thisSeg];
-        if (atval === fluid.inEvaluationMarker && index === segs.length) {
-            fluid.fail("Error in component configuration - a circular reference was found during evaluation of path segment \"" + thisSeg +
+        if (atval === fluid.inEvaluationMarker) {
+            fluid.fail("Error in component configuration - a circular reference was found during evaluation of path segment \"" + thisSeg + " of path ", segs,
                 "\": for more details, see the activity records following this message in the console, or issue fluid.setLogging(fluid.logLevel.TRACE) when running your application");
         }
         if (index > 1) {
