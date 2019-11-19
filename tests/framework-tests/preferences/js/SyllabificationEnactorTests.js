@@ -175,30 +175,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             },
             existing: [{
-                    selector: ".flc-syllabification-parentLang",
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 4
-                }, {
-                    selector: ".flc-syllabification-otherRegion",
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-GB",
-                    separatorCount: 4
-                }, {
-                    selector: ".flc-syllabification-generic",
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 4
-                }, {
-                    selector: ".flc-syllabification-fallback",
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 4
-                }, {
-                    selector: ".flc-syllabification-notAvailable",
-                    text: "{that}.options.testOpts.text.es",
-                    syllabified: "{that}.options.testOpts.syllabified.es",
-                    separatorCount: 0
+                selector: ".flc-syllabification-parentLang",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-US",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-otherRegion",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-GB",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-generic",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-US",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-fallback",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-US",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-notAvailable",
+                text: "{that}.options.testOpts.text.es",
+                syllabified: "{that}.options.testOpts.syllabified.es",
+                separatorCount: 0
             }],
             injected: {
                 disabled: {
