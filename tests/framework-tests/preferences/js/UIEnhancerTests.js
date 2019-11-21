@@ -118,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.getInitialFontSize = function (container, tester) {
-        tester.options.testOpts.initialFontSize = parseFloat(container.css("fontSize"));
+        tester.initialFontSize = parseFloat(container.css("fontSize"));
     };
 
     fluid.tests.testToc = function () {
@@ -163,7 +163,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{uiEnhancer}.tableOfContents.events.afterTocRender"
                 }, {
                     func: "fluid.tests.testSettings",
-                    args: ["{uiEnhancer}", "{that}.options.testOpts.testSettings", "{that}.options.testOpts.initialFontSize"]
+                    args: ["{uiEnhancer}", "{that}.options.testOpts.testSettings", "{that}.initialFontSize"]
                 }]
             }]
         }]

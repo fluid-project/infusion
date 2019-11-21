@@ -160,7 +160,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.dataSource.defaultiseOptions = function (componentOptions, options, directModel, isSet) {
-        options = options || {};
+        options = fluid.copy(options) || {};
         options.directModel = directModel;
         options.operation = isSet ? "set" : "get";
         options.notFoundIsEmpty = options.notFoundIsEmpty || componentOptions.notFoundIsEmpty;

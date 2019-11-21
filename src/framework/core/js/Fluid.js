@@ -1027,7 +1027,7 @@ var fluid = fluid || fluid_3_0_0;
     fluid.makeMarker = function (value, extra) {
         var togo = Object.create(fluid.marker.prototype);
         togo.value = value;
-        $.extend(togo, extra);
+        fluid.extend(togo, extra);
         return Object.freeze(togo);
     };
 
@@ -1555,12 +1555,15 @@ var fluid = fluid || fluid_3_0_0;
 
     /* Generate a name for a component for debugging purposes */
     fluid.nameComponent = function (that) {
-        return that ? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]";
+        return that ? fluid.dumpComponentAndPath(that) : "[unknown component]";
     };
 
     fluid.event.nameEvent = function (that, eventName) {
         return eventName + " of " + fluid.nameComponent(that);
     };
+
+    // A function to tag the type of a Fluid event firer (primarily to mark it uncopyable)
+    fluid.event.firer = function () {};
 
     /** Construct an "event firer" object which can be used to register and deregister
      * listeners, to which "events" can be fired. These events consist of an arbitrary
@@ -1636,7 +1639,8 @@ var fluid = fluid || fluid_3_0_0;
             };
             that.addListener.apply(null, arguments);
         };
-        that = {
+        that = Object.create(fluid.event.firer.prototype);
+        fluid.extend(that, {
             eventId: fluid.allocateGuid(),
             name: name,
             ownerId: options.ownerId,
@@ -1708,7 +1712,7 @@ var fluid = fluid || fluid_3_0_0;
                     }
                 }
             }
-        };
+        });
         return that;
     };
 
@@ -2441,8 +2445,7 @@ var fluid = fluid || fluid_3_0_0;
                 }
             }
             if (oldTarget === undefined && newSources.length === 0 && target[name] === fluid.inEvaluationMarker) {
-                target[name] = undefined;
-                // delete target[name]; // remove the evaluation marker - nothing to evaluate
+                delete target[name]; // remove the evaluation marker - nothing to evaluate
             }
             return thisTarget;
         };
@@ -2632,7 +2635,7 @@ var fluid = fluid || fluid_3_0_0;
         var updateBlocks = function () {
             fluid.each(mergeBlocks, function (block) {
                 if (fluid.isPrimitive(block.priority)) {
-                    block.priority = fluid.parsePriority(block.priority, 0, false, "options distribution");
+                    block.priority = fluid.parsePriority(block.priority, 0, false, block.recordType);
                 }
             });
             fluid.sortByPriority(mergeBlocks);

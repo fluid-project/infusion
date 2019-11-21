@@ -1288,7 +1288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     headValue: {
                         expander: {
-                            type: "fluid.invokeFunc",
+                            type: "fluid.expander.invokeFunc",
                             func: "fluid.identity",
                             args: "{thatStackHead}.options.headValue"
                         }
@@ -3940,6 +3940,118 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.events.createIt.fire();
         that.events.createIt.fire();
         jqUnit.assertEquals("Model resolved from promise for the 2nd time", "Everything is fine.", that.resourceLoader.model.promiseResource);
+    });
+
+    /** FLUID-6428 - Options which resolve to undefined in the immutable world: two cases **/
+
+    fluid.defaults("fluid.tests.fluid6428root", {
+        gradeNames: "fluid.component",
+        arena1: {
+        },
+        arena2: {
+        },
+        reference: "{that}.options.arena1.nonexistent",
+        components: {
+            child: {
+                type: "fluid.component",
+                options: {
+                    // This forwarding duplicates the setup in fluid.textfieldSlider -> fluid.slider where the because of lack of cloning
+                    // mergeBlock target ends up sharing the frozen target object from the parent
+                    arena2: "{fluid6428root}.options.arena2",
+                    listeners: {
+                        "onCreate.reference": "fluid.identity({that}.options.arena2.nonexistent)"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6428: Options which resolve to undefined in the immutable world", function () {
+        var that = fluid.tests.fluid6428root();
+        jqUnit.assertDeepEq("No mouse droppings in arena1", {}, that.options.arena1);
+        jqUnit.assertDeepEq("No mouse droppings in arena2", {}, that.child.options.arena2);
+    });
+
+    /** FLUID-6428 - Aliasing of noexpand material **/
+
+    jqUnit.test("FLUID-6428: Options which resolve to undefined in the immutable world", function () {
+        var immutableEvents = fluid.freezeRecursive({
+            type: "fluid.component",
+            events: {
+                immutableEvent: null
+            }
+        });
+        // This checks thisPolicy.noexpand -> expanded = fluid.copy(source); in fluid.expandSource
+        // Note that this only gets exercised because fluid.construct currently doesn't go through expandCompact
+        // which does a copy anyway
+        var that = fluid.construct("fluid-6428alias2", immutableEvents);
+        jqUnit.assertValue("Successfully constructed component", that);
+        that.events.immutableEvent.fire();
+        that.destroy();
+    });
+
+    /** FLUID-6428 - Ensure that aliasing is proper in the immutable world for exotic records **/
+
+    fluid.defaults("fluid.tests.fluid6428alias", {
+        gradeNames: "fluid.modelComponent",
+        members: {
+            queue: []
+        },
+        invokers: {
+            pushQueue: {
+                "this": "{that}.queue",
+                method: "push",
+                args: "thisistInvoker"
+            }
+        },
+        modelListeners: {
+            flag1: {
+                funcName: "fluid.tests.fluid6428push",
+                args: ["{that}.queue", "directModelListener"]
+            },
+            flag2: {
+                "this": "{that}.queue",
+                method: "push",
+                args: "thisistModelListener"
+            }
+        },
+        eventReader: "{that}.options.events.nonexistent"
+    });
+
+    fluid.tests.fluid6428push = function (queue, element) {
+        queue.push(element);
+    };
+
+    jqUnit.test("FLUID-6428: Aliasing in immutable world", function () {
+        var that = fluid.tests.fluid6428alias();
+        that.pushQueue();
+        that.applier.change("flag1", true);
+        that.applier.change("flag2", true);
+        var expected = ["thisistInvoker", "directModelListener", "thisistModelListener"];
+        jqUnit.assertDeepEq("Expected aliasing in immediate expansion", expected, that.queue);
+    });
+
+    /** FLUID-6428 - Expander inside changePath record **/
+
+    fluid.defaults("fluid.tests.fluid6428expander", {
+        gradeNames: "fluid.modelComponent",
+        invokers: {
+            changeIt: {
+                changePath: "flag",
+                value: {
+                    expander: {
+                        funcName: "fluid.identity",
+                        args: true
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6428: Expanders inside listeners", function () {
+        var that = fluid.tests.fluid6428expander();
+        that.changeIt();
+        jqUnit.assertEquals("Flag updated via expander", true, that.model.flag);
     });
 
     /** FLUID-6390 - Lensed components as a hash **/

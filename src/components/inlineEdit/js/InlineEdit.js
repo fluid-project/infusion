@@ -67,8 +67,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} that - The component itself.
      */
     fluid.inlineEdit.bindEditFinish = function (that) {
-        if (that.options.submitOnEnter === undefined) {
-            that.options.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
+        that.submitOnEnter = that.options.submitOnEnter;
+        if (that.submitOnEnter === undefined) {
+            that.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
         }
         function keyCode(evt) {
             // Fix for handling arrow key presses. See FLUID-760.
@@ -96,7 +97,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             return false;
         };
-        if (that.options.submitOnEnter) {
+        if (that.submitOnEnter) {
             that.editContainer.keypress(finishHandler);
         }
         that.editContainer.keydown(escHandler);

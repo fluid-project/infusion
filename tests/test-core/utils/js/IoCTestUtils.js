@@ -179,7 +179,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.test.makeExpander = function (that) {
         return function (toExpand, localRecord, contextThat) {
-            return fluid.expandOptions(toExpand, contextThat || that, {}, localRecord);
+            return fluid.expandImmediate(toExpand, contextThat || that, localRecord);
         };
     };
 

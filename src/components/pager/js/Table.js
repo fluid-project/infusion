@@ -87,9 +87,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
 
-    fluid.table.bigHeaderForKey = function (key, options) {
+    fluid.table.bigHeaderForKey = function (key, options, idMap) {
         // TODO: ensure this is shared properly
-        var id = options.rendererOptions.idMap["header:" + key];
+        var id = idMap["header:" + key];
         var smallHeader = fluid.jById(id);
         if (smallHeader.length === 0) {
             return null;
@@ -119,10 +119,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return columnDef ? columnDef.sortable : false;
     };
 
-    fluid.table.setModelSortHeaderClass = function (columnDefs, newModel, options) {
+    fluid.table.setModelSortHeaderClass = function (columnDefs, newModel, options, idMap) {
         var styles = options.styles;
         var sort = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ? newModel.sortDir : 0;
-        fluid.table.setSortHeaderClass(styles, fluid.table.bigHeaderForKey(newModel.sortKey, options), sort);
+        fluid.table.setSortHeaderClass(styles, fluid.table.bigHeaderForKey(newModel.sortKey, options, idMap), sort);
     };
 
 
@@ -136,7 +136,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (columnDef.key !== model.sortKey) {
                     newModel.sortKey = columnDef.key;
                     newModel.sortDir = 1;
-                    var oldBig = fluid.table.bigHeaderForKey(oldKey, options);
+                    var oldBig = fluid.table.bigHeaderForKey(oldKey, options, tableThat.bodyRenderer.rendererOptions.idMap);
                     if (oldBig) {
                         fluid.table.setSortHeaderClass(styles, oldBig, 0);
                     }
@@ -317,7 +317,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }],
             afterRender: { // TODO, should this not be actually renderable?
                 funcName: "fluid.table.setModelSortHeaderClass",
-                args: ["{that}.options.columnDefs", "{fluid.table}.model", "{that}.options"]
+                args: ["{that}.options.columnDefs", "{fluid.table}.model", "{that}.options", "{that}.rendererOptions.idMap"]
             }
         },
         modelListeners: {

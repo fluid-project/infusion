@@ -5,6 +5,7 @@
         <title>Text Node Parser tests</title>
 
         <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+        <link rel="stylesheet" media="screen" href="../../../../src/framework/core/css/fluid.css" />
 
         <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script src="../../../../src/framework/core/js/Fluid.js"></script>
@@ -68,6 +69,16 @@
                     var div2 = $("<div>");
                 </script>
             </span>
+            <div class="flc-textNodeParser-test-checkDOMText-floatParent">
+                <div style="float:left">Left</div>
+                <div style="float:right">Right</div>
+            </div>
+            <div class="flc-textNodeParser-test-checkDOMText-fixedParent">
+                <div style="position:fixed; bottom: 0; right: 0">Position: Fixed</div>
+            </div>
+            <div class="flc-textNodeParser-test-checkDOMText-absoluteParent">
+                <div style="position:absolute; bottom: 1rem; right: 0">Position: Absolute</div>
+            </div>
         </div>
 
         <div class="flc-textNodeParser-test-lang-none">

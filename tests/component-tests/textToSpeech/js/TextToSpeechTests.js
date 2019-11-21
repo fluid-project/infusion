@@ -332,7 +332,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.tests.textToSpeech.utterance"
             },
             utteranceError: {
-                type: "fluid.tests.textToSpeech.utterance"
+                type: "fluid.tests.textToSpeech.utterance",
+                options: {
+                    utterance: {
+                        rate: 0.1
+                    }
+                }
             },
             utteranceTester: {
                 type: "fluid.tests.textToSpeech.utteranceTester"
