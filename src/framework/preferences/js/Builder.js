@@ -425,13 +425,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.uio.defaultSchemaIndexer = function (defaults) {
         var keys = [];
-        fluid.each(defaults.auxiliarySchema, function (auxSchemaPref) {
-            if (auxSchemaPref.type) {
-                keys.push(auxSchemaPref.type);
+        fluid.each(defaults.auxiliarySchema, function (auxSchemaValue, auxSchemaKey) {
+            if (auxSchemaKey !== "prefsEditor" && auxSchemaKey !== "terms" && auxSchemaKey !== "groups") {
+                keys.push(auxSchemaKey);
             }
         });
         return keys;
     };
+
+    /*
+    "prefsEditor": {
+        "loaderGrades": ["fluid.prefs.separatedPanel"],
+        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+        "message": "%messagePrefix/prefsEditor.json"
+    },
+    "terms": {
+        "templatePrefix": "../../framework/preferences/html",
+        "messagePrefix": "../../framework/preferences/messages"
+    }
+     */
 
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.

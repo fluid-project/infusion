@@ -26,8 +26,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.textSize", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            textSize: {
-                type: "fluid.prefs.textSize",
+            "fluid.prefs.textSize": {
                 alias: "textSize",
                 enactor: {
                     type: "fluid.prefs.enactor.textSize"
@@ -45,8 +44,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.lineSpace", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            lineSpace: {
-                type: "fluid.prefs.lineSpace",
+            "fluid.prefs.lineSpace": {
                 alias: "lineSpace",
                 enactor: {
                     type: "fluid.prefs.enactor.lineSpace",
@@ -73,8 +71,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.textFont", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            textFont: {
-                type: "fluid.prefs.textFont",
+            "fluid.prefs.textFont": {
                 alias: "textFont",
                 classes: {
                     "default": "",
@@ -102,8 +99,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.contrast", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            contrast: {
-                type: "fluid.prefs.contrast",
+            "fluid.prefs.contrast": {
                 alias: "theme",
                 classes: {
                     "default": "fl-theme-prefsEditor-default",
@@ -135,8 +131,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.tableOfContents", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            tableOfContents: {
-                type: "fluid.prefs.tableOfContents",
+            "fluid.prefs.tableOfContents": {
                 alias: "toc",
                 enactor: {
                     type: "fluid.prefs.enactor.tableOfContents",
@@ -156,8 +151,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.enhanceInputs", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            enhanceInputs: {
-                type: "fluid.prefs.enhanceInputs",
+            "fluid.prefs.enhanceInputs": {
                 alias: "inputs",
                 enactor: {
                     type: "fluid.prefs.enactor.enhanceInputs",

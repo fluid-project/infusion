@@ -25,8 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.syllabification", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            syllabification: {
-                type: "fluid.prefs.syllabification",
+            "fluid.prefs.syllabification": {
                 enactor: {
                     type: "fluid.prefs.enactor.syllabification",
                     container: "body"

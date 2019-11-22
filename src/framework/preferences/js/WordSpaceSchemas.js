@@ -25,8 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.wordSpace", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            wordSpace: {
-                type: "fluid.prefs.wordSpace",
+            "fluid.prefs.wordSpace": {
                 enactor: {
                     type: "fluid.prefs.enactor.wordSpace",
                     fontSizeMap: {

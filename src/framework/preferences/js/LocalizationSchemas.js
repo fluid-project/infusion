@@ -25,8 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.localization", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            localization: {
-                "type": "fluid.prefs.localization",
+            "fluid.prefs.localization": {
                 "alias": "locale",
                 "enactor": {
                     "type": "fluid.prefs.enactor.localization"

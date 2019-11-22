@@ -38,8 +38,7 @@ var example = example || {};
                     }
                 }
             },
-            speak: {
-                type: "example.speakText",
+            "example.speakText": {
                 enactor: {
                     type: "example.enactors.speak"
                 },
@@ -50,8 +49,7 @@ var example = example || {};
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
-            vol: {
-                type: "example.volume",
+            "example.volume": {
                 enactor: {
                     type: "example.enactors.vol"
                 },
@@ -62,8 +60,7 @@ var example = example || {};
                     template: "%templatePrefix/slider-template.html"
                 }
             },
-            wpm: {
-                type: "example.wordsPerMinute",
+            "example.wordsPerMinute": {
                 enactor: {
                     type: "example.enactors.wpm"
                 },
@@ -74,8 +71,7 @@ var example = example || {};
                     template: "%templatePrefix/slider-template.html"
                 }
             },
-            incSize: {
-                type: "example.increaseSize",
+            "example.increaseSize": {
                 enactor: {
                     type: "example.enactors.incSize"
                 },
@@ -86,8 +82,7 @@ var example = example || {};
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
-            cursor: {
-                type: "example.cursorSize",
+            "example.cursorSize": {
                 enactor: {
                     type: "example.enactors.cursor"
                 },
@@ -98,8 +93,7 @@ var example = example || {};
                     template: "%templatePrefix/slider-template.html"
                 }
             },
-            magFactor: {
-                type: "example.magnification",
+            "example.magnification": {
                 enactor: {
                     type: "example.enactors.magFactor"
                 },
@@ -110,8 +104,7 @@ var example = example || {};
                     template: "%templatePrefix/slider-template.html"
                 }
             },
-            magPos: {
-                type: "example.magnifierPosition",
+            "example.magnifierPosition": {
                 enactor: {
                     type: "example.enactors.magPos"
                 },

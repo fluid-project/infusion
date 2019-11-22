@@ -37,9 +37,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // the main template for the preference editor itself
             template: "%templatePrefix/prefsEditorTemplate.html",
 
-            heatedSeats: {
-                // this 'type' must match the name of the pref in the primary schema
-                type: "awesomeCars.prefs.heatedSeats",
+            // this key must match the name of the pref in the primary schema
+            "awesomeCars.prefs.heatedSeats": {
                 panel: {
                     // this 'type' must match the name of the panel grade created for this pref
                     type: "awesomeCars.prefs.panels.heatedSeats",

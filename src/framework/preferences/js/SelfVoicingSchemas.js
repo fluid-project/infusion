@@ -25,8 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.speak", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            speak: {
-                type: "fluid.prefs.speak",
+            "fluid.prefs.speak": {
                 enactor: {
                     type: "fluid.prefs.enactor.selfVoicing"
                 },

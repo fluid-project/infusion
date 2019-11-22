@@ -25,8 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema.captions", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            captions: {
-                type: "fluid.prefs.captions",
+            "fluid.prefs.captions": {
                 enactor: {
                     type: "fluid.prefs.enactor.captions",
                     container: "body"
