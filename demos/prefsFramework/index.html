@@ -96,7 +96,7 @@
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
+                prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
                     auxiliarySchemas: [
                         "fluid.prefs.auxSchema.starter", // this will add the starter set
                         "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor

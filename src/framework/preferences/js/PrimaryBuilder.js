@@ -77,7 +77,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
      * @param {JSON} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {Array} typeFilter   - A list of all necessarry top level preference names.
+     * @param {Array} typeFilter   - A list of all necessary top level preference names.
      * @param {JSON} primarySchema - Primary schema provided as an option to the primary builder.
      * @return {Array} - A list of schema grades.
      */
