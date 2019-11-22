@@ -328,7 +328,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.textToSpeech.utteranceEnvironment", {
         gradeNames: "fluid.test.testEnvironment",
         components: {
-            utterance: {
+            utteranceSuccess: {
                 type: "fluid.tests.textToSpeech.utterance"
             },
             utteranceError: {
@@ -355,55 +355,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence:
                 [{
                     func: "fluid.tests.textToSpeech.utteranceTester.verifyUtterance",
-                    args: ["{utterance}.utterance", "{utterance}.options.utterance"]
+                    args: ["{utteranceSuccess}.utterance", "{utteranceSuccess}.options.utterance"]
                 }, {
                     funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
-                    args: ["{utterance}.utterance", "start"]
+                    args: ["{utteranceSuccess}.utterance", "start"]
                 }, {
                     listener: "jqUnit.assert",
                     args: ["The onStart event fired"],
                     priority: "last:testing",
-                    event: "{utterance}.events.onStart"
+                    event: "{utteranceSuccess}.events.onStart"
                 }, {
                     funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
-                    args: ["{utterance}.utterance", "boundary"]
+                    args: ["{utteranceSuccess}.utterance", "boundary"]
                 }, {
                     listener: "jqUnit.assert",
                     args: ["The onBoundary event fired"],
                     priority: "last:testing",
-                    event: "{utterance}.events.onBoundary"
+                    event: "{utteranceSuccess}.events.onBoundary"
                 }, {
                     funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
-                    args: ["{utterance}.utterance", "mark"]
+                    args: ["{utteranceSuccess}.utterance", "mark"]
                 }, {
                     listener: "jqUnit.assert",
                     args: ["The onMark event fired"],
                     priority: "last:testing",
-                    event: "{utterance}.events.onMark"
+                    event: "{utteranceSuccess}.events.onMark"
                 }, {
                     funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
-                    args: ["{utterance}.utterance", "pause"]
+                    args: ["{utteranceSuccess}.utterance", "pause"]
                 }, {
                     listener: "jqUnit.assert",
                     args: ["The onPause event fired"],
                     priority: "last:testing",
-                    event: "{utterance}.events.onPause"
+                    event: "{utteranceSuccess}.events.onPause"
                 }, {
                     funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
-                    args: ["{utterance}.utterance", "resume"]
+                    args: ["{utteranceSuccess}.utterance", "resume"]
                 }, {
                     listener: "jqUnit.assert",
                     args: ["The onResume event fired"],
                     priority: "last:testing",
-                    event: "{utterance}.events.onResume"
+                    event: "{utteranceSuccess}.events.onResume"
                 }, {
                     funcName: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
-                    args: ["{utterance}.utterance", "end"]
+                    args: ["{utteranceSuccess}.utterance", "end"]
                 }, {
                     listener: "jqUnit.assert",
                     args: ["The onEnd event fired"],
                     priority: "last:testing",
-                    event: "{utterance}.events.onEnd"
+                    event: "{utteranceSuccess}.events.onEnd"
                 }]
             }, {
                 expect: 1,
