@@ -4054,6 +4054,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Flag updated via expander", true, that.model.flag);
     });
 
+    /** FLUID-6433 - Priority in scope for memberName **/
+
+    fluid.defaults("fluid.tests.fluid6433trial", {
+        gradeNames: "fluid.component"
+    });
+
+    fluid.defaults("fluid.tests.fluid6433head", {
+        gradeNames: "fluid.component",
+        components: {
+            fluid6433first: {
+                type: "fluid.tests.fluid6433trial"
+            },
+            fluid6433trial: {
+                type: "fluid.tests.fluid6433trial",
+                options: {
+                    value: "The right one"
+                }
+            },
+            fluid6433other: {
+                type: "fluid.tests.fluid6433trial"
+            }
+        },
+        invokers: {
+            getIt: "fluid.identity({fluid6433trial})"
+        }
+    });
+
+    jqUnit.test("FLUID-6433: Priority of members via fast path scope resolution", function () {
+        var that = fluid.tests.fluid6433head();
+        var resolved = that.getIt();
+        jqUnit.assertEquals("Retrieved component via member by priority", "The right one", resolved.options.value);
+    });
+
     /** FLUID-6427 - References cyclic via model state yield corrupted model rather than failure **/
 
     fluid.defaults("fluid.tests.fluid6427root", {

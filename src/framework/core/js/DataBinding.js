@@ -1246,7 +1246,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!shadow.modelComplete) {
             var initModelTransaction = treeTransaction.initModelTransaction;
             var transRec = fluid.getModelTransactionRec(fluid.rootComponent, shadow.initTransactionId);
-            var trans = Object.values(initModelTransaction)[0].transaction;
+            var trans = fluid.values(initModelTransaction)[0].transaction;
             treeTransaction.initModelTransaction = {};
             treeTransaction.initModelTransactionId = null;
             trans.commit(); // committing one representative transaction will commit them all

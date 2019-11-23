@@ -569,22 +569,39 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.gradeNamesToHash = function (gradeNames) {
         var contextHash = {};
         fluid.each(gradeNames, function (gradeName) {
-            contextHash[gradeName] = true;
-            contextHash[fluid.computeNickName(gradeName)] = true;
+            if (!fluid.isReferenceOrExpander(gradeName)) {
+                contextHash[gradeName] = fluid.contextName;
+                contextHash[fluid.computeNickName(gradeName)] = fluid.contextName;
+            }
         });
         return contextHash;
     };
 
+    fluid.contextName = 1;
+    fluid.memberName = 2;
+
+    fluid.applyToContexts = function (hash, key, disposition) {
+        var existing = hash[key];
+        hash[key] = (existing || 0) | disposition; // Resolve part of FLUID-6433
+    };
+
+    fluid.applyToScope = function (scope, key, value, disposition) {
+        var existing = scope[key];
+        if (!existing || (disposition & fluid.memberName)) {
+            scope[key] = value;
+        }
+    };
+
     fluid.cacheShadowGrades = function (that, shadow) {
         var contextHash = fluid.gradeNamesToHash(that.options && that.options.gradeNames || [that.typeName]);
-        if (!contextHash[shadow.memberName]) {
-            contextHash[shadow.memberName] = "memberName"; // This is filtered out again in recordComponent - TODO: Ensure that ALL resolution uses the scope chain eventually
-        }
+        // This is filtered out again in recordComponent - TODO: Ensure that ALL resolution uses the scope chain eventually
+        fluid.applyToContexts(contextHash, shadow.memberName, fluid.memberName);
         shadow.contextHash = contextHash;
-        fluid.each(contextHash, function (troo, context) {
+        fluid.each(contextHash, function (disposition, context) {
+            fluid.applyToScope(shadow.ownScope, context, that, disposition);
             shadow.ownScope[context] = that;
             if (shadow.parentShadow && shadow.parentShadow.that.type !== "fluid.rootComponent") {
-                shadow.parentShadow.childrenScope[context] = that;
+                fluid.applyToScope(shadow.parentShadow.childrenScope, context, that, disposition);
             }
         });
     };
@@ -891,7 +908,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     var scopeValue = shadow.contextHash[context];
                     // Replace "memberName" member of contextHash from original site with memberName from injection site -
                     // need to mirror "fast" action of recordComponent in composing childrenScope
-                    if (scopeValue && scopeValue !== "memberName" || context === memberName) {
+                    if (scopeValue && (scopeValue !== fluid.memberName) || context === memberName) {
                         foundComponent = component;
                         return true; // YOUR VISIT IS AT AN END!!
                     }
@@ -959,7 +976,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.clearChildrenScope = function (instantiator, parentShadow, child, childShadow) {
-        fluid.each(childShadow.contextHash, function (troo, context) {
+        fluid.each(childShadow.contextHash, function (disposition, context) {
             if (parentShadow.childrenScope[context] === child) {
                 delete parentShadow.childrenScope[context]; // TODO: ambiguous resolution
             }
@@ -1053,7 +1070,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var parentShadow = that.idToShadow[parent.id]; // structural parent shadow - e.g. resolveRootComponent
                 var keys = fluid.keys(shadow.contextHash);
                 fluid.remove_if(keys, function (key) {
-                    return shadow.contextHash && shadow.contextHash[key] === "memberName";
+                    return shadow.contextHash && (shadow.contextHash[key] === fluid.memberName);
                 });
                 keys.push(name); // add local name - FLUID-5696 and FLUID-5820
                 fluid.each(keys, function (context) {
