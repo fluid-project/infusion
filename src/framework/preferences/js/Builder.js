@@ -278,7 +278,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.terms",
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages",
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.initialModel",
-                        "{fluid.prefs.assembler.prefsEd}.options.auxSchema.prefsEditor.loaderGrades"
+                        "{fluid.prefs.assembler.prefsEd}.options.auxSchema.loaderGrades"
                     ],
                     defaultLocale: "{fluid.prefs.assembler.prefsEd}.options.auxSchema.defaultLocale",
                     templateLoader: {
@@ -413,6 +413,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.uio.mappedDefaults": {
                 source: "{that}.options.schema.properties",
                 target: "{that}.options.mappedDefaults"
+            },
+            "fluid.uio.prefsEditorLoader": {
+                source: "{that}.options.prefsEditorLoader",
+                target: "{that > prefsEditorLoader}.options"
+            },
+            "fluid.uio.enhancer": {
+                source: "{that}.options.enhancer",
+                target: "{that > enhancer}.options"
+            },
+            "fluid.uio.store": {
+                source: "{that}.options.store",
+                target: "{that > store}.options"
             }
         }
     });
@@ -424,7 +436,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {String}          A preference name.
      */
     fluid.uio.defaultSchemaIndexer = function (defaults) {
-        var censoredKeys = ["defaultLocale", "groups", "prefsEditor", "terms"];
+        var censoredKeys = ["defaultLocale", "groups", "loaderGrades", "message", "template", "terms"];
         return fluid.keys(fluid.censorKeys(defaults.auxiliarySchema, censoredKeys));
     };
 

@@ -26,11 +26,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.auxSchema", {
         gradeNames: ["fluid.component"],
         auxiliarySchema: {
-            "prefsEditor": {
-                "loaderGrades": ["fluid.prefs.separatedPanel"],
-                "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-                "message": "%messagePrefix/prefsEditor.json"
-            },
+            "loaderGrades": ["fluid.prefs.separatedPanel"],
+            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+            "message": "%messagePrefix/prefsEditor.json",
             "terms": {
                 "templatePrefix": "../../framework/preferences/html",
                 "messagePrefix": "../../framework/preferences/messages"
@@ -427,12 +425,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
 
-            if (prefName === "prefsEditor") {
-                fluid.each(["template", "message"], function (type) {
-                    fluid.set(auxSchema, [type + "Loader", "resources", "prefsEditor"], category[type]);
-                    delete auxSchema.prefsEditor[type];
-                });
-            }
+            fluid.each(["template", "message"], function (type) {
+                if (prefName === type) {
+                    fluid.set(auxSchema, [type + "Loader", "resources", "prefsEditor"], category);
+                    delete auxSchema[type];
+                }
+            });
         });
 
         // Remove subPanels array. It is to keep track of the panels that are only used as sub-components of composite panels.
