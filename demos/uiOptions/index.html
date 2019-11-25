@@ -76,26 +76,12 @@
     <body class="prefsEditor-demo-theme fl-focus">
         <script type="text/javascript">
             $(document).ready(function () {
-                // uio = fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
-                //     lazyLoad: true,
-                //     terms: {
-                //         "templatePrefix": "../../src/framework/preferences/html",
-                //         "messagePrefix": "../../src/framework/preferences/messages"
-                //     },
-                //     "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html",
-                //     "tocMessage": "../../src/framework/preferences/messages/tableOfContents-enactor.json",
-                //     "ignoreForToC": {
-                //         "overviewPanel": ".flc-overviewPanel"
-                //     }
-                // });
-
-                uio2 = fluid.uio(".flc-prefsEditor-separatedPanel", {
+                fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
                     auxiliarySchema: {
                         terms: {
                             "templatePrefix": "../../src/framework/preferences/html",
                             "messagePrefix": "../../src/framework/preferences/messages"
                         },
-                        // defaultLocale: "fr",
                         "fluid.prefs.tableOfContents": {
                             enactor: {
                                 "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html",
@@ -108,15 +94,7 @@
                     },
                     prefsEditorLoader: {
                         lazyLoad: true
-                    },
-                    preferences: [
-                        "fluid.prefs.textSize",
-                        "fluid.prefs.lineSpace",
-                        "fluid.prefs.textFont",
-                        "fluid.prefs.contrast",
-                        "fluid.prefs.tableOfContents",
-                        "fluid.prefs.enhanceInputs"
-                    ]
+                    }
                 });
             });
         </script>

@@ -15,35 +15,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.prefs.create"],
-        auxiliarySchemas: [
-            "fluid.prefs.auxSchema.textSize",
-            "fluid.prefs.auxSchema.lineSpace",
-            "fluid.prefs.auxSchema.textFont",
-            "fluid.prefs.auxSchema.contrast",
-            "fluid.prefs.auxSchema.tableOfContents",
-            "fluid.prefs.auxSchema.enhanceInputs"
-        ],
-        lazyLoad: false,
-        distributeOptions: {
-            "uio.separatedPanel.lazyLoad": {
-                record: "{that}.options.lazyLoad",
-                target: "{that separatedPanel}.options.lazyLoad"
-            },
-            "uio.uiEnhancer.tocTemplate": {
-                source: "{that}.options.tocTemplate",
-                target: "{that uiEnhancer > tableOfContents}.options.tocTemplate"
-            },
-            "uio.uiEnhancer.tocMessage": {
-                source: "{that}.options.tocMessage",
-                target: "{that uiEnhancer > tableOfContents}.options.tocMessage"
-            },
-            "uio.uiEnhancer.ignoreForToC": {
-                source: "{that}.options.ignoreForToC",
-                target: "{that uiEnhancer > tableOfContents}.options.ignoreForToC"
-            }
-        }
+    fluid.defaults("fluid.uiOptions", {
+        gradeNames: ["fluid.prefs.builder", "fluid.viewComponent"],
+        preferences: [
+            "fluid.prefs.textSize",
+            "fluid.prefs.lineSpace",
+            "fluid.prefs.textFont",
+            "fluid.prefs.contrast",
+            "fluid.prefs.tableOfContents",
+            "fluid.prefs.enhanceInputs"
+        ]
     });
 
 })(jQuery, fluid_3_0_0);

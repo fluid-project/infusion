@@ -20,7 +20,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.registerNamespace("fluid.prefs");
 
     fluid.defaults("fluid.prefs.builder", {
-        gradeNames: ["fluid.component", "{that}.applyAssemblerGrades"],
+        gradeNames: [
+            "fluid.prefs.primaryBuilder",
+            "fluid.prefs.auxBuilder",
+            "{that}.applyAssemblerGrades",
+            // "fluid.viewComponent"
+        ],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
@@ -62,7 +67,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.defaults("fluid.prefs.assembler.store", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.component"],
         components: {
             store: {
                 type: "fluid.prefs.globalSettingsStore",
@@ -88,7 +93,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.defaults("fluid.prefs.assembler.uie", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.assembler.store"],
+        gradeNames: ["fluid.prefs.assembler.store", "fluid.viewComponent"],
         enhancerType: "fluid.pageEnhancer",
         components: {
             store: {
@@ -137,8 +142,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.defaults("fluid.prefs.assembler.prefsEd", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.assembler.uie"],
-        // gradeNames: ["fluid.viewComponent", "fluid.prefs.assembler.store"],
+        gradeNames: ["fluid.prefs.assembler.uie"],
         components: {
             prefsEditorLoader: {
                 type: "fluid.viewComponent",
@@ -184,8 +188,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         distributeOptions: {
             "prefsEdAssembler.prefsEditor": {
                 source: "{that}.options.prefsEditor",
-                removeSource: true,
                 target: "{that prefsEditor}.options"
+            },
+            "prefsEdAssembler.prefsEditorLoader": {
+                source: "{that}.options.prefsEditorLoader",
+                target: "{that prefsEditorLoader}.options"
             }
         }
     });
@@ -244,28 +251,5 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     var builder = fluid.prefs.builder(options);
     //     return builder.options.assembledPrefsEditorGrade;
     // };
-
-    fluid.defaults("fluid.uio", {
-        gradeNames: [
-            "fluid.prefs.primaryBuilder",
-            "fluid.prefs.auxBuilder",
-            "fluid.prefs.builder",
-            "fluid.viewComponent"
-        ],
-        distributeOptions: {
-            "fluid.uio.prefsEditorLoader": {
-                source: "{that}.options.prefsEditorLoader",
-                target: "{that > prefsEditorLoader}.options"
-            },
-            "fluid.uio.enhancer": {
-                source: "{that}.options.enhancer",
-                target: "{that > enhancer}.options"
-            },
-            "fluid.uio.store": {
-                source: "{that}.options.store",
-                target: "{that > store}.options"
-            }
-        }
-    });
 
 })(jQuery, fluid_3_0_0);
