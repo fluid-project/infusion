@@ -227,33 +227,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return auxSchema;
     };
 
-    /**
-     * Expands a all "@" path references from an auxiliary schema.
-     * Note that you cannot chain "@" paths.
-     *
-     *  @param {Object} schemaToExpand -  the schema which will be expanded
-     *  @param {Object} altSource -  an alternative look up object. This is primarily used for the internal recursive call.
-     *  @return {Object} an expanded version of the schema.
-     */
-    fluid.prefs.expandSchemaImpl = function (schemaToExpand, altSource) {
-        var expandedSchema = fluid.copy(schemaToExpand);
-        altSource = altSource || expandedSchema;
-
-        fluid.each(expandedSchema, function (value, key) {
-            if (typeof value === "object") {
-                expandedSchema[key] = fluid.prefs.expandSchemaImpl(value, altSource);
-            // } else if (typeof value === "string") {
-            //     var expandedVal = fluid.prefs.expandSchemaValue(altSource, value);
-            //     if (expandedVal !== undefined) {
-            //         expandedSchema[key] = expandedVal;
-            //     } else {
-            //         delete expandedSchema[key];
-            //     }
-            }
-        });
-        return expandedSchema;
-    };
-
     fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, panelCommonOptions, subPanelCommonOptions,
         compositePanelBasedOnSubCommonOptions, panelModelCommonOptions, mappedDefaults) {
         var panelsToIgnore = [];
@@ -388,7 +361,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // These grades are consumed and integrated by builder.js
     // (https://github.com/fluid-project/infusion/blob/master/src/framework/preferences/js/Builder.js)
     fluid.prefs.expandSchema = function (schemaToExpand, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
-        var auxSchema = fluid.prefs.expandSchemaImpl(schemaToExpand);
+        var auxSchema = fluid.copy(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
         var terms = fluid.prefs.removeKey(auxSchema, "terms");
@@ -447,9 +420,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.defaults("fluid.prefs.auxBuilder", {
-        gradeNames: ["fluid.prefs.auxSchema"],
+        gradeNames: ["fluid.prefs.auxSchema", "{that}.buildAuxiliary"],
         mergePolicy: {
             elementCommonOptions: "noexpand"
+        },
+        preferences: [],
+        invokers: {
+            // An invoker used to generate a set of grades that comprise a
+            // final version of the auxiliary schema to be used by the PrefsEditor
+            // builder.
+            buildAuxiliary: {
+                funcName: "fluid.prefs.auxBuilder.buildAuxiliary",
+                args: [
+                    "{that}.options.indexes.auxSchema",
+                    "{that}.options.preferences"
+                ]
+            }
         },
         topCommonOptions: {
             panels: {
@@ -503,6 +489,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         indexes: {
+            auxSchema: {
+                expander: {
+                    func: "fluid.indexDefaults",
+                    args: ["auxSchemaIndex", {
+                        gradeNames: "fluid.prefs.auxSchema",
+                        indexFunc: "fluid.prefs.auxBuilder.defaultSchemaIndexer"
+                    }]
+                }
+            },
             panel: {
                 expander: {
                     func: "fluid.indexDefaults",
@@ -539,6 +534,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.prefs.auxBuilder.prefMapIndexer = function (defaults) {
         return fluid.keys(defaults.preferenceMap);
+    };
+
+    /**
+     * An index function that indexes all schema grades based on their
+     * preference name.
+     * @param {JSON} defaults -  Registered defaults for a schema grade.
+     * @return {String}          A preference name.
+     */
+    fluid.prefs.auxBuilder.defaultSchemaIndexer = function (defaults) {
+        var censoredKeys = ["defaultLocale", "groups", "loaderGrades", "message", "template", "terms"];
+        return fluid.keys(fluid.censorKeys(defaults.auxiliarySchema, censoredKeys));
+    };
+
+    /**
+     * An invoker method that builds a list of grades that comprise a final version of the primary schema.
+     * @param {JSON} schemaIndex - A global index of all schema grades registered with the framework.
+     * @param {Array} preferences   - A list of all necessarry top level preference names.
+     * @param {JSON} primarySchema - Primary schema provided as an option to the primary builder.
+     * @return {Array} - A list of schema grades.
+     */
+    fluid.prefs.auxBuilder.buildAuxiliary = function (schemaIndex, preferences, auxiliarySchema) {
+        var auxSchema = [];
+        // Lookup all available schema grades from the index that match the
+        // top level preference name.
+        fluid.each(preferences, function merge(type) {
+            var schemaGrades = schemaIndex[type];
+            if (schemaGrades) {
+                auxSchema = auxSchema.concat(schemaGrades);
+            }
+        });
+        return auxSchema;
     };
 
 })(jQuery, fluid_3_0_0);

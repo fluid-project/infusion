@@ -245,41 +245,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     return builder.options.assembledPrefsEditorGrade;
     // };
 
-    // TODO: merge buildAuxiliary functions with fluid.prefs.primaryBuilder
     // TODO: remove fluid.uio.mappedDefaults distribute options in favour of accessing the option directly in auxBuilder
     // TODO: remove merge policy in favour of calling expandedAuxSchema, auxSchema, or using expandedAuxSchema directly
     fluid.defaults("fluid.uio", {
         gradeNames: [
             "fluid.prefs.primaryBuilder",
-            "{that}.buildAuxiliary",
             "fluid.prefs.auxBuilder",
             "fluid.prefs.builder",
             "fluid.viewComponent"
         ],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
-        },
-        auxSchemaIndex: {
-            expander: {
-                func: "fluid.indexDefaults",
-                args: ["auxSchemaIndex", {
-                    gradeNames: "fluid.prefs.auxSchema",
-                    indexFunc: "fluid.uio.defaultSchemaIndexer"
-                }]
-            }
-        },
-        preferences: [],
-        invokers: {
-            // An invoker used to generate a set of grades that comprise a
-            // final version of the auxiliary schema to be used by the PrefsEditor
-            // builder.
-            buildAuxiliary: {
-                funcName: "fluid.uio.buildAuxiliary",
-                args: [
-                    "{that}.options.auxSchemaIndex",
-                    "{that}.options.preferences"
-                ]
-            }
         },
         distributeOptions: {
             "fluid.uio.mappedDefaults": {
@@ -300,36 +276,5 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
-
-    /**
-     * An index function that indexes all schema grades based on their
-     * preference name.
-     * @param {JSON} defaults -  Registered defaults for a schema grade.
-     * @return {String}          A preference name.
-     */
-    fluid.uio.defaultSchemaIndexer = function (defaults) {
-        var censoredKeys = ["defaultLocale", "groups", "loaderGrades", "message", "template", "terms"];
-        return fluid.keys(fluid.censorKeys(defaults.auxiliarySchema, censoredKeys));
-    };
-
-    /**
-     * An invoker method that builds a list of grades that comprise a final version of the primary schema.
-     * @param {JSON} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {Array} preferences   - A list of all necessarry top level preference names.
-     * @param {JSON} primarySchema - Primary schema provided as an option to the primary builder.
-     * @return {Array} - A list of schema grades.
-     */
-    fluid.uio.buildAuxiliary = function (schemaIndex, preferences, auxiliarySchema) {
-        var auxSchema = [];
-        // Lookup all available schema grades from the index that match the
-        // top level preference name.
-        fluid.each(preferences, function merge(type) {
-            var schemaGrades = schemaIndex[type];
-            if (schemaGrades) {
-                auxSchema = auxSchema.concat(schemaGrades);
-            }
-        });
-        return auxSchema;
-    };
 
 })(jQuery, fluid_3_0_0);
