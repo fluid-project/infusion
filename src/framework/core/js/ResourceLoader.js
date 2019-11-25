@@ -354,13 +354,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * the final value is dereferenced. From this instance, the members `promise`
      * @param {ResourceSpec} resourceSpec - The resourceSpec holding the resource that will be dereferenced into
      * @param {ResourceFetcher} resourceFetcher - The overall resourceFetcher governing the owning component's resources
-     * @param {String[]} segments - The array of path segments to be resolved into the resource once it loads
+     * @param {String[]} segs - The array of path segments to be resolved into the resource once it loads
      */
-    fluid.fetchResources.FetchOne = function (resourceSpec, resourceFetcher, segments) {
+    fluid.fetchResources.FetchOne = function (resourceSpec, resourceFetcher, segs) {
         var FetchOne = this;
         FetchOne.resourceFetcher = resourceFetcher;
         FetchOne.resourceSpec = resourceSpec;
-        FetchOne.segments = segments || [];
+        FetchOne.segs = segs || [];
         var thisPromise = FetchOne.promise = fluid.promise();
         fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher).then(function () {
             thisPromise.resolve(fluid.fetchResources.resolveFetchOne(FetchOne));
@@ -373,7 +373,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Any} The indirected resource value
      */
     fluid.fetchResources.resolveFetchOne = function (FetchOne) {
-        return fluid.model.getSimple(FetchOne.resourceSpec, FetchOne.segments);
+        return fluid.getImmediate(FetchOne.resourceSpec, FetchOne.segs);
     };
 
     /** Invoked by the framework when indirection into the unfetched resource is required
@@ -381,7 +381,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {fluid.fetchResources.FetchOne} A further FetchOne instance indirected further by the supplied path segment
      */
     fluid.fetchResources.FetchOne.prototype.resolvePathSegment = function (seg) {
-        return new fluid.fetchResources.FetchOne(this.resourceSpec, this.resourceFetcher, this.segments.concat(fluid.makeArray(seg)));
+        return new fluid.fetchResources.FetchOne(this.resourceSpec, this.resourceFetcher, this.segs.concat(fluid.makeArray(seg)));
     };
 
 // Note: This strange style of applying JSDoc comments is described at https://stackoverflow.com/questions/23095975/jsdoc-object-methods-with-method-or-property

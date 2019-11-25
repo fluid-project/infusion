@@ -632,7 +632,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var failed = fluid.tests.FLUID4982badJSON();
         failed.creationPromise.then(null, function (err) {
             jqUnit.assertTrue("Failed component has been destroyed", fluid.isDestroyed(failed));
-            jqUnit.assertTrue("Message recoverable from failed component", err.message.indexOf("JSON") !== -1);
+            jqUnit.assertTrue("Message recoverable from failed component", err.stack.indexOf("JSON") !== -1);
             jqUnit.assertTrue("onDestroy called for failed component", true, failed.onDestroyCalled);
             jqUnit.assertTrue("afterDestroy called for failed component", true, failed.onDestroyCalled);
             mocks.destroy();

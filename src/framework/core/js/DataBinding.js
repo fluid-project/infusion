@@ -416,21 +416,47 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return (reca.completeOnInit ? 1 : 0) - (recb.completeOnInit ? 1 : 0);
     };
 
-    fluid.subscribeResourceModelUpdates = function (that, segs, resourceSpec) {
+    fluid.subscribeResourceModelUpdates = function (that, resourceMapEntry) {
         var treeTransaction = fluid.currentTreeTransaction();
-        var resourceUpdateListener = function (value) {
+        var resourceSpec = resourceMapEntry.resourceSpec;
+        var resourceUpdateListener = function () {
             // We can't go for currentTreeTransaction() in this listener because we in the "dead space" between workflow
             // functions where it has not been restored by the waitIO listener. Isn't the stack a sod.
             var initTransaction = fluid.getImmediate(treeTransaction, ["initModelTransaction", that.id]);
             var trans = initTransaction ? initTransaction.transaction : that.applier.initiate();
-            trans.change(segs, null, "DELETE");
-            trans.change(segs, value);
+            resourceMapEntry.listeners.forEach(function (oneListener) {
+                var innerValue = fluid.getImmediate(resourceSpec, oneListener.resourceSegs);
+                trans.change(oneListener.segs, null, "DELETE");
+                trans.change(oneListener.segs, innerValue);
+            });
             if (!initTransaction) {
                 trans.commit();
             }
         };
         resourceSpec.onFetched.addListener(resourceUpdateListener);
         fluid.recordListener(resourceSpec.onFetched, resourceUpdateListener, fluid.shadowForComponent(that));
+    };
+
+    // Condense the resource map so that it is indexed by resource id, so that all model paths affected by the same
+    // resource can be updated in a single transaction
+    fluid.condenseResourceMap = function (resourceMap) {
+        var byId = {};
+        resourceMap.forEach(function (resourceMapEntry) {
+            var resourceSpec = resourceMapEntry.fetchOne.resourceSpec;
+            var id = resourceSpec.transformEvent.id;
+            var existing = byId[id];
+            if (!existing) {
+                existing = byId[id] = {
+                    resourceSpec: resourceSpec,
+                    listeners: []
+                };
+            }
+            existing.listeners.push({
+                resourceSegs: resourceMapEntry.fetchOne.segs,
+                segs: resourceMapEntry.segs
+            });
+        });
+        return byId;
     };
 
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
@@ -476,8 +502,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // Play the stabilised model value of previously complete components into the relay network
                 fluid.notifyModelChanges(applier.listeners.sortedListeners, "ADD", transac.oldHolder, fluid.emptyHolder, null, transac, applier, that);
             } else {
-                applier.resourceMap.forEach(function (resourceMapEntry) {
-                    fluid.subscribeResourceModelUpdates(that, resourceMapEntry.segs, resourceMapEntry.fetchOne.resourceSpec);
+                var resourceMapById = fluid.condenseResourceMap(applier.resourceMap);
+                fluid.each(resourceMapById, function (resourceMapEntry) {
+                    fluid.subscribeResourceModelUpdates(that, resourceMapEntry);
                 });
                 fluid.each(recel.initModels, function (oneInitModel) {
                     if (oneInitModel !== undefined) {
@@ -1246,7 +1273,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!shadow.modelComplete) {
             var initModelTransaction = treeTransaction.initModelTransaction;
             var transRec = fluid.getModelTransactionRec(fluid.rootComponent, shadow.initTransactionId);
-            var trans = Object.values(initModelTransaction)[0].transaction;
+            var trans = fluid.values(initModelTransaction)[0].transaction;
             treeTransaction.initModelTransaction = {};
             treeTransaction.initModelTransactionId = null;
             trans.commit(); // committing one representative transaction will commit them all
