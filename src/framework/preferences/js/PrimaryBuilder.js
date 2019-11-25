@@ -57,8 +57,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         primarySchema: {},
-        // A list of all necessarry top level preference names.
-        typeFilter: [],
+        // A list of all necessary top level preference names.
+        preferences: [],
         invokers: {
             // An invoker used to generate a set of grades that comprise a
             // final version of the primary schema to be used by the PrefsEditor
@@ -67,7 +67,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.primaryBuilder.buildPrimary",
                 args: [
                     "{that}.options.schemaIndex",
-                    "{that}.options.typeFilter",
+                    "{that}.options.preferences",
                     "{that}.options.primarySchema"
                 ]
             }
@@ -77,22 +77,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
      * @param {JSON} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {Array} typeFilter   - A list of all necessary top level preference names.
+     * @param {Array} preferences   - A list of all necessary top level preference names.
      * @param {JSON} primarySchema - Primary schema provided as an option to the primary builder.
      * @return {Array} - A list of schema grades.
      */
-    fluid.prefs.primaryBuilder.buildPrimary = function (schemaIndex, typeFilter, primarySchema) {
+    fluid.prefs.primaryBuilder.buildPrimary = function (schemaIndex, preferences, primarySchema) {
         var suppliedPrimaryGradeName = "fluid.prefs.schemas.suppliedPrimary" + fluid.allocateGuid();
         // Create a grade that has a primary schema passed as an option inclosed.
         fluid.defaults(suppliedPrimaryGradeName, {
             gradeNames: ["fluid.prefs.schemas"],
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
-                typeFilter, false)
+                preferences, false)
         });
         var primary = [];
         // Lookup all available schema grades from the index that match the
         // top level preference name.
-        fluid.each(typeFilter, function merge(type) {
+        fluid.each(preferences, function merge(type) {
             var schemaGrades = schemaIndex[type];
             if (schemaGrades) {
                 primary.push.apply(primary, schemaGrades);
@@ -103,7 +103,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * An index function that indexes all shcema grades based on their
+     * An index function that indexes all schema grades based on their
      * preference name.
      * @param {JSON} defaults -  Registered defaults for a schema grade.
      * @return {String}          A preference name.

@@ -19,108 +19,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.registerNamespace("fluid.prefs");
 
-    // fluid.defaults("fluid.prefs.builder", {
-    //     gradeNames: ["fluid.component", "fluid.prefs.auxBuilder", "{that}.applyAuxiliarySchemaGrades"],
-    //     mergePolicy: {
-    //         auxSchema: "expandedAuxSchema"
-    //     },
-    //     invokers: {
-    //         applyAuxiliarySchemaGrades: {
-    //             funcName: "fluid.identity",
-    //             args: ["{that}.options.auxiliarySchemas"]
-    //         }
-    //     },
-    //     assembledPrefsEditorGrade: {
-    //         expander: {
-    //             func: "fluid.prefs.builder.generateGrade",
-    //             args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
-    //                 gradeNames: ["fluid.prefs.assembler.prefsEd", "fluid.viewComponent"],
-    //                 componentGrades: "{that}.options.constructedGrades",
-    //                 loaderGrades: "{that}.options.auxSchema.loaderGrades",
-    //                 defaultLocale: "{that}.options.auxSchema.defaultLocale",
-    //                 enhancer: {
-    //                     defaultLocale: "{that}.options.auxSchema.defaultLocale"
-    //                 }
-    //             }]
-    //         }
-    //     },
-    //     assembledUIEGrade: {
-    //         expander: {
-    //             func: "fluid.prefs.builder.generateGrade",
-    //             args: ["uie", "{that}.options.auxSchema.namespace", {
-    //                 gradeNames: ["fluid.viewComponent", "fluid.prefs.assembler.uie"],
-    //                 componentGrades: "{that}.options.constructedGrades"
-    //             }]
-    //         }
-    //     },
-    //     constructedGrades: {
-    //         expander: {
-    //             func: "fluid.prefs.builder.constructGrades",
-    //             args: [
-    //                 "{that}.options.auxSchema",
-    //                 [
-    //                     "enactors",
-    //                     "messages",
-    //                     "panels",
-    //                     "initialModel",
-    //                     "templateLoader",
-    //                     "messageLoader",
-    //                     "terms",
-    //                     "aliases_prefsEditor",
-    //                     "aliases_enhancer"
-    //                 ]
-    //             ]
-    //         }
-    //     },
-    //     mappedDefaults: "{primaryBuilder}.options.schema.properties",
-    //     components: {
-    //         primaryBuilder: {
-    //             type: "fluid.prefs.primaryBuilder",
-    //             options: {
-    //                 typeFilter: {
-    //                     expander: {
-    //                         func: "fluid.prefs.builder.parseAuxSchema",
-    //                         args: "{builder}.options.auxiliarySchema"
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     },
-    //
-    //     distributeOptions: {
-    //         "builder.primaryBuilder.primarySchema": {
-    //             source: "{that}.options.primarySchema",
-    //             removeSource: true,
-    //             target: "{that > primaryBuilder}.options.primarySchema"
-    //         },
-    //         "builder.auxiliarySchema.loaderGrades": {
-    //             source: "{that}.options.loaderGrades",
-    //             removeSource: true,
-    //             target: "{that}.options.auxiliarySchema.loaderGrades"
-    //         },
-    //         "builder.auxiliarySchema.terms": {
-    //             source: "{that}.options.terms",
-    //             removeSource: true,
-    //             target: "{that}.options.auxiliarySchema.terms"
-    //         },
-    //         "builder.auxiliarySchema.prefsEditorTemplate": {
-    //             source: "{that}.options.prefsEditorTemplate",
-    //             removeSource: true,
-    //             target: "{that}.options.auxiliarySchema.template"
-    //         },
-    //         "builder.auxiliarySchema.prefsEditorMessage": {
-    //             source: "{that}.options.prefsEditorMessage",
-    //             removeSource: true,
-    //             target: "{that}.options.auxiliarySchema.message"
-    //         },
-    //         "builder.auxiliarySchema.defaultLocale": {
-    //             source: "{that}.options.defaultLocale",
-    //             removeSource: true,
-    //             target: "{that}.options.auxiliarySchema.defaultLocale"
-    //         }
-    //     }
-    // });
-
     fluid.defaults("fluid.prefs.builder", {
         gradeNames: ["fluid.component", "{that}.applyAssemblerGrades"],
         mergePolicy: {
@@ -156,34 +54,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     ]
                 ]
             }
-        },
-        // distributeOptions: {
-        //     "builder.auxiliarySchema.loaderGrades": {
-        //         source: "{that}.options.loaderGrades",
-        //         removeSource: true,
-        //         target: "{that}.options.auxiliarySchema.loaderGrades"
-        //     },
-        //     "builder.auxiliarySchema.terms": {
-        //         source: "{that}.options.terms",
-        //         removeSource: true,
-        //         target: "{that}.options.auxiliarySchema.terms"
-        //     },
-        //     "builder.auxiliarySchema.prefsEditorTemplate": {
-        //         source: "{that}.options.prefsEditorTemplate",
-        //         removeSource: true,
-        //         target: "{that}.options.auxiliarySchema.template"
-        //     },
-        //     "builder.auxiliarySchema.prefsEditorMessage": {
-        //         source: "{that}.options.prefsEditorMessage",
-        //         removeSource: true,
-        //         target: "{that}.options.auxiliarySchema.message"
-        //     },
-        //     "builder.auxiliarySchema.defaultLocale": {
-        //         source: "{that}.options.defaultLocale",
-        //         removeSource: true,
-        //         target: "{that}.options.auxiliarySchema.defaultLocale"
-        //     }
-        // }
+        }
     });
 
     fluid.prefs.builder.getAssemblerGrades = function (assemblers, buildType) {
@@ -391,12 +262,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         auxSchemaIndex: {
             expander: {
                 func: "fluid.indexDefaults",
-                args: ["schemaIndex", {
+                args: ["auxSchemaIndex", {
                     gradeNames: "fluid.prefs.auxSchema",
                     indexFunc: "fluid.uio.defaultSchemaIndexer"
                 }]
             }
         },
+        preferences: [],
         invokers: {
             // An invoker used to generate a set of grades that comprise a
             // final version of the auxiliary schema to be used by the PrefsEditor
@@ -405,7 +277,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.uio.buildAuxiliary",
                 args: [
                     "{that}.options.auxSchemaIndex",
-                    "{that}.options.typeFilter"
+                    "{that}.options.preferences"
                 ]
             }
         },
@@ -440,30 +312,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.keys(fluid.censorKeys(defaults.auxiliarySchema, censoredKeys));
     };
 
-    /*
-    "prefsEditor": {
-        "loaderGrades": ["fluid.prefs.separatedPanel"],
-        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-        "message": "%messagePrefix/prefsEditor.json"
-    },
-    "terms": {
-        "templatePrefix": "../../framework/preferences/html",
-        "messagePrefix": "../../framework/preferences/messages"
-    }
-     */
-
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
      * @param {JSON} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {Array} typeFilter   - A list of all necessarry top level preference names.
+     * @param {Array} preferences   - A list of all necessarry top level preference names.
      * @param {JSON} primarySchema - Primary schema provided as an option to the primary builder.
      * @return {Array} - A list of schema grades.
      */
-    fluid.uio.buildAuxiliary = function (schemaIndex, typeFilter, auxiliarySchema) {
+    fluid.uio.buildAuxiliary = function (schemaIndex, preferences, auxiliarySchema) {
         var auxSchema = [];
         // Lookup all available schema grades from the index that match the
         // top level preference name.
-        fluid.each(typeFilter, function merge(type) {
+        fluid.each(preferences, function merge(type) {
             var schemaGrades = schemaIndex[type];
             if (schemaGrades) {
                 auxSchema = auxSchema.concat(schemaGrades);
