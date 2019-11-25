@@ -38,36 +38,38 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    /**
-     * Look up the value on the given source object by using the path.
-     * Takes a template string containing tokens in the form of "@source-path-to-value".
-     * Returns a value (any type) or undefined if the path is not found.
-     *
-     * Example:
-     * 1. Parameters:
-     * source:
-     * {
-     *     path1: {
-     *         path2: "here"
-     *     }
-     * }
-     *
-     * template: "@path1.path2"
-     *
-     * 2. Return: "here"
-     *
-     * @param {Object} root - An object to retrieve the returned value from.
-     * @param {String} pathRef - A string that the path to the requested value is embedded into.
-     * @return {Any} - Returns a value (any type) or undefined if the path is not found.
-     *
-     */
-    fluid.prefs.expandSchemaValue = function (root, pathRef) {
-        if (pathRef.charAt(0) !== "@") {
-            return pathRef;
-        }
-
-        return fluid.get(root, pathRef.substring(1));
-    };
+    // /**
+    //  * Look up the value on the given source object by using the path.
+    //  * Takes a template string containing tokens in the form of "@source-path-to-value".
+    //  * Returns a value (any type) or undefined if the path is not found.
+    //  *
+    //  * Example:
+    //  * 1. Parameters:
+    //  * source:
+    //  * {
+    //  *     path1: {
+    //  *         path2: "here"
+    //  *     }
+    //  * }
+    //  *
+    //  * template: "@path1.path2"
+    //  *
+    //  * 2. Return: "here"
+    //  *
+    //  * @param {Object} root - An object to retrieve the returned value from.
+    //  * @param {String|Array} pathRef - A special case EL expression to be evaluated, or an array of path segments.
+    //  *                                 Unlike, typical EL expressions or pathSegments, the EL expression or initial
+    //  *                                 path segment may be begin with an "@" character to indicate internal
+    //  * @return {Any} - Returns a value (any type) or undefined if the path is not found.
+    //  *
+    //  */
+    // fluid.prefs.expandSchemaValue = function (root, pathRef) {
+    //     if (pathRef.charAt(0) !== "@") {
+    //         return pathRef;
+    //     }
+    //
+    //     return fluid.get(root, pathRef.substring(1));
+    // };
 
     fluid.prefs.addAtPath = function (root, path, object) {
         var existingObject = fluid.get(root, path);
@@ -242,13 +244,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(expandedSchema, function (value, key) {
             if (typeof value === "object") {
                 expandedSchema[key] = fluid.prefs.expandSchemaImpl(value, altSource);
-            } else if (typeof value === "string") {
-                var expandedVal = fluid.prefs.expandSchemaValue(altSource, value);
-                if (expandedVal !== undefined) {
-                    expandedSchema[key] = expandedVal;
-                } else {
-                    delete expandedSchema[key];
-                }
+            // } else if (typeof value === "string") {
+            //     var expandedVal = fluid.prefs.expandSchemaValue(altSource, value);
+            //     if (expandedVal !== undefined) {
+            //         expandedSchema[key] = expandedVal;
+            //     } else {
+            //         delete expandedSchema[key];
+            //     }
             }
         });
         return expandedSchema;
@@ -391,11 +393,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var auxSchema = fluid.prefs.expandSchemaImpl(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
-        var terms = fluid.get(auxSchema, "terms");
+        var terms = fluid.prefs.removeKey(auxSchema, "terms");
         if (terms) {
-            delete auxSchema.terms;
             fluid.set(auxSchema, ["terms", "terms"], terms);
         }
+        // var terms = fluid.get(auxSchema, "terms");
+        // if (terms) {
+        //     delete auxSchema.terms;
+        //     fluid.set(auxSchema, ["terms", "terms"], terms);
+        // }
 
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
@@ -411,23 +417,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var type = "panel";
             // Ignore the subpanels that are only for composing composite panels
             if (category[type] && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "panels", category.type, category.alias, category[type], fluid.get(indexes, type),
+                fluid.prefs.expandSchemaComponents(auxSchema, "panels", prefName, category.alias, category[type], fluid.get(indexes, type),
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
 
             type = "enactor";
             if (category[type]) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "enactors", category.type, category.alias, category[type], fluid.get(indexes, type),
+                fluid.prefs.expandSchemaComponents(auxSchema, "enactors", prefName, category.alias, category[type], fluid.get(indexes, type),
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
 
-            fluid.each(["template", "message"], function (type) {
-                if (prefName === type) {
-                    fluid.set(auxSchema, [type + "Loader", "resources", "prefsEditor"], auxSchema[type]);
-                    delete auxSchema[type];
-                }
-            });
-
+            if (prefName === "prefsEditor") {
+                fluid.each(["template", "message"], function (type) {
+                    fluid.set(auxSchema, [type + "Loader", "resources", "prefsEditor"], category[type]);
+                    delete auxSchema.prefsEditor[type];
+                });
+            }
         });
 
         // Remove subPanels array. It is to keep track of the panels that are only used as sub-components of composite panels.

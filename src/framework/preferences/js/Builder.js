@@ -157,33 +157,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 ]
             }
         },
-        distributeOptions: {
-            "builder.auxiliarySchema.loaderGrades": {
-                source: "{that}.options.loaderGrades",
-                removeSource: true,
-                target: "{that}.options.auxiliarySchema.loaderGrades"
-            },
-            "builder.auxiliarySchema.terms": {
-                source: "{that}.options.terms",
-                removeSource: true,
-                target: "{that}.options.auxiliarySchema.terms"
-            },
-            "builder.auxiliarySchema.prefsEditorTemplate": {
-                source: "{that}.options.prefsEditorTemplate",
-                removeSource: true,
-                target: "{that}.options.auxiliarySchema.template"
-            },
-            "builder.auxiliarySchema.prefsEditorMessage": {
-                source: "{that}.options.prefsEditorMessage",
-                removeSource: true,
-                target: "{that}.options.auxiliarySchema.message"
-            },
-            "builder.auxiliarySchema.defaultLocale": {
-                source: "{that}.options.defaultLocale",
-                removeSource: true,
-                target: "{that}.options.auxiliarySchema.defaultLocale"
-            }
-        }
+        // distributeOptions: {
+        //     "builder.auxiliarySchema.loaderGrades": {
+        //         source: "{that}.options.loaderGrades",
+        //         removeSource: true,
+        //         target: "{that}.options.auxiliarySchema.loaderGrades"
+        //     },
+        //     "builder.auxiliarySchema.terms": {
+        //         source: "{that}.options.terms",
+        //         removeSource: true,
+        //         target: "{that}.options.auxiliarySchema.terms"
+        //     },
+        //     "builder.auxiliarySchema.prefsEditorTemplate": {
+        //         source: "{that}.options.prefsEditorTemplate",
+        //         removeSource: true,
+        //         target: "{that}.options.auxiliarySchema.template"
+        //     },
+        //     "builder.auxiliarySchema.prefsEditorMessage": {
+        //         source: "{that}.options.prefsEditorMessage",
+        //         removeSource: true,
+        //         target: "{that}.options.auxiliarySchema.message"
+        //     },
+        //     "builder.auxiliarySchema.defaultLocale": {
+        //         source: "{that}.options.defaultLocale",
+        //         removeSource: true,
+        //         target: "{that}.options.auxiliarySchema.defaultLocale"
+        //     }
+        // }
     });
 
     fluid.prefs.builder.getAssemblerGrades = function (assemblers, buildType) {
@@ -278,7 +278,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.terms",
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages",
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.initialModel",
-                        "{fluid.prefs.assembler.prefsEd}.options.auxSchema.loaderGrades"
+                        "{fluid.prefs.assembler.prefsEd}.options.auxSchema.prefsEditor.loaderGrades"
                     ],
                     defaultLocale: "{fluid.prefs.assembler.prefsEd}.options.auxSchema.defaultLocale",
                     templateLoader: {
@@ -418,19 +418,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
-     * An index function that indexes all shcema grades based on their
+     * An index function that indexes all schema grades based on their
      * preference name.
      * @param {JSON} defaults -  Registered defaults for a schema grade.
      * @return {String}          A preference name.
      */
     fluid.uio.defaultSchemaIndexer = function (defaults) {
-        var keys = [];
-        fluid.each(defaults.auxiliarySchema, function (auxSchemaValue, auxSchemaKey) {
-            if (auxSchemaKey !== "prefsEditor" && auxSchemaKey !== "terms" && auxSchemaKey !== "groups") {
-                keys.push(auxSchemaKey);
-            }
-        });
-        return keys;
+        var censoredKeys = ["defaultLocale", "groups", "prefsEditor", "terms"];
+        return fluid.keys(fluid.censorKeys(defaults.auxiliarySchema, censoredKeys));
     };
 
     /*

@@ -73,22 +73,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         auxiliarySchema: {
             "fluid.prefs.textFont": {
                 alias: "textFont",
-                classes: {
-                    "default": "",
-                    "times": "fl-font-times",
-                    "comic": "fl-font-comic-sans",
-                    "arial": "fl-font-arial",
-                    "verdana": "fl-font-verdana",
-                    "open-dyslexic": "fl-font-open-dyslexic"
-                },
                 enactor: {
                     type: "fluid.prefs.enactor.textFont",
-                    classes: "@textFont.classes"
+                    classes: {
+                        "default": "",
+                        "times": "fl-font-times",
+                        "comic": "fl-font-comic-sans",
+                        "arial": "fl-font-arial",
+                        "verdana": "fl-font-verdana",
+                        "open-dyslexic": "fl-font-open-dyslexic"
+                    }
                 },
                 panel: {
                     type: "fluid.prefs.panel.textFont",
                     container: ".flc-prefsEditor-text-font",  // the css selector in the template where the panel is rendered
-                    classnameMap: {"textFont": "@textFont.classes"},
+                    classnameMap: {
+                        "textFont": {
+                            "default": "",
+                            "times": "fl-font-times",
+                            "comic": "fl-font-comic-sans",
+                            "arial": "fl-font-arial",
+                            "verdana": "fl-font-verdana",
+                            "open-dyslexic": "fl-font-open-dyslexic"
+                        }
+                    },
                     template: "%templatePrefix/PrefsEditorTemplate-textFont.html",
                     message: "%messagePrefix/textFont.json"
                 }
@@ -101,26 +109,38 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         auxiliarySchema: {
             "fluid.prefs.contrast": {
                 alias: "theme",
-                classes: {
-                    "default": "fl-theme-prefsEditor-default",
-                    "bw": "fl-theme-bw",
-                    "wb": "fl-theme-wb",
-                    "by": "fl-theme-by",
-                    "yb": "fl-theme-yb",
-                    "lgdg": "fl-theme-lgdg",
-                    "gd": "fl-theme-gd",
-                    "gw": "fl-theme-gw",
-                    "bbr": "fl-theme-bbr"
-
-                },
                 enactor: {
                     type: "fluid.prefs.enactor.contrast",
-                    classes: "@contrast.classes"
+                    classes: {
+                        "default": "fl-theme-prefsEditor-default",
+                        "bw": "fl-theme-bw",
+                        "wb": "fl-theme-wb",
+                        "by": "fl-theme-by",
+                        "yb": "fl-theme-yb",
+                        "lgdg": "fl-theme-lgdg",
+                        "gd": "fl-theme-gd",
+                        "gw": "fl-theme-gw",
+                        "bbr": "fl-theme-bbr"
+
+                    }
                 },
                 panel: {
                     type: "fluid.prefs.panel.contrast",
                     container: ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
-                    classnameMap: {"theme": "@contrast.classes"},
+                    classnameMap: {
+                        "theme": {
+                            "default": "fl-theme-prefsEditor-default",
+                            "bw": "fl-theme-bw",
+                            "wb": "fl-theme-wb",
+                            "by": "fl-theme-by",
+                            "yb": "fl-theme-yb",
+                            "lgdg": "fl-theme-lgdg",
+                            "gd": "fl-theme-gd",
+                            "gw": "fl-theme-gw",
+                            "bbr": "fl-theme-bbr"
+
+                        }
+                    },
                     template: "%templatePrefix/PrefsEditorTemplate-contrast.html",
                     message: "%messagePrefix/contrast.json"
                 }
