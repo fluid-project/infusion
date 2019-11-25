@@ -42,7 +42,7 @@ var demo = demo || {};
                 checks: {
                     supportsTTS: {
                         contextValue: "{fluid.supportsTTS}",
-                        gradeNames: "demo.prefsEditor.auxSchema.speak"
+                        gradeNames: "demo.prefsEditor.speak"
                     }
                 }
             }
@@ -85,42 +85,63 @@ var demo = demo || {};
     });
 
     // Fine-tune the starter aux schema and add speak panel
-    fluid.defaults("demo.prefsEditor.auxSchema.speak", {
-        gradeNames: ["fluid.prefs.auxSchema.speak"],
+    fluid.defaults("demo.prefsEditor.speak", {
         auxiliarySchema: {
-            terms: {
-                // adjust paths
-                templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
-                messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
-            },
-            tableOfContents: {
-                enactor: {
-                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
-                    tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json",
-                    ignoreForToC: {
-                        "overviewPanel": ".flc-overviewPanel"
-                    }
-                }
-            },
-
             // specify augmented container template for panels
             template: "html/SeparatedPanelPrefsEditorWithTTS.html"
-        }
+        },
+        preferences: [
+            "fluid.prefs.textSize",
+            "fluid.prefs.lineSpace",
+            "fluid.prefs.textFont",
+            "fluid.prefs.contrast",
+            "fluid.prefs.tableOfContents",
+            "fluid.prefs.enhanceInputs",
+            "fluid.prefs.letterSpace",
+            "fluid.prefs.wordSpace",
+            "fluid.prefs.syllabification",
+            "fluid.prefs.speak",
+            "demo.prefs.simplify"
+        ]
     });
 
-    // Fine-tune the syllabification schema
-    fluid.defaults("demo.prefsEditor.auxSchema.syllabification", {
-        gradeNames: ["fluid.prefs.auxSchema.syllabification"],
-        auxiliarySchema: {
-            syllabification: {
-                enactor: {
-                    terms: {
-                        patternPrefix: "../../src/lib/hypher/patterns"
-                    }
-                }
-            }
-        }
-    });
+    // // Fine-tune the starter aux schema and add speak panel
+    // fluid.defaults("demo.prefsEditor.auxSchema.speak", {
+    //     gradeNames: ["fluid.prefs.auxSchema.speak"],
+    //     auxiliarySchema: {
+    //         terms: {
+    //             // adjust paths
+    //             templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
+    //             messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
+    //         },
+    //         tableOfContents: {
+    //             enactor: {
+    //                 tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+    //                 tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json",
+    //                 ignoreForToC: {
+    //                     "overviewPanel": ".flc-overviewPanel"
+    //                 }
+    //             }
+    //         },
+    //
+    //         // specify augmented container template for panels
+    //         template: "html/SeparatedPanelPrefsEditorWithTTS.html"
+    //     }
+    // });
+
+    // // Fine-tune the syllabification schema
+    // fluid.defaults("demo.prefsEditor.auxSchema.syllabification", {
+    //     gradeNames: ["fluid.prefs.auxSchema.syllabification"],
+    //     auxiliarySchema: {
+    //         syllabification: {
+    //             enactor: {
+    //                 terms: {
+    //                     patternPrefix: "../../src/lib/hypher/patterns"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
 
 
     /**********************************************************************************

@@ -82,6 +82,7 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
         <script type="text/javascript" src="../../src/components/orator/js/Orator.js"></script>
+        <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
 
         <script type="text/javascript" src="js/prefsEditorDemo.js"></script>
 
@@ -96,16 +97,53 @@
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                    auxiliarySchemas: [
-                        "fluid.prefs.auxSchema.starter", // this will add the starter set
-                        "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor
-                        "fluid.prefs.auxSchema.wordSpace", // this will add the word space adjuster and enactor
-                        "demo.prefsEditor.auxSchema.syllabification", // this will add the syllabification adjuster and enactor
-                        "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
-                        "demo.prefsEditor.progressiveEnhancement" // progressive enhancement - may add selfVoicing
-                    ]
+                prefsEditor = fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
+                    gradeNames: ["demo.prefsEditor.progressiveEnhancement"],
+                    preferences: [
+                        "fluid.prefs.textSize",
+                        "fluid.prefs.lineSpace",
+                        "fluid.prefs.textFont",
+                        "fluid.prefs.contrast",
+                        "fluid.prefs.tableOfContents",
+                        "fluid.prefs.enhanceInputs",
+                        "fluid.prefs.letterSpace",
+                        "fluid.prefs.wordSpace",
+                        "fluid.prefs.syllabification",
+                        "demo.prefs.simplify"
+                    ],
+                    auxiliarySchema: {
+                        terms: {
+                            // adjust paths
+                            templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
+                            messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
+                        },
+                        "fluid.prefs.tableOfContents": {
+                            enactor: {
+                                tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                                tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json"
+                            }
+                        },
+                        // sepcify augmented container template for panels
+                        template: "html/SeparatedPanelPrefsEditor.html",
+                        "fluid.prefs.syllabification": {
+                            enactor: {
+                                terms: {
+                                    patternPrefix: "../../src/lib/hypher/patterns"
+                                }
+                            }
+                        }
+                    }
                 });
+                // prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
+                //     auxiliarySchemas: [
+                //         "fluid.prefs.auxSchema.starter", // this will add the starter set
+                //         "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor
+                //         "fluid.prefs.auxSchema.wordSpace", // this will add the word space adjuster and enactor
+                //         "demo.prefsEditor.auxSchema.syllabification", // this will add the syllabification adjuster and enactor
+                //         "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
+                //         "demo.prefsEditor.progressiveEnhancement" // progressive enhancement - may add selfVoicing
+                //     ]
+                // });
             });
         </script>
 
