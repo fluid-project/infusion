@@ -517,8 +517,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
-        mappedDefaults: {},
-        expandedAuxSchema: {
+        auxSchema: {
             expander: {
                 func: "fluid.prefs.expandSchema",
                 args: [
@@ -526,7 +525,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     "{that}.options.indexes",
                     "{that}.options.topCommonOptions",
                     "{that}.options.elementCommonOptions",
-                    "{that}.options.mappedDefaults"
+                    "{that}.options.schema.properties"
                 ]
             }
         }

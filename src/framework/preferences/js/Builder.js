@@ -245,8 +245,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     return builder.options.assembledPrefsEditorGrade;
     // };
 
-    // TODO: remove fluid.uio.mappedDefaults distribute options in favour of accessing the option directly in auxBuilder
-    // TODO: remove merge policy in favour of calling expandedAuxSchema, auxSchema, or using expandedAuxSchema directly
     fluid.defaults("fluid.uio", {
         gradeNames: [
             "fluid.prefs.primaryBuilder",
@@ -254,14 +252,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.builder",
             "fluid.viewComponent"
         ],
-        mergePolicy: {
-            auxSchema: "expandedAuxSchema"
-        },
         distributeOptions: {
-            "fluid.uio.mappedDefaults": {
-                source: "{that}.options.schema.properties",
-                target: "{that}.options.mappedDefaults"
-            },
             "fluid.uio.prefsEditorLoader": {
                 source: "{that}.options.prefsEditorLoader",
                 target: "{that > prefsEditorLoader}.options"
