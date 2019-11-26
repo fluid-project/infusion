@@ -789,19 +789,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             resourceLoader: {
                 locale: "en"
             },
-            messages: "{that}.resources.messages.parsed"
+            messages: "{that}.resources.messages.parsed",
+            courses: "{that}.resources.messages.parsed.courses" // Check FLUID-6434
         }
     });
 
     jqUnit.asyncTest("FLUID-4982 localised fetch model with mid-life relocalisation", function () {
-        jqUnit.expect(3);
+        jqUnit.expect(5);
         var checkIt2 = function (component) {
-            jqUnit.assertEquals("Relocalised model fetched", "These courses will require a lot of marking", component.model.messages.courses);
+            var expected = "These courses will require a lot of marking";
+            jqUnit.assertEquals("Relocalised model fetched", expected, component.model.messages.courses);
+            jqUnit.assertEquals("Relocalised model fetched at subpath", expected, component.model.courses);
             jqUnit.start();
         };
         var checkIt = function (component) {
+            var expected = "These courses will require a lot of grading";
             jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
-            jqUnit.assertEquals("Localised model fetched", "These courses will require a lot of grading", component.model.messages.courses);
+            jqUnit.assertEquals("Localised model fetched", expected, component.model.messages.courses);
+            jqUnit.assertEquals("Localised model fetched at subpath", expected, component.model.courses);
             component.applier.modelChanged.addListener("messages", function () {
                 checkIt2(component);
             });

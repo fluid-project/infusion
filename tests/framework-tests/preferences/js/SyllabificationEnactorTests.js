@@ -174,52 +174,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     text: "La temperatura global ha aumentado en los últimos 50 años."
                 }]
             },
-            existing: {
-                ".flc-syllabification-parentLang": {
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 4
-                },
-                ".flc-syllabification-otherRegion": {
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-GB",
-                    separatorCount: 4
-                },
-                ".flc-syllabification-generic": {
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 4
-                },
-                ".flc-syllabification-fallback": {
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
-                    separatorCount: 4
-                },
-                ".flc-syllabification-notAvailable": {
-                    text: "{that}.options.testOpts.text.es",
-                    syllabified: "{that}.options.testOpts.syllabified.es",
-                    separatorCount: 0
-                }
-            },
+            existing: [{
+                selector: ".flc-syllabification-parentLang",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-US",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-otherRegion",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-GB",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-generic",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-US",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-fallback",
+                text: "{that}.options.testOpts.text.en",
+                syllabified: "{that}.options.testOpts.syllabified.en-US",
+                separatorCount: 4
+            }, {
+                selector: ".flc-syllabification-notAvailable",
+                text: "{that}.options.testOpts.text.es",
+                syllabified: "{that}.options.testOpts.syllabified.es",
+                separatorCount: 0
+            }],
             injected: {
                 disabled: {
-                    ".flc-syllabification-injectWhenDisabled": {
-                        text: "{that}.options.testOpts.text.en",
-                        syllabified: "{that}.options.testOpts.syllabified.en-US",
-                        separatorCount: 4
-                    }
+                    selector: ".flc-syllabification-injectWhenDisabled",
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US",
+                    separatorCount: 4
                 },
                 enabled: {
-                    ".flc-syllabification-injectWhenEnabled": {
-                        text: "{that}.options.testOpts.text.en",
-                        syllabified: "{that}.options.testOpts.syllabified.en-US",
-                        separatorCount: 4
-                    }
+                    selector: ".flc-syllabification-injectWhenEnabled",
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US",
+                    separatorCount: 4
                 },
-                combined: {
-                    ".flc-syllabification-injectWhenDisabled": "{that}.options.testOpts.injected.disabled.\.flc-syllabification-injectWhenDisabled",
-                    ".flc-syllabification-injectWhenEnabled": "{that}.options.testOpts.injected.disabled.\.flc-syllabification-injectWhenEnabled"
-                }
+                combined: [
+                    "{that}.options.testOpts.injected.disabled",
+                    "{that}.options.testOpts.injected.enabled"
+                ]
             },
             markup: {
                 injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global temperature has increased over the past 50 years.</p>",
@@ -259,7 +256,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Syllabification Removed", "{syllabification}", "{that}.options.testOpts.existing"]
                 }]
             }, {
-                expect: 41,
+                expect: 45,
                 name: "Injected Content",
                 sequence: [{
                     // inject content, then enable syllabification
@@ -309,8 +306,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Specify an initial separatorCount for cases where the test cases do not cover all of the text that is being
         // syllabified. For example when testing injected content.
         separatorCount = separatorCount || 0;
+        testCases = fluid.makeArray(testCases);
 
-        fluid.each(testCases, function (testCase, selector) {
+        fluid.each(testCases, function (testCase) {
+            var selector = testCase.selector;
             var elm = $(selector);
             var childNodes = elm[0].childNodes;
             separatorCount += testCase.separatorCount;
@@ -333,8 +332,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.syllabificationTester.verifyUnsyllabified = function (prefix, that, testCases) {
         fluid.tests.syllabificationTester.verifySeparatorCount(prefix, that, 0);
+        testCases = fluid.makeArray(testCases);
 
-        fluid.each(testCases, function (testCase, selector) {
+        fluid.each(testCases, function (testCase) {
+            var selector = testCase.selector;
             var childNodes = $(selector)[0].childNodes;
             jqUnit.assertEquals(prefix + ": " + selector + " should only have one child node", 1, childNodes.length);
             jqUnit.assertEquals(prefix + ": " + selector + " should have the correct textcontent", testCase.text, childNodes[0].textContent);

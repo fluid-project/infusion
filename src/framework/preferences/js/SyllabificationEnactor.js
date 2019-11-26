@@ -77,6 +77,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     listeners: {
                         "afterParse.boil": "{syllabification}.events.afterParse",
                         "onParsedTextNode.boil": "{syllabification}.events.onParsedTextNode"
+                    },
+                    invokers: {
+                        hasTextToRead: {
+                            // apply to text nodes even if they have the ariaHidden attribute set
+                            funcName: "fluid.textNodeParser.hasTextToRead",
+                            args: ["{arguments}.0", true]
+                        }
                     }
                 }
             },

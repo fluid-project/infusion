@@ -3942,6 +3942,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Model resolved from promise for the 2nd time", "Everything is fine.", that.resourceLoader.model.promiseResource);
     });
 
+    /** FLUID-6427 - References cyclic via model state yield corrupted model rather than failure **/
+
+    fluid.defaults("fluid.tests.fluid6427root", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            inner: {
+                type: "fluid.modelComponent",
+                options: {
+                    trunkValue: {
+                        outerConsumer: "{fluid6427root}.model.toConsume",
+                        toConsumeInner: 26
+                    },
+                    model: {
+                        innerConsumer: "{that}.options.trunkValue.toConsumerInner"
+                    }
+                }
+            }
+        },
+        model: {
+            toConsume: 25
+        }
+    });
+
+    jqUnit.test("FLUID-6427: References cyclic via model state yield corruption", function () {
+        jqUnit.expectFrameworkDiagnostic("Should receive diagnostic rather than corrupt model", function () {
+            fluid.tests.fluid6427root();
+        }, ["circular", "model"]);
+    });
+
     /** FLUID-6390 - Lensed components as a hash **/
 
     fluid.defaults("fluid.tests.fluid6390child", {
