@@ -309,7 +309,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.lineSpaceTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
-            lineSpace: {
+            lineSpaceNormal: {
                 type: "fluid.tests.prefs.enactor.lineSpace",
                 container: ".flc-lineSpace",
                 // Forcing getLineHeight to return "normal" and getLineHeightMultiplier to return 28.8px
@@ -367,7 +367,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // default line-height is.
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpace}", "normal", 1.2]
+                    args: ["{lineSpaceNormal}", "normal", 1.2]
                 }]
             }]
         }, {

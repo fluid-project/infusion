@@ -772,7 +772,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                 else if (type === "addClass" || type === "removeClass") {
                     // Using an unattached DOM node because jQuery will use the
                     // node's setAttribute method to add the class.
-                    var fakeNode = $("<div>", {class: attrcopy["class"]})[0];
+                    var fakeNode = $("<div>", {"class": attrcopy["class"]})[0];
                     renderOptions.jQuery(fakeNode)[type](decorator.classes);
                     attrcopy["class"] = fakeNode.className;
                 }

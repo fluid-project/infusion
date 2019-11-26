@@ -1347,6 +1347,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (typeof(listener) === "string") {
             listener = fluid.event.resolveListener(listener); // just resolves globals
         }
+        // TODO: It is likely that args for special records will get double-expanded
         return listener.apply(null, args, localRecord, mergeRecord); // can be "false apply" that requires extra context for expansion
     };
 
@@ -1360,7 +1361,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var localRecord = {change: change, "arguments": args};
             var mergeRecord = {source: Object.keys(change.transaction.sources)}; // cascade for FLUID-5490
             if (record.args) {
-                args = fluid.expandOptions(record.args, that, {}, localRecord);
+                args = fluid.expandImmediate(record.args, that, localRecord);
             }
             fluid.event.invokeListener(record.listener, fluid.makeArray(args), localRecord, mergeRecord);
         };

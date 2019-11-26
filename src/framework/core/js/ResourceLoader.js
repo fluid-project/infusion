@@ -405,6 +405,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.fetchResources.explodeForLocales(resourceFetcher);
     };
 
+    // A function to tag the type of a Fluid resourceFetcher (primarily to mark it uncopyable)
+    fluid.resourceFetcher = function () {};
+
     /** Construct a lightweight `resourceFetcher` component (not an Infusion component) coordinating the fetch process
      * designated by a `resourceSpecs` structure.
      * @param {resourceSpecs} sourceResourceSpecs - The resourceSpecs to be loaded. This will be copied into a modifiable
@@ -415,12 +418,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * `locale, `defaultLocale`, `dataType`)
      * @param {Function} transformResourceURL - A function {String -> String} which maps URL/path entries in resource
      * specs, possibly by interpolating term values
-     * @return {ResourceFetcher} The constructed resourceFetcher, ready to have individual resources fetched by
+     * @return {fluid.resourceFetcher} The constructed resourceFetcher, ready to have individual resources fetched by
      * an invocation of `fetchOneResource` or the entire set triggered via `fetchAll`
      */
     fluid.makeResourceFetcher = function (sourceResourceSpecs, callback, options, transformResourceURL) {
         options = options || {};
-        var that = {
+        var that = Object.create(fluid.resourceFetcher.prototype);
+        fluid.extend(that, {
             sourceResourceSpecs: sourceResourceSpecs,
             options: fluid.copy(options),
             // We need to gate the launching of any requests on this promise, since resourceFetcher options arising from
@@ -431,7 +435,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 ownerId: options.ownerComponentId
             }),
             transformResourceURL: transformResourceURL
-        };
+        });
         /**
          * @name ResourceFetcher#fetchAll
          * @method

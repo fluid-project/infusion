@@ -246,7 +246,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.separatedPanel.renderIframe.startLoadingIframe = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader,
-        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, that.options.terms);
+        var markupProps = fluid.copy(that.options.markupProps);
+        markupProps.src = fluid.stringTemplate(markupProps.src, that.options.terms);
         that.iframeSrc = that.options.markupProps.src;
 
         // Create iframe and append to container
@@ -261,7 +262,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
-        that.iframe.attr(that.options.markupProps);
+        that.iframe.attr(markupProps);
 
         that.iframe.addClass(styles.container);
         that.iframe.hide();
