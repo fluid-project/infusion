@@ -67,7 +67,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.primaryBuilder.buildPrimary",
                 args: [
                     "{that}.options.schemaIndex",
-                    "{that}.options.preferences",
+                    "{that}.options.prefsPrioritized",
                     "{that}.options.primarySchema"
                 ]
             }
@@ -92,7 +92,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var primary = [];
         // Lookup all available schema grades from the index that match the
         // top level preference name.
-        fluid.each(preferences, function merge(type) {
+        fluid.each(preferences, function merge(priority, type) {
             var schemaGrades = schemaIndex[type];
             if (schemaGrades) {
                 primary.push.apply(primary, schemaGrades);

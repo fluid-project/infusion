@@ -90,19 +90,11 @@ var demo = demo || {};
             // specify augmented container template for panels
             template: "html/SeparatedPanelPrefsEditorWithTTS.html"
         },
-        preferences: [
-            "fluid.prefs.textSize",
-            "fluid.prefs.lineSpace",
-            "fluid.prefs.textFont",
-            "fluid.prefs.contrast",
-            "fluid.prefs.tableOfContents",
-            "fluid.prefs.enhanceInputs",
-            "fluid.prefs.letterSpace",
-            "fluid.prefs.wordSpace",
-            "fluid.prefs.syllabification",
-            "fluid.prefs.speak",
-            "demo.prefs.simplify"
-        ]
+        prefsPrioritized: {
+            "fluid.prefs.speak": {
+                priority: "after:demo.prefs.simplify"
+            }
+        }
     });
 
     // // Fine-tune the starter aux schema and add speak panel

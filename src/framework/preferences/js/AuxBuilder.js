@@ -433,7 +433,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.auxBuilder.buildAuxiliary",
                 args: [
                     "{that}.options.indexes.auxSchema",
-                    "{that}.options.preferences"
+                    "{that}.options.prefsPrioritized"
                 ]
             }
         },
@@ -557,7 +557,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var auxSchema = [];
         // Lookup all available schema grades from the index that match the
         // top level preference name.
-        fluid.each(preferences, function merge(type) {
+        fluid.each(preferences, function merge(priority, type) {
             var schemaGrades = schemaIndex[type];
             if (schemaGrades) {
                 auxSchema = auxSchema.concat(schemaGrades);

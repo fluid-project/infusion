@@ -23,8 +23,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: [
             "fluid.prefs.primaryBuilder",
             "fluid.prefs.auxBuilder",
-            "{that}.applyAssemblerGrades",
-            // "fluid.viewComponent"
+            "{that}.applyAssemblerGrades"
         ],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
@@ -36,6 +35,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         buildType: "prefsEditor",
+        prefsPrioritized: {
+            expander: {
+                funcName: "fluid.prefs.builder.prioritizePrefs",
+                args: ["{that}.options.preferences"]
+            }
+        },
         assemblerGrades: {
             store: "fluid.prefs.assembler.store",
             prefsEditor: "fluid.prefs.assembler.prefsEd",
@@ -224,6 +229,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
         return auxTypes;
+    };
+
+    fluid.prefs.builder.prioritizePrefs = function (preferences) {
+        var prioritized = {};
+        fluid.each(preferences, function (preference, index) {
+            var record = {};
+            if (index) {
+                record.priority = "after:" + preferences[index - 1];
+            }
+            prioritized[preference] = record;
+        });
+        return prioritized;
     };
 
     // /*
