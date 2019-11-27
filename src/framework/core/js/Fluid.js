@@ -765,7 +765,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /** Accepts an object to be filtered, and an array of keys. Either all keys not present in
      * the array are removed, or only keys present in the array are returned.
-     * @param {Array|Object} toFilter - The object to be filtered - this will be NOT modified by the operation (current implementation
+     * @param {Object} toFilter - The object to be filtered - this will be NOT modified by the operation (current implementation
      * passes through $.extend shallow algorithm)
      * @param {String[]} keys - The array of keys to operate with
      * @param {Boolean} exclude - If <code>true</code>, the keys listed are removed rather than included
