@@ -121,9 +121,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         if (that.hasTextToRead(elm)) {
             var childNodes = elm.childNodes;
-            var elementLang = elm.getAttribute("lang") || lang || that.getLang(elm);;
-
-            childNodes.forEach(function (childNode, childIndex) {
+            var elementLang = elm.getAttribute("lang") || lang || that.getLang(elm);
+            // This funny iteration is a fix for FLUID-6435 on IE11
+            Array.prototype.forEach.call(childNodes, function (childNode, childIndex) {
                 if (childNode.nodeType === Node.TEXT_NODE) {
                     var textNodeData = {
                         node: childNode,

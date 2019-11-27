@@ -991,7 +991,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return [{
                 text: range.commonAncestorContainer.textContent.slice(range.startOffset, range.endOffset),
                 options: {
-                    lang: $(range.commonAncestorContainer.parentElement).closest("[lang]").attr("lang")
+                    lang: $(range.commonAncestorContainer.parentNode).closest("[lang]").attr("lang")
                 }
             }];
         }
@@ -1080,7 +1080,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // use getClientRects()[0] instead of getBoundingClientRect() because in cases where more than one rect
         // is returned we only want the first one, not the aggregation of all of them.
         var rangeRect = range.getClientRects()[0];
-        var rangeParent = range.startContainer.parentElement;
+        var rangeParent = range.startContainer.parentNode;
         var rangeParentRect = rangeParent.getClientRects()[0];
         var offsetParent = rangeParent.offsetParent;
         var bodyBorderAdjustment = {
@@ -1156,7 +1156,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.selectionReader.renderControl = function (that, state) {
         if (state) {
             var selectionRange = window.getSelection().getRangeAt(0);
-            var controlContainer = selectionRange.startContainer.parentElement.offsetParent || selectionRange.startContainer.parentElement;
+            var controlContainer = selectionRange.startContainer.parentNode.offsetParent || selectionRange.startContainer.parentNode;
             var position = fluid.orator.selectionReader.calculatePosition(selectionRange);
 
             that.control = that.control || fluid.orator.selectionReader.createControl(that);
