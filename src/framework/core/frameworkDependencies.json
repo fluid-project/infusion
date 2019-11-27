@@ -17,6 +17,7 @@
             "./js/ModelTransformationTransforms.js",
             "./js/jquery.keyboard-a11y.js",
             "./js/FluidView.js",
+            "./js/FluidView-browser.js",
             "./js/MessageResolver.js",
             "./js/ResourceLoader.js",
             "./js/ResourceLoader-browser.js",
