@@ -866,7 +866,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }];
         },
         startContainer: {
-            parentElement: {
+            parentNode: {
                 getClientRects: function () {
                     return [{
                         top: 10,
@@ -888,7 +888,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.orator.selectionReader.mockRangeBody = $.extend(true, {}, fluid.tests.orator.selectionReader.mockRange, {
         startContainer: {
-            parentElement: {
+            parentNode: {
                 offsetParent: {
                     tagName: "body"
                 }
@@ -899,7 +899,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.orator.selectionReader.mockRangeBodyOuterBorder = $.extend(true, {}, fluid.tests.orator.selectionReader.mockRangeBody, {
         startContainer: {
-            parentElement: {
+            parentNode: {
                 offsetParent: {
                     clientTop: 16,
                     clientLeft: 16
@@ -910,7 +910,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.orator.selectionReader.mockRangeBodyInnerBorder = $.extend(true, {}, fluid.tests.orator.selectionReader.mockRangeBodyOuterBorder, {
         startContainer: {
-            parentElement: {
+            parentNode: {
                 offsetParent: {
                     offsetTop: -16,
                     offsetLeft: -16
