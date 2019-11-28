@@ -44,6 +44,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         members: {
             dom: "@expand:fluid.createDomBinder({that}.container, {that}.options.selectors)"
+        },
+        // mergePolicy allows these members to be cleanly overridden, avoiding FLUID-5668
+        mergePolicy: {
+            "members.dom": "replace",
+            "members.container": "replace"
         }
     });
 

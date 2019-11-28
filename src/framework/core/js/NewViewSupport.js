@@ -23,7 +23,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /**
-     * A variant of fluid.viewComponent that bypasses the wacky "initView" and variant signature
+     * A variant of fluid.viewComponent that bypasses the variant creator function signature
      * workflow, sourcing instead its "container" from an option of that name, so that this argument
      * can participate in standard ginger resolution. This enables useful results such as a component
      * which can render its own container into the DOM on startup, whilst the container remains immutable.

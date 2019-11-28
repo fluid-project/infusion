@@ -2347,7 +2347,7 @@ var fluid = fluid || fluid_3_0_0;
                     // The problem is that a custom mergePolicy may have replaced the system generated trunk with a differently structured object which we must not
                     // corrupt. This work should properly be done with a set of dedicated provenance/progress records in a separate structure
                     if (!(name in target) || (options.evaluateFully && childPolicy === undefined && !fluid.isPrimitive(target[name]))) { // only request each new target key once -- all sources will be queried per strategy
-                        segs[i] = name;
+                        segs[i] = name; // TODO: Why doesn't this corrupt the requestor's segs?
                         options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                     }
                 });
@@ -2764,7 +2764,7 @@ var fluid = fluid || fluid_3_0_0;
             if (!target[key]) {
                 target[key] = new fluid.mergingArray();
             }
-            if (fluid.derefMergePolicy(mergePolicyHolder[key]).replace) {
+            if (fluid.derefMergePolicy(mergePolicyHolder[key]).replace && oneSource !== undefined) {
                 target[key].length = 0;
             }
             if (oneSource instanceof fluid.mergingArray) {

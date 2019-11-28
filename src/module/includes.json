@@ -5,6 +5,7 @@
     "../framework/core/js/FluidPromises.js",
     "../framework/core/js/FluidIoC.js",
     "../framework/core/js/FluidView.js",
+    "../framework/core/js/NewViewSupport.js",
     "../framework/core/js/DataSource.js",
     "../framework/core/js/ResourceLoader.js",
     "../framework/core/js/ResourceLoader-node.js",
