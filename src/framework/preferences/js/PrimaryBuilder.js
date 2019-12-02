@@ -67,7 +67,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.primaryBuilder.buildPrimary",
                 args: [
                     "{that}.options.schemaIndex",
-                    "{that}.options.prefsPrioritized",
+                    // "{that}.options.preferences",
+                    // "{that}.options.prefsPrioritized",
+                    "{that}.options.prefsMerged",
                     "{that}.options.primarySchema"
                 ]
             }

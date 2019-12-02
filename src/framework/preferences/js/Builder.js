@@ -17,7 +17,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.registerNamespace("fluid.prefs");
+    fluid.registerNamespace("fluid.prefs.builder");
+
+    fluid.deferredMergePolicy = function (target, source) {
+        if (!target) {
+            target = new fluid.mergingArray();
+        }
+        if (source instanceof fluid.mergingArray) {
+            target.push.apply(target, source);
+        } else if (source !== undefined) {
+            target.push(source);
+        }
+
+        return target;
+    };
 
     fluid.defaults("fluid.prefs.builder", {
         gradeNames: [
@@ -26,7 +39,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "{that}.applyAssemblerGrades"
         ],
         mergePolicy: {
-            auxSchema: "expandedAuxSchema"
+            preferences: "replace",
+            prefsPrioritized: {
+                noexpand: true,
+                func: fluid.deferredMergePolicy
+            }
         },
         invokers: {
             applyAssemblerGrades: {
@@ -35,6 +52,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         buildType: "prefsEditor",
+        prefsMerged: {
+            expander: {
+                funcName: "fluid.prefs.builder.mergePrefs",
+                args: ["{that}", "{that}.options.prefsPrioritized"]
+            }
+        },
         prefsPrioritized: {
             expander: {
                 funcName: "fluid.prefs.builder.prioritizePrefs",
@@ -231,6 +254,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return auxTypes;
     };
 
+    // fluid.prefs.builder.prioritizePrefs = function (that) {
+    // // fluid.prefs.builder.prioritizePrefs = function (preferences, contextAwarePrefs) {
+    //     var preferences = that.options.preferences;
+    //     var contextAwarePrefs = that.options.contextAwarePrefs
+    //     var prioritized = {};
+    //     fluid.each(preferences, function (preference, index) {
+    //         var record = {};
+    //         if (index) {
+    //             record.priority = "after:" + preferences[index - 1];
+    //         }
+    //         prioritized[preference] = record;
+    //     });
+    //
+    //     fluid.each(contextAwarePrefs, function (priority, preference) {
+    //         if (priority === null) {
+    //             delete prioritized[preference];
+    //         } else {
+    //             prioritized[preference] = priority;
+    //         }
+    //     });
+    //     return prioritized;
+    // };
     fluid.prefs.builder.prioritizePrefs = function (preferences) {
         var prioritized = {};
         fluid.each(preferences, function (preference, index) {
@@ -241,6 +286,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             prioritized[preference] = record;
         });
         return prioritized;
+    };
+
+    fluid.prefs.builder.mergePrefs = function (that, mergingArray) {
+        var merged = {};
+        for (var i = 0; i < mergingArray.length; i++) {
+            var mergeRecord = mergingArray[i];
+            var expanded = fluid.expandImmediate(mergeRecord, that);
+
+            fluid.each(expanded, function (prefConfig, preference) {
+                if (prefConfig === null) {
+                    delete merged[preference];
+                    delete expanded[preference];
+                }
+            });
+
+            $.extend(true, merged, expanded);
+        }
+        return merged;
     };
 
     // /*

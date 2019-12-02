@@ -433,7 +433,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.auxBuilder.buildAuxiliary",
                 args: [
                     "{that}.options.indexes.auxSchema",
-                    "{that}.options.prefsPrioritized"
+                    // "{that}.options.preferences"
+                    // "{that}.options.prefsPrioritized"
+                    "{that}.options.prefsMerged"
                 ]
             }
         },
