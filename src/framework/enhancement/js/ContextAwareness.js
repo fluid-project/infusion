@@ -109,7 +109,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * If no check matches, the grades held in `defaultGradeNames` will be applied.
      */
     fluid.defaults("fluid.contextAware", {
-        gradeNames: ["{that}.check"],
+        // forward-looking definition for FLUID-6439 - "namespace" is currently ignored
+        gradeNames: {
+            namespace: "contextAwareness",
+            priority: "first",
+            expander: {
+                funcName: "fluid.contextAware.check",
+                args: ["{that}", "{that}.options.contextAwareness"]
+            }
+        },
         mergePolicy: {
             contextAwareness: "noexpand"
         },
@@ -123,12 +131,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             //     defaultGradeNames: // String or String[] holding default gradeNames which will be output if no check matches [optional]
             //     priority: // Number or String encoding priority relative to other records (same format as with event listeners) [optional]
             // }
-        },
-        invokers: {
-            check: {
-                funcName: "fluid.contextAware.check",
-                args: ["{that}", "{that}.options.contextAwareness"]
-            }
         }
     });
 

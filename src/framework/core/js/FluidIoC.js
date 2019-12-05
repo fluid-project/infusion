@@ -609,10 +609,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.flattenGradeName = function (gradeName) {
-        return typeof(gradeName) === "string" ? gradeName : JSON.stringify(gradeName);
-    };
-
     // Apply a batch of freshly acquired plain dynamic grades to the target component and recompute its options
     fluid.applyDynamicGrades = function (rec) {
         rec.oldGradeNames = fluid.makeArray(rec.gradeNames);
@@ -658,6 +654,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    // A very primitive comparator, good enough to resolve FLUID-6438 for now. Once we widen support to FLUID-6439, this
+    // will need to use the full fluid.parsePriorityRecords algorithm
+    fluid.rawDynamicComparator = function (raw1, raw2) {
+        var simplePriority = function (raw) {
+            return raw && raw.priority ? fluid.priorityTypes[raw.priority] : 0;
+        };
+        return simplePriority(raw1) - simplePriority(raw2);
+    };
+
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
         delete that.options.gradeNames; // Recompute gradeNames for FLUID-5012 and others
         var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy); // Just acquire the reference and force eval of mergeBlocks "target", contents are wrong
@@ -686,6 +691,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.applyDynamicGrades(rec);
                 fluid.collectDistributedGrades(rec);
             }
+            fluid.stableSort(rec.rawDynamic, fluid.rawDynamicComparator);
             if (rec.rawDynamic.length > 0) {
                 var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localRecord);
                 if (typeof(expanded) === "function") {
@@ -698,6 +704,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 break;
             }
         }
+        fluid.remove_if(gradeNames, fluid.isReferenceOrExpander);
 
         if (shadow.collectedClearer) {
             shadow.collectedClearer();
