@@ -841,8 +841,8 @@ var fluid = fluid || fluid_3_0_0;
         return togo;
     };
 
-    /** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript is not specified
-     * to be stable). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
+    /** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript was not specified
+     * to be stable until ES2019). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
      * on small array sizes.
      * @param {Array} array - The array to be sorted. This input array will be modified in place.
      * @param {Function} func - A comparator returning >0, 0, or <0 on pairs of elements representing their sort order (same contract as Array.sort comparator)
@@ -1904,6 +1904,10 @@ var fluid = fluid || fluid_3_0_0;
 
     fluid.defaultsStore = {};
 
+    fluid.flattenGradeName = function (gradeName) {
+        return typeof(gradeName) === "string" ? gradeName : JSON.stringify(gradeName);
+    };
+
     // unsupported, NON-API function
     // Recursively builds up "gradeStructure" in first argument. 2nd arg receives gradeNames to be resolved, with stronger grades at right (defaults order)
     // builds up gradeStructure.gradeChain pushed from strongest to weakest (reverse defaults order)
@@ -1911,12 +1915,14 @@ var fluid = fluid || fluid_3_0_0;
         gradeNames = fluid.makeArray(gradeNames);
         for (var i = gradeNames.length - 1; i >= 0; --i) { // from stronger to weaker
             var gradeName = gradeNames[i];
-            if (gradeName && !gs.gradeHash[gradeName]) {
-                var isDynamic = fluid.isIoCReference(gradeName);
+            // cf. logic in fluid.accumulateDynamicGrades
+            var flatGradeName = fluid.flattenGradeName(gradeName);
+            if (gradeName && !gs.gradeHash[flatGradeName]) {
+                var isDynamic = fluid.isReferenceOrExpander(gradeName);
                 var options = (isDynamic ? null : fluid.rawDefaults(gradeName)) || {};
                 var thisTick = gradeTickStore[gradeName] || (gradeTick - 1); // a nonexistent grade is recorded as just previous to current
                 gs.lastTick = Math.max(gs.lastTick, thisTick);
-                gs.gradeHash[gradeName] = true;
+                gs.gradeHash[flatGradeName] = true;
                 gs.gradeChain.push(gradeName);
                 var oGradeNames = fluid.makeArray(options.gradeNames);
                 for (var j = oGradeNames.length - 1; j >= 0; --j) { // from stronger to weaker grades
