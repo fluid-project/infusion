@@ -20,7 +20,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         distributeOptions: {
             target: "{/ fluid.tableOfContents.levels}.options.resources.template",
             record: {
-                forceCache: true,
                 url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
             }
         }
@@ -308,7 +307,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    forceCache: true,
                     url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             }
@@ -542,7 +540,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        // TODO: This test and the component is faulty - if the template loads asynchronously, rendering will fail
         /**
          * #FLUID-5110: refreshView updates headings
          */
@@ -559,8 +556,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             fluid.tableOfContents("#flc-toc-refreshHeadings", {
                 listeners: {
-                    // FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
-                    "onCreate.initialState": {
+                    "onReady.initialState": {
                         listener: function (levels, that) {
                             that.events.onRefresh.addListener(function () {
                                 jqUnit.assert("The onRefresh event should have fired");
@@ -572,14 +568,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             that.container.append("<h2>test</h2>");
                             that.refreshView();
                         },
-                        args: ["{that}.levels", "{that}"],
-                        priority: "last"
+                        args: ["{that}.levels", "{that}"]
                     }
                 }
             });
         });
 
-        /**
+       /**
         * #FLUID-5567: Test that table of contents header is localizable
         */
         jqUnit.asyncTest("FLUID-5567: Table of Contents header localization", function () {

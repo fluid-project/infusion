@@ -464,7 +464,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
                     },
                     strings: {
-                        tocHeader: "{messageLoader}.resources.tocMessage.resourceText.tocHeader"
+                        tocHeader: "{messageLoader}.resources.tocMessage.parsed.tocHeader"
                     }
                 }
             }

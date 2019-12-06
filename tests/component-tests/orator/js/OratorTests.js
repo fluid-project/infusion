@@ -486,6 +486,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.tests.orator.domReader",
                 container: ".flc-orator-domReader-test",
                 options: {
+                    gradeNames: "fluid.tests.orator.domReaderRecorder",
                     members: {
                         tts: "{tts}"
                     }
@@ -498,7 +499,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.orator.domReaderTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "fluid.tests.orator.stubs"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             startStopFireRecord: {
                 onStart: 1,
@@ -578,7 +579,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "DOM Reading",
                 sequence: [{
                     // Play sequence
-                    func: "{domReader}.play"
+                    func: "{domReader}.events.play.fire"
                 }, {
                     func: "fluid.tests.orator.domReaderTester.verifyParseQueue",
                     args: ["{domReader}", fluid.tests.orator.domReader.parsed]
@@ -683,7 +684,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "fluid.set",
                     args: ["{tts}", "speechRecord", []]
                 }, {
-                    func: "{domReader}.play"
+                    func: "{domReader}.events.play.fire"
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyParseQueue",
                     args: ["{domReader}", fluid.tests.orator.domReader.parsed]
@@ -697,97 +698,78 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Replayed Self Voicing completed", "{domReader}"]
                 }, {
                     // pause when stopped
-                    funcName: "fluid.tests.orator.addStub",
-                    args: ["{that}.stubs", "{domReader}.tts", "pause"]
+                    funcName: "fluid.mock.textToSpeech.clearRequestRecord",
+                    args: ["{domReader}.tts.requestRecord"]
                 }, {
-                    func: "{domReader}.pause"
+                    func: "{domReader}.events.pause.fire"
                 }, {
                     funcName: "jqUnit.assertFalse",
-                    args: ["The pause method should not have been called when pausing after speaking has stopped.", "{that}.stubs.pause.called"]
-                }, {
-                    funcName: "fluid.tests.orator.restoreStubs",
-                    args: ["{that}.stubs", "pause"]
-                }, {
+                    args: ["The TTS pause method should not have been called when pausing after speaking has stopped.", "{domReader}.tts.requestRecord.pause"]
+                },  {
                     // pause when paused
-                    funcName: "fluid.tests.orator.addStub",
-                    args: ["{that}.stubs", "{domReader}.tts", "pause"]
+                    funcName: "fluid.mock.textToSpeech.clearRequestRecord",
+                    args: ["{domReader}.tts.requestRecord"]
                 }, {
                     funcName: "fluid.set",
                     args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.pausedModel"]
                 }, {
-                    func: "{domReader}.pause"
+                    func: "{domReader}.events.pause.fire"
                 }, {
                     funcName: "jqUnit.assertFalse",
-                    args: ["The pause method should not have been called when pausing while already paused.", "{that}.stubs.pause.called"]
-                }, {
-                    funcName: "fluid.tests.orator.restoreStubs",
-                    args: ["{that}.stubs", "pause"]
+                    args: ["The TTS pause method should not have been called when pausing while already paused.", "{domReader}.tts.requestRecord.pause"]
                 }, {
                     // pause when speaking
-                    funcName: "fluid.tests.orator.addStub",
-                    args: ["{that}.stubs", "{domReader}.tts", "pause"]
+                    funcName: "fluid.mock.textToSpeech.clearRequestRecord",
+                    args: ["{domReader}.tts.requestRecord"]
                 }, {
                     funcName: "fluid.set",
                     args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.speakingModel"]
                 }, {
-                    func: "{domReader}.pause"
+                    func: "{domReader}.events.pause.fire"
                 }, {
                     funcName: "jqUnit.assertTrue",
-                    args: ["The pause method should be called when pausing while speaking.", "{that}.stubs.pause.called"]
-                }, {
-                    funcName: "fluid.tests.orator.restoreStubs",
-                    args: ["{that}.stubs", "pause"]
+                    args: ["The TTS pause method should be called when pausing while speaking.", "{domReader}.tts.requestRecord.pause"]
                 }, {
                     // play after pause
+                    funcName: "fluid.mock.textToSpeech.clearRequestRecord",
+                    args: ["{domReader}.tts.requestRecord"]
+                }, {
                     funcName: "fluid.set",
                     args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.pausedModel"]
                 }, {
-                    funcName: "fluid.tests.orator.addStub",
-                    args: ["{that}.stubs", "{domReader}.tts", "resume"]
-                }, {
-                    func: "{domReader}.play"
+                    func: "{domReader}.events.play.fire"
                 }, {
                     funcName: "jqUnit.assertTrue",
-                    args: ["The resume method should have been called", "{that}.stubs.resume.called"]
-                }, {
-                    funcName: "fluid.tests.orator.restoreStubs",
-                    args: ["{that}.stubs", "resume"]
+                    args: ["The TTS resume method should have been called", "{domReader}.tts.requestRecord.resume"]
                 }, {
                     // play while speaking
+                    funcName: "fluid.tests.orator.clearFired",
+                    args: ["{domReader}.fired"]
+                }, {
                     funcName: "fluid.set",
                     args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.speakingModel"]
                 }, {
-                    funcName: "fluid.tests.orator.addStub",
-                    args: ["{that}.stubs", "{domReader}", "readFromDOM"]
-                }, {
-                    func: "{domReader}.play"
+                    func: "{domReader}.events.play.fire"
                 }, {
                     funcName: "jqUnit.assertFalse",
-                    args: ["The readFromDOM method should not be called again when currently speaking", "{that}.stubs.readFromDOM.called"]
+                    args: ["The readFromDOM method should not be called again when currently speaking", "{domReader}.fired.readFromDOM"]
+                }, { // speak when disabled
+                    funcName: "fluid.tests.orator.clearFired",
+                    args: ["{domReader}.fired"]
+                },  {
+                    funcName: "fluid.mock.textToSpeech.clearRequestRecord",
+                    args: ["{domReader}.tts.requestRecord"]
                 }, {
-                    funcName: "fluid.tests.orator.restoreStubs",
-                    args: ["{that}.stubs", "readFromDOM"]
-                }, {
-                    // speak when disabled
                     funcName: "fluid.set",
                     args: ["{domReader}", ["model", "tts"], "{that}.options.testOptions.disabledModel"]
                 }, {
-                    funcName: "fluid.tests.orator.addStub",
-                    args: ["{that}.stubs", "{domReader}", "readFromDOM"]
-                }, {
-                    funcName: "fluid.tests.orator.addStub",
-                    args: ["{that}.stubs", "{domReader}.tts", "resume"]
-                }, {
-                    func: "{domReader}.play"
+                    func: "{domReader}.events.play.fire"
                 }, {
                     funcName: "jqUnit.assertFalse",
-                    args: ["The readFromDOM method should not be called when the component state is disabled", "{that}.stubs.readFromDOM.called"]
+                    args: ["The readFromDOM method should not be called when the component state is disabled", "{domReader}.fired.readFromDOM"]
                 }, {
                     funcName: "jqUnit.assertFalse",
-                    args: ["The resume method should not be called when the component state is disabled", "{that}.stubs.resume.called"]
-                }, {
-                    funcName: "fluid.tests.orator.restoreStubs",
-                    args: ["{that}.stubs", ["readFromDOM", "resume"]]
+                    args: ["The TTS resume method should not be called when the component state is disabled", "{domReader}.tts.requestRecord.resume"]
                 }]
             }]
         }]
@@ -1365,7 +1347,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             enabled: true
         },
         domReader: {
-            gradeNames: ["fluid.tests.orator.domReaderStubs"]
+            gradeNames: ["fluid.tests.orator.domReader", "fluid.tests.orator.domReaderRecorder"]
         }
     });
 

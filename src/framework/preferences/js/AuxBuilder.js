@@ -92,6 +92,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return result;
     };
 
+// TODO: What does this function do? Why is the early return on no "existingValue" so important?
     fluid.prefs.addCommonOptions = function (root, path, commonOptions, templateValues) {
         templateValues = templateValues || {};
 
@@ -127,8 +128,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
 
         fluid.set(root, path, fluid.merge(mergePolicy, existingValue, opts));
-
-        return root;
     };
 
     fluid.prefs.containerNeeded = function (root, path) {
@@ -312,9 +311,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.set(messages, safeSubPanelPrefsKey, fluid.get(subPanelOptions, "message"));
 
                 fluid.set(compositePanelOptions, ["options", "selectors", safeSubPanelPrefsKey], fluid.get(subPanelOptions, "container"));
-                fluid.set(compositePanelOptions, ["options", "resources"], fluid.get(compositePanelOptions, ["options", "resources"]) || {});
+                fluid.set(compositePanelOptions, ["options", "members", "resources"], fluid.get(compositePanelOptions, ["options", "members", "resources"]) || {});
 
-                fluid.prefs.addCommonOptions(compositePanelOptions.options, "resources", compositePanelBasedOnSubCommonOptions, {
+                fluid.prefs.addCommonOptions(compositePanelOptions.options, "members.resources", compositePanelBasedOnSubCommonOptions, {
                     subPrefKey: safeSubPanelPrefsKey
                 });
 
@@ -470,8 +469,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": "fluid.prefs.prefsEditorConnections",
-                "options.resources.template": "{templateLoader}.resources.%prefKey",
-                "options.messageBase": "{messageLoader}.resources.%prefKey.resourceText"
+                "options.members.resources.template": "{templateLoader}.resources.%prefKey",
+                "options.messageBase": "{messageLoader}.resources.%prefKey.parsed"
             },
             panelModel: {
                 "%internalModelName": "{prefsEditor}.model.preferences.%externalModelName"
@@ -481,7 +480,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             subPanel: {
                 "container": "{%compositePanel}.dom.%prefKey",
-                "options.messageBase": "{messageLoader}.resources.%prefKey.resourceText"
+                "options.messageBase": "{messageLoader}.resources.%prefKey.parsed"
             },
             enactor: {
                 "container": "{uiEnhancer}.container"

@@ -31,7 +31,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         defaultLocale: "en",
         components: {
             prefsEditor: {
-                priority: "last",
                 type: "fluid.prefs.prefsEditor",
                 createOnEvent: "onCreatePrefsEditorReady",
                 options: {
@@ -61,10 +60,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 type: "fluid.resourceLoader",
                 createOnEvent: "afterInitialSettingsFetched",
                 options: {
-                    defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
-                    locale: "{prefsEditorLoader}.settings.preferences.locale",
                     resourceOptions: {
-                        dataType: "json"
+                        dataType: "json",
+                        defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
+                        locale: "{prefsEditorLoader}.settings.preferences.locale"
                     },
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
@@ -98,7 +97,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "prefsEditorLoader.templateLoader.terms": {
                 source: "{that}.options.terms",
-                target: "{that > templateLoader}.options.terms"
+                target: "{that > templateLoader}.options.resourceOptions.terms"
             },
             "prefsEditorLoader.messageLoader": {
                 source: "{that}.options.messageLoader",
@@ -107,7 +106,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "prefsEditorLoader.messageLoader.terms": {
                 source: "{that}.options.terms",
-                target: "{that > messageLoader}.options.terms"
+                target: "{that > messageLoader}.options.resourceOptions.terms"
             },
             "prefsEditorLoader.prefsEditor": {
                 source: "{that}.options.prefsEditor",
@@ -323,8 +322,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "modelChange"
             }]
         },
-        resources: {
-            template: "{templateLoader}.resources.prefsEditor"
+        members: {
+            resources: {
+                template: "{templateLoader}.resources.prefsEditor"
+            }
         },
         autoSave: false
     });
@@ -453,7 +454,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.locate("cancel").click(that.cancel);
         };
 
-        that.container.append(that.options.resources.template.resourceText);
+        that.container.append(that.resources.template.resourceText);
         bindHandlers(that);
 
         var fetchPromise = that.fetch();
@@ -517,7 +518,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "onReady.updateModel": "{that}.updateModel"
         },
-        templateUrl: "%prefix/PrefsEditorPreview.html"
+        templateUrl: "%templatePrefix/PrefsEditorPreview.html"
     });
 
     fluid.prefs.preview.updateModel = function (that, preferences) {
@@ -532,7 +533,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.prefs.preview.startLoadingContainer = function (that) {
-        var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
+        // TODO: Don't reach into the impl in this way and make the head component a resourceLoader
+        var templateUrl = that.templateLoader.transformResourceURL(that.options.templateUrl);
         that.container.on("load", function () {
             that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();

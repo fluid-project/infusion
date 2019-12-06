@@ -78,38 +78,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
-    fluid.defaults("fluid.tests.autoGradedComponent", {
-        gradeNames: ["fluid.viewComponent"],
-        events: {
-            anEvent: null
-        }
-    });
-
     fluid.defaults("fluid.tests.gradedComponent", {
         gradeNames: "fluid.viewComponent",
         events: {
             anEvent: null
         }
     });
-
-    fluid.defaults("fluid.tests.ungradedComponent", {
-        events: {
-            anEvent: null
-        }
-    });
-
-    fluid.tests.gradedComponent = function (container, options) {
-        var that = fluid.initView("fluid.tests.gradedComponent", container, options);
-        return that;
-    };
-
-    fluid.tests.ungradedComponent = function (container, options) {
-        var that = fluid.initView("fluid.tests.ungradedComponent", container, options);
-        return that;
-    };
-
-
-    fluid.tests.gradeTestTypes = ["fluid.tests.gradedComponent", "fluid.tests.autoGradedComponent", "fluid.tests.ungradedComponent"];
 
     function testEvent(message, component) {
         jqUnit.expect(1);
@@ -120,10 +94,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }
 
     jqUnit.test("Grade resolution test", function () {
-        fluid.each(fluid.tests.gradeTestTypes, function (typeName) {
-            var that = fluid.invokeGlobalFunction(typeName, ["#pager-top"]);
-            testEvent("Construction of " + typeName, that);
-        });
+        var typeName = "fluid.tests.gradedComponent";
+        var that = fluid.invokeGlobalFunction(typeName, ["#pager-top"]);
+        testEvent("Construction of " + typeName, that);
     });
 
     fluid.tests.dynamicCounter = function (parent) {
@@ -220,6 +193,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(1);
         var that = fluid.tests.FLUID5908root(".FLUID5908-container");
         jqUnit.assertValue("Successfully constructed component with this-ist listener", that);
+    });
+
+    /** Self-rendering and unrendering **/
+
+    fluid.defaults("fluid.tests.selfRenderLensed", {
+        gradeNames: "fluid.viewComponent",
+        model: {
+            arena: ["a", "b", "c"]
+        },
+        selectors: {
+            element: ".flc-tests-self-render-element"
+        },
+        dynamicComponents: {
+            elements: {
+                type: "fluid.tests.selfRenderElement",
+                sources: "{that}.model.arena",
+                options: {
+                    parentContainer: "{selfRenderLensed}.container",
+                    model: {
+                        text: "{source}"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.selfRenderElement", {
+        gradeNames: "fluid.containerRenderingView",
+        markup: {
+            container: "<div class=\"flc-tests-self-render-element\">%text</div>"
+        },
+        invokers: {
+            renderMarkup: {
+                funcName: "fluid.stringTemplate",
+                args: ["{that}.options.markup.container", {
+                    text: "{that}.model.text"
+                }]
+            }
+        }
+    });
+
+    jqUnit.test("Self-rendering and unrendering of lensed components", function () {
+        var that = fluid.tests.selfRenderLensed(".flc-tests-self-rendering");
+        var elements = that.locate("element");
+        jqUnit.assertEquals("Three elements should have been rendered", 3, elements.length);
+        var texts = fluid.transform(elements, function (element) {
+            return element.textContent;
+        });
+        jqUnit.assertDeepEq("The element texts should be those derived from the model", that.model.arena, texts);
+        that.applier.change("arena", null, "DELETE");
+        elements = that.locate("element");
+        jqUnit.assertEquals("Elements should have been removed", 0, elements.length);
     });
 
 })();

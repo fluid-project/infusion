@@ -41,7 +41,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.url.parsePathInfoTrim = function (pathInfo) {
         var togo = fluid.url.parsePathInfo(pathInfo);
-        if (togo.pathInfo[togo.pathInfo.length - 1] === "") {
+        if (fluid.peek(togo.pathInfo) === "") {
             togo.pathInfo.length--;
         }
         return togo;
@@ -64,14 +64,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         if (to > from) { // TODO: bug in Kettle version
             togo += segs[to - 1];
-        }
-        return togo;
-    };
-
-    fluid.url.makeRelPath = function (parsed, index) {
-        var togo = fluid.kettle.collapseSegs(parsed.pathInfo, index);
-        if (parsed.extension) {
-            togo += "." + parsed.extension;
         }
         return togo;
     };
@@ -138,6 +130,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return (parseRel.host || parseRel.protocol || parseRel.directory.charAt(0) === "/");
     };
 
+    /* TODO: utility is unused **/
     fluid.url.computeRelativePrefix = function (outerLocation, iframeLocation, relPath) {
         if (fluid.url.isAbsoluteUrl(relPath)) {
             return relPath;

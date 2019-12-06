@@ -24,16 +24,14 @@ var example = example || {};
     example.initPager = function () {
         var resources = {
             users: {
-                href: "../shared/data/pager.json",
-                options: {
-                    dataType: "json"
-                }
+                url: "../shared/data/pager.json",
+                dataType: "json"
             }
         };
 
         function initPager(resourceSpecs) {
 
-            var model = resourceSpecs.users.resourceText;
+            var model = resourceSpecs.users.parsed;
             var columnDefs = [
                 {
                     key: "user-link",

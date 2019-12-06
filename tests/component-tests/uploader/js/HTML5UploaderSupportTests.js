@@ -166,7 +166,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
 
             var checkOnFileCompleteEvent = function (transcript) {
-                var lastTranscriptEntry = transcript[transcript.length - 1];
+                var lastTranscriptEntry = fluid.peek(transcript);
                 jqUnit.assertEquals("The last event should be onFileComplete",
                                     "onFileComplete", lastTranscriptEntry.name);
                 jqUnit.assertEquals("One argument should have been passed to onFileComplete",
@@ -174,7 +174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
 
             var checkAfterFileDialogEvent = function (expectedNumFiles, transcript) {
-                var lastTranscriptEntry = transcript[transcript.length - 1];
+                var lastTranscriptEntry = fluid.peek(transcript);
                 jqUnit.assertEquals("The last event should be afterFileDialog",
                                     "afterFileDialog", lastTranscriptEntry.name);
                 jqUnit.assertEquals("One argument should have been passed to afterFileDialog",

@@ -10,30 +10,32 @@
         <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
 
-        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
-        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../src/framework/core/js/FluidView-browser.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
 
     </head>
     <body>
         <section class="flc-overviewPanel fl-overviewPanel-container"></section>
 
-        <script type="text/javascript">
+        <script>
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: {
                     template: {
-                        href: "../../src/components/overviewPanel/html/overviewPanelTemplate.html"
+                        url: "../../src/components/overviewPanel/html/overviewPanelTemplate.html"
                     }
                 },
                 strings: {

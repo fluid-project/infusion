@@ -54,7 +54,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         distributeOptions: {
             "uiEnhancer.messageLoader.defaultLocale": {
                 source: "{that}.options.defaultLocale",
-                target: "{that messageLoader}.options.defaultLocale"
+                target: "{that messageLoader}.options.resourceOptions.defaultLocale"
             },
             // TODO: This needs to be improved as it is static and should be dynamic. Unfortunately the resource loader
             //       accepts the locale as an option instead of a model value.

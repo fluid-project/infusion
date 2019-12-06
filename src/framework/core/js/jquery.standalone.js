@@ -10,9 +10,7 @@
  * without FluidView.js. Consult http://issues.fluidproject.org/browse/FLUID-4568 for more details.
  *
  * Copyright 2011, John Resig
- * Copyright The Infusion copyright holders
- * See the AUTHORS.md file at the top-level directory of this distribution and at
- * https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+ * Copyright 2011- OCAD University
  *
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
@@ -38,8 +36,18 @@ var fluid = fluid || fluid_3_0_0;
     // Map over the $ in case of overwrite
     var _$ = globalScope.$;
 
-    var jQuery = fluid.jQueryStandalone = {
+    var jQuery = fluid.jQueryStandalone = function (/* arguments */) {
+        return jQuery.constructor.apply(null, arguments);
+    };
 
+    // Define all the members in a fresh object, so that they can later be copied onto the function just defined
+    var jQueryMembers = {
+        globalScope: globalScope,
+
+        // A placeholder for the jQuery constructor function, which will be patched elsewhere
+        constructor: function () {
+            return [];
+        },
         // The current version of jQuery being used
         jquery: "1.6.1-fluidStandalone",
 
@@ -148,6 +156,8 @@ var fluid = fluid || fluid_3_0_0;
             return target;
         }
     };
+
+    jQueryMembers.extend(jQuery, jQueryMembers);
 
 })(fluid_3_0_0);
 

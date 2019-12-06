@@ -72,6 +72,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         components: {
             msgResolver: {
                 type: "fluid.messageResolver"
+            }, // TODO: note that rendererComponent now configures such a resolver named "messageResolver"
+            messageResolver: {
+                type: "fluid.emptySubcomponent"
             }
         },
         rendererOptions: {
@@ -170,7 +173,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (that.container.length === 0) {
             fluid.fail("resetDomBinder got no elements in DOM for container searching for selector " + that.container.selector);
         }
-        fluid.initDomBinder(that, that.options.selectors);
+        that.dom = fluid.createDomBinder(that.container, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
 
@@ -213,6 +216,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return target;
     };
 
+    fluid.prefs.appendTemplate = function (container, markup) {
+        container.append(markup);
+    };
+
     fluid.defaults("fluid.prefs.compositePanel", {
         gradeNames: ["fluid.prefs.panel", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifecycleBindings"],
         mergePolicy: {
@@ -227,13 +234,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
-            "onCreate.appendTemplate": {
-                "this": "{that}.container",
-                "method": "append",
-                "args": ["{that}.options.resources.template.resourceText"]
-            },
+            "onCreate.appendTemplate": "fluid.prefs.appendTemplate({that}.container, {that}.resources.template.resourceText)",
             "onCreate.initSubPanels": "{that}.events.initSubPanels",
-            "onCreate.hideInactive": "{that}.hideInactive",
+            "onCreate.hideInactive": {
+                func: "{that}.hideInactive",
+                priority: "after:fluid-componentConstruction"
+            },
             "afterRender.hideInactive": "{that}.hideInactive"
         },
         invokers: {
@@ -247,7 +253,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             combineResources: {
                 funcName: "fluid.prefs.compositePanel.combineTemplates",
-                args: ["{that}.options.resources", "{that}.options.selectors"]
+                args: ["{that}.resources", "{that}.options.selectors"]
             },
             produceSubPanelTrees: {
                 funcName: "fluid.prefs.compositePanel.produceSubPanelTrees",
@@ -297,7 +303,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.compositePanel.prefetchComponentOptions = function (type, options) {
         var baseOptions = fluid.getMergedDefaults(type, fluid.get(options, "gradeNames"));
         // TODO: awkwardly, fluid.merge is destructive on each argument!
-        return fluid.merge(baseOptions.mergePolicy, fluid.copy(baseOptions), options);
+        return baseOptions && fluid.merge(baseOptions.mergePolicy, fluid.copy(baseOptions), options);
     };
     /*
      * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.
@@ -320,7 +326,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
         var distributeOptions = {};
         var relayOption = {};
-        fluid.each(components, function (componentOptions, componentName) {
+        fluid.each(components, function (componentEntry, componentName) {
+            var componentOptions = componentEntry[0];
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 distributeOptions[componentName + ".subPanelOverrides"] = {
                     source: "{that}.options.subPanelOverrides",
@@ -381,6 +388,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return {
                 func: "{that}.handleRenderOnPreference",
                 args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames],
+                excludeSource: "init",
                 namespace: "handleRenderOnPreference_" + pref
             };
         });
@@ -413,7 +421,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var listeners = {};
         var events = {};
         var selectors = {};
-        fluid.each(components, function (componentOptions, componentName) {
+        // TODO: All of this old-style options introspection is deprecated and should be replaced by workflow functions -
+        // but in practice the entirety of this prefs framework should be deprecated and replaced by the new renderer
+        fluid.each(components, function (componentEntry, componentName) {
+            var componentOptions = componentEntry[0]; // Compensate for wrapping caused by FLUID-5614 fix
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 var creationEventOpt = "default";
                 // would have had renderOnPreference directly sourced from the componentOptions
@@ -477,7 +488,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * information from it.
      */
     fluid.prefs.compositePanel.hideInactive = function (that) {
-        fluid.each(that.options.components, function (componentOpts, componentName) {
+        fluid.each(that.options.components, function (componentEntry, componentName) {
+            var componentOpts = componentEntry[0]; // See above for FLUID-5614
             if (fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
                 that.locate(componentName).hide();
             }
@@ -508,7 +520,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var resourceSpec = {
             base: {
                 resourceText: resources.template.resourceText,
-                href: ".",
+                url: ".",
                 resourceKey: ".",
                 cutpoints: cutpoints
             }
@@ -521,7 +533,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.prefs.compositePanel.surfaceRepeatingSelectors = function (components) {
         var repeatingSelectors = [];
-        fluid.each(components, function (compOpts, compName) {
+        fluid.each(components, function (compEntry, compName) {
+            var compOpts = compEntry[0];
             if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
                 var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
                 var rebasedRepeatingSelectors = fluid.transform(opts.repeatingSelectors, function (selector) {

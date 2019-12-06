@@ -31,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-syllabification.html"
+                url: "../../../../src/framework/preferences/html/PrefsEditorTemplate-syllabification.html"
             }
         }
     });
@@ -61,7 +61,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 7,
                 name: "Test the rendering of the syllabification panel",
                 sequence: [{
-                    event: "{testEnvironment syllabification}.events.onResourcesFetched",
+                    event: "{testEnvironment syllabification}.events.onCreate",
                     listener: "fluid.identity"
                 },  {
                     func: "{syllabification}.refreshView"

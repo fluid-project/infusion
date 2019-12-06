@@ -19,10 +19,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.panels.utils");
 
     fluid.defaults("fluid.tests.panels.utils.defaultTestPanel", {
+        gradeNames: "fluid.resourceLoader",
         strings: {},
         testMessages: {},
         parentBundle: {
             expander: {
+                // TODO: This is a dangerous technique that will leak the fluid.messageResolver component
+                // We need to add checks that component creators are not used as expander functions
                 funcName: "fluid.messageResolver",
                 args: [{messageBase: "{that}.options.testMessages"}]
             }
@@ -30,12 +33,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.panels.utils.injectTemplates", {
-        listeners: {
-            "onCreate.getTemplate": {
-                funcName: "fluid.fetchResources",
-                args: ["{that}.options.resources", "{that}.refreshView"]
-            }
-        }
+        gradeNames: "fluid.resourceLoader",
+        renderOnInit: true
     });
 
     fluid.tests.panels.utils.checkModel = function (path, newModel, expectedValue) {

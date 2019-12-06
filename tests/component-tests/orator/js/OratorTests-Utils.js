@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit, sinon */
+/* global fluid, jqUnit */
 
 (function () {
     "use strict";
@@ -29,75 +29,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator.mockTTS", {
-        members: {
-            // this is just to force the evaluation of the tts subcomponent.
-            ttsID: "{tts}.id"
-        },
         components: {
             tts: {
                 type: "fluid.textToSpeech",
                 options: {
-                    gradeNames: ["fluid.mock.textToSpeech"],
-                    listeners: {
-                        "{mockTTS}.events.onDestroy": {
-                            listener: "{that}.destroy",
-                            namespace: "destroy"
-                        }
-                    }
+                    gradeNames: ["fluid.mock.textToSpeech"]
                 }
             }
         }
     });
 
-    /*******************************************************************************
-     * Sinon Stub Utils
-     *******************************************************************************/
-
-    fluid.defaults("fluid.tests.orator.stubs", {
+    fluid.defaults("fluid.tests.orator.domReaderRecorder", {
         members: {
-            stubs: {}
-        }
-    });
-
-    fluid.defaults("fluid.tests.orator.domReaderStubs", {
-        gradeNames: ["fluid.tests.orator.stubs"],
-        methods: ["play", "pause"],
-        listeners: {
-            "onCreate.addSpies": {
-                funcName: "fluid.tests.orator.addStubs",
-                priority: "first",
-                args: ["{that}.stubs", "{that}", "{that}.options.methods"]
+            fired: {
+                play: false,
+                pause: false,
+                readFromDOM: false
             }
+        },
+        listeners: {
+            play:  "fluid.tests.orator.recordFired({that}.fired, play)",
+            pause: "fluid.tests.orator.recordFired({that}.fired, pause)",
+            readFromDOM: "fluid.tests.orator.recordFired({that}.fired, readFromDOM)"
         }
     });
 
-    fluid.tests.orator.addStub = function (stubs, object, method) {
-        stubs[method] = sinon.stub(object, method);
+    fluid.tests.orator.clearFired = function (fired) {
+        fired.play = false;
+        fired.pause = false;
+        fired.readFromDOM = false;
     };
 
-    fluid.tests.orator.addStubs = function (stubs, object, methods) {
-        methods = fluid.makeArray(methods);
-        fluid.each(methods, function (method) {
-            fluid.tests.orator.addStub(stubs, object, method);
-        });
-    };
-
-    fluid.tests.orator.restoreStubs = function (stubs, methods) {
-        methods = fluid.makeArray(methods);
-        fluid.each(methods, function (method) {
-            stubs[method].restore();
-        });
-    };
-
-    fluid.tests.orator.resetStubs = function (stubs, methods) {
-        methods = fluid.makeArray(methods);
-        fluid.each(methods, function (method) {
-            stubs[method].resetHistory();
-        });
-    };
-
-    fluid.tests.orator.createSandbox = function (config) {
-        return sinon.createSandbox(config);
+    fluid.tests.orator.recordFired = function (fired, which) {
+        fired[which] = true;
     };
 
     /*******************************************************************************
@@ -178,13 +142,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.orator.verifyControllerState(orator.controller, state);
 
         if (state) {
-            jqUnit.assertTrue(testPrefix + ": The domReaders's \"play\" method should have been called", orator.domReader.stubs.play.called);
-            jqUnit.assertFalse(testPrefix + ": The domReaders's \"pause\" method should not have been called", orator.domReader.stubs.pause.called);
+            jqUnit.assertTrue(testPrefix + ": The domReader's \"play\" method should have been called", orator.domReader.fired.play);
+            jqUnit.assertFalse(testPrefix + ": The domReader's \"pause\" method should not have been called", orator.domReader.fired.pause);
         } else {
-            jqUnit.assertFalse(testPrefix + ": The domReaders's \"play\" method should not have been called", orator.domReader.stubs.play.called);
-            jqUnit.assertTrue(testPrefix + ": The domReaders's \"pause\" method should have been called", orator.domReader.stubs.pause.called);
+            jqUnit.assertFalse(testPrefix + ": The domReader's \"play\" method should not have been called", orator.domReader.fired.play);
+            jqUnit.assertTrue(testPrefix + ": The domReader's \"pause\" method should have been called", orator.domReader.fired.pause);
         }
-
-        fluid.tests.orator.resetStubs(orator.domReader.stubs, ["play", "pause"]);
+        fluid.tests.orator.clearFired(orator.domReader.fired);
     };
 })(jQuery);

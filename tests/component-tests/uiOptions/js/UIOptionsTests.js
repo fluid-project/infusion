@@ -64,12 +64,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates = function (prefsEditorComponent, expectedTocTemplate, expectedTocMessage) {
         // template
-        jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer", expectedTocTemplate, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
-        jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", expectedTocTemplate, prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+        jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer",
+            expectedTocTemplate, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+        jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", expectedTocTemplate,
+            prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
 
         // message bundle
-        jqUnit.assertEquals("The toc message is applied properly to the pageEnhancer", expectedTocMessage, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
-        jqUnit.assertEquals("The toc message is applied properly to iframeEnhancer", expectedTocMessage, prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
+        jqUnit.assertEquals("The toc message is applied properly to the pageEnhancer",
+            expectedTocMessage, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
+        jqUnit.assertEquals("The toc message is applied properly to iframeEnhancer", expectedTocMessage,
+            prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
     };
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTest", {
@@ -108,7 +112,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     event: "{prefsEditorBaseTest prefsEditorLoader > messageLoader}.events.onResourcesLoaded",
                     listener: "jqUnit.assertEquals",
-                    args: ["defaultLocale is properly propagated to messageLoader", "fr", "{prefsEditor}.prefsEditorLoader.messageLoader.options.defaultLocale"]
+                    args: ["defaultLocale is properly propagated to messageLoader", "fr",
+                        "{prefsEditor}.prefsEditorLoader.messageLoader.options.resourceOptions.defaultLocale"]
                 },
                 {
                     event: "{prefsEditorBaseTest prefsEditor prefsEditorLoader prefsEditor}.events.onReady",
@@ -121,11 +126,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 {
                     funcName: "jqUnit.assertEquals",
-                    args: ["defaultLocale is properly propagated to the toc messageLoader", "fr", "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.options.defaultLocale"]
+                    args: ["defaultLocale is properly propagated to the toc messageLoader", "fr",
+                        "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.options.resourceOptions.defaultLocale"]
                 },
                 {
                     funcName: "jqUnit.assertDeepEq",
-                    args: ["The localized messages are loaded correctly", "{that}.options.testOpts.localized.fr", "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.resources.tocMessage.resourceText"]
+                    args: ["The localized messages are loaded correctly", "{that}.options.testOpts.localized.fr",
+                        "{prefsEditor}.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.messageLoader.resources.tocMessage.parsed"]
                 }]
             }]
         }]
@@ -161,17 +168,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.uiOptions.prefsEditorLocalizedTester.verifyPanelMessages = function (prefsEditor) {
         fluid.each(prefsEditor.prefsEditorLoader.messageLoader.resources, function (panel, key) {
             if (fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key]) {
-                var actualMessageValue = panel.resourceText[fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].path];
-                jqUnit.assertEquals("Panel " + key + " localized message loaded correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualMessageValue);
+                var actualMessageValue = panel.parsed[fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].path];
+                jqUnit.assertEquals("Panel " + key + " localized message loaded correctly",
+                    fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualMessageValue);
 
                 var actualRenderedValue = prefsEditor.prefsEditorLoader.prefsEditor[key].locate("label").text();
-                jqUnit.assertEquals("Panel " + key + " localized message rendererd correctly", fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualRenderedValue);
+                jqUnit.assertEquals("Panel " + key + " localized message rendererd correctly",
+                    fluid.tests.uiOptions.prefsEditorLocalizedTester.localizedValuesToVerify[key].expected, actualRenderedValue);
             }
         });
     };
 
     fluid.tests.uiOptions.prefsEditorLocalizedTester.verifySlidingPanelMessages = function (prefsEditor, resourceKey, expectedValue) {
-        var actualMessageValue = prefsEditor.prefsEditorLoader.messageLoader.resources.prefsEditor.resourceText.slidingPanelPanelLabel;
+        var actualMessageValue = prefsEditor.prefsEditorLoader.messageLoader.resources.prefsEditor.parsed.slidingPanelPanelLabel;
         jqUnit.assertEquals("Sliding panel localized message loaded correctly", expectedValue, actualMessageValue);
 
         var actualRenderedValue = prefsEditor.prefsEditorLoader.slidingPanel.locate("panel").attr("aria-label");

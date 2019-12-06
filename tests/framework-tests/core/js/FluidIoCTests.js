@@ -25,6 +25,124 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // to aid tracking of memory leaks
     // fluid.activityTracing = true;
 
+
+    fluid.defaults("fluid.tests.eventMerge", {
+        gradeNames: ["fluid.component"],
+        events: {
+            event: "preventable"
+        }
+    });
+
+    jqUnit.test("Merge over named listener", function () {
+        var that = fluid.tests.eventMerge({
+            events: {
+                event: null
+            },
+            listeners: {
+                event: "fluid.identity"
+            }
+        });
+        var result = that.events.event.fire(false);
+        jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
+    });
+
+    fluid.tests.makeNotingListener = function (key) {
+        return function (that) {
+            var existing = that.values[key];
+            that.values[key] = existing === undefined ? 1 : existing + 1;
+        };
+    };
+
+    fluid.defaults("fluid.tests.listenerTest", {
+        gradeNames: ["fluid.component"],
+        events: {
+            event: null
+        },
+        listeners: {
+            event: fluid.tests.makeNotingListener("noNamespace"),
+            "event.namespace": fluid.tests.makeNotingListener("namespace"),
+            onCreate: fluid.tests.makeNotingListener("onCreate"),
+            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace"),
+            "onCreate.makeValues": {
+                listener: "fluid.tests.listenerTest.makeValues",
+                priority: "first"
+            }
+        }
+    });
+
+    fluid.tests.listenerTest.makeValues = function (that) {
+        that.values = {};
+    };
+
+    jqUnit.test("Correctly merge optioned listeners", function () {
+        var options = {listeners: {
+            event: fluid.tests.makeNotingListener("noNamespace2"),
+            "event.namespace": fluid.tests.makeNotingListener("namespace2"),
+            onCreate: fluid.tests.makeNotingListener("onCreate2"),
+            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace2")
+        }};
+        var that = fluid.tests.listenerTest(options);
+        var expected1 = {
+            onCreate: 1,
+            onCreate2: 1,
+            "onCreate.namespace2": 1
+        };
+        jqUnit.assertDeepEq("Creation listeners merged and fired", expected1, that.values);
+        that.events.event.fire(that);
+        var expected2 = {
+            noNamespace: 1,
+            noNamespace2: 1,
+            namespace2: 1
+        };
+        jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values);
+    });
+
+    /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
+
+    jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on incomplete grade hierarchy", function () {
+            // TODO: in future, there will be no error thrown on definition, but only on use - since it should be possible
+            // to declare grade hierarchies through forward reference
+            fluid.defaults("fluid.tests.missingGradeComponent", {
+                gradeNames: ["fluid.tests.nonexistentGrade"]
+            });
+            fluid.tests.missingGradeComponent();
+        }, ["incomplete", "nonexistentGrade"]);
+    });
+
+    fluid.defaults("fluid.tests.nonexistentRootBase", {
+        gradeNames: "fluid.component",
+        components: {
+            nonexistentRoot: {
+                type: "fluid.tests.nonexistentGrade"
+            }
+        }
+    });
+
+    jqUnit.test("Framework diagnostic for all grades nonexistent", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on all grades nonexistent ", function () {
+            fluid.tests.nonexistentRootBase();
+        }, ["defined", "nonexistentGrade"]);
+    });
+
+    /** Forward reference through grade hierarchy **/
+
+    fluid.defaults("fluid.tests.forwardRefComponent", {
+        gradeNames: "fluid.tests.forwardBaseComponent"
+    });
+
+    fluid.defaults("fluid.tests.forwardBaseComponent", {
+        gradeNames: "fluid.component"
+    });
+
+    jqUnit.test("Forward reference through grade hierarchy", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.forwardRefComponent();
+        jqUnit.assertValue("Should have received component with forward grade reference", that);
+    });
+
+    /** fluid.parseContextReference tests **/
+
     fluid.tests.parseContext = [{
         ref: "{context}.path",
         expected: {
@@ -1148,44 +1266,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Two subsequent firings", [1, 1, 2, 2], that.fireRecord);
     });
 
-    /** withEnvironment tests - eventually to be deprecated **/
-
-    fluid.registerNamespace("fluid.tests.envTests");
-
-    fluid.tests.envTests.config = {
-        viewURLTemplate: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",
-        views: {
-            exhibitions: "_design/exhibitions/_view/browse"
-        }
-    };
-
-    jqUnit.test("Environmental Tests", function () {
-        var urlBuilder = {
-            type: "fluid.stringTemplate",
-            template: "{config}.viewURLTemplate",
-            mapper: {
-                dbName: "${{params}.db}_exhibitions",
-                view: "{config}.views.exhibitions"
-            }
-        };
-
-        fluid.withEnvironment({
-            params: {db: "mccord"},
-            config: fluid.tests.envTests.config
-        }, function () {
-            var resolved = fluid.expand(urlBuilder, {fetcher: fluid.makeEnvironmentFetcher()});
-            var required = {
-                type: "fluid.stringTemplate",
-                template: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",
-                mapper: {
-                    dbName: "mccord_exhibitions",
-                    view: "_design/exhibitions/_view/browse"
-                }
-            };
-            jqUnit.assertDeepEq("Resolved Environment", required, resolved);
-        });
-    });
-
     /** Contextualisation of invokers **/
 
     fluid.defaults("fluid.tests.thatStackHead", {
@@ -2098,24 +2178,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.reinstantiation", {
         gradeNames: ["fluid.component"],
-        headValue: "headValue",
+        members: {
+            headValue: "headValue"
+        },
+        events: {
+            createIt: null
+        },
         components: {
             headChild: {
                 type: "fluid.component"
             },
             child1: {
                 type: "fluid.component",
+                createOnEvent: "createIt",
                 options: {
                     components: {
                         child2: {
                             type: "fluid.tests.reinsChild2",
                             options: {
-                                value: "{reinstantiation}.options.headValue",
+                                value: "{reinstantiation}.headValue",
                                 components: {
                                     child3: {
                                         type: "fluid.tests.reinsChild2",
                                         options: {
-                                            value: "{reinstantiation}.options.headValue"
+                                            value: "{reinstantiation}.headValue"
                                         }
                                     },
                                     // This duplication tests FLUID-4166
@@ -2143,7 +2229,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.reinsChild2", {
         gradeNames: ["fluid.component"],
         members: {
-            otherValue: "{reinstantiation}.options.headValue"
+            otherValue: "{reinstantiation}.headValue"
         }
     });
 
@@ -2155,8 +2241,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("FLUID-4055 reinstantiation test", function () {
         var reins = fluid.tests.reinstantiation();
+        reins.events.createIt.fire();
         var origID = reins.child1.child2.id;
-        var instantiator = fluid.getInstantiator(reins.child1);
         var expectedPaths = [
             "child1.child2.options.value",
             "child1.child2.otherValue",
@@ -2164,11 +2250,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "child1.child2.child3.otherValue",
             "child1.child2.child8.options.value"
         ];
-        checkValue("Original value", reins, reins.options.headValue, expectedPaths);
-        reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
-        reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.tests.reinstantiation").components.child1.options.components.child2);
-        instantiator.clearComponent(reins.child1, "child2");
-        fluid.initDependent(reins.child1, "child2", instantiator);
+        checkValue("Original value", reins, reins.headValue, expectedPaths);
+        reins.headValue = "headValue2";
+        reins.events.createIt.fire();
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
         checkValue("Changed value", reins, "headValue2", expectedPaths);
     });
@@ -2399,7 +2483,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     function pushRecord(target, name, extra, that, childName, parent) {
         var key = that.options.name + "." + name;
-        target.listenerRecord.push(extra ? {
+        var listenerRecord = fluid.getForComponent(target, "listenerRecord");
+        listenerRecord.push(extra ? {
             key: key,
             name: childName,
             parent: fluid.computeNickName(parent.typeName)
@@ -2432,11 +2517,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Test FLUID-4162 by creating namespace before component of the same name
     fluid.registerNamespace("fluid.tests.lifecycle");
-
-    fluid.tests.lifecycle.initRecordingComponent = function (that) {
-        var parent = that.options.parent;
-        parent.listenerRecord.push(that.options.name);
-    };
 
     fluid.defaults("fluid.tests.lifecycle.recordingComponent", {
         gradeNames: ["fluid.component"],
@@ -2503,7 +2583,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testComp.events.mainEvent.fire(testComp);
         var expected = [
             // Note: we don't get onComponentAttach for root because it occurs before we can register root listeners
-            {key: "initTimeComponent.onComponentAttach", created: true},
+            // {key: "initTimeComponent.onComponentAttach", created: true},
             "initTimeComponent.onCreate",
             "root.onCreate",
             "root.mainEventListener",
@@ -2579,7 +2659,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5931.recreate = function (root) {
-        // In the future framework, this will not start construction immediately
+        // In the future framework, this must still start creation immediately - although it will not conclude until the fluid-componentConstruction listener
         root.events.createIt.fire(2);
     };
 
@@ -2699,7 +2779,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4290 - createOnEvent sequence corruption test **/
 
     fluid.defaults("fluid.tests.createOnEvent", {
-        gradeNames: ["fluid.component"],
+        gradeNames: "fluid.component",
         events: {
             afterRender: null
         },
@@ -2732,82 +2812,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assert("Component successfully constructed");
     });
 
-    /** Guided component sequence (priority field without createOnEvent **/
+    /** FLUID-6367 - createOnEvent during onCreate **/
 
-    fluid.defaults("fluid.tests.guidedChild", {
-        gradeNames: ["fluid.component"],
-        mergePolicy: {
-            parent: "nomerge"
-        },
-        parent: "{guidedParent}",
+    fluid.defaults("fluid.tests.FLUID6367head", {
+        gradeNames: "fluid.component",
         listeners: {
-            onCreate: "fluid.tests.guidedChild.pushIndex"
-        }
-    });
-
-    fluid.tests.guidedChild.pushIndex = function (that) {
-        // awful, illegal, side-effect-laden init function :P
-        that.options.parent.constructRecord.push(that.options.index);
-    };
-
-    fluid.defaults("fluid.tests.guidedParent", {
-        gradeNames: ["fluid.component"],
-        members: {
-            constructRecord: []
+            onCreate: "fluid.tests.FLUID6367create"
+        },
+        events: {
+            createIt: null
         },
         components: {
-            compn: {
-                type: "fluid.tests.guidedChild",
-                options: {
-                    index: 4
-                },
-                priority: "last"
-            },
-            comp5: {
-                type: "fluid.tests.guidedChild",
-                options: {
-                    index: 2
-                },
-                priority: 5
-            },
-            comp0: {
-                type: "fluid.tests.guidedChild",
-                options: {
-                    index: 3
-                }
-            },
-            compf: {
-                type: "fluid.tests.guidedChild",
-                options: {
-                    index: 1
-                },
-                priority: "first"
+            child: {
+                type: "fluid.component",
+                createOnEvent: "createIt"
             }
         }
     });
 
-    jqUnit.test("Guided instantiation test", function () {
-        var testComp = fluid.tests.guidedParent();
-        jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
-    });
+    fluid.tests.FLUID6367create = function (that) {
+        that.events.createIt.fire();
+        // Note that these flags are not intended to be inspected by ordinary users - at least, they should not
+        // be expected to resolve the difference between "constructed" and "treeConstructed"
+        jqUnit.assertEquals("Subcomponent should be fully constructed", "treeConstructed", that.child.lifecycleStatus);
+    };
 
-    fluid.defaults("fluid.tests.FLUID5762test", {
-        gradeNames: "fluid.component",
-        events: {
-            thing: null
-        },
-        listeners: {
-            thing: {
-                funcName: "fluid.identity",
-                priority: "10"
-            }
-        }
-    });
-
-    jqUnit.test("FLUID-5762: Helpful diagnostic on faulty priority", function () {
-        jqUnit.expectFrameworkDiagnostic("Got framework diagnostic from faulty priority", function () {
-            fluid.tests.FLUID5762test();
-        }, ["last", "numeric"]);
+    jqUnit.test("FLUID-6367 test: createOnEvent during onCreate", function () {
+        jqUnit.expect(1);
+        fluid.tests.FLUID6367head();
     });
 
     /** Tree circularity tests (early detection of stack overflow) **/
@@ -2931,6 +2963,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expectFrameworkDiagnostic("Attempt to invoke creator via invoker", fluid.tests.circular.strategy, "invoker");
     });
 
+    /** FLUID-5668: Mouse droppings when merging member holding expander reference **/
+
     fluid.defaults("fluid.tests.droppingsRoot", {
         gradeNames: "fluid.component",
         topRecord: {
@@ -2961,6 +2995,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("Absence of string mouse droppings in reference holder", member[0]);
     });
 
+    /** FLUID-5668: Ability to suppress merging for member using mergePolicy **/
+
+    fluid.defaults("fluid.tests.FLUID5668nomerge", {
+        gradeNames: "fluid.component",
+        mergePolicy: {
+            "members.noMergeMember": "replace"
+        },
+        members: {
+            noMergeMember: "@expand:fluid.fail(Exploding member should not be evaluated)"
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID5668nomergeDerived", {
+        gradeNames: "fluid.tests.FLUID5668nomerge",
+        members: {
+            noMergeMember: 3
+        }
+    });
+
+    jqUnit.test("FLUID-5668: Ability to defeat merging for members", function () {
+        var that = fluid.tests.FLUID5668nomergeDerived();
+        jqUnit.assertEquals("Successfully overridden merging member declaration", 3, that.noMergeMember);
+    });
+
+    /** FLUID-5694: Circularity in component injection **/
+
     fluid.defaults("fluid.tests.fluid5694circle", {
         gradeNames: "fluid.component",
         components: {
@@ -2968,12 +3028,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.fluid5694circle2", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: "{fluid5694circle2}.child2",
+            child2: "{fluid5694circle2}.child1"
+        }
+    });
+
     jqUnit.test("FLUID-5694 circularity test", function () {
         jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on self-injection", function () {
             fluid.tests.fluid5694circle();
-        }, "circular");
+        }, "Circular");
+        jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on circular injection", function () {
+            fluid.tests.fluid5694circle2();
+        }, "Circular");
     });
 
+    /** FLUID-6148: Injection of unconstructed component **/
+
+    fluid.defaults("fluid.tests.fluid6148ahead", {
+        gradeNames: "fluid.component",
+        components: {
+            injected: "{fluid6148ahead}.ahead",
+            ahead: {
+                type: "fluid.component"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6148: Injection of unconstructed component", function () {
+        var that = fluid.tests.fluid6148ahead();
+        jqUnit.assertValue("Expected injected value", that.injected);
+        jqUnit.assertEquals("Expected injected value equal to constructed", that.injected, that.ahead);
+    });
 
     /** Correct resolution of invoker arguments through the tree **/
 
@@ -3473,8 +3561,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** FLUID-5022 - Designation of dynamic components **/
 
-    fluid.tests.fluid5022add = function (that) {
-        that.count++;
+    fluid.tests.fluid5022add = function (that, count) {
+        that.count = count + 1;
     };
 
     fluid.defaults("fluid.tests.fluid5022head", {
@@ -3492,7 +3580,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listeners: {
                         onCreate: {
                             funcName: "fluid.tests.fluid5022add",
-                            args: "{fluid5022head}"
+                            args: ["{fluid5022head}", "{fluid5022head}.count"]
                         }
                     }
                 }
@@ -3500,11 +3588,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5022: Dynamic component creation", function () {
-        var head = fluid.tests.fluid5022head();
+    fluid.defaults("fluid.tests.fluid5022literal", {
+        dynamicComponents: {
+            dynamic: {
+                sources: [2, 3]
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5022expander", {
+        dynamicComponents: {
+            dynamic: {
+                sources: {
+                    expander: {
+                        func: "fluid.identity",
+                        args: "{that}.options.values"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5022test = function (headGrades) {
+        var head = fluid.tests.fluid5022head({
+            gradeNames: fluid.makeArray(headGrades)
+        });
         jqUnit.assertEquals("Constructed 2 components", 2, head.count);
         jqUnit.assertEquals("First component source transmitted: ", 2, head.dynamic.options.source);
         jqUnit.assertEquals("Second component source transmitted: ", 3, head["dynamic-1"].options.source);
+    };
+
+    fluid.tests.fluid5022fixtures = [{
+        name: "FLUID-5022: Dynamic component creation from referenced array source"
+    }, {
+        name: "FLUID-5022: Dynamic component creation from literal array",
+        headGrades: "fluid.tests.fluid5022literal"
+    },  {
+        name: "FLUID-5022: Dynamic component creation from expander",
+        headGrades: "fluid.tests.fluid5022expander"
+    }];
+
+    fluid.tests.fluid5022fixtures.forEach(function (oneFixture) {
+        jqUnit.test(oneFixture.name, function () {
+            fluid.tests.fluid5022test(oneFixture.headGrades);
+        });
     });
 
     fluid.defaults("fluid.tests.fluid5022eventHead", {
@@ -3525,7 +3652,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listeners: {
                         onCreate: {
                             funcName: "fluid.tests.fluid5022add",
-                            args: "{fluid5022eventHead}"
+                            args: ["{fluid5022eventHead}", "{fluid5022eventHead}.count"]
                         }
                     }
                 }
@@ -3552,6 +3679,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             createIt: null
         },
         dynamicComponents: {
+            // Note: This kind of definition makes the FLUID-5750 options flattening revolution somewhat problematic
             dynamic: {
                 createOnEvent: "createIt",
                 type: "fluid.component",
@@ -3589,6 +3717,442 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Event argument is unmodified through being fired", eventArgCopy, eventArgument);
         jqUnit.assertDeepEq("Designated subcomponents have been created", ["sub1", "sub2"], fluid.keys(fluid.filterKeys(that.dynamic, ["sub1", "sub2"])));
         jqUnit.assertEquals("Subcomponent has designated option", 42, that.dynamic.sub1.options.answer);
+    });
+
+    /** FLUID-5912 - {arguments} within members and models **/
+
+    fluid.defaults("fluid.tests.fluid5912root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                createOnEvent: "createIt",
+                type: "fluid.modelComponent",
+                options: {
+                    members: {
+                        argument0: "{arguments}.0"
+                    },
+                    model: {
+                        argument1: "{arguments}.1"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5912: {arguments} within members and models", function () {
+        var that = fluid.tests.fluid5912root();
+        that.events.createIt.fire(42, 43);
+        jqUnit.assertEquals("Argument value transmitted to member", 42, that.dynamic.argument0);
+        jqUnit.assertEquals("Argument value transmitted to model", 43, that.dynamic.model.argument1);
+    });
+
+    /** FLUID-6404 - destroy() of self during onDestroy via createOnEvent **/
+
+    fluid.defaults("fluid.tests.fluid6404root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            dynamic: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    components: {
+                        dynamicChild: {
+                            type: "fluid.component"
+                        }
+                    },
+                    listeners: {
+                        "onDestroy.destroy": "fluid.tests.fluid6404destroy"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6404destroy = function (that) {
+        if (!fluid.isDestroyed(that)) {
+            that.destroy();
+        }
+    };
+
+    fluid.tests.fluid6404verify = function (that) {
+        jqUnit.assertTrue("Dynamic component exists", fluid.isComponent(that.dynamic));
+        jqUnit.assertTrue("Dynamic child exists", fluid.isComponent(that.dynamic.dynamicChild));
+        var dynamic = that.dynamic, dynamicChild = that.dynamic.dynamicChild;
+        var rootPath = fluid.pathForComponent(that);
+        var dynamicPath = rootPath.concat(["dynamic"]);
+        var dynamicChildPath = rootPath.concat(["dynamic", "dynamicChild"]);
+        jqUnit.assertDeepEq("Path for dynamic is correct", dynamicPath, fluid.pathForComponent(dynamic));
+        jqUnit.assertDeepEq("Path for dynamic child is correct", dynamicChildPath, fluid.pathForComponent(dynamicChild));
+        jqUnit.assertEquals("Shadow for dynamic is correct", dynamic, fluid.shadowForComponent(dynamic).that);
+        jqUnit.assertEquals("Shadow for dynamic is correct", dynamicChild, fluid.shadowForComponent(dynamicChild).that);
+        jqUnit.assertEquals("Path lookup for dynamic is correct", dynamic, fluid.componentForPath(dynamicPath));
+        jqUnit.assertEquals("Path lookup for dynamic child is correct", dynamicChild, fluid.componentForPath(dynamicChildPath));
+    };
+
+    jqUnit.test("FLUID-6404: destroy of self during onDestroy", function () {
+        jqUnit.expect(40);
+        var that = fluid.tests.fluid6404root();
+        for (var i = 0; i < 5; ++i) {
+            that.events.createIt.fire();
+            fluid.tests.fluid6404verify(that);
+        }
+    });
+
+    /** FLUID-6408 - "Hybrid time" **/
+
+    fluid.defaults("fluid.tests.fluid6408root", {
+        gradeNames: "fluid.modelComponent",
+        workflows: {
+            local: {
+                fluid6408workflow: {
+                    funcName: "fluid.tests.fluid6408workflow",
+                    priority: "after:concludeComponentObservation"
+                }
+            }
+        },
+        freeComponent: {
+            expander: { // This will eventually be forbidden
+                func: "fluid.component"
+            }
+        },
+        someLateOption: 42
+    });
+
+    fluid.tests.fluid6408workflow = function (shadow) {
+        jqUnit.assertEquals("Component options should have been fully evaluated", 42, shadow.that.options.someLateOption);
+        fluid.invokeLater(function () {
+            // Clear out the defaults and workflow function to avoid disrupting later tests
+            fluid.defaults("fluid.tests.fluid6408root", {});
+        });
+    };
+
+    jqUnit.test("FLUID-6408: Obnoxious free component disrupts workflow", function () {
+        jqUnit.expect(1);
+        fluid.tests.fluid6408root();
+    });
+
+    /** FLUID-6406 - Workflow runs ahead */
+
+    fluid.defaults("fluid.tests.fluid6406root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            value: true
+        },
+        dynamicComponents: {
+            dynamic: {
+                // Deliberately don't make this a modelComponent to make the fresh work cycle empty
+                type: "fluid.component",
+                source: "{that}.model",
+                options: {
+                    staticish: 42
+                }
+            }
+        },
+        members: {
+            // This should be what we see, even though it is not a great practice
+            staticish: "{that}.dynamic.options.staticish"
+        }
+    });
+
+    jqUnit.test("FLUID-6406: Progress of workflow", function () {
+        var that = fluid.tests.fluid6406root();
+        jqUnit.assertEquals("Late reference to lensed component value ", 42, that.staticish);
+    });
+
+    /** FLUID-6410 - Failure in hybrid time through 0-element sequence reuse **/
+
+// This currently tests the final branch of the test in fluid.commitPotentiae:
+//         if (!topSequencer || topSequencer.hasStartedConcludeInit || topSequencer.promise.disposition) {
+    fluid.defaults("fluid.tests.fluid6410root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                type: "fluid.modelComponent",
+                createOnEvent: "createIt",
+                options: {
+                    model: 42
+                }
+            }
+        },
+        listeners: {
+            "onCreate.createThem": "fluid.tests.fluid6410createThem"
+        }
+    });
+
+    fluid.tests.fluid6410createThem = function (that) {
+        that.events.createIt.fire();
+        that.events.createIt.fire();
+    };
+
+    jqUnit.test("FLUID-6410: Partial construction through sequence reuse", function () {
+        var that = fluid.tests.fluid6410root();
+        jqUnit.assertValue("First component model constructed", that.dynamic.model);
+        jqUnit.assertValue("Second component model constructed", that["dynamic-1"].model);
+    });
+
+    /** FLUID-6411 - Failure when cleaning up model resource listener **/
+
+    fluid.tests.fluid6411promiseGenerator = function () {
+        return function () {
+            var simplePromise = fluid.promise();
+            simplePromise.resolve("Everything is fine.");
+            return simplePromise;
+        };
+    };
+
+    fluid.defaults("fluid.tests.fluid6411resourceLoader", {
+        gradeNames: ["fluid.resourceLoader", "fluid.modelComponent"],
+        resources: {
+            promiseResource: {
+                promiseFunc: "@expand:fluid.tests.fluid6411promiseGenerator()"
+            }
+        },
+        model: {
+            promiseResource: "{that}.resources.promiseResource.parsed"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6411root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            resourceLoader: {
+                createOnEvent: "createIt",
+                type: "fluid.tests.fluid6411resourceLoader"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6411: Cleanup after resource-based model", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid6411root();
+        that.events.createIt.fire();
+        that.events.createIt.fire();
+        jqUnit.assertEquals("Model resolved from promise for the 2nd time", "Everything is fine.", that.resourceLoader.model.promiseResource);
+    });
+
+    /** FLUID-6427 - References cyclic via model state yield corrupted model rather than failure **/
+
+    fluid.defaults("fluid.tests.fluid6427root", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            inner: {
+                type: "fluid.modelComponent",
+                options: {
+                    trunkValue: {
+                        outerConsumer: "{fluid6427root}.model.toConsume",
+                        toConsumeInner: 26
+                    },
+                    model: {
+                        innerConsumer: "{that}.options.trunkValue.toConsumerInner"
+                    }
+                }
+            }
+        },
+        model: {
+            toConsume: 25
+        }
+    });
+
+    jqUnit.test("FLUID-6427: References cyclic via model state yield corruption", function () {
+        jqUnit.expectFrameworkDiagnostic("Should receive diagnostic rather than corrupt model", function () {
+            fluid.tests.fluid6427root();
+        }, ["circular", "model"]);
+    });
+
+    /** FLUID-6390 - Lensed components as a hash **/
+
+    fluid.defaults("fluid.tests.fluid6390child", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390hashRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: {
+                element1: {
+                    value: 42
+                },
+                element2: {
+                    value: 43
+                }
+            }
+        },
+        dynamicComponents: {
+            arenaComponents: {
+                sources: "{that}.model.arena",
+                type: "fluid.tests.fluid6390child",
+                options: {
+                    model: {
+                        arenaValue: "{source}.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390assertModelValues = function (message, that, expected) {
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        var values = fluid.getMembers(children, ["model", "arenaValue"]);
+        jqUnit.assertDeepEq(message, expected, values);
+    };
+
+    jqUnit.test("FLUID-6390: Lensed components as a hash", function () {
+        var that = fluid.tests.fluid6390hashRoot();
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        jqUnit.assertEquals("Two model-driven subcomponents created", 2, children.length);
+        fluid.tests.fluid6390assertModelValues("Initial model values are correct", that, [42, 43]);
+        that.applier.change("arena.element3.value", 44);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with new component", that, [42, 43, 44]);
+        that.applier.change("arena.element1.value", 1);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with forward relay", that, [1, 43, 44]);
+        that.applier.change("arena.element1", null, "DELETE");
+        fluid.tests.fluid6390assertModelValues("Model deletion relayed to component deletion", that, [43, 44]);
+        var component3 = that["arenaComponents-element3"];
+        jqUnit.assertTrue("Fetched component via fluid.componentForModelPath", fluid.isComponent(component3));
+        component3.applier.change("arenaValue", 3);
+        jqUnit.assertEquals("Model value propagated through backward relay", 3, that.model.arena.element3.value);
+        var component2 = that["arenaComponents-element2"];
+        component2.destroy();
+        var expectedFinalArena = {
+            element3: {
+                value: 3
+            }
+        };
+        jqUnit.assertDeepEq("Relay of component destruction back to deletion of source model", expectedFinalArena, that.model.arena);
+    });
+
+    fluid.defaults("fluid.tests.fluid6390booleanRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            shouldComponentExist: 1
+        },
+        dynamicComponents: {
+            conditionalComponent: {
+                source: "{that}.model.shouldComponentExist",
+                type: "fluid.component"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6390: Lensed components from a boolean", function () {
+        var that = fluid.tests.fluid6390booleanRoot();
+        jqUnit.assertTrue("Conditional component should have been constructed", fluid.isComponent(that.conditionalComponent));
+        that.conditionalComponent.destroy();
+        jqUnit.assertEquals("Destruction of component should have unset model value", false, that.model.shouldComponentExist);
+        jqUnit.assertUndefined("Conditional component should not have been reconstructed", that.conditionalComponent);
+        that.applier.change("shouldComponentExist", true);
+        jqUnit.assertTrue("Conditional component should have been reconstructed", fluid.isComponent(that.conditionalComponent));
+        jqUnit.assertEquals("Model flag should not have been unset", true, that.model.shouldComponentExist);
+        that.applier.change("shouldComponentExist", false);
+        jqUnit.assertUndefined("Conditional component should have been destroyed", that.conditionalComponent);
+        jqUnit.assertEquals("Model flag should not have been reset", false, that.model.shouldComponentExist);
+    });
+
+    /** FLUID-6414 - Dynamic grades via expanders **/
+// Also tests FLUID-6415 corruption in graph structure
+    fluid.defaults("fluid.tests.fluid6414root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: {
+                element1: {
+                    type: "green",
+                    value: 42
+                },
+                element2: {
+                    type: "red",
+                    value: 43
+                },
+                element3: {
+                    type: "green",
+                    value: 44
+                }
+            }
+        },
+        components: {
+            middle: {
+                type: "fluid.tests.fluid6414middle",
+                options: {
+                    model: "{fluid6414root}.model"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414middle", {
+        gradeNames: "fluid.modelComponent",
+        invokers: {
+            resolveElementGrade: "fluid.tests.fluid6414resolve({arguments}.0)"
+        },
+        model: {
+            arena: {}
+        },
+        dynamicComponents: {
+            element: {
+                sources: "{that}.model.arena",
+                type: "@expand:{fluid6414middle}.resolveElementGrade({source}.type)",
+                options: {
+                    model: {
+                        value: "{source}.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414element", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            value: null
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414green", {
+        gradeNames: "fluid.tests.fluid6414element",
+        model: {
+            colour: "green"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6414red", {
+        gradeNames: "fluid.tests.fluid6414element",
+        model: {
+            colour: "red"
+        }
+    });
+
+    fluid.tests.fluid6414resolve = function (flatType) {
+        return "fluid.tests.fluid6414" + flatType;
+    };
+
+    jqUnit.test("FLUID-6414: Dynamic grades via expanders", function () {
+        var that = fluid.tests.fluid6414root();
+        fluid.test.assertTransactionsConcluded();
+        var subs = fluid.queryIoCSelector(that, "fluid.tests.fluid6414element");
+        jqUnit.assertEquals("Three components lensed into existence", 3, subs.length);
+        var expectedModels = [{
+            colour: "green",
+            value: 42
+        },{
+            colour: "red",
+            value: 43
+        },{
+            colour: "green",
+            value: 44
+        }];
+        var models = fluid.getMembers(subs, "model");
+        jqUnit.assertDeepEq("Models resolved correctly", expectedModels, models);
     });
 
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
@@ -3840,7 +4404,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
+    /** FLUID-5036, Case 1 - An IoCSS source that is fetched from a resolveRoot component is not resolved correctly **/
 
     fluid.defaults("fluid.tests.fluid5036_1Root", {
         gradeNames: ["fluid.component"],
@@ -3860,7 +4424,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly", function () {
+    jqUnit.test("FLUID-5036, Case 1 - An IoCSS source that is fetched from a resolveRoot is not resolved correctly", function () {
         var userOption = 10;
 
         var optionHolder = fluid.component({
@@ -3869,11 +4433,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         var root = fluid.tests.fluid5036_1Root();
 
-        jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", userOption, root.subComponent.options.targetOption);
+        jqUnit.assertEquals("A user option fetched from a resolveRoot component is passed down the target", userOption, root.subComponent.options.targetOption);
         optionHolder.destroy();
     });
 
-    /** FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
+    /** FLUID-5036, Case 2 - An IoCSS source that is fetched from a resolveRoot is not resolved correctly **/
 
     fluid.defaults("fluid.tests.fluid5036_2Root", {
         gradeNames: ["fluid.component"],
@@ -4434,8 +4998,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5333component();
         jqUnit.assertEquals("Component should be returned in destroyed condition", true, fluid.isDestroyed(that));
         jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
+        delete that.noted;
         that.events.ourEvent.fire(that);
-        jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
+        jqUnit.assertUndefined("Listeners after destruction should not be notified", that.noted);
     });
 
     /*** FLUID-5266 diagnostic when accessing createOnEvent component before construction ***/
@@ -4470,8 +5035,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-5226 - ginger reference to createOnEvent component should fail", function () {
-        jqUnit.expectFrameworkDiagnostic("Bad ginger reference to createOnEvent via context", fluid.tests.fluid5266context, "createOnEvent");
-        jqUnit.expectFrameworkDiagnostic("Bad ginger reference to createOnEvent via direct member", fluid.tests.fluid5266direct, "createOnEvent");
+        // Note: This behaviour has changed after FLUID-6148.
+        // The first is a generic "not found" failure since the component is not constructed
+        jqUnit.expectFrameworkDiagnostic("Bad ginger reference to createOnEvent via context", fluid.tests.fluid5266context, "could not match context");
+        // The second simply resolves to nothing as would any "reference into nothing"
+        var that = fluid.tests.fluid5266direct();
+        jqUnit.expect(1);
+        jqUnit.assertUndefined("Bad ginger reference to createOnEvent via direct member", that.reference);
+    });
+
+    /*** FLUID-6418 no failure when referring to site of dynamic component during afterDestroy ***/
+
+    fluid.defaults("fluid.tests.fluid6418root", {
+        gradeNames: ["fluid.component"],
+        events: {
+            creationEvent: null
+        },
+        dynamicComponents: {
+            child: {
+                type: "fluid.component",
+                createOnEvent: "creationEvent",
+                options: {
+                    initMember: "{arguments}.0",
+                    listeners: {
+                        "afterDestroy": "fluid.tests.fluid6418verify({fluid6418root}.child)"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6418verify = function (site) {
+        jqUnit.assertUndefined("Dynamic component should have been cleanly removed", site);
+    };
+
+    jqUnit.test("FLUID-6418 - no failure when referring to site of destroyed dynamic component during after destroy", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid6418root();
+        that.events.creationEvent.fire(42);
+        that.child.destroy();
     });
 
     /** FLUID-5249 tests - globalInstantiator, fluid.resolveRoot and its effects **/
@@ -4696,7 +5298,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var results = fluid.queryIoCSelector(that, fixture.selector, fixture.flat);
         var leaves = fluid.transform(results, function (result) {
             var path = fluid.pathForComponent(result);
-            return path[path.length - 1];
+            return fluid.peek(path);
         });
         jqUnit.assertDeepEq("Expected results for queryIoCSelector", fixture.expected, leaves);
     };
@@ -4929,6 +5531,311 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
     });
 
+    /** Test potentia idioms **/
+
+    fluid.tests.fetchPaths = function (that, paths) {
+        return fluid.transform(paths, function (path) {
+            return fluid.get(that, path);
+        });
+    };
+
+    fluid.defaults("fluid.tests.FLUID6148root", {
+        gradeNames: "fluid.component",
+        events: {
+            constructEvent: null
+        },
+        components: {
+            child1: {
+                createOnEvent: "constructEvent",
+                type: "fluid.component",
+                options: {
+                    value1: "value1",
+                    nextValue: "{child3}.options.value3"
+                }
+            },
+            child2: {
+                createOnEvent: "constructEvent",
+                type: "fluid.component",
+                options: {
+                    value2: "value2",
+                    nextValue: "{child1}.options.value1"
+                }
+            },
+            child3: {
+                createOnEvent: "constructEvent",
+                type: "fluid.component",
+                options: {
+                    value3: "value3",
+                    nextValue: "{child2}.options.value2"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6148: Construct circularly referring component on event", function () {
+        var that = fluid.tests.FLUID6148root();
+        that.events.constructEvent.fire();
+        var paths = ["child1.options.nextValue", "child2.options.nextValue", "child3.options.nextValue"];
+        var expected = ["value3", "value1", "value2"];
+        var values = fluid.tests.fetchPaths(that, paths);
+        jqUnit.assertDeepEq("Constructed circularly referring components on event", expected, values);
+    });
+
+    /** Test partial evaluation **/
+
+    fluid.defaults("fluid.tests.FLUID6148partial", {
+        gradeNames: "fluid.component",
+        unnecessaryValue: 42,
+        listeners: {
+            onCreate: {
+                funcName: "fluid.tests.notingListener"
+            }
+        }
+    });
+
+    fluid.tests.oneFluid6148Partial = function (name, options, expected) {
+        var paths = ["options.unnecessaryValue", "noted"];
+        var transactionId = fluid.beginTreeTransaction(options).transactionId;
+        fluid.construct("FLUID6148partial-instance", {
+            type: "fluid.tests.FLUID6148partial"
+        }, {transactionId: transactionId});
+        var that = fluid.commitPotentiae(transactionId).that;
+        var values = fluid.tests.fetchPaths(that, paths);
+        jqUnit.assertTrue("Partial evaluation test - " + name + ": component constructed", fluid.isComponent(that));
+        jqUnit.assertDeepEq("Partial evaluation test - " + name + ": expected construction state", expected, values);
+        fluid.destroy("FLUID6148partial-instance");
+    };
+
+    jqUnit.test("FLUID-6148: Partial evaluation tests", function () {
+        jqUnit.expect(6);
+        fluid.tests.oneFluid6148Partial("shell construction",       {breakAt: "shells"},       [undefined, undefined]);
+        fluid.tests.oneFluid6148Partial("observation construction", {breakAt: "concludeComponentObservation"},  [42, undefined]);
+        fluid.tests.oneFluid6148Partial("full construction",        null,                      [42, true]);
+    });
+
+    jqUnit.test("FLUID-6148: Failed lookup of breakAt doesn't corrupt framework", function () {
+        jqUnit.expectFrameworkDiagnostic("Failed lookup gives diagnostic", function () {
+            var transaction = fluid.beginTreeTransaction({breakAt: "unknown workflow"});
+            transaction.promise.then(null, function (err) {
+                throw err;
+            });
+        }, "concludeComponentObservation");
+    });
+
+    /** Test cleanup even of perversely constructed components **/
+
+    fluid.defaults("fluid.tests.FLUID6148cleanup", {
+        gradeNames: "fluid.component",
+        components: {
+            lateChild: {
+                createOnEvent: "onCreate",
+                type: "fluid.component",
+                options: {
+                    listeners: {
+                        "onCreate.explode": {
+                            func: "fluid.builtinFail",
+                            args: [["Explosion during creation"]]
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6184: Cleanup test", function () {
+        var prePaths = fluid.test.getConstructedPaths();
+        jqUnit.expect(2);
+        try {
+            fluid.tests.FLUID6148cleanup();
+        } catch (e) {
+            jqUnit.assert("Exception caught during construction");
+        } finally {
+            var postPaths = fluid.test.getConstructedPaths();
+            jqUnit.assertDeepEq("No disturbance of constructed paths from failed construction", prePaths, postPaths);
+        }
+    });
+
+    /** Test cleanup after cancellation of transaction featuring creation and destruction **/
+    // Discovered through running GPII's new LifecycleManagerSession/UserRequest setup through FLUID-6148 branch
+    fluid.defaults("fluid.tests.FLUID6148cleanup2", {
+        gradeNames: "fluid.component",
+        events: {
+            createOne: null,
+            createTwo: null
+        },
+        components: {
+            createOne: {
+                type: "fluid.component",
+                createOnEvent: "createOne",
+                options: {
+                    destroyOther: "{arguments}.0",
+                    listeners: {
+                        "onCreate.destroyOther": "fluid.tests.FLUID6148destroyOther({FLUID6148cleanup2})",
+                        "onCreate.explode": {
+                            funcName: "fluid.builtinFail",
+                            args: [["Fail after destruction"]],
+                            priority: "after:destroyOther"
+                        }
+                    }
+                }
+            },
+            createTwo: {
+                type: "fluid.component",
+                createOnEvent: "createTwo"
+
+            }
+        }
+    });
+
+    fluid.tests.FLUID6148destroyOther = function (head) {
+        head.createTwo.destroy();
+    };
+
+    jqUnit.test("FLUID-6184: Cleanup test 2", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.FLUID6148cleanup2();
+        that.events.createTwo.fire();
+        try {
+            that.events.createOne.fire();
+        } catch (e) {
+            jqUnit.assertUndefined("Component one not created", that.createOne);
+            jqUnit.assertUndefined("Component two destroyed", that.createTwo);
+        }
+    });
+
+    /** Justin's theme: Test destruction of free component during onDestroy listener **/
+    // Discovered in "Localization Enactor Tests" where fluid.tests.localizationExistingTests both instantiates and
+    // destroys a free component. In fact the stack overflow failure was masked since the destructor had actually
+    // executed and the stack overflow exception was just converted into a transaction promise rejection that was unobserved
+
+    fluid.defaults("fluid.tests.FLUID6148destructors", {
+        gradeNames: "fluid.component",
+        listeners: {
+            "onCreate.constructIt": "fluid.tests.FLUID6148destructors.construct",
+            "onDestroy.destroyIt": "fluid.tests.FLUID6148destructors.destroy"
+        }
+        /** Still worse, we could write the following, which will presumably always be forbidden since it might execute
+        as late as "observation" which is at the end of local workflows
+        members: {
+            freeComponent: "@expand:fluid.component()"
+        }
+        */
+    });
+
+    fluid.tests.FLUID6148destructors.construct = function (that) {
+        // Truly awful practice but there is little we can do to effectively forbid it
+        that.freeComponent = fluid.component();
+    };
+
+    fluid.tests.FLUID6148destructors.destroy = function (that) {
+        var transRec = fluid.currentTreeTransaction();
+        transRec.promise.then(function () {
+            jqUnit.assert("Transaction should conclude normally");
+        }, function (err) {
+            jqUnit.fail("Destruction transaction should have concluded normally, instead got " + err);
+        });
+        that.freeComponent.destroy();
+        jqUnit.assertNotEquals("Opened transaction should not have rejected already", "reject", transRec.promise.disposition);
+    };
+
+    jqUnit.test("FLUID-6148: Chained destructors", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.FLUID6148destructors();
+        that.destroy();
+    });
+
+    /** Test to check for double inversion of notification order with onCreate createOnEvent **/
+
+    fluid.defaults("fluid.tests.FLUID6148notate", {
+        gradeNames: "fluid.component",
+        listeners: {
+            "onCreate.note": {
+                funcName: "fluid.tests.FLUID6148note",
+                args: ["{fluid.tests.FLUID6148create}", "{that}"],
+                // Note that if this priority is not supplied, the order will not be as expected since component
+                // creation via "onCreate" itself will not be fully enqueued
+                priority: "after:fluid-componentConstruction"
+            }
+        }
+    });
+
+    fluid.tests.FLUID6148note = function (noteHolder, created) {
+        var createdPath = fluid.pathForComponent(created);
+        createdPath.shift();
+        noteHolder.createOrder.push(createdPath.join("."));
+    };
+
+    fluid.defaults("fluid.tests.FLUID6148create", {
+        gradeNames: "fluid.tests.FLUID6148notate",
+        members: {
+            createOrder: []
+        },
+        components: {
+            child1: {
+                type: "fluid.tests.FLUID6148notate",
+                createOnEvent: "onCreate",
+                options: {
+                    components: {
+                        child2: {
+                            type: "fluid.tests.FLUID6148notate",
+                            options: {
+                                components: {
+                                    child3: {
+                                        type: "fluid.tests.FLUID6148notate",
+                                        createOnEvent: "onCreate"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6148: Chained onCreate", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID6148create();
+        var expected = ["child1.child2.child3", "child1.child2", "child1", ""];
+        jqUnit.assertDeepEq("Components created in expected order", expected, that.createOrder);
+    });
+
+    /** FLUID-5614: Merging of "double deep trees" **/
+
+    fluid.tests.push = function (array, value) {
+        array.push(value);
+    };
+
+    fluid.defaults("fluid.tests.FLUID5614root1", {
+        gradeNames: "fluid.component",
+        components: {
+            sub: {
+                type: "fluid.component",
+                options: {
+                    members: {
+                        firings: []
+                    },
+                    listeners: {
+                        onCreate: {
+                            funcName: "fluid.tests.push",
+                            args: ["{that}.firings", true]
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID5614root2", fluid.defaults("fluid.tests.FLUID5614root1"));
+
+    jqUnit.test("FLUID-5614: Failure to merge \"double deep trees\" correctly", function () {
+        var that = fluid.tests.FLUID5614root1({
+            gradeNames: "fluid.tests.FLUID5614root2"
+        });
+        jqUnit.assertDeepEq("Should have fired two onCreate listeners through merged definitions",
+            [true, true], that.sub.firings);
+    });
+
     /** FLUID-6371 Memory leaks with dynamic components **/
 
     fluid.defaults("fluid.tests.FLUID6371root", {
@@ -4971,7 +5878,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.countHeapRecurse = function (map, root, path) {
-        if (!map.has(root) && path !== "fluid.global") {
+        if (!map.has(root) && path !== "fluid.global" && path !== "fluid.jQueryStandalone.globalScope") {
             map.set(root, path);
             fluid.each(root, function (child, seg) {
                 fluid.tests.countHeapRecurse(map, child, path + "." + seg);

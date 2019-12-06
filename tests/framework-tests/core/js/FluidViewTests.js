@@ -178,9 +178,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent", function () {
-            jqUnit.expectFrameworkDiagnostic("Nonexist container for relay component", function () {
+            jqUnit.expectFrameworkDiagnostic("Nonexistent container", function () {
                 fluid.tests.fluid5277("#nonexistent-container");
-            }, "did not match any markup");
+            }, ["No container element was found", "#nonexistent-container"]);
         });
 
         fluid.defaults("fluid.tests.testGradedView", {
@@ -196,6 +196,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertValue("Constructed component", that);
             jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
             jqUnit.assertDeepEq("View component acquired model", model, that.model);
+        });
+
+        // Test for regression in ability to use the DOM binder in expanders in the FLUID-6148 framework. This
+        // previously used to happen "by accident" via the custom init function for view components.
+        fluid.defaults("fluid.tests.testLocatorExpander", {
+            gradeNames: "fluid.tests.testGradedView",
+            // Use of options rather than members is more likely to jump the queue ahead of the binder itself
+            aLink: "@expand:{that}.locate(page-link)"
+        });
+
+        jqUnit.test("Use of DOM binder within expander", function () {
+            var that = fluid.tests.testLocatorExpander("#pager-top");
+            jqUnit.assertValue("Resolved some kind of value via locator expander", that.options.aLink);
+            jqUnit.assertEquals("Found the 3 page links during startup", 3, that.options.aLink.length);
         });
 
         fluid.defaults("fluid.tests.blurTester", {

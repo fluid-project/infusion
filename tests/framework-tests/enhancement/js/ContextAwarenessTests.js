@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         var names = contextAware.options.gradeNames;
         return fluid.remove_if(fluid.makeArray(names), function (name) {
-            return (/fluid\.contextAware|fluid\.tests\.contextAware\.base|{that}.check|fluid\.component/).test(name);
+            return (/fluid\.contextAware|fluid\.tests\.contextAware\.base|fluid\.component/).test(name);
         });
     };
 
@@ -147,7 +147,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             urgency: {
                 defaultGradeNames: "above.food",
-                priority: "before:food" // Note that stronger grades appear to the LEFT in defaults - even though we consider merging to morally occur from left to right
+                priority: "before:food" // Note that stronger grades (those which override others) appear to the RIGHT in defaults
             },
             strongest: {
                 defaultGradeNames: "strongest.priority",
@@ -218,6 +218,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "check.set.one": false,
             "check.set.two": false
         });
+    });
+
+    /** FLUID-6438 contextAwareness dynamic grade application order **/
+
+    fluid.defaults("fluid.tests.fluid6438context", {
+        gradeNames: "fluid.component",
+        buildingOptions: {
+            contextOption: 42
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6438outer", {
+        gradeNames: ["fluid.tests.fluid6438base", "fluid.contextAware"],
+        contextAwareness: {
+            food: {
+                defaultGradeNames: "fluid.tests.fluid6438context"
+            }
+        }
+    });
+
+    fluid.tests.fluid6438consume = function (buildingOptions) {
+        jqUnit.assertEquals("ContextAwareness contributed grade should already have arrived", 42, buildingOptions.contextOption);
+        return null;
+    };
+
+    fluid.defaults("fluid.tests.fluid6438base", {
+        gradeNames: ["fluid.component", "@expand:fluid.tests.fluid6438consume({that}.options.buildingOptions)"]
+    });
+
+    jqUnit.test("FLUID-6438: Ordering of fluid.contextAware grade application", function () {
+        jqUnit.expect(1);
+        fluid.tests.fluid6438outer();
     });
 
 })();
