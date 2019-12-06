@@ -119,7 +119,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selfVoicing}.orator.selectionReader", "Selection", {
-                        showUI: true,
                         play: false,
                         text: "text",
                         enabled: true
@@ -132,12 +131,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selfVoicing}.orator.selectionReader", "Remove Selection UI", {
-                        showUI: false,
                         play: false,
                         text: "",
                         enabled: false
                     }],
-                    spec: {priority: "last:testing", path: "showUI"},
+                    spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selfVoicing}.orator.selectionReader.applier.modelChanged"
                 }]
             }]
