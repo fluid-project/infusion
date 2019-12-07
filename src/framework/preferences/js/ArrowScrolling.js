@@ -74,12 +74,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }]
             },
             "onReady.windowResize": {
-                "this": window,
+                "this": "window",
                 method: "addEventListener",
                 args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
             },
             "onDestroy.removeWindowResize": {
-                "this": window,
+                "this": "window",
                 method: "removeEventListener",
                 args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
             },

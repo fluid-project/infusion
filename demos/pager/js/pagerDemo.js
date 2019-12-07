@@ -19,23 +19,11 @@ var demo = demo || {};
     "use strict";
 
     fluid.defaults("demo.pager", {
-        gradeNames: ["fluid.viewComponent"],
-        events: {
-            onDataReady: null
-        },
-        listeners: {
-            "onCreate.loadData": "{that}.loadData"
-        },
+        gradeNames: ["fluid.resourceLoader", "fluid.viewComponent"],
         resources: {
             users: {
                 url: "data/pager.json",
                 dataType: "json"
-            }
-        },
-        invokers: {
-            loadData: {
-                funcName: "fluid.fetchResources",
-                args: ["{that}.options.resources", "{that}.events.onDataReady.fire"]
             }
         },
         components: {
@@ -43,9 +31,9 @@ var demo = demo || {};
             pagedTable: {
                 type: "fluid.pagedTable",
                 container: "{that}.container",
-                createOnEvent: "onDataReady",
+                createOnEvent: "onResourcesLoaded",
                 options: {
-                    dataModel: "{demo.pager}.options.resources.users.parsed",
+                    dataModel: "{demo.pager}.resources.users.parsed",
                     model: {
                         pageSize: 20
                     },
