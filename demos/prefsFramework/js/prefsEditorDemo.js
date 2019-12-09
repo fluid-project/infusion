@@ -32,8 +32,8 @@ var demo = demo || {};
     });
 
     fluid.contextAware.makeChecks({
-        // "fluid.supportsTTS": false
-        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
+        "fluid.supportsTTS": false
+        // "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
     });
 
     fluid.defaults("demo.prefsEditor.progressiveEnhancement", {
