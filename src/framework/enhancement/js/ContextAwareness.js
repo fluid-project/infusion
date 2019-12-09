@@ -109,15 +109,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * If no check matches, the grades held in `defaultGradeNames` will be applied.
      */
     fluid.defaults("fluid.contextAware", {
-        // forward-looking definition for FLUID-6439 - "namespace" is currently ignored
-        gradeNames: {
-            namespace: "contextAwareness",
-            priority: "first",
-            expander: {
-                funcName: "fluid.contextAware.check",
-                args: ["{that}", "{that}.options.contextAwareness"]
-            }
-        },
         mergePolicy: {
             contextAwareness: "noexpand"
         },
@@ -161,6 +152,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // unsupported, NON-API function
+    // Note that this function is now invoked directly from fluid.computeDynamicGrades
+    /** The top-level engine for the contextAwareness algorithm. Accepts the context-aware component and its top-level `contextAwarenessOptions` block
+     * and returns the array of grade names to be contributed into its `gradeNames`
+     * @param {fluid.contextAware} that - The `contextAware` component
+     * @param {Object} contextAwarenessOptions - The component's top-level `contextAwareness` options
+     * @return {String[]} An array, possibly empty, of grade names to be contributed into the component
+     */
     fluid.contextAware.check = function (that, contextAwarenessOptions) {
         var gradeNames = [];
         var contextAwareList = fluid.parsePriorityRecords(contextAwarenessOptions, "contextAwareness adaptationRecord");

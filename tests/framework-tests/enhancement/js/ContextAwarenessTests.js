@@ -252,4 +252,51 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.fluid6438outer();
     });
 
+    /** FLUID-6440 contextAwareness and grade closure algorithm **/
+
+    fluid.defaults("fluid.tests.fluid6440foodContext", {
+        gradeNames: "fluid.component",
+        foodValue: "carrots",
+        secondaryFoodValue: "cheese"
+    });
+
+    fluid.defaults("fluid.tests.fluid6440intermediateOutput", {
+        gradeNames: "fluid.component",
+        secondaryFoodValue: "corn"
+    });
+
+    fluid.defaults("fluid.tests.fluid6440contextOut", {
+        secondaryFoodValue: "courses"
+    });
+
+    fluid.tests.fluid6440intermediate = function (foodValue) {
+        jqUnit.assertEquals("Nullary contextAwareness value applied already", "carrots", foodValue);
+        return "fluid.tests.fluid6440intermediateOutput";
+    };
+
+    fluid.defaults("fluid.tests.fluid6440base", {
+        gradeNames: ["fluid.component", "fluid.contextAware", "@expand:fluid.tests.fluid6440intermediate({that}.options.foodValue)"],
+        contextAwareness: {
+            food: {
+                defaultGradeNames: "fluid.tests.fluid6440foodContext"
+            },
+            ambition: {
+                checks: {
+                    firstCheck: {
+                        contextValue: "{fluid6440intermediateOutput}.options.foodValue",
+                        gradeNames: "fluid.tests.fluid6440contextOut"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6440: Grade closure for ContextAwareness", function () {
+        jqUnit.expect(3);
+        var that = fluid.tests.fluid6440base();
+        jqUnit.assertTrue("Final grade output through repeated ContextAwareness application",
+            fluid.componentHasGrade(that, "fluid.tests.fluid6440contextOut"));
+        jqUnit.assertEquals("ContextAwareness grade has overridden computed option value", "courses", that.options.secondaryFoodValue);
+    });
+
 })();

@@ -182,6 +182,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.debug.renderDefaults = function (defaultsTemplate, typeName, options) {
+        // console.log(fluid.prettyPrintJSON(options));
         return fluid.stringTemplate(defaultsTemplate, {
             typeName: typeName,
             options: JSON.stringify(options, null, 4)
@@ -284,7 +285,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.debug.renderInspecting = function (that, paneBody, markup, inspecting) {
-        if (!paneBody || !that.highlighter) { // stupid ginger world failure
+        if (!paneBody || !that.highlighter || !that.tooltips) { // stupid ginger world failure
             return;
         }
         var defaultsIdToContent = {}; // driver for tooltips showing defaults source
@@ -546,10 +547,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             onCreate: {
                 funcName: "fluid.debug.viewMapper.registerView",
+                priority: "first",
                 args: ["{fluid.debug.viewMapper}", "{that}", "add"]
             },
             onDestroy: {
                 funcName: "fluid.debug.viewMapper.registerView",
+                priority: "last",
                 args: ["{fluid.debug.viewMapper}", "{that}", "remove"]
             }
         }

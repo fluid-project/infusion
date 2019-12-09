@@ -654,13 +654,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    // A very primitive comparator, good enough to resolve FLUID-6438 for now. Once we widen support to FLUID-6439, this
-    // will need to use the full fluid.parsePriorityRecords algorithm
-    fluid.rawDynamicComparator = function (raw1, raw2) {
-        var simplePriority = function (raw) {
-            return raw && raw.priority ? fluid.priorityTypes[raw.priority] : 0;
-        };
-        return simplePriority(raw1) - simplePriority(raw2);
+    fluid.accumulateContextAwareGrades = function (that, rec) {
+        var newContextAware = [];
+        if (fluid.contains(rec.gradeNames, "fluid.contextAware")) {
+            var contextAwarenessOptions = fluid.getForComponent(that, ["options", "contextAwareness"]);
+            newContextAware = fluid.contextAware.check(that, contextAwarenessOptions);
+            var lostGrade = rec.contextAware.find(function (gradeName) {
+                return !fluid.contains(newContextAware, gradeName);
+            });
+            if (lostGrade) { // The user really deserves a prize if they achieve this diagnostic
+                fluid.fail("Failure operating contextAwareness definition ", contextAwarenessOptions, " for component " + fluid.dumpComponentAndPath(that)
+                    + ": grade name " + lostGrade + " returned by an earlier round of checks was lost through a context change caused by a raw dynamic grade");
+            }
+            rec.contextAware = newContextAware;
+        }
+        return newContextAware;
     };
 
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
@@ -676,7 +684,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             defaultsBlock: defaultsBlock,
             gradeNames: gradeNames, // remember that this array is globally shared
             seenGrades: {},
-            plainDynamic: [],
+            plainDynamic: [], // unshared, accumulates any directly seen grades and their derivatives seen on one cycle
+            contextAware: [],
             rawDynamic: []
         };
         fluid.each(shadow.mergeOptions.mergeBlocks, function (block) { // acquire parents of earlier blocks before applying later ones
@@ -684,6 +693,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.applyDynamicGrades(rec);
         });
         fluid.collectDistributedGrades(rec);
+        var checkContextAware = true; // Make a fresh check for contextAware grades after every contribution from raw dynamics
         while (true) {
             while (rec.plainDynamic.length > 0) {
                 gradeNames.push.apply(gradeNames, rec.plainDynamic);
@@ -691,8 +701,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.applyDynamicGrades(rec);
                 fluid.collectDistributedGrades(rec);
             }
-            fluid.stableSort(rec.rawDynamic, fluid.rawDynamicComparator);
-            if (rec.rawDynamic.length > 0) {
+            if (checkContextAware) {
+                var newContextAware = fluid.accumulateContextAwareGrades(that, rec);
+                rec.plainDynamic = rec.plainDynamic.concat(newContextAware);
+                checkContextAware = false;
+            } else if (rec.rawDynamic.length > 0) {
                 var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localRecord);
                 if (typeof(expanded) === "function") {
                     expanded = expanded();
@@ -700,6 +713,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (expanded) {
                     rec.plainDynamic = rec.plainDynamic.concat(expanded);
                 }
+                checkContextAware = true;
             } else {
                 break;
             }
