@@ -17,12 +17,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
+    fluid.registerNamespace("fluid.tests.uiOptions");
+
+    fluid.tests.uiOptions.customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
+    fluid.tests.uiOptions.customizedTocMessage = "../../../../src/framework/preferences/messages/tableOfContents-enactor.json";
+
     /* Mixin grade for UIO test component */
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorBase", {
-        gradeNames: ["fluid.uiOptions.prefsEditor"],
-        terms: {
-            templatePrefix: "../../../../src/framework/preferences/html",
-            messagePrefix: "../../../../src/framework/preferences/messages"
+        gradeNames: ["fluid.uiOptions"],
+        auxiliarySchema: {
+            terms: {
+                templatePrefix: "../../../../src/framework/preferences/html",
+                messagePrefix: "../../../../src/framework/preferences/messages"
+            },
+            "fluid.prefs.tableOfContents": {
+                enactor: {
+                    "tocTemplate": fluid.tests.uiOptions.customizedTocTemplate,
+                    "tocMessage": fluid.tests.uiOptions.customizedTocMessage
+                }
+            }
         }
     });
 
@@ -37,15 +50,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.uiOptions.customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
-    fluid.tests.uiOptions.customizedTocMessage = "../../../../src/framework/preferences/messages/tableOfContents-enactor.json";
-
-    fluid.defaults("fluid.tests.uiOptions.testPrefsEditorCustomToc", {
-        gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
-        tocTemplate: fluid.tests.uiOptions.customizedTocTemplate,
-        tocMessage: fluid.tests.uiOptions.customizedTocMessage
-    });
-
     fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
@@ -54,9 +58,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Pass in customized toc template",
                 expect: 4,
                 sequence: [{
-                    "event": "{prefsEditorCustomTocTest testPrefsEditorCustomToc}.events.onReady",
+                    "event": "{prefsEditorCustomTocTest testPrefsEditorBase}.events.onReady",
                     "listener": "fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates",
-                    "args": ["{testPrefsEditorCustomToc}", fluid.tests.uiOptions.customizedTocTemplate,  fluid.tests.uiOptions.customizedTocMessage]
+                    "args": ["{testPrefsEditorBase}", fluid.tests.uiOptions.customizedTocTemplate,  fluid.tests.uiOptions.customizedTocMessage]
                 }]
             }]
         }]
@@ -80,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.uiOptions.prefsEditorBaseTest"],
         components: {
             prefsEditor: {
-                type: "fluid.tests.uiOptions.testPrefsEditorCustomToc",
+                type: "fluid.tests.uiOptions.testPrefsEditorBase",
                 container: ".flc-prefsEditor-separatedPanel"
             },
             prefsEditorTester: {
@@ -91,8 +95,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorLocalized", {
         gradeNames: ["fluid.tests.uiOptions.testPrefsEditorBase"],
-        defaultLocale: "fr",
-        tocMessage: fluid.tests.uiOptions.customizedTocMessage
+        auxiliarySchema: {
+            defaultLocale: "fr"
+        }
     });
 
     fluid.defaults("fluid.tests.uiOptions.prefsEditorLocalizedTester", {
