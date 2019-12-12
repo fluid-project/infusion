@@ -25,15 +25,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.prefs.auxSchema", {
         gradeNames: ["fluid.component"],
-        auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.separatedPanel"],
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html",
-                "messagePrefix": "../../framework/preferences/messages"
-            }
-        }
+        auxiliarySchema: {}
     });
 
     // /**
@@ -271,8 +263,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             fluid.each(subPanelList, function (subPanelID) {
                 panelsToIgnore.push(subPanelID);
-                var subPanelPrefsKey = fluid.get(auxSchema, [subPanelID, "type"]);
-                var safeSubPanelPrefsKey = fluid.prefs.subPanel.safePrefKey(subPanelPrefsKey);
+                var safeSubPanelPrefsKey = fluid.prefs.subPanel.safePrefKey(subPanelID);
                 selectorsToIgnore.push(safeSubPanelPrefsKey);
 
                 var subPanelOptions = fluid.copy(fluid.get(auxSchema, [subPanelID, "panel"]));
@@ -285,11 +276,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
 
                 // Deal with preferenceMap related options
-                var map = fluid.defaults(subPanelType).preferenceMap[subPanelPrefsKey];
-                var prefSchema = mappedDefaults[subPanelPrefsKey];
+                var map = fluid.defaults(subPanelType).preferenceMap[subPanelID];
+                var prefSchema = mappedDefaults[subPanelID];
 
                 fluid.each(map, function (primaryPath, internalPath) {
-                    if (fluid.prefs.checkPrimarySchema(prefSchema, subPanelPrefsKey)) {
+                    if (fluid.prefs.checkPrimarySchema(prefSchema, subPanelID)) {
                         var opts;
                         if (internalPath.indexOf("model.") === 0 && primaryPath === "value") {
                             // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
@@ -516,6 +507,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         indexFunc: "fluid.prefs.auxBuilder.prefMapIndexer"
                     }]
                 }
+            }
+        },
+        auxiliarySchema: {
+            "loaderGrades": ["fluid.prefs.separatedPanel"],
+            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+            "message": "%messagePrefix/prefsEditor.json",
+            "terms": {
+                "templatePrefix": "../../framework/preferences/html",
+                "messagePrefix": "../../framework/preferences/messages"
             }
         },
         auxSchema: {

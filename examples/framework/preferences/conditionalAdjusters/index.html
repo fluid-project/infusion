@@ -56,10 +56,10 @@
         <script src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script src="../../../../src/framework/preferences/js/Builder.js"></script>
+        <script src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
 
-        <script src="../shared/js/primarySchema.js"></script>
+        <script src="../shared/js/schemas.js"></script>
         <script src="../shared/js/utilities.js"></script>
-        <script src="js/auxiliarySchema.js"></script>
         <script src="../shared/js/panels.js"></script>
         <script src="js/panels.js"></script>
         <script src="../shared/js/enactors.js"></script>
@@ -98,11 +98,49 @@
         <!-- END markup for Preference Editor -->
 
         <script type="text/javascript">
-            fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                auxiliarySchemas: ["example.auxSchema"],
-                terms: {
-                    "templatePrefix": "../shared/html",
-                    "messagePrefix": "../shared/messages"
+            fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
+                preferences: [
+                    "example.speakText",
+                    "example.volume",
+                    "example.wordsPerMinute",
+                    "example.increaseSize",
+                    "example.cursorSize",
+                    "example.magnification",
+                    "example.magnifierPosition"
+                ],
+                auxiliarySchema: {
+                    template: "html/prefsEditor.html",
+                    message: "%messagePrefix/prefsEditor.json",
+                    terms: {
+                        "templatePrefix": "../shared/html",
+                        "messagePrefix": "../shared/messages"
+                    },
+                    groups: {
+                        speaking: {
+                            "container": ".mpe-speaking",
+                            "template": "%templatePrefix/speaking.html",
+                            "message": "%messagePrefix/speaking.json",
+                            "type": "example.panels.speaking",
+                            "panels": {
+                                "always": ["example.speakText"],
+                                "example.speakText": ["example.volume", "example.wordsPerMinute"]
+                            }
+                        },
+                        increasing: {
+                            "container": ".mpe-increasing",
+                            "template": "%templatePrefix/increasing.html",
+                            "message": "%messagePrefix/increasing.json",
+                            "type": "example.panels.increasing",
+                            "panels": {
+                                "always": ["example.increaseSize"],
+                                "example.increaseSize": [
+                                    "example.cursorSize",
+                                    "example.magnification",
+                                    "example.magnifierPosition"
+                                ]
+                            }
+                        }
+                    }
                 }
             });
         </script>

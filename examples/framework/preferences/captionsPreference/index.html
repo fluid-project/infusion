@@ -30,6 +30,7 @@
         <script src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script src="../../../../src/framework/core/js/FluidView.js"></script>
         <script src="../../../../src/framework/core/js/FluidView-browser.js"></script>
+        <script src="../../../../src/framework/core/js/DataSource.js"></script>
         <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script src="../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
         <script src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
@@ -56,6 +57,7 @@
         <script src="../../../../src/framework/preferences/js/Builder.js"></script>
         <script src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../src/framework/preferences/js/CaptionsSchemas.js"></script>
+        <script src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
     </head>
 
     <body class="fl-focus">
@@ -100,13 +102,17 @@
         </main>
 
         <script type="text/javascript">
-            fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                auxiliarySchemas: ["fluid.prefs.auxSchema.captions"],
-                terms: {
-                    "templatePrefix": "../../../../src/framework/preferences/html",
-                    "messagePrefix": "../../../../src/framework/preferences/messages"
-                },
-                prefsEditorTemplate: "html/prefsEditor.html"
+            fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
+                preferences: [
+                    "fluid.prefs.captions"
+                ],
+                auxiliarySchema: {
+                    terms: {
+                        "templatePrefix": "../../../../src/framework/preferences/html",
+                        "messagePrefix": "../../../../src/framework/preferences/messages"
+                    },
+                    template: "html/prefsEditor.html"
+                }
             });
         </script>
     </body>

@@ -58,6 +58,7 @@
         <script src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script src="../../../../../src/framework/preferences/js/Builder.js"></script>
+        <script src="../../../../../src/components/uiOptions/js/UIOptions.js"></script>
     </head>
 
     <body>
@@ -90,33 +91,25 @@
         </main>
 
         <script type="text/javascript">
-            fluid.prefs.create("#myPrefsEditor", {
-                auxiliarySchemas: [
-                    "fluid.prefs.auxSchema.textSize",
-                    "fluid.prefs.auxSchema.lineSpace",
-                    "fluid.prefs.auxSchema.textFont",
-                    "fluid.prefs.auxSchema.contrast",
-                    "fluid.prefs.auxSchema.tableOfContents",
-                    "fluid.prefs.auxSchema.enhanceInputs"
-                ],
-                "loaderGrades": ["fluid.prefs.fullPreview"],
-                "terms": {
-                    "templatePrefix": "../../../../../src/framework/preferences/html/",
-                    "messagePrefix": "../../../../../src/framework/preferences/messages/"
+            fluid.uiOptions("#myPrefsEditor", {
+                auxiliarySchema: {
+                    loaderGrades: ["fluid.prefs.fullPreview"],
+                    terms: {
+                        "templatePrefix": "../../../../../src/framework/preferences/html/",
+                        "messagePrefix": "../../../../../src/framework/preferences/messages/"
+                    },
+                    message: "%messagePrefix/prefsEditor.json",
+                    template: "%templatePrefix/FullPreviewPrefsEditor.html",
+                    "fluid.prefs.tableOfContents": {
+                        enactor: {
+                            tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+                            tocMessage: "%messagePrefix/tableOfContents-enactor.json"
+                        }
+                    }
                 },
-                "prefsEditorTemplate": "%templatePrefix/FullPreviewPrefsEditor.html",
                 prefsEditor: {
                     preview: {
                         templateUrl: "../shared/html/prefsEditorPreview.html"
-                    }
-                },
-                distributeOptions: {
-                    "fullPreview.tocEnactor": {
-                        record: {
-                            "tocTemplate": "../../../../../src/components/tableOfContents/html/TableOfContents.html",
-                            "tocMessage": "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
-                        },
-                        target: "{that uiEnhancer > tableOfContents}.options"
                     }
                 }
             });

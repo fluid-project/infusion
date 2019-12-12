@@ -31,6 +31,7 @@
         <script src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script src="../../../../src/framework/core/js/FluidView.js"></script>
         <script src="../../../../src/framework/core/js/FluidView-browser.js"></script>
+        <script src="../../../../src/framework/core/js/DataSource.js"></script>
         <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script src="../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
         <script src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
@@ -56,14 +57,13 @@
         <script src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script src="../../../../src/framework/preferences/js/Builder.js"></script>
+        <script src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
 
-        <script src="../shared/js/primarySchema.js"></script>
+        <script src="../shared/js/schemas.js"></script>
         <script src="../shared/js/utilities.js"></script>
-        <script src="js/auxiliarySchema.js"></script>
         <script src="../shared/js/panels.js"></script>
         <script src="js/panels.js"></script>
         <script src="../shared/js/enactors.js"></script>
-        <script src="js/conditional.js"></script>
     </head>
 
     <body class="example-theme fl-focus">
@@ -98,11 +98,40 @@
         <!-- END markup for Preference Editor -->
 
         <script type="text/javascript">
-            fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                auxiliarySchemas: ["example.auxSchema"],
-                terms: {
-                    "templatePrefix": "../shared/html",
-                    "messagePrefix": "../shared/messages"
+            fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
+                preferences: [
+                    "example.speakText",
+                    "example.volume",
+                    "example.wordsPerMinute",
+                    "example.increaseSize",
+                    "example.cursorSize",
+                    "example.magnification",
+                    "example.magnifierPosition"
+                ],
+                auxiliarySchema: {
+                    template: "html/prefsEditor.html",
+                    message: "%messagePrefix/prefsEditor.json",
+                    terms: {
+                        "templatePrefix": "../shared/html",
+                        "messagePrefix": "../shared/messages"
+                    },
+                    groups: {
+                        speakIncrease: {
+                            "container": ".mpe-speakIncrease",
+                            "template": "%templatePrefix/speakIncrease.html",
+                            "message": "%messagePrefix/speakIncrease.json",
+                            "type": "example.panels.speakIncrease",
+                            "panels": {
+                                "always": ["example.speakText", "example.increaseSize"],
+                                "example.speakText": ["example.volume", "example.wordsPerMinute"],
+                                "example.increaseSize": [
+                                    "example.cursorSize",
+                                    "example.magnification",
+                                    "example.magnifierPosition"
+                                ]
+                            }
+                        }
+                    }
                 }
             });
         </script>

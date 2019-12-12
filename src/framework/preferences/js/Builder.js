@@ -253,28 +253,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return auxTypes;
     };
 
-    // fluid.prefs.builder.prioritizePrefs = function (that) {
-    // // fluid.prefs.builder.prioritizePrefs = function (preferences, contextAwarePrefs) {
-    //     var preferences = that.options.preferences;
-    //     var contextAwarePrefs = that.options.contextAwarePrefs
-    //     var prioritized = {};
-    //     fluid.each(preferences, function (preference, index) {
-    //         var record = {};
-    //         if (index) {
-    //             record.priority = "after:" + preferences[index - 1];
-    //         }
-    //         prioritized[preference] = record;
-    //     });
-    //
-    //     fluid.each(contextAwarePrefs, function (priority, preference) {
-    //         if (priority === null) {
-    //             delete prioritized[preference];
-    //         } else {
-    //             prioritized[preference] = priority;
-    //         }
-    //     });
-    //     return prioritized;
-    // };
     fluid.prefs.builder.prioritizePrefs = function (preferences) {
         var prioritized = {};
         fluid.each(preferences, function (preference, index) {
@@ -304,31 +282,5 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         return merged;
     };
-
-    // /*
-    //  * A one-stop-shop function to build and instantiate a prefsEditor from a schema.
-    //  */
-    // fluid.defaults("fluid.prefs.create", {
-    //     gradeNames: ["fluid.viewComponent", "{that}.getGradeFromSchema"],
-    //     invokers: {
-    //         getGradeFromSchema: {
-    //             funcName: "fluid.prefs.getGradeFromSchema",
-    //             args: [{
-    //                 auxiliarySchemas: "{that}.options.auxiliarySchemas",
-    //                 defaultLocale: "{that}.options.defaultLocale",
-    //                 loaderGrades: "{that}.options.loaderGrades",
-    //                 prefsEditorMessage: "{that}.options.prefsEditorMessage",
-    //                 prefsEditorTemplate: "{that}.options.prefsEditorTemplate",
-    //                 primarySchema: "{that}.options.primarySchema",
-    //                 terms: "{that}.options.terms"
-    //             }]
-    //         }
-    //     }
-    // });
-    //
-    // fluid.prefs.getGradeFromSchema = function (options) {
-    //     var builder = fluid.prefs.builder(options);
-    //     return builder.options.assembledPrefsEditorGrade;
-    // };
 
 })(jQuery, fluid_3_0_0);

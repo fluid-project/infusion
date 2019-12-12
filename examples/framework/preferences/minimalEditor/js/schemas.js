@@ -16,6 +16,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function () {
     "use strict";
 
+    /**
+     * Auxiliary Schema
+     */
+    fluid.defaults("awesomeCars.prefs.auxSchema", {
+
+        // the base grade for the schema
+        gradeNames: ["fluid.prefs.auxSchema"],
+
+        auxiliarySchema: {
+            // this key must match the name of the pref in the primary schema
+            "awesomeCars.prefs.heatedSeats": {
+                panel: {
+                    // this 'type' must match the name of the panel grade created for this pref
+                    type: "awesomeCars.prefs.panels.heatedSeats",
+
+                    // selector indicating where, in the main template, to place this panel
+                    container: ".awec-heatedSeats",
+
+                    // the template for this panel
+                    template: "%templatePrefix/heatedSeats.html"
+                }
+            }
+        }
+    });
+
    /**
      * Primary Schema
      * This schema defines the "heated seats" preference edited by this preferences

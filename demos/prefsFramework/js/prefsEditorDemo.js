@@ -32,8 +32,7 @@ var demo = demo || {};
     });
 
     fluid.contextAware.makeChecks({
-        "fluid.supportsTTS": false
-        // "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
+        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
     });
 
     fluid.defaults("demo.prefsEditor.progressiveEnhancement", {
@@ -53,9 +52,7 @@ var demo = demo || {};
 
     fluid.defaults("demo.prefsEditor.speakNotSupported", {
         auxiliarySchema: {
-            auxiliarySchema: {
-                template: "html/SeparatedPanelPrefsEditor.html"
-            }
+            template: "html/SeparatedPanelPrefsEditor.html"
         }
     });
 
@@ -63,21 +60,6 @@ var demo = demo || {};
     fluid.defaults("demo.prefsEditor.auxSchema.simplify", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            // terms: {
-            //     // adjust paths
-            //     templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
-            //     messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
-            // },
-            // tableOfContents: {
-            //     enactor: {
-            //         tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
-            //         tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json"
-            //     }
-            // },
-
-            // sepcify augmented container template for panels
-            // template: "html/SeparatedPanelPrefsEditor.html",
-
             // add panels and enactors for extra settings
             "demo.prefs.simplify": {
                 enactor: {
@@ -96,10 +78,6 @@ var demo = demo || {};
 
     // Fine-tune the starter aux schema and add speak panel
     fluid.defaults("demo.prefsEditor.speak", {
-        // auxiliarySchema: {
-        //     // specify augmented container template for panels
-        //     template: "html/SeparatedPanelPrefsEditorWithTTS.html"
-        // },
         auxiliarySchema: {
             // specify augmented container template for panels
             template: "html/SeparatedPanelPrefsEditorWithTTS.html"
@@ -110,45 +88,6 @@ var demo = demo || {};
             }
         }
     });
-
-    // // Fine-tune the starter aux schema and add speak panel
-    // fluid.defaults("demo.prefsEditor.auxSchema.speak", {
-    //     gradeNames: ["fluid.prefs.auxSchema.speak"],
-    //     auxiliarySchema: {
-    //         terms: {
-    //             // adjust paths
-    //             templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
-    //             messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
-    //         },
-    //         tableOfContents: {
-    //             enactor: {
-    //                 tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
-    //                 tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json",
-    //                 ignoreForToC: {
-    //                     "overviewPanel": ".flc-overviewPanel"
-    //                 }
-    //             }
-    //         },
-    //
-    //         // specify augmented container template for panels
-    //         template: "html/SeparatedPanelPrefsEditorWithTTS.html"
-    //     }
-    // });
-
-    // // Fine-tune the syllabification schema
-    // fluid.defaults("demo.prefsEditor.auxSchema.syllabification", {
-    //     gradeNames: ["fluid.prefs.auxSchema.syllabification"],
-    //     auxiliarySchema: {
-    //         syllabification: {
-    //             enactor: {
-    //                 terms: {
-    //                     patternPrefix: "../../src/lib/hypher/patterns"
-    //                 }
-    //             }
-    //         }
-    //     }
-    // });
-
 
     /**********************************************************************************
      * simplifyPanel

@@ -31,6 +31,7 @@
         <script src="../../../../../../src/framework/core/js/FluidView.js"></script>
         <script src="../../../../../../src/framework/core/js/FluidView-browser.js"></script>
         <script src="../../../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
         <script src="../../../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script src="../../../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script src="../../../../../../src/framework/core/js/MessageResolver.js"></script>
@@ -94,15 +95,11 @@
         <h1>Hello World!</h1>
 
         <script type="text/javascript">
-            example.prefs.localization.prefsEditor(".flc-prefsEditor-separatedPanel", {
-                gradeNames: ["fluid.prefs.create"],
-                terms: {
-                    "templatePrefix": "../../../../../../src/framework/preferences/html",
-                    "messagePrefix": "../../../../../../src/framework/preferences/messages"
-                },
-                prefsEditorTemplate: "../html/prefsEditor.html",
+        example.prefs.localization.localized.prefsEditor(".flc-prefsEditor-separatedPanel", {
+            auxiliarySchema: {
                 defaultLocale: "en"
-            });
+            }
+        });
         </script>
     </body>
 </html>

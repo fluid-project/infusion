@@ -53,6 +53,7 @@
         <script src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script src="../../../../src/framework/preferences/js/Builder.js"></script>
+        <script src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
 
         <title>Preferences Editor: Full page with panel styling</title>
      </head>
@@ -62,22 +63,22 @@
         <div class="flc-toc-tocContainer"></div>
 
         <script>
-            fluid.prefs.create(".flc-prefsEditor-panelStyle", {
-                auxiliarySchemas: [
-                    "fluid.prefs.auxSchema.textSize",
-                    "fluid.prefs.auxSchema.lineSpace",
-                    "fluid.prefs.auxSchema.textFont",
-                    "fluid.prefs.auxSchema.contrast",
-                    "fluid.prefs.auxSchema.tableOfContents",
-                    "fluid.prefs.auxSchema.enhanceInputs"
-                ],
-                loaderGrades: ["fluid.prefs.fullNoPreview"],
-                terms: {
-                    templatePrefix: "../../../../src/framework/preferences/html/",
-                    messagePrefix: "../../../../src/framework/preferences/messages/"
+            fluid.uiOptions(".flc-prefsEditor-panelStyle", {
+                auxiliarySchema: {
+                    loaderGrades: ["fluid.prefs.fullNoPreview"],
+                    terms: {
+                        templatePrefix: "../../../../src/framework/preferences/html/",
+                        messagePrefix: "../../../../src/framework/preferences/messages/"
+                    },
+                    message: "%messagePrefix/prefsEditor.json",
+                    template: "%templatePrefix/SeparatedPanelPrefsEditor.html",
+                    "fluid.prefs.tableOfContents": {
+                        enactor: {
+                            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                            tocMessage: "%messagePrefix/tableOfContents-enactor.json"
+                        }
+                    }
                 },
-                prefsEditorTemplate: "%templatePrefix/SeparatedPanelPrefsEditor.html",
-                tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
                 prefsEditor: {
                     gradeNames: ["fluid.prefs.arrowScrolling"],
                     model: {
@@ -95,12 +96,6 @@
                             args: ["{that}"],
                             namespace: "autoSavePanelIndex"
                         }]
-                    }
-                },
-                distributeOptions: {
-                    "fullPagePanelStyle.tocTemplate": {
-                        source: "{that}.options.tocTemplate",
-                        target: "{that uiEnhancer > tableOfContents}.options.tocTemplate"
                     }
                 }
             });

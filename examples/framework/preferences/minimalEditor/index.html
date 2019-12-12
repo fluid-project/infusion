@@ -36,10 +36,10 @@
         <script src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
         <script src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../src/framework/preferences/js/Builder.js"></script>
+        <script src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
 
-        <script src="schemas/primary.js"></script>
-        <script src="schemas/auxiliary.js"></script>
         <script src="js/panel.js"></script>
+        <script src="js/schemas.js"></script>
     </head>
 
     <body>
@@ -59,8 +59,30 @@
         <div id="preferencesEditor"></div>
 
         <script type="text/javascript">
-            fluid.prefs.create("#preferencesEditor", {
-                auxiliarySchemas: ["awesomeCars.prefs.auxSchema"]
+            prefsEditor = fluid.uiOptions("#preferencesEditor", {
+                // the preference
+                preferences: ["awesomeCars.prefs.heatedSeats"],
+                auxiliarySchema: {
+                    // the loaderGrade identifies the "base" form of preference editor desired
+                    loaderGrades: ["fluid.prefs.fullNoPreview"],
+
+                    // 'terms' are strings that can be re-used elsewhere in this schema;
+                    terms: {
+                        templatePrefix: "html"
+                    },
+
+                    // the main template for the preference editor itself
+                    template: "%templatePrefix/prefsEditorTemplate.html",
+                },
+                prefsEditor: {
+                    listeners: {
+                        "onReady.test": {
+                            "this": "console",
+                            method: "log",
+                            args: ["onReady for prefsEditor Fired", "{that}"]
+                        }
+                    }
+                }
             });
         </script>
 

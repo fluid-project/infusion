@@ -68,15 +68,28 @@ var example = example || {};
     };
 
     fluid.defaults("example.prefs.localization.prefsEditor", {
-        gradeNames: ["fluid.prefs.create", "example.prefs.localization"],
-        auxiliarySchemas: [
-            "fluid.prefs.auxSchema.localization"
+        gradeNames: ["fluid.prefs.builder", "example.prefs.localization", "fluid.viewComponent"],
+        preferences: [
+            "fluid.prefs.localization"
         ],
-        terms: {
-            "templatePrefix": "../../../../../src/framework/preferences/html",
-            "messagePrefix": "../../../../../src/framework/preferences/messages"
-        },
-        prefsEditorTemplate: "html/prefsEditor.html"
+        auxiliarySchema: {
+            terms: {
+                "templatePrefix": "../../../../../src/framework/preferences/html",
+                "messagePrefix": "../../../../../src/framework/preferences/messages"
+            },
+            template: "html/prefsEditor.html"
+        }
+    });
+
+    fluid.defaults("example.prefs.localization.localized.prefsEditor", {
+        gradeNames: ["example.prefs.localization.prefsEditor"],
+        auxiliarySchema: {
+            terms: {
+                "templatePrefix": "../../../../../../src/framework/preferences/html",
+                "messagePrefix": "../../../../../../src/framework/preferences/messages"
+            },
+            template: "../html/prefsEditor.html"
+        }
     });
 
 })(jQuery, fluid);
