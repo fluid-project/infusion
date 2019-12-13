@@ -250,6 +250,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.UI(".flc-container");
     });
 
+    /** FLUID-6441: onResourcesLoaded should still fire even with no resources **/
+
+    fluid.defaults("fluid.tests.FLUID6441", {
+        gradeNames: "fluid.resourceLoader"
+    });
+
+    jqUnit.asyncTest("FLUID-6441: onResourcesLoaded should still fire even with no resources", function () {
+        jqUnit.expect(1);
+        var check = function () {
+            jqUnit.assert("onResourcesLoaded has fired");
+            jqUnit.start();
+        };
+        fluid.tests.FLUID6441({
+            listeners: {
+                onResourcesLoaded: check
+            }
+        });
+    });
+
     /** FLUID-6202: Boiling on resourcesLoaded event **/
 
     fluid.defaults("fluid.tests.FLUID6202parent2", {
