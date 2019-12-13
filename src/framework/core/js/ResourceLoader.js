@@ -252,7 +252,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var completionPromise = resourceFetcher.completionPromise;
             // Always defer notification in an anti-Zalgo scheme to ease problems like FLUID-6202
             fluid.invokeLater(function () {
-                completionPromise.resolve(resourceSpecs);
+                if (!completionPromise.disposition) {
+                    completionPromise.resolve(resourceSpecs);
+                }
             });
         }
     };
@@ -491,6 +493,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher);
         });
         resourceFetcher.onFetchAll.fire(resourceFetcher.completionPromise);
+        // Deal with FLUID-6441 in case there are no outstanding resources
+        fluid.fetchResources.checkCompletion(resourceFetcher.resourceSpecs, resourceFetcher);
         return resourceFetcher.completionPromise;
     };
     fluid.fetchResources.mutableResourceSpecFields = ["promise", "resourceText", "parsed", "locale", "defaultLocale"];
