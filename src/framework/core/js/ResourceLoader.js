@@ -339,6 +339,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             name: "onFetched event for resources \"" + key + "\"",
             ownerId: ownerComponentId
         });
+        resourceSpec.onError = fluid.makeEventFirer({
+            name: "onError event for resources \"" + key + "\"",
+            ownerId: ownerComponentId
+        });
 
         resourceSpec.transformEvent.addListener(fluid.fetchResources.fireFetched, "fireFetched", "after:parsed");
         fluid.fetchResources.prepareRequestOptions(resourceSpec);
@@ -544,6 +548,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.fetchResources.checkCompletion(resourceFetcher.resourceSpecs, resourceFetcher);
                 }, function (error) {
                     resourceSpec.fetchError = error;
+                    resourceSpec.onError.fire(error);
                     resourceFetcher.completionPromise.reject(error);
                 });
             });
@@ -811,13 +816,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             ownerComponentPath: fluid.pathForComponent(that)
         }, userResourceOptions);
         var fetcher = fluid.makeResourceFetcher(resourceSpecs, null, resourceOptions, transformResourceURL);
-        // Note that we beat the existing completion listener in the fetcher by "sheer luck"
         fluid.each(fetcher.resourceSpecs, function (resourceSpec, key) {
-            resourceSpec.promise.then(function () {
+            resourceSpec.transformEvent.addListener(function () {
                 that.resources[key] = resourceSpec;
-            }, function (err) {
-                that.events.onResourceError.fire(err);
-            });
+            }, "noteComponentResource", "after:parsed");
+            resourceSpec.onError.addListener(that.events.onResourceError.fire);
         });
         return fetcher;
     };

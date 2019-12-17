@@ -546,6 +546,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.fluid4982messageResolver();
     });
 
+    fluid.defaults("fluid.tests.fluid4982messageResolver2", {
+        gradeNames: "fluid.tests.fluid4982messageResolver",
+        components: {
+            messageResolver: {
+                options: {
+                    messageBase: {
+                        courses: "{fluid4982messageResolver}.resources.messages.parsed.courses"
+                    }
+                }
+            }
+        }
+    });
+
+    // This style blesses the shortly to be cursed method of "localisation" via "strings" of an old-fashioned renderer component,
+    // e.g. the TableOfContents component's strings which are now usually resolved from a resource
+    jqUnit.asyncTest("FLUID-4982 II: Use of startup resource from messageLoader via individual fetch", function () {
+        jqUnit.expect(1);
+        fluid.tests.fluid4982messageResolver2();
+    });
+
     /** FLUID-6413 I - Elementary failure with asynchronous activities during init transaction **/
 
     fluid.defaults("fluid.tests.fluid6413child", {
