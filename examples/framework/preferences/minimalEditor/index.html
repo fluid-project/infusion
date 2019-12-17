@@ -59,12 +59,16 @@
         <div id="preferencesEditor"></div>
 
         <script type="text/javascript">
-            prefsEditor = fluid.uiOptions("#preferencesEditor", {
+
+            fluid.uiOptions("#preferencesEditor", {
                 // the preference
                 preferences: ["awesomeCars.prefs.heatedSeats"],
                 auxiliarySchema: {
                     // the loaderGrade identifies the "base" form of preference editor desired
                     loaderGrades: ["fluid.prefs.fullNoPreview"],
+
+                    // Remove the default path as there are no message bundles associated with this minimal editor.
+                    message: null,
 
                     // 'terms' are strings that can be re-used elsewhere in this schema;
                     terms: {
@@ -73,17 +77,9 @@
 
                     // the main template for the preference editor itself
                     template: "%templatePrefix/prefsEditorTemplate.html",
-                },
-                prefsEditor: {
-                    listeners: {
-                        "onReady.test": {
-                            "this": "console",
-                            method: "log",
-                            args: ["onReady for prefsEditor Fired", "{that}"]
-                        }
-                    }
                 }
             });
+
         </script>
 
    </body>

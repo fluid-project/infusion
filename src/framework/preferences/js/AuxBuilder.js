@@ -374,26 +374,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         fluid.each(auxSchema, function (category, prefName) {
             // TODO: Replace this cumbersome scheme with one based on an extensible lookup to handlers
-
-            var type = "panel";
-            // Ignore the subpanels that are only for composing composite panels
-            if (category[type] && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "panels", prefName, category.alias, category[type], fluid.get(indexes, type),
-                    fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
-            }
-
-            type = "enactor";
-            if (category[type]) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "enactors", prefName, category.alias, category[type], fluid.get(indexes, type),
-                    fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
-            }
-
-            fluid.each(["template", "message"], function (type) {
-                if (prefName === type) {
-                    fluid.set(auxSchema, [type + "Loader", "resources", "prefsEditor"], category);
-                    delete auxSchema[type];
+            if (fluid.isValue(category)) {
+                var type = "panel";
+                // Ignore the subpanels that are only for composing composite panels
+                if (category[type] && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
+                    fluid.prefs.expandSchemaComponents(auxSchema, "panels", prefName, category.alias, category[type], fluid.get(indexes, type),
+                        fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
                 }
-            });
+
+                type = "enactor";
+                if (category[type]) {
+                    fluid.prefs.expandSchemaComponents(auxSchema, "enactors", prefName, category.alias, category[type], fluid.get(indexes, type),
+                        fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
+                }
+
+                fluid.each(["template", "message"], function (type) {
+                    if (prefName === type) {
+                        fluid.set(auxSchema, [type + "Loader", "resources", "prefsEditor"], category);
+                        delete auxSchema[type];
+                    }
+                });
+            }
         });
 
         // Remove subPanels array. It is to keep track of the panels that are only used as sub-components of composite panels.
