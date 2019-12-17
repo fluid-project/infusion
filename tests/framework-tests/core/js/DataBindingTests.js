@@ -795,11 +795,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.asyncTest("FLUID-4982 localised fetch model with mid-life relocalisation", function () {
-        jqUnit.expect(5);
+        jqUnit.expect(7);
         var checkIt2 = function (component) {
             var expected = "These courses will require a lot of marking";
             jqUnit.assertEquals("Relocalised model fetched", expected, component.model.messages.courses);
             jqUnit.assertEquals("Relocalised model fetched at subpath", expected, component.model.courses);
+            // Check a route for FLUID-6442
+            jqUnit.assertEquals("Relocalised model findable in resources", expected, component.resources.messages.parsed.courses);
             jqUnit.start();
         };
         var checkIt = function (component) {
@@ -807,6 +809,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
             jqUnit.assertEquals("Localised model fetched", expected, component.model.messages.courses);
             jqUnit.assertEquals("Localised model fetched at subpath", expected, component.model.courses);
+            // Check a route for FLUID-6442
+            jqUnit.assertEquals("Localised model findable in resources", expected, component.resources.messages.parsed.courses);
             component.applier.modelChanged.addListener("messages", function () {
                 checkIt2(component);
             });
@@ -822,6 +826,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
     });
+
+    /** FLUID-6442: Modelised relocalisation should be accessible via resources **/
+
+    fluid.defaults("fluid.tests.fluid6442", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                url: "../data/messages1.json",
+                locale: "en",
+                dataType: "json"
+            }
+        },
+        model: {
+            resourceLoader: {
+                locale: "en"
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-6442: Modelised relocalisation should be accessible via resources", function () {
+        jqUnit.expect(2);
+        var checkIt = function (component) {
+            var expected = "These courses will require a lot of marking";
+            var err;
+            jqUnit.assertValue("Resources should be findable", component.resources.messages);
+            try {
+                jqUnit.assertEquals("Relocalised model findable in resources", expected, component.resources.messages.parsed.courses);
+            } catch (e) {
+                err = e;
+            }
+            jqUnit.start();
+            if (err) {
+                throw err;
+            }
+        };
+        var component = fluid.tests.fluid6442({
+            listeners: {
+                "onResourcesLoaded.checkIt": {
+                    func: checkIt,
+                    args: "{that}"
+                },
+                "onResourceError.failTest": function (err) {
+                    jqUnit.fail("Failure fetching resource: " + err);
+                }
+            }
+        });
+        // Change the locale before the queued I/O can resolve
+        component.applier.change("resourceLoader.locale", "en_ZA");
+    });
+
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 

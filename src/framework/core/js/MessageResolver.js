@@ -88,6 +88,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         for (var i = 0; i < messagecodes.length; ++i) {
             var code = messagecodes[i];
             var message = messageBase[code];
+            // Bless people who have resolved individual messages asynchronously as well. In practice this will
+            // eventually have to give way to an approach for general asynchrony in options, or the much more
+            // efficient "immutable application" model for models, or both
+            if (message instanceof fluid.fetchResources.FetchOne) {
+                message = fluid.fetchResources.resolveFetchOne(message);
+            }
             if (message !== undefined) {
                 return message;
             }
