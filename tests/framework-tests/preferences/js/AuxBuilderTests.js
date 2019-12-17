@@ -389,27 +389,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.auxSchema.manyPanelsOnePref = {
-        "textSize": {
-            "type": "fluid.prefs.textSize",
-            "panel": {
-                "type": "fluid.prefs.panel.textSize",
-                "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-                "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
-            }
-        },
-        "textSize.other": {
-            "type": "fluid.prefs.textSize",
-            "panel": {
-                "type": "fluid.prefs.panel.otherTextSize",
-                "container": ".flc-prefsEditor-otherTextSize",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html",
-                "message": "%messagePrefix/PrefsEditorTemplate-otherTextSize.json"
-            }
-        }
-    };
-
     fluid.tests.auxSchema.enactors = {
         "fluid.prefs.textSize": {
             "enactor": {
@@ -630,14 +609,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     schema: {properties: fluid.tests.auxSchema.mappedDefaults}
                 }
             },
-            auxbuilderManyPanelsOnePref: {
-                type: "fluid.prefs.auxBuilder",
-                options: {
-                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.manyPanelsOnePref, fluid.tests.auxSchema.namespace, fluid.tests.auxSchema.terms),
-                    elementCommonOptions: fluid.tests.elementCommonOptions,
-                    schema: {properties: fluid.tests.auxSchema.mappedDefaults}
-                }
-            },
             auxbuilderManyPrefsOnePanel: {
                 type: "fluid.prefs.auxBuilder",
                 options: {
@@ -670,123 +641,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOptions: {
             expectedPanels: fluid.tests.auxSchema.expectedPanels,
             expectedEnactors: fluid.tests.auxSchema.expectedEnactors,
-            expectedManyPanelsOnePref: {
-                "namespace": fluid.tests.auxSchema.customizedNamespace,
-                "loaderGrades": ["fluid.prefs.separatedPanel"],
-                "textSize": {
-                    "type": "fluid.prefs.textSize",
-                    "panel": {
-                        "type": "fluid.prefs.panel.textSize",
-                        "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-                        "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
-                    }
-                },
-                "textSize.other": {
-                    "type": "fluid.prefs.textSize",
-                    "panel": {
-                        "type": "fluid.prefs.panel.otherTextSize",
-                        "container": ".flc-prefsEditor-otherTextSize",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html",
-                        "message": "%messagePrefix/PrefsEditorTemplate-otherTextSize.json"
-                    }
-                },
-                panels: {
-                    "gradeNames": ["fluid.prefs.prefsEditor"],
-                    "selectors": {
-                        "fluid_prefs_panel_textSize": ".flc-prefsEditor-text-size",
-                        "fluid_prefs_panel_otherTextSize": ".flc-prefsEditor-otherTextSize"
-                    },
-                    "components": {
-                        "fluid_prefs_panel_textSize": {
-                            "type": "fluid.prefs.panel.textSize",
-                            "container": "prefsEditor.dom.fluid_prefs_panel_textSize",
-                            "createOnEvent": "onPrefsEditorMarkupReady",
-                            options: {
-                                gradeNames: ["fluid.prefs.prefsEditorConnections"],
-                                model: {
-                                    value: "prefsEditor.model.preferences.fluid_prefs_textSize"
-                                },
-                                range: {
-                                    min: 1,
-                                    max: 2
-                                },
-                                step: 0.1,
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.parsed",
-                                members: {
-                                    resources: {
-                                        template: "templateLoader.resources.fluid_prefs_panel_textSize"
-                                    }
-                                }
-                            }
-                        },
-                        "fluid_prefs_panel_otherTextSize": {
-                            "type": "fluid.prefs.panel.otherTextSize",
-                            "container": "prefsEditor.dom.fluid_prefs_panel_otherTextSize",
-                            "createOnEvent": "onPrefsEditorMarkupReady",
-                            options: {
-                                gradeNames: ["fluid.prefs.prefsEditorConnections"],
-                                model: {
-                                    value: "prefsEditor.model.preferences.fluid_prefs_textSize"
-                                },
-                                range: {
-                                    min: 1,
-                                    max: 2
-                                },
-                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_otherTextSize.parsed",
-                                members: {
-                                    resources: {
-                                        template: "templateLoader.resources.fluid_prefs_panel_otherTextSize"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                aliases_enhancer: {
-                    gradeNames: ["fluid.modelComponent"],
-                    model: {}
-                },
-                aliases_prefsEditor: {
-                    gradeNames: ["fluid.modelComponent"],
-                    model: {
-                        preferences: {}
-                    }
-                },
-                templateLoader: {
-                    gradeNames: ["fluid.resourceLoader"],
-                    resources: {
-                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-                        "fluid_prefs_panel_otherTextSize": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html",
-                        "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html"
-                    }
-                },
-                messageLoader: {
-                    gradeNames: ["fluid.resourceLoader"],
-                    resources: {
-                        "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json",
-                        "fluid_prefs_panel_otherTextSize": "%messagePrefix/PrefsEditorTemplate-otherTextSize.json",
-                        "prefsEditor": "%messagePrefix/prefsEditor.json"
-                    }
-                },
-                terms: {
-                    gradeNames: ["fluid.component"],
-                    terms: {
-                        templatePrefix: "../html",
-                        messagePrefix: "../messages"
-                    }
-                },
-                initialModel: {
-                    gradeNames: ["fluid.prefs.initialModel"],
-                    members: {
-                        initialModel: {
-                            preferences: {
-                                fluid_prefs_textSize: 1
-                            }
-                        }
-                    }
-                }
-            },
             expectedManyPrefsOnePanel: {
                 "namespace": fluid.tests.auxSchema.customizedNamespace,
                 "loaderGrades": ["fluid.prefs.separatedPanel"],
@@ -994,12 +848,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "test",
                 func: "fluid.tests.testAuxBuilder",
                 args: ["{auxbuilderOnlyEnactor}.options.auxSchema", "{that}.options.testOptions.expectedEnactors"]
-            }, {
-                expect: 1,
-                name: "auxSchema - manyPanelsOnePref",
-                type: "test",
-                func: "fluid.tests.testAuxBuilder",
-                args: ["{auxbuilderManyPanelsOnePref}.options.auxSchema", "{that}.options.testOptions.expectedManyPanelsOnePref"]
             }, {
                 expect: 1,
                 name: "auxSchema - manyPrefsOnePanel",
