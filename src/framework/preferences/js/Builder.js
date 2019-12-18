@@ -52,6 +52,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         buildType: "prefsEditor",
+        requestedPrefs: {
+            expander: {
+                funcName: "fluid.keys",
+                args: ["{that}.options.prefsMerged"]
+            }
+        },
         prefsMerged: {
             expander: {
                 funcName: "fluid.prefs.builder.mergePrefs",

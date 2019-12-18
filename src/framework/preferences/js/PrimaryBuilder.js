@@ -22,9 +22,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A custom merge policy that merges primary schema blocks and
      * places them in the right location (consistent with the JSON schema
      * format).
-     * @param {JSON} target - A base for merging the options.
-     * @param {JSON} source - Options being merged.
-     * @return {JSON} - The updated target.
+     * @param {Object} target - A base for merging the options.
+     * @param {Object} source - Options being merged.
+     * @return {Object} - The updated target.
      */
     fluid.prefs.schemas.merge = function (target, source) {
         if (!target) {
@@ -57,8 +57,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         primarySchema: {},
-        // A list of all necessary top level preference names.
-        preferences: [],
+        // A list of all requested preferences, to be supplied by an integrator or concrete grade.
+        // Typically provided through the `fluid.prefs.builder` grade.
+        // requestedPrefs: [],
         invokers: {
             // An invoker used to generate a set of grades that comprise a
             // final version of the primary schema to be used by the PrefsEditor
@@ -67,9 +68,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.primaryBuilder.buildPrimary",
                 args: [
                     "{that}.options.schemaIndex",
-                    // "{that}.options.preferences",
-                    // "{that}.options.prefsPrioritized",
-                    "{that}.options.prefsMerged",
+                    "{that}.options.requestedPrefs",
                     "{that}.options.primarySchema"
                 ]
             }
@@ -78,10 +77,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
-     * @param {JSON} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {Array} preferences   - A list of all necessary top level preference names.
-     * @param {JSON} primarySchema - Primary schema provided as an option to the primary builder.
-     * @return {Array} - A list of schema grades.
+     * @param {Object} schemaIndex - A global index of all schema grades registered with the framework.
+     * @param {String[]} preferences   - A list of all necessary top level preference names.
+     * @param {Object} primarySchema - Primary schema provided as an option to the primary builder.
+     * @return {String[]} - A list of schema grades.
      */
     fluid.prefs.primaryBuilder.buildPrimary = function (schemaIndex, preferences, primarySchema) {
         var suppliedPrimaryGradeName = "fluid.prefs.schemas.suppliedPrimary" + fluid.allocateGuid();
@@ -89,15 +88,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.defaults(suppliedPrimaryGradeName, {
             gradeNames: ["fluid.prefs.schemas"],
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
-                preferences, false)
+                preferences)
         });
         var primary = [];
-        // Lookup all available schema grades from the index that match the
-        // top level preference name.
-        fluid.each(preferences, function merge(priority, type) {
-            var schemaGrades = schemaIndex[type];
+        // Lookup all available schema grades from the index that match the requested preference names.
+        fluid.each(preferences, function merge(pref) {
+            var schemaGrades = schemaIndex[pref];
             if (schemaGrades) {
-                primary.push.apply(primary, schemaGrades);
+                primary = primary.concat(schemaGrades);
             }
         });
         primary.push(suppliedPrimaryGradeName);
@@ -107,7 +105,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * An index function that indexes all schema grades based on their
      * preference name.
-     * @param {JSON} defaults -  Registered defaults for a schema grade.
+     * @param {Object} defaults -  Registered defaults for a schema grade.
      * @return {String}          A preference name.
      */
     fluid.prefs.primaryBuilder.defaultSchemaIndexer = function (defaults) {
