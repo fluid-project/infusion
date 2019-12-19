@@ -5240,7 +5240,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid5249finder", {
         gradeNames: ["fluid.component"],
         components: {
-            nonRoot: "{fluid.tests.fluid5249nonroot}"
+            nonRoot: "{fluid.tests.fluid5249nonroot}",
+            root: "{fluid.tests.fluid5249root}"
+        },
+        invokers: {
+            findRoot: "fluid.identity({fluid.tests.fluid5249root})",
+            findNonRoot: "fluid.identity({fluid.tests.fluid5249nonroot})",
+            findNonRoot2: "fluid.identity({nonRoot})"
         }
     });
 
@@ -5249,12 +5255,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var rootFinder = fluid.tests.fluid5249finder();
 
         jqUnit.assertEquals("Expected to resolve non-root value of resolveRoot as root", rootAdvertiser.nonRootRoot.id, rootFinder.nonRoot.id);
+        // FLUID-6444 tests
+        jqUnit.assertNoValue("Expected no leakage of ordinary root component", rootFinder.root);
+        jqUnit.assertNoValue("Expected no leakage of ordinary root component via fast-path invoker", rootFinder.findRoot());
 
         rootAdvertiser.destroy();
         var rootFinder2 = fluid.tests.fluid5249finder();
 
         jqUnit.assertNoValue("Expected to find non-root value cleared after parent is cleared", rootFinder2.nonRoot);
         jqUnit.assertNoValue("Expected to find injected component cleared from injection point after parent is destroyed", rootFinder.nonRoot);
+        jqUnit.assertNoValue("Expected to find non-root value gone from global scope", rootFinder.findNonRoot());
+        jqUnit.assertNoValue("Expected to find non-root value gone by member name from all scopes", rootFinder.findNonRoot2());
     });
 
     /** FLUID-5495 tests - distribute upwards, use of "/" context, global instantiator, and proper deregistration - "new demands blocks" **/

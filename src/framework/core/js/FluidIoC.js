@@ -600,7 +600,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(contextHash, function (disposition, context) {
             fluid.applyToScope(shadow.ownScope, context, that, disposition);
             shadow.ownScope[context] = that;
-            if (shadow.parentShadow && shadow.parentShadow.that.type !== "fluid.rootComponent") {
+            if (shadow.parentShadow && shadow.parentShadow.that.typeName !== "fluid.rootComponent") {
                 fluid.applyToScope(shadow.parentShadow.childrenScope, context, that, disposition);
             }
         });
@@ -996,8 +996,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.cacheShadowGrades(child, childShadow);
     };
 
-    fluid.clearChildrenScope = function (instantiator, parentShadow, child, childShadow) {
-        fluid.each(childShadow.contextHash, function (disposition, context) {
+    fluid.clearChildrenScope = function (instantiator, parentShadow, child, childShadow, memberName) {
+        var keys = fluid.keys(childShadow.contextHash);
+        keys.push(memberName); // Add local name in case we are clearing an injected component - FLUID-6444
+        keys.forEach(function (context) {
             if (parentShadow.childrenScope[context] === child) {
                 delete parentShadow.childrenScope[context]; // TODO: ambiguous resolution
             }
@@ -1094,7 +1096,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     return shadow.contextHash && (shadow.contextHash[key] === fluid.memberName);
                 });
                 keys.push(name); // add local name - FLUID-5696 and FLUID-5820
-                fluid.each(keys, function (context) {
+                keys.forEach(function (context) {
                     if (!parentShadow.childrenScope[context]) {
                         parentShadow.childrenScope[context] = component;
                     }
@@ -1176,7 +1178,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     return path === childPath;
                 });
             }
-            fluid.clearChildrenScope(that, shadow, child, childShadow);
+            fluid.clearChildrenScope(that, shadow, child, childShadow, name);
             // Note that "pathToComponent" will not be available during afterDestroy. This is so that we can synchronously recreate the component
             // in an afterDestroy listener (FLUID-5931). We don't clear up the shadow itself until after afterDestroy.
             delete that.pathToComponent[childPath];
