@@ -5268,6 +5268,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("Expected to find non-root value gone by member name from all scopes", rootFinder.findNonRoot2());
     });
 
+    /** FLUID-6444 tests - scope priority of injected components **/
+
+    fluid.defaults("fluid.tests.fluid6444outer", {
+        gradeNames: "fluid.component"
+    });
+
+    fluid.defaults("fluid.tests.fluid6444root", {
+        gradeNames: ["fluid.component"],
+        components: {
+            outer: {
+                type: "fluid.tests.fluid6444outer",
+                options: {
+                    value: 42
+                }
+            },
+            holder: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        innerOuter: {
+                            type: "fluid.tests.fluid6444outer",
+                            options: {
+                                value: 43
+                            }
+                        }
+                    }
+                }
+            },
+            middle: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        outer: "{fluid6444root}.holder.innerOuter"
+                    },
+                    invokers: {
+                        resolveOuter: "fluid.identity({fluid.tests.fluid6444outer}.options.value)"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6444 - scope priority of injected components", function () {
+        var that = fluid.tests.fluid6444root();
+        jqUnit.assertEquals("Injected component at proper scope", 43, that.middle.resolveOuter());
+    });
+
     /** FLUID-5495 tests - distribute upwards, use of "/" context, global instantiator, and proper deregistration - "new demands blocks" **/
 
     fluid.defaults("fluid.tests.fluid5495rootDistributor", {

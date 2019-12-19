@@ -566,6 +566,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    // Bitmapped constants holding reason for context name to be in scope within contextHash and childrenScope
+    fluid.contextName = 1;
+    fluid.memberName = 2;
+
     fluid.gradeNamesToHash = function (gradeNames) {
         var contextHash = {};
         fluid.each(gradeNames, function (gradeName) {
@@ -576,9 +580,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
         return contextHash;
     };
-
-    fluid.contextName = 1;
-    fluid.memberName = 2;
 
     fluid.applyToContexts = function (hash, key, disposition) {
         var existing = hash[key];
@@ -598,7 +599,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.applyToContexts(contextHash, shadow.memberName, fluid.memberName);
         shadow.contextHash = contextHash;
         fluid.each(contextHash, function (disposition, context) {
-            fluid.applyToScope(shadow.ownScope, context, that, disposition);
             shadow.ownScope[context] = that;
             if (shadow.parentShadow && shadow.parentShadow.that.typeName !== "fluid.rootComponent") {
                 fluid.applyToScope(shadow.parentShadow.childrenScope, context, that, disposition);
@@ -1097,7 +1097,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 });
                 keys.push(name); // add local name - FLUID-5696 and FLUID-5820
                 keys.forEach(function (context) {
-                    if (!parentShadow.childrenScope[context]) {
+                    if (!parentShadow.childrenScope.hasOwnProperty(context)) { // FLUID-6444
                         parentShadow.childrenScope[context] = component;
                     }
                 });
