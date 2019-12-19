@@ -852,7 +852,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var err;
             jqUnit.assertValue("Resources should be findable", component.resources.messages);
             try {
-                jqUnit.assertEquals("Relocalised model findable in resources", expected, component.resources.messages.parsed.courses);
+                var found = component.resources.messages.parsed.courses;
+                jqUnit.assertEquals("Relocalised model findable in resources", expected, found);
             } catch (e) {
                 err = e;
             }
@@ -872,7 +873,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-        // Change the locale before the queued I/O can resolve
+        // Change the locale before the queued I/O can resolve. In addition this tests promise cancellation propagation.
         component.applier.change("resourceLoader.locale", "en_ZA");
     });
 
