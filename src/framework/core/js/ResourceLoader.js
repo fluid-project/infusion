@@ -344,7 +344,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             ownerId: ownerComponentId
         });
 
-        resourceSpec.transformEvent.addListener(fluid.fetchResources.fireFetched, "fireFetched", "after:parsed");
+        resourceSpec.transformEvent.addListener(fluid.fetchResources.fireFetched, "fireFetched", "last");
         fluid.fetchResources.prepareRequestOptions(resourceSpec);
         fluid.fetchResources.initOneResource(resourceSpec);
     };
