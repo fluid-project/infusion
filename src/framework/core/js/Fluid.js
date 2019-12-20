@@ -1588,6 +1588,8 @@ var fluid = fluid || fluid_3_0_0;
             // The "live" list of listeners which will be notified in order on any firing. Recomputed on any use of
             // addListener/removeListener
             that.sortedListeners = [];
+            // Very low-level destruction notification scheme primarily intended for FLUID-6445. Will be an array of nullary functions
+            that.onDestroy = null;
             // arguments after 3rd are not part of public API
             // listener as Object is used only by ChangeApplier to tunnel path, segs, etc as part of its "spec"
             /** Adds a listener to this event.
@@ -1643,6 +1645,9 @@ var fluid = fluid || fluid_3_0_0;
             typeName: "fluid.event.firer",
             destroy: function () {
                 that.destroyed = true;
+                fluid.each(that.onDestroy, function (func) {
+                    func();
+                });
             },
             addListener: function () {
                 lazyInit.apply(null, arguments);
@@ -1710,6 +1715,16 @@ var fluid = fluid || fluid_3_0_0;
             }
         };
         return that;
+    };
+
+    // unsupported, NON-API function
+    // Supports the framework-internal "onDestroy" list attached to an event which needs to be extremely lightweight
+    fluid.event.addPrimitiveListener = function (holder, name, func) {
+        var existing = holder[name];
+        if (!existing) {
+            existing = holder[name] = [];
+        }
+        existing.push(func);
     };
 
     // unsupported, NON-API function
