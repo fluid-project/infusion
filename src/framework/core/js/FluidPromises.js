@@ -172,6 +172,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         sequencer.promise.then(null, null, function () {
             fluid.promise.cancelSequencer(sequencer);
         });
+        sequencer.promise.sequencer = sequencer; // An aid to debuggability
         return sequencer;
     };
 
@@ -240,7 +241,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // until the promise at the preceding position has resolved
     fluid.promise.sequence = function (sources, options) {
         var sequencer = fluid.promise.makeSequencer(sources, options, fluid.promise.makeSequenceStrategy());
-        sequencer.promise.sequencer = sequencer; // An aid to debuggability
         fluid.promise.resumeSequence(sequencer);
         return sequencer.promise;
     };
@@ -271,7 +271,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
         var sequencer = fluid.promise.makeSequencer(listeners, options, fluid.promise.makeTransformerStrategy());
         sequencer.returns.push(null); // first dummy return from initial entry
-        fluid.promise.resumeSequence(sequencer);
         return sequencer;
     };
 
@@ -303,8 +302,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var listeners = options.reverse ? fluid.makeArray(event.sortedListeners).reverse() :
                 fluid.makeArray(event.sortedListeners);
         listeners = fluid.promise.filterNamespaces(listeners, options.filterNamespaces);
-        var transformer = fluid.promise.makeTransformer(listeners, payload, options);
-        return transformer.promise;
+        var sequencer = fluid.promise.makeTransformer(listeners, payload, options);
+        var canceller = sequencer.promise.cancel;
+        var remover = function () {
+            fluid.remove_if(event.onDestroy, function (func) {
+                return func === canceller;
+            });
+        };
+        fluid.event.addPrimitiveListener(event, "onDestroy", canceller);
+        sequencer.promise.then(remover, remover, remover);
+        fluid.promise.resumeSequence(sequencer);
+        return sequencer.promise;
     };
 
 
