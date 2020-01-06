@@ -678,7 +678,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (fluid.contains(rec.gradeNames, "fluid.contextAware")) {
             var contextAwarenessOptions = fluid.getForComponent(that, ["options", "contextAwareness"]);
             newContextAware = fluid.contextAware.check(that, contextAwarenessOptions);
-            var lostGrade = rec.contextAware.find(function (gradeName) {
+            var lostGrade = fluid.find_if(rec.contextAware, function (gradeName) {
                 return !fluid.contains(newContextAware, gradeName);
             });
             if (lostGrade) { // The user really deserves a prize if they achieve this diagnostic
