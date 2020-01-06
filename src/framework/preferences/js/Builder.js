@@ -52,6 +52,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         buildType: "prefsEditor",
+        assemblerGrades: {
+            store: "fluid.prefs.assembler.store",
+            prefsEditor: "fluid.prefs.assembler.prefsEd",
+            enhancer: "fluid.prefs.assembler.uie"
+        },
         requestedPrefs: {
             expander: {
                 funcName: "fluid.keys",
@@ -69,11 +74,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.builder.prioritizePrefs",
                 args: ["{that}.options.preferences"]
             }
-        },
-        assemblerGrades: {
-            store: "fluid.prefs.assembler.store",
-            prefsEditor: "fluid.prefs.assembler.prefsEd",
-            enhancer: "fluid.prefs.assembler.uie"
         },
         componentGrades: {
             expander: {
