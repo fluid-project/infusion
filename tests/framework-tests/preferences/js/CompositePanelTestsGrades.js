@@ -193,14 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
         schema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
-            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"],
-        },
-        listeners: {
-            "onCreate.log": {
-                "this": "console",
-                method: "log",
-                args: ["{that}"]
-            }
+            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"]
         }
     });
 
@@ -233,11 +226,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // });
 
     fluid.defaults("fluid.tests.composite.fullNoPreview.prefsEditor", {
-        gradeNames: ["fluid.prefs.builder", "fluid.viewComponent"],
+        gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
         schema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
             "loaderGrades": ["fluid.prefs.fullNoPreview"]
         }
-    })
+    });
 
 })();

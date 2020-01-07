@@ -116,7 +116,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     }
                 }
-            },
+            }
         },
         distributeOptions: {
             "uie.store": {

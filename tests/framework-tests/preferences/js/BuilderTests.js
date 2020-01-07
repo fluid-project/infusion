@@ -36,9 +36,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.expandResources = function (resources) {
+    fluid.tests.flattenResources = function (resources) {
         return fluid.transform(resources, function (resourceConfig) {
-            return typeof(resourceConfig) === "string" ? {url: resourceConfig} : resourceConfig;
+            return typeof(resourceConfig) === "string" ? resourceConfig : resourceConfig.url;
         });
     };
 
@@ -53,8 +53,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             } else if (optPath === "components") {
                 actualOpt = jqUnit.flattenMergedSubcomponents(actualOpt);
             } else if (optPath === "resources") {
-                actualOpt = fluid.tests.expandResources(actualOpt);
-            } else if (optPath !== "gradeNames") {
+                actualOpt = fluid.tests.flattenResources(actualOpt);
+            } else if (optPath === "model") {
+                actualOpt = actualOpt[0];
+            }
+
+            if (optPath !== "gradeNames") {
                 jqUnit.assertDeepEq("The options at path '" + optPath + "'' is set correctly", opt, actualOpt);
             }
         });
@@ -285,7 +289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("{that}.options.componentGrades." + grade + " should be undefined", builder.options.componentGrades[grade]);
             jqUnit.assertUndefined("No defaults for the " + grade + " grade should have been created", fluid.defaults(builder.options.auxSchema.namespace + "." + grade));
         });
-    }
+    };
 
     fluid.tests.assembleAuxSchema = function (auxObjs) {
         // var auxiliarySchema = {};
@@ -295,34 +299,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // return auxiliarySchema;
 
         return fluid.accumulate(auxObjs, function (auxObj, auxiliarySchema) {
-            return $.extend(true, auxiliarySchema, auxObjs);
+            return $.extend(true, auxiliarySchema, auxObj);
         }, {});
     };
 
-    fluid.tests.prefs = {
+    fluid.registerNamespace("fluid.tests.aux");
+
+    fluid.tests.aux.prefs = {
         "fluid.prefs.textSize": {}
     };
 
-    fluid.tests.template = {
-        "template": {
-            url: "%templatePrefix/SeparatedPanelPrefsEditor.html"
-        }
+    fluid.tests.aux.template = {
+        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html"
     };
 
-    fluid.tests.message = {
-        "message": {
-            url: "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
-        }
+    fluid.tests.aux.message = {
+        "message": "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
     };
 
-    fluid.tests.terms = {
+    fluid.tests.aux.terms = {
         "terms": {
             "templatePrefix": "templatePrefix",
             "messagePrefix": "messagePrefix"
         }
     };
 
-    fluid.tests.panels = {
+    fluid.tests.aux.panels = {
         "fluid.prefs.textSize": {
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
@@ -333,7 +335,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.enactors = {
+    fluid.tests.aux.enactors = {
         "fluid.prefs.textSize": {
             "enactor": {
                 "type": "fluid.prefs.enactor.textSize"
@@ -341,7 +343,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.defaultLocale = {
+    fluid.tests.aux.defaultLocale = {
         "defaultLocale": "en-CA"
     };
 
@@ -387,10 +389,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 enhancer: "fluid.prefs.assembler.uie"
             }
         }
-    }
+    };
 
     fluid.defaults("fluid.tests.prefs.builder", {
-        gradeNames: ["fluid.prefs.builder", "fluid.viewComponent"]
+        gradeNames: ["fluid.prefs.builder", "fluid.prefs.schemas.textSize", "fluid.viewComponent"]
     });
 
     fluid.defaults("fluid.tests.builder.empty", {
@@ -401,7 +403,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.tests.prefs.builder",
                 container: "{that}.options.markupFixture",
                 options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema([fluid.tests.prefs])
+                    auxiliarySchema: fluid.tests.assembleAuxSchema([fluid.tests.aux.prefs])
                 }
             },
             builderTester: {
@@ -423,11 +425,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     [
                         "templateLoader",
                         "messageLoader",
-                        "terms",
+                        "terms"
                     ],
                     [
                         "enactors",
-                        "messages",
                         "panels",
                         "initialModel",
                         "aliases_prefsEditor",
@@ -452,8 +453,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "{that}.options.markupFixture",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema([
-                        fluid.tests.prefs,
-                        fluid.tests.defaultLocale
+                        fluid.tests.aux.prefs,
+                        fluid.tests.aux.defaultLocale
                     ])
                 }
             },
@@ -476,11 +477,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     [
                         "templateLoader",
                         "messageLoader",
-                        "terms",
+                        "terms"
                     ],
                     [
                         "enactors",
-                        "messages",
                         "panels",
                         "initialModel",
                         "aliases_prefsEditor",
@@ -505,8 +505,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "{that}.options.markupFixture",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema([
-                        fluid.tests.prefs,
-                        fluid.tests.enactors
+                        fluid.tests.aux.prefs,
+                        fluid.tests.aux.enactors
                     ])
                 }
             },
@@ -521,7 +521,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - only enactors",
             tests: [{
-                expect: 20,
+                expect: 25,
                 name: "Component Grade Creation",
                 func: "fluid.tests.assertComponentGradeCreation",
                 args: [
@@ -536,8 +536,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "aliases_enhancer"
                     ],
                     [
-                        "messages",
-                        "panels",
+                        "panels"
                     ]
                 ]
             }, {
@@ -546,455 +545,243 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.test.testAssembly",
                 args: ["{builder}", fluid.tests.expectedAssembly.prefsEditor]
             }]
-            // tests: [{
-            //     expect: 7,
-            //     name: "constructed grades",
-            //     func: "fluid.tests.assertConstructedDefaults",
-            //     args: ["{builderEnactors}", ["enactors", "initialModel"]]
-            // }, {
-            //     expect: 2,
-            //     name: "constructed alias grades",
-            //     func: "fluid.tests.assertConstructedAliases",
-            //     args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
-            // }, {
-            //     expect: 4,
-            //     name: "not created",
-            //     func: "fluid.tests.testNotCreated",
-            //     args: ["{builderEnactors}", ["messages", "panels"]]
-            // }, {
-            //     expect: 2,
-            //     name: "assembledUIEGrade",
-            //     func: "fluid.tests.assertDefaults",
-            //     args: ["{builderEnactors}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-            // }, {
-            //     expect: 2,
-            //     name: "assembledPrefsEditorGrade",
-            //     func: "fluid.tests.assertDefaults",
-            //     args: ["{builderEnactors}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
-            // }]
         }]
     });
 
-    fluid.defaults("fluid.tests.builder", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        testOpts: {
-            topCommonOptions: {
-                panels: {
-                    selectors: {
-                        cancel: ".flc-prefsEditor-cancel",
-                        reset: ".flc-prefsEditor-reset",
-                        save: ".flc-prefsEditor-save",
-                        panels: ".flc-prefsEditor-panel",
-                        previewFrame : ".flc-prefsEditor-preview-frame"
-                    }
-                },
-                templateLoader: {
-                    resources: {
-                        prefsEditor: {
-                            url: "%templatePrefix/SeparatedPanelPrefsEditor.html"
-                        }
-                    }
+    fluid.defaults("fluid.tests.prefs.builder.topCommonOptions", {
+        topCommonOptions: {
+            panels: {
+                selectors: {
+                    cancel: ".flc-prefsEditor-cancel",
+                    reset: ".flc-prefsEditor-reset",
+                    save: ".flc-prefsEditor-save",
+                    panels: ".flc-prefsEditor-panel",
+                    previewFrame : ".flc-prefsEditor-preview-frame"
+                }
+            },
+            templateLoader: {
+                resources: {
+                    prefsEditor: "%templatePrefix/SeparatedPanelPrefsEditor.html"
                 }
             }
-        },
+        }
+    });
+
+    fluid.defaults("fluid.tests.builder.panels", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-prefs-builder",
         components: {
-            // builderEmpty: {
-            //     type: "fluid.tests.prefs.builder",
-            //     container: $("<div>"),
-            //     options: {
-            //         auxiliarySchema: fluid.tests.assembleAuxSchema([fluid.tests.prefs])
-            //     }
-            // },
-            // builderDefaultLocale: {
-            //     type: "fluid.tests.prefs.builder",
-            //     options: {
-            //         auxiliarySchema: fluid.tests.assembleAuxSchema([
-            //             fluid.tests.prefs,
-            //             fluid.tests.defaultLocale
-            //         ])
-            //     }
-            // },
-            // builderEnactors: {
-            //     type: "fluid.tests.prefs.builder",
-            //     options: {
-            //         auxiliarySchema: fluid.tests.assembleAuxSchema([
-            //             fluid.tests.prefs,
-            //             fluid.tests.enactors
-            //         ])
-            //     }
-            // },
-            builderPanels: {
+            builder: {
                 type: "fluid.tests.prefs.builder",
+                container: "{that}.options.markupFixture",
                 options: {
+                    gradeNames: ["fluid.tests.prefs.builder.topCommonOptions"],
                     auxiliarySchema: fluid.tests.assembleAuxSchema([
-                        fluid.tests.prefs,
-                        fluid.tests.panels
-                    ]),
-                    topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
-                }
-            },
-            builderPanelsAndMessages: {
-                type: "fluid.tests.prefs.builder",
-                options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema([
-                        fluid.tests.prefs,
-                        fluid.tests.panels,
-                        fluid.tests.message,
-                        fluid.tests.terms
-                    ]),
-                    topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
-                }
-            },
-            builderPanelsAndTemplates: {
-                type: "fluid.tests.prefs.builder",
-                options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema([
-                        fluid.tests.prefs,
-                        fluid.tests.panels,
-                        fluid.tests.template,
-                        fluid.tests.terms
-                    ]),
-                    topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
-                }
-            },
-            builderAll: {
-                type: "fluid.tests.prefs.builder",
-                options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema([
-                        fluid.tests.prefs,
-                        fluid.tests.defaultLocale,
-                        fluid.tests.panels,
-                        fluid.tests.enactors,
-                        fluid.tests.message,
-                        fluid.tests.template,
-                        fluid.tests.terms
-                    ]),
-                    topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
+                        fluid.tests.aux.prefs,
+                        fluid.tests.aux.panels
+                    ])
                 }
             },
             builderTester: {
-                type: "fluid.tests.builderTester"
+                type: "fluid.tests.builder.panelsTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.builderTester", {
+    fluid.defaults("fluid.tests.builder.panelsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            consolidationGrades: {
-                enhancer: "fluid.prefs.builder.uie",
-                prefsEditor: "fluid.prefs.builder.prefsEditor"
-            }
-        },
         modules: [{
-        //     name: "fluid.prefs.builder - empty",
-        //     tests: [{
-        //         expect: 12,
-        //         name: "not created",
-        //         func: "fluid.tests.testNotCreated",
-        //         args: [
-        //             "{builderEmpty}",
-        //             [
-        //                 "enactors",
-        //                 "messages",
-        //                 "panels",
-        //                 "initialModel",
-        //                 "aliases_prefsEditor",
-        //                 "aliases_enhancer"
-        //             ]
-        //         ]
-        //     }, {
-        //         expect: 2,
-        //         name: "assembledUIEGrade",
-        //         func: "fluid.tests.assertDefaults",
-        //         args: ["{builderEmpty}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-        //     }, {
-        //         expect: 2,
-        //         name: "assembledPrefsEditorGrade",
-        //         func: "fluid.tests.assertDefaults",
-        //         args: ["{builderEmpty}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
-        //     }]
-        // }, {
-        //     name: "fluid.prefs.builder - defaultLocale",
-        //     tests: [{
-        //         expect: 12,
-        //         name: "not created",
-        //         func: "fluid.tests.testNotCreated",
-        //         args: [
-        //             "{builderEmpty}",
-        //             [
-        //                 "enactors",
-        //                 "messages",
-        //                 "panels",
-        //                 "initialModel",
-        //                 "aliases_prefsEditor",
-        //                 "aliases_enhancer"
-        //             ]
-        //         ]
-        //     }, {
-        //         expect: 2,
-        //         name: "assembledUIEGrade",
-        //         func: "fluid.tests.assertDefaults",
-        //         args: ["{builderEmpty}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-        //     }, {
-        //         expect: 4,
-        //         name: "assembledPrefsEditorGrade",
-        //         func: "fluid.tests.assertDefaults",
-        //         args: ["{builderDefaultLocale}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditorWithLocale]
-        //     }]
-        // }, {
-            name: "fluid.prefs.builder - only enactors",
-            tests: [{
-                expect: 7,
-                name: "constructed grades",
-                func: "fluid.tests.assertConstructedDefaults",
-                args: ["{builderEnactors}", ["enactors", "initialModel"]]
-            }, {
-                expect: 2,
-                name: "constructed alias grades",
-                func: "fluid.tests.assertConstructedAliases",
-                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
-            }, {
-                expect: 4,
-                name: "not created",
-                func: "fluid.tests.testNotCreated",
-                args: ["{builderEnactors}", ["messages", "panels"]]
-            }, {
-                expect: 2,
-                name: "assembledUIEGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-            }, {
-                expect: 2,
-                name: "assembledPrefsEditorGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
-            }]
-        }, {
             name: "fluid.prefs.builder - only panels",
             tests: [{
-                expect: 13,
-                name: "constructed grades",
-                func: "fluid.tests.assertConstructedDefaults",
-                args: ["{builderPanels}", ["panels", "initialModel", "templateLoader", "messageLoader"]]
+                expect: 25,
+                name: "Component Grade Creation",
+                func: "fluid.tests.assertComponentGradeCreation",
+                args: [
+                    "{builder}",
+                    [
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "panels",
+                        "initialModel",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ],
+                    [
+                        "enactors"
+                    ]
+                ]
             }, {
-                expect: 2,
-                name: "constructed alias grades",
-                func: "fluid.tests.assertConstructedAliases",
-                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
-            }, {
-                expect: 4,
-                name: "not created",
-                func: "fluid.tests.testNotCreated",
-                args: ["{builderPanels}", ["message", "enactors"]]
-            }, {
-                expect: 2,
-                name: "assembledUIEGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-            }, {
-                expect: 2,
-                name: "assembledPrefsEditorGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
-            }]
-        }, {
-            name: "fluid.prefs.builder - panels & messages",
-            tests: [{
-                expect: 16,
-                name: "constructed grades",
-                func: "fluid.tests.assertConstructedDefaults",
-                args: ["{builderPanelsAndMessages}", ["panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
-            }, {
-                expect: 2,
-                name: "constructed alias grades",
-                func: "fluid.tests.assertConstructedAliases",
-                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
-            }, {
-                expect: 2,
-                name: "not created",
-                func: "fluid.tests.testNotCreated",
-                args: ["{builderPanelsAndMessages}", ["enactors"]]
-            }, {
-                expect: 2,
-                name: "assembledUIEGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-            }, {
-                expect: 2,
-                name: "assembledPrefsEditorGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
-            }]
-        }, {
-            name: "fluid.prefs.builder - panels & templates",
-            tests: [{
-                expect: 16,
-                name: "constructed grades",
-                func: "fluid.tests.assertConstructedDefaults",
-                args: ["{builderPanelsAndTemplates}", ["panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
-            }, {
-                expect: 2,
-                name: "constructed alias grades",
-                func: "fluid.tests.assertConstructedAliases",
-                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
-            }, {
-                expect: 2,
-                name: "not created",
-                func: "fluid.tests.testNotCreated",
-                args: ["{builderPanelsAndTemplates}", ["enactors"]]
-            }, {
-                expect: 2,
-                name: "assembledUIEGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-            }, {
-                expect: 2,
-                name: "assembledPrefsEditorGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditor]
-            }]
-        }, {
-            name: "fluid.prefs.builder - all",
-            tests: [{
-                expect: 20,
-                name: "constructed grades",
-                func: "fluid.tests.assertConstructedDefaults",
-                args: ["{builderAll}", ["panels", "enactors", "initialModel", "templateLoader", "messageLoader", "terms"]]
-            }, {
-                expect: 2,
-                name: "constructed alias grades",
-                func: "fluid.tests.assertConstructedAliases",
-                args: ["{builderEnactors}", ["aliases_prefsEditor", "aliases_enhancer"]]
-            }, {
-                expect: 2,
-                name: "assembledUIEGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledUIEGrade", fluid.tests.expectedOpts.uie]
-            }, {
-                expect: 4,
-                name: "assembledPrefsEditorGrade",
-                func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledPrefsEditorGrade", fluid.tests.expectedOpts.prefsEditorWithLocale]
+                expect: 6,
+                name: "assemblerGrades",
+                func: "fluid.test.testAssembly",
+                args: ["{builder}", fluid.tests.expectedAssembly.prefsEditor]
             }]
         }]
     });
 
-    /**********************************
-     * Builder munging tests          *
-     **********************************/
-    var loaderGrades = ["fluid.prefs.fullNoPreview"];
-    var storeType = "fluid.tests.store";
-    var enhancerType = "fluid.tests.enhancer";
-    var terms = {
-        templatePrefix: "../../../../src/framework/preferences/html",
-        messagePrefix: "../../../../src/framework/preferences/messages"
-    };
-    var prefsEdReady = false;
-
-    fluid.defaults("fluid.tests.store", {
-        gradeNames: "fluid.prefs.store",
-        listeners: {
-            "onRead.impl": {
-                func: "fluid.identity"
-            },
-            "onWrite.impl": {
-                func: "fluid.identity"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.enhancer", {
-        gradeNames: ["fluid.pageEnhancer"]
-    });
-
-    fluid.defaults("fluid.tests.builderMunging", {
+    fluid.defaults("fluid.tests.builder.panelsAndMessages", {
         gradeNames: ["fluid.test.testEnvironment"],
-        testOpts: {
-            topCommonOptions: fluid.tests.topCommonOptions
-        },
+        markupFixture: ".flc-prefs-builder",
         components: {
             builder: {
-                type: "fluid.prefs.builder",
+                type: "fluid.tests.prefs.builder",
+                container: "{that}.options.markupFixture",
                 options: {
-                    gradeNames: ["fluid.prefs.auxSchema.starter"],
-                    auxiliarySchema: {
-                        loaderGrades: loaderGrades,
-                        "template": "%templatePrefix/FullNoPreviewPrefsEditor.html",
-                        "tableOfContents": {
-                            "enactor": {
-                                "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html"
-                            }
-                        }
-                    }
+                    gradeNames: ["fluid.tests.prefs.builder.topCommonOptions"],
+                    auxiliarySchema: fluid.tests.assembleAuxSchema([
+                        fluid.tests.aux.prefs,
+                        fluid.tests.aux.panels,
+                        fluid.tests.aux.message,
+                        fluid.tests.aux.terms
+                    ])
                 }
             },
-            prefsEd: {
-                type: "fluid.viewComponent",
-                container: "#flc-prefsEditor",
-                createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
-                options: {
-                    gradeNames: ["{builder}.options.assembledPrefsEditorGrade"],
-                    storeType: storeType,
-                    enhancerType: enhancerType,
-                    terms: terms,
-                    enhancer: {
-                        classnameMap: {
-                            "textFont.default": "fl-aria"
-                        }
-                    },
-                    prefsEditor: {
-                        userOption: 1
-                    },
-                    store: {
-                        storeOption: 2
-                    },
-                    listeners: {
-                        "onReady.setReadyFlag": function () {
-                            prefsEdReady = true;
-                        }
-                    }
-                }
-            },
-            builderMungingTester: {
-                type: "fluid.tests.builderMungingTester"
+            builderTester: {
+                type: "fluid.tests.builder.panelsAndMessagesTester"
             }
         }
     });
 
-    fluid.tests.assertBuilderMunging = function (prefsEditor) {
-        jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
-        jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
-
-        jqUnit.assertDeepEq("Munging options for terms should be passed down to the template loader", terms, prefsEditor.prefsEditorLoader.templateLoader.options.resourceOptions.terms);
-        jqUnit.assertDeepEq("Munging options for terms should be passed down to the message loader", terms, prefsEditor.prefsEditorLoader.messageLoader.options.resourceOptions.terms);
-        jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
-
-        fluid.each(loaderGrades, function (loaderGrade) {
-            jqUnit.assertTrue(loaderGrade + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, loaderGrade));
-        });
-
-        jqUnit.assertTrue(enhancerType + " should be in the base enhancer grades", fluid.hasGrade(prefsEditor.enhancer.options, enhancerType));
-        var storeOptions = prefsEditor.store.settingsStore.options;
-        jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(storeOptions, storeType));
-        jqUnit.assertFalse("The default store grade should have been displaced", fluid.hasGrade(storeOptions, "fluid.prefs.cookieStore"));
-        jqUnit.assertFalse("The default store grade should have been displaced", fluid.hasGrade(storeOptions, "fluid.prefs.tempStore"));
-
-        jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
-    };
-
-    fluid.defaults("fluid.tests.builderMungingTester", {
+    fluid.defaults("fluid.tests.builder.panelsAndMessagesTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "Builder munging",
+            name: "fluid.prefs.builder - panels and messages",
             tests: [{
-                expect: 11,
-                name: "Builder munging",
-                sequence: [{
-                    listener: "fluid.tests.assertBuilderMunging",
-                    spec: {priority: "last"},
-                    event: "{builderMunging > prefsEd}.events.onReady"
-                }]
+                expect: 25,
+                name: "Component Grade Creation",
+                func: "fluid.tests.assertComponentGradeCreation",
+                args: [
+                    "{builder}",
+                    [
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "panels",
+                        "initialModel",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ],
+                    [
+                        "enactors"
+                    ]
+                ]
+            }, {
+                expect: 6,
+                name: "assemblerGrades",
+                func: "fluid.test.testAssembly",
+                args: ["{builder}", fluid.tests.expectedAssembly.prefsEditor]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.builder.panelsAndTemplates", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-prefs-builder",
+        components: {
+            builder: {
+                type: "fluid.tests.prefs.builder",
+                container: "{that}.options.markupFixture",
+                options: {
+                    gradeNames: ["fluid.tests.prefs.builder.topCommonOptions"],
+                    auxiliarySchema: fluid.tests.assembleAuxSchema([
+                        fluid.tests.aux.prefs,
+                        fluid.tests.aux.panels,
+                        fluid.tests.aux.template,
+                        fluid.tests.aux.terms
+                    ])
+                }
+            },
+            builderTester: {
+                type: "fluid.tests.builder.panelsAndTemplatesTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.builder.panelsAndTemplatesTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.prefs.builder - panels and templates",
+            tests: [{
+                expect: 25,
+                name: "Component Grade Creation",
+                func: "fluid.tests.assertComponentGradeCreation",
+                args: [
+                    "{builder}",
+                    [
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "panels",
+                        "initialModel",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ],
+                    [
+                        "enactors"
+                    ]
+                ]
+            }, {
+                expect: 6,
+                name: "assemblerGrades",
+                func: "fluid.test.testAssembly",
+                args: ["{builder}", fluid.tests.expectedAssembly.prefsEditor]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.builder.all", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-prefs-builder",
+        components: {
+            builder: {
+                type: "fluid.tests.prefs.builder",
+                container: "{that}.options.markupFixture",
+                options: {
+                    gradeNames: ["fluid.tests.prefs.builder.topCommonOptions"],
+                    auxiliarySchema: fluid.tests.assembleAuxSchema([
+                        fluid.tests.aux.prefs,
+                        fluid.tests.aux.defaultLocale,
+                        fluid.tests.aux.panels,
+                        fluid.tests.aux.enactors,
+                        fluid.tests.aux.message,
+                        fluid.tests.aux.template,
+                        fluid.tests.aux.terms
+                    ])
+                }
+            },
+            builderTester: {
+                type: "fluid.tests.builder.allTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.builder.allTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.prefs.builder - all",
+            tests: [{
+                expect: 27,
+                name: "Component Grade Creation",
+                func: "fluid.tests.assertComponentGradeCreation",
+                args: [
+                    "{builder}",
+                    [
+                        "templateLoader",
+                        "messageLoader",
+                        "terms",
+                        "panels",
+                        "enactors",
+                        "initialModel",
+                        "aliases_prefsEditor",
+                        "aliases_enhancer"
+                    ]
+                ]
+            }, {
+                expect: 6,
+                name: "assemblerGrades",
+                func: "fluid.test.testAssembly",
+                args: ["{builder}", fluid.tests.expectedAssembly.prefsEditor]
             }]
         }]
     });
@@ -1025,7 +812,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Rendering",
                 sequence: [{
                     listener: "fluid.tests.composite.tester.initialRendering",
-                    event: "{compositePrefsEditor prefsEditor prefsEditorLoader prefsEditor}.events.onReady"
+                    event: "{compositePrefsEditor prefsEditorLoader prefsEditor}.events.onReady"
                 }, {
                     func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
                     args: ["preferences.fluid_tests_composite_pref_increaseSize", true]
@@ -1069,17 +856,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.notVisible("The container for the conditional panel is not visible", compositePanel.locate("fluid_tests_composite_pref_lineSpace"));
     };
 
+    /***************************************
+     * fluid.prefs.builder buildType tests *
+     ***************************************/
+
     jqUnit.test("fluid.prefs.builder - prefsEditor/default", function () {
         jqUnit.expect(6);
         var prefsEditor = fluid.tests.prefs.builder(".prefs_defaultNamespace");
-        jqUnit.assertTrue("The prefs editor assembler grade should have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.prefsEd"));
-        jqUnit.assertTrue("The prefsEditorLoader subcomponent should be instantiated", prefsEditor.prefsEditorLoader);
 
-        jqUnit.assertTrue("The ui enhancer assembler grade should have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.uie"));
-        jqUnit.assertTrue("The enhancer subcomponent should be instantiated", prefsEditor.enhancer);
-
-        jqUnit.assertTrue("The store assembler grade should have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.store"));
-        jqUnit.assertTrue("The store subcomponent should be instantiated", prefsEditor.store);
+        fluid.test.testAssembly(prefsEditor, fluid.tests.expectedAssembly.prefsEditor);
 
     });
 
@@ -1088,14 +873,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var prefsEditor = fluid.tests.prefs.builder(".prefs_defaultNamespace", {
             buildType: "enhancer"
         });
-        jqUnit.assertFalse("The prefs editor assembler grade should not have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.prefsEd"));
-        jqUnit.assertUndefined("The prefsEditorLoader subcomponent should not be instantiated", prefsEditor.prefsEditorLoader);
 
-        jqUnit.assertTrue("The ui enhancer assembler grade should have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.uie"));
-        jqUnit.assertTrue("The enhancer subcomponent should be instantiated", prefsEditor.enhancer);
-
-        jqUnit.assertTrue("The store assembler grade should have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.store"));
-        jqUnit.assertTrue("The store subcomponent should be instantiated", prefsEditor.store);
+        fluid.test.testAssembly(prefsEditor, fluid.tests.expectedAssembly.enhancer);
     });
 
     jqUnit.test("fluid.prefs.builder - store", function () {
@@ -1103,14 +882,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var prefsEditor = fluid.prefs.builder({
             buildType: "store"
         });
-        jqUnit.assertFalse("The prefs editor assembler grade should not have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.prefsEd"));
-        jqUnit.assertUndefined("The prefsEditorLoader subcomponent should not be instantiated", prefsEditor.prefsEditorLoader);
 
-        jqUnit.assertFalse("The ui enhancer assembler grade should not have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.uie"));
-        jqUnit.assertUndefined("The enhancer subcomponent should not be instantiated", prefsEditor.enhancer);
-
-        jqUnit.assertTrue("The store assembler grade should have been added", fluid.hasGrade(prefsEditor.options, "fluid.prefs.assembler.store"));
-        jqUnit.assertTrue("The store subcomponent should be instantiated", prefsEditor.store);
+        fluid.test.testAssembly(prefsEditor, fluid.tests.expectedAssembly.store);
     });
 
     /***********************
@@ -1119,15 +892,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            // "fluid.tests.parseAuxSchema",
-            // "fluid.tests.generateGrade",
-            // "fluid.tests.constructGrades",
-            // "fluid.tests.builder.empty",
-            // "fluid.tests.builder.defaultLocale",
-            "fluid.tests.builder.enactors"
-            // "fluid.tests.builder", // replace with individual test runs
-            // "fluid.tests.builderMunging",
-            // "fluid.tests.compositePrefsEditor"
+            "fluid.tests.parseAuxSchema",
+            "fluid.tests.generateGrade",
+            "fluid.tests.constructGrades",
+            "fluid.tests.builder.empty",
+            "fluid.tests.builder.defaultLocale",
+            "fluid.tests.builder.enactors",
+            "fluid.tests.builder.panels",
+            "fluid.tests.builder.panelsAndMessages",
+            "fluid.tests.builder.panelsAndTemplates",
+            "fluid.tests.builder.all",
+            "fluid.tests.compositePrefsEditor"
         ]);
     });
 
