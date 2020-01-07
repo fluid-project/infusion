@@ -273,8 +273,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.prefs.builder.mergePrefs = function (that, mergingArray) {
         var merged = {};
-        for (var i = 0; i < mergingArray.length; i++) {
-            var mergeRecord = mergingArray[i];
+        fluid.each(mergingArray, function (mergeRecord) {
             var expanded = fluid.expandImmediate(mergeRecord, that);
 
             fluid.each(expanded, function (prefConfig, preference) {
@@ -285,7 +284,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
 
             $.extend(true, merged, expanded);
-        }
+        });
         return merged;
     };
 
