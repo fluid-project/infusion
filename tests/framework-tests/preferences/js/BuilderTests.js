@@ -27,15 +27,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.assertGradesNotPresent = function (gradeName, grades) {
-        var grade = fluid.defaults(gradeName);
-        jqUnit.assertNotUndefined(gradeName + " should be created", grade);
-
-        fluid.each(grades, function (baseGrade) {
-            jqUnit.assertFalse(gradeName + " should not have the base grade '" + baseGrade + "'", grade.gradeNames.indexOf(baseGrade) >= 0);
-        });
-    };
-
     fluid.tests.flattenResources = function (resources) {
         return fluid.transform(resources, function (resourceConfig) {
             return typeof(resourceConfig) === "string" ? resourceConfig : resourceConfig.url;
@@ -231,7 +222,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /**********************************
-     * fluid.prefs.builder. tests *
+     * fluid.prefs.builder tests      *
      **********************************/
 
     fluid.test.testAssembly = function (that, assembly) {
@@ -251,16 +242,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var constructedGrade = fluid.get(builder, ["options", "componentGrades", grade]);
             var auxSchemaConfig = fluid.get(builder, ["options", "auxSchema", grade]);
             fluid.tests.assertDefaults(constructedGrade, auxSchemaConfig);
-        });
-    };
-
-    fluid.tests.assertConstructedAliases = function (builder, aliasGrades) {
-        aliasGrades = fluid.makeArray(aliasGrades);
-        fluid.each(aliasGrades, function (aliasGrade) {
-            var constructedGrade = fluid.get(builder, ["options", "componentGrades", aliasGrade]);
-            var constructedDefaults = fluid.defaults(constructedGrade);
-            var auxSchemaConfig = fluid.get(builder, ["options", "auxSchema", aliasGrade]);
-            jqUnit.assertDeepEq("The model setup is correct", constructedDefaults.model[0], auxSchemaConfig.model);
         });
     };
 

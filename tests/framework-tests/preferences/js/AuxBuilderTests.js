@@ -1507,13 +1507,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.auxSchema.renderOnPreflIndex = $.extend(true, {}, fluid.tests.auxSchema.multiPanelIndex, {
-        "fluid.prefs.subPanel5": ["fluid.prefs.panel.subPanel5"],
-        "fluid.prefs.subPanel6": ["fluid.prefs.panel.subPanel6"],
-        "fluid.prefs.subPanel7": ["fluid.prefs.panel.subPanel7"],
-        "fluid.prefs.subPanel8": ["fluid.prefs.panel.subPanel8"]
-    });
-
     fluid.tests.auxSchema.renderOnPrefSchema = {
         "groups": {
             "combinedBoth3": {
