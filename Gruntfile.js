@@ -34,8 +34,8 @@ var getFromExec = function (command, options) {
         result = execSync(command, {stdio: ["pipe", "pipe", stderr]});
     } catch (e) {
         if (options.verbose) {
-            console.log("Error executing command: " + command);
-            console.log(e.stack);
+            console.log("Error executing command: " + command); // eslint-disable-line no-console
+            console.log(e.stack); // eslint-disable-line no-console
         }
     }
     return result;

@@ -58,8 +58,8 @@ QUnit.log(function (details) {
     if (details.source) { // "white-box" inspection of qunit.js shows that it sets this field on error
         fluid.log("Message: " + details.message + "\nSource: " + details.source);
         if (details.expected !== undefined) {
-            console.log("Expected: ", JSON.stringify(details.expected, null, 4));
-            console.log("Actual: ", JSON.stringify(details.actual, null, 4));
+            fluid.log("Expected: ", JSON.stringify(details.expected, null, 4));
+            fluid.log("Actual: ", JSON.stringify(details.actual, null, 4));
         }
     }
 });
@@ -120,7 +120,7 @@ jqUnit.module("Non IoC tests");
 jqUnit.test("Rendering truncation test", function () {
     var rendered = fluid.renderLoggingArg(fluid);
     jqUnit.assertTrue("Large object truncated", rendered.length < fluid.logObjectRenderChars + 100); // small allowance for extra diagnostic
-    console.log("Large log rendering object truncated to " + rendered.length + " chars");
+    fluid.log("Large log rendering object truncated to " + rendered.length + " chars");
 });
 
 jqUnit.test("Test fluid.require support", function () {
@@ -169,7 +169,7 @@ fluid.tests.onUncaughtException = function () {
     fluid.onUncaughtException.removeListener("test-uncaught"); // remove ourselves - registered by the test below
     fluid.onUncaughtException.removeListener("log"); // remove "benignLogger" and restore the original listener
     fluid.invokeLater(function () { // apply this later to avoid nesting uncaught exception handler
-        console.log("Restarting jqUnit in nested handler");
+        fluid.log("Restarting jqUnit in nested handler");
         jqUnit.start();
     });
 };

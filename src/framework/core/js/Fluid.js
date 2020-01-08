@@ -330,11 +330,13 @@ var fluid = fluid || fluid_3_0_0;
      */
     fluid.doBrowserLog = function (args) {
         if (typeof (console) !== "undefined") {
+            /* eslint-disable no-console */
             if (console.debug) {
                 console.debug.apply(console, args);
             } else if (typeof (console.log) === "function") {
                 console.log.apply(console, args);
             }
+            /* eslint-enable no-console */
         }
     };
 
