@@ -28,39 +28,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         auxiliarySchema: {}
     });
 
-    // /**
-    //  * Look up the value on the given source object by using the path.
-    //  * Takes a template string containing tokens in the form of "@source-path-to-value".
-    //  * Returns a value (any type) or undefined if the path is not found.
-    //  *
-    //  * Example:
-    //  * 1. Parameters:
-    //  * source:
-    //  * {
-    //  *     path1: {
-    //  *         path2: "here"
-    //  *     }
-    //  * }
-    //  *
-    //  * template: "@path1.path2"
-    //  *
-    //  * 2. Return: "here"
-    //  *
-    //  * @param {Object} root - An object to retrieve the returned value from.
-    //  * @param {String|Array} pathRef - A special case EL expression to be evaluated, or an array of path segments.
-    //  *                                 Unlike, typical EL expressions or pathSegments, the EL expression or initial
-    //  *                                 path segment may be begin with an "@" character to indicate internal
-    //  * @return {Any} - Returns a value (any type) or undefined if the path is not found.
-    //  *
-    //  */
-    // fluid.prefs.expandSchemaValue = function (root, pathRef) {
-    //     if (pathRef.charAt(0) !== "@") {
-    //         return pathRef;
-    //     }
-    //
-    //     return fluid.get(root, pathRef.substring(1));
-    // };
-
     fluid.prefs.addAtPath = function (root, path, object) {
         var existingObject = fluid.get(root, path);
         fluid.set(root, path, $.extend(true, {}, existingObject, object));
@@ -358,11 +325,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (terms) {
             fluid.set(auxSchema, ["terms", "terms"], terms);
         }
-        // var terms = fluid.get(auxSchema, "terms");
-        // if (terms) {
-        //     delete auxSchema.terms;
-        //     fluid.set(auxSchema, ["terms", "terms"], terms);
-        // }
 
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {

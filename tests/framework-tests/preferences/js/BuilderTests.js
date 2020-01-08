@@ -234,20 +234,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * fluid.prefs.builder. tests *
      **********************************/
 
-    // fluid.tests.testCreated = function (that, grades) {
-    //     fluid.each(grades, function (grade) {
-    //         jqUnit.assertValue("{that}.options.componentGrades." + grade + " should be defined", that.options.componentGrades[grade]);
-    //         jqUnit.assertValue("Defaults for the " + grade + " grade should have been created", fluid.defaults(that.options.auxSchema.namespace + "." + grade));
-    //     });
-    // };
-    //
-    // fluid.tests.testNotCreated = function (that, grades) {
-    //     fluid.each(grades, function (grade) {
-    //         jqUnit.assertUndefined("{that}.options.componentGrades." + grade + " should be undefined", that.options.componentGrades[grade]);
-    //         jqUnit.assertUndefined("No defaults for the " + grade + " grade should have been created", fluid.defaults(that.options.auxSchema.namespace + "." + grade));
-    //     });
-    // };
-
     fluid.test.testAssembly = function (that, assembly) {
         fluid.each(assembly.included, function (grade, subComponent) {
             jqUnit.assertTrue("The " + grade + " should have been added", fluid.hasGrade(that.options, grade));
@@ -280,10 +266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.assertComponentGradeCreation = function (builder, createdGrades, notCreatedGrades) {
         jqUnit.assertEquals("The correct number of component grades should have been created", createdGrades.length, fluid.keys(builder.options.componentGrades).length);
-        // fluid.each(createdGrades, function (grade) {
-        //     jqUnit.assertValue("{that}.options.componentGrades." + grade + " should be defined", builder.options.componentGrades[grade]);
-        //     jqUnit.assertValue("Defaults for the " + grade + " grade should have been created", fluid.defaults(builder.options.auxSchema.namespace + "." + grade));
-        // });
+
         fluid.tests.assertConstructedDefaults(builder, createdGrades);
         fluid.each(notCreatedGrades, function (grade) {
             jqUnit.assertUndefined("{that}.options.componentGrades." + grade + " should be undefined", builder.options.componentGrades[grade]);
@@ -292,12 +275,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.assembleAuxSchema = function (auxObjs) {
-        // var auxiliarySchema = {};
-        // fluid.each(auxObjs, function (auxObj) {
-        //     $.extend(true, auxiliarySchema, auxObj);
-        // });
-        // return auxiliarySchema;
-
         return fluid.accumulate(auxObjs, function (auxObj, auxiliarySchema) {
             return $.extend(true, auxiliarySchema, auxObj);
         }, {});

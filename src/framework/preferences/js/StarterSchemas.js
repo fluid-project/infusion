@@ -187,18 +187,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    // fluid.defaults("fluid.prefs.auxSchema.starter", {
-    //     gradeNames: [
-    //         "fluid.prefs.auxSchema",
-    //         "fluid.prefs.auxSchema.textSize",
-    //         "fluid.prefs.auxSchema.lineSpace",
-    //         "fluid.prefs.auxSchema.textFont",
-    //         "fluid.prefs.auxSchema.contrast",
-    //         "fluid.prefs.auxSchema.tableOfContents",
-    //         "fluid.prefs.auxSchema.enhanceInputs"
-    //     ]
-    // });
-
     /*******************************************************************************
      * Starter primary schema grades
      *

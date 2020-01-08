@@ -1,4 +1,4 @@
-/*
+  /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
 https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
@@ -174,21 +174,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // fluid.defaults("fluid.tests.prefs.composite.separatedPanel.lazyLoad", {
-    //     gradeNames: ["fluid.tests.prefs.composite.separatedPanel"],
-    //     lazyLoad: true
-    // });
-
-    // Creates the "fluid.tests.composite.separatedPanel.prefsEditor" grade
-    // fluid.prefs.builder({
-    //     gradeNames: ["fluid.tests.composite.auxSchema"],
-    //     primarySchema: fluid.tests.composite.primarySchema,
-    //     auxiliarySchema: {
-    //         "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"],
-    //         "namespace": "fluid.tests.composite.separatedPanel"
-    //     }
-    // });
-
     fluid.defaults("fluid.tests.composite.separatedPanel.prefsEditor", {
         gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
         schema: fluid.tests.composite.primarySchema,
@@ -197,33 +182,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // Creates the "fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor" grade
-    // fluid.prefs.builder({
-    //     gradeNames: ["fluid.tests.composite.auxSchema"],
-    //     primarySchema: fluid.tests.composite.primarySchema,
-    //     auxiliarySchema: {
-    //         "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel.lazyLoad"],
-    //         "namespace": "fluid.tests.composite.separatedPanel.lazyLoad"
-    //     }
-    // });
-
     fluid.defaults("fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor", {
         gradeNames: ["fluid.tests.composite.separatedPanel.prefsEditor"],
         prefsEditorLoader: {
             lazyLoad: true
         }
     });
-
-
-    // Creates the "fluid.tests.composite.fullNoPreview.prefsEditor" grade
-    // fluid.prefs.builder({
-    //     gradeNames: ["fluid.tests.composite.auxSchema"],
-    //     primarySchema: fluid.tests.composite.primarySchema,
-    //     auxiliarySchema: {
-    //         "loaderGrades": ["fluid.prefs.fullNoPreview"],
-    //         "namespace": "fluid.tests.composite.fullNoPreview"
-    //     }
-    // });
 
     fluid.defaults("fluid.tests.composite.fullNoPreview.prefsEditor", {
         gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
