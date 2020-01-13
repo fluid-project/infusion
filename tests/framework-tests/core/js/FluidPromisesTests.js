@@ -145,6 +145,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.testActivePromise("reject", "cancel");
     });
 
+    jqUnit.test("Cancellation through fluid.promise.follow", function () {
+        var source = fluid.promise();
+        var target = fluid.promise();
+        fluid.promise.follow(source, target);
+        var unwantedSideEffect = false;
+        source.then(function () {
+            unwantedSideEffect = true;
+        });
+        target.cancel();
+        source.resolve(42);
+        jqUnit.assertFalse("Cancellation of followed target cancels source", unwantedSideEffect);
+    });
+
     fluid.tests.makeMultipleListenerPromise = function () {
         var holder = fluid.tests.makeTrackingPromise();
         holder.addListeners(1);
@@ -408,6 +421,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         return promise;
     };
+
+    fluid.tests.fluid6445wait = function () {
+        var togo = fluid.promise();
+        fluid.invokeLater(togo.resolve);
+        return togo;
+    };
+
+    // In practice this function will never execute at all, but we place its side-effect here as a final stopgap check
+    fluid.tests.fluid6445sideEffect = function () {
+        var togo = fluid.promise();
+        togo.then(function () {
+            jqUnit.fail("Undesirable side-effect was not prevented through component destruction while chain in progress");
+        });
+        fluid.invokeLater(togo.resolve);
+    };
+
+    fluid.defaults("fluid.tests.fluid6445", {
+        gradeNames: "fluid.component",
+        events: {
+            cancellableTransform: null
+        },
+        listeners: {
+            "cancellableTransform.first": {
+                funcName: "fluid.tests.fluid6445wait"
+            },
+            "cancellableTransform.sideEffect": {
+                funcName: "fluid.tests.fluid6445sideEffect",
+                args: "{fluid.tests.fluid6445}"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6445: Sequence cancellation of fluid.promise.fireTransformEvent through component destruction", function () {
+        var that = fluid.tests.fluid6445();
+        var promise = fluid.promise.fireTransformEvent(that.events.cancellableTransform);
+        that.destroy();
+        jqUnit.assertEquals("In-progress transform was cancelled through component destruction", "cancel", promise.disposition);
+    });
 
     jqUnit.asyncTest("fluid.promise.sequence", function () {
         var sources = [3, fluid.promise(), fluid.tests.optionValueViaPromise, function () { return 12;}];

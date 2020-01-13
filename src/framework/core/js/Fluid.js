@@ -1029,7 +1029,7 @@ var fluid = fluid || fluid_3_0_0;
     fluid.makeMarker = function (value, extra) {
         var togo = Object.create(fluid.marker.prototype);
         togo.value = value;
-        $.extend(togo, extra);
+        fluid.extend(togo, extra);
         return Object.freeze(togo);
     };
 
@@ -1557,12 +1557,15 @@ var fluid = fluid || fluid_3_0_0;
 
     /* Generate a name for a component for debugging purposes */
     fluid.nameComponent = function (that) {
-        return that ? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]";
+        return that ? fluid.dumpComponentAndPath(that) : "[unknown component]";
     };
 
     fluid.event.nameEvent = function (that, eventName) {
         return eventName + " of " + fluid.nameComponent(that);
     };
+
+    // A function to tag the type of a Fluid event firer (primarily to mark it uncopyable)
+    fluid.event.firer = function () {};
 
     /** Construct an "event firer" object which can be used to register and deregister
      * listeners, to which "events" can be fired. These events consist of an arbitrary
@@ -1590,6 +1593,8 @@ var fluid = fluid || fluid_3_0_0;
             // The "live" list of listeners which will be notified in order on any firing. Recomputed on any use of
             // addListener/removeListener
             that.sortedListeners = [];
+            // Very low-level destruction notification scheme primarily intended for FLUID-6445. Will be an array of nullary functions
+            that.onDestroy = null;
             // arguments after 3rd are not part of public API
             // listener as Object is used only by ChangeApplier to tunnel path, segs, etc as part of its "spec"
             /** Adds a listener to this event.
@@ -1638,13 +1643,17 @@ var fluid = fluid || fluid_3_0_0;
             };
             that.addListener.apply(null, arguments);
         };
-        that = {
+        that = Object.create(fluid.event.firer.prototype);
+        fluid.extend(that, {
             eventId: fluid.allocateGuid(),
             name: name,
             ownerId: options.ownerId,
             typeName: "fluid.event.firer",
             destroy: function () {
                 that.destroyed = true;
+                fluid.each(that.onDestroy, function (func) {
+                    func();
+                });
             },
             addListener: function () {
                 lazyInit.apply(null, arguments);
@@ -1710,8 +1719,18 @@ var fluid = fluid || fluid_3_0_0;
                     }
                 }
             }
-        };
+        });
         return that;
+    };
+
+    // unsupported, NON-API function
+    // Supports the framework-internal "onDestroy" list attached to an event which needs to be extremely lightweight
+    fluid.event.addPrimitiveListener = function (holder, name, func) {
+        var existing = holder[name];
+        if (!existing) {
+            existing = holder[name] = [];
+        }
+        existing.push(func);
     };
 
     // unsupported, NON-API function
@@ -2387,7 +2406,7 @@ var fluid = fluid || fluid_3_0_0;
             }
 
             var oldTarget;
-            if (name in target) { // bail out if our work has already been done
+            if (name in target || options.fullyEvaluated) { // bail out if our work has already been done
                 oldTarget = target[name];
                 if (!options.evaluateFully) { // see notes on this hack in "initter" - early attempt to deal with FLUID-4930
                     return oldTarget;
@@ -2448,7 +2467,7 @@ var fluid = fluid || fluid_3_0_0;
                     fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
                 }
             }
-            if (oldTarget === undefined && newSources.length === 0) {
+            if (oldTarget === undefined && newSources.length === 0 && target[name] === fluid.inEvaluationMarker) {
                 delete target[name]; // remove the evaluation marker - nothing to evaluate
             }
             return thisTarget;
@@ -2521,6 +2540,7 @@ var fluid = fluid || fluid_3_0_0;
             // in the strategy API to express when full evaluation is required - and the "flooding API" is not standardised. See FLUID-4930
             options.evaluateFully = true;
             fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);
+            options.fullyEvaluated = true;
         };
         fluid.makeMergeStrategy(options);
         return options;
@@ -2638,7 +2658,7 @@ var fluid = fluid || fluid_3_0_0;
         var updateBlocks = function () {
             fluid.each(mergeBlocks, function (block) {
                 if (fluid.isPrimitive(block.priority)) {
-                    block.priority = fluid.parsePriority(block.priority, 0, false, "options distribution");
+                    block.priority = fluid.parsePriority(block.priority, 0, false, block.recordType);
                 }
             });
             fluid.sortByPriority(mergeBlocks);

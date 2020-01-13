@@ -113,12 +113,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Chains the resolution methods of one promise (target) so that they follow those of another (source).
      * That is, whenever source resolves, target will resolve, or when source rejects, target will reject, with the
-     * same payloads in each case.
+     * same payloads in each case. In addition, if the target promise is cancelled, this will be propagated to the
+     * source promise.
      * @param {Promise} source - The promise that the target promise will subscribe to
      * @param {Promise} target - The promise to which notifications will be forwarded from the source
      */
     fluid.promise.follow = function (source, target) {
         source.then(target.resolve, target.reject);
+        target.then(null, null, source.cancel);
     };
 
     /** Returns a promise whose resolved value is mapped from the source promise or value by the supplied function.
@@ -156,7 +158,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!fluid.isArrayable(sources)) {
             fluid.fail("fluid.promise sequence algorithms must be supplied an array as source");
         }
-        return {
+        var sequencer = {
             sources: sources,
             resolvedSources: [], // the values of "sources" only with functions invoked (an array of promises or values)
             index: 0,
@@ -164,8 +166,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             options: options, // available to be supplied to each listener
             returns: [],
             sequenceStarted: false,
+            sequenceCancelled: false,
             promise: fluid.promise() // the final return value
         };
+        sequencer.promise.then(null, null, function () {
+            fluid.promise.cancelSequencer(sequencer);
+        });
+        sequencer.promise.sequencer = sequencer; // An aid to debuggability
+        return sequencer;
+    };
+
+    fluid.promise.cancelSequencer = function (sequencer) {
+        sequencer.sequenceCancelled = true;
+        sequencer.resolvedSources.forEach(function (source) {
+            if (fluid.isPromise(source)) {
+                source.cancel();
+            }
+        });
     };
 
     fluid.promise.progressSequence = function (that, retValue) {
@@ -186,7 +203,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.promise.resumeSequence = function (that) {
         that.sequenceStarted = true;
-        if (that.index === that.sources.length) {
+        if (that.sequenceCancelled) {
+            return;
+        } else if (that.index === that.sources.length) {
             that.promise.resolve(that.strategy.resolveResult(that));
         } else {
             var value = that.strategy.invokeNext(that);
@@ -222,7 +241,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // until the promise at the preceding position has resolved
     fluid.promise.sequence = function (sources, options) {
         var sequencer = fluid.promise.makeSequencer(sources, options, fluid.promise.makeSequenceStrategy());
-        sequencer.promise.sequencer = sequencer; // An aid to debuggability
         fluid.promise.resumeSequence(sequencer);
         return sequencer.promise;
     };
@@ -253,7 +271,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
         var sequencer = fluid.promise.makeSequencer(listeners, options, fluid.promise.makeTransformerStrategy());
         sequencer.returns.push(null); // first dummy return from initial entry
-        fluid.promise.resumeSequence(sequencer);
         return sequencer;
     };
 
@@ -285,8 +302,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var listeners = options.reverse ? fluid.makeArray(event.sortedListeners).reverse() :
                 fluid.makeArray(event.sortedListeners);
         listeners = fluid.promise.filterNamespaces(listeners, options.filterNamespaces);
-        var transformer = fluid.promise.makeTransformer(listeners, payload, options);
-        return transformer.promise;
+        var sequencer = fluid.promise.makeTransformer(listeners, payload, options);
+        var canceller = sequencer.promise.cancel;
+        var remover = function () {
+            fluid.remove_if(event.onDestroy, function (func) {
+                return func === canceller;
+            });
+        };
+        fluid.event.addPrimitiveListener(event, "onDestroy", canceller);
+        sequencer.promise.then(remover, remover, remover);
+        fluid.promise.resumeSequence(sequencer);
+        return sequencer.promise;
     };
 
 

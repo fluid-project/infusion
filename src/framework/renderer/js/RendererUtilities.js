@@ -208,7 +208,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         var produceTreeOption = that.options.produceTree;
         return produceTreeOption ?
             (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
-            that.options.protoTree;
+            fluid.copy(that.options.protoTree);
     };
 
     fluid.fetchOldRendererTemplate = function (shadow) {
@@ -222,7 +222,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.initOldRendererComponent = function (that) {
-        var rendererOptions = fluid.oldRenderer.modeliseOptions(that.options.rendererOptions, null, that);
+        var rendererOptions = fluid.oldRenderer.modeliseOptions(fluid.copy(that.options.rendererOptions), null, that);
 
         if (!rendererOptions.messageSource && that.options.strings) {
             rendererOptions.messageSource = {type: "resolver", resolver: that.messageResolver};

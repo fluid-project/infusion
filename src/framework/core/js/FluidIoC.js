@@ -182,9 +182,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.recordStrategy = function (that, options, optionsStrategy, recordPath, recordMaker, prefix, exceptions) {
         prefix = prefix || [];
+        var fullyEvaluated = false;
         return {
             strategy: function (target, name, i) {
-                if (i !== 1) { // Strange hack added for forgotten reason
+                if (i !== 1 || fullyEvaluated) { // i !== -1 is strange hack added for forgotten reason
                     return;
                 }
                 var record = fluid.driveStrategy(options, [recordPath, name], optionsStrategy);
@@ -203,6 +204,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         fluid.getForComponent(that, prefix.concat([name]));
                     }
                 }
+                fullyEvaluated = true;
             }
         };
     };
@@ -564,25 +566,42 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    // Bitmapped constants holding reason for context name to be in scope within contextHash and childrenScope
+    fluid.contextName = 1;
+    fluid.memberName = 2;
+
     fluid.gradeNamesToHash = function (gradeNames) {
         var contextHash = {};
         fluid.each(gradeNames, function (gradeName) {
-            contextHash[gradeName] = true;
-            contextHash[fluid.computeNickName(gradeName)] = true;
+            if (!fluid.isReferenceOrExpander(gradeName)) {
+                contextHash[gradeName] = fluid.contextName;
+                contextHash[fluid.computeNickName(gradeName)] = fluid.contextName;
+            }
         });
         return contextHash;
     };
 
+    fluid.applyToContexts = function (hash, key, disposition) {
+        var existing = hash[key];
+        hash[key] = (existing || 0) | disposition; // Resolve part of FLUID-6433
+    };
+
+    fluid.applyToScope = function (scope, key, value, disposition) {
+        var existing = scope[key];
+        if (!existing || (disposition & fluid.memberName)) {
+            scope[key] = value;
+        }
+    };
+
     fluid.cacheShadowGrades = function (that, shadow) {
         var contextHash = fluid.gradeNamesToHash(that.options && that.options.gradeNames || [that.typeName]);
-        if (!contextHash[shadow.memberName]) {
-            contextHash[shadow.memberName] = "memberName"; // This is filtered out again in recordComponent - TODO: Ensure that ALL resolution uses the scope chain eventually
-        }
+        // This is filtered out again in recordComponent - TODO: Ensure that ALL resolution uses the scope chain eventually
+        fluid.applyToContexts(contextHash, shadow.memberName, fluid.memberName);
         shadow.contextHash = contextHash;
-        fluid.each(contextHash, function (troo, context) {
+        fluid.each(contextHash, function (disposition, context) {
             shadow.ownScope[context] = that;
-            if (shadow.parentShadow && shadow.parentShadow.that.type !== "fluid.rootComponent") {
-                shadow.parentShadow.childrenScope[context] = that;
+            if (shadow.parentShadow && shadow.parentShadow.that.typeName !== "fluid.rootComponent") {
+                fluid.applyToScope(shadow.parentShadow.childrenScope, context, that, disposition);
             }
         });
     };
@@ -659,7 +678,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (fluid.contains(rec.gradeNames, "fluid.contextAware")) {
             var contextAwarenessOptions = fluid.getForComponent(that, ["options", "contextAwareness"]);
             newContextAware = fluid.contextAware.check(that, contextAwarenessOptions);
-            var lostGrade = rec.contextAware.find(function (gradeName) {
+            var lostGrade = fluid.find_if(rec.contextAware, function (gradeName) {
                 return !fluid.contains(newContextAware, gradeName);
             });
             if (lostGrade) { // The user really deserves a prize if they achieve this diagnostic
@@ -857,7 +876,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.dumpThat = function (that) {
-        return "{ typeName: \"" + that.typeName + "\"" + fluid.dumpGradeNames(that) + " id: " + that.id + "}";
+        return "{ typeName: \"" + that.typeName + " id: " + that.id + "\"" + fluid.dumpGradeNames(that) + "}";
     };
 
     fluid.dumpThatStack = function (thatStack, instantiator) {
@@ -910,7 +929,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     var scopeValue = shadow.contextHash[context];
                     // Replace "memberName" member of contextHash from original site with memberName from injection site -
                     // need to mirror "fast" action of recordComponent in composing childrenScope
-                    if (scopeValue && scopeValue !== "memberName" || context === memberName) {
+                    if (scopeValue && (scopeValue !== fluid.memberName) || context === memberName) {
                         foundComponent = component;
                         return true; // YOUR VISIT IS AT AN END!!
                     }
@@ -977,8 +996,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.cacheShadowGrades(child, childShadow);
     };
 
-    fluid.clearChildrenScope = function (instantiator, parentShadow, child, childShadow) {
-        fluid.each(childShadow.contextHash, function (troo, context) {
+    fluid.clearChildrenScope = function (instantiator, parentShadow, child, childShadow, memberName) {
+        var keys = fluid.keys(childShadow.contextHash);
+        keys.push(memberName); // Add local name in case we are clearing an injected component - FLUID-6444
+        keys.forEach(function (context) {
             if (parentShadow.childrenScope[context] === child) {
                 delete parentShadow.childrenScope[context]; // TODO: ambiguous resolution
             }
@@ -1072,11 +1093,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var parentShadow = that.idToShadow[parent.id]; // structural parent shadow - e.g. resolveRootComponent
                 var keys = fluid.keys(shadow.contextHash);
                 fluid.remove_if(keys, function (key) {
-                    return shadow.contextHash && shadow.contextHash[key] === "memberName";
+                    return shadow.contextHash && (shadow.contextHash[key] === fluid.memberName);
                 });
                 keys.push(name); // add local name - FLUID-5696 and FLUID-5820
-                fluid.each(keys, function (context) {
-                    if (!parentShadow.childrenScope[context]) {
+                keys.forEach(function (context) {
+                    if (!parentShadow.childrenScope.hasOwnProperty(context)) { // FLUID-6444
                         parentShadow.childrenScope[context] = component;
                     }
                 });
@@ -1157,7 +1178,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     return path === childPath;
                 });
             }
-            fluid.clearChildrenScope(that, shadow, child, childShadow);
+            fluid.clearChildrenScope(that, shadow, child, childShadow, name);
             // Note that "pathToComponent" will not be available during afterDestroy. This is so that we can synchronously recreate the component
             // in an afterDestroy listener (FLUID-5931). We don't clear up the shadow itself until after afterDestroy.
             delete that.pathToComponent[childPath];
@@ -1165,7 +1186,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (!nested) {
                 delete component[name]; // there may be no entry - if creation is not concluded
                 // Do actual destruction for the whole tree here, including "afterDestroy" and deleting shadows
-                fluid.each(options.destroyRecs, that.clearConcreteComponent);
+                options.destroyRecs.forEach(that.clearConcreteComponent);
             }
         };
         return that;
@@ -1217,7 +1238,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  component. The component's own options take <code>{defer: true}</code> as part of
      *  <code>outerExpandOptions</code> which produces an "expandOptions" structure holding the "strategy" and "initter" pattern
      *  common to ginger participants.
-     *  This is pretty well-attested as a public API but only the first two arguments are stable. However, `fluid.expand` should be
+     *  This is pretty well-attested as a public API but only the first two arguments are stable. However, `fluid.expandImmediate` should be
      *  used by preference for standard immediate expansion.
      */
 
@@ -1269,8 +1290,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.fabricateDestroyMethod = function (that) {
         return function () {
+            var currentTrans = fluid.currentTreeTransaction();
             var shadow = fluid.shadowForComponent(that);
-            fluid.destroy(shadow.path);
+            var transRec = fluid.destroy(shadow.path);
+            if (!currentTrans) {
+                transRec.promise.then(null, function (e) {
+                    throw e;
+                });
+            }
         };
     };
 
@@ -1419,6 +1446,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         shadow.memberStrategy.initter();
         shadow.invokerStrategy.initter();
+
+        fluid.freezeRecursive(that.options);
 
         fluid.each(shadow.lightMergeComponents, function (lightMerge, key) {
             if (lightMerge.createOnEvent) {
@@ -2520,7 +2549,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             apply: function (noThis, args) {
                 // Resolve this material late, to deal with cases where the target has only just been brought into existence
                 // (e.g. a jQuery target for rendered material) - TODO: Possibly implement cached versions of these as we might do for invokers
-                var resolvedThis = fluid.expandOptions(recthis, that);
+                var resolvedThis = fluid.expandImmediate(recthis, that);
                 if (typeof(resolvedThis) === "string") {
                     resolvedThis = fluid.getGlobalValue(resolvedThis);
                 }
@@ -2541,9 +2570,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.changeToApplicable = function (record, that) {
         return {
+            // These extra arguments get in via fluid.event.invokeListener and resolveModelListener
             apply: function (noThis, args, localRecord, mergeRecord) {
                 var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
-                var value = fluid.expandOptions(record.value, that, {}, fluid.extend(localRecord, {"arguments": args}));
+                var value = fluid.expandImmediate(record.value, that, fluid.extend(localRecord, {"arguments": args}));
                 var sources = mergeRecord && mergeRecord.source && mergeRecord.source.length ? fluid.makeArray(record.source).concat(mergeRecord.source) : record.source;
                 parsed.applier.change(parsed.modelSegs, value, record.type, sources); // FLUID-5586 now resolved
             }
@@ -3067,14 +3097,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (typeof (source) === "string" && !thisPolicy.noexpand) {
             if (!options.defaultEL || source.charAt(0) === "{") { // hard-code this for performance
                 fluid.pushActivity("expandContextValue", "expanding context value %source held at path %path", {source: source, path: fluid.path.apply(null, segs.slice(0, i))});
-                expanded = fluid.resolveContextValue(source, options);
+                expanded = fluid.copy(fluid.resolveContextValue(source, options));
                 fluid.popActivity(1);
             } else {
                 expanded = source;
             }
         }
         else if (thisPolicy.noexpand || fluid.isUnexpandable(source)) {
-            expanded = source;
+            expanded = fluid.copy(source);
         }
         else if (source.expander) {
             expanded = fluid.expandExpander(deliverer, source, options);
@@ -3082,8 +3112,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         else {
             expanded = fluid.freshContainer(source);
             isTrunk = true;
-        }
-        if (expanded !== fluid.NO_VALUE) {
+        } // 2nd branch was another partial site for FLUID-6428 but no longer seems to be needed
+        if (expanded !== fluid.NO_VALUE /* && source !== undefined */) {
             deliverer(expanded);
         }
         if (isTrunk) {
@@ -3158,6 +3188,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             else {
                 options.target = source;
             }
+            // TODO: This option is never used!
             options.immutableTarget = true;
         }
         return options;
@@ -3186,7 +3217,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
         } else if (fluid.isPlainObject(source)) {
             if (source.expander) {
-                source.expander.typeFunc = fluid.getGlobalValue(source.expander.type || "fluid.invokeFunc");
+                source.expander.typeFunc = fluid.getGlobalValue(source.expander.type || "fluid.expander.invokeFunc");
                 pushExpander(source.expander);
             } else {
                 fluid.each(source, function (value, key) {
@@ -3207,7 +3238,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return root;
     };
 
-    // Main pathway for freestanding material that is not part of a component's options
+    // Main pathway for freestanding material that is not part of a component's options. As well as being rather more
+    // rapid, this pathway does not clone containers from "source" to "target"
     fluid.expandImmediate = function (source, that, localRecord) {
         var options = fluid.makeStackResolverOptions(that, localRecord, true); // TODO: ELstyle and target are now ignored
         var root = fluid.preExpand(source);
@@ -3215,7 +3247,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return root.source;
     };
 
-    // High performance expander for situations such as invokers, listeners, where raw materials can be cached - consumes "root" structure produced by preExpand
     fluid.expandImmediateImpl = function (root, options) {
         var expanders = root.expanders;
         for (var i = 0; i < expanders.length; ++i) {
@@ -3225,7 +3256,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.expandExpander = function (deliverer, source, options) {
-        var expander = fluid.getGlobalValue(source.expander.type || "fluid.invokeFunc");
+        var expander = fluid.getGlobalValue(source.expander.type || "fluid.expander.invokeFunc");
         if (!expander) {
             fluid.fail("Unknown expander with type " + source.expander.type);
         }
@@ -3235,6 +3266,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.registerNamespace("fluid.expander");
 
     // "deliverer" is null in the new (fast) pathway, this is a relic of the old "source expander" signature. It appears we can already globally remove this
+    // The main "expander" of the new, monomorphic fast path to operating listeners and invokers. Any IoC references found
+    // in such material are expanded into such "cells" so that they may be run through in an array.
+    // Old comment: High performance expander for situations such as invokers, listeners, where raw materials can be cached
+    // - consumes "root" structure produced by preExpand
     fluid.expander.fetch = function (deliverer, source, options) {
         var localRecord = options.localRecord, context = source.expander.context, segs = source.expander.segs;
         // TODO: Either type-check on context as string or else create fetchSlow
@@ -3268,7 +3303,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
          equivalent model transformation machinery */
 
     // This one is now positioned as the "universal expander" - default if no type supplied
-    fluid.invokeFunc = function (deliverer, source, options) {
+    fluid.expander.invokeFunc = function (deliverer, source, options) {
         var expander = source.expander;
         var args = fluid.makeArray(expander.args);
         var whichFuncEntry = expander.func ? "func" : (expander.funcName ? "funcName" : null);
@@ -3291,8 +3326,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
-    fluid.noexpand = function (deliverer, source) {
+    fluid.expander.noexpand = function (deliverer, source) {
         return source.expander.value ? source.expander.value : source.expander.tree;
     };
+
+    fluid.noexpand = fluid.expander.noexpand;
 
 })(jQuery, fluid_3_0_0);

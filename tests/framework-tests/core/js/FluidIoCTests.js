@@ -1288,7 +1288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     headValue: {
                         expander: {
-                            type: "fluid.invokeFunc",
+                            type: "fluid.expander.invokeFunc",
                             func: "fluid.identity",
                             args: "{thatStackHead}.options.headValue"
                         }
@@ -3942,6 +3942,151 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Model resolved from promise for the 2nd time", "Everything is fine.", that.resourceLoader.model.promiseResource);
     });
 
+    /** FLUID-6428 - Options which resolve to undefined in the immutable world: two cases **/
+
+    fluid.defaults("fluid.tests.fluid6428root", {
+        gradeNames: "fluid.component",
+        arena1: {
+        },
+        arena2: {
+        },
+        reference: "{that}.options.arena1.nonexistent",
+        components: {
+            child: {
+                type: "fluid.component",
+                options: {
+                    // This forwarding duplicates the setup in fluid.textfieldSlider -> fluid.slider where the because of lack of cloning
+                    // mergeBlock target ends up sharing the frozen target object from the parent
+                    arena2: "{fluid6428root}.options.arena2",
+                    listeners: {
+                        "onCreate.reference": "fluid.identity({that}.options.arena2.nonexistent)"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6428: Options which resolve to undefined in the immutable world", function () {
+        var that = fluid.tests.fluid6428root();
+        jqUnit.assertDeepEq("No mouse droppings in arena1", {}, that.options.arena1);
+        jqUnit.assertDeepEq("No mouse droppings in arena2", {}, that.child.options.arena2);
+    });
+
+    /** FLUID-6428 - Aliasing of noexpand material **/
+
+    jqUnit.test("FLUID-6428: Options which resolve to undefined in the immutable world", function () {
+        var immutableEvents = fluid.freezeRecursive({
+            type: "fluid.component",
+            events: {
+                immutableEvent: null
+            }
+        });
+        // This checks thisPolicy.noexpand -> expanded = fluid.copy(source); in fluid.expandSource
+        // Note that this only gets exercised because fluid.construct currently doesn't go through expandCompact
+        // which does a copy anyway
+        var that = fluid.construct("fluid-6428alias2", immutableEvents);
+        jqUnit.assertValue("Successfully constructed component", that);
+        that.events.immutableEvent.fire();
+        that.destroy();
+    });
+
+    /** FLUID-6428 - Ensure that aliasing is proper in the immutable world for exotic records **/
+
+    fluid.defaults("fluid.tests.fluid6428alias", {
+        gradeNames: "fluid.modelComponent",
+        members: {
+            queue: []
+        },
+        invokers: {
+            pushQueue: {
+                "this": "{that}.queue",
+                method: "push",
+                args: "thisistInvoker"
+            }
+        },
+        modelListeners: {
+            flag1: {
+                funcName: "fluid.tests.fluid6428push",
+                args: ["{that}.queue", "directModelListener"]
+            },
+            flag2: {
+                "this": "{that}.queue",
+                method: "push",
+                args: "thisistModelListener"
+            }
+        },
+        eventReader: "{that}.options.events.nonexistent"
+    });
+
+    fluid.tests.fluid6428push = function (queue, element) {
+        queue.push(element);
+    };
+
+    jqUnit.test("FLUID-6428: Aliasing in immutable world", function () {
+        var that = fluid.tests.fluid6428alias();
+        that.pushQueue();
+        that.applier.change("flag1", true);
+        that.applier.change("flag2", true);
+        var expected = ["thisistInvoker", "directModelListener", "thisistModelListener"];
+        jqUnit.assertDeepEq("Expected aliasing in immediate expansion", expected, that.queue);
+    });
+
+    /** FLUID-6428 - Expander inside changePath record **/
+
+    fluid.defaults("fluid.tests.fluid6428expander", {
+        gradeNames: "fluid.modelComponent",
+        invokers: {
+            changeIt: {
+                changePath: "flag",
+                value: {
+                    expander: {
+                        funcName: "fluid.identity",
+                        args: true
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6428: Expanders inside listeners", function () {
+        var that = fluid.tests.fluid6428expander();
+        that.changeIt();
+        jqUnit.assertEquals("Flag updated via expander", true, that.model.flag);
+    });
+
+    /** FLUID-6433 - Priority in scope for memberName **/
+
+    fluid.defaults("fluid.tests.fluid6433trial", {
+        gradeNames: "fluid.component"
+    });
+
+    fluid.defaults("fluid.tests.fluid6433head", {
+        gradeNames: "fluid.component",
+        components: {
+            fluid6433first: {
+                type: "fluid.tests.fluid6433trial"
+            },
+            fluid6433trial: {
+                type: "fluid.tests.fluid6433trial",
+                options: {
+                    value: "The right one"
+                }
+            },
+            fluid6433other: {
+                type: "fluid.tests.fluid6433trial"
+            }
+        },
+        invokers: {
+            getIt: "fluid.identity({fluid6433trial})"
+        }
+    });
+
+    jqUnit.test("FLUID-6433: Priority of members via fast path scope resolution", function () {
+        var that = fluid.tests.fluid6433head();
+        var resolved = that.getIt();
+        jqUnit.assertEquals("Retrieved component via member by priority", "The right one", resolved.options.value);
+    });
+
     /** FLUID-6427 - References cyclic via model state yield corrupted model rather than failure **/
 
     fluid.defaults("fluid.tests.fluid6427root", {
@@ -4648,6 +4793,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 
+    /** FLUID-5117: Return value from expander in listener is corrupted **/
+
     fluid.defaults("fluid.tests.fluid5117", {
         gradeNames: ["fluid.component"],
         inputObject: {
@@ -4668,12 +4815,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5117.init = function (that, retrievedObject) {
-        that.options.outputObject = retrievedObject;
+        that.outputObject = retrievedObject;
     };
 
-    jqUnit.test("FLUID-5117: Function that uses an expander as an argument have the expander itself in the resolved expander return", function () {
+    jqUnit.test("FLUID-5117: Function that uses an expander as an argument includes the expander itself in the resolved expander return", function () {
         var that = fluid.tests.fluid5117();
-        jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.options.outputObject);
+        jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.outputObject);
     });
 
 
@@ -5093,7 +5240,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid5249finder", {
         gradeNames: ["fluid.component"],
         components: {
-            nonRoot: "{fluid.tests.fluid5249nonroot}"
+            nonRoot: "{fluid.tests.fluid5249nonroot}",
+            root: "{fluid.tests.fluid5249root}"
+        },
+        invokers: {
+            findRoot: "fluid.identity({fluid.tests.fluid5249root})",
+            findNonRoot: "fluid.identity({fluid.tests.fluid5249nonroot})",
+            findNonRoot2: "fluid.identity({nonRoot})"
         }
     });
 
@@ -5102,12 +5255,64 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var rootFinder = fluid.tests.fluid5249finder();
 
         jqUnit.assertEquals("Expected to resolve non-root value of resolveRoot as root", rootAdvertiser.nonRootRoot.id, rootFinder.nonRoot.id);
+        // FLUID-6444 tests
+        jqUnit.assertNoValue("Expected no leakage of ordinary root component", rootFinder.root);
+        jqUnit.assertNoValue("Expected no leakage of ordinary root component via fast-path invoker", rootFinder.findRoot());
 
         rootAdvertiser.destroy();
         var rootFinder2 = fluid.tests.fluid5249finder();
 
         jqUnit.assertNoValue("Expected to find non-root value cleared after parent is cleared", rootFinder2.nonRoot);
         jqUnit.assertNoValue("Expected to find injected component cleared from injection point after parent is destroyed", rootFinder.nonRoot);
+        jqUnit.assertNoValue("Expected to find non-root value gone from global scope", rootFinder.findNonRoot());
+        jqUnit.assertNoValue("Expected to find non-root value gone by member name from all scopes", rootFinder.findNonRoot2());
+    });
+
+    /** FLUID-6444 tests - scope priority of injected components **/
+
+    fluid.defaults("fluid.tests.fluid6444outer", {
+        gradeNames: "fluid.component"
+    });
+
+    fluid.defaults("fluid.tests.fluid6444root", {
+        gradeNames: ["fluid.component"],
+        components: {
+            outer: {
+                type: "fluid.tests.fluid6444outer",
+                options: {
+                    value: 42
+                }
+            },
+            holder: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        innerOuter: {
+                            type: "fluid.tests.fluid6444outer",
+                            options: {
+                                value: 43
+                            }
+                        }
+                    }
+                }
+            },
+            middle: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        outer: "{fluid6444root}.holder.innerOuter"
+                    },
+                    invokers: {
+                        resolveOuter: "fluid.identity({fluid.tests.fluid6444outer}.options.value)"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6444 - scope priority of injected components", function () {
+        var that = fluid.tests.fluid6444root();
+        jqUnit.assertEquals("Injected component at proper scope", 43, that.middle.resolveOuter());
     });
 
     /** FLUID-5495 tests - distribute upwards, use of "/" context, global instantiator, and proper deregistration - "new demands blocks" **/

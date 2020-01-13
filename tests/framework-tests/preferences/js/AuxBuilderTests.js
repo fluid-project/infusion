@@ -55,8 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var componentConfig = auxSchema[prefKey].panel;
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var panelModelOptions = fluid.get(fluid.tests.elementCommonOptions, "panelModel");
-        // auxSchema, type, prefKey, alias, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults
-        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, alias, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
+        var output = fluid.prefs.expandSchemaComponents(fluid.copy(auxSchema), type, prefKey, alias, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
     };
 
@@ -434,7 +433,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.auxSchema.expectedEnactors = {
+    fluid.tests.auxSchema.expectedEnactors = fluid.freezeRecursive({
         "namespace": fluid.tests.auxSchema.customizedNamespace,
         "loaderGrades": ["fluid.prefs.separatedPanel"],
         "fluid.prefs.textSize": {
@@ -496,9 +495,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "templatePrefix": "../../framework/preferences/html"
             }
         }
-    };
+    });
 
-    fluid.tests.auxSchema.expectedPanels = {
+    fluid.tests.auxSchema.expectedPanels = fluid.freezeRecursive({
         "namespace": fluid.tests.auxSchema.customizedNamespace,
         "loaderGrades": ["fluid.prefs.separatedPanel"],
         "fluid.prefs.textSize": {
@@ -580,7 +579,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         }
-    };
+    });
 
     fluid.defaults("fluid.tests.auxBuilderTest", {
         gradeNames: ["fluid.test.testEnvironment"],
