@@ -126,11 +126,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /***********************************************
-     * fluid.prefs.builder.generateGrade tests *
+     * fluid.prefs.builder.constructGrade tests *
      ***********************************************/
 
     fluid.tests.testGenerateGrade = function (expectedOpts, funcArgs) {
-        var gradeName = fluid.invokeGlobalFunction("fluid.prefs.builder.generateGrade", funcArgs);
+        var gradeName = fluid.invokeGlobalFunction("fluid.prefs.builder.constructGrade", funcArgs);
         fluid.tests.assertDefaults(gradeName, expectedOpts);
     };
 
@@ -146,7 +146,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.generateGradeTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "fluid.prefs.builder.generateGrade",
+            name: "fluid.prefs.builder.constructGrade",
             tests: [{
                 expect: 3,
                 name: "grade creation",
@@ -211,7 +211,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         modules: [{
-            name: "fluid.prefs.builder.constructGrade",
+            name: "fluid.prefs.builder.constructGrades",
             tests: [{
                 expect: 6,
                 name: "generate grades",

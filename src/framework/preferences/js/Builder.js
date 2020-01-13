@@ -19,6 +19,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.registerNamespace("fluid.prefs.builder");
 
+    /**
+     * A merge policy where the items are not merged, but returned as a merge array to be handled by another
+     * function (e.g. by an expander).
+     *
+     * @param  {Object} target - A base for merging the options.
+     * @param  {Object} source - Options being merged.
+     * @return {Object[]} - The merge array
+     */
     fluid.deferredMergePolicy = function (target, source) {
         if (!target) {
             target = new fluid.mergingArray();
@@ -47,7 +55,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         invokers: {
             applyAssemblerGrades: {
-                funcName: "fluid.prefs.builder.getAssemblerGrades",
+                funcName: "fluid.get",
                 args: ["{that}.options.assemblerGrades", "{that}.options.buildType"]
             }
         },
@@ -95,10 +103,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
-
-    fluid.prefs.builder.getAssemblerGrades = function (assemblers, buildType) {
-        return assemblers[buildType];
-    };
 
     fluid.defaults("fluid.prefs.assembler.store", {
         gradeNames: ["fluid.component"],
@@ -230,19 +234,35 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.prefs.builder.generateGrade = function (name, namespace, options) {
+    /**
+     * Constructs a grade with the supplied options.
+     *
+     * @param  {String} name - the "short" name of the grade
+     * @param  {String} namespace - the namespace to use for the grade name.
+     * @param  {Object} options - any options required for defining the grade
+     * @return {String} - the full grade name for the newly constructed grade
+     */
+    fluid.prefs.builder.constructGrade = function (name, namespace, options) {
         var gradeNameTemplate = "%namespace.%name";
         var gradeName = fluid.stringTemplate(gradeNameTemplate, {name: name, namespace: namespace});
         fluid.defaults(gradeName, options);
         return gradeName;
     };
 
+    /**
+     * Will attempt to construct grades for each supplied category if appropriate configuration can be found for the
+     * category in the supplied `auxSchema`
+     *
+     * @param  {Object} auxSchema - An expanded auxiliary schema
+     * @param  {String[]} gradeCategories - an array of grade categories to construct
+     * @return {Object} - the grade names of the constructed grades
+     */
     fluid.prefs.builder.constructGrades = function (auxSchema, gradeCategories) {
         var constructedGrades = {};
         fluid.each(gradeCategories, function (category) {
             var gradeOpts = auxSchema[category];
             if (fluid.get(gradeOpts, "gradeNames")) {
-                constructedGrades[category] = fluid.prefs.builder.generateGrade(category, auxSchema.namespace, gradeOpts);
+                constructedGrades[category] = fluid.prefs.builder.constructGrade(category, auxSchema.namespace, gradeOpts);
             }
         });
         return constructedGrades;

@@ -23,12 +23,98 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Base auxiliary schema grade
      *******************************************************************************/
 
+    /**
+     * The Auxiliary Schema configuration for a preference's corresponding panel (adjuster) component.
+     *
+     * @typedef {Object} PanelAuxConfig
+     * @property {String} type - The grade name for the panel component
+     * @property {Selector} container - The CSS selector to find a single DOM element to use as the component's
+     *                                  container.
+     * @property {URL} template - The URL path to the HTML template used by the component. It may contain string
+     *                            templating tokens (%tokenName) which will be expanded with values stored in the
+     *                            {AuxiliarySchema} terms Object.
+     * @property {URL} message - The URL path to the JSON message bundle used by the component. It may contain string
+     *                           templating tokens (%tokenName) which will be expanded with values stored in the
+     *                           {AuxiliarySchema} terms Object.
+     * @property {Any} [key: String] - May specify additional properties that will be passed along as top level options
+     *                                 to the component.
+     */
+
+    /**
+     * The Auxiliary Schema configuration for a preference's corresponding enactor component.
+     *
+     * @typedef {Object} EnactorAuxConfig
+     * @property {String} type - The grade name for the enactor component
+     * @property {Selector} [container] - The CSS selector to find a single DOM element to use as the component's
+     * @property {Any} [key: String] - May specify additional properties that will be passed along as top level options
+     *                                 to the component.
+     */
+
+    /**
+     * The Auxiliary Schema configuration for a preference
+     *
+     * @typedef {Object} PreferenceAuxConfig
+     * @property {String} [alias] - An alternative name to use for model values. This is useful to store or access
+     *                            model values from specific property. Model values for the preference are also stored
+     *                            at a property named after the preferences. Typically by replacing any "." with "_".
+     * @property {EnactorAuxConfig} [enactor] - The configuration for the related enactor component
+     * @property {PanelAuxConfig} [panel] - The configuration for the related panel (adjuster) component
+     */
+
+    /**
+     * The Auxiliary Schema provides the configuration for a preference editor including the information for which
+     * preferences to configure with which panels (adjusters) and enactors. The auxiliary schemas can be merged together
+     * allowing for individual auxiliary schemas for each preference, which are combined together for a particular
+     * preference editor/enhancer instance.
+     *
+     * @typedef {Object} AuxiliarySchema
+     * @property {String[]} [loaderGrades] - An array of grade names that will be applied to the PrefsEditorLoader component.
+     *                                     This can be used to set the type of prefs editor used (e.g. separated panel,
+     *                                     full page, full page with preview).
+     * @property {URL} [template] - The URL path to the HTML template used by the Preference Editor. It may contain string
+     *                            templating tokens (%tokenName) which will be expanded with values stored in the
+     *                            `terms` property.
+     * @property {URL} [message] - The URL path to the JSON message bundle used by the Preference Editor. It may contain
+     *                           string templating tokens (%tokenName) which will be expanded with values stored in the
+     *                           `terms` property.
+     * @property {Object} [terms] - An object containing key/value pairs of tokens/path segments for interpolating into
+     *                              the various `template` and `message` URLs.
+     * @property {String} [namespace] - A namespace to use for the generated grades.
+     * @property {PreferenceAuxConfig} [key: String] - May specify any number of {PreferenceAuxConfig}'s keyed by the
+     *                                                 preference name.
+     */
+
+     /**
+      * An processed version of an {AuxiliarySchema}. The defined preferences remain, but other top level properties
+      * are transformed into the various grade definition options.
+      *
+      * @typedef {Object} AuxSchema
+      * @property {Object} templateLoader - Definition for constructing the `templateLoader` component
+      * @property {Object} messageLoader - Definition for constructing the `messageLoader` component
+      * @property {Object} terms - Definition for constructing a grade containing the `terms` options
+      * @property {String} namespace - A namespace to use for the generated grades.
+      * @property {Object} [panels] - Definition for constructing the Preference Editor component, including the
+      *                               required panels (adjusters).
+      * @property {Object} [enactors] - Definition for constructing the UI Enhancer component, including the required
+      *                                 enactors.
+      * @property {Object} [initialModel] - Definition for constructing a grade containing the default model values of
+      *                                     the included preferences.
+      * @property {Object} [aliases_prefsEditor] - Definition for constructing a grade containing the model relays from
+      *                                            the preference model values to their aliases. Applied to the
+      *                                            Preference Editor model.
+      * @property {Object} [aliases_enhancer] - Definition for constructing a grade containing the model relays from
+      *                                         the preference model values to their aliases. Applied to the UI Enhancer
+      *                                         model.
+      * @property {PreferenceAuxConfig} [key: String] - May specify any number of {PreferenceAuxConfig}'s keyed by the
+      *                                                 preference name.
+      */
+
     fluid.defaults("fluid.prefs.auxSchema", {
         gradeNames: ["fluid.component"],
         auxiliarySchema: {}
     });
 
-    fluid.prefs.addAtPath = function (root, path, object) {
+    fluid.prefs.mergeAtPath = function (root, path, object) {
         var existingObject = fluid.get(root, path);
         fluid.set(root, path, $.extend(true, {}, existingObject, object));
 
@@ -42,11 +128,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return value;
     };
 
-    fluid.prefs.rearrangeDirect = function (root, toPath, sourcePath) {
+    /**
+     * Removes the key/value at the specified `path` from the supplied `root` object. It is returned in a new object
+     * either at the same path or at the provided `extractedPath`.
+     *
+     * @param  {Object} root - The source object to extract from
+     * @param  {String|String[]} path - The path to be extracted from the `root` object
+     * @param  {String|String[]} [extractedPath] - The path to write the extracted value to in the returned object
+     * @return {Object} - An object containing the extracted value
+     */
+    fluid.prefs.extract = function (root, path, extractedPath) {
+        extractedPath = fluid.isValue(extractedPath) ? extractedPath : path;
         var result = {};
-        var sourceValue = fluid.prefs.removeKey(root, sourcePath);
+        var sourceValue = fluid.prefs.removeKey(root, path);
         if (sourceValue) {
-            fluid.set(result, toPath, sourceValue);
+            fluid.set(result, extractedPath, sourceValue);
         }
         return result;
     };
@@ -117,8 +213,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             enhancerModel[alias] = "{that}.model." + flattenedPrefKey;
         });
 
-        fluid.prefs.addAtPath(auxSchema, ["aliases_prefsEditor", "model", "preferences"], prefsEditorModel);
-        fluid.prefs.addAtPath(auxSchema, ["aliases_enhancer", "model"], enhancerModel);
+        fluid.prefs.mergeAtPath(auxSchema, ["aliases_prefsEditor", "model", "preferences"], prefsEditorModel);
+        fluid.prefs.mergeAtPath(auxSchema, ["aliases_enhancer", "model"], enhancerModel);
     };
 
     fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults) {
@@ -137,9 +233,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: componentOptions
             };
 
-            var selectors = fluid.prefs.rearrangeDirect(componentOptions, memberName, "container");
-            var templates = fluid.prefs.rearrangeDirect(componentOptions, memberName, "template");
-            var messages = fluid.prefs.rearrangeDirect(componentOptions, memberName, "message");
+            var selectors = fluid.prefs.extract(componentOptions, "container", memberName);
+            var templates = fluid.prefs.extract(componentOptions, "template", memberName);
+            var messages = fluid.prefs.extract(componentOptions, "message", memberName);
 
             var preferenceMap = fluid.defaults(componentName).preferenceMap;
 
@@ -173,11 +269,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 prefKey: memberName
             });
 
-            fluid.prefs.addAtPath(auxSchema, [type, "components"], components);
-            fluid.prefs.addAtPath(auxSchema, [type, "selectors"], selectors);
-            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "resources"], templates);
-            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "resources"], messages);
-            fluid.prefs.addAtPath(auxSchema, "initialModel", initialModel);
+            fluid.prefs.mergeAtPath(auxSchema, [type, "components"], components);
+            fluid.prefs.mergeAtPath(auxSchema, [type, "selectors"], selectors);
+            fluid.prefs.mergeAtPath(auxSchema, ["templateLoader", "resources"], templates);
+            fluid.prefs.mergeAtPath(auxSchema, ["messageLoader", "resources"], messages);
+            fluid.prefs.mergeAtPath(auxSchema, "initialModel", initialModel);
 
             fluid.prefs.constructAliases(auxSchema, flattenedPrefKey, alias);
         }
@@ -202,9 +298,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.set(compositePanelOptions, "type", thisCompositeOptions.type);
             delete thisCompositeOptions.type;
 
-            selectors = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "container");
-            templates = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "template");
-            messages = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "message");
+            selectors = fluid.prefs.extract(thisCompositeOptions, "container", compositeKey);
+            templates = fluid.prefs.extract(thisCompositeOptions, "template", compositeKey);
+            messages = fluid.prefs.extract(thisCompositeOptions, "message", compositeKey);
 
             var subPanelList = []; // list of subpanels to generate options for
             var subPanels = {};
@@ -301,11 +397,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
 
             // Add onto auxSchema
-            fluid.prefs.addAtPath(auxSchema, ["panels", "components"], components);
-            fluid.prefs.addAtPath(auxSchema, ["panels", "selectors"], selectors);
-            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "resources"], templates);
-            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "resources"], messages);
-            fluid.prefs.addAtPath(auxSchema, "initialModel", initialModel);
+            fluid.prefs.mergeAtPath(auxSchema, ["panels", "components"], components);
+            fluid.prefs.mergeAtPath(auxSchema, ["panels", "selectors"], selectors);
+            fluid.prefs.mergeAtPath(auxSchema, ["templateLoader", "resources"], templates);
+            fluid.prefs.mergeAtPath(auxSchema, ["messageLoader", "resources"], messages);
+            fluid.prefs.mergeAtPath(auxSchema, "initialModel", initialModel);
             $.extend(true, auxSchema, {panelsToIgnore: panelsToIgnore});
         });
 
@@ -513,7 +609,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
      * @param {Object} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {String[]} preferences   - A list of all necessarry top level preference names.
+     * @param {String[]} preferences   - A list of the requested preferences.
      * @return {String[]} - A list of schema grades.
      */
     fluid.prefs.auxBuilder.buildAuxiliary = function (schemaIndex, preferences) {

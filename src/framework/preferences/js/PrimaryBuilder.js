@@ -19,6 +19,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.registerNamespace("fluid.prefs.schemas");
 
     /**
+     * https://github.com/GPII/gpii-json-schema/blob/master/docs/gss.md
+     *
+     * @typedef {PrimarySchema}
+     */
+
+    /**
      * A custom merge policy that merges primary schema blocks and
      * places them in the right location (consistent with the JSON schema
      * format).
@@ -78,7 +84,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
      * @param {Object} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {String[]} preferences   - A list of all necessary top level preference names.
+     * @param {String[]} preferences   - A list of the requested preferences.
      * @param {Object} primarySchema - Primary schema provided as an option to the primary builder.
      * @return {String[]} - A list of schema grades.
      */
@@ -105,8 +111,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * An index function that indexes all schema grades based on their
      * preference name.
-     * @param {Object} defaults -  Registered defaults for a schema grade.
-     * @return {String}          A preference name.
+     * @param {Object} defaults - Registered defaults for a schema grade.
+     * @return {String} - The preference name.
      */
     fluid.prefs.primaryBuilder.defaultSchemaIndexer = function (defaults) {
         if (defaults.schema) {
