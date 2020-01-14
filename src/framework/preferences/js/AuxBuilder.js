@@ -421,11 +421,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return auxSchema;
     };
 
-    // Processes the auxiliary schema to output an object that contains all grade component definitions
-    // required for building the preferences editor, uiEnhancer and the settings store. These grade components
-    // are: panels, enactors, initialModel, messageLoader, templateLoader and terms.
-    // These grades are consumed and integrated by builder.js
-    // (https://github.com/fluid-project/infusion/blob/master/src/framework/preferences/js/Builder.js)
+    /**
+     * Processes the auxiliary schema to output an object that contains all grade component definitions required for
+     * building the preferences editor, uiEnhancer and the settings store. These grade components are: panels, enactors,
+     * initialModel, messageLoader, templateLoader, terms, aliases_prefsEditor, and aliases_enhancer. These grades are
+     * consumed and integrated by a `fluid.prefs.builder` component.
+     *
+     * @param  {AuxiliarySchema} schemaToExpand - The auxiliary schema to process
+     * @param  {Object} indexes - A set of the global indexes for all of the Panels (`panel`), Enactors (`enactor`) and
+     *                            Auxiliary Schemas (`auxSchema`).
+     * @param  {[type]} topCommonOptions     [description]
+     * @param  {[type]} elementCommonOptions [description]
+     * @param  {PrimarySchema} mappedDefaults - A Primary Schema for the requested preferences.
+     * @return {AuxSchema} - The processed auxiliary schema
+     */
     fluid.prefs.expandSchema = function (schemaToExpand, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
         var auxSchema = fluid.copy(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
