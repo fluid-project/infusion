@@ -24,7 +24,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *******************************************************************************/
 
     /**
-     * The Auxiliary Schema configuration for a preference's corresponding panel (adjuster) component.
+     * The Auxiliary Schema configuration for a preference's corresponding panel (adjuster) component. Any additional
+     * properties, other than those specified below, will be passed along as top level options to the panel component.
      *
      * @typedef {Object} PanelAuxConfig
      * @property {String} type - The grade name for the panel component
@@ -36,18 +37,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @property {URL} message - The URL path to the JSON message bundle used by the component. It may contain string
      *                           templating tokens (%tokenName) which will be expanded with values stored in the
      *                           {AuxiliarySchema} terms Object.
-     * @property {Any} [key: String] - May specify additional properties that will be passed along as top level options
-     *                                 to the component.
      */
 
     /**
-     * The Auxiliary Schema configuration for a preference's corresponding enactor component.
+     * The Auxiliary Schema configuration for a preference's corresponding enactor component. Any additional properties,
+     * other than those specified below, will be passed along as top level options to the enactor component.
      *
      * @typedef {Object} EnactorAuxConfig
      * @property {String} type - The grade name for the enactor component
      * @property {Selector} [container] - The CSS selector to find a single DOM element to use as the component's
-     * @property {Any} [key: String] - May specify additional properties that will be passed along as top level options
-     *                                 to the component.
+     *                                    container.
      */
 
     /**
@@ -63,9 +62,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * The Auxiliary Schema provides the configuration for a preference editor including the information for which
-     * preferences to configure with which panels (adjusters) and enactors. The auxiliary schemas can be merged together
-     * allowing for individual auxiliary schemas for each preference, which are combined together for a particular
-     * preference editor/enhancer instance.
+     * preferences to configure with which panels (adjusters) and enactors. Auxiliary schemas can be merged together
+     * allowing for individual auxiliary schemas for each preference; which are combined together for a particular
+     * preference editor/enhancer instance. In addition the properties specified below, {PreferenceAuxConfig} should be
+     * added, using the preference name as the key, to define which preferences to use and how they are configured.
      *
      * @typedef {Object} AuxiliarySchema
      * @property {String[]} [loaderGrades] - An array of grade names that will be applied to the PrefsEditorLoader component.
@@ -80,13 +80,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @property {Object} [terms] - An object containing key/value pairs of tokens/path segments for interpolating into
      *                              the various `template` and `message` URLs.
      * @property {String} [namespace] - A namespace to use for the generated grades.
-     * @property {PreferenceAuxConfig} [key: String] - May specify any number of {PreferenceAuxConfig}'s keyed by the
-     *                                                 preference name.
      */
 
      /**
-      * An processed version of an {AuxiliarySchema}. The defined preferences remain, but other top level properties
-      * are transformed into the various grade definition options.
+      * A processed version of an {AuxiliarySchema}. The defined {PreferenceAuxConfig} preferences remain, but other top
+      * level properties are transformed into the various grade definition options.
       *
       * @typedef {Object} AuxSchema
       * @property {Object} templateLoader - Definition for constructing the `templateLoader` component
@@ -105,8 +103,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
       * @property {Object} [aliases_enhancer] - Definition for constructing a grade containing the model relays from
       *                                         the preference model values to their aliases. Applied to the UI Enhancer
       *                                         model.
-      * @property {PreferenceAuxConfig} [key: String] - May specify any number of {PreferenceAuxConfig}'s keyed by the
-      *                                                 preference name.
       */
 
     fluid.defaults("fluid.prefs.auxSchema", {
@@ -147,12 +143,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return result;
     };
 
-// TODO: What does this function do? Why is the early return on no "existingValue" so important?
+    /**
+     * Applies a set of options onto the supplied `root` object at the specified `path`. Values are typically replaced
+     * with the exception of `gradeNames` properties, which are concatenated together. The `commonOptions` can also
+     * contain string tokens (%tokenName) which will be replaced with the related values from the `templateValues`.
+     * @param  {Object} root - Any object, but typically a Component option definition or portion there of.
+     * @param  {String|String[]} path - The EL path to property within the `root` to apply the `commonOptions`
+     * @param  {Object} commonOptions - The options to apply to the `root` object at the specified `path`. May include
+     *                                  string tokens (%tokenName) to be sourced from `templateValues`.
+     * @param  {Object.<String.String>} templateValues - A map of token names to the values which should be interpolated
+     * @return {Object|Undefined} - When successful nothing (Undefined) is returned and the `root` object is modified
+     *                              directly. When there is no existing value in the `root` object at the specified
+     *                              `path`, the `root` object itself is returned without any modifications.
+     */
     fluid.prefs.addCommonOptions = function (root, path, commonOptions, templateValues) {
         templateValues = templateValues || {};
 
         var existingValue = fluid.get(root, path);
 
+        // TODO: Why is the early return on no "existingValue" so important? Why is root returned?
         if (!existingValue) {
             return root;
         }
@@ -185,12 +194,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.set(root, path, fluid.merge(mergePolicy, existingValue, opts));
     };
 
-    fluid.prefs.containerNeeded = function (root, path) {
-        var componentType = fluid.get(root, [path, "type"]);
-        var componentOptions = fluid.defaults(componentType);
-        return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
-    };
-
     fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {
         if (!primarySchema) {
             fluid.fail("The primary schema for " + prefKey + " is not defined.");
@@ -203,6 +206,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return name.replace(regexp,  "_");
     };
 
+    /**
+     * Adds implicit model relay definitions for preference aliases to the `auxSchema`.
+     *
+     * @param  {AuxSchema} auxSchema - The processed {AuxiliarySchema} to add the model relay definitions to
+     * @param  {String} flattenedPrefKey - The preference to associate with the alias. The preference name must have
+     *                                     past through fluid.prefs.flattenName to ensure that is is in a format that
+     *                                     is safe to use in IoC expressions.
+     * @param  {String|String[]} aliases - One or more model names to use as model properties where the preference's
+     *                                     model value will be linked.
+     */
     fluid.prefs.constructAliases = function (auxSchema, flattenedPrefKey, aliases) {
         aliases = fluid.makeArray(aliases);
 
