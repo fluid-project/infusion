@@ -51,11 +51,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.prefs.expandSchemaComponents
      *******************************************************************************/
 
-    fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, alias, index, primarySchema, expectedOutput) {
+    fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, alias, primarySchema, expectedOutput) {
         var componentConfig = auxSchema[prefKey].panel;
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var panelModelOptions = fluid.get(fluid.tests.elementCommonOptions, "panelModel");
-        var output = fluid.prefs.expandSchemaComponents(fluid.copy(auxSchema), type, prefKey, alias, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
+        var output = fluid.prefs.expandSchemaComponents(fluid.copy(auxSchema), type, prefKey, alias, componentConfig, panelsCommonOptions, panelModelOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
     };
 
@@ -109,9 +109,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "message": "messages/contrast"
                     }
                 }
-            },
-            index: {
-                "fluid.prefs.contrast": ["fluid.tests.prefs.panel.contrast"]
             },
             primarySchema: {
                 "fluid.prefs.contrast": {
@@ -236,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "test",
                 func: "fluid.tests.testExpandSchemaComponents",
                 args: ["{that}.options.testOptions.auxSchema", "panels", "fluid.prefs.contrast", "contrast",
-                    "{that}.options.testOptions.index", "{that}.options.testOptions.primarySchema", "{that}.options.testOptions.expectedOutput"]
+                    "{that}.options.testOptions.primarySchema", "{that}.options.testOptions.expectedOutput"]
             }]
         }]
     });
@@ -1151,7 +1148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("Test expanding composite panel groups fluid.prefs.expandCompositePanels()", function () {
-        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.compositePanelSchema.groups, fluid.tests.auxSchema.panelIndex,
+        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.compositePanelSchema.groups,
                 fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"), fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"),
                 fluid.get(fluid.tests.elementCommonOptions, "panelModel"), fluid.tests.auxSchema.compositePanelMappedDefaults);
 
@@ -1400,7 +1397,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Test expanding multiple composite panel groups with fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.multiCompositePanelSchema, fluid.tests.auxSchema.multiCompositePanelSchema.groups,
-                fluid.tests.auxSchema.multiPanelIndex, fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
+                fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.get(fluid.tests.elementCommonOptions, "panelModel"),
                 fluid.tests.auxSchema.multiCompositePanelMappedDefaults);
 
@@ -1708,7 +1705,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Test expanding composite panel group having subpanels rendered on particular pref key with fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.renderOnPrefSchema, fluid.tests.auxSchema.renderOnPrefSchema.groups,
-                fluid.tests.auxSchema.renderOnPrefIndex, fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
+                fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.get(fluid.tests.elementCommonOptions, "panelModel"),
                 fluid.tests.auxSchema.renderOnPrefMappedDefaults);
 

@@ -61,6 +61,42 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     /**
+     * The configuration of the preference panels within a composite panel. The `always` property identifies the
+     * the preferences that should always be visible. These always visible preferences can, in turn, be used to
+     * identify which other preferences in the composite panel are displayed when it is enabled. To define this, the
+     * key {String} is the name of the always on preference, and the value {String[]} is a list of preferences to be
+     * displayed when it is enabled.
+     *
+     * @typedef {Object} CompositePanelPanelsDefinition
+     * @property {String[]} always - An array of preferences for whose related panel should always be visible in the
+     *                               composite panel.
+     */
+
+    /**
+     * The Auxiliary Schema configuration composing multiple preferences into a single panel. Can also configure a
+     * preference to control the visibility of the other preference adjusters contained within the same panel.
+     *
+     * @typedef {Object} CompositePanelAuxConfig
+     * @property {Object} type - The grade name for the composite panel component
+     * @property {Selector} container - The CSS selector to find a single DOM element to use as the component's
+     *                                  container.
+     * @property {URL} template - The URL path to the HTML template used by the component. It may contain string
+     *                            templating tokens (%tokenName) which will be expanded with values stored in the
+     *                            {AuxiliarySchema} terms Object.
+     * @property {URL} message - The URL path to the JSON message bundle used by the component. It may contain string
+     *                           templating tokens (%tokenName) which will be expanded with values stored in the
+     *                           {AuxiliarySchema} terms Object.
+     * @property {CompositePanelPanelsDefinition} panels - The definition of which panels are to be included in the
+     */
+
+    /**
+     * A set of {CompositePanelAuxConfig} defining how to compose groups of preference panels. The key can be any
+     * {String} name that appropriately identifies the grouping of preferences.
+     *
+     * @typedef {Object} CompositePanelsAuxConfig
+     */
+
+    /**
      * The Auxiliary Schema provides the configuration for a preference editor including the information for which
      * preferences to configure with which panels (adjusters) and enactors. Auxiliary schemas can be merged together
      * allowing for individual auxiliary schemas for each preference; which are combined together for a particular
@@ -80,11 +116,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @property {Object} [terms] - An object containing key/value pairs of tokens/path segments for interpolating into
      *                              the various `template` and `message` URLs.
      * @property {String} [namespace] - A namespace to use for the generated grades.
+     * @property {CompositePanelsAuxConfig} [groups] - The configuration defining the composition of groups of preferences
      */
 
      /**
-      * A processed version of an {AuxiliarySchema}. The defined {PreferenceAuxConfig} preferences remain, but other top
-      * level properties are transformed into the various grade definition options.
+      * A processed, or processing, version of an {AuxiliarySchema}. The defined {PreferenceAuxConfig} preferences
+      * remain, but other top level properties are transformed into the various grade definition options.
       *
       * @typedef {Object} AuxSchema
       * @property {Object} templateLoader - Definition for constructing the `templateLoader` component
@@ -209,7 +246,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Adds implicit model relay definitions for preference aliases to the `auxSchema`.
      *
-     * @param  {AuxSchema} auxSchema - The processed {AuxiliarySchema} to add the model relay definitions to
+     * @param  {AuxSchema} auxSchema - The {AuxiliarySchema} being processed to add the model relay definitions to
      * @param  {String} flattenedPrefKey - The preference to associate with the alias. The preference name must have
      *                                     past through fluid.prefs.flattenName to ensure that is is in a format that
      *                                     is safe to use in IoC expressions.
@@ -230,7 +267,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.prefs.mergeAtPath(auxSchema, ["aliases_enhancer", "model"], enhancerModel);
     };
 
-    fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults) {
+    /**
+     * Expands the configuration from the {AuxiliarySchema} related to configuring the panel and enactor components for
+     * the various preferences.
+     *
+     * @param  {AuxSchema} auxSchema - The {AuxiliarySchema} being processed to expand the component definitions into
+     * @param  {String} type - Identifies the type of component that is being expanded; either `panels` or `enactors`
+     * @param  {String} prefKey - The preference name.
+     * @param  {String} alias - A model property to alias the preferences model value to
+     * @param  {PanelAuxConfig|EnactorAuxConfig} componentConfig - Component configuration for the preference's enactor
+     *                                                             or panel component.
+     * @param  {Object} commonOptions - Additional configuration needed to mix into the enactor or panel component.
+     * @param  {Object} modelCommonOptions - Configuration for relaying the enactor or panel component's model to the
+     *                                       one used by the parent UI Enhancer or Prefs Editor respectively. The
+     *                                       configuration can include string tokens for "%internalModelName" and
+     *                                       "%externalModelName" which will be interpolated with values from the
+     *                                       `preferenceMap` and the flattened preference name.
+     * @param  {PrimarySchema} mappedDefaults - A primary schema for the preference
+     * @return {AuxSchema} - Returns the supplied `auxSchema` with the additional modifications
+     */
+    fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, commonOptions, modelCommonOptions, mappedDefaults) {
         var componentOptions = fluid.copy(componentConfig) || {};
         var components = {};
         var initialModel = {};
@@ -294,7 +350,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return auxSchema;
     };
 
-    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, panelCommonOptions, subPanelCommonOptions,
+    /**
+     * Expands the configuration from the {AuxiliarySchema} related to configuring composite panels. Composite panels
+     * allow for expressing a panel that contains multiple preferences and optionally a preference that controls
+     * whether the other preference panels are displayed.
+     *
+     * @param  {AuxSchema} auxSchema - The {AuxiliarySchema} being processed to expand the composite panel definitions
+     * @param  {CompositePanelsAuxConfig} compositePanelList - The groups of preference panels.
+     * @param  {[type]} panelCommonOptions - Additional configuration needed to mix into the panel component.
+     * @param  {[type]} subPanelCommonOptions - Additional configuration needed by sub panels.
+     * @param  {[type]} compositePanelBasedOnSubCommonOptions [description]
+     * @param  {[type]} panelModelCommonOptions - Configuration for relaying the panel component's model to the one used
+     *                                            by the parent Prefs Editor. The configuration can include string
+     *                                            tokens for "%internalModelName" and "%externalModelName" which will be
+     *                                            interpolated with values from the `preferenceMap` and the flattened
+     *                                            preference name.
+     * @param  {PrimarySchema} mappedDefaults - A primary schema for the preference
+     * @return {AuxSchema} - Returns the supplied `auxSchema` with the additional modifications
+     */
+    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelCommonOptions, subPanelCommonOptions,
         compositePanelBasedOnSubCommonOptions, panelModelCommonOptions, mappedDefaults) {
         var panelsToIgnore = [];
 
@@ -428,14 +502,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * consumed and integrated by a `fluid.prefs.builder` component.
      *
      * @param  {AuxiliarySchema} schemaToExpand - The auxiliary schema to process
-     * @param  {Object} indexes - A set of the global indexes for all of the Panels (`panel`), Enactors (`enactor`) and
-     *                            Auxiliary Schemas (`auxSchema`).
-     * @param  {[type]} topCommonOptions     [description]
-     * @param  {[type]} elementCommonOptions [description]
+     * @param  {Object} topCommonOptions - component options to apply to the various grade components.
+     * @param  {Object} elementCommonOptions - component options mixed into the various
      * @param  {PrimarySchema} mappedDefaults - A Primary Schema for the requested preferences.
      * @return {AuxSchema} - The processed auxiliary schema
      */
-    fluid.prefs.expandSchema = function (schemaToExpand, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
+    fluid.prefs.expandSchema = function (schemaToExpand, topCommonOptions, elementCommonOptions, mappedDefaults) {
         var auxSchema = fluid.copy(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
@@ -446,7 +518,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
-            fluid.prefs.expandCompositePanels(auxSchema, compositePanelList, fluid.get(indexes, "panel"),
+            fluid.prefs.expandCompositePanels(auxSchema, compositePanelList,
                 fluid.get(elementCommonOptions, "panel"), fluid.get(elementCommonOptions, "subPanel"),
                 fluid.get(elementCommonOptions, "compositePanelBasedOnSub"), fluid.get(elementCommonOptions, "panelModel"),
                 mappedDefaults);
@@ -455,17 +527,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(auxSchema, function (category, prefName) {
             // TODO: Replace this cumbersome scheme with one based on an extensible lookup to handlers
             if (fluid.isValue(category)) {
-                var type = "panel";
+                var panelSchemaConfig = category["panel"];
                 // Ignore the subpanels that are only for composing composite panels
-                if (category[type] && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
-                    fluid.prefs.expandSchemaComponents(auxSchema, "panels", prefName, category.alias, category[type], fluid.get(indexes, type),
-                        fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
+                if (panelSchemaConfig && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
+                    fluid.prefs.expandSchemaComponents(auxSchema, "panels", prefName, category.alias, panelSchemaConfig,
+                        fluid.get(elementCommonOptions, "panel"), fluid.get(elementCommonOptions, "panelModel"), mappedDefaults);
                 }
 
-                type = "enactor";
-                if (category[type]) {
-                    fluid.prefs.expandSchemaComponents(auxSchema, "enactors", prefName, category.alias, category[type], fluid.get(indexes, type),
-                        fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
+                var enactorSchemaConfig = category["enactor"];
+                if (enactorSchemaConfig) {
+                    fluid.prefs.expandSchemaComponents(auxSchema, "enactors", prefName, category.alias, enactorSchemaConfig,
+                        fluid.get(elementCommonOptions, "enactor"), fluid.get(elementCommonOptions, "enactorModel"), mappedDefaults);
                 }
 
                 fluid.each(["template", "message"], function (type) {
@@ -505,7 +577,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             buildAuxiliary: {
                 funcName: "fluid.prefs.auxBuilder.buildAuxiliary",
                 args: [
-                    "{that}.options.indexes.auxSchema",
+                    "{that}.options.auxiliarySchemaIndex",
                     "{that}.options.requestedPrefs"
                 ]
             }
@@ -561,33 +633,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "%internalModelName": "{uiEnhancer}.model.%externalModelName"
             }
         },
-        indexes: {
-            auxSchema: {
-                expander: {
-                    func: "fluid.indexDefaults",
-                    args: ["auxSchemaIndex", {
-                        gradeNames: "fluid.prefs.auxSchema",
-                        indexFunc: "fluid.prefs.auxBuilder.defaultSchemaIndexer"
-                    }]
-                }
-            },
-            panel: {
-                expander: {
-                    func: "fluid.indexDefaults",
-                    args: ["panelsIndex", {
-                        gradeNames: "fluid.prefs.panel",
-                        indexFunc: "fluid.prefs.auxBuilder.prefMapIndexer"
-                    }]
-                }
-            },
-            enactor: {
-                expander: {
-                    func: "fluid.indexDefaults",
-                    args: ["enactorsIndex", {
-                        gradeNames: "fluid.prefs.enactor",
-                        indexFunc: "fluid.prefs.auxBuilder.prefMapIndexer"
-                    }]
-                }
+        auxiliarySchemaIndex: {
+            expander: {
+                func: "fluid.indexDefaults",
+                args: ["auxSchemaIndex", {
+                    gradeNames: "fluid.prefs.auxSchema",
+                    indexFunc: "fluid.prefs.auxBuilder.defaultSchemaIndexer"
+                }]
             }
         },
         auxiliarySchema: {
@@ -604,7 +656,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 func: "fluid.prefs.expandSchema",
                 args: [
                     "{that}.options.auxiliarySchema",
-                    "{that}.options.indexes",
                     "{that}.options.topCommonOptions",
                     "{that}.options.elementCommonOptions",
                     "{that}.options.schema.properties"
@@ -613,15 +664,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.prefs.auxBuilder.prefMapIndexer = function (defaults) {
-        return fluid.keys(defaults.preferenceMap);
-    };
-
     /**
      * An index function that indexes all schema grades based on their
      * preference name.
      * @param {Object} defaults -  Registered defaults for a schema grade.
-     * @return {String}          A preference name.
+     * @return {String} - A preference name.
      */
     fluid.prefs.auxBuilder.defaultSchemaIndexer = function (defaults) {
         var censoredKeys = ["defaultLocale", "groups", "loaderGrades", "message", "template", "terms"];
