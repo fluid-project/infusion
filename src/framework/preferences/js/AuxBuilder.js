@@ -527,14 +527,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(auxSchema, function (category, prefName) {
             // TODO: Replace this cumbersome scheme with one based on an extensible lookup to handlers
             if (fluid.isValue(category)) {
-                var panelSchemaConfig = category["panel"];
+                var panelSchemaConfig = category.panel;
                 // Ignore the subpanels that are only for composing composite panels
                 if (panelSchemaConfig && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
                     fluid.prefs.expandSchemaComponents(auxSchema, "panels", prefName, category.alias, panelSchemaConfig,
                         fluid.get(elementCommonOptions, "panel"), fluid.get(elementCommonOptions, "panelModel"), mappedDefaults);
                 }
 
-                var enactorSchemaConfig = category["enactor"];
+                var enactorSchemaConfig = category.enactor;
                 if (enactorSchemaConfig) {
                     fluid.prefs.expandSchemaComponents(auxSchema, "enactors", prefName, category.alias, enactorSchemaConfig,
                         fluid.get(elementCommonOptions, "enactor"), fluid.get(elementCommonOptions, "enactorModel"), mappedDefaults);
