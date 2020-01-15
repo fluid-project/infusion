@@ -77,6 +77,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{that}.options.prefsPrioritized"]
             }
         },
+        // Context aware supplied preferences should be targeted at `prefsPrioritized` instead of `preferences` and
+        // be supplied as {PrioritizedPrefs} object.
         prefsPrioritized: {
             expander: {
                 funcName: "fluid.prefs.builder.prioritizePrefs",
@@ -268,17 +270,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return constructedGrades;
     };
 
-    fluid.prefs.builder.parseAuxSchema = function (auxSchema) {
-        var auxTypes = [];
-        fluid.each(auxSchema, function parse(field) {
-            var type = field.type;
-            if (type) {
-                auxTypes.push(type);
-            }
-        });
-        return auxTypes;
-    };
+    /**
+     * A prioritized set of preferences where the keys are the {String} name of the preference and value in the form
+     * {priority: "optional.priority.definition"}. If the value is set to `null` the preference will be removed.
+     *
+     * @typedef {Object} PrioritizedPrefs
+     */
 
+    /**
+     * Converts a list of preferences into a prioritized set. The preferences are prioritized based on their position
+     * in the array of preferences.
+     *
+     * @param  {String[]} preferences - The list of preferences
+     * @return {PrioritizedPrefs} - The prioritized preferences
+     */
     fluid.prefs.builder.prioritizePrefs = function (preferences) {
         var prioritized = {};
         fluid.each(preferences, function (preference, index) {
@@ -291,6 +296,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return prioritized;
     };
 
+    /**
+     * Handles the deferred merging of {PrioritizedPrefs} options. Each item in the mergingArray will be merged on top
+     * of the previous value. If a preference is supplied with a `null` value, the preference will be removed.
+     *
+     * @param  {fluid.prefs.builder} that - The `fluid.prefs.builder` component
+     * @param  {Object[]} mergingArray - The array of deferred merge objects
+     * @return {Object} - The fully merged option
+     */
     fluid.prefs.builder.mergePrefs = function (that, mergingArray) {
         var merged = {};
         fluid.each(mergingArray, function (mergeRecord) {

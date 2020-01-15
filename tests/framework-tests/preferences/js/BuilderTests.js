@@ -55,76 +55,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    /************************************************
-     * fluid.prefs.builder.parseAuxSchema tests *
-     ************************************************/
-
-    fluid.tests.testParseAuxSchema = function (expected, funcArgs) {
-        var actualFilter = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
-        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFilter);
-    };
-
-    fluid.defaults("fluid.tests.parseAuxSchema", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        components: {
-            defaultsTester: {
-                type: "fluid.tests.parseAuxSchemaTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.parseAuxSchemaTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOpts: {
-            auxSchema: {
-                "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
-                "textSize": {
-                    "type": "fluid.prefs.textSize",
-                    "enactor": {
-                        "type": "fluid.prefs.enactor.textSize"
-                    },
-                    "panel": {
-                        "type": "fluid.prefs.panel.textSize",
-                        "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-                        "message": "%messagePrefix/textSize.json"
-                    }
-                },
-                "lineSpace": {
-                    "type": "fluid.prefs.lineSpace",
-                    "enactor": {
-                        "type": "fluid.prefs.enactor.lineSpace",
-                        "fontSizeMap": {
-                            "xx-small": "9px",
-                            "x-small": "11px",
-                            "small": "13px",
-                            "medium": "15px",
-                            "large": "18px",
-                            "x-large": "23px",
-                            "xx-large": "30px"
-                        }
-                    },
-                    "panel": {
-                        "type": "fluid.prefs.panel.lineSpace",
-                        "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html",
-                        "message": "%messagePrefix/lineSpace.json"
-                    }
-                }
-            },
-            expectedTypeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace"]
-        },
-        modules: [{
-            name: "fluid.prefs.builder.parseAuxSchema",
-            tests: [{
-                expect: 1,
-                name: "grade creation",
-                func: "fluid.tests.testParseAuxSchema",
-                args: ["{that}.options.testOpts.expectedTypeFilter", ["{that}.options.testOpts.auxSchema"]]
-            }]
-        }]
-    });
-
     /***********************************************
      * fluid.prefs.builder.constructGrade tests *
      ***********************************************/
@@ -850,7 +780,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.parseAuxSchema",
             "fluid.tests.generateGrade",
             "fluid.tests.constructGrades",
             "fluid.tests.builder.empty",
