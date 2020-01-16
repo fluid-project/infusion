@@ -77,7 +77,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{that}.options.prefsPrioritized"]
             }
         },
-        // Context aware supplied preferences should be targeted at `prefsPrioritized` instead of `preferences` and
+        // TODO: Due to https://issues.fluidproject.org/browse/FLUID-6438
+        // Context aware supplied preferences must be targeted at `prefsPrioritized` instead of `preferences` and
         // be supplied as {PrioritizedPrefs} object.
         prefsPrioritized: {
             expander: {
