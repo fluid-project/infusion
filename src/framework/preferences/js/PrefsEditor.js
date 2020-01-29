@@ -454,6 +454,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.locate("cancel").click(that.cancel);
         };
 
+        /*
+          TODO: Steps for FLUID-6421
+
+            1) Check options to determine if we need to generate the containers
+                1.1) option might be called something like "generatePanelContainers"
+                1.2) must be accompanied by a markup option that includes a sort of a template for the
+                     panel container itself
+
+            2) Still requires the overall prefs editor template, bu
+         */
+
         that.container.append(that.resources.template.resourceText);
         bindHandlers(that);
 
