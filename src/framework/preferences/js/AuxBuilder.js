@@ -107,6 +107,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @property {String[]} [loaderGrades] - An array of grade names that will be applied to the PrefsEditorLoader component.
      *                                     This can be used to set the type of prefs editor used (e.g. separated panel,
      *                                     full page, full page with preview).
+     * @property {Boolean} [generatePanelContainers] - Indicate if the panel containers should be generated. If false
+     *                                                 it is expected that the supplied template alread contains all of
+     *                                                 the necessary container elements.
      * @property {URL} [template] - The URL path to the HTML template used by the Preference Editor. It may contain string
      *                            templating tokens (%tokenName) which will be expanded with values stored in the
      *                            `terms` property.
@@ -302,7 +305,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: componentOptions
             };
 
-            var selectors = fluid.prefs.extract(componentOptions, "container", memberName);
+            var selectors = {};
+            if (auxSchema.generatePanelContainers) {
+                selectors[memberName] = ".flc-prefsEditor-" + flattenedPrefKey;
+            } else {
+                selectors = fluid.prefs.extract(componentOptions, "container", memberName);
+            }
+
+            var prefToMemberMap = {};
+            prefToMemberMap[prefKey] = memberName;
+
             var templates = fluid.prefs.extract(componentOptions, "template", memberName);
             var messages = fluid.prefs.extract(componentOptions, "message", memberName);
 
@@ -340,6 +352,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             fluid.prefs.mergeAtPath(auxSchema, [type, "components"], components);
             fluid.prefs.mergeAtPath(auxSchema, [type, "selectors"], selectors);
+            fluid.prefs.mergeAtPath(auxSchema, [type, "prefToMemberMap"], prefToMemberMap);
             fluid.prefs.mergeAtPath(auxSchema, ["templateLoader", "resources"], templates);
             fluid.prefs.mergeAtPath(auxSchema, ["messageLoader", "resources"], messages);
             fluid.prefs.mergeAtPath(auxSchema, "initialModel", initialModel);
@@ -644,6 +657,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         auxiliarySchema: {
             "loaderGrades": ["fluid.prefs.separatedPanel"],
+            "generatePanelContainers": true,
             "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
             "message": "%messagePrefix/prefsEditor.json",
             "terms": {

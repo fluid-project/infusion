@@ -104,6 +104,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     ]
                 ]
             }
+        },
+        distributeOptions: {
+            source: "{that}.options.auxiliarySchema.generatePanelContainers",
+            target: "{that prefsEditorLoader prefsEditor}.options.generatePanelContainers",
+            namespace: "generatePanelContainers"
         }
     });
 
@@ -229,6 +234,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "prefsEdAssembler.prefsEditor": {
                 source: "{that}.options.prefsEditor",
                 target: "{that prefsEditor}.options"
+            },
+            "prefsEdAssembler.prefsEditorPrefs": {
+                source: "{that}.options.prefsMerged",
+                target: "{that prefsEditor}.options.preferences"
             },
             "prefsEdAssembler.prefsEditorLoader": {
                 source: "{that}.options.prefsEditorLoader",

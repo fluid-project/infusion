@@ -44,15 +44,8 @@ var demo = demo || {};
                         contextValue: "{fluid.supportsTTS}",
                         gradeNames: "demo.prefsEditor.speak"
                     }
-                },
-                defaultGradeNames: "demo.prefsEditor.speakNotSupported"
+                }
             }
-        }
-    });
-
-    fluid.defaults("demo.prefsEditor.speakNotSupported", {
-        auxiliarySchema: {
-            template: "html/SeparatedPanelPrefsEditor.html"
         }
     });
 
@@ -78,10 +71,6 @@ var demo = demo || {};
 
     // Fine-tune the starter aux schema and add speak panel
     fluid.defaults("demo.prefsEditor.speak", {
-        auxiliarySchema: {
-            // specify augmented container template for panels
-            template: "html/SeparatedPanelPrefsEditorWithTTS.html"
-        },
         prefsPrioritized: {
             "fluid.prefs.speak": {
                 priority: "after:demo.prefs.simplify"

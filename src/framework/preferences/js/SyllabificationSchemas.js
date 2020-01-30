@@ -27,8 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         auxiliarySchema: {
             "fluid.prefs.syllabification": {
                 enactor: {
-                    type: "fluid.prefs.enactor.syllabification",
-                    container: "body"
+                    type: "fluid.prefs.enactor.syllabification"
                 },
                 panel: {
                     type: "fluid.prefs.panel.syllabification",
