@@ -458,41 +458,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.locate("cancel").click(that.cancel);
         };
 
-        /*
-          TODO: Steps for FLUID-6421
-
-            1) Check options to determine if we need to generate the containers
-                1.1) option might be called something like "generatePanelContainers"
-                1.2) must be accompanied by a markup option that includes a sort of a template for the
-                     panel container itself. This requires a token to be replaced for adding the class name.
-                1.3) Still requires the overall prefs editor template but with a token to be replaced by the set of
-                     panel containers.
-            2) If the containers need to be generated, perform the generation and modify the template
-                2.1) We need to know the preference panels to be rendered and in what order
-                2.2) Can use the flattened preference name as the container, maybe with a prefix
-                2.3) Need to update the selectors and for the containers to point at the generated class names
-                    2.3.1) This might need to be done ahead of time and passed along with options distributions. Might
-                           need to mix with context awareness to check the "generatePanelContainers" option.
-            3) If the containers do not need to be generated, just append the resourceText
-        */
-
+        var template = that.resources.template.resourceText;
         if (that.options.generatePanelContainers) {
             var sorted = fluid.parsePriorityRecords(that.options.preferences, "preferences"); // sort the preferences
             var sortedPrefs = fluid.getMembers(sorted, "namespace"); // retrieve just the preferences names
 
-            var panels = "";
-            fluid.each(sortedPrefs, function (pref) {
+            // generate panel container markup
+            var panels = fluid.accumulate(sortedPrefs, function (pref, containers) {
                 var className = that.options.selectors[that.options.prefToMemberMap[pref]].slice(1);
+                return containers += fluid.stringTemplate(that.options.markup.panel, {className: className});
+            }, "");
 
-                panels += fluid.stringTemplate(that.options.markup.panel, {className: className});
-            });
-
-            var template = fluid.stringTemplate(that.resources.template.resourceText, {panels: panels});
-            that.container.append(template);
-        } else {
-            that.container.append(that.resources.template.resourceText);
+            // interpolate panels into template.
+            template = fluid.stringTemplate(template, {panels: panels});
         }
 
+        that.container.append(template);
         bindHandlers(that);
 
         var fetchPromise = that.fetch();
