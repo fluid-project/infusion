@@ -35,8 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             terms: {
                 templatePrefix: "../../../../src/framework/preferences/html",
                 messagePrefix: "../../../../src/framework/preferences/messages"
-            },
-            template: "LocalizationPrefsEditor-template.html"
+            }
         }
     });
 

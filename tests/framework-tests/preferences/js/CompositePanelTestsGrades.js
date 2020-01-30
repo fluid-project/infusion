@@ -178,7 +178,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
         schema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
-            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"]
+            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"],
+            "generatePanelContainers": false
         }
     });
 
@@ -193,7 +194,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
         schema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.fullNoPreview"]
+            "loaderGrades": ["fluid.prefs.fullNoPreview"],
+            "generatePanelContainers": false
         }
     });
 

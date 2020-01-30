@@ -409,7 +409,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - only enactors",
             tests: [{
-                expect: 25,
+                expect: 26,
                 name: "Component Grade Creation",
                 func: "fluid.tests.assertComponentGradeCreation",
                 args: [
@@ -481,7 +481,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - only panels",
             tests: [{
-                expect: 25,
+                expect: 26,
                 name: "Component Grade Creation",
                 func: "fluid.tests.assertComponentGradeCreation",
                 args: [
@@ -536,7 +536,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - panels and messages",
             tests: [{
-                expect: 25,
+                expect: 26,
                 name: "Component Grade Creation",
                 func: "fluid.tests.assertComponentGradeCreation",
                 args: [
@@ -591,7 +591,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - panels and templates",
             tests: [{
-                expect: 25,
+                expect: 26,
                 name: "Component Grade Creation",
                 func: "fluid.tests.assertComponentGradeCreation",
                 args: [
@@ -649,7 +649,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder - all",
             tests: [{
-                expect: 27,
+                expect: 29,
                 name: "Component Grade Creation",
                 func: "fluid.tests.assertComponentGradeCreation",
                 args: [
