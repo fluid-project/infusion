@@ -76,8 +76,7 @@ var example = example || {};
             terms: {
                 "templatePrefix": "../../../../../src/framework/preferences/html",
                 "messagePrefix": "../../../../../src/framework/preferences/messages"
-            },
-            template: "html/prefsEditor.html"
+            }
         }
     });
 
@@ -87,8 +86,7 @@ var example = example || {};
             terms: {
                 "templatePrefix": "../../../../../../src/framework/preferences/html",
                 "messagePrefix": "../../../../../../src/framework/preferences/messages"
-            },
-            template: "../html/prefsEditor.html"
+            }
         }
     });
 

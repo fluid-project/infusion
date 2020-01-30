@@ -76,7 +76,11 @@
                     },
 
                     // the main template for the preference editor itself
-                    template: "%templatePrefix/prefsEditorTemplate.html"
+                    template: "%templatePrefix/prefsEditorTemplate.html",
+
+                    // indicates that the adjuster panel containers do not need to be generated and are included in the
+                    // template.
+                    "generatePanelContainers": false
                 }
             });
 
