@@ -306,7 +306,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             };
 
             var selectors = {};
-            if (auxSchema.generatePanelContainers) {
+            // do not need to generate contains for enactors
+            if (auxSchema.generatePanelContainers && type === "panels") {
+                fluid.prefs.removeKey(componentOptions, "container");
                 selectors[memberName] = ".flc-prefsEditor-" + flattenedPrefKey;
             } else {
                 selectors = fluid.prefs.extract(componentOptions, "container", memberName);
