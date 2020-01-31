@@ -17,6 +17,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
+    // use tempStore for tests
+    fluid.contextAware.makeChecks({"fluid.prefs.tests": true});
+
+    fluid.contextAware.makeAdaptation({
+        distributionName: "fluid.tests.prefs.tempStoreDistributor",
+        targetName: "fluid.prefs.store",
+        adaptationName: "strategy",
+        checkName: "test",
+        record: {
+            contextValue: "{fluid.prefs.tests}",
+            gradeNames: "fluid.prefs.tempStore",
+            priority: "after:user"
+        }
+    });
+
     /* Mixin grade for UIO test component */
     fluid.defaults("fluid.tests.uiOptions.testPrefsEditorBase", {
         gradeNames: ["fluid.uiOptions.prefsEditor"],
