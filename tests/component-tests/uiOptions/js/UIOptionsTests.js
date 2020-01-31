@@ -23,7 +23,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         terms: {
             templatePrefix: "../../../../src/framework/preferences/html",
             messagePrefix: "../../../../src/framework/preferences/messages"
-        }
+        },
+        "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html",
+        "tocMessage": "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
     });
 
     /* Mixin grade for UIO test environment */
