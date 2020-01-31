@@ -393,7 +393,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.isIoCReference = function (ref) {
-        return typeof(ref) === "string" && ref.charAt(0) === "{" && ref.indexOf("}") > 0;
+        return typeof(ref) === "string" && ref.charAt(0) === "{";
     };
 
     fluid.isDOMNode = function (obj) {

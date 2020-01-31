@@ -3840,6 +3840,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-6450 - Malformed syntax in regular f-ing invokers **/
+
+    fluid.defaults("fluid.tests.fluid6450test", {
+        gradeNames: "fluid.component",
+        intendedTarget: "Here we are!",
+        invokers: {
+            log: {
+                funcName: "fluid.log",
+                args: ["Mangled invoker arg resolves to -> ", "{that].options.intendedTarget"]
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6450 - malformed regular syntax", function () {
+        jqUnit.expectFrameworkDiagnostic("Malformed regular invoker", function () {
+            var that = fluid.tests.fluid6450test();
+            that.log();
+        }, "formed");
+    });
+
     /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
 
     fluid.defaults("fluid.tests.fluid5036_1Root", {
