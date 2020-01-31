@@ -431,7 +431,7 @@ var fluid = fluid || fluid_3_0_0;
      * @return {Boolean} `true` if the supplied value is an IoC reference
      */
     fluid.isIoCReference = function (ref) {
-        return typeof(ref) === "string" && ref.charAt(0) === "{" && ref.indexOf("}") > 0;
+        return typeof(ref) === "string" && ref.charAt(0) === "{";
     };
 
     /** Determine whether the supplied value is a reference or an expander. The test is passed if either fluid.isIoCReference passes
