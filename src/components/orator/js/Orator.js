@@ -840,7 +840,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         model: {
             enabled: true,
-            showUI: false,
             play: false,
             text: ""
         },
@@ -868,15 +867,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onToggleControl.togglePlay": "{that}.toggle"
         },
         modelListeners: {
-            "showUI": {
+            "text": [{
+                func: "{that}.stop",
+                namespace: "stopPlayingWhenTextChanges"
+            }, {
                 funcName: "fluid.orator.selectionReader.renderControl",
                 args: ["{that}", "{change}.value"],
                 namespace: "render"
-            },
-            "text": {
-                func: "{that}.stop",
-                namespace: "stopPlayingWhenTextChanges"
-            },
+            }],
             "play": [{
                 func: "fluid.orator.selectionReader.queueSpeech",
                 args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeechSequence"],
@@ -893,15 +891,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "updateText"
             }
         },
-        modelRelay: [{
-            source: "text",
-            target: "showUI",
-            backward: "never",
-            namespace: "showUIControl",
-            singleTransform: {
-                type: "fluid.transforms.stringToBoolean"
-            }
-        }],
         invokers: {
             getSelection: {
                 funcName: "fluid.orator.selectionReader.getSelection",

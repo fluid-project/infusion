@@ -125,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.orator.verifySelectionState = function (that, testPrefix, expectedModel) {
         jqUnit.assertDeepEq(testPrefix + ": The model should be set correctly.", expectedModel, that.model);
 
-        if (expectedModel.showUI) {
+        if (expectedModel.text) {
             fluid.tests.orator.assertNodeInDOM(testPrefix + ": The selection control should be present", that.control);
             jqUnit.assertFalse(testPrefix + ": The selection control should not be hidden", that.control.prop("hidden"));
 

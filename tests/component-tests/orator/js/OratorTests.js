@@ -1180,7 +1180,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.orator.selectionReader"],
         // gradeNames: ["fluid.orator.selectionReader", "fluid.tests.orator.mockTTS"],
         model: {
-            showUI: false,
             play: false,
             text: "",
             enabled: true
@@ -1212,31 +1211,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOpts: {
             expected: {
                 noSelection: {
-                    showUI: false,
                     play: false,
                     text: "",
                     enabled: true
                 },
                 textSelected: {
-                    showUI: true,
                     play: false,
                     text: "Selection Test",
                     enabled: true
                 },
                 textPlay: {
-                    showUI: true,
                     play: true,
                     text: "Selection Test",
                     enabled: true
                 },
                 text2Selected: {
-                    showUI: true,
                     play: false,
                     text: "Other Text",
                     enabled: true
                 },
                 disabled: {
-                    showUI: false,
                     play: false,
                     text: "",
                     enabled: false
@@ -1260,7 +1254,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Selection", "{that}.options.testOpts.expected.textSelected"],
-                    spec: {priority: "last:testing", path: "showUI"},
+                    spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     // play
@@ -1302,7 +1296,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Selection Collapsed", "{that}.options.testOpts.expected.noSelection"],
-                    spec: {priority: "last:testing", path: "showUI"},
+                    spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     // Disable after selection
@@ -1311,7 +1305,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Selection before disabled", "{that}.options.testOpts.expected.text2Selected"],
-                    spec: {priority: "last:testing", path: "showUI"},
+                    spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     func: "{selectionReader}.applier.change",
@@ -1319,7 +1313,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Disabled", "{that}.options.testOpts.expected.disabled"],
-                    spec: {priority: "last:testing", path: "showUI"},
+                    spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
                     // Selection while disabled
@@ -1335,7 +1329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selectionReader}", "Enabled after selection", "{that}.options.testOpts.expected.text2Selected"],
-                    spec: {priority: "last:testing", path: "showUI"},
+                    spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }]
             }]
@@ -1433,7 +1427,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.notVisible("The controller should not be visible when it is disabled", that.controller.container);
         jqUnit.assertFalse("The domReader should be disabled", that.domReader.model.enabled);
         fluid.tests.orator.verifySelectionState(that.selectionReader, "selectionReader disabled by orator", {
-            showUI: false,
             play: false,
             text: "",
             enabled: false
