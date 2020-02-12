@@ -77,6 +77,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-6456 Obsolete ${} EL style tests */
+
+    fluid.defaults("fluid.tests.FLUID6456", {
+        gradeNames: "fluid.component",
+        nonexistent: "${nonexistent.thing}"
+    });
+
+    jqUnit.test("Obsolete ELstyle test", function () {
+        var that = fluid.tests.FLUID6456();
+        jqUnit.assertEquals("Should have received component with unexpanded obsolete EL", "${nonexistent.thing}",
+            that.options.nonexistent);
+    });
+
     fluid.defaults("fluid.tests.defaultMergePolicy", {
         gradeNames: ["fluid.modelComponent"],
         defaultSource: "sourceValue",

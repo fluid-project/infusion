@@ -939,6 +939,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.makeStackResolverOptions = function (parentThat, localRecord, fast) {
         return $.extend(fluid.copy(fluid.rawDefaults("fluid.makeExpandOptions")), {
+            ELstyle: "{}",
             localRecord: localRecord || {},
             fetcher: fluid.makeStackFetcher(parentThat, localRecord, fast),
             contextThat: parentThat,
@@ -2123,7 +2124,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** End compact record expansion machinery **/
 
     fluid.extractEL = function (string, options) {
-        if (options.ELstyle === "ALL") {
+        if (options.ELstyle === "ALL" || options.ELstyle === "{}") {
             return string;
         }
         else if (options.ELstyle.length === 1) {
@@ -2144,6 +2145,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var EL = fluid.extractEL(string, options);
         if (fluid.isIoCReference(EL)) {
             return fluid.parseContextReference(EL);
+        } else if (options.ELstyle === "{}") {
+            return null;
         }
         return EL ? {path: EL} : EL;
     };
@@ -2184,7 +2187,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.renderContextReference = function (parsed) {
         var context = parsed.context;
-        return "{" + (typeof(context) === "string" ? context : fluid.renderContextReference(context)) + "}" + (parsed.path ? "." + parsed.path : "");
+        return "{" + (fluid.isPrimitive(context) ? context : fluid.renderContextReference(context)) + "}" + (parsed.path ? "." + parsed.path : "");
     };
 
     // TODO: Once we eliminate expandSource (in favour of fluid.expander.fetch), all of this tree of functions can be hived off to RendererUtilities
@@ -2207,27 +2210,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 return fetch(parsed);
             }
         }
-        while (typeof(string) === "string") {
-            var i1 = string.indexOf("${");
-            var i2 = string.indexOf("}", i1 + 2);
-            if (i1 !== -1 && i2 !== -1) {
-                if (string.charAt(i1 + 2) === "{") {
-                    parsed = fluid.parseContextReference(string, i1 + 2, "}");
-                    i2 = parsed.endpos;
+        if (options.ELstyle === "${}") {
+            while (typeof(string) === "string") {
+                var i1 = string.indexOf("${");
+                var i2 = string.indexOf("}", i1 + 2);
+                if (i1 !== -1 && i2 !== -1) {
+                    if (string.charAt(i1 + 2) === "{") {
+                        parsed = fluid.parseContextReference(string, i1 + 2, "}");
+                        i2 = parsed.endpos;
+                    }
+                    else {
+                        parsed = {path: string.substring(i1 + 2, i2)};
+                    }
+                    var subs = fetch(parsed);
+                    var all = (i1 === 0 && i2 === string.length - 1);
+                    // TODO: test case for all undefined substitution
+                    if (subs === undefined || subs === null) {
+                        return subs;
+                    }
+                    string = all ? subs : string.substring(0, i1) + subs + string.substring(i2 + 1);
                 }
                 else {
-                    parsed = {path: string.substring(i1 + 2, i2)};
+                    break;
                 }
-                var subs = fetch(parsed);
-                var all = (i1 === 0 && i2 === string.length - 1);
-                // TODO: test case for all undefined substitution
-                if (subs === undefined || subs === null) {
-                    return subs;
-                }
-                string = all ? subs : string.substring(0, i1) + subs + string.substring(i2 + 1);
-            }
-            else {
-                break;
             }
         }
         return string;
