@@ -464,7 +464,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var sortedPrefs = fluid.getMembers(sorted, "namespace"); // retrieve just the preferences names
 
             // generate panel container markup
-            var panels = sortedPrefs.map(function(pref, containers) {
+            var panels = sortedPrefs.map(function (pref) {
                 var className = that.options.selectors[that.options.prefToMemberMap[pref]].slice(1);
                 return fluid.stringTemplate(that.options.markup.panel, {className: className});
             }).join("");
