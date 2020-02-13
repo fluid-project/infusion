@@ -21,7 +21,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * A merge policy where the items are not merged, but returned as a merge array to be handled by another
-     * function (e.g. by an expander).
+     * function (e.g. by an expander). Similar merge policies are `fluid.membersMergePolicy` and
+     * `fluid.deferringMergePolicy`. These types of deferred merges are required to work around
+     * [FLUID-6457](https://issues.fluidproject.org/browse/FLUID-6457).
      *
      * @param  {Object} target - A base for merging the options.
      * @param  {Object} source - Options being merged.
