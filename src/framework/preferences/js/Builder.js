@@ -21,7 +21,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * A merge policy where the items are not merged, but returned as a merge array to be handled by another
-     * function (e.g. by an expander).
+     * function (e.g. by an expander). Similar merge policies are `fluid.membersMergePolicy` and
+     * `fluid.deferringMergePolicy`. These types of deferred merges are required to work around
+     * [FLUID-6457](https://issues.fluidproject.org/browse/FLUID-6457).
      *
      * @param  {Object} target - A base for merging the options.
      * @param  {Object} source - Options being merged.
@@ -93,7 +95,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     "{that}.options.auxSchema",
                     [
                         "enactors",
-                        "messages",
                         "panels",
                         "initialModel",
                         "templateLoader",
@@ -263,9 +264,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Will attempt to construct grades for each supplied category if appropriate configuration can be found for the
-     * category in the supplied `auxSchema`
+     * category in the supplied `auxSchema`. Categories refer to the top level properties of the {AuxSchema} which will
+     * be used to source the options for defining the related grades.
      *
-     * @param  {Object} auxSchema - An expanded auxiliary schema
+     * @param  {AuxSchema} auxSchema - A processed {AuxiliarySchema}
      * @param  {String[]} gradeCategories - an array of grade categories to construct
      * @return {Object} - the grade names of the constructed grades
      */
