@@ -81,13 +81,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.FLUID6456", {
         gradeNames: "fluid.component",
-        nonexistent: "${nonexistent.thing}"
+        nonexistent: "${nonexistent.thing}",
+        nonexistentNested: "\"${{nonexistent}.nested}.thing\""
     });
 
-    jqUnit.test("Obsolete ELstyle test", function () {
+    jqUnit.test("FLUID 6456: Obsolete ELstyle test", function () {
         var that = fluid.tests.FLUID6456();
         jqUnit.assertEquals("Should have received component with unexpanded obsolete EL", "${nonexistent.thing}",
             that.options.nonexistent);
+        jqUnit.assertEquals("Should have received component with unexpanded obsolete EL", "\"${{nonexistent}.nested}.thing\"",
+            that.options.nonexistentNested);
     });
 
     fluid.defaults("fluid.tests.defaultMergePolicy", {
