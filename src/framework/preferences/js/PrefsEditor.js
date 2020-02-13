@@ -464,10 +464,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var sortedPrefs = fluid.getMembers(sorted, "namespace"); // retrieve just the preferences names
 
             // generate panel container markup
-            var panels = fluid.accumulate(sortedPrefs, function (pref, containers) {
+            var panels = sortedPrefs.map(function(pref, containers) {
                 var className = that.options.selectors[that.options.prefToMemberMap[pref]].slice(1);
-                return containers += fluid.stringTemplate(that.options.markup.panel, {className: className});
-            }, "");
+                return fluid.stringTemplate(that.options.markup.panel, {className: className});
+            }).join("");
 
             // interpolate panels into template.
             template = fluid.stringTemplate(template, {panels: panels});
