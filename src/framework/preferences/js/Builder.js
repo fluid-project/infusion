@@ -256,9 +256,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Will attempt to construct grades for each supplied category if appropriate configuration can be found for the
-     * category in the supplied `auxSchema`
+     * category in the supplied `auxSchema`. Categories refer to the top level properties of the {AuxSchema} which will
+     * be used to source the options for defining the related grades.
      *
-     * @param  {Object} auxSchema - An expanded auxiliary schema
+     * @param  {AuxSchema} auxSchema - A processed {AuxiliarySchema}
      * @param  {String[]} gradeCategories - an array of grade categories to construct
      * @return {Object} - the grade names of the constructed grades
      */
