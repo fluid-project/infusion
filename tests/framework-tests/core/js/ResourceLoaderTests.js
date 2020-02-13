@@ -646,6 +646,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.FLUID4982.badJSONMocks", {
         gradeNames: "fluid.test.mockXHR",
+        mergePolicy: {
+            "mocks.badJSON.body": "noexpand"
+        },
         mocks: {
             badJSON: {
                 url: "/badJSON",

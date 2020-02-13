@@ -1845,9 +1845,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             selectors: {
                 select: ".flc-fluid4986-select",
                 simpleBound1: ".flc-fluid4986-simpleBound1",
-                simpleBound2: ".flc-fluid4986-simpleBound2",
+//              simpleBound2: ".flc-fluid4986-simpleBound2",
                 simpleBound3: ".flc-fluid4986-simpleBound3",
-                simpleBound4: ".flc-fluid4986-simpleBound4",
+//                simpleBound4: ".flc-fluid4986-simpleBound4",
                 simpleBound5: ".flc-fluid4986-simpleBound5",
                 simpleBound6: ".flc-fluid4986-simpleBound6"
             },
@@ -1863,9 +1863,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     selection: "${select}"
                 },
                 simpleBound1: "{test}.string",
-                simpleBound2: "{test.string .....",
+// This test discontinued after FLUID-6450
+//              simpleBound2: "{test.string .....",
                 simpleBound3: "test}.string .....",
-                simpleBound4: "${{test.string}",
+//                simpleBound4: "${{test.string}",
                 simpleBound5: "${test.string}}",
                 simpleBound6: "${{test}.string}"
             },
@@ -1877,12 +1878,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Select should be rendered properly", that.model.select, that.locate("select").val());
             jqUnit.assertEquals("Simple bound with that includes {} should be rendered correctly",
                 "{test}.string", that.locate("simpleBound1").text());
+/* Tests 2 and 4 discontinued after FLUID-6450
             jqUnit.assertEquals("Simple bound with that includes just { should be rendered correctly",
                 "{test.string .....", that.locate("simpleBound2").text());
+*/
             jqUnit.assertEquals("Simple bound with that includes just } should be rendered correctly",
                 "test}.string .....", that.locate("simpleBound3").text());
-            jqUnit.assertEquals("A bound with incorrect { nested resolvable context should be rendered correctly",
+/*            jqUnit.assertEquals("A bound with incorrect { nested resolvable context should be rendered correctly",
                 "", that.locate("simpleBound4").text());
+*/
             jqUnit.assertEquals("A bound with incorrect } nested resolvable context should be rendered correctly",
                 "", that.locate("simpleBound5").text());
             jqUnit.assertEquals("A bound with incorrect {} nested resolvable context should be rendered correctly",
