@@ -28,6 +28,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             onReject: [],
             onCancel: []
             // disposition: "resolve"/"reject"/"cancel"
+            // directHandle: "resolve"/"reject"/"cancel" - signalling to unhandled rejection handler
             // value: Any
         };
         that.then = function (onResolve, onReject, onCancel) {
@@ -54,6 +55,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "which has already received \"" + that.disposition + "\"");
                 }
             } else {
+                if (that.onReject.length === 0) {
+                    fluid.armUnhandledRejection(that, reason);
+                }
                 that.complete("reject", that.onReject, reason);
             }
             return that;
@@ -82,12 +86,37 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (promise.disposition) {
                 if (promise.disposition === disposition) {
                     handler(promise.value);
+                    promise.directHandle = disposition;
                 }
             } else {
                 promise[eventName].push(handler);
             }
         }
     };
+
+    fluid.armUnhandledRejection = function (promise, reason) {
+        fluid.invokeLater(function () {
+            if (promise.directHandle !== "reject") {
+                fluid.fireUnhandledRejection(promise, reason);
+            }
+        });
+    };
+
+    fluid.fireUnhandledRejection = function (promise, reason) {
+        fluid.unhandledRejectionEvent.fire(reason, promise);
+    };
+
+    // A global event which will fire, and by default, foreward to fluid.fail in the event a promise rejection is not
+    // handled by the next tick. See FLUID-6453 for discussion on semantics and desirability
+    fluid.unhandledRejectionEvent = fluid.makeEventFirer({
+        name: "Global unhandled rejection handler"
+    });
+
+    fluid.logUnhandledRejection = function (reason) {
+        fluid.log(fluid.logLevel.WARN, "Unhandled promise rejection: ", reason);
+    };
+
+    fluid.unhandledRejectionEvent.addListener(fluid.logUnhandledRejection, "log");
 
     /* Any object with a member <code>then</code> of type <code>function</code> passes this test.
      * This includes essentially every known variety, including jQuery promises.

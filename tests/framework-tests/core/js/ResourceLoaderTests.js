@@ -682,4 +682,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    jqUnit.asyncTest("FLUID-4982: Unhandled rejection during async construction", function () {
+        var mocks = fluid.tests.FLUID4982.badJSONMocks();
+        var handler = function (err) {
+            fluid.unhandledRejectionEvent.removeListener("test");
+            jqUnit.assertTrue("Received error for failed resource", err.message.indexOf("JSON") !== -1);
+            mocks.destroy();
+            jqUnit.start();
+        };
+        jqUnit.expect(1);
+        fluid.tests.FLUID4982badJSON({model: "{that}.resources.initModel.parsed"});
+        fluid.unhandledRejectionEvent.addListener(handler, "test");
+    });
 })();

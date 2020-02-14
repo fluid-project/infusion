@@ -256,7 +256,7 @@ fluid.handlerPriorities = {
 fluid.logUncaughtException = function (err) {
     var message = "FATAL ERROR: Uncaught exception: " + err.message;
     fluid.log(fluid.logLevel.FATAL, message);
-    console.log(err.stack); // eslint-disable-line no-console
+    console.log(err.stack || "(No error stack)"); // eslint-disable-line no-console
 };
 
 fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",

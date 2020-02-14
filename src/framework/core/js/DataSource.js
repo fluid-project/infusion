@@ -344,17 +344,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.dataSource.URL.handle.http(that, requestOptions, model);
     };
 
-    /** Upgrades a promise rejection payload (or Error) by suffixing an additional "while" reason into its "message" field
-     * @param {Object|Error} originError - A rejection payload. This should (at least) have the member `isError: true` set, as well as a String `message` holding a rejection reason.
-     * @param {String} whileMsg - A message describing the activity which led to this error
-     * @return {Object} The rejected payload formed by shallow cloning the supplied argument (if it is not an `Error`) and suffixing its `message` member
-     */
-    fluid.upgradeError = function (originError, whileMsg) {
-        var error = originError instanceof Error ? originError : fluid.extend({}, originError);
-        error.message = originError.message + whileMsg;
-        return error;
-    };
-
     /** After express 4.15.0 of 2017-03-01 error messages are packaged as HTML readable
      * in this stereotypical form.
      * @param {String} received - The body of an HTTP response (perhaps from express) which has completed with an error

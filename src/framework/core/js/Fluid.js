@@ -1874,6 +1874,18 @@ var fluid = fluid || fluid_3_0_0;
 
     /*** FLUID ERROR SYSTEM ***/
 
+    /** Upgrades a promise rejection payload (or Error) by suffixing an additional "while" reason into its "message" field
+     * @param {Object|Error} originError - A rejection payload. This should (at least) have the member `isError: true` set, as well as a String `message` holding a rejection reason.
+     * @param {String} whileMsg - A message describing the activity which led to this error
+     * @return {Object} The rejected payload formed by shallow cloning the supplied argument (if it is not an `Error`) and suffixing its `message` member
+     */
+    fluid.upgradeError = function (originError, whileMsg) {
+        var error = originError instanceof Error ? originError :
+            fluid.isPrimitive(originError) ? { message: originError} : fluid.extend({}, originError);
+        error.message = error.message + whileMsg;
+        return error;
+    };
+
     fluid.failureEvent = fluid.makeEventFirer({name: "failure event"});
 
     fluid.failureEvent.addListener(fluid.builtinFail, "fail");
@@ -2933,6 +2945,10 @@ var fluid = fluid || fluid_3_0_0;
         transRec.promise.then(null, function (e) {
             if (!returned) {
                 throw e;
+            } else {
+                if (transRec.promise.onReject.length === 0) {
+                    fluid.fireUnhandledRejection(transRec.promise, e);
+                }
             }
         });
         returned = true;

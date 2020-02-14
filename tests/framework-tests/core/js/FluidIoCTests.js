@@ -4221,6 +4221,101 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Model flag should not have been reset", false, that.model.shouldComponentExist);
     });
 
+    /** FLUID-6390 - Hall of mirrors lensed components **/
+
+    fluid.registerNamespace("fluid.tests.fluid6390mirror");
+
+    fluid.tests.fluid6390mirror.model2 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2"
+            }]
+        }]
+    };
+
+    fluid.tests.fluid6390mirror.model6 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2",
+                headings: [{
+                    level: 3,
+                    text: "h3",
+                    url: "#h3",
+                    headings: [{
+                        level: 4,
+                        text: "h4",
+                        url: "#h4",
+                        headings: [{
+                            level: 5,
+                            text: "h5",
+                            url: "#h5",
+                            headings: [{
+                                level: 6,
+                                text: "h6",
+                                url: "#h6"
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    };
+
+    fluid.defaults("fluid.tests.fluid6390levels", {
+        gradeNames: "fluid.tests.fluid6390heading"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390heading", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format ]
+        },
+        dynamicComponents: {
+            headings: {
+                sources: "{that}.model.headings",
+                type: "fluid.tests.fluid6390heading",
+                options: {
+                    model: "{source}"
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390defaultModels = function (rootModel, depth) {
+        var togo = [], model = rootModel;
+        for (var i = 0; i < depth; ++i) {
+            togo.push(model);
+            model = fluid.getImmediate(model, ["headings", "0"]);
+        }
+        return togo;
+    };
+
+    fluid.tests.fluid6390mirrorTest = function (model, levels) {
+        var that = fluid.tests.fluid6390levels({
+            model: model
+        });
+        var headings = [that].concat(fluid.queryIoCSelector(that, "fluid6390heading"));
+        jqUnit.assertEquals("Correct number of headings constructed", levels, headings.length);
+        var expectedModels = fluid.tests.fluid6390defaultModels(model, levels);
+        var models = fluid.getMembers(headings, "model");
+        jqUnit.assertDeepEq("Nested models should be correct", expectedModels, models);
+    };
+
+    jqUnit.test("FLUID-6390: Hall of mirrors lensed components", function () {
+        fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model2, 3);
+        fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model6, 7);
+    });
+
     /** FLUID-6414 - Dynamic grades via expanders **/
 // Also tests FLUID-6415 corruption in graph structure
     fluid.defaults("fluid.tests.fluid6414root", {

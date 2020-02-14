@@ -98,6 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.executePromiseResolutions = function (resolve1, resolve2) {
         var holder = fluid.promise();
+        holder.then(null, fluid.identity); // Dummy rejection handler to avoid false diagnostic
         holder[resolve1]();
         holder[resolve2]();
         return holder;
@@ -190,6 +191,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var nonPromises = [null, undefined, 0, false, "thing", {then: 5}, []];
         fluid.each(nonPromises, function (promise) {
             jqUnit.assertFalse("Detect nonpromises", fluid.isPromise(promise));
+        });
+    });
+
+    jqUnit.asyncTest("Unhandled rejection: FLUID-6453", function () {
+        var listener = function (err) {
+            jqUnit.assertValue("Expected payload to global rejection handler", "expected", err);
+            fluid.unhandledRejectionEvent.removeListener("test");
+            jqUnit.start();
+        };
+        var promise = fluid.promise();
+        promise.reject("expected");
+        fluid.unhandledRejectionEvent.addListener(listener);
+    });
+
+    fluid.tests.testFluid6453 = function (promiseMaker) {
+        var listener = function () {
+            jqUnit.fail("No calls expected to global rejection handler");
+        };
+        var guard = function () {
+            jqUnit.assert("No calls expected to global rejection handler");
+            fluid.unhandledRejectionEvent.removeListener("test");
+            jqUnit.start();
+        };
+        fluid.unhandledRejectionEvent.addListener(listener);
+        promiseMaker();
+        window.setTimeout(guard, 17);
+    };
+
+    jqUnit.asyncTest("Unhandled rejection: FLUID-6453 reject first", function () {
+        fluid.tests.testFluid6453(function () {
+            var promise = fluid.promise();
+            promise.reject("expected");
+            promise.then(null, fluid.identity);
+        });
+    });
+
+    jqUnit.asyncTest("Unhandled rejection: FLUID-6453 reject after", function () {
+        fluid.tests.testFluid6453(function () {
+            var promise = fluid.promise();
+            promise.then(null, fluid.identity);
+            promise.reject("expected");
         });
     });
 

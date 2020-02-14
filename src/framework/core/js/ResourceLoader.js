@@ -409,6 +409,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
          */
         resourceFetcher.completionPromise = fluid.promise();
         fluid.fetchResources.explodeForLocales(resourceFetcher);
+        resourceFetcher.onInit.fire(resourceFetcher.completionPromise);
     };
 
     // A function to tag the type of a Fluid resourceFetcher (primarily to mark it uncopyable)
@@ -436,8 +437,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // We need to gate the launching of any requests on this promise, since resourceFetcher options arising from
             // models will arrive strictly later during construction.
             optionsReady: fluid.promise(),
-            onFetchAll: fluid.makeEventFirer({
-                name: "onFetchAll for resourceFetcher",
+            // This may fire multiple times during lifecycle if there are further calls to fetchAll - argument is completionPromise
+            onInit: fluid.makeEventFirer({
+                name: "onInit for resourceFetcher",
                 ownerId: options.ownerComponentId
             }),
             transformResourceURL: transformResourceURL
@@ -475,14 +477,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
          * relocalised, and non-static members such as promises will be reinitialised
          */
         that.resourceSpecs = fluid.copy(that.sourceResourceSpecs);
+
+        that.onInit.addListener(function (completionPromise) {
+            completionPromise.then(callback, callback);
+        });
+        fluid.each(options.onInitListeners, function (args) {
+            that.onInit.addListener.apply(null, args);
+        });
+
         fluid.initResourceFetcher(that);
 
         fluid.each(that.resourceSpecs, function (resourceSpec, key) {
             fluid.fetchResources.subscribeOneResource(resourceSpec, key, that.options.ownerComponentId);
-        });
-
-        that.onFetchAll.addListener(function (completionPromise) {
-            completionPromise.then(callback, callback);
         });
 
         return that;
@@ -500,7 +506,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(resourceFetcher.resourceSpecs, function (resourceSpec) {
             fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher);
         });
-        resourceFetcher.onFetchAll.fire(resourceFetcher.completionPromise);
         // Deal with FLUID-6441 in case there are no outstanding resources
         fluid.fetchResources.checkCompletion(resourceFetcher.resourceSpecs, resourceFetcher);
         return resourceFetcher.completionPromise;
@@ -747,7 +752,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
              */
             "onCreate.loadResources": "{that}.resourceFetcher.fetchAll",
             "onDestroy.destroyResourceEvents": "fluid.resourceLoader.destroyResourceEvents({that}.resourceFetcher)",
-            "{that}.resourceFetcher.onFetchAll": {
+            "{that}.resourceFetcher.onInit": {
                 namespace: "resourceLoaderCompletion",
                 funcName: "fluid.resourceLoader.subscribeCompletion",
                 args: ["{arguments}.0", "{that}"]
@@ -813,7 +818,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.resourceLoader.makeResourceFetcher = function (that, resourceSpecs, userResourceOptions, transformResourceURL) {
         var resourceOptions = $.extend({
             ownerComponentId: that.id, // For debuggability
-            ownerComponentPath: fluid.pathForComponent(that)
+            ownerComponentPath: fluid.pathForComponent(that),
+            onInitListeners: [[function (completionPromise) {
+                fluid.resourceLoader.subscribeCompletion(completionPromise, that);
+            }, "resourceLoaderCompletion"]]
         }, userResourceOptions);
         var fetcher = fluid.makeResourceFetcher(resourceSpecs, null, resourceOptions, transformResourceURL);
         fluid.each(fetcher.resourceSpecs, function (resourceSpec, key) {
@@ -834,7 +842,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             resourceLoader.events.onResourcesLoaded.fire(resourceLoader.resourceFetcher.resourceSpecs);
         }, function (error) {
             // Note that if the failure was for a resource demanded during startup, this component will already have
-            // been destroyed
+            // been destroyed.
+            // Note that this failure may also be logged by initFreeComponent for a free construction without a rejection handler
             fluid.log("Failure loading resources for component at path " + fluid.dumpComponentPath(resourceLoader) + ": ", error);
         });
     };
