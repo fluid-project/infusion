@@ -497,6 +497,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Successfully evaluated all options", expected, that.options.arrowGeometry);
     });
 
+    /** FLUID-4930 test II - taken from bagatelle renderer **/
+
+    fluid.tests.FLUID4930combine = function () {
+        return fluid.makeArray(arguments).join(", ");
+    };
+
+    fluid.defaults("fluid.tests.retrunkingII", {
+        gradeNames: "fluid.component",
+        dom: "@expand:fluid.identity({that}.options.selectors)",
+        selectors: {
+            svg: ".flc-bagatelle-svg",
+            taxonDisplay: ".fld-bagatelle-taxonDisplay",
+            autocomplete: ".fld-bagatelle-autocomplete",
+            segment: ".fld-bagatelle-segment",
+            phyloPic: ".fld-bagatelle-phyloPic",
+            mousable: "@expand:fluid.tests.FLUID4930combine({that}.options.selectors.segment, {that}.options.selectors.phyloPic)"
+        }
+    });
+
+    jqUnit.test("FLUID-4930: Retrunking with expanders", function () {
+        var that = fluid.tests.retrunkingII();
+        jqUnit.assertEquals("Expander should have consumed sibling values", ".fld-bagatelle-segment, .fld-bagatelle-phyloPic",
+            that.options.selectors.mousable);
+    });
+
     /** FLUID-5755 - another "exotic types" test - this time a native array **/
 
     fluid.defaults("fluid.tests.componentWithTypedArrayOption", {
