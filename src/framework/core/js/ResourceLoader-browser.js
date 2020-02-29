@@ -29,8 +29,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.resourceLoader.configureXHR = function (xhr, options) {
         fluid.resourceLoader.loaders.XHR.copyProps.forEach(function (prop) {
-            if (fluid.isValue(options.prop)) {
-                xhr[prop] = options.prop;
+            if (fluid.isValue(options[prop])) {
+                xhr[prop] = options[prop];
             }
         });
         fluid.each(options.requestHeaders, function (value, key) {

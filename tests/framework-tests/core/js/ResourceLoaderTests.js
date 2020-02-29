@@ -414,6 +414,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-6460: Transfer resourceLoader options to XHR **/
+
+    fluid.defaults("fluid.tests.FLUID6460", {
+        gradeNames: "fluid.resourceLoader",
+        resources: {
+            someResource: {
+                url: "/notfound",
+                options: {
+                    responseType: "arraybuffer"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6460: Transfer options to XHR", function () {
+        var that = fluid.tests.FLUID6460();
+        jqUnit.assertEquals("Should have transferred responseType option to XHR property", "arraybuffer", that.resourceFetcher.resourceSpecs.someResource.xhr.responseType);
+    });
+
     /** FLUID-4982: Partially filled out resource blocks **/
 
     fluid.defaults("fluid.tests.FLUID4982incomplete", {
