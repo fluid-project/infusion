@@ -1645,6 +1645,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-6468 - ginger reference to site of nested reference **/
+
+    fluid.defaults("fluid.tests.FLUID6468root", {
+        gradeNames: ["fluid.component"],
+        components: {
+            coOcRoot: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        recipesContainer: "{coOcRoot}.componentRoot.recipes",
+                        componentRoot: "{FLUID6468root}.componentRoot"
+                    }
+                }
+            },
+            componentRoot: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        recipes: {
+                            type: "fluid.component",
+                            options: {
+                                recipe: 42
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6468 ginger reference to site of nested parent", function () {
+        var that = fluid.tests.FLUID6468root();
+        jqUnit.assertEquals("Cross-injected reference walked", 42, that.coOcRoot.recipesContainer.options.recipe);
+    });
+
     /** FLUID-5925 - ginger reference from IoC-qualified listener key **/
 
     fluid.defaults("fluid.tests.FLUID5925root1", {
@@ -4438,6 +4473,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.tests.fluid6450test();
             that.log();
         }, "formed");
+    });
+
+    /** FLUID-6467 - Corrupt subcomponent definition produces framework diagnostic **/
+
+    fluid.defaults("fluid.tests.fluid6467root", {
+        gradeNames: "fluid.component",
+        components: {
+            corrupt: null
+        }
+    });
+
+    jqUnit.test("FLUID-6467 - malformed subcomponent definition", function () {
+        jqUnit.expectFrameworkDiagnostic("Malformed subcomponent", function () {
+            fluid.tests.fluid6467root();
+        }, ["null", "subcomponent"]);
     });
 
     /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/

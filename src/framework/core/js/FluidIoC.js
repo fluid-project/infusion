@@ -1321,7 +1321,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return fluid.generateExpandBlock(value, that, mergePolicy, potentia.localRecord);
         });
 
-        fluid.popActivity();
         return togo;
     };
 
@@ -1480,7 +1479,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.isInjectedComponentRecord = function (record) {
-        return typeof(record) === "string" || record.expander;
+        return typeof(record) === "string" || fluid.isPlainObject(record, true) && record.expander;
     };
 
     fluid.lightMergeValue = function (records, member) {
@@ -1645,13 +1644,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.checkComponentRecord = function (localRecord, expected) {
         if (!fluid.isInjectedComponentRecord(localRecord)) {
-            fluid.each(localRecord, function (value, key) {
-                if (!expected[key]) {
-                    fluid.fail("Probable error in subcomponent record ", localRecord, " - key \"" + key +
-                        "\" found, where the only legal options are " +
-                        fluid.keys(expected).join(", "));
-                }
-            });
+            if (fluid.isPlainObject(localRecord, true)) {
+                fluid.each(localRecord, function (value, key) {
+                    if (!expected[key]) {
+                        fluid.fail("Error in subcomponent record " + JSON.stringify(localRecord) + " - key \"" + key +
+                            "\" found, where the only legal options are " +
+                            fluid.keys(expected).join(", "));
+                    }
+                });
+            } else {
+                fluid.fail("Error in subcomponent record " + JSON.stringify(localRecord) +
+                    " - this should either be an object with member \"type\" or else a reference to another component");
+            }
         }
     };
 
@@ -1864,6 +1868,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
     };
 
+    fluid.fetchNestedInjectedComponentReference = function (transRec, potentiaList, injected, head, parentPath, segs) {
+        var instantiator = fluid.globalInstantiator;
+        var path = parentPath, current = head;
+        // FLUID-6468 - resolve this potentially ginger reference one segment at a time
+        for (var i = 0; i < segs.length; ++i) {
+            path = fluid.composePath(path, segs[i]);
+            current = instantiator.pathToComponent[path];
+            if (!current) { // possible forward reference
+                var upcoming = potentiaList.pathToPotentia[path];
+                if (upcoming) {
+                    if (upcoming.applied) {
+                        fluid.fail("Circular reference found when resolving injected component reference ", injected, " - the target of the reference is still in construction");
+                    } else {
+                        current = fluid.operateCreatePotentia(transRec, upcoming);
+                        if (current) {
+                            path = instantiator.idToShadow[current.id].path;
+                        }
+                    }
+                }
+            }
+            if (!current && i !== segs.length - 1) {
+                fluid.fail("Failed to resolved injected component reference ", injected,
+                    " - component at segment " + segs[i] + " was not found");
+            }
+        }
+        return current;
+    };
+
     // Fetch the component referred to if a createPotentia is determined to hold an injected component reference.
     // This is more complex than it needs to be because of the potential for references to concrete components which
     // are further along in the potentia list. This used to be handled by the old-fashioned one-step
@@ -1883,29 +1915,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             } else {
                 var parentPath = instantiator.idToShadow[head.id].path;
-                var fullPath = fluid.composePath(parentPath, parsed.path);
-                var current = instantiator.pathToComponent[fullPath];
-                if (current) {
-                    return current;
-                } else { // possible forward reference
-                    var upcoming = potentiaList.pathToPotentia[fullPath];
-                    if (upcoming) {
-                        if (upcoming.applied) {
-                            fluid.fail("Circular reference found when resolving injected component reference ", injected, " - the target of the reference is still in construction");
-                        } else {
-                            return fluid.operateOneCreatePotentia(transRec, upcoming);
-                        }
-                    }
-                }
+                var segs = fluid.model.parseEL(parsed.path);
+                return fluid.fetchNestedInjectedComponentReference(transRec, potentiaList, injected, head, parentPath, segs);
             }
         }
     };
 
     // Begin the action of creating a component - register its shell and mergeOptions at the correct site, and evaluate
     // and scan options for its child components, recursively registering them
-    // Returns shadow of created shell, if any
-    fluid.operateCreatePotentia = function (transRec, potentiaList, potentia) {
+    // Returns created or referenced shell, if any
+    fluid.operateCreatePotentia = function (transRec, potentia) {
         var instantiator = fluid.globalInstantiator;
+        var potentiaList = transRec.pendingPotentiae;
         fluid.preparePathedPotentia(potentia, instantiator);
         // TODO: currently this overall workflow is synchronous and so we have no risk. In future, asynchronous
         // transactions imply that the same path may receive a component from two different transactions - therefore
@@ -1918,12 +1939,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.pushActivity("operateCreatePotentia", "operating create potentia for path \"%path\" with records %records",
             {path: potentia.path, records: potentia.records});
 
+        potentia.applied = true;
+        --potentiaList.activeCount;
+
         var lightMerge = potentia.lightMerge;
         if (lightMerge.isInjected) {
             parentThat[memberName] = fluid.inEvaluationMarker; // support FLUID-5694
-            var instance = fluid.fetchInjectedComponentReference(transRec, potentiaList, lightMerge.toMerge[0].injected, parentThat);
-            if (instance) {
-                instantiator.recordKnownComponent(parentThat, instance, memberName, false);
+            shell = fluid.fetchInjectedComponentReference(transRec, potentiaList, lightMerge.toMerge[0].injected, parentThat);
+            if (shell) {
+                instantiator.recordKnownComponent(parentThat, shell, memberName, false);
             } else {
                 delete parentThat[memberName];
             }
@@ -1931,6 +1955,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             shell = fluid.initComponentShell(potentia, lightMerge);
             if (shell) {
                 fluid.processComponentShell(potentia, shell, transRec);
+                var shadow = instantiator.idToShadow[shell.id];
+                transRec.outputShadows.push(shadow);
             }
         } else {
             fluid.fail("Unrecognised material in place of subcomponent " + memberName + " - could not recognise the records ",
@@ -1942,9 +1968,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             segs: potentia.segs
         });
         fluid.popActivity();
-        if (shell) {
-            return instantiator.idToShadow[shell.id];
-        }
+        return shell;
     };
 
     fluid.operateDestroyPotentia = function (transRec, potentia, instantiator) {
@@ -2098,18 +2122,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    // Tightly bound to commitPotentiaePhase - broken out as a function so that we can call it from
-    // fluid.fetchInjectedComponentReference for out-of-order construction.
-    fluid.operateOneCreatePotentia = function (transRec, potentia) {
-        potentia.applied = true;
-        --transRec.pendingPotentiae.activeCount;
-        var shadow = fluid.operateCreatePotentia(transRec, transRec.pendingPotentiae, potentia);
-        if (shadow) {
-            transRec.outputShadows.push(shadow);
-        }
-        return shadow && shadow.that;
-    };
-
     /** Operate one phase of a tree transaction, consisting of a list of component destructions and a list of
      * component creations.
      * @param {TreeTransaction} transRec - The tree transaction in progress
@@ -2130,7 +2142,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var potentia = pendingPotentiae.creates[i]; // not "forEach" since further elements will accumulate during construction
             if (!potentia.applied) {
                 if (potentia.type === "create") {
-                    fluid.operateOneCreatePotentia(transRec, potentia);
+                    fluid.operateCreatePotentia(transRec, potentia);
                 } else if (potentia.type === "distributeOptions") {
                     potentia.distributions.forEach(function (distro) {
                         fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
