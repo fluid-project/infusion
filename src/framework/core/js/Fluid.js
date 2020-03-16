@@ -439,11 +439,20 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.isArrayable(tocopy) ? [] : {};
     };
 
-    fluid.copyRecurse = function (tocopy, segs) {
+    /** Determine whether the supplied object path exceeds the maximum strategy recursion depth of fluid.strategyRecursionBailout -
+     * if it does, fluid.fail will be issued with a diagnostic
+     * @param {String} funcName - The name of the function to appear in the diagnostic if issued
+     * @param {String[]} segs - The segments of the path that the strategy has reached
+     */
+    fluid.testStrategyRecursion = function (funcName, segs) {
         if (segs.length > fluid.strategyRecursionBailout) {
-            fluid.fail("Runaway recursion encountered in fluid.copy - reached path depth of " + fluid.strategyRecursionBailout + " via path of " + segs.join(".") +
+            fluid.fail("Runaway recursion encountered in " + funcName + " - reached path depth of " + fluid.strategyRecursionBailout + " via path of " + segs.join(".") +
                 "this object is probably circularly connected. Either adjust your object structure to remove the circularity or increase fluid.strategyRecursionBailout");
         }
+    };
+
+    fluid.copyRecurse = function (tocopy, segs) {
+        fluid.testStrategyRecursion("fluid.copy", segs);
         if (fluid.isUncopyable(tocopy)) {
             return tocopy;
         } else {
@@ -924,14 +933,20 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    /** Calls Object.freeze at each level of containment of the supplied object
+
+    /** Calls Object.freeze at each level of containment of the supplied object.
      * @param {Any} tofreeze  - The material to freeze.
+     * @param {String[]} [segs] - Implementation-internal - path segments that recursion has reached.
      * @return {Any} - The supplied argument, recursively frozen.
      */
-    fluid.freezeRecursive = function (tofreeze) {
+    fluid.freezeRecursive = function (tofreeze, segs) {
+        segs = segs || [];
+        fluid.testStrategyRecursion("fluid.freezeRecursive", segs);
         if (fluid.isPlainObject(tofreeze)) {
-            fluid.each(tofreeze, function (value) {
-                fluid.freezeRecursive(value);
+            fluid.each(tofreeze, function (value, key) {
+                segs.push(key);
+                fluid.freezeRecursive(value, segs);
+                segs.pop();
             });
             return Object.freeze(tofreeze);
         } else {
