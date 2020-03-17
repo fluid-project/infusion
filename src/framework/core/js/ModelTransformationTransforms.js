@@ -710,6 +710,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.transforms.free = function (transformSpec) {
         var args = fluid.makeArray(transformSpec.args);
+        if (!transformSpec.func) {
+            fluid.fail("Error in transform specification ", transformSpec, " required member \"func\" was not set");
+        }
         return fluid.invokeGlobalFunction(transformSpec.func, args);
     };
 

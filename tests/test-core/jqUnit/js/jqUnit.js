@@ -321,8 +321,13 @@ var jqUnit = jqUnit || {};
     jqUnit.expectFrameworkDiagnostic = function (message, toInvoke, errorTexts) {
         errorTexts = fluid.makeArray(errorTexts);
         var gotFailure;
+        var capturedActivity;
+        var captureActivity = function (args, activity) {
+            capturedActivity = fluid.renderActivity(activity).map(fluid.prettyPrintJSON).join("");
+        };
         try {
             fluid.failureEvent.addListener(fluid.identity, "jqUnit");
+            fluid.failureEvent.addListener(captureActivity, "captureActivity", "before:fail");
             jqUnit.expect(errorTexts.length);
             toInvoke();
         } catch (e) {
@@ -331,14 +336,16 @@ var jqUnit = jqUnit || {};
                 jqUnit.fail(message + " - received non-framework exception");
                 throw e;
             }
+            var fullText = e.message + capturedActivity;
             fluid.each(errorTexts, function (errorText) {
-                jqUnit.assertTrue(message + " - message text must contain " + errorText, e.message.indexOf(errorText) >= 0);
+                jqUnit.assertTrue(message + " - message text must contain " + errorText, fullText.indexOf(errorText) >= 0);
             });
         } finally {
             if (!gotFailure) {
                 jqUnit.fail("No failure received for test " + message);
             }
             fluid.failureEvent.removeListener("jqUnit");
+            fluid.failureEvent.removeListener("captureActivity");
         }
     };
 
