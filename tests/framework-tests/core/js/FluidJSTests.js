@@ -437,11 +437,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("prop1 should have been destroyed", expected, target4);
     });
 
-    jqUnit.test("copy", function () {
+    jqUnit.test("fluid.copy tests", function () {
         var array = [1, "thing", true, null];
         var copy = fluid.copy(array);
         jqUnit.assertDeepEq("Array copy", array, copy);
+        array.forEach(function (element) {
+            jqUnit.assertEquals("Primitive copy", element, fluid.copy(element));
+        });
     });
+
+    fluid.tests.circularStructure = {
+        property: 42,
+        nestedProperty: {
+        }
+    };
+
+    fluid.tests.testOneRecursion = function (message, func) {
+        jqUnit.test("Recursion bailout tests: " + message, function () {
+            jqUnit.expectFrameworkDiagnostic("Framework diagnostic on circular structure", function () {
+                func(fluid.tests.circularStructure);
+            }, ["circular", "nestedProperty"]);
+        });
+    };
+
+    fluid.tests.circularStructure.nestedProperty.furtherNested = fluid.tests.circularStructure;
+
+    fluid.tests.testOneRecursion("fluid.copy", fluid.copy);
+
+    fluid.tests.testOneRecursion("fluid.freezeRecursive", fluid.freezeRecursive);
 
     jqUnit.test("flattenObjectPaths: deep values", function () {
         var originalObject = {

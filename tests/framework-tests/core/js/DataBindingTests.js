@@ -1666,6 +1666,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /** FLUID-6124: Diagnostic on faulty modelRelay rule **/
+
+    fluid.defaults("fluid.tests.fluid6124badTransform", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            oneRule: {
+                target: "field",
+                singleTransform: {
+                    type: "free",
+                    funcName: "fluid.tests.nonexistent",
+                    args: ["{that}.model.input"]
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6124: Diagnostic on faulty modelRelay rule during operation", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on corrupt relay rule", function () {
+            var that = fluid.tests.fluid6124badTransform();
+            that.applier.change("input", 32);
+        }, ["nonexistent", "oneRule"]);
+    });
+
+    fluid.defaults("fluid.tests.fluid6124badSource", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            oneRule: {
+                target: "field",
+                source: "{that.thing",
+                singleTransform: {
+                    type: "fluid.identity"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6124: Diagnostic on faulty modelRelay rule during parse", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on corrupt relay rule", function () {
+            fluid.tests.fluid6124badSource();
+        }, ["alformed", "thing", "oneRule"]);
+    });
+
     /** FLUID-6424: Notifying modelListeners of relay material on init **/
 
     fluid.defaults("fluid.tests.fluid6424root", {

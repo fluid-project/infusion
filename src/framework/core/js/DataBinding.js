@@ -755,10 +755,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     existing = fluid.registerRelayTransaction(transRec, targetApplier, transId, options, npOptions);
                 }
                 if (transducer && !options.targetApplier) {
-                    // TODO: This is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
+                    // TODO: This censoring of newValue is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
                     // has been baked into the transform document itself. However, we now rely on this special signalling value to make sure we regenerate transforms in
                     // the "forwardAdapter"
+                    fluid.pushActivity("relayTransducer", "computing modelRelay output for rule with target path \"%targetSegs\" and namespace \"%namespace\"",
+                        {targetSegs: targetSegs, namespace: npOptions.namespace});
                     transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs, changeRequest);
+                    fluid.popActivity();
                 } else {
                     if (changeRequest && changeRequest.type === "DELETE") {
                         existing.transaction.fireChangeRequest({type: "DELETE", segs: targetSegs});
@@ -1166,7 +1169,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var enlist = fluid.enlistModelComponent(that);
         fluid.each(optionsMR, function (mrrec, key) {
             for (var i = 0; i < mrrec.length; ++i) {
+                fluid.pushActivity("parseModelRelay", "parsing modelRelay definition with key \"%key\" and body \"%body\" attached to component \"%that\"",
+                    {key: key, body: mrrec[i], that: that});
                 fluid.parseModelRelay(that, mrrec[i], key);
+                fluid.popActivity();
             }
         });
 
