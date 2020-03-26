@@ -138,7 +138,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.getCallerInfo = function (atDepth) {
         atDepth = (atDepth || 3) - stackStyle.offset;
         var stack = fluid.decodeStack();
-        var element = stack && stack[atDepth][0];
+        var element = stack && stack[atDepth] && stack[atDepth][0];
         if (element) {
             var lastslash = element.lastIndexOf("/");
             if (lastslash === -1) {
