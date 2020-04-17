@@ -109,15 +109,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return menu;
     };
 
-    function simulateKeyDown(onElement, withKeycode, modifier) {
-        var modifiers = {
-            ctrl: (modifier === $.ui.keyCode.CTRL) ? true : false,
-            shift: (modifier === $.ui.keyCode.SHIFT) ? true : false,
-            alt: (modifier === $.ui.keyCode.ALT) ? true : false
-        };
+    // TODO: This is for mapping keyCodes for IE11
+    //       After we drop support for IE11 we should remove this.
+    var keyMap = {};
+    keyMap[$.ui.keyCode.ENTER] = "Enter";
+    keyMap[$.ui.keyCode.DOWN] = "Down";
+    keyMap[$.ui.keyCode.UP] = "Up";
+    keyMap[$.ui.keyCode.SPACE] = "Spacebar";
 
-        var keyEvent = document.createEvent("KeyEvents");
-        keyEvent.initKeyEvent("keydown", true, true, window, modifiers.ctrl, modifiers.alt, modifiers.shift, false, withKeycode, 0);
+    function simulateKeyDown(onElement, keyboardEventInit) {
+        var keyEvent;
+
+        if (typeof(KeyboardEvent) === "function") {
+            keyEvent = new KeyboardEvent("keydown", keyboardEventInit);
+        } else {
+            // TODO: This conditional is for handling IE11. After we drop support for IE11 we should remove this
+            var modifiers = keyboardEventInit.ctrlKey ? "Control" : "";
+            keyEvent = document.createEvent("KeyboardEvent");
+
+            keyEvent.initKeyboardEvent("keydown", true, true, window, keyMap[keyboardEventInit.keyCode], 0, modifiers, !!keyboardEventInit.repeat, "");
+        }
 
         onElement = onElement[0];
 
@@ -408,33 +419,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The menu.activatedItem should be set to the third item.", getThirdMenuItem()[0], menu.activatedItem);
     });
 
-    function guardMozilla() {
-        // These tests can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!$.browser.mozilla) {
-            jqUnit.expect(0);
-            return true;
-        }
-    }
-
     jqUnit.test("activate with Enter key", function () {
-        if (guardMozilla()) {return;}
-
         var menu = createActivatableMenu();
-        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.ENTER);
+        simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.ENTER});
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
     });
 
     jqUnit.test("activate with Spacebar", function () {
-        if (guardMozilla()) {return;}
-
         var menu = createActivatableMenu();
-        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.SPACE);
+        simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.SPACE});
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
     });
 
     jqUnit.test("One custom activate binding", function () {
-        if (guardMozilla()) {return;}
-
         var menu = createAndFocusMenu();
         var eventTarget = null;
 
@@ -460,7 +457,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         menu.items.fluid("activatable", [defaultActivate, options]);
 
         var item = getFirstMenuItem();
-        simulateKeyDown(item, $.ui.keyCode.DOWN);
+        simulateKeyDown(item, {keyCode: $.ui.keyCode.DOWN});
         jqUnit.assertNotUndefined("The menu should have been activated by the down arrow key.", menu.wasActivated);
         jqUnit.assertTrue("The menu should have been activated by the down arrow key.", menu.wasActivated);
         jqUnit.assertEquals("The event target for activation should have been the item ", item[0], eventTarget);
@@ -468,8 +465,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     function makeCustomActivateTest(enabled) {
         jqUnit.test("Multiple custom activate bindings" + (enabled ? "" : " - disabled"), function () {
-            if (guardMozilla()) {return;}
-
             var menu = createAndFocusMenu();
 
             // Define additional key bindings.
@@ -503,13 +498,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             // Test that the down arrow works.
-            simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.DOWN);
+            simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.DOWN});
             jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") +
                 " have been activated by the down arrow key.", enabled ? true : undefined, menu.wasActivated);
 
             // Reset and try the other key map.
             menu.wasActivated = false;
-            simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.UP, $.ui.keyCode.CTRL);
+            simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.UP, ctrlKey: true});
 
             jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") +
                 " have been activated by the ctrl key.", enabled ? "foo" : false, menu.wasActivated);
@@ -550,27 +545,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return $(containerSelector).fluid("selectable", options).that();
     };
 
-    jqUnit.test("Leaving container: onLeaveContainer", function () {
-        if (guardMozilla()) {return;}
-
-        var wasCalled = false;
-        quickMakeSelectable(MENU_SEL, {
-            selectableSelector: MENU_ITEM_SEL,
-            onLeaveContainer: function () {
-                wasCalled = true;
-            }
-        });
-        getFirstMenuItem().focus();
-
-        // When onLeaveContainer is called, it should be invoked when tabbing out of the container.
-        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.TAB);
-        jqUnit.assertTrue("On leave is called when tabbing out of the selectables container.",
-                          wasCalled);
-    });
-
+    // Can not test the `onLeaveContainer` event because we are not able to synthesize the `Tab` key.
     jqUnit.test("Leaving container: onUnselect", function () {
-        if (guardMozilla()) {return;}
-
+        // This test does not work on IE11, so we skip it. When IE 11 is no longer supported, this should be removed.
+        if ($.browser.msie) {
+            jqUnit.expect(0);
+            return;
+        }
         var wasCalled = false;
         quickMakeSelectable(MENU_SEL, {
             selectableSelector: MENU_ITEM_SEL,
@@ -579,26 +560,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
         getFirstMenuItem().focus();
+        getFirstMenuItem().blur();
 
-        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.TAB);
-        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when tabbing out of the selectables container.",
+        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when moving focus off of the selectables container.",
                           wasCalled);
     });
 
     jqUnit.test("No-wrap options", function () {
-        if (guardMozilla()) {return;}
-
         var menu = makeMenuSelectable({
             noWrap: true
         });
 
         menu.items.fluid("selectable.select", getFirstMenuItem());
-        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.UP);
+        simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.UP});
         jqUnit.assertSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getLastMenuItem());
 
         menu.items.fluid("selectable.select", getLastMenuItem());
-        simulateKeyDown(getLastMenuItem(), $.ui.keyCode.DOWN);
+        simulateKeyDown(getLastMenuItem(), {keyCode: $.ui.keyCode.DOWN});
         jqUnit.assertSelected(getLastMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
 
