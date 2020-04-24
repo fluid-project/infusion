@@ -258,7 +258,7 @@ that, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatical
 
 Each of these commands will create the VM (if needed).  The test results from the VM will be displayed in your terminal.
 
-If you just want to create the VM yourself, you can use a command like ``vagrant up``, and connect to it the VM either
+If you just want to create the VM yourself, you can use a command like ``vagrant up``, and connect to it either
 from VirtualBox, or from the command line using a command like ``vagrant ssh``.
 
 When this VM is first created, Chrome and Firefox will be upgraded to the latest versions available in the Fedora and
