@@ -55,7 +55,7 @@
         "grunt-shell": "3.0.1",
         "hypher": "0.2.5",
         "@fluid-project/hyphenation-patterns": "0.2.2-dev.20181115T221631Z.b2d0651",
-        "jquery": "3.3.1",
+        "jquery": "3.5.0",
         "jquery-mockjax": "2.5.1",
         "jquery-simulate": "1.0.2",
         "jquery-ui": "1.12.1",
