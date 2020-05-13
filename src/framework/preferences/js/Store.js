@@ -48,9 +48,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.cookieStore", {
         gradeNames: ["fluid.dataSource"],
         cookie: {
-            name: "fluid-ui-settings",
-            path: "/",
-            expires: ""
+            name: "fluid-ui-settings"
         },
         listeners: {
             "onRead.impl": {
@@ -71,6 +69,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.prefs.cookieStore.writable", {
         gradeNames: ["fluid.dataSource.writable"],
+        cookie: {
+            // Any attribute specified will be interpolated into the cookie during a write
+            path: "/",
+            samesite: "strict"
+        },
         listeners: {
             "onWrite.encodeURI": {
                 func: "fluid.prefs.store.encodeURIComponent",
@@ -128,13 +131,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         options = options || {};
         var cookieStr = cookieName + "=" + data;
 
-        if (options.expires) {
-            cookieStr += "; expires=" + options.expires;
-        }
-
-        if (options.path) {
-            cookieStr += "; path=" + options.path;
-        }
+        fluid.each(options, function (value, setting) {
+            // skip name because it was already set as the first portion of the cookieStr
+            if (setting !== "name" && setting !== "secure") {
+                cookieStr += "; " + setting + "=" + value;
+            } else if (setting === "secure" && value) {
+                cookieStr += "; secure";
+            }
+        });
 
         return cookieStr;
     };

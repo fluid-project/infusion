@@ -48,28 +48,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             cookieName: "cookieName",
             payload: "cookieValue",
             cookieOpts: {
+                domain: "example.com",
                 expires: "Fri, 15 Jul 2011 16:44:24 GMT",
-                path: "/"
+                "max-age": 1000,
+                path: "/",
+                samesite: "strict",
+                secure: true
             },
-            expected: "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT; path=/"
+            expected: "cookieName=cookieValue; domain=example.com; expires=Fri, 15 Jul 2011 16:44:24 GMT; max-age=1000; path=/; samesite=strict; secure"
         }, {
-            testName: "no expiry date set",
+            testName: "secure set to false",
             cookieName: "cookieName",
             payload: "cookieValue",
             cookieOpts: {
-                path: "/"
+                secure: false
             },
-            expected: "cookieName=cookieValue; path=/"
+            expected: "cookieName=cookieValue"
         }, {
-            testName: "no path set",
-            cookieName: "cookieName",
-            payload: "cookieValue",
-            cookieOpts: {
-                expires: "Fri, 15 Jul 2011 16:44:24 GMT"
-            },
-            expected: "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT"
-        }, {
-            testName: "no path or expiry date set",
+            testName: "only name set",
             cookieName: "cookieName",
             payload: "cookieValue",
             expected: "cookieName=cookieValue"
