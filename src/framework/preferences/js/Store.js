@@ -123,13 +123,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Assembles the cookie string
      * @param {String} cookieName - name of the cookie
-     * @param {String} data - the serialized data to be stored in the cookie
+     * @param {String} payload - the serialized data to be stored in the cookie
      * @param {Object} options - settings
      * @return {String} - A string representing the assembled cookie.
      */
-    fluid.prefs.cookieStore.assembleCookie = function (cookieName, data, options) {
+    fluid.prefs.cookieStore.assembleCookie = function (cookieName, payload, options) {
         options = options || {};
-        var cookieStr = cookieName + "=" + data;
+        var cookieStr = cookieName + "=" + payload;
 
         fluid.each(options, function (value, attribute) {
             // skip name because it was already set as the first portion of the cookieStr
@@ -147,7 +147,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Saves the settings into a cookie
-     * @param {Object} payload - the serialized data to write to the cookie
+     * @param {String} payload - the serialized data to be stored in the cookie
      * @param {Object} options - settings
      * @return {Object} - The original payload.
      */
