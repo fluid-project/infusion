@@ -57,6 +57,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: "cookieName=cookieValue; domain=example.com; expires=Fri, 15 Jul 2011 16:44:24 GMT; max-age=1000; path=/; samesite=strict; secure"
         }, {
+            testName: "cookie attributes with capitals",
+            cookieName: "cookieName",
+            payload: "cookieValue",
+            cookieOpts: {
+                Domain: "example.com",
+                Expires: "Fri, 15 Jul 2011 16:44:24 GMT",
+                "Max-Age": 1000,
+                Path: "/",
+                SameSite: "strict",
+                Secure: true
+            },
+            expected: "cookieName=cookieValue; Domain=example.com; Expires=Fri, 15 Jul 2011 16:44:24 GMT; Max-Age=1000; Path=/; SameSite=strict; Secure"
+        }, {
             testName: "secure set to false",
             cookieName: "cookieName",
             payload: "cookieValue",
@@ -65,9 +78,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: "cookieName=cookieValue"
         }, {
+            testName: "Secure set to false",
+            cookieName: "cookieName",
+            payload: "cookieValue",
+            cookieOpts: {
+                Secure: false
+            },
+            expected: "cookieName=cookieValue"
+        }, {
             testName: "only name set",
             cookieName: "cookieName",
             payload: "cookieValue",
+            expected: "cookieName=cookieValue"
+        }, {
+            testName: "name attribute in cookie options",
+            cookieName: "cookieName",
+            payload: "cookieValue",
+            cookieOpts: {
+                name: "ignoreName"
+            },
             expected: "cookieName=cookieValue"
         }
     ];

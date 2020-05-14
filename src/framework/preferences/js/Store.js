@@ -131,12 +131,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         options = options || {};
         var cookieStr = cookieName + "=" + data;
 
-        fluid.each(options, function (value, setting) {
+        fluid.each(options, function (value, attribute) {
             // skip name because it was already set as the first portion of the cookieStr
-            if (setting !== "name" && setting !== "secure") {
-                cookieStr += "; " + setting + "=" + value;
-            } else if (setting === "secure" && value) {
-                cookieStr += "; secure";
+            var isNameAttr = attribute.toLowerCase() === "name";
+            var isSecureAttr = attribute.toLowerCase() === "secure";
+            if (!isNameAttr && !isSecureAttr) {
+                cookieStr += "; " + attribute + "=" + value;
+            } else if (isSecureAttr && value) {
+                cookieStr += "; " + attribute;
             }
         });
 
