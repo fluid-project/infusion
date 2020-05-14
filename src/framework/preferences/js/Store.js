@@ -42,8 +42,41 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      ****************/
 
     /**
-     * SettingsStore Subcomponent that uses a cookie for persistence.
-     * @param options {Object}
+     * Options for reading and/or writing a cookie using the `Document.cookie` web api through a {fluid.dataSource}.
+     * In most cases these are used directly for setting attributes of the same name on the cookie. However, the `name`
+     * and `directModel` properties are used for reading/writing the specific cookie. The `directModel` is typically
+     * included via calls to the `dataSource`'s `get` and `set` methods. The `directModel` is typically prioritized for
+     * sourcing the cookie's name, followed by the `name` property.
+     *
+     * Note: Other than `name` and `directModel` all property names are case insensitive.
+     * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie for more details on `Document.cookie`
+     *
+     * @typedef {Object} CookieOpts
+     *
+     * @property {Object} [directModel] - An object defining the coordinates to the cookie
+     *                                    see: `fluid.dataSource` for more information.
+     * @property {String} [directModel.cookieName] - The name of the cookie to read/write
+     * @property {String} [domain] - The domain to scope the cookie's permissions to.
+     *                               (e.g. "example.com" or "subdomain.example.com"). Defaults to the host portion of
+     *                               the current `document.location`.
+     * @property {GMTString} [expires] - The cookie expiry date.
+     * @property {Integer} [max-age] - The maximum age, in seconds, for the cookie before it expires. A negative value
+     *                                 will cause the cookie to expire immediately.
+     * @property {String} [name] - The name of the cookie to read/write; typically used if `directModel.cookieName` is
+     *                             not provided.
+     * @property {String} [path] - The URL path that must be included. Defaults to the current
+     *                             `document.location.pathname`.
+     * @property {String} [samesite] - Manages how cookies are sent with cross site requests. Possible values are `lax`,
+     *                                `strict`, or `none`. In the future this may be a required field or default to
+     *                                `lax`.
+     * @property {String} [secure] - If enabled, will only allow cookies to be sent over secure protocols (e.g. https).
+     *                               In the Cookie specification this property doesn't take any values and will be
+     *                               enabled regardless of the value assigned. However, the specific {fluid.dataSource}
+     *                               implementation may handle `falsey` values as a means to remove it.
+     */
+
+    /**
+     * A type of {fluid.dataSource} that uses a cookie for persistence.
      */
     fluid.defaults("fluid.prefs.cookieStore", {
         gradeNames: ["fluid.dataSource"],
@@ -96,8 +129,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.makeGradeLinkage("fluid.prefs.cookieStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.cookieStore"], "fluid.prefs.cookieStore.writable");
 
-    /*
+    /**
      * Retrieve and return the value of the cookie
+     *
+     * @param {CookieOpts} options - the cookie attributes; used to get the cookie name.
+     * @return {String} - the serialized cookie
      */
     fluid.prefs.cookieStore.getCookie = function (options) {
         var cookieName = fluid.get(options, ["directModel", "cookieName"]) || options.name;
@@ -124,7 +160,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Assembles the cookie string
      * @param {String} cookieName - name of the cookie
      * @param {String} payload - the serialized data to be stored in the cookie
-     * @param {Object} options - settings
+     * @param {CookieOpts} options - the cookie attributes
      * @return {String} - A string representing the assembled cookie.
      */
     fluid.prefs.cookieStore.assembleCookie = function (cookieName, payload, options) {
@@ -148,7 +184,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Saves the settings into a cookie
      * @param {String} payload - the serialized data to be stored in the cookie
-     * @param {Object} options - settings
+     * @param {CookieOpts} options - settings
      * @return {Object} - The original payload.
      */
     fluid.prefs.cookieStore.writeCookie = function (payload, options) {
@@ -173,9 +209,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         contentType: "application/json"
     });
 
-    /**
-     * SettingsStore mock that doesn't do persistence.
-     * @param options {Object}
+    /*
+     * A type of {fluid.dataSource} mock that doesn't do persistence.
      */
     fluid.defaults("fluid.prefs.tempStore", {
         gradeNames: ["fluid.dataSource", "fluid.modelComponent"],
