@@ -819,6 +819,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     childrenScope: A hash of names to components which are in scope because they are children of this component (BELOW own ownScope in resolution order)
     //     potentia: The original potentia record as supplied to registerPotentia
     //     childComponents: Hash of key names to subcomponents
+    //     inEvaluation: Hash of paths that are currently in evaluation - hack for FLUID-5981/FLUID-4930
     //     lightMergeComponents, lightMergeDynamicComponents: signalling between fluid.processComponentShell and fluid.concludeComponentObservation
     //     modelSourcedDynamicComponents: signalling between fluid.processComponentShell and fluid.initModel
 
@@ -830,25 +831,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Access the member at a particular path in a component, forcing it to be constructed gingerly if necessary
     // supported, PUBLIC API function
     fluid.getForComponent = function (component, path) {
-        var segs = fluid.model.pathToSegments(path, getConfig);
+        var segs = fluid.model.pathToSegments(path);
         if (segs.length === 0) {
             return component;
         }
         var shadow = fluid.shadowForComponent(component);
-        var getConfig = shadow ? shadow.getConfig : undefined;
-        var next = fluid.get(component, segs[0], getConfig);
-        // Remove this appalling travesty when we eliminate fluid.get, merging, etc. in the FLUID-6143 rewrite
-        if (fluid.isComponent(next)) {
-            return fluid.getForComponent(next, segs.slice(1));
+        if (shadow) {
+            var next = fluid.get(component, segs[0], shadow.getConfig);
+            // Remove this appalling travesty when we eliminate fluid.get, merging, etc. in the FLUID-6143 rewrite
+            if (fluid.isComponent(next)) {
+                return fluid.getForComponent(next, segs.slice(1));
+            } else {
+                if (shadow.inEvaluation[path]) {
+                    fluid.fail("Error in component configuration - a circular reference was found during evaluation of path " + path + " for component " + fluid.dumpComponentAndPath(component) +
+                        ": a circular set of references was found - for more details, see the activity records following this message in the console");
+                } else {
+                    shadow.inEvaluation[path] = true;
+                    var togo = fluid.get(component, path, shadow.getConfig);
+                    delete shadow.inEvaluation[path];
+                    return togo;
+                }
+            }
         } else {
-            return fluid.get(component, path, getConfig);
+            return fluid.get(component, path);
         }
     };
 
     // The EL segment resolver strategy for resolving concrete members
     fluid.concreteStrategy = function (component, thisSeg, index, segs) {
         var atval = component[thisSeg];
-        if (atval === fluid.inEvaluationMarker) {
+        if (atval === fluid.inEvaluationMarker) { // Only remaining user is currently modelRelay return, since inEvaluation hack covers ordinary material
             fluid.fail("Error in component configuration - a circular reference was found during evaluation of path segment \"" + thisSeg + " of path ", segs,
                 "\": for more details, see the activity records following this message in the console, or issue fluid.setLogging(fluid.logLevel.TRACE) when running your application");
         }
@@ -994,6 +1006,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         childShadow.ownScope = Object.create(childShadow.childrenScope);
         childShadow.parentShadow = parentShadow;
         childShadow.childComponents = {};
+        childShadow.inEvaluation = {};
         fluid.cacheShadowGrades(child, childShadow);
     };
 
@@ -1437,6 +1450,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var mergeOptions = shadow.mergeOptions;
         fluid.pushActivity("concludeComponentObservation", "constructing component of type %componentName at path %path",
             {componentName: that.typeName, path: shadow.path});
+        mergeOptions.evaluateFully = true;
 
         for (var i = 0; i < mergeOptions.mergeBlocks.length; ++i) {
             mergeOptions.mergeBlocks[i].initter();
@@ -3167,6 +3181,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 target[name] = value;
             }
             return fluid.expandSource(options, target, i, segs, deliverer, thisSource, thisPolicy, recurse);
+            if (target[name] === fluid.inEvaluationMarker) {
+                delete target[name];
+            }
         };
         options.recurse = recurse;
         options.strategy = strategy;

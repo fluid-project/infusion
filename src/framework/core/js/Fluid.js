@@ -2439,13 +2439,6 @@ var fluid = fluid || fluid_3_0_0;
                     return oldTarget;
                 }
             }
-            else {
-                if (target !== fluid.inEvaluationMarker) { // TODO: blatant "coding to the test" - this enables the simplest "re-trunking" in
-                    // FluidIoCTests to function. In practice, we need to throw away this implementation entirely in favour of the
-                    // "iterative deepening" model coming with FLUID-4925
-                    target[name] = fluid.inEvaluationMarker;
-                }
-            }
             if (sources === undefined) { // recover our state in case this is an external entry point
                 segs = fluid.makeArray(segs); // avoid trashing caller's segs
                 sources = regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
@@ -2479,9 +2472,7 @@ var fluid = fluid || fluid_3_0_0;
                         else {
                             // write this in early, since early expansions may generate a trunk object which is written in to by later ones
                             thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, newPolicyHolder, i, segs, options);
-                            if (target !== fluid.inEvaluationMarker) {
-                                target[name] = thisTarget;
-                            }
+                            target[name] = thisTarget;
                         }
                     }
                 }
@@ -2493,9 +2484,6 @@ var fluid = fluid || fluid_3_0_0;
                 if (fluid.isPlainObject(thisTarget)) {
                     fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
                 }
-            }
-            if (oldTarget === undefined && newSources.length === 0 && target[name] === fluid.inEvaluationMarker) {
-                delete target[name]; // remove the evaluation marker - nothing to evaluate
             }
             return thisTarget;
         };

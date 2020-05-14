@@ -497,6 +497,73 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Successfully evaluated all options", expected, that.options.arrowGeometry);
     });
 
+    // Structure taken from gpii.express.user.validationMiddleware"
+
+    fluid.defaults("fluid.tests.FLUID4930.schemaHolder", {
+        gradeNames: "fluid.component",
+        schema: {
+            type: "object",
+            title: "gpii-express-user core user schema",
+            description: "This schema defines the common format for user data transmitted and received by the gpii-express-user library.",
+            definitions: {
+                email: {
+                    type: "string",
+                    format: "email",
+                    required: true,
+                    errors: {
+                        "": "gpii.express.user.email"
+                    }
+                },
+                username: {
+                    required: true,
+                    type: "string",
+                    minLength: 1,
+                    errors: {
+                        "": "gpii.express.user.username"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID4930.signup", {
+        gradeNames: ["fluid.tests.FLUID4930.schemaHolder", "fluid.resourceLoader", "fluid.modelComponent"],
+        resources: {
+            schema: {
+                promiseFunc: "{that}.generateSchema"
+            }
+        },
+        model: {
+            inputSchema: "{that}.resources.schema.parsed"
+        },
+        invokers: {
+            generateSchema: "fluid.tests.FLUID4930.generateSchema({that}.options.schema)"
+        },
+        schema: {
+            title: "gpii-express-user user signup schema",
+            description: "This schema defines the format accepted when creating a new user.",
+            properties: {
+                email: "{that}.options.schema.definitions.email",
+                username: "{that}.options.schema.definitions.username",
+                password: "{that}.options.schema.definitions.password",
+                confirm: "{that}.options.schema.definitions.confirm",
+                profile: "{that}.options.schema.definitions.profile"
+            }
+        }
+    });
+
+    fluid.tests.FLUID4930.generateSchema = function (schema) {
+        var togo = fluid.promise();
+        togo.resolve(schema);
+        return togo;
+    };
+
+    jqUnit.test("FLUID-4930: Retrunking III", function () {
+        var that = fluid.tests.FLUID4930.signup();
+        jqUnit.assertEquals("Successfully evaluated email option", "string", that.options.schema.properties.email.type);
+        jqUnit.assertEquals("Successfully evaluated username option", "string", that.options.schema.properties.username.type);
+    });
+
     /** FLUID-5755 - another "exotic types" test - this time a native array **/
 
     fluid.defaults("fluid.tests.componentWithTypedArrayOption", {
