@@ -18,7 +18,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.prefs.builder", "fluid.viewComponent"],
         preferences: [
-            "fluid.prefs.textSize",
             "fluid.prefs.lineSpace",
             "fluid.prefs.textFont",
             "fluid.prefs.contrast",
