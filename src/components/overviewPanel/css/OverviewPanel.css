@@ -2,27 +2,32 @@
 @font-face {
     font-family: "Icons";
     src:url('../fonts/OverviewPanel-Icons.woff');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'OpenSans';
     src: url('../../../lib/opensans/fonts/OpenSans-Regular.woff');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'OpenSans';
     src: url('../../../lib/opensans/fonts/OpenSans-Bold.woff');
+    font-display: swap;
     font-weight: bold;
 }
 
 @font-face {
     font-family: 'RobotoSlab';
     src: url('../../../lib/roboto/fonts/Roboto-Slab-Regular.woff');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'RobotoSlab';
     src: url('../../../lib/roboto/fonts/Roboto-Slab-Bold.woff');
+    font-display: swap;
     font-weight: bold;
 }
 

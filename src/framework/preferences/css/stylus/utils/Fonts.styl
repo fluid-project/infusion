@@ -35,7 +35,7 @@ fontFaces = {
                 fontWeight: 600
                 fontStyle: normal
             },
-            italic: {            
+            italic: {
                 filename:"OpenDyslexic-Italic.woff"
                 fontWeight: normal
                 fontStyle: italic
@@ -56,25 +56,26 @@ build-fonts-Enactors(textFont, textFontFaces) {
         fontDirectory = textFontFaces[fontFamilyName].fontDirectory
         fontFamily = textFontFaces[fontFamilyName].fontFamily
         fontFamilyDefs = textFontFaces[fontFamilyName].definitions;
-        for def in fontFamilyDefs {                
+        for def in fontFamilyDefs {
                 fontDef = textFontFaces[fontFamilyName][definitions][def]
                 @font-face {
                     font-family: fontFamily;
                     src: url(fontDirectory + fontDef.filename);
                     font-weight: fontDef.fontWeight;
                     font-style: fontDef.fontStyle;
+                    font-display: swap;
             }
             }
         }
 
     for fontName in textFont {
         font = textFont[fontName].fontFamily;
-        
+
         {fontName},
         {fontName} * {
             &:not([class*='icon']) {
                 font-family: unquote(font) !important;
             }
         }
-    }    
+    }
 }

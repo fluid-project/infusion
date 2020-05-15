@@ -4,26 +4,32 @@
 @font-face {
   font-family: Lato;
   src: url(../fonts/Lato-Regular.woff);
+  font-display: swap;
 }
 @font-face {
   font-family: LatoLight;
   src: url(../fonts/Lato-Light.woff);
+  font-display: swap;
 }
 @font-face {
   font-family: LatoLightItalic;
   src: url(../fonts/Lato-LightItalic.woff);
+  font-display: swap;
 }
 @font-face {
   font-family: LatoBlack;
   src: url(../fonts/Lato-Black.woff);
+  font-display: swap;
 }
 @font-face {
   font-family: LatoRegular;
   src: url(../fonts/Lato-Regular.woff);
+  font-display: swap;
 }
 @font-face {
   font-family: LoveYaLikeASister;
   src: url(../fonts/LoveYaLikeASister.ttf);
+  font-display: swap;
 }
 
 
