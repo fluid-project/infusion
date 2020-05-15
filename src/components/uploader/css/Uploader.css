@@ -1,6 +1,7 @@
 @font-face {
     font-family: 'InfusionIcons';
     src: url('../fonts/Uploader-Icons.woff');
+    font-display: swap;
 }
 
 /*
