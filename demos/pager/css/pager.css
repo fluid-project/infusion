@@ -127,3 +127,14 @@
  .demo-pager-page-size  label {
     margin-right: 2px;
  }
+
+ /***********************************************
+ * Styles for pager previous and next page symbol
+ */
+ .demo-pager-previous-character::before {
+     content: "<";
+ }
+
+ .demo-pager-next-character::after {
+     content: ">";
+ }
