@@ -845,27 +845,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.fluid6442.checkIt = function (component) {
+        var expected = "These courses will require a lot of marking";
+        var err;
+        jqUnit.assertValue("Resources should be findable", component.resources.messages);
+        try {
+            var found = component.resources.messages.parsed.courses;
+            jqUnit.assertEquals("Relocalised model findable in resources", expected, found);
+        } catch (e) {
+            err = e;
+        }
+        jqUnit.start();
+        if (err) {
+            throw err;
+        }
+    };
+
     jqUnit.asyncTest("FLUID-6442: Modelised relocalisation should be accessible via resources", function () {
         jqUnit.expect(2);
-        var checkIt = function (component) {
-            var expected = "These courses will require a lot of marking";
-            var err;
-            jqUnit.assertValue("Resources should be findable", component.resources.messages);
-            try {
-                var found = component.resources.messages.parsed.courses;
-                jqUnit.assertEquals("Relocalised model findable in resources", expected, found);
-            } catch (e) {
-                err = e;
-            }
-            jqUnit.start();
-            if (err) {
-                throw err;
-            }
-        };
         var component = fluid.tests.fluid6442({
             listeners: {
                 "onResourcesLoaded.checkIt": {
-                    func: checkIt,
+                    func: "fluid.tests.fluid6442.checkIt",
                     args: "{that}"
                 },
                 "onResourceError.failTest": function (err) {
@@ -877,6 +878,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         component.applier.change("resourceLoader.locale", "en_ZA");
     });
 
+    /** FLUID-6503: Two side-by-side modelised resources **/
+
+    fluid.defaults("fluid.tests.fluid6503", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                url: "../data/messages4.json",
+                dataType: "json"
+            },
+            template: {
+                url: "../data/testTemplate1.html"
+            }
+        },
+        model: {
+            messages: "{that}.resources.messages.parsed",
+            template: "{that}.resources.template.resourceText"
+        }
+    });
+
+    fluid.tests.fluid6503.checkIt = function (component) {
+        jqUnit.assertDeepEq("Messages should be loaded and parsed", {
+            "same": "Are you Mr. Sherlock Holmes?"
+        }, component.model.messages);
+        jqUnit.assertEquals("Template should be loaded and parsed", "<div>Test Template 1</div>\n",
+            component.model.template);
+        jqUnit.start();
+    };
+
+    jqUnit.asyncTest("FLUID-6503: Two side-by-side modelised resources", function () {
+        fluid.tests.fluid6503({
+            listeners: {
+                "onCreate.checkIt": {
+                    func: "fluid.tests.fluid6503.checkIt",
+                    args: "{that}"
+                }
+            }
+        });
+        jqUnit.expect(2);
+    });
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 

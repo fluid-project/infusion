@@ -443,7 +443,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var byId = {};
         resourceMap.forEach(function (resourceMapEntry) {
             var resourceSpec = resourceMapEntry.fetchOne.resourceSpec;
-            var id = resourceSpec.transformEvent.id;
+            var id = resourceSpec.transformEvent.eventId;
             var existing = byId[id];
             if (!existing) {
                 existing = byId[id] = {
