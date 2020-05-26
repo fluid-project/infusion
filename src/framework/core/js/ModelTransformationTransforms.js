@@ -388,7 +388,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * https://docs.fluidproject.org/infusion/development/ModelTransformationAPI.html#fluidtransformsarraytosetmembership
      *
      * @param {Array} value - The Array to be transformed into an object.
-     * @param {Object} transformSpec (OPTIONAL) - The options provided to the transformation rule.
+     * @param {Object} [transformSpec] - The options provided to the transformation rule.
      * @return {Object} - The transformed object
      *
      */
@@ -489,7 +489,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * https://docs.fluidproject.org/infusion/development/ModelTransformationAPI.html#fluidtransformssetmembershiptoarray
      *
      * @param {Object} input - The object to be transformed into an array.
-     * @param {Object} transformSpec (OPTIONAL) - The options provided to the transformation rule.
+     * @param {Object} [transformSpec] - The options provided to the transformation rule.
      * @return {Array} - The transformed array
      *
      */
