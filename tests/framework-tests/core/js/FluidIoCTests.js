@@ -589,6 +589,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Successfully evaluated username option", "string", that.options.schema.properties.username.type);
     });
 
+    /** FLUID-4930 retrunking test IV - Structure taken from "gpii.express.user.verify.resend" */
+
+    fluid.defaults("fluid.tests.FLUID4930.verify.api", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            "source": "{that}.options.couch",
+            "target": "{that resend}.options.couch"
+        },
+        couch: {
+            port: 5984,
+            userDbName: "users",
+            userDbUrl: {
+                expander: {
+                    funcName: "fluid.stringTemplate",
+                    args:     ["http://localhost:%port/%userDbName", { port: "{that}.options.couch.port", userDbName: "{that}.options.couch.userDbName" }]
+                }
+            }
+        },
+        components: {
+            resend: {
+                type: "fluid.tests.FLUID4930.verify.resend"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID4930.verify.resend", {
+        gradeNames: "fluid.component",
+        urls: {
+            read: {
+                expander: {
+                    funcName: "fluid.stringTemplate",
+                    args:     ["%userDbUrl/_design/lookup/_view/byUsernameOrEmail", "{that}.options.couch"]
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-4930: Retrunking IV", function () {
+        var that = fluid.tests.FLUID4930.verify.api();
+        jqUnit.assertEquals("Successfully evaluated email option", "http://localhost:5984/users/_design/lookup/_view/byUsernameOrEmail", that.resend.options.urls.read);
+    });
+
     /** FLUID-5755 - another "exotic types" test - this time a native array **/
 
     fluid.defaults("fluid.tests.componentWithTypedArrayOption", {

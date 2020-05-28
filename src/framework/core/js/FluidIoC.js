@@ -819,13 +819,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     childrenScope: A hash of names to components which are in scope because they are children of this component (BELOW own ownScope in resolution order)
     //     potentia: The original potentia record as supplied to registerPotentia
     //     childComponents: Hash of key names to subcomponents
-    //     inEvaluation: Hash of paths that are currently in evaluation - hack for FLUID-5981/FLUID-4930
     //     lightMergeComponents, lightMergeDynamicComponents: signalling between fluid.processComponentShell and fluid.concludeComponentObservation
     //     modelSourcedDynamicComponents: signalling between fluid.processComponentShell and fluid.initModel
 
     fluid.shadowForComponent = function (component) {
         var instantiator = fluid.getInstantiator(component);
         return instantiator && component ? instantiator.idToShadow[component.id] : null;
+    };
+
+    // Hack for FLUID-4930 - every test so far other than FLUID-4930 retrunking IV can pass without a single instance
+    // of the path, but apparently as a result of the options distribution this test requires to visit the expansion site twice
+    fluid.pathInEvaluation = function (path, paths) {
+        var index = paths.indexOf(path);
+        return index !== -1 && index !== paths.length - 1;
     };
 
     // Access the member at a particular path in a component, forcing it to be constructed gingerly if necessary
@@ -835,6 +841,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (segs.length === 0) {
             return component;
         }
+        var instantiator = fluid.globalInstantiator;
         var shadow = fluid.shadowForComponent(component);
         if (shadow) {
             var next = fluid.get(component, segs[0], shadow.getConfig);
@@ -842,13 +849,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (fluid.isComponent(next)) {
                 return fluid.getForComponent(next, segs.slice(1));
             } else {
-                if (shadow.inEvaluation[path]) {
+                var inEvaluationPaths = instantiator.inEvaluationPaths;
+                var inEvaluationPath = component.id + ":" + path;
+                if (fluid.pathInEvaluation(inEvaluationPath, inEvaluationPaths)) {
                     fluid.fail("Error in component configuration - a circular reference was found during evaluation of path " + path + " for component " + fluid.dumpComponentAndPath(component) +
                         ": a circular set of references was found - for more details, see the activity records following this message in the console");
                 } else {
-                    shadow.inEvaluation[path] = true;
+                    inEvaluationPaths.push(inEvaluationPath);
                     var togo = fluid.get(component, path, shadow.getConfig);
-                    delete shadow.inEvaluation[path];
+                    inEvaluationPaths.pop();
                     return togo;
                 }
             }
@@ -1006,7 +1015,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         childShadow.ownScope = Object.create(childShadow.childrenScope);
         childShadow.parentShadow = parentShadow;
         childShadow.childComponents = {};
-        childShadow.inEvaluation = {};
         fluid.cacheShadowGrades(child, childShadow);
     };
 
@@ -1053,6 +1061,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             idToShadow: {},
             modelTransactions: {}, // a map of transaction id to map of component id to records of components enlisted in a current model initialisation transaction
             treeTransactions: {}, // a map of transaction id to TreeTransaction - see fluid.beginTreeTransaction for initial values
+            inEvaluationPaths: [], // stack of paths in evaluation via fluid.getForComponent - hack for FLUID-4930
             // any tree instantiation in progress. This is primarily read in order to enlist in bindDeferredComponent.
             currentTreeTransactionId: null,
             composePath: fluid.model.composePath, // For speed, we declare that no component's name may contain a period
@@ -2364,6 +2373,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var onException = function (err) {
             if (!transRec.cancelled) {
                 delete transRec.rootSequencer;
+                instantiator.inEvaluationPaths.length = 0;
                 fluid.cancelTreeTransaction(transactionId, instantiator, err);
                 onConclude();
             }
@@ -3181,9 +3191,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 target[name] = value;
             }
             return fluid.expandSource(options, target, i, segs, deliverer, thisSource, thisPolicy, recurse);
-            if (target[name] === fluid.inEvaluationMarker) {
-                delete target[name];
-            }
         };
         options.recurse = recurse;
         options.strategy = strategy;
