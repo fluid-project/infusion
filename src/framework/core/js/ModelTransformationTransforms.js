@@ -398,28 +398,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("arrayToSetMembership didn't find array at inputPath nor passed as value.");
         }
         var output = {};
-        var presentValue = fluid.get(transformSpec, "presentValue") ? transformSpec.presentValue : true,
-            missingValue = fluid.get(transformSpec, "missingValue") ? transformSpec.missingValue : false,
-            options = fluid.get(transformSpec, "options");
+        transformSpec = transformSpec || {};
+        var presentValue = (transformSpec.presentValue === undefined) ? true : transformSpec.presentValue,
+            missingValue = (transformSpec.missingValue === undefined) ? false : transformSpec.missingValue,
+            options = transformSpec.options;
 
         /**
-         * When <options> are provided in the transformation rule, use them for keys in the output object.
-         * Otherwise, use items from the <value> array as keys.
+         * When no <options> are provided in the transformation rule, use items from the <value> array as keys.
+         * Otherwise, use <options> for keys in the output object.
          */
-        if (options !== undefined) {
+        if (options === undefined) {
+            fluid.each(value, function (outPath) {
+                // Write <presentValue> for all the items present in the <value> array.
+                output[outPath] = presentValue;
+            });
+        }
+        else {
             fluid.each(options, function (outPath, key) {
                 /**
                  * Write to output object the value <presentValue> or <missingValue> depending on whether key is
                  * found in user input.
                  */
                 var outVal = (value.indexOf(key) !== -1) ? presentValue : missingValue;
-                fluid.set(output, outPath, outVal);
-            });
-        }
-        else {
-            fluid.each(value, function (outPath) {
-                // Write <presentValue> for all the items present in the <value> array.
-                fluid.set(output, outPath, presentValue);
+                output[outPath] = outVal;
             });
         }
 
@@ -502,25 +503,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("setMembershipToArray didn't find object at inputPath nor passed as value.");
         }
         var outputArr = [];
-        var presentValue = fluid.get(transformSpec, "presentValue") ? transformSpec.presentValue : true,
-            options = fluid.get(transformSpec, "options");
+        transformSpec = transformSpec || {};
+        var presentValue = (transformSpec.presentValue === undefined) ? true : transformSpec.presentValue,
+            options = transformSpec.options;
 
         /**
-         * When <options> are provided in the transformation rule, use them for entries in the output array.
-         * Otherwise, use the <input> object for entries in the output array.
+         * When no <options> are provided in the transformation rule, use the <input> object for entries in the output array.
+         * Otherwise, use <options> for entries in the output array.
          */
-        if (options !== undefined) {
-            fluid.each(options, function (outputVal, key) {
+        if (options === undefined) {
+            fluid.each(input, function (keyValue, outputVal) {
                 // Write to output array the key of the <input> object if it's value matches the <presentValue>
-                if (fluid.get(input, key) === presentValue) {
+                if (keyValue === presentValue) {
                     outputArr.push(outputVal);
                 }
             });
         }
         else {
-            fluid.each(input, function (keyValue, outputVal) {
+            fluid.each(options, function (outputVal, key) {
                 // Write to output array the key of the <input> object if it's value matches the <presentValue>
-                if (keyValue === presentValue) {
+                if (input[key] === presentValue) {
                     outputArr.push(outputVal);
                 }
             });
