@@ -6051,6 +6051,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
     });
 
+    /** FLUID-6509 - exceptions from fluid.construct **/
+
+    fluid.defaults("fluid.tests.throwingComponent", {
+        gradeNames: "fluid.component",
+        listeners: {
+            "onCreate.throw": "fluid.fail(\"Error during construction\")"
+        }
+    });
+
+    jqUnit.test("FLUID-6509 - Exceptions from fluid.construct", function () {
+        jqUnit.expectFrameworkDiagnostic("Got exception", function () {
+            fluid.construct("fluid_6509_thrower", {
+                type: "fluid.tests.throwingComponent"
+            });
+        }, "Error during construction");
+    });
+
     /** Test potentia idioms **/
 
     fluid.tests.fetchPaths = function (that, paths) {

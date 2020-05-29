@@ -2915,6 +2915,22 @@ var fluid = fluid || fluid_3_0_0;
         return nickName + "-" + id;
     };
 
+    // Adapt a promise rejection indicating a transaction failure back to an exception for clients in orthochronous code
+    fluid.adaptTransactionFailure = function (transRec) {
+        var returned = false;
+        // This registration MUST go last otherwise we mask the catch->reject handler in bindDeferredComponent
+        transRec.promise.then(null, function (e) {
+            if (!returned) {
+                throw e;
+            } else {
+                if (transRec.promise.onReject.length === 0) {
+                    fluid.fireUnhandledRejection(transRec.promise, e);
+                }
+            }
+        });
+        returned = true;
+    };
+
     // unsupported, NON-API function
     // After some error checking, this *is* the component creator function
     fluid.initFreeComponent = function (type, initArgs) {
@@ -2943,18 +2959,8 @@ var fluid = fluid || fluid_3_0_0;
         };
         var transRec = fluid.registerPotentia(potentia);
         var shadow = fluid.commitPotentiae(transRec.transactionId);
-        var returned = false;
-        // This registration MUST go last otherwise we mask the catch->reject handler in bindDeferredComponent
-        transRec.promise.then(null, function (e) {
-            if (!returned) {
-                throw e;
-            } else {
-                if (transRec.promise.onReject.length === 0) {
-                    fluid.fireUnhandledRejection(transRec.promise, e);
-                }
-            }
-        });
-        returned = true;
+        fluid.adaptTransactionFailure(transRec);
+
         return shadow && shadow.that;
     };
 

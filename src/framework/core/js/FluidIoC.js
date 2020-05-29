@@ -1918,6 +1918,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         potentia.segs = segs;
         potentia.memberName = fluid.peek(segs);
         potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
+        if (potentia.type === "create" && !potentia.parentThat) {
+            fluid.fail("Cannot construct component at path ", segs, " whose parent does not exist");
+        }
     };
 
     fluid.fetchNestedInjectedComponentReference = function (transRec, potentiaList, injected, head, parentPath, segs) {
@@ -2489,6 +2492,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!constructOptions.transactionId) {
             fluid.commitPotentiae(transRec.transactionId);
         }
+        fluid.adaptTransactionFailure(transRec);
         return constructOptions.returnTransaction ? transRec : fluid.getImmediate(fluid.rootComponent, potentia.segs);
     };
 
