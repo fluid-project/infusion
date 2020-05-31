@@ -349,32 +349,87 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invertConfiguration: "fluid.transforms.arrayToSetMembership.invert"
     });
 
-
-    fluid.transforms.arrayToSetMembership = function (value, transformSpec, transformer) {
-        var output = {};
-        var options = transformSpec.options;
-
+    /**
+     *
+     * Transform the input array into an object based upon the options provided to the specification. Accepts
+     * an array as its first argument and an optional second argument (an object) which contains the
+     * specifications for the resulting output.
+     *
+     * An error will be thrown if the input to be transformed is not an array.
+     *
+     * Partly invertible (into setMembershipToArray)
+     *
+     * For example, with the following transformSpec:
+     *
+     * {
+     *   "options": {
+     *      "mouse": "hasMouse",
+     *      "keyboard": "hasKeyboard",
+     *      "trackpad": "hasTrackpad",
+     *      "headtracker": "hasHeadtracker"
+     *   },
+     *   "presentValue": "supported",
+     *   "missingValue": "not supported"
+     * }
+     *
+     * For an input array like this:
+     *
+     * ["keyboard", "mouse"]
+     *
+     * The output object will be:
+     *
+     * {
+     *   "hasMouse": "supported",
+     *   "hasKeyboard": "supported",
+     *   "hasTrackpad": "not supported",
+     *   "hasHeadtracker": "not supported"
+     * }
+     *
+     * https://docs.fluidproject.org/infusion/development/ModelTransformationAPI.html#fluidtransformsarraytosetmembership
+     *
+     * @param {Array} value - The Array to be transformed into an object.
+     * @param {Object} [transformSpec] - (optional) The options provided to the transformation rule.
+     * @return {Object} - The transformed object
+     *
+     */
+    fluid.transforms.arrayToSetMembership = function (value, transformSpec) {
+        // Input <value> should be an array
         if (!value || !fluid.isArrayable(value)) {
-            fluid.fail("arrayToSetMembership didn't find array at inputPath nor passed as value.", transformSpec);
+            fluid.fail("arrayToSetMembership didn't find array at inputPath nor passed as value.");
         }
-        if (!options) {
-            fluid.fail("arrayToSetMembership requires an options block set");
+        var output = {};
+        transformSpec = transformSpec || {};
+        var presentValue = (transformSpec.presentValue === undefined) ? true : transformSpec.presentValue,
+            missingValue = (transformSpec.missingValue === undefined) ? false : transformSpec.missingValue,
+            options = transformSpec.options;
+
+        /**
+         * When no <options> are provided in the transformation rule, use items from the <value> array as keys.
+         * Otherwise, use <options> for keys in the output object.
+         */
+        if (options === undefined) {
+            fluid.each(value, function (outPath) {
+                // Write <presentValue> for all the items present in the <value> array.
+                output[outPath] = presentValue;
+            });
+        }
+        else {
+            fluid.each(options, function (outPath, key) {
+                /**
+                 * Write to output object the value <presentValue> or <missingValue> depending on whether key is
+                 * found in user input.
+                 */
+                var outVal = (value.indexOf(key) !== -1) ? presentValue : missingValue;
+                output[outPath] = outVal;
+            });
         }
 
-        if (transformSpec.presentValue === undefined) {
-            transformSpec.presentValue = true;
-        }
-
-        if (transformSpec.missingValue === undefined) {
-            transformSpec.missingValue = false;
-        }
-
-        fluid.each(options, function (outPath, key) {
-            // write to output object the value <presentValue> or <missingValue> depending on whether key is found in user input
-            var outVal = (value.indexOf(key) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
-            fluid.set(output, outPath, outVal, transformer.resolverSetConfig);
-        });
         return output;
+    };
+
+    fluid.transforms.arrayToSetMembership.invert = function (transformSpec) {
+        return fluid.transforms.arrayToSetMembership.invertWithType(transformSpec,
+            "fluid.transforms.setMembershipToArray");
     };
 
     /*
@@ -382,19 +437,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * * A new type is set (from argument)
      * * each [key]=value entry in the options is swapped to be: [value]=key
      */
-    fluid.transforms.arrayToSetMembership.invertWithType = function (transformSpec, transformer, newType) {
+    fluid.transforms.arrayToSetMembership.invertWithType = function (transformSpec, newType) {
         transformSpec.type = newType;
         var newOptions = {};
         fluid.each(transformSpec.options, function (path, oldKey) {
             newOptions[path] = oldKey;
         });
-        transformSpec.options = newOptions;
+        if (!$.isEmptyObject(newOptions)) {
+            transformSpec.options = newOptions;
+        }
         return transformSpec;
-    };
-
-    fluid.transforms.arrayToSetMembership.invert = function (transformSpec, transformer) {
-        return fluid.transforms.arrayToSetMembership.invertWithType(transformSpec, transformer,
-            "fluid.transforms.setMembershipToArray");
     };
 
     fluid.defaults("fluid.transforms.setMembershipToArray", {
@@ -402,33 +454,85 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invertConfiguration: "fluid.transforms.setMembershipToArray.invert"
     });
 
-    fluid.transforms.setMembershipToArray = function (input, transformSpec, transformer) {
-        var options = transformSpec.options;
-
-        if (!options) {
-            fluid.fail("setMembershipToArray requires an options block specified");
+    /**
+     *
+     * Transform the input object into an array based upon the options provided to the specification. Accepts
+     * an object as its first argument and an optional second argument (an object) which contains the
+     * specifications for the resulting output.
+     *
+     * An error will be thrown if the input to be transformed is not an object.
+     *
+     * Partly invertible (into arrayToSetMembership)
+     *
+     * For example, with the following transformSpec:
+     *
+     * {
+     *   "options": {
+     *      "hasMouse": "mouse",
+     *      "hasKeyboard": "keyboard",
+     *      "hasTrackpad": "trackpad",
+     *      "hasHeadtracker": "headtracker"
+     *   },
+     *   "presentValue": "supported",
+     *   "missingValue": "not supported"
+     * }
+     *
+     * For an input object like this:
+     *
+     * {
+     *   "hasMouse": "supported",
+     *   "hasKeyboard": "supported",
+     *   "hasTrackpad": "not supported",
+     *   "hasHeadtracker": "not supported"
+     * }
+     *
+     * The output array will be:
+     *
+     * ["keyboard", "mouse"]
+     *
+     * https://docs.fluidproject.org/infusion/development/ModelTransformationAPI.html#fluidtransformssetmembershiptoarray
+     *
+     * @param {Object} input - The object to be transformed into an array.
+     * @param {Object} [transformSpec] - (optional) The options provided to the transformation rule.
+     * @return {Array} - The transformed array
+     *
+     */
+    fluid.transforms.setMembershipToArray = function (input, transformSpec) {
+        // <input> should be an object.
+        if (!fluid.isPlainObject(input, true)) {
+            fluid.fail("setMembershipToArray didn't find object at inputPath nor passed as value.");
         }
-
-        if (transformSpec.presentValue === undefined) {
-            transformSpec.presentValue = true;
-        }
-
-        if (transformSpec.missingValue === undefined) {
-            transformSpec.missingValue = false;
-        }
-
         var outputArr = [];
-        fluid.each(options, function (outputVal, key) {
-            var value = fluid.get(input, key, transformer.resolverGetConfig);
-            if (value === transformSpec.presentValue) {
-                outputArr.push(outputVal);
-            }
-        });
+        transformSpec = transformSpec || {};
+        var presentValue = (transformSpec.presentValue === undefined) ? true : transformSpec.presentValue,
+            options = transformSpec.options;
+
+        /**
+         * When no <options> are provided in the transformation rule, use the <input> object for entries in the output array.
+         * Otherwise, use <options> for entries in the output array.
+         */
+        if (options === undefined) {
+            fluid.each(input, function (keyValue, outputVal) {
+                // Write to output array the key of the <input> object if it's value matches the <presentValue>
+                if (keyValue === presentValue) {
+                    outputArr.push(outputVal);
+                }
+            });
+        }
+        else {
+            fluid.each(options, function (outputVal, key) {
+                // Write to output array the key of the <input> object if it's value matches the <presentValue>
+                if (input[key] === presentValue) {
+                    outputArr.push(outputVal);
+                }
+            });
+        }
+
         return outputArr;
     };
 
-    fluid.transforms.setMembershipToArray.invert = function (transformSpec, transformer) {
-        return fluid.transforms.arrayToSetMembership.invertWithType(transformSpec, transformer,
+    fluid.transforms.setMembershipToArray.invert = function (transformSpec) {
+        return fluid.transforms.arrayToSetMembership.invertWithType(transformSpec,
             "fluid.transforms.arrayToSetMembership");
     };
 

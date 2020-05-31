@@ -5029,7 +5029,135 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* --------------- array to set-membership tests -------------------- */
     fluid.tests.transforms.arrayToSetMembershipTests = [{
-        message: "basic test 1",
+        message: "arrayToSetMembership() should return an object when no specifications are provided to the transformation rule.",
+        model: {
+            a: [ "foo", "bar" ]
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    inputPath: "a"
+                }
+            }
+        },
+        expected: {
+            b: {
+                foo: true,
+                bar: true
+            }
+        },
+        expectedInputPaths: [ "a" ],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.setMembershipToArray",
+                    outputPath: "a",
+                    inputPath: "b"
+                }
+            ]
+        },
+        fullyInvertible: true
+    }, {
+        message: "arrayToSetMembership() should return an object when presentValue and missingValue are provided to the transformation rule.",
+        model: {
+            a: [ "foo", "bar" ]
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    inputPath: "a",
+                    presentValue: "yes",
+                    missingValue: "no"
+                }
+            }
+        },
+        expected: {
+            b: {
+                foo: "yes",
+                bar: "yes"
+            }
+        },
+        expectedInputPaths: [ "a" ],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.setMembershipToArray",
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes",
+                    missingValue: "no"
+                }
+            ]
+        },
+        fullyInvertible: true
+    }, {
+        message: "arrayToSetMembership() should return an object when only presentValue is provided to the transformation rule.",
+        model: {
+            a: [ "foo", "bar" ]
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    inputPath: "a",
+                    presentValue: "yes"
+                }
+            }
+        },
+        expected: {
+            b: {
+                foo: "yes",
+                bar: "yes"
+            }
+        },
+        expectedInputPaths: [ "a" ],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.setMembershipToArray",
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes"
+                }
+            ]
+        },
+        fullyInvertible: true
+    }, {
+        message: "arrayToSetMembership() should return an object when only missingValue is provided to the transformation rule.",
+        model: {
+            a: [ "foo", "bar" ]
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    inputPath: "a",
+                    missingValue: "no"
+                }
+            }
+        },
+        expected: {
+            b: {
+                foo: true,
+                bar: true
+            }
+        },
+        expectedInputPaths: [ "a" ],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.setMembershipToArray",
+                    outputPath: "a",
+                    inputPath: "b",
+                    missingValue: "no"
+                }
+            ]
+        },
+        fullyInvertible: true
+    }, {
+        message: "arrayToSetMembership() should return an object when presentValue, missingValue, and options are provided to the transformation rule.",
         model: {
             a: [ "foo", "bar" ]
         },
@@ -5041,18 +5169,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     presentValue: "yes",
                     missingValue: "no",
                     options: {
-                        "foo": "settingF",
-                        "bar": "settingB",
-                        "tar": "settingT"
+                        "foo": "hasFoo",
+                        "bar": "hasBar",
+                        "tar": "hasTar"
                     }
                 }
             }
         },
         expected: {
             b: {
-                settingF: "yes",
-                settingB: "yes",
-                settingT: "no"
+                hasFoo: "yes",
+                hasBar: "yes",
+                hasTar: "no"
             }
         },
         expectedInputPaths: [ "a" ],
@@ -5065,16 +5193,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     presentValue: "yes",
                     missingValue: "no",
                     options: {
-                        "settingF": "foo",
-                        "settingB": "bar",
-                        "settingT": "tar"
+                        "hasFoo": "foo",
+                        "hasBar": "bar",
+                        "hasTar": "tar"
                     }
                 }
             ]
         },
         fullyInvertible: true
     }, {
-        message: "basic test with defaulted present and missing values",
+        message: "arrayToSetMembership() should return an object when only options is provided to the transformation rule.",
         model: {
             a: [ "foo", "bar" ]
         },
@@ -5084,115 +5212,370 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.transforms.arrayToSetMembership",
                     inputPath: "a",
                     options: {
-                        "foo": "settingF",
-                        "bar": "settingB",
-                        "tar": "settingT"
+                        "foo": "hasFoo",
+                        "bar": "hasBar",
+                        "tar": "hasTar"
                     }
                 }
             }
         },
         expected: {
             b: {
-                settingF: true,
-                settingB: true,
-                settingT: false
+                hasFoo: true,
+                hasBar: true,
+                hasTar: false
             }
         },
+        expectedInputPaths: [ "a" ],
         invertedRules: {
             transform: [
                 {
                     type: "fluid.transforms.setMembershipToArray",
                     outputPath: "a",
                     inputPath: "b",
-                    presentValue: true,
-                    missingValue: false,
                     options: {
-                        "settingF": "foo",
-                        "settingB": "bar",
-                        "settingT": "tar"
+                        "hasFoo": "foo",
+                        "hasBar": "bar",
+                        "hasTar": "tar"
                     }
                 }
             ]
         },
         fullyInvertible: true
-    },  {
-        message: "FLUID-5907 test: escaping of EL values",
+    }, {
+        message: "arrayToSetMembership() should return an object when presentValue and options are provided to the transformation rule.",
         model: {
-            "http://registry.gpii.net/common/trackingTTS": [ "focus", "caret" ]
+            a: [ "foo", "bar" ]
         },
         transform: {
-            transform: {
-                type: "fluid.transforms.arrayToSetMembership",
-                inputPath: "http://registry\\.gpii\\.net/common/trackingTTS",
-                outputPath: "",
-                presentValue: true,
-                missingValue: false,
-                options: {
-                    focus: "reviewCursor\\.followFocus",
-                    caret: "reviewCursor\\.followCaret",
-                    mouse: "reviewCursor\\.followMouse"
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    inputPath: "a",
+                    presentValue: "yes",
+                    options: {
+                        "foo": "hasFoo",
+                        "bar": "hasBar",
+                        "tar": "hasTar"
+                    }
                 }
             }
         },
         expected: {
-            "reviewCursor.followFocus": true,
-            "reviewCursor.followCaret": true,
-            "reviewCursor.followMouse": false
+            b: {
+                hasFoo: "yes",
+                hasBar: "yes",
+                hasTar: false
+            }
         },
+        expectedInputPaths: [ "a" ],
         invertedRules: {
             transform: [
                 {
                     type: "fluid.transforms.setMembershipToArray",
-                    outputPath: "http://registry\\.gpii\\.net/common/trackingTTS",
-                    inputPath: "",
-                    presentValue: true,
-                    missingValue: false,
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes",
                     options: {
-                        "reviewCursor\\.followFocus": "focus",
-                        "reviewCursor\\.followCaret": "caret",
-                        "reviewCursor\\.followMouse": "mouse"
+                        "hasFoo": "foo",
+                        "hasBar": "bar",
+                        "hasTar": "tar"
                     }
                 }
             ]
         },
         fullyInvertible: true
+    }, {
+        message: "arrayToSetMembership() should return an object when missingValue and options are provided to the transformation rule.",
+        model: {
+            a: [ "foo", "bar" ]
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    inputPath: "a",
+                    missingValue: "no",
+                    options: {
+                        "foo": "hasFoo",
+                        "bar": "hasBar",
+                        "tar": "hasTar"
+                    }
+                }
+            }
+        },
+        expected: {
+            b: {
+                hasFoo: true,
+                hasBar: true,
+                hasTar: "no"
+            }
+        },
+        expectedInputPaths: [ "a" ],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.setMembershipToArray",
+                    outputPath: "a",
+                    inputPath: "b",
+                    missingValue: "no",
+                    options: {
+                        "hasFoo": "foo",
+                        "hasBar": "bar",
+                        "hasTar": "tar"
+                    }
+                }
+            ]
+        },
+        fullyInvertible: true
+    }, {
+        message: "arrayToSetMembership() should throw an error when the input is not an array.",
+        model: {
+            a: "foo"
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    inputPath: "a"
+                }
+            }
+        },
+        errorTexts: "arrayToSetMembership didn't find array at inputPath nor passed as value.",
+        expectedInputPaths: [ "a" ],
+        fullyInvertible: false
     }];
 
-    jqUnit.test("arrayToSetMembership and setMembershipToArray transformation tests", function () {
+    jqUnit.test("arrayToSetMembership transformation tests", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.arrayToSetMembershipTests, {
             method: "assertDeepEq"
         });
     });
 
-    /* --------------- array to set-membership tests -------------------- */
+    /* --------------- set-membership to array tests -------------------- */
     fluid.tests.transforms.setMembershipToArrayTests = [{
-        message: "basic test",
+        message: "setMembershipToArray() should return an array when no specifications are provided to the transformation rule.",
         model: {
             a: {
-                settingF: "yes",
-                settingB: "yes",
-                settingT: "no"
+                foo: true,
+                bar: true,
+                tar: false
             }
         },
         transform: {
-            b: {
-                transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a"
+                }
+            }
+        },
+        expected: {
+            b: ["foo", "bar"]
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b"
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
+        message: "setMembershipToArray() should return a fully invertible array when each key has value equal to the passed or the default presentValue.",
+        model: {
+            a: {
+                foo: true,
+                bar: true
+            }
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a"
+                }
+            }
+        },
+        expected: {
+            b: ["foo", "bar"]
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b"
+                }
+            ]
+        },
+        fullyInvertible: true
+    }, {
+        message: "setMembershipToArray() should return an array when presentValue and missingValue are provided to the transformation rule.",
+        model: {
+            a: {
+                foo: "yes",
+                bar: "yes",
+                tar: "no"
+            }
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a",
+                    presentValue: "yes",
+                    missingValue: "no"
+                }
+            }
+        },
+        expected: {
+            b: ["foo", "bar"]
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes",
+                    missingValue: "no"
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
+        message: "setMembershipToArray() should return an array when only presentValue is provided to the transformation rule.",
+        model: {
+            a: {
+                foo: "yes",
+                bar: "yes",
+                tar: "no"
+            }
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a",
+                    presentValue: "yes"
+                }
+            }
+        },
+        expected: {
+            b: ["foo", "bar"]
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes"
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
+        message: "setMembershipToArray() should return an empty array when input object doesn't have any key with the value same as the passed presentValue.",
+        model: {
+            a: {
+                foo: "yes",
+                bar: "yes",
+                tar: "no"
+            }
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a",
+                    presentValue: "exist"
+                }
+            }
+        },
+        expected: {
+            b: []
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "exist"
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
+        message: "setMembershipToArray() should return an array when only missingValue is provided to the transformation rule.",
+        model: {
+            a: {
+                foo: "yes",
+                bar: "yes",
+                tar: "no"
+            }
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a",
+                    missingValue: "no"
+                }
+            }
+        },
+        expected: {
+            b: []
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b",
+                    missingValue: "no"
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
+        message: "setMembershipToArray() should return an array when presentValue, missingValue, and options are provided to the transformation rule.",
+        model: {
+            a: {
+                hasFoo: "yes",
+                hasBar: "yes",
+                hasTar: "no"
+            }
+        },
+        transform: {
+            "b": {
+                "transform": {
                     type: "fluid.transforms.setMembershipToArray",
                     inputPath: "a",
                     presentValue: "yes",
                     missingValue: "no",
                     options: {
-                        "settingF": "foo",
-                        "settingB": "bar",
-                        "settingT": "tar"
+                        hasFoo: "foo",
+                        hasBar: "bar",
+                        hasTar: "tar"
                     }
                 }
             }
         },
         expected: {
-            b: [ "foo", "bar" ]
+            b: ["foo", "bar"]
         },
-        expectedInputPaths: [ "a" ],
+        expectedInputPaths: ["a"],
         invertedRules: {
             transform: [
                 {
@@ -5201,102 +5584,157 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     inputPath: "b",
                     presentValue: "yes",
                     missingValue: "no",
-                    options: { //(paths)
-                        "foo": "settingF",
-                        "bar": "settingB",
-                        "tar": "settingT"
+                    options: {
+                        foo: "hasFoo",
+                        bar: "hasBar",
+                        tar: "hasTar"
                     }
                 }
             ]
         },
         fullyInvertible: true
     }, {
-        message: "basic test with defaults for present and missing value",
+        message: "setMembershipToArray() should return an array when presentValue and options are provided to the transformation rule.",
         model: {
-            detections: {
-                hasMouse: true,
-                hasKeyboard: true,
-                hasTrackpad: false,
-                hasHeadtracker: false
+            a: {
+                hasFoo: "yes",
+                hasBar: "yes",
+                hasTar: "no"
             }
         },
         transform: {
-            controls: {
-                transform: {
+            "b": {
+                "transform": {
                     type: "fluid.transforms.setMembershipToArray",
-                    inputPath: "detections",
+                    inputPath: "a",
+                    presentValue: "yes",
                     options: {
-                        hasMouse: "mouse",
-                        hasKeyboard: "keyboard",
-                        hasTrackpad: "trackpad",
-                        hasHeadtracker: "headtracker"
+                        hasFoo: "foo",
+                        hasBar: "bar",
+                        hasTar: "tar"
                     }
                 }
             }
         },
         expected: {
-            controls: [ "mouse", "keyboard" ]
+            b: ["foo", "bar"]
         },
+        expectedInputPaths: ["a"],
         invertedRules: {
             transform: [
                 {
                     type: "fluid.transforms.arrayToSetMembership",
-                    outputPath: "detections",
-                    inputPath: "controls",
-                    presentValue: true,
-                    missingValue: false,
-                    options: { //(paths)
-                        mouse: "hasMouse",
-                        keyboard: "hasKeyboard",
-                        trackpad: "hasTrackpad",
-                        headtracker: "hasHeadtracker"
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes",
+                    options: {
+                        foo: "hasFoo",
+                        bar: "hasBar",
+                        tar: "hasTar"
                     }
                 }
             ]
         },
-        fullyInvertible: true
+        weaklyInvertible: true
     }, {
-        message: "Checking for missing / extra values",
+        message: "setMembershipToArray() should return an array when missingValue and options are provided to the transformation rule.",
         model: {
-            detections: {
-                hasMouse: "supported",
-                hasKeyboard: "supported",
-                hasTrackpad: "not supported",
-                hasHeadtracker: "not supported",
-                hasTelephone: "supported"
+            a: {
+                hasFoo: "yes",
+                hasBar: "yes",
+                hasTar: "no"
+            }
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a",
+                    missingValue: "no",
+                    options: {
+                        hasFoo: "foo",
+                        hasBar: "bar",
+                        hasTar: "tar"
+                    }
+                }
+            }
+        },
+        expected: {
+            b: []
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b",
+                    missingValue: "no",
+                    options: {
+                        foo: "hasFoo",
+                        bar: "hasBar",
+                        tar: "hasTar"
+                    }
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
+        message: "setMembershipToArray() should throw an error when input is not an object.",
+        model: {
+            a: "foo"
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a"
+                }
+            }
+        },
+        errorTexts: "setMembershipToArray didn't find object at inputPath nor passed as value.",
+        expectedInputPaths: [ "a" ],
+        fullyInvertible: false
+    }, {
+        message: "setMembershipToArray() should return an array with only those values for which options have been provided in the transformation rule.",
+        model: {
+            a: {
+                hasFoo: "yes",
+                hasBar: "no",
+                hasTar: "yes",
+                hasRar: "no"
             }
         },
         transform: {
             transform: {
                 type: "fluid.transforms.setMembershipToArray",
-                inputPath: "detections",
-                outputPath: "controls",
-                presentValue: "supported",
-                missingValue: "not supported",
+                inputPath: "a",
+                outputPath: "b",
+                presentValue: "yes",
+                missingValue: "no",
                 options: {
-                    hasMouse: "mouse",
-                    hasKeyboard: "keyboard",
-                    hasTrackpad: "trackpad",
-                    hasHeadtracker: "headtracker"
+                    hasFoo: "foo",
+                    hasBar: "bar",
+                    hasRar: "rar"
                 }
             }
         },
         expected: {
-            controls: [ "mouse", "keyboard" ]
+            b: ["foo"]
         },
+        expectedInputPaths: ["a"],
         invertedRules: {
             transform: [
                 {
                     type: "fluid.transforms.arrayToSetMembership",
-                    outputPath: "detections",
-                    inputPath: "controls",
-                    presentValue: "supported",
-                    missingValue: "not supported",
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes",
+                    missingValue: "no",
                     options: {
-                        mouse: "hasMouse",
-                        keyboard: "hasKeyboard",
-                        trackpad: "hasTrackpad",
-                        headtracker: "hasHeadtracker"
+                        foo: "hasFoo",
+                        bar: "hasBar",
+                        rar: "hasRar"
                     }
                 }
             ]
