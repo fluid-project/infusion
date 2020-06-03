@@ -154,7 +154,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         markup: {
             container: "<div class=\"flc-orator-controller fl-orator-controller\">" +
                 "<div class=\"fl-icon-orator\" aria-hidden=\"true\"></div>" +
-                "<button class=\"flc-orator-controller-playToggle\">" +
+                "<button type=\"button\" class=\"flc-orator-controller-playToggle\">" +
                     "<span class=\"fl-orator-controller-playToggle fl-icon-orator-playToggle\" aria-hidden=\"true\"></span>" +
                 "</button></div>"
         },
@@ -837,7 +837,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             control: "fl-orator-selectionReader-control"
         },
         markup: {
-            control: "<button class=\"flc-orator-selectionReader-control\"><span class=\"fl-icon-orator\"></span><span class=\"flc-orator-selectionReader-controlLabel\"></span></button>"
+            control: "<button type=\"button\" class=\"flc-orator-selectionReader-control\"><span class=\"fl-icon-orator\"></span><span class=\"flc-orator-selectionReader-controlLabel\"></span></button>"
         },
         model: {
             enabled: true,
