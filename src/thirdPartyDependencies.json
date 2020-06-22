@@ -60,7 +60,9 @@
             "./lib/jquery/ui/js/unique-id.js",
             "./lib/jquery/ui/js/mouse.js",
             "./lib/jquery/ui/js/draggable.js",
-            "./lib/jquery/ui/js/tooltip.js"
+            "./lib/jquery/ui/js/tooltip.js",
+            "./lib/jquery/ui/js/focusable.js",
+            "./lib/jquery/ui/js/tabbable.js"
         ],
         "dependencies": [
             "jQuery"

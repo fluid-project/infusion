@@ -326,7 +326,9 @@ module.exports = function (grunt) {
                         "node_modules/jquery-ui/ui/unique-id.js",
                         "node_modules/jquery-ui/ui/widgets/mouse.js",
                         "node_modules/jquery-ui/ui/widgets/draggable.js",
-                        "node_modules/jquery-ui/ui/widgets/tooltip.js"
+                        "node_modules/jquery-ui/ui/widgets/tooltip.js",
+                        "node_modules/jquery-ui/ui/focusable.js",
+                        "node_modules/jquery-ui/ui/tabbable.js"
                     ],
                     dest: "src/lib/jquery/ui/js/",
                     expand: true,
