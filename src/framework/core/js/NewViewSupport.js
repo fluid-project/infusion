@@ -23,51 +23,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /**
-     * A variant of fluid.viewComponent that bypasses the variant creator function signature
-     * workflow, sourcing instead its "container" from an option of that name, so that this argument
-     * can participate in standard ginger resolution. This enables useful results such as a component
-     * which can render its own container into the DOM on startup, whilst the container remains immutable.
-     */
-    fluid.defaults("fluid.newViewComponent", {
-        gradeNames: ["fluid.modelComponent", "fluid.baseViewComponent"],
-        members: {
-            container: "@expand:fluid.container({that}.options.container)"
-        }
-    });
-
-    /**
-     * Used to add an element to a parent container. Internally it can use either of jQuery's prepend or append methods.
-     *
-     * @param {jQuery|DOMElement|Selector} parentContainer - any jQueryable selector representing the parent element to
-     *                                                       inject the `elm` into.
-     * @param {DOMElement|jQuery} elm - a DOM element or jQuery element to be added to the parent.
-     * @param {String} method - (optional) a string representing the method to use to add the `elm` to the
-     *                          `parentContainer`. The method can be "append" (default), "prepend", or "html" (will
-     *                          replace the contents).
-     */
-    fluid.newViewComponent.addToParent = function (parentContainer, elm, method) {
-        if (!parentContainer) {
-            fluid.fail("fluid.containerRenderingView needs to have \"parentContainer\" option supplied");
-        }
-        method = method || "append";
-        $(parentContainer)[method](elm);
-    };
-
-    /**
-     * Similar to fluid.newViewComponent; however, it will render its own markup including its container, into a
+     * A viewComponent which renders its own markup including its container, into a
      * specified parent container.
      */
     fluid.defaults("fluid.containerRenderingView", {
-        gradeNames: ["fluid.newViewComponent"],
-        container: "@expand:{that}.renderContainer()",
+        gradeNames: ["fluid.viewComponent"],
+        members: {
+            container: "@expand:{that}.renderContainer()"
+        },
         // The DOM element which this component should inject its markup into on startup
-        parentContainer: null, // must be overridden
+        parentContainer: "{that}.options.container", // should be overridden
         injectionType: "append",
         invokers: {
             renderMarkup: "fluid.identity({that}.options.markup.container)",
             renderContainer: "fluid.containerRenderingView.renderContainer({that}, {that}.renderMarkup, {that}.addToParent)",
             addToParent: {
-                funcName: "fluid.newViewComponent.addToParent",
+                funcName: "fluid.containerRenderingView.addToParent",
                 args: ["{that}.options.parentContainer", "{arguments}.0", "{that}.options.injectionType"]
             }
         },
@@ -89,6 +60,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
+
+    /**
+     * Used to add an element to a parent container. Internally it can use either of jQuery's prepend or append methods.
+     *
+     * @param {jQuery|DOMElement|Selector} parentContainer - any jQueryable selector representing the parent element to
+     *                                                       inject the `elm` into.
+     * @param {DOMElement|jQuery} elm - a DOM element or jQuery element to be added to the parent.
+     * @param {String} method - (optional) a string representing the method to use to add the `elm` to the
+     *                          `parentContainer`. The method can be "append" (default), "prepend", or "html" (will
+     *                          replace the contents).
+     */
+    fluid.containerRenderingView.addToParent = function (parentContainer, elm, method) {
+        if (!parentContainer) {
+            fluid.fail("fluid.containerRenderingView needs to have \"parentContainer\" or \"container\" option supplied");
+        }
+        method = method || "append";
+        $(parentContainer)[method](elm);
+    };
 
     fluid.registerNamespace("fluid.renderer");
 
@@ -116,7 +105,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Similar to fluid.newViewComponent; however, it will fetch a template and render it into the container.
+     * A fluid.containerRenderingView which fetches a template and renders it into the container.
      *
      * The template path must be supplied either via a top level `template` option or directly to the
      * `resources.template` option. The path may optionally include "terms" to use as tokens which will be resolved
@@ -126,7 +115,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * the `afterRender` event is fired.
      */
     fluid.defaults("fluid.templateRenderingView", {
-        gradeNames: ["fluid.newViewComponent", "fluid.resourceLoader"],
+        gradeNames: ["fluid.viewComponent", "fluid.resourceLoader"],
         resources: {
             template: "fluid.notImplemented"
         },
@@ -144,7 +133,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         invokers: {
             render: {
-                funcName: "fluid.newViewComponent.addToParent",
+                funcName: "fluid.containerRenderingView.addToParent",
                 args: ["{that}.container", "{that}.resources.template.resourceText", "{that}.options.injectionType"]
             }
         },

@@ -99,7 +99,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.defaults("fluid.undo", {
-        gradeNames: ["fluid.baseViewComponent"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             state: fluid.undo.STATE_INITIAL,
             initialModel: {},
@@ -160,6 +160,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     // An uninstantiable grade expressing the contract of the "fluid.undoable" grade
+    // WARNING: Note that the only component which complies with this "corrupt contract" of being a fluid.modelComponent but
+    // having an unrelated means of updating the model is fluid.inlineEdit - it should not be used.
     fluid.defaults("fluid.undoable", {
         gradeNames: ["fluid.modelComponent"],
         invokers: {
@@ -168,11 +170,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         events: {
             modelChanged: null
         }
-    });
-
-    // Backward compatibility for users of Infusion 1.4.x API
-    fluid.defaults("fluid.undoDecorator", {
-        gradeNames: ["fluid.undo"]
     });
 
 })(jQuery, fluid_3_0_0);

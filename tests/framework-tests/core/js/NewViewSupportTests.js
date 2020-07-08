@@ -23,14 +23,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testNewViewSupport = function () {
 
         fluid.defaults("fluid.tests.newViewComponent", {
-            gradeNames: ["fluid.newViewComponent"],
+            gradeNames: ["fluid.viewComponent"],
             container: ".flc-newViewSupport-container",
             selectors: {
                 elm: ".flc-newViewSupport-elm"
             }
         });
 
-        jqUnit.test("Init fluid.newViewComponent", function () {
+        jqUnit.test("Init fluid.viewComponent", function () {
             jqUnit.expect(3);
             var that = fluid.tests.newViewComponent();
 
@@ -39,7 +39,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDomEquals("The dom binder should be able to locate the correct elements.", $(".flc-newViewSupport-elm"), that.locate("elm"));
         });
 
-        fluid.tests.newViewComponent.addToParentCases = [{
+        fluid.registerNamespace("fluid.tests.containerRenderingView");
+
+        fluid.tests.containerRenderingView.addToParentCases = [{
             elm: $("<li>first</li>"),
             method: "prepend"
         }, {
@@ -49,11 +51,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             elm: $("<li>last</li>")
         }];
 
-        jqUnit.test("fluid.newViewComponent.addToParent", function () {
+        jqUnit.test("fluid.containerRenderingView.addToParent", function () {
             var parent = $(".flc-newViewSupport-addToParent");
 
-            fluid.each(fluid.tests.newViewComponent.addToParentCases, function (testCase) {
-                fluid.newViewComponent.addToParent(parent, testCase.elm, testCase.method);
+            fluid.each(fluid.tests.containerRenderingView.addToParentCases, function (testCase) {
+                fluid.containerRenderingView.addToParent(parent, testCase.elm, testCase.method);
             });
 
             var children = parent.children();
@@ -62,10 +64,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The element added without a method should be last", "last", children.eq(3).text());
         });
 
-        jqUnit.test("fluid.newViewComponent.addToParent replace content", function () {
+        jqUnit.test("fluid.containerRenderingView.addToParent replace content", function () {
             var parent = $(".flc-newViewSupport-addToParent-replace");
 
-            fluid.newViewComponent.addToParent(parent, "<li>new</li>", "html");
+            fluid.containerRenderingView.addToParent(parent, "<li>new</li>", "html");
 
             var children = parent.children();
             jqUnit.assertEquals("There should only be one child element", 1, children.length);
@@ -91,7 +93,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.defaults("fluid.tests.templateRenderingView", {
             gradeNames: ["fluid.templateRenderingView"],
-            container: ".flc-newViewSupport-templateContainer",
             template: "../data/testTemplate1.html"
         });
 
@@ -105,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Init fluid.templateRenderingView", function () {
             jqUnit.expect(3);
-            fluid.tests.templateRenderingView({
+            fluid.tests.templateRenderingView(".flc-newViewSupport-templateContainer", {
                 listeners: {
                     "afterRender.test": {
                         listener: "fluid.tests.templateRenderingView.verifyInit",

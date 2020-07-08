@@ -30,8 +30,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // A "proto-viewComponent" which simply defines a DOM binder and is agnostic as to how its container is defined
+    // Temporary factoring artefact which will most likely go away/be improved once new renderer has stabilised
     fluid.defaults("fluid.baseViewComponent", {
         gradeNames: "fluid.component",
+        argumentMap: {
+            container: 0,
+            options: 1
+        },
         invokers: {
             locate: { // We use this peculiar form of definition since the current implementation of makeInvoker can't
                       // cope with a variable function, and the DOM binder instance is historically mutable
@@ -54,10 +59,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.viewComponent", {
         gradeNames: ["fluid.modelComponent", "fluid.baseViewComponent"],
-        argumentMap: {
-            container: 0,
-            options: 1
-        },
         members: {
             container: "@expand:fluid.containerForViewComponent({that}, {that}.options.container)"
         }

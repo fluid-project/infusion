@@ -708,6 +708,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit", {
+        // WARNING: fluid.inlineEdit, via fluid.undoable, inherits from fluid.modelComponent but it does not use the ChangeApplier to
+        // update its model. This will lead to corruption if it participates in any model relays and will not be supported in future
+        // Infusion releases.
         gradeNames: ["fluid.undoable", "fluid.viewComponent"],
         mergePolicy: {
             "strings.defaultViewText": "defaultViewText"
