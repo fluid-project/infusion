@@ -859,7 +859,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
                 args: ["{that}"]
             },
-            "onSelectionChanged.updateSelection": "{that}.getSelection",
+            "onSelectionChanged.updateSelection": "{that}.setTextFromSelection",
             "onStop.stop": {
                 changePath: "play",
                 value: false,
@@ -893,8 +893,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-            getSelection: {
-                funcName: "fluid.orator.selectionReader.getSelection",
+            setTextFromSelection: {
+                funcName: "fluid.orator.selectionReader.setTextFromSelection",
                 args: ["{that}", "{that}.isWord"]
             },
             play: {
@@ -941,7 +941,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.orator.selectionReader.updateText = function (that, state) {
         if (state) {
-            that.getSelection();
+            that.setTextFromSelection();
         } else {
             that.applier.change("text", "", "ADD", "updateText");
         }
@@ -956,11 +956,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                              if it should be accepted and `false` if rejected. If the filter rejects, an empty
      *                              string `""` is used as the selection.
      */
-    fluid.orator.selectionReader.getSelection = function (that, filter) {
+    fluid.orator.selectionReader.setTextFromSelection = function (that, filter) {
         that.selection = window.getSelection();
         var selectedText = that.selection.toString();
         selectedText = !filter || filter(selectedText) ? selectedText : "";
-        that.applier.change("text", selectedText, "ADD", "getSelection");
+        that.applier.change("text", selectedText, "ADD", "setTextFromSelection");
     };
 
     /**
