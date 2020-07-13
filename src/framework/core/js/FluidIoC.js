@@ -11,6 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
+/* global Symbol, Proxy */
+
 var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
@@ -1958,7 +1960,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.fetchInjectedComponentReference = function (transRec, potentiaList, injected, parentThat) {
         var instantiator = fluid.globalInstantiator;
         if (injected.expander) {
-            return fluid.expandImmediate(injected, parentThat);
+            return fluid.expandImmediate(injected, parentThat, null, true);
         } else {
             var parsed = fluid.parseContextReference(injected);
             var head = fluid.resolveContext(parsed.context, parentThat);
@@ -3285,8 +3287,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Main pathway for freestanding material that is not part of a component's options. As well as being rather more
     // rapid, this pathway does not clone containers from "source" to "target"
-    fluid.expandImmediate = function (source, that, localRecord) {
+    fluid.expandImmediate = function (source, that, localRecord, noproxy) {
         var options = fluid.makeStackResolverOptions(that, localRecord, true); // TODO: ELstyle and target are now ignored
+        options.noproxy = !!noproxy;
         var root = fluid.preExpand(source);
         fluid.expandImmediateImpl(root, options);
         return root.source;
@@ -3306,6 +3309,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("Unknown expander with type " + source.expander.type);
         }
         return expander(deliverer, source, options);
+    };
+
+    fluid.proxyComponentHandler = function (target, prop) {
+        // Use "Symbol.toStringTag" to make sure that tricks like fluid.isArrayable work on the target
+        return prop === Symbol.toStringTag ? Object.prototype.toString.call(target) :
+            prop in target ? target[prop] : fluid.getForComponent(target, prop);
+    };
+
+    fluid.proxyComponent = function (component) {
+        var shadow = fluid.shadowForComponent(component);
+        if (!shadow.proxy) {
+            shadow.proxy = new Proxy(component, {
+                get: fluid.proxyComponentHandler
+            });
+        }
+        return shadow.proxy;
+    };
+
+    fluid.proxyComponentArgs = function (args) {
+        args.forEach(function (arg, i) {
+            if (fluid.isComponent(arg) && arg.lifecycleStatus !== "treeConstructed") {
+                args[i] = fluid.proxyComponent(arg);
+            }
+        });
     };
 
     fluid.registerNamespace("fluid.expander");
@@ -3336,6 +3363,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (root === undefined && !inLocal) { // last-ditch attempt to get exotic EL value from component
                 root = fluid.getForComponent(component, segs);
             }
+            if (!fast && !options.noproxy && fluid.isComponent(root)) {
+                return fluid.proxyComponent(root);
+            }
             return root;
         } else if (segs.length > 0) {
             fluid.triggerMismatchedPathError(source.expander, options.contextThat);
@@ -3356,8 +3386,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (options.recurse) { // only available in the path from fluid.expandOptions - this will be abolished in the end
             args = options.recurse([], args);
         } else {
-            expander = fluid.expandImmediate(expander, options.contextThat, options.localRecord);
+            // TODO: The fact that we pass through the noproxy argument suggests that arguments to expanders are getting double-expanded
+            expander = fluid.expandImmediate(expander, options.contextThat, options.localRecord, expander.noproxy);
             args = expander.args;
+        }
+        if (!expander.noproxy) {
+            fluid.proxyComponentArgs(args);
         }
         var funcEntry = expander[whichFuncEntry];
         var func = (options.expandSource ? options.expandSource(funcEntry) : funcEntry) || fluid.recordToApplicable(expander, options.contextThat);

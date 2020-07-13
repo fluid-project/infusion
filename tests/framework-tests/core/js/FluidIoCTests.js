@@ -4485,6 +4485,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model6, 7);
     });
 
+    /** FLUID-6372 - Proxies to gear component access during construction **/
+
+    fluid.defaults("fluid.tests.fluid6372root", {
+        gradeNames: "fluid.component",
+        earlyExpander: "@expand:fluid.tests.fluid6372invoke({that})",
+        invokers: {
+            lateInvoker: "fluid.tests.fluid6372invokeLate({that})",
+            laterInvoker: "fluid.identity(42)"
+        }
+    });
+
+    fluid.tests.fluid6372invokeLate = function (that) {
+        return that.laterInvoker();
+    };
+
+    fluid.tests.fluid6372invoke = function (that) {
+        return that.lateInvoker();
+    };
+
+    jqUnit.test("FLUID-6372: Access to component material via proxies", function () {
+        var that = fluid.tests.fluid6372root();
+        jqUnit.assertEquals("Expander gained access to invoker through blind component reference", 42, that.options.earlyExpander);
+    });
+
     /** FLUID-6414 - Dynamic grades via expanders **/
 // Also tests FLUID-6415 corruption in graph structure
     fluid.defaults("fluid.tests.fluid6414root", {

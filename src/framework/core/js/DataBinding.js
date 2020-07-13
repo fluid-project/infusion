@@ -1325,9 +1325,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         members: {
-            model: "@expand:fluid.initRelayModel({that}, {that}.modelRelay)",
-            applier: "@expand:fluid.makeHolderChangeApplier({that}, {that}.options.changeApplierOptions)",
-            modelRelay: "@expand:fluid.establishModelRelay({that}, {that}.options.model, {that}.options.modelListeners, {that}.options.modelRelay, {that}.applier)"
+            model: {
+                expander: {
+                    funcName: "fluid.initRelayModel",
+                    args: ["{that}", "{that}.modelRelay"],
+                    noproxy: true
+                }
+            },
+            applier: {
+                expander: {
+                    funcName: "fluid.makeHolderChangeApplier",
+                    args: ["{that}", "{that}.options.changeApplierOptions"],
+                    noproxy: true
+                }
+            },
+            modelRelay: {
+                expander: {
+                    funcName: "fluid.establishModelRelay",
+                    args: ["{that}", "{that}.options.model", "{that}.options.modelListeners", "{that}.options.modelRelay", "{that}.applier"],
+                    noproxy: true
+                }
+            }
         },
         mergePolicy: {
             model: {
