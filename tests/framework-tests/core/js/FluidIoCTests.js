@@ -4469,20 +4469,57 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.tests.fluid6390mirrorTest = function (model, levels) {
+    fluid.tests.fluid6390mirrorAssert = function (levelsComponent, model, levelsCount) {
+        var headings = [levelsComponent].concat(fluid.queryIoCSelector(levelsComponent, "fluid6390heading"));
+        jqUnit.assertEquals("Correct number of headings constructed", levelsCount, headings.length);
+        var expectedModels = fluid.tests.fluid6390defaultModels(model, levelsCount);
+        var models = fluid.getMembers(headings, "model");
+        jqUnit.assertDeepEq("Nested models should be correct", expectedModels, models);
+    };
+
+    fluid.tests.fluid6390mirrorTest = function (model, levelsCount) {
         var that = fluid.tests.fluid6390levels({
             model: model
         });
-        var headings = [that].concat(fluid.queryIoCSelector(that, "fluid6390heading"));
-        jqUnit.assertEquals("Correct number of headings constructed", levels, headings.length);
-        var expectedModels = fluid.tests.fluid6390defaultModels(model, levels);
-        var models = fluid.getMembers(headings, "model");
-        jqUnit.assertDeepEq("Nested models should be correct", expectedModels, models);
+        fluid.tests.fluid6390mirrorAssert(that, model, levelsCount);
     };
 
     jqUnit.test("FLUID-6390: Hall of mirrors lensed components", function () {
         fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model2, 3);
         fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model6, 7);
+    });
+
+    /** FLUID-6390 - Hall of mirrors via resource and relay **/
+
+    fluid.defaults("fluid.tests.fluid6390resource", {
+        gradeNames: "fluid.resourceLoader",
+        resources: {
+            headingsSource: {
+                promiseFunc: "fluid.identity",
+                promiseArgs: "{that}.options.headingsModel"
+            }
+        },
+        model: "{that}.resources.headingsSource.parsed",
+        components: {
+            levels: {
+                type: "fluid.tests.fluid6390levels",
+                options: {
+                    model: "{fluid6390resource}.model"
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390mirrorTestII = function (model, levelsCount) {
+        var that = fluid.tests.fluid6390resource({
+            headingsModel: model
+        });
+        fluid.tests.fluid6390mirrorAssert(that.levels, model, levelsCount);
+    };
+
+    jqUnit.test("FLUID-6390 II : Hall of mirrors lensed components via resource and relay", function () {
+        fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model2, 3);
+        fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model6, 7);
     });
 
     /** FLUID-6372 - Proxies to gear component access during construction **/

@@ -1380,7 +1380,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return recordKey + (sourceKey === 0 ? "" : "-" + sourceKey); // TODO: configurable name strategies
     };
 
-    fluid.concludeAnyTransaction = function () {
+    /** Conclude any tree transaction which is currently in progress. A "catch-all" that is currently operated in the following two situations:
+     * - At the end of any model transaction, to conclude the construction/destruction of any components brought in or out of existence through lensing from the model
+     * - At the end (namespace "fluid-componentConstruction") of any event firing, to conclude construction of any createOnEvent components designated through the event
+     */
+    fluid.concludeAnyTreeTransaction = function () {
         var instantiator = fluid.globalInstantiator;
         var transactionId = instantiator.currentTreeTransactionId;
         if (transactionId) {
@@ -1422,8 +1426,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         event.addListener(constructListener);
         fluid.recordListener(event, constructListener, shadow);
-        event.addListener(fluid.concludeAnyTransaction, "fluid-componentConstruction", "last:transaction");
-        fluid.recordListener(event, fluid.concludeAnyTransaction, shadow);
+        event.addListener(fluid.concludeAnyTreeTransaction, "fluid-componentConstruction", "last:transaction");
+        fluid.recordListener(event, fluid.concludeAnyTreeTransaction, shadow);
     };
 
     fluid.markSubtree = function (instantiator, that, path, state) {

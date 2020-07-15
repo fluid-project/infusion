@@ -659,7 +659,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Promise} The result of invoking `promiseFunc` with `promiseArgs`
      */
     fluid.resourceLoader.loaders.promiseFunc = function (resourceSpec) {
-        return resourceSpec.promiseFunc.apply(null, fluid.makeArray(resourceSpec.promiseArgs));
+        var promiseFunc = fluid.event.resolveListener(resourceSpec.promiseFunc);
+        return promiseFunc.apply(null, fluid.makeArray(resourceSpec.promiseArgs));
     };
 
     fluid.resourceLoader.loaders.promiseFunc.noPath = true;
@@ -825,8 +826,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }, userResourceOptions);
         var fetcher = fluid.makeResourceFetcher(resourceSpecs, null, resourceOptions, transformResourceURL);
         fluid.each(fetcher.resourceSpecs, function (resourceSpec, key) {
-            resourceSpec.transformEvent.addListener(function () {
+            resourceSpec.transformEvent.addListener(function (parsed) {
                 that.resources[key] = resourceSpec;
+                return parsed;
             }, "noteComponentResource", "after:parsed");
             resourceSpec.onError.addListener(that.events.onResourceError.fire);
         });

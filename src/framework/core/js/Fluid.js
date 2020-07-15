@@ -1304,6 +1304,8 @@ var fluid = fluid || fluid_3_0_0;
         return obj[fnName].apply(obj, fluid.makeArray(args));
     };
 
+    // Stub for function in FluidIoC.js
+    fluid.proxyComponentArgs = fluid.identity;
     /**
      * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
      * @param {Object} functionPath - An EL expression
@@ -1316,7 +1318,9 @@ var fluid = fluid || fluid_3_0_0;
         if (!func) {
             fluid.fail("Error invoking global function: " + functionPath + " could not be located");
         } else {
-            return func.apply(null, fluid.isArrayable(args) ? args : fluid.makeArray(args));
+            var argsArray = fluid.isArrayable(args) ? args : fluid.makeArray(args);
+            fluid.proxyComponentArgs(argsArray);
+            return func.apply(null, argsArray);
         }
     };
 
