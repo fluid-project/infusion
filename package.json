@@ -31,7 +31,8 @@
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html",
         "buildDists": "grunt buildDists",
         "buildStylus": "grunt buildStylus",
-        "loadDependencies": "grunt loadDependencies"
+        "loadDependencies": "grunt loadDependencies",
+        "lint": "grunt lint"
     },
     "engines": {
         "node": ">=0.10.0"
