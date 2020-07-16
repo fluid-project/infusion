@@ -21,23 +21,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.registerNamespace("fluid.tests.textNodeParser");
 
         /****************************************************************
-         * fluid.textNodeParser.isWord Tests
+         * fluid.textNodeParser.hasGlyph Tests
          ****************************************************************/
 
-        fluid.tests.textNodeParser.isWordTestCases = {
+        fluid.tests.textNodeParser.hasGlyphTestCases = {
             "trueCase": ["a", "hello", "test string"],
             "falseCase": ["", " ", "\t", "\n", undefined, null]
         };
 
-        jqUnit.test("Test fluid.textNodeParser.isWord", function () {
+        jqUnit.test("Test fluid.textNodeParser.hasGlyph", function () {
             // test trueCase
-            fluid.each(fluid.tests.textNodeParser.isWordTestCases.trueCase, function (str) {
-                jqUnit.assertTrue("\"" + str + "\" is considered a word.", fluid.textNodeParser.isWord(str));
+            fluid.each(fluid.tests.textNodeParser.hasGlyphTestCases.trueCase, function (str) {
+                jqUnit.assertTrue("\"" + str + "\" is considered a word.", fluid.textNodeParser.hasGlyph(str));
             });
 
             // test falseCase
-            fluid.each(fluid.tests.textNodeParser.isWordTestCases.falseCase, function (str) {
-                jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.textNodeParser.isWord(str));
+            fluid.each(fluid.tests.textNodeParser.hasGlyphTestCases.falseCase, function (str) {
+                jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.textNodeParser.hasGlyph(str));
             });
         });
 

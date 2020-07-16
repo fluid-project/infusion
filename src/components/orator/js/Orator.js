@@ -347,7 +347,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.domReader.queueSpeech",
                 args: ["{that}", "{arguments}.0", "{arguments}.1"]
             },
-            isWord: "fluid.textNodeParser.isWord"
+            isWord: "fluid.textNodeParser.hasGlyph"
         },
         modelListeners: {
             "parseIndex": {
@@ -895,7 +895,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
             setTextFromSelection: {
                 funcName: "fluid.orator.selectionReader.setTextFromSelection",
-                args: ["{that}", "{that}.isWord"]
+                args: ["{that}", "{that}.selectionFilter"]
             },
             play: {
                 changePath: "play",
@@ -910,7 +910,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.togglePlay",
                 args: ["{that}", "{arguments}.0"]
             },
-            isWord: "fluid.textNodeParser.isWord"
+            selectionFilter: "fluid.textNodeParser.hasGlyph"
         }
     });
 
