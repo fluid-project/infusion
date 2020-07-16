@@ -347,7 +347,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.domReader.queueSpeech",
                 args: ["{that}", "{arguments}.0", "{arguments}.1"]
             },
-            isWord: "fluid.textNodeParser.isWord"
+            isWord: "fluid.textNodeParser.hasGlyph"
         },
         modelListeners: {
             "parseIndex": {
@@ -859,7 +859,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
                 args: ["{that}"]
             },
-            "onSelectionChanged.updateSelection": "{that}.getSelection",
+            "onSelectionChanged.updateSelection": "{that}.setTextFromSelection",
             "onStop.stop": {
                 changePath: "play",
                 value: false,
@@ -893,9 +893,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-            getSelection: {
-                funcName: "fluid.orator.selectionReader.getSelection",
-                args: ["{that}"]
+            setTextFromSelection: {
+                funcName: "fluid.orator.selectionReader.setTextFromSelection",
+                args: ["{that}", "{that}.selectionFilter"]
             },
             play: {
                 changePath: "play",
@@ -909,7 +909,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             toggle: {
                 funcName: "fluid.orator.selectionReader.togglePlay",
                 args: ["{that}", "{arguments}.0"]
-            }
+            },
+            selectionFilter: "fluid.textNodeParser.hasGlyph"
         }
     });
 
@@ -940,30 +941,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.orator.selectionReader.updateText = function (that, state) {
         if (state) {
-            that.getSelection();
+            that.setTextFromSelection();
         } else {
             that.applier.change("text", "", "ADD", "updateText");
         }
     };
 
     /**
-     * Retrieves the text from the current selection
-     *
-     * @return {String} - the text from the current selection
-     */
-    fluid.orator.selectionReader.getSelectedText = function () {
-        var selection = window.getSelection();
-        return selection.toString();
-    };
-
-    /**
-     * Retrieves the text from the current selection
+     * Retrieves the text from the current selection. If a filter is provided and the string does not pass the filter
+     * check, an empty string `""` is used as the selection.
      *
      * @param {fluid.orator.selectionReader} that - an instance of the component
+     * @param {Function} [filter] - (optional) a function that takes the selection string as an input and returns `true`
+     *                              if it should be accepted and `false` if rejected. If the filter rejects, an empty
+     *                              string `""` is used as the selection.
      */
-    fluid.orator.selectionReader.getSelection = function (that) {
+    fluid.orator.selectionReader.setTextFromSelection = function (that, filter) {
         that.selection = window.getSelection();
-        that.applier.change("text", that.selection.toString(), "ADD", "getSelection");
+        var selectedText = that.selection.toString();
+        selectedText = !filter || filter(selectedText) ? selectedText : "";
+        that.applier.change("text", selectedText, "ADD", "setTextFromSelection");
     };
 
     /**

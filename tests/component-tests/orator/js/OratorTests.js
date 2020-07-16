@@ -846,17 +846,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    jqUnit.test("Test fluid.orator.selectionReader.getSelectedText", function () {
-        var elm = $(".flc-orator-selectionReader-test-selection");
-        fluid.tests.orator.selection.selectNode(elm);
-
-        var selectedText = fluid.orator.selectionReader.getSelectedText();
-        jqUnit.assertEquals("The correct text should be selected", elm.text(), selectedText);
-
-        // selection cleanup
-        fluid.tests.orator.selection.collapse();
-    });
-
     fluid.tests.orator.selectionReader.mockRange = {
         getClientRects: function () {
             return [{
@@ -1021,7 +1010,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selector: ".flc-orator-selectionReader-test",
         options: {},
         expected: [{
-            text: "\n            Selection Test\n            Other Text\n            Change ",
+            text: "\n            Selection Test\n            \n            Other Text\n            Change ",
             options: {lang: "en"}
         }, {
             text: "Language",
@@ -1034,7 +1023,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         name: "Selected parent element - undefined options",
         selector: ".flc-orator-selectionReader-test",
         expected: [{
-            text: "\n            Selection Test\n            Other Text\n            Change ",
+            text: "\n            Selection Test\n            \n            Other Text\n            Change ",
             options: {lang: "en"}
         }, {
             text: "Language",
@@ -1204,7 +1193,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         selectors: {
             text: ".flc-orator-selectionReader-test-selection",
-            otherText: ".flc-orator-selectionReader-test-selectionTwo"
+            otherText: ".flc-orator-selectionReader-test-selectionTwo",
+            whitespaceText: ".flc-orator-selectionReader-test-selectionWhitespace"
         }
     });
 
@@ -1229,6 +1219,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOpts: {
             expected: {
                 noSelection: {
+                    play: false,
+                    text: "",
+                    enabled: true
+                },
+                whitespaceSelection: {
                     play: false,
                     text: "",
                     enabled: true
@@ -1309,11 +1304,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
-                    // Collapse selection
-                    func: "fluid.tests.orator.selection.collapse"
+                    // Whitespace selection (NOTE: this will clear the selection and set the model.text path back to "")
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selectionReader}.dom.whitespaceText"]
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
-                    args: ["{selectionReader}", "Selection Collapsed", "{that}.options.testOpts.expected.noSelection"],
+                    args: ["{selectionReader}", "Whitespace Selection", "{that}.options.testOpts.expected.whitespaceSelection"],
                     spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
                 }, {
