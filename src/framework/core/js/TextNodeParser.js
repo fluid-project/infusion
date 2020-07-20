@@ -34,20 +34,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{that}.events.afterParse.fire"]
             },
             hasTextToRead: "fluid.textNodeParser.hasTextToRead",
-            isWord: "fluid.textNodeParser.isWord",
             getLang: "fluid.textNodeParser.getLang"
         }
     });
 
     /**
-     * Tests if a string is a word; i.e. it has a value and is not only whitespace.
+     * Checks if a string contains non-whitespace characters.
      * inspired by https://stackoverflow.com/a/2031143
      *
      * @param {String} str - the String to test
      *
      * @return {Boolean} - `true` if a word, `false` otherwise.
      */
-    fluid.textNodeParser.isWord = function (str) {
+    fluid.textNodeParser.hasGlyph = function (str) {
         return fluid.isValue(str) && /\S/.test(str);
     };
 
@@ -75,7 +74,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         return elm &&
                (elm.tagName.toLowerCase() === "body" || elm.offsetParent) &&
-               fluid.textNodeParser.isWord(elm.innerText) &&
+               fluid.textNodeParser.hasGlyph(elm.innerText) &&
                (acceptAriaHidden || !$(elm).closest("[aria-hidden=\"true\"]").length);
     };
 
