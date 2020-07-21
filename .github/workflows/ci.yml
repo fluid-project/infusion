@@ -66,7 +66,7 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         file: ./reports/lcov.info
-        flags: unittests
+        flags: unit-tests
 
     - name: Coveralls Coverage Report
       env:
