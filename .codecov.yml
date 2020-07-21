@@ -1,8 +1,9 @@
 coverage:
-  project:
-    default:
-      target: 90%
-      threshold: 2%
+  status:
+    project:
+      default:
+        target: 90%
+        threshold: 2%
 
 comment:
   layout: "diff,flags,tree"
