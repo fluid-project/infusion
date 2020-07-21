@@ -62,6 +62,12 @@ jobs:
     - name: Code coverage
       run: npm run posttest
 
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./reports/lcov.info
+        flags: unittests
+
     - name: Coveralls Coverage Report
       env:
         # workaround to set flag name as it is not properly added to the inputs.
