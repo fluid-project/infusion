@@ -7,3 +7,7 @@ coverage:
 comment:
   layout: "diff,flags,tree"
   after_n_builds: 6
+
+parsers:
+  javascript:
+    enable_partials: yes
