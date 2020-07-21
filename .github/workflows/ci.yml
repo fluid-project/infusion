@@ -67,24 +67,3 @@ jobs:
       with:
         file: ./reports/lcov.info
         flags: unit-tests
-
-    - name: Coveralls Coverage Report
-      env:
-        # workaround to set flag name as it is not properly added to the inputs.
-        # see: https://github.com/coverallsapp/github-action/issues/50
-        COVERALLS_FLAG_NAME: run-${{ matrix.os }}-node_${{ matrix.node-version }}
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        path-to-lcov: "./reports/lcov.info"
-        parallel: true
-
-  finish:
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
