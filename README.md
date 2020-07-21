@@ -2,6 +2,7 @@
 
 ![CI build status badge](https://github.com/fluid-project/infusion/workflows/CI/badge.svg)
 [![Coverage status badge](https://coveralls.io/repos/github/fluid-project/infusion/badge.svg?branch=master)](https://coveralls.io/github/fluid-project/infusion?branch=master)
+[![Coverage status badge](https://codecov.io/github/fluid-project/infusion/coverage.svg?branch=master)](https://codecov.io/github/fluid-project/infusion?branch=master)
 
 ## What Is Infusion?
 
