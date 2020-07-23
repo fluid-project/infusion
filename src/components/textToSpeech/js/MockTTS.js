@@ -25,6 +25,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Web Speech API. This will allow for tests to run in browsers
     // that don't support the Web Speech API.
     fluid.defaults("fluid.mock.textToSpeech", {
+        model: {
+            throwError: false
+        },
         members: {
             // An archive of all the calls to queueSpeech.
             // Will contain an ordered set of objects -- {text: String, options: Object}.
@@ -81,8 +84,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         distributeOptions: {
-            record: "fluid.mock.textToSpeech.utterance",
-            target: "{that fluid.textToSpeech.utterance}.options.gradeNames",
+            record: {
+                gradeNames: "fluid.mock.textToSpeech.utterance",
+                model: {
+                    throwError: "{fluid.mock.textToSpeech}.model.throwError"
+                }
+            },
+            target: "{that fluid.textToSpeech.utterance}.options",
             namespace: "utteranceMock"
         }
     });
@@ -179,13 +187,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.mock.textToSpeech.utterance.speakUtterance = function (that, resume) {
-        that.dispatchEvent(resume ? "resume" : "start");
-
-        if (that.options.synchronous) {
-            that.utteranceEnd();
+        if (that.model.throwError) {
+            that.dispatchEvent("error");
         } else {
-            setTimeout(that.utteranceEnd, that.utterance.text.length);
+            that.dispatchEvent(resume ? "resume" : "start");
+
+            if (that.options.synchronous) {
+                that.utteranceEnd();
+            } else {
+                setTimeout(that.utteranceEnd, that.utterance.text.length);
+            }
         }
+
     };
 
 })();
