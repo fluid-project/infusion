@@ -574,7 +574,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 51,
+                expect: 57,
                 name: "DOM Reading",
                 sequence: [{
                     // Play sequence
@@ -695,6 +695,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
                     args: ["Replayed Self Voicing completed", "{domReader}"]
+                }, {
+                    // utterance threw an error
+                    // clear speechRecord
+                    funcName: "fluid.set",
+                    args: ["{tts}", "speechRecord", []]
+                }, {
+                    func: "{tts}.applier.change",
+                    args: ["throwError", true]
+                }, {
+                    func: "{domReader}.play"
+                }, {
+                    listener: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
+                    args: ["Self Voicing terminated by utterance error", "{domReader}"],
+                    spec: {priority: "last:testing"},
+                    event: "{domReader}.events.onError"
+                }, {
+                    func: "{tts}.applier.change",
+                    args: ["throwError", false]
                 }, {
                     // pause when stopped
                     funcName: "fluid.tests.orator.addStub",
@@ -1253,7 +1271,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.selectionReader",
             tests: [{
-                expect: 36,
+                expect: 40,
                 name: "Selection Reader work flow",
                 sequence: [{
                     listener: "fluid.tests.orator.verifySelectionState",
@@ -1285,6 +1303,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{selectionReader}", "Stop", "{that}.options.testOpts.expected.textSelected"],
                     spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // utterance threw an error while playing
+                    func: "{tts}.applier.change",
+                    args: ["throwError", true]
+                }, {
+                    func: "{selectionReader}.play"
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Error", "{that}.options.testOpts.expected.textSelected"],
+                    spec: {priority: "last:testing"},
+                    event: "{selectionReader}.events.onError"
+                }, {
+                    func: "{tts}.applier.change",
+                    args: ["throwError", false]
                 }, {
                     // click play
                     jQueryTrigger: "click",

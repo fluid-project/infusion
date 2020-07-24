@@ -109,6 +109,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             listener: "{textToSpeech}.events.utteranceOnError.fire",
                             priority: "before:rejectPromise"
                         },
+                        "onError.destroy": {
+                            listener: "{that}.destroy",
+                            priority: "after:rejectPromise"
+                        },
                         "onMark.relay": "{textToSpeech}.events.utteranceOnMark.fire",
                         "onPause.relay": "{textToSpeech}.events.utteranceOnPause.fire",
                         "onResume.relay": "{textToSpeech}.events.utteranceOnResume.fire",
@@ -207,6 +211,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "utteranceOnStart"
             },
             "utteranceOnEnd.stop": {
+                funcName: "fluid.textToSpeech.handleEnd",
+                args: ["{that}"]
+            },
+            "onError.stop": {
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]
             },
