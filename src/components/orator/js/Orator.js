@@ -264,7 +264,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             utteranceOnPause: null,
             utteranceOnResume: null,
             utteranceOnStart: null,
-            onStop: null
+            onStop: null,
+            onError: null
         },
         utteranceEventMap: {
             onboundary: "utteranceOnBoundary",
@@ -361,6 +362,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{arguments}.0", "{arguments}.1.interrupt", "{arguments}.1"],
                 priority: "after:removeExtraWhiteSpace"
             },
+            "onError.stop": "{that}.events.onStop",
             "onStop.resetParseQueue": {
                 listener: "{that}.resetParseQueue"
             },
@@ -674,7 +676,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 return that.queueSpeech(text, {lang: parsedBlock[0].lang, interrupt: interrupt});
             });
 
-            fluid.promise.sequence(queueSpeechPromises).then(that.events.onStop.fire);
+            fluid.promise.sequence(queueSpeechPromises).then(that.events.onStop.fire, that.events.onError.fire);
         }
     };
 
@@ -844,6 +846,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             text: ""
         },
         events: {
+            onError: null,
             onSelectionChanged: null,
             onStop: null,
             onToggleControl: null
@@ -863,6 +866,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 changePath: "play",
                 value: false,
                 source: "stopMethod"
+            },
+            "onError.stop": {
+                changePath: "play",
+                value: false,
+                source: "onError"
             },
             "onToggleControl.togglePlay": "{that}.toggle"
         },
@@ -926,7 +934,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var parsed = fluid.orator.selectionReader.parseRange(that.selection.getRangeAt(0), that.parser.parse);
             var speechPromise = speechFn(parsed, true);
 
-            speechPromise.then(that.events.onStop.fire);
+            speechPromise.then(that.events.onStop.fire, that.events.onError.fire);
         }
     };
 

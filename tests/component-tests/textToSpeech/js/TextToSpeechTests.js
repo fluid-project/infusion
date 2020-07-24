@@ -205,6 +205,54 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.textToSpeech.ttsErrorTestEnvironment", {
+        gradeNames: "fluid.test.testEnvironment",
+        components: {
+            tts: {
+                type: "fluid.tests.textToSpeech",
+                createOnEvent: "{ttsTester}.events.onTestCaseStart"
+            },
+            ttsTester: {
+                type: "fluid.tests.textToSpeech.ttsTesterError"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.ttsTesterError", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.textToSpeech",
+            tests: [{
+                expect: 6,
+                name: "Test onError Event",
+                sequence: [{
+                    func: "{tts}.queueSpeech",
+                    args: "Testing error events"
+                }, {
+                    // Pausing as we are just simulating the error event.
+                    // Need to wait for the onStart event or {tts}.pause can be called
+                    // before the speech event has actually started,
+                    // which messes up the sequencing
+                    listener: "{tts}.pause",
+                    event: "{tts}.events.onStart"
+                }, {
+                    // Simulates the error event triggered from the utterance
+                    func: "fluid.tests.textToSpeech.utteranceTester.dispatchEvent",
+                    args: ["{tts}.utterance.utterance", "error"]
+                }, {
+                    listener: "fluid.tests.textToSpeech.testStop",
+                    args: ["{tts}", "onError"],
+                    event: "{tts}.events.onError"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testUtteranceDetached",
+                    args: ["The utterance should not be attached", "{tts}"],
+                    priority: "last:testing",
+                    event: "{tts}.utterance.events.afterDestroy"
+                }]
+            }]
+        }]
+    });
+
     fluid.tests.textToSpeech.testInitialization = function (tts) {
         jqUnit.assertTrue("The Text to Speech component should have initialized", tts);
         jqUnit.assertFalse("Nothing should be speaking", tts.model.speaking);
@@ -224,8 +272,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     };
 
-    fluid.tests.textToSpeech.testStop = function (tts) {
-        jqUnit.assert("The onStop event should have fired");
+    fluid.tests.textToSpeech.testStop = function (tts, eventTrigger) {
+        eventTrigger = eventTrigger || "onStop";
+        jqUnit.assert("The " + eventTrigger + " event should have fired");
         jqUnit.assertFalse("Should not be speaking", tts.model.speaking);
         jqUnit.assertFalse("Nothing should be pending", tts.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", tts.model.paused);
@@ -258,7 +307,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.textToSpeech.supportsPauseResumeTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests",
          fluid.tests.checkTTSSupport,
-          fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment,
+          function () {
+              fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment();
+              fluid.tests.textToSpeech.ttsErrorTestEnvironment();
+          },
            fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS pause/resume", "Browser does not appear to support TTS pause/resume");
     };
 
