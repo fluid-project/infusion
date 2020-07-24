@@ -705,7 +705,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{tts}.applier.change",
                     args: ["throwError", true]
                 }, {
-                    func: "{domReader}.play"
+                    func: "{domReader}.events.play.fire"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyEmptyParseQueueState",
                     args: ["Self Voicing terminated by utterance error", "{domReader}"],

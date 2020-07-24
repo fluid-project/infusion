@@ -48,11 +48,12 @@ var fluid = fluid || fluid_3_0_0;
         window : typeof self !== "undefined" ? self : {};
 
     // A standard utility to schedule the invocation of a function after the current
-    // stack returns. On browsers this defaults to setTimeout(func, 1) but in
+    // stack returns. On browsers this defaults to setTimeout(func, 0) but in
     // other environments can be customised - e.g. to process.nextTick in node.js
     // In future, this could be optimised in the browser to not dispatch into the event queue
+    // See https://github.com/YuzuJS/setImmediate for a more verbose but very robust replacement
     fluid.invokeLater = function (func) {
-        return setTimeout(func, 1);
+        return setTimeout(func, 0);
     };
 
     // The following flag defeats all logging/tracing activities in the most performance-critical parts of the framework.

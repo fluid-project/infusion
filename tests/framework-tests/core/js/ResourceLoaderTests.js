@@ -713,4 +713,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.FLUID4982badJSON({model: "{that}.resources.initModel.parsed"});
         fluid.unhandledRejectionEvent.addListener(handler, "test");
     });
+
+    jqUnit.asyncTest("FLUID-4982: No unhandled rejection during async construction with rejection handler", function () {
+        var mocks = fluid.tests.FLUID4982.badJSONMocks();
+        var transRec = fluid.construct("fluid4982root", {
+            type: "fluid.tests.FLUID4982badJSON",
+            model: "{that}.resources.initModel.parsed"
+        }, {
+            returnTransaction: true
+        });
+        var handler = function (err) {
+            jqUnit.fail("Should not have received unhandled exception rejection, instead got " + err.message);
+        };
+        // Prevent unhandled rejection from the creation promise itself
+        transRec.outputShadows[0].that.creationPromise.then(null, fluid.identity);
+        transRec.promise.then(null, function (err) {
+            jqUnit.assertTrue("Received error for failed resource", err.message.indexOf("JSON") !== -1);
+            fluid.invokeLater(function () {
+                fluid.unhandledRejectionEvent.removeListener("test");
+                jqUnit.start();
+            });
+            mocks.destroy();
+        });
+        fluid.unhandledRejectionEvent.addListener(handler, "test");
+    });
+
 })();

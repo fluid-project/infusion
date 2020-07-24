@@ -1450,7 +1450,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** CHANGE APPLIER **/
 
+    /** Opens a transaction against the supplied applier, deletes the value at the supplied path, applies the supplied value in its place
+     * and commits the transaction. This is a useful method since the semantics of a ChangeApplier "ADD" message are accumulative - the
+     * supplied value is ordinarily merged into any existing value. By using this method, a client can wholly update a value held
+     * at a particular path, apparently atomically from the point of view of any model listeners.
+     * @param {fluid.ChangeApplier} applier - The ChangeApplier to operate the update
+     * @param {String|String[]} path - The path at which the new value is to be applied
+     * @param {Any} newValue - The new value to be stored at the path
+     * @return {Any} The updated contents of the entire model managed by the supplied applier
+     */
+    fluid.replaceModelValue = function (applier, path, newValue) {
+        var transaction = applier.initiate();
+        transaction.fireChangeRequest({path: path, type: "DELETE"});
+        transaction.fireChangeRequest({path: path, value: newValue});
+        transaction.commit();
+        return applier.holder.model;
+    };
+
     /* Dispatches a list of changes to the supplied applier */
+    // TODO: Good candidate for removal
     fluid.fireChanges = function (applier, changes) {
         for (var i = 0; i < changes.length; ++i) {
             applier.fireChangeRequest(changes[i]);

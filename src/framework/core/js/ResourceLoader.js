@@ -367,10 +367,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         FetchOne.resourceFetcher = resourceFetcher;
         FetchOne.resourceSpec = resourceSpec;
         FetchOne.segs = segs || [];
+        // We don't add a rejection handler here since is a "leaf promise" which will give rise to an unhandled rejection warning.
+        // The overall rejection of resources will surface at the component level.
         var thisPromise = FetchOne.promise = fluid.promise();
         fluid.fetchResources.fetchOneResource(resourceSpec, resourceFetcher).then(function () {
             thisPromise.resolve(fluid.fetchResources.resolveFetchOne(FetchOne));
-        }, thisPromise.reject);
+        });
     };
 
     /** Resolve the referenced resource value inside a FetchOne holder. Note that this value will only be

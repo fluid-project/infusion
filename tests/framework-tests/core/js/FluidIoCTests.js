@@ -4388,6 +4388,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("shouldComponentExist", false);
         jqUnit.assertUndefined("Conditional component should have been destroyed", that.conditionalComponent);
         jqUnit.assertEquals("Model flag should not have been reset", false, that.model.shouldComponentExist);
+        var thatWithout = fluid.tests.fluid6390booleanRoot({
+            model: {
+                shouldComponentExist: null
+            }
+        });
+        jqUnit.assertUndefined("Conditional component should not have been constructed on startup", thatWithout.conditionalComponent);
     });
 
     /** FLUID-6390 - Hall of mirrors lensed components **/

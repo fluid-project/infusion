@@ -124,11 +124,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.remoteModelComponent.updateRemoteFromLocal = function (that) {
-        // perform model updates in a single transaction
-        var transaction = that.applier.initiate();
-        transaction.fireChangeRequest({path: "remote", type: "DELETE"}); // clear old remote model
-        transaction.change("remote", that.model.local); // update remote model to local changes.
-        transaction.commit(); // submit transaction
+        fluid.replaceModelValue(that.applier, "remote", that.model.local);
     };
 
     /*

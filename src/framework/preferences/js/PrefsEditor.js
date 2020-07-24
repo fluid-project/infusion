@@ -415,31 +415,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
+    fluid.prefs.prefsEditor.resetModel = function (that, newModel) {
+        var transaction = that.applier.initiate();
+        transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
+        transaction.change("", newModel);
+        transaction.commit();
+        that.events.onPrefsEditorRefresh.fire();
+    };
+
     /*
      * Resets the selections to the integrator's defaults and fires afterReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
-        var transaction = that.applier.initiate();
         that.events.beforeReset.fire(that);
-        transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
-        transaction.change("", fluid.copy(that.initialModel));
-        transaction.commit();
-        that.events.onPrefsEditorRefresh.fire();
+        fluid.prefs.prefsEditor.resetModel(that, fluid.copy(that.initialModel));
         that.events.afterReset.fire(that);
     };
 
     /*
-     * Resets the selections to the last saved selections and fires onCancel
+     * Fires onCancel and resets the selections to the last saved selections
      */
     fluid.prefs.prefsEditor.cancel = function (that) {
         that.events.onCancel.fire();
         var fetchPromise = that.fetch();
         fetchPromise.then(function () {
-            var transaction = that.applier.initiate();
-            transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
-            transaction.change("", that.model.remote);
-            transaction.commit();
-            that.events.onPrefsEditorRefresh.fire();
+            fluid.prefs.prefsEditor.resetModel(that, that.model.remote);
         });
     };
 

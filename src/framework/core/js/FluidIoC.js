@@ -402,16 +402,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    // supported, PUBLIC API function
     /** Query for all components matching a selector in a particular tree
      * @param {Component} root - The root component at which to start the search
      * @param {String} selector - An IoCSS selector, in form of a string. Note that since selectors supplied to this function implicitly
-     * match downwards, they need not contain the "head context" followed by whitespace required in the distributeOptions form. E.g.
+     * match downwards, they do not contain the "head context" followed by whitespace required in the distributeOptions form. E.g.
      * simply <code>"fluid.viewComponent"</code> will match all viewComponents below the root.
      * @param {Boolean} flat - [Optional] <code>true</code> if the search should just be performed at top level of the component tree
      * Note that with <code>flat=false</code> this search will scan every component in the tree and may well be very slow.
-     * @return {Component[]} The list of all components matching the selector
+     * @return {Component[]} An array holding all components matching the selector
      */
-    // supported, PUBLIC API function
     fluid.queryIoCSelector = function (root, selector, flat) {
         var parsed = fluid.parseSelector(selector, fluid.IoCSSMatcher);
         var togo = [];
@@ -1844,7 +1844,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *     function is currently implemented in `fluid.constructLensedComponents` in DataBinding.js
      */
     fluid.registerSourcedDynamicComponentsTriage = function (potentia, shell, sourceOrSources, lightMerge, key, isBoolean, localRecordContributor) {
-        if (isBoolean) {
+        if (isBoolean && sourceOrSources) {
             fluid.registerSourcedDynamicComponent(potentia, shell, sourceOrSources, 0, lightMerge, key, localRecordContributor);
         } else {
             fluid.registerSourcedDynamicComponents(potentia, shell, sourceOrSources, lightMerge, key, localRecordContributor);
