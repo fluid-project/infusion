@@ -62,7 +62,7 @@
         "jquery-ui": "1.12.1",
         "jquery-ui-touch-punch": "0.2.3",
         "jquery.scrollto": "2.1.2",
-        "lodash": "4.17.15",
+        "lodash": "4.17.19",
         "ncp": "2.0.0",
         "normalize.css": "8.0.1",
         "nyc": "15.0.1",
