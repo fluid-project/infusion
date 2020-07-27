@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>infusion-uio.js Bundle Test</title>
+
+    <!--  This is the jqUnit test css file -->
+    <link rel="stylesheet" media="screen" href="../lib/qunit/css/qunit.css" />
+
+    <!--  These are the jqUnit test js files -->
+    <script src="../lib/qunit/js/qunit.js"></script>
+    <script src="/testem.js"></script>
+
+    <!--  The bundle we are verifying. -->
+    <script src="../../dist/infusion-uio.js"></script>
+
+    <!-- jqUnit can't be included until we include our bundled version of infusion above. -->
+    <script src="../test-core/jqUnit/js/jqUnit.js"></script>
+</head>
+<body>
+<h1 id="qunit-header">infusion-uio.js Bundle Test</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+
+<script>
+    jqUnit.test("Verifying that the infusion-uio.js bundle can be safely included by a browser.", function () {
+        jqUnit.assert("Passing tests are awesome.");
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Bundle integrity tests runner</title>
+
+    <!--  Fluid is required for the "coverage sender" below -->
+    <script src="../../src/lib/jquery/core/js/jquery.js"></script>
+    <script src="../../src/framework/core/js/Fluid.js"></script>
+    <script src="../../src/framework/core/js/FluidDebugging.js"></script>
+
+    <link rel="stylesheet" href="../lib/qunit/css/qunit.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="../lib/qunit/addons/composite/qunit-composite.css">
+    <script src="../lib/qunit/js/qunit.js"></script>
+
+    <script src="/testem.js"></script>
+
+    <script src="../lib/qunit/addons/composite/qunit-composite.js"></script>
+
+    <!--
+        command line search:
+        find . -name "*-test.html" | awk '{print "\""$1"\","}' | sort
+    -->
+    <script>
+        QUnit.testSuites("Bundle Tests", [
+            "infusion-all.html",
+            "infusion-all-min.html",
+            "infusion-all-no-jquery.html",
+            "infusion-all-no-jquery-min.html",
+            "infusion-framework.html",
+            "infusion-framework-min.html",
+            "infusion-framework-no-jquery.html",
+            "infusion-framework-no-jquery-min.html",
+            "infusion-uio.html",
+            "infusion-uio-min.html",
+            "infusion-uio-no-jquery.html",
+            "infusion-uio-no-jquery-min.html"
+        ]);
+    </script>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+</body>
+</html>
