@@ -1,5 +1,7 @@
 /*
-Copyright 2011-2017 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -32,8 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.store.cookieName2 = "fluid-cookieStore-test2";
 
     fluid.tests.prefs.store.dropCookie = function (cookieName) {
-        var date = new Date();
-        document.cookie = cookieName + "=; expires=" + date.toGMTString() + "; path=/";
+        document.cookie = cookieName + "=; max-age=-1; path=/";
     };
 
     // Assemble Cookie Tests
@@ -46,30 +47,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             cookieName: "cookieName",
             payload: "cookieValue",
             cookieOpts: {
+                domain: "example.com",
                 expires: "Fri, 15 Jul 2011 16:44:24 GMT",
-                path: "/"
+                "max-age": 1000,
+                path: "/",
+                samesite: "strict",
+                secure: true
             },
-            expected: "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT; path=/"
+            expected: "cookieName=cookieValue; domain=example.com; expires=Fri, 15 Jul 2011 16:44:24 GMT; max-age=1000; path=/; samesite=strict; secure"
         }, {
-            testName: "no expiry date set",
+            testName: "cookie attributes with capitals",
             cookieName: "cookieName",
             payload: "cookieValue",
             cookieOpts: {
-                path: "/"
+                Domain: "example.com",
+                Expires: "Fri, 15 Jul 2011 16:44:24 GMT",
+                "Max-Age": 1000,
+                Path: "/",
+                SameSite: "strict",
+                Secure: true
             },
-            expected: "cookieName=cookieValue; path=/"
+            expected: "cookieName=cookieValue; Domain=example.com; Expires=Fri, 15 Jul 2011 16:44:24 GMT; Max-Age=1000; Path=/; SameSite=strict; Secure"
         }, {
-            testName: "no path set",
+            testName: "secure set to false",
             cookieName: "cookieName",
             payload: "cookieValue",
             cookieOpts: {
-                expires: "Fri, 15 Jul 2011 16:44:24 GMT"
+                secure: false
             },
-            expected: "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT"
+            expected: "cookieName=cookieValue"
         }, {
-            testName: "no path or expiry date set",
+            testName: "Secure set to false",
             cookieName: "cookieName",
             payload: "cookieValue",
+            cookieOpts: {
+                Secure: false
+            },
+            expected: "cookieName=cookieValue"
+        }, {
+            testName: "only name set",
+            cookieName: "cookieName",
+            payload: "cookieValue",
+            expected: "cookieName=cookieValue"
+        }, {
+            testName: "name attribute in cookie options",
+            cookieName: "cookieName",
+            payload: "cookieValue",
+            cookieOpts: {
+                name: "ignoreName"
+            },
             expected: "cookieName=cookieValue"
         }
     ];
@@ -106,13 +132,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // returns a date the specificed number of milliseconds into the future. Defaults to 5 minutes
-    fluid.prefs.cookieStore.tests.getFutureDate = function (ms) {
-        ms = ms || 300000;
-        var date = new Date(Date.now() + ms);
-        return date.toGMTString();
-    };
-
     fluid.defaults("fluid.prefs.cookieStore.tester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
@@ -129,36 +148,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     task: "{cookieStore}.set",
                     args: [null, fluid.tests.prefs.store.testSettings1],
                     resolve: "fluid.prefs.cookieStore.tester.assertCookie",
-                    resolveArgs: ["set cookie", "{arguments}.0", fluid.tests.prefs.store.cookieName, fluid.tests.prefs.store.testSettings1]
+                    resolveArgs: ["set cookie - name from options", "{arguments}.0", fluid.tests.prefs.store.cookieName, fluid.tests.prefs.store.testSettings1]
                 }, {
                     task: "{cookieStore}.get",
                     resolve: "jqUnit.assertDeepEq",
-                    resolveArgs: ["set cookie: The model should be fetched from the cookie", fluid.tests.prefs.store.testSettings1, "{arguments}.0"]
+                    resolveArgs: ["get cookie - name from options: The model should be fetched from the cookie", fluid.tests.prefs.store.testSettings1, "{arguments}.0"]
                 }, {
                     // update the cookie
                     task: "{cookieStore}.set",
                     args: [null, fluid.tests.prefs.store.testSettings2],
                     resolve: "fluid.prefs.cookieStore.tester.assertCookie",
-                    resolveArgs: ["update cookie", "{arguments}.0", fluid.tests.prefs.store.cookieName, fluid.tests.prefs.store.testSettings2]
+                    resolveArgs: ["update cookie - name from options", "{arguments}.0", fluid.tests.prefs.store.cookieName, fluid.tests.prefs.store.testSettings2]
                 }, {
                     task: "{cookieStore}.get",
                     resolve: "jqUnit.assertDeepEq",
-                    resolveArgs: ["update cookie: The updated model should be fetched from the cookie", fluid.tests.prefs.store.testSettings2, "{arguments}.0"]
+                    resolveArgs: ["update cookie - name from options: The updated model should be fetched from the cookie", fluid.tests.prefs.store.testSettings2, "{arguments}.0"]
                 }, {
                     // set new cookie using directModel
                     task: "{cookieStore}.set",
                     args: [{cookieName: fluid.tests.prefs.store.cookieName2}, fluid.tests.prefs.store.testSettings1],
                     resolve: "fluid.prefs.cookieStore.tester.assertCookie",
-                    resolveArgs: ["set new cookie:", "{arguments}.0", fluid.tests.prefs.store.cookieName2, fluid.tests.prefs.store.testSettings1]
+                    resolveArgs: ["set new cookie - name from directModel", "{arguments}.0", fluid.tests.prefs.store.cookieName2, fluid.tests.prefs.store.testSettings1]
                 }, {
                     task: "{cookieStore}.get",
                     args: [{cookieName: fluid.tests.prefs.store.cookieName2}],
                     resolve: "jqUnit.assertDeepEq",
-                    resolveArgs: ["set new cookie: The model should be returned from the new cookie", fluid.tests.prefs.store.testSettings1, "{arguments}.0"]
+                    resolveArgs: ["get new cookie - name from directModel: The model should be returned from the new cookie", fluid.tests.prefs.store.testSettings1, "{arguments}.0"]
                 }, {
                     task: "{cookieStore}.get",
                     resolve: "jqUnit.assertDeepEq",
-                    resolveArgs: ["set new cookie: The correct model should be returned from the first cookie", fluid.tests.prefs.store.testSettings2, "{arguments}.0"]
+                    resolveArgs: ["get first cookie - name from options: The correct model should be returned from the first cookie", fluid.tests.prefs.store.testSettings2, "{arguments}.0"]
                 }, {
                     funcName: "fluid.tests.prefs.store.dropCookie",
                     args: [fluid.tests.prefs.store.cookieName]

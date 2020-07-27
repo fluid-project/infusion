@@ -1,5 +1,7 @@
 /*
-Copyright 2015-2018 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -114,14 +116,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selection.addRange(range);
     };
 
+    fluid.tests.orator.selection.selectNodes = function (startNode, endNode, startOffset, endOffset) {
+        var range = document.createRange();
+        var selection = window.getSelection();
+
+        range.setStart(startNode, startOffset);
+        range.setEnd(endNode, endOffset);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    };
+
     fluid.tests.orator.selection.collapse = function () {
         var selection = window.getSelection();
         selection.removeAllRanges();
     };
 
+    fluid.tests.orator.selection.getSelectionRange = function () {
+        return window.getSelection().getRangeAt(0);
+    };
+
     /*******************************************************************************
      * Assertions
      *******************************************************************************/
+
+    // assert that the element is actually in the document, not detached
+    fluid.tests.orator.assertNodeInDOM = function (msg, elm) {
+        jqUnit.okWithPrefix($.contains(document, fluid.unwrap(elm)), msg);
+    };
+
+    // assert that the element is not in the document, may be detached
+    fluid.tests.orator.assertNodeNotInDOM = function (msg, elm) {
+        jqUnit.okWithPrefix(!$.contains(document, fluid.unwrap(elm)), msg);
+    };
 
     fluid.tests.orator.verifyControllerState = function (controller, state) {
         var toggleButton = controller.locate("playToggle");
@@ -135,13 +161,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.orator.verifySelectionState = function (that, testPrefix, expectedModel) {
         jqUnit.assertDeepEq(testPrefix + ": The model should be set correctly.", expectedModel, that.model);
 
-        if (expectedModel.showUI) {
-            jqUnit.assertNodeExists(testPrefix + ": The selection control should be present", that.options.selectors.control);
+        if (expectedModel.text) {
+            fluid.tests.orator.assertNodeInDOM(testPrefix + ": The selection control should be present", that.control);
+            jqUnit.assertFalse(testPrefix + ": The selection control should not be hidden", that.control.prop("hidden"));
 
             var expectedText = that.options.strings[that.model.play ? "stop" : "play"];
-            jqUnit.assertEquals(testPrefix + ": The selection control label should have the correct text", expectedText, that.locate("controlLabel").text());
+            var labelText = that.control.find(that.options.selectors.controlLabel).text();
+            jqUnit.assertEquals(testPrefix + ": The selection control label should have the correct text", expectedText, labelText);
         } else {
-            jqUnit.assertNodeNotExists(testPrefix + ": The selection control should not be present", that.options.selectors.control);
+            fluid.tests.orator.assertNodeNotInDOM(testPrefix + ": The selection control should not be present", that.control);
         }
     };
 

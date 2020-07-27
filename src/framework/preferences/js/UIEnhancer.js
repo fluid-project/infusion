@@ -1,8 +1,7 @@
 /*
-Copyright 2009 University of Toronto
-Copyright 2010-2017 OCAD University
-Copyright 2011 Lucendo Development Ltd.
-Copyright 2015 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -43,13 +42,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent"],
+        defaultLocale: "en",
         invokers: {
             updateModel: {
                 func: "{that}.applier.change",
                 args: ["", "{arguments}.0"]
             }
         },
-        userGrades: "@expand:fluid.prefs.filterEnhancerGrades({that}.options.gradeNames)"
+        userGrades: "@expand:fluid.prefs.filterEnhancerGrades({that}.options.gradeNames)",
+
+        distributeOptions: {
+            "uiEnhancer.messageLoader.defaultLocale": {
+                source: "{that}.options.defaultLocale",
+                target: "{that messageLoader}.options.defaultLocale"
+            },
+            // TODO: This needs to be improved as it is static and should be dynamic. Unfortunately the resource loader
+            //       accepts the locale as an option instead of a model value.
+            "uiEnhancer.messageLoader.locale": {
+                source: "{that}.options.locale",
+                target: "{that messageLoader}.model.locale"
+            }
+        }
     });
 
     // Make this a standalone grade since options merging can't see 2 levels deep into merging
@@ -73,7 +86,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // This just the options that we are clear safely represent user options - naturally this all has
     // to go when we refactor UIEnhancer
     fluid.prefs.filterEnhancerOptions = function (options) {
-        return fluid.filterKeys(options, ["classnameMap", "fontSizeMap", "tocTemplate", "components"]);
+        return fluid.filterKeys(options, ["classnameMap", "fontSizeMap", "tocTemplate", "tocMessage", "components"]);
     };
 
     /********************************************************************************

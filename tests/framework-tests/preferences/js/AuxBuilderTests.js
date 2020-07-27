@@ -1,5 +1,7 @@
 /*
-Copyright 2013-2017 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -73,7 +75,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             }
         },
         "contrast": {
@@ -119,7 +122,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             }
         },
         "contrast": {
@@ -139,7 +143,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             }
         }, {
             "type": "fluid.prefs.enactor.contrast",
@@ -163,7 +168,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             },
             "template": "templates/textFont"
         }, {
@@ -248,10 +254,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.prefs.expandSchemaComponents
      *******************************************************************************/
 
-    fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, primarySchema, expectedOutput) {
+    fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, alias, componentConfig, index, primarySchema, expectedOutput) {
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var panelModelOptions = fluid.get(fluid.tests.elementCommonOptions, "panelModel");
-        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
+        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, alias, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
     };
 
@@ -277,6 +283,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.expandSchemaComponentsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        mergePolicy: {
+            "testOptions.expectedOutput": "noexpand"
+        },
         testOptions: {
             auxSchema: {
                 "contrast": {
@@ -311,7 +320,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid.prefs.contrast": {
                     "type": "string",
                     "default": "default",
-                    "enum": ["default", "bw", "wb", "by", "yb"]
+                    "enum": ["default", "bw", "wb", "by", "yb"],
+                    "enumLabels": [
+                        "contrast-default",
+                        "contrast-bw",
+                        "contrast-wb",
+                        "contrast-by",
+                        "contrast-yb"
+                    ]
                 }
             },
             expectedOutput: {
@@ -364,10 +380,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 controlValues: {
                                     theme: ["default", "bw", "wb", "by", "yb"]
                                 },
+                                stringArrayIndex: {
+                                    theme: [
+                                        "contrast-default",
+                                        "contrast-bw",
+                                        "contrast-wb",
+                                        "contrast-by",
+                                        "contrast-yb"
+                                    ]
+                                },
                                 resources: {
                                     template: "templateLoader.resources.fluid_tests_prefs_panel_contrast"
                                 }
                             }
+                        }
+                    }
+                },
+                aliases_enhancer: {
+                    model: {
+                        "contrast": "{that}.model.fluid_prefs_contrast"
+                    }
+                },
+                aliases_prefsEditor: {
+                    model: {
+                        preferences: {
+                            "contrast": "{that}.model.preferences.fluid_prefs_contrast"
                         }
                     }
                 },
@@ -385,6 +422,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     members: {
                         initialModel: {
                             preferences: {
+                                "contrast": "default",
                                 "fluid_prefs_contrast": "default"
                             }
                         }
@@ -399,7 +437,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Component expander based on schema",
                 type: "test",
                 func: "fluid.tests.testExpandSchemaComponents",
-                args: ["{that}.options.testOptions.auxSchema", "panels", "{that}.options.testOptions.auxSchema.contrast.type", "{that}.options.testOptions.auxSchema.contrast.panel",
+                args: ["{that}.options.testOptions.auxSchema", "panels", "{that}.options.testOptions.auxSchema.contrast.type", "contrast", "{that}.options.testOptions.auxSchema.contrast.panel",
                     "{that}.options.testOptions.index", "{that}.options.testOptions.primarySchema", "{that}.options.testOptions.expectedOutput"]
             }]
         }]
@@ -603,7 +641,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "default": 1,
             "minimum": 1,
             "maximum": 2,
-            "divisibleBy": 0.1
+            "multipleOf": 0.1
         },
         "fluid.prefs.emphasizeLinks": {
             "type": "boolean",
@@ -647,6 +685,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         fluid_prefs_textSize: 1
                     }
                 }
+            }
+        },
+        aliases_enhancer: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {}
+        },
+        aliases_prefsEditor: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {
+                preferences: {}
             }
         },
         messageLoader: {
@@ -697,6 +745,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 }
+            }
+        },
+        aliases_enhancer: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {}
+        },
+        aliases_prefsEditor: {
+            gradeNames: ["fluid.modelComponent"],
+            model: {
+                preferences: {}
             }
         },
         templateLoader: {
@@ -866,6 +924,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
+                aliases_enhancer: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {}
+                },
+                aliases_prefsEditor: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {
+                        preferences: {}
+                    }
+                },
                 templateLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
@@ -940,6 +1008,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
+                aliases_enhancer: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {}
+                },
+                aliases_prefsEditor: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {
+                        preferences: {}
+                    }
+                },
                 templateLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
@@ -1012,6 +1090,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 }
                             }
                         }
+                    }
+                },
+                aliases_enhancer: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {}
+                },
+                aliases_prefsEditor: {
+                    gradeNames: ["fluid.modelComponent"],
+                    model: {
+                        preferences: {}
                     }
                 },
                 templateLoader: {
@@ -1436,7 +1524,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
-                "model.step": "divisibleBy" // to test that model paths without the "default" keyword are mapped correctly.
+                "model.step": "multipleOf" // to test that model paths without the "default" keyword are mapped correctly.
             }
         }
     });
@@ -1474,7 +1562,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "default": false,
             "minimum": 20,
             "maximum": 100,
-            "divisibleBy": 0.1
+            "multipleOf": 0.1
         },
         "fluid.prefs.subPanel4": {
             "type": "boolean",

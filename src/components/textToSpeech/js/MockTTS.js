@@ -1,5 +1,7 @@
 /*
-Copyright 2015 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -23,6 +25,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Web Speech API. This will allow for tests to run in browsers
     // that don't support the Web Speech API.
     fluid.defaults("fluid.mock.textToSpeech", {
+        model: {
+            throwError: false
+        },
         members: {
             // An archive of all the calls to queueSpeech.
             // Will contain an ordered set of objects -- {text: String, options: Object}.
@@ -74,16 +79,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             // override the speak invoker to return the utterance component instead of the SpeechSynthesisUtterance instance
             speak: {
-                func: "{that}.invokeSpeechSynthesisFunc",
-                args: ["speak", "{that}.queue.0"]
+                funcName: "fluid.mock.textToSpeech.speakOverride",
+                args: ["{that}"]
             }
         },
         distributeOptions: {
-            record: "fluid.mock.textToSpeech.utterance",
-            target: "{that fluid.textToSpeech.utterance}.options.gradeNames",
+            record: {
+                gradeNames: "fluid.mock.textToSpeech.utterance",
+                model: {
+                    throwError: "{fluid.mock.textToSpeech}.model.throwError"
+                }
+            },
+            target: "{that fluid.textToSpeech.utterance}.options",
             namespace: "utteranceMock"
         }
     });
+
+    fluid.mock.textToSpeech.speakOverride = function (that) {
+        var utterance = that.queue[that.queue.length - 1];
+        that.invokeSpeechSynthesisFunc("speak", utterance);
+    };
 
     fluid.mock.textToSpeech.invokeStub = function (that, method, args) {
         args = fluid.makeArray(args);
@@ -172,13 +187,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.mock.textToSpeech.utterance.speakUtterance = function (that, resume) {
-        that.dispatchEvent(resume ? "resume" : "start");
-
-        if (that.options.synchronous) {
-            that.utteranceEnd();
+        if (that.model.throwError) {
+            that.dispatchEvent("error");
         } else {
-            setTimeout(that.utteranceEnd, that.utterance.text.length);
+            that.dispatchEvent(resume ? "resume" : "start");
+
+            if (that.options.synchronous) {
+                that.utteranceEnd();
+            } else {
+                setTimeout(that.utteranceEnd, that.utterance.text.length);
+            }
         }
+
     };
 
 })();

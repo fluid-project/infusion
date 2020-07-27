@@ -1,5 +1,7 @@
 /*
-Copyright 2015-2018 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -67,7 +69,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
-                expect: 27,
+                expect: 28,
                 name: "Init",
                 sequence: [{
                     func: "fluid.tests.selfVoicingTester.verifySubComponnetNotInitted",
@@ -117,7 +119,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selfVoicing}.orator.selectionReader", "Selection", {
-                        showUI: true,
                         play: false,
                         text: "text",
                         enabled: true
@@ -130,12 +131,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifySelectionState",
                     args: ["{selfVoicing}.orator.selectionReader", "Remove Selection UI", {
-                        showUI: false,
                         play: false,
                         text: "",
                         enabled: false
                     }],
-                    spec: {priority: "last:testing", path: "showUI"},
+                    spec: {priority: "last:testing", path: "text"},
                     changeEvent: "{selfVoicing}.orator.selectionReader.applier.modelChanged"
                 }]
             }]

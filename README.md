@@ -1,9 +1,5 @@
 # Infusion
 
-[![Build status](
-https://badge.buildkite.com/5c8634255695aaaeda0e48799272f9f0e758e6512829737c94.svg?branch=master)](
-https://buildkite.com/fluid-project/fluid-infusion)
-
 ## What Is Infusion?
 
 Infusion is a different kind of JavaScript framework. Our approach is to leave you in control—it's your interface,
@@ -210,6 +206,7 @@ grunt custom --name="myPackage"
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
 * normalize
+* open-dyslexic
 * opensans
 * roboto
 * url-polyfill
@@ -261,7 +258,7 @@ that, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatical
 
 Each of these commands will create the VM (if needed).  The test results from the VM will be displayed in your terminal.
 
-If you just want to create the VM yourself, you can use a command like ``vagrant up``, and connect to it the VM either
+If you just want to create the VM yourself, you can use a command like ``vagrant up``, and connect to it either
 from VirtualBox, or from the command line using a command like ``vagrant ssh``.
 
 When this VM is first created, Chrome and Firefox will be upgraded to the latest versions available in the Fedora and
@@ -280,6 +277,21 @@ script runs before the command defined for the `test` script.  The `posttest` sc
 we use a `pretest` script to clean up previous coverage data before we run the tests, and a `posttest` script to
 compile the actual report.  You should not need to run the `pretest` scripts manually before running either the node or
 browser tests, or to run the `posttest` scripts afterward.
+
+### Run Tests In a Docker Container
+
+You can also run the tests from a [Docker](https://docs.docker.com/get-docker) container.
+
+Once you have Docker installed, run the following commands to build a Docker image and start a container:
+
+* Build the image: `docker build -t infusion .`
+* Run the container: `docker run --name infusion -p 8000:80 infusion`
+
+Infusion will be available at [http://localhost:8000](http://localhost:8000)
+
+* To stop and remove the container: `docker rm -f infusion`
+
+If you make changes to Infusion, repeat the steps to build the image and start a new container.
 
 ## Developing with the Preferences Framework
 

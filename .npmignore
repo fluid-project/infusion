@@ -1,9 +1,11 @@
-.buildkite
+.dockerignore
+.editorconfig
 .settings
 .gitignore
 .npmignore
 .project
 .vagrant
+Dockerfile
 report.tap
 build/
 coverage/

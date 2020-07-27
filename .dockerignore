@@ -1,0 +1,14 @@
+.git
+node_modules
+.vagrant
+
+npm-debug.log
+*.bak
+
+browserify
+report.tap
+coverage
+.nyc_output
+instrumented
+reports
+.idea/

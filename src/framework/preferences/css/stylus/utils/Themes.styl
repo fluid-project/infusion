@@ -202,6 +202,11 @@ build-themes-Enactors(contrastThemes) {
                 background-color: buttonBColor !important;
             }
 
+            ::placeholder {
+                color: currentColor;
+                font-style: italic;
+            }
+
             // Tables
             th {
                 border-top-width: 0.1em;
@@ -281,6 +286,10 @@ build-themes-Enactors(contrastThemes) {
 
             .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
                 visibility: hidden;
+            }
+
+            .fl-textfieldStepper .fl-textfieldStepper-focus {
+                outline-color: fColor;
             }
 
             // Orator
@@ -514,6 +523,11 @@ build-themes-Enactors(contrastThemes) {
                 .fl-orator-selectionReader-control.fl-orator-selectionReader-below:hover:after,
                 .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
                     border-bottom-color: bColor;
+                }
+
+                // TextfieldStepper
+                .fl-textfieldStepper .fl-textfieldStepper-focus {
+                    outline-color: bColor;
                 }
             }
         }

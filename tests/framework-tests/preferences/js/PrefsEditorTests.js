@@ -1,8 +1,7 @@
 /*
-Copyright 2008-2010 University of Toronto
-Copyright 2010-2017 OCAD University
-Copyright 2011 Lucendo Development Ltd.
-Copyright 2015 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -38,7 +37,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "body",
                 priority: "first",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.starterEnactors"]
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
                 }
             }
         },
@@ -153,7 +154,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Initialization: The first theme is default", "default", themeValues[0]);
 
         var fontValues = prefsEditor.textFont.options.controlValues.textFont;
-        jqUnit.assertEquals("Initialization: There are 5 font values in font style adjuster", 5, fontValues.length);
+        jqUnit.assertEquals("Initialization: There are 6 font values in font style adjuster", 6, fontValues.length);
         jqUnit.assertTrue("Initialization: There is a default font value", fontValues.indexOf("default") !== -1);
 
         jqUnit.assertEquals("Initialization: The onPrefsEditorRefresh event has been called once", 1, prefsEditor.refreshCount);

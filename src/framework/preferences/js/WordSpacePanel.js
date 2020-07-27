@@ -1,5 +1,7 @@
 /*
-Copyright 2018 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -28,7 +30,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
-                "step": "divisibleBy"
+                "step": "multipleOf"
             }
         },
         panelOptions: {

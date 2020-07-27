@@ -1,5 +1,7 @@
 /*
-Copyright 2016 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one of these
@@ -34,7 +36,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.uiEnhancer.starterEnactors"],
             // The UI Enhancer's Table of Contents uses an HTML template. This tells the component
             // where to find that template.
-            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+            tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
         }
     });
 })();

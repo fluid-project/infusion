@@ -4,18 +4,14 @@
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
  *
- * For information on copyright, see the individual Infusion source code files:
- * https://github.com/fluid-project/infusion/
+ * Copyright The Infusion copyright holders
+ * See the AUTHORS.md file at the top-level directory of this distribution and at
+ * https://github.com/fluid-project/infusion/raw/master/AUTHORS.md
  */
 /*
-Copyright 2007-2010 University of Cambridge
-Copyright 2007-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
-Copyright 2010-2011 Lucendo Development Ltd.
-Copyright 2010-2015 OCAD University
-Copyright 2011 Charly Molter
-Copyright 2012-2014 Raising the Floor - US
-Copyright 2014-2016 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -397,7 +393,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.isIoCReference = function (ref) {
-        return typeof(ref) === "string" && ref.charAt(0) === "{" && ref.indexOf("}") > 0;
+        return typeof(ref) === "string" && ref.charAt(0) === "{";
     };
 
     fluid.isDOMNode = function (obj) {
@@ -443,11 +439,20 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.isArrayable(tocopy) ? [] : {};
     };
 
-    fluid.copyRecurse = function (tocopy, segs) {
+    /** Determine whether the supplied object path exceeds the maximum strategy recursion depth of fluid.strategyRecursionBailout -
+     * if it does, fluid.fail will be issued with a diagnostic
+     * @param {String} funcName - The name of the function to appear in the diagnostic if issued
+     * @param {String[]} segs - The segments of the path that the strategy has reached
+     */
+    fluid.testStrategyRecursion = function (funcName, segs) {
         if (segs.length > fluid.strategyRecursionBailout) {
-            fluid.fail("Runaway recursion encountered in fluid.copy - reached path depth of " + fluid.strategyRecursionBailout + " via path of " + segs.join(".") +
+            fluid.fail("Runaway recursion encountered in " + funcName + " - reached path depth of " + fluid.strategyRecursionBailout + " via path of " + segs.join(".") +
                 "this object is probably circularly connected. Either adjust your object structure to remove the circularity or increase fluid.strategyRecursionBailout");
         }
+    };
+
+    fluid.copyRecurse = function (tocopy, segs) {
+        fluid.testStrategyRecursion("fluid.copy", segs);
         if (fluid.isUncopyable(tocopy)) {
             return tocopy;
         } else {
@@ -701,7 +706,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /** Accepts an object to be filtered, and an array of keys. Either all keys not present in
      * the array are removed, or only keys present in the array are returned.
-     * @param {Array|Object} toFilter - The object to be filtered - this will be NOT modified by the operation (current implementation
+     * @param {Object} toFilter - The object to be filtered - this will be NOT modified by the operation (current implementation
      * passes through $.extend shallow algorithm)
      * @param {String[]} keys - The array of keys to operate with
      * @param {Boolean} exclude - If <code>true</code>, the keys listed are removed rather than included
@@ -928,14 +933,20 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    /** Calls Object.freeze at each level of containment of the supplied object
+
+    /** Calls Object.freeze at each level of containment of the supplied object.
      * @param {Any} tofreeze  - The material to freeze.
+     * @param {String[]} [segs] - Implementation-internal - path segments that recursion has reached.
      * @return {Any} - The supplied argument, recursively frozen.
      */
-    fluid.freezeRecursive = function (tofreeze) {
+    fluid.freezeRecursive = function (tofreeze, segs) {
+        segs = segs || [];
+        fluid.testStrategyRecursion("fluid.freezeRecursive", segs);
         if (fluid.isPlainObject(tofreeze)) {
-            fluid.each(tofreeze, function (value) {
-                fluid.freezeRecursive(value);
+            fluid.each(tofreeze, function (value, key) {
+                segs.push(key);
+                fluid.freezeRecursive(value, segs);
+                segs.pop();
             });
             return Object.freeze(tofreeze);
         } else {
@@ -1408,9 +1419,9 @@ var fluid = fluid || fluid_3_0_0;
      * @return {Array} An array of the same elements supplied to `records`, sorted into priority order. The supplied argument `records` will not be modified.
      */
     fluid.parsePriorityRecords = function (records, name) {
-        var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement, index) {
+        var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement) {
             $.extend(newElement, oldElement);
-            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, name);
+            newElement.priority = fluid.parsePriority(oldElement.priority, 0, false, name);
         });
         fluid.sortByPriority(array);
         return array;

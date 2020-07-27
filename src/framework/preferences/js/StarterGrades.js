@@ -1,5 +1,7 @@
 /*
-Copyright 2013-2017 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -54,7 +56,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "times": "fl-font-times",
                 "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "verdana": "fl-font-verdana",
+                "open-dyslexic": "fl-font-open-dyslexic"
             },
             "theme": {
                 "default": "fl-theme-prefsEditor-default",
@@ -157,6 +160,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
+                    tocMessage: "{uiEnhancer}.options.tocMessage",
                     model: {
                         toc: "{uiEnhancer}.model.toc"
                     }
@@ -234,6 +238,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     messageBase: "{messageLoader}.resources.textFont.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textFont"
+                    },
+                    stringArrayIndex: {
+                        textFont: [
+                            "textFont-default",
+                            "textFont-times",
+                            "textFont-comic",
+                            "textFont-arial",
+                            "textFont-verdana",
+                            "textFont-open-dyslexic"
+                        ]
+                    },
+                    controlValues: {
+                        textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
                     }
                 }
             },
@@ -250,6 +267,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     messageBase: "{messageLoader}.resources.contrast.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.contrast"
+                    },
+                    stringArrayIndex: {
+                        theme: [
+                            "contrast-default",
+                            "contrast-bw",
+                            "contrast-wb",
+                            "contrast-by",
+                            "contrast-yb",
+                            "contrast-lgdg",
+                            "contrast-gw",
+                            "contrast-gd",
+                            "contrast-bbr"
+                        ]
+                    },
+                    controlValues: {
+                        theme: ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"]
                     }
                 }
             },

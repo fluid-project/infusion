@@ -1,5 +1,7 @@
 /*
-Copyright 2018 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -38,7 +40,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             separator: ".flc-syllabification-separator"
         },
         strings: {
-            languageUnavailable: "Syllabification not available for %lang"
+            languageUnavailable: "Syllabification not available for %lang",
+            patternLoadError: "The pattern file %src could not be loaded. %errorMsg"
         },
         markup: {
             separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>"
@@ -60,7 +63,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             "onParsedTextNode.syllabify": {
                 listener: "{that}.apply",
-                args: ["{arguments}.0", "{arguments}.1"]
+                args: ["{arguments}.0.node", "{arguments}.0.lang"]
             },
             "onNodeAdded.syllabify": {
                 listener: "{that}.parse",
@@ -74,6 +77,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     listeners: {
                         "afterParse.boil": "{syllabification}.events.afterParse",
                         "onParsedTextNode.boil": "{syllabification}.events.onParsedTextNode"
+                    },
+                    invokers: {
+                        hasTextToRead: {
+                            // apply to text nodes even if they have the ariaHidden attribute set
+                            funcName: "fluid.textNodeParser.hasTextToRead",
+                            args: ["{arguments}.0", true]
+                        }
                     }
                 }
             },
@@ -103,6 +113,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         members: {
+            // `hyphenators` is a mapping of strings, representing the source paths of pattern files, to Promises
+            // linked to the resolutions of loading and initially applying those syllabification patterns.
             hyphenators: {}
         },
         modelListeners: {
@@ -129,20 +141,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.prefs.enactor.syllabification.parse",
                 args: ["{that}", "{arguments}.0"]
             },
+            createHyphenator: {
+                funcName: "fluid.prefs.enactor.syllabification.createHyphenator",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            },
             getHyphenator: {
                 funcName: "fluid.prefs.enactor.syllabification.getHyphenator",
                 args: ["{that}", "{arguments}.0"]
             },
+            getPattern: "fluid.prefs.enactor.syllabification.getPattern",
             hyphenateNode: {
                 funcName: "fluid.prefs.enactor.syllabification.hyphenateNode",
                 args: ["{arguments}.0", "{arguments}.1", "{that}.options.markup.separator"]
             },
-            injectScript: "fluid.prefs.enactor.syllabification.injectScript"
+            injectScript: {
+                this: "$",
+                method: "ajax",
+                args: [{
+                    url: "{arguments}.0",
+                    dataType: "script",
+                    cache: true
+                }]
+            }
         }
     });
 
     /**
-     * Only disconnect the observer is the state is set to false.
+     * Only disconnect the observer if the state is set to false.
      * This corresponds to the syllabification's `enabled` model path being set to false.
      *
      * @param {Component} that - an instance of `fluid.mutationObserver`
@@ -178,32 +203,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Injects a script into the document.
-     *
-     * @param {String} src - the URL of the script to inject
-     *
-     * @return {Promise} - A promise that is resolved on successfully loading the script, or rejected if the load fails.
-     */
-    fluid.prefs.enactor.syllabification.injectScript = function (src) {
-        var promise = fluid.promise();
-
-        $.ajax({
-            url: src,
-            dataType: "script",
-            success: promise.resolve,
-            error: promise.reject,
-            cache: true
-        });
-
-        return promise;
-    };
-
-    /**
      * Creates a hyphenator instance making use of the pattern supplied by the path; which is injected into the Document
      * if it hasn't already been loaded. If the pattern file cannot be loaded, the onError event is fired.
      *
      * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
-     * @param {Object} pattern - the `file` path to source the pattern file from.
+     * @param {Object} pattern - the `file path` to the pattern file. The path may include a string template token to
+     *                           resolve a portion of its path from. The token will be resolved from the component's
+     *                           `terms` option. (e.g. "%patternPrefix/en-us.js");
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
      *
@@ -216,27 +222,76 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var hyphenator = fluid.getGlobalValue(globalPath);
 
         // If the pattern file has already been loaded, return the hyphenator.
+        // This could happen if the pattern file is statically linked to the page.
         if (hyphenator) {
             promise.resolve(hyphenator);
             return promise;
         }
 
         var src = fluid.stringTemplate(pattern, that.options.terms);
+
         var injectPromise = that.injectScript(src);
         injectPromise.then(function () {
             hyphenator = fluid.getGlobalValue(globalPath);
             promise.resolve(hyphenator);
-        }, function (jqXHR, textStatus, errorThrown) {
-            that.events.onError.fire(
-                "The pattern file \"" + src + "\" could not be loaded.",
-                jqXHR,
-                textStatus,
-                errorThrown
-            );
-            // If the pattern file could not be loaded resolve the promise with out a hyphenator (undefined).
+        }, function (error) {
+            var errorInfo = {
+                src: src,
+                errorMsg: typeof(error) === "string" ? error : ""
+            };
+
+            var errorMessage = fluid.stringTemplate(that.options.strings.patternLoadError, errorInfo);
+            fluid.log(fluid.logLevel.WARN, errorMessage, error);
+            that.events.onError.fire(errorMessage, error);
+
+            //TODO: A promise rejection would be more appropriate. However, we need to know when all of the hyphenators
+            //      have attempted to load and apply syllabification. The current promise utility,
+            //      fluid.promise.sequence, will reject the whole sequence if a promise is rejected, and prevent us from
+            //      knowing if all of the hyphenators have been attempted. We should be able to improve this
+            //      implementation once https://issues.fluidproject.org/browse/FLUID-5938 has been resolved.
+            //
+            // If the pattern file could not be loaded, resolve the promise without a hyphenator (undefined).
             promise.resolve();
         });
+
         return promise;
+    };
+
+    /**
+     * Information about a pattern, including the resolved language code and the file path to the pattern file.
+     *
+     * @typedef {Object} PatternInfo
+     * @property {String} lang - The resolved language code
+     * @property {String|Undefined} src - The file path to the pattern file for the resolved language. If no pattern
+     *                                    file is available, the value should be `undefined`.
+     */
+
+    /**
+     * Assembles an Object containing the information for locating the pattern file. If a pattern for the specific
+     * requested language code cannot be located, it will attempt to locate a fall back, by looking for a pattern
+     * supporting the generic language code. If no pattern can be found, `undefined` is returned as the `src` value.
+     *
+     *
+     * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
+     *                        `patterns`) option.
+     * @param {Object.<String, String>} patterns - an object mapping language codes to file paths for the pattern files. For example:
+     *                            {"en": "./patterns/en-us.js"}
+     *
+     * @return {PatternInfo} - returns a PatternInfo Object for the resolved language code. If a pattern file is not
+     *                         available for the language, the `src` property will be `undefined`.
+     */
+    fluid.prefs.enactor.syllabification.getPattern = function (lang, patterns) {
+        var src = patterns[lang];
+
+        if (!src) {
+            lang = lang.split("-")[0];
+            src = patterns[lang];
+        }
+
+        return {
+            lang: lang,
+            src: src
+        };
     };
 
     /**
@@ -254,45 +309,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                     Otherwise, it resolves with undefined.
      */
     fluid.prefs.enactor.syllabification.getHyphenator = function (that, lang) {
+        //TODO: For all of the instances where an empty promise is resolved, a promise rejection would be more
+        //      appropriate. However, we need to know when all of the hyphenators have attempted to load and apply
+        //      syllabification. The current promise utility, fluid.promise.sequence, will reject the whole sequence if
+        //      a promise is rejected, and prevent us from knowing if all of the hyphenators have been attempted. We
+        //      should be able to improve this implementation once https://issues.fluidproject.org/browse/FLUID-5938 has
+        //      been resolved.
         var promise = fluid.promise();
+        var hyphenatorPromise;
+
         if (!lang) {
             promise.resolve();
             return promise;
         }
-        lang = lang.toLowerCase();
 
-        // Use an existing hyphenator if available
-        var existing = that.hyphenators[lang];
-        if (existing) {
-            return existing;
-        }
+        var pattern = that.getPattern(lang.toLowerCase(), that.options.patterns);
 
-        // Attempt to create an appropriate hyphenator
-        var hyphenatorPromise;
-        var pattern = that.options.patterns[lang];
-
-        if (pattern) {
-            hyphenatorPromise = fluid.prefs.enactor.syllabification.createHyphenator(that, pattern, lang);
-            fluid.promise.follow(hyphenatorPromise, promise);
-            that.hyphenators[lang] = hyphenatorPromise;
+        if (!pattern.src) {
+            hyphenatorPromise = promise;
+            promise.resolve();
             return promise;
         }
 
-        var langSegs = lang.split("-");
-        pattern = that.options.patterns[langSegs[0]];
-
-        if (pattern) {
-            hyphenatorPromise = fluid.prefs.enactor.syllabification.createHyphenator(that, pattern, langSegs[0]);
-            fluid.promise.follow(hyphenatorPromise, promise);
-        } else {
-            hyphenatorPromise = promise;
-            // If there no available patterns to match the specified language, resolve the promise with out a
-            // hyphenator (undefined).
-            promise.resolve();
+        if (that.hyphenators[pattern.src]) {
+            return that.hyphenators[pattern.src];
         }
 
-        that.hyphenators[lang] = hyphenatorPromise;
-        that.hyphenators[langSegs[0]] = hyphenatorPromise;
+        hyphenatorPromise = that.createHyphenator(pattern.src, pattern.lang);
+        fluid.promise.follow(hyphenatorPromise, promise);
+        that.hyphenators[pattern.src] = hyphenatorPromise;
+
         return promise;
     };
 
@@ -380,6 +426,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             cs: "%patternPrefix/cs.js",
             da: "%patternPrefix/da.js",
             de: "%patternPrefix/de.js",
+            el: "%patternPrefix/el-monoton.js",
             "el-monoton": "%patternPrefix/el-monoton.js",
             "el-polyton": "%patternPrefix/el-polyton.js",
             en: "%patternPrefix/en-us.js",
@@ -400,7 +447,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             lt: "%patternPrefix/lt.js",
             lv: "%patternPrefix/lv.js",
             ml: "%patternPrefix/ml.js",
+            nb: "%patternPrefix/nb-no.js",
             "nb-no": "%patternPrefix/nb-no.js",
+            no: "%patternPrefix/nb-no.js",
             nl: "%patternPrefix/nl.js",
             or: "%patternPrefix/or.js",
             pa: "%patternPrefix/pa.js",

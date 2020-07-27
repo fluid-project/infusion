@@ -1,5 +1,7 @@
 /*
-Copyright 2015-2018 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -40,7 +42,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     * Adds a lister to a window event for each event defined on the component.
     * The name must match a valid window event.
     *
-    * @param {Component} that - the component itself
+    * @param {Component} that - an instance of `fluid.window`
     */
     fluid.window.bindEvents = function (that) {
         fluid.each(that.options.events, function (type, eventName) {
@@ -57,42 +59,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.textToSpeech.isSupported = function () {
         return !!(window && window.speechSynthesis);
-    };
-
-    /**
-     * Ensures that TTS is supported in the browser, including cases where the
-     * feature is detected, but where the underlying audio engine is missing.
-     * For example in VMs on SauceLabs, the behaviour for browsers which report that the speechSynthesis
-     * API is implemented is for the `onstart` event of an utterance to never fire. If we don't receive this
-     * event within a timeout, this API's behaviour is to return a promise which rejects.
-     *
-     * @param {Number} delay - A time in milliseconds to wait for the speechSynthesis to fire its onStart event
-     * by default it is 5000ms (5s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
-     * @return {fluid.promise} - A promise which will resolve if the TTS is supported (the onstart event is fired within the delay period)
-     * or be rejected otherwise.
-     */
-    fluid.textToSpeech.checkTTSSupport = function (delay) {
-        var promise = fluid.promise();
-        if (fluid.textToSpeech.isSupported()) {
-            // MS Edge speech synthesizer won't speak if the text string is blank,
-            // so this must contain actual text
-            var toSpeak = new SpeechSynthesisUtterance("short"); // short text to attempt to speak
-            toSpeak.volume = 0; // mutes the Speech Synthesizer
-            // Same timeout as the timeout in the IoC testing framework
-            var timeout = setTimeout(function () {
-                fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
-                promise.reject();
-            }, delay || 5000);
-            toSpeak.onend = function () {
-                clearTimeout(timeout);
-                fluid.textToSpeech.invokeSpeechSynthesisFunc("cancel");
-                promise.resolve();
-            };
-            fluid.textToSpeech.invokeSpeechSynthesisFunc("speak", toSpeak);
-        } else {
-            fluid.invokeLater(promise.reject);
-        }
-        return promise;
     };
 
     /*********************************************************************************************
@@ -135,22 +101,43 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     listeners: {
                         "onBoundary.relay": "{textToSpeech}.events.utteranceOnBoundary.fire",
-                        "onEnd.relay": "{textToSpeech}.events.utteranceOnEnd.fire",
-                        "onError.relay": "{textToSpeech}.events.utteranceOnError.fire",
+                        "onEnd.relay": {
+                            listener: "{textToSpeech}.events.utteranceOnEnd.fire",
+                            priority: "before:resolvePromise"
+                        },
+                        "onError.relay": {
+                            listener: "{textToSpeech}.events.utteranceOnError.fire",
+                            priority: "before:rejectPromise"
+                        },
+                        "onError.destroy": {
+                            listener: "{that}.destroy",
+                            priority: "after:rejectPromise"
+                        },
                         "onMark.relay": "{textToSpeech}.events.utteranceOnMark.fire",
                         "onPause.relay": "{textToSpeech}.events.utteranceOnPause.fire",
                         "onResume.relay": "{textToSpeech}.events.utteranceOnResume.fire",
                         "onStart.relay": "{textToSpeech}.events.utteranceOnStart.fire",
+                        "onCreate.followPromise": {
+                            funcName: "fluid.promise.follow",
+                            args: ["{that}.promise", "{that}.options.onSpeechQueuePromise"]
+                        },
                         "onCreate.queue": {
                             "this": "{fluid.textToSpeech}.queue",
                             method: "push",
-                            args: ["{that}"]
+                            args: ["{that}"],
+                            priority: "after:followPromise"
+                        },
+                        "onCreate.speak": {
+                            listener: "{textToSpeech}.speak",
+                            args: ["{that}.utterance"],
+                            priority: "after:queue"
                         },
                         "onEnd.destroy": {
                             func: "{that}.destroy",
                             priority: "last"
                         }
                     },
+                    onSpeechQueuePromise: "{arguments}.2",
                     utterance: "{arguments}.0"
                 }
             }
@@ -189,6 +176,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.textToSpeech.queueSpeech",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
+            queueSpeechSequence: {
+                funcName: "fluid.textToSpeech.queueSpeechSequence",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            },
             cancel: {
                 funcName: "fluid.textToSpeech.cancel",
                 args: ["{that}"]
@@ -209,21 +200,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             speak: {
                 func: "{that}.invokeSpeechSynthesisFunc",
-                args: ["speak", "{that}.queue.0.utterance"]
+                args: ["speak", "{arguments}.0"]
             },
             invokeSpeechSynthesisFunc: "fluid.textToSpeech.invokeSpeechSynthesisFunc"
         },
         listeners: {
-            "onSpeechQueued.speak": {
-                func: "{that}.speak",
-                priority: "last"
-            },
             "utteranceOnStart.speaking": {
                 changePath: "speaking",
                 value: true,
                 source: "utteranceOnStart"
             },
             "utteranceOnEnd.stop": {
+                funcName: "fluid.textToSpeech.handleEnd",
+                args: ["{that}"]
+            },
+            "onError.stop": {
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]
             },
@@ -298,29 +289,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Options to configure the SpeechSynthesis Utterance with.
      * See: https://w3c.github.io/speech-api/speechapi.html#utterance-attributes
-     *  {
-     *      text: "", // the text to Synthesize
-     *      lang: "", // the language of the synthesized text
-     *      voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
-     *      volume: 1, // a Floating point number between 0 and 1
-     *      rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
-     *      pitch: 1, // a Floating point number from 0 to 2
-     *   }
      *
      * @typedef {Object} UtteranceOpts
+     * @property {String} text - The text to Synthesize
+     * @property {String} lang - The BCP 47 language code for the synthesized text
+     * @property {WebSpeechSynthesis} voice - If not set, will use the default one provided by the browser
+     * @property {Float} volume - A Floating point number between 0 and 1
+     * @property {Float} rate - A Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
+     * @property {Float} pitch - A Floating point number from 0 to 2
      */
 
     /**
      * Assembles the utterance options and fires onSpeechQueued which will kick off the creation of an utterance
      * component. If "interrupt" is true, this utterance will replace any existing ones.
      *
-     * @param {Component} that - the component
+     * @param {fluid.textToSpeech} that - an instance of the component
      * @param {String} text - the text to be synthesized
      * @param {Boolean} interrupt - used to indicate if this text should be queued or replace existing utterances
-     * @param {UtteranceOpts} options - options to configure the SpeechSynthesis utterance with. It is merged on top of the
-     *                           utteranceOpts from the component's model.
+     * @param {UtteranceOpts} options - options to configure the {SpeechSynthesisUtterance} with. It is merged on top of
+     *                                  the `utteranceOpts` from the component's model.
      *
-     * @return {Promise} - returns a promise that is resolved after the onSpeechQueued event has fired.
+     * @return {Promise} - returns a promise that is resolved/rejected from the related `fluid.textToSpeech.utterance`
+     *                     instance.
      */
     fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
         var promise = fluid.promise();
@@ -333,17 +323,54 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // The setTimeout is needed for Safari to fully cancel out the previous speech.
         // Without this the synthesizer gets confused and may play multiple utterances at once.
         setTimeout(function () {
-            that.events.onSpeechQueued.fire(utteranceOpts, interrupt);
-            promise.resolve(text);
+            that.events.onSpeechQueued.fire(utteranceOpts, interrupt, promise);
         }, 100);
         return promise;
     };
 
+    /**
+     * Values to configure the SpeechSynthesis Utterance with.
+     * See: https://w3c.github.io/speech-api/speechapi.html#utterance-attributes
+     *
+     * @typedef {Object} Speech
+     * @property {String} text - the text to Synthesize
+     * @property {UtteranceOpts} options - options to configure the {SpeechSynthesisUtterance} with. It is merged on top
+     *                                     of the `utteranceOpts` from the component's model.
+     */
+
+    /**
+     * Queues a {Speech[]}, calling `that.queueSpeech` for each. This is useful for sets of text that should be
+     * synthesized with differing {UtteranceOpts}, but still treated as an atomic unit. For example, if a set of text
+     * includes words from different languages.
+     *
+     * @param  {fluid.textToSpeech} that - an instance of the component
+     * @param  {Speech[]} speeches - the set of text to queue as a unit
+     * @param  {Boolean} interrupt - used to indicate if the related text should be queued or replace existing
+     *                               utterances
+     *
+     * @return {Promise} - returns a promise that is resolved/rejected after all of the speeches have finish or any
+     *                     have been rejected.
+     */
+    fluid.textToSpeech.queueSpeechSequence = function (that, speeches, interrupt) {
+        var sequence = fluid.transform(speeches, function (speech, index) {
+            var toInterrupt = interrupt && !index; // only interrupt on the first string
+            return that.queueSpeech(speech.text, toInterrupt, speech.options);
+        });
+        return fluid.promise.sequence(sequence);
+    };
+
+    /**
+     * Manually fires the `onEnd` event of each remaining `fluid.textToSpeech.utterance` component in the queue. This
+     * is required because if the SpeechSynthesis is cancelled remaining {SpeechSynthesisUtterance} are ignored and do
+     * not fire their `onend` event.
+     *
+     * @param  {fluid.textToSpeech} that - an instance of the component
+     */
     fluid.textToSpeech.cancel = function (that) {
         // Safari does not fire the onend event from an utterance when the speech synthesis is cancelled.
         // Manually triggering the onEnd event for each utterance as we empty the queue, before calling cancel.
         while (that.queue.length) {
-            var utterance = that.queue.shift();
+            var utterance = that.queue[0];
             utterance.events.onEnd.fire();
         }
 
@@ -363,6 +390,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 expander: {
                     funcName: "fluid.textToSpeech.utterance.construct",
                     args: ["{that}", "{that}.options.utteranceEventMap", "{that}.options.utterance"]
+                }
+            },
+            promise: {
+                expander: {
+                    funcName: "fluid.promise"
                 }
             }
         },
@@ -399,7 +431,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onBoundary.updateModel": {
                 changePath: "boundary",
                 value: "{arguments}.0.charIndex"
-            }
+            },
+            "onEnd.resolvePromise": "{that}.promise.resolve",
+            "onError.rejectPromise": "{that}.promise.reject"
         }
     });
 
@@ -408,11 +442,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * event provided in the utteranceEventMap, any corresponding event binding passed in directly through the
      * utteranceOpts will be rebound as component event listeners with the "external" namespace.
      *
-     * @param {Component} that - the component
-     * @param {Object} utteranceEventMap - a mapping from SpeechSynthesisUtterance events to component events.
-     * @param {UtteranceOpts} utteranceOpts - options to configure the SpeechSynthesis utterance with.
+     * @param {fluid.textToSpeech.utterance} that - an instance of the component
+     * @param {Object} utteranceEventMap - a mapping from {SpeechSynthesisUtterance} events to component events.
+     * @param {UtteranceOpts} utteranceOpts - options to configure the {SpeechSynthesisUtterance} with.
      *
-     * @return {SpeechSynthesisUtterance} - returns the created SpeechSynthesisUtterance object
+     * @return {SpeechSynthesisUtterance} - returns the created {SpeechSynthesisUtterance} object
      */
     fluid.textToSpeech.utterance.construct = function (that, utteranceEventMap, utteranceOpts) {
         var utterance = new SpeechSynthesisUtterance();

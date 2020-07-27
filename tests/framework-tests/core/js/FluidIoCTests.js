@@ -1,8 +1,7 @@
 /*
-Copyright 2010-2011 Lucendo Development Ltd.
-Copyright 2010-2016 OCAD University
-Copyright 2012-2014 Raising the Floor - US
-Copyright 2014-2016 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -12,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit, Float32Array */
+/* global fluid, jqUnit, Float32Array, Map */
 
 (function ($) {
     "use strict";
@@ -22,7 +21,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.module("Fluid IoC Tests");
 
     fluid.setLogging(fluid.logLevel.TRACE);
-    fluid.activityTracing = true;
+    // This option might one day support external visualisations of the framework activity, but for now is disabled
+    // to aid tracking of memory leaks
+    // fluid.activityTracing = true;
 
     fluid.tests.parseContext = [{
         ref: "{context}.path",
@@ -74,6 +75,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             parsed = fluid.tests.filterContext(parsed);
             jqUnit.assertDeepEq("Expected parsed context index " + i, fixture.expected, parsed);
         });
+    });
+
+    /** FLUID-6456 Obsolete ${} EL style tests */
+
+    fluid.defaults("fluid.tests.FLUID6456", {
+        gradeNames: "fluid.component",
+        nonexistent: "${nonexistent.thing}",
+        nonexistentNested: "\"${{nonexistent}.nested}.thing\""
+    });
+
+    jqUnit.test("FLUID 6456: Obsolete ELstyle test", function () {
+        var that = fluid.tests.FLUID6456();
+        jqUnit.assertEquals("Should have received component with unexpanded obsolete EL", "${nonexistent.thing}",
+            that.options.nonexistent);
+        jqUnit.assertEquals("Should have received component with unexpanded obsolete EL", "\"${{nonexistent}.nested}.thing\"",
+            that.options.nonexistentNested);
     });
 
     fluid.defaults("fluid.tests.defaultMergePolicy", {
@@ -688,6 +705,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: false
             },
             structuralInvoker: {
+            // This test also exercises a crucial part of the reference idiom - obviously fluid.identity can't clone its
+            // argument, and obviously the return value needs to be referenceable after the return. This implies we
+            // can't get away without invokers doing a deep clone of structural arguments - at least to any site of expansion.
                 funcName: "fluid.identity",
                 args: {
                     arg1: "{arguments}.1",
@@ -2516,6 +2536,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventTimeComponent.onCreate"
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord);
+        // Unbind its global listeners
+        testComp.destroy();
     });
 
     /** FLUID-5930 - presence of injected components during onDestroy **/
@@ -2675,7 +2697,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.child4257.listener = function (that, parentThat, arg) {
         parentThat.records = parentThat.records || [];
-        parentThat.records.push(arg);
+        parentThat.records.push(fluid.copy(arg));
     };
 
     jqUnit.test("FLUID-4257 test: removal of injected listeners", function () {
@@ -3834,6 +3856,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-6450 - Malformed syntax in regular f-ing invokers **/
+
+    fluid.defaults("fluid.tests.fluid6450test", {
+        gradeNames: "fluid.component",
+        intendedTarget: "Here we are!",
+        invokers: {
+            log: {
+                funcName: "fluid.log",
+                args: ["Mangled invoker arg resolves to -> ", "{that].options.intendedTarget"]
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6450 - malformed regular syntax", function () {
+        jqUnit.expectFrameworkDiagnostic("Malformed regular invoker", function () {
+            var that = fluid.tests.fluid6450test();
+            that.log();
+        }, "formed");
+    });
+
     /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
 
     fluid.defaults("fluid.tests.fluid5036_1Root", {
@@ -4921,6 +4963,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.destroy("fluid_tests_nexusRoot");
 
         jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
+    });
+
+    /** FLUID-6371 Memory leaks with dynamic components **/
+
+    fluid.defaults("fluid.tests.FLUID6371root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null,
+            reportIt: null
+        },
+        listeners: {
+            reportIt: "fluid.tests.destroyIt"
+        },
+        // Test leak resistance with targetted distributions
+        distributeOptions: {
+            target: "{that > *}.options.listeners.onCreate",
+            record: "{FLUID6371root}.events.reportIt.fire"
+        },
+        dynamicComponents: {
+            leakChild: {
+                createOnEvent: "createIt",
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        // Note that with current framework this distribution can't hit self but does reach child
+                        target: "{FLUID6371root *}.options.selfValue",
+                        record: 42
+                    },
+                    components: {
+                        furtherChild: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // This is necessary because of FLUID-6373
+    fluid.tests.destroyIt = function (that) {
+        that.destroy();
+    };
+
+    fluid.tests.countHeapRecurse = function (map, root, path) {
+        if (!map.has(root) && path !== "fluid.global") {
+            map.set(root, path);
+            fluid.each(root, function (child, seg) {
+                fluid.tests.countHeapRecurse(map, child, path + "." + seg);
+            });
+        }
+    };
+
+    fluid.tests.countHeap = function () {
+        var map = new Map();
+        fluid.tests.countHeapRecurse(map, fluid, "fluid");
+        return map;
+    };
+
+    jqUnit.test("FLUID-6371: Memory leak tests", function () {
+        var that = fluid.tests.FLUID6371root();
+        var initialHeap = fluid.tests.countHeap();
+        fluid.log("Initial heap size ", initialHeap);
+        that.events.createIt.fire();
+        var oneHeap = fluid.tests.countHeap();
+        fluid.log("Heap size after one cycle", oneHeap.size);
+
+        for (var i = 0; i < 3; ++i) {
+            that.events.createIt.fire();
+        }
+        var finalHeap = fluid.tests.countHeap();
+        fluid.log("Heap size after three cycles", finalHeap.size);
+        jqUnit.assertEquals("Heap size should not have increased after repeated construction", oneHeap.size, finalHeap.size);
+        finalHeap.forEach(function (value, key) {
+            if (!oneHeap.has(key)) {
+                fluid.log("Excess path: ", value);
+            }
+        });
     });
 
     /** FLUID-6126 failure to construct child of root which has been advised **/

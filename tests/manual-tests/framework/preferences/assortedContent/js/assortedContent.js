@@ -1,5 +1,7 @@
 /*
-Copyright 2011-2017 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -27,7 +29,8 @@ var assortedContent = assortedContent || {};
                         "default": "assortedContent-theme-basic"
                     }
                 },
-                tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html"
+                tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+                tocMessage: "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
             }
         });
 

@@ -1,5 +1,7 @@
 /*
-Copyright 2013 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -26,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "default": 1,
                     "minimum": 1,
                     "maximum": 10,
-                    "divisibleBy": 1
+                    "multipleOf": 1
                 }
             }
         }
@@ -42,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "default": 1,
                     "minimum": 1,
                     "maximum": 2,
-                    "divisibleBy": 0.2
+                    "multipleOf": 0.2
                 }
             }
         }
@@ -85,7 +87,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "default": 1,
                             "minimum": 1,
                             "maximum": 10,
-                            "divisibleBy": 1
+                            "multipleOf": 1
                         },
                         "fluid.prefs.textSize": fluid.defaults(
                             "fluid.tests.customTextSize").schema.properties["fluid.prefs.textSize"]
@@ -158,7 +160,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.prefs.contrast"
         ]);
         jqUnit.assertEquals("Supplied primary schema should override the default schema grades",
-            0.2, schema.properties["fluid.prefs.textSize"].divisibleBy);
+            0.2, schema.properties["fluid.prefs.textSize"].multipleOf);
     };
 
     fluid.tests.primaryBuilder = function (schema) {

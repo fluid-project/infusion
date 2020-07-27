@@ -83,6 +83,7 @@
                         "messagePrefix": "../../src/framework/preferences/messages"
                     },
                     "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html",
+                    "tocMessage": "../../src/framework/preferences/messages/tableOfContents-enactor.json",
                     "ignoreForToC": {
                         "overviewPanel": ".flc-overviewPanel"
                     }
@@ -237,11 +238,11 @@
                     <form class="feedback-form">
                         <div>
                             <label for="email">Email address <span class="optional">(optional)</span></label>
-                            <input type="text" id="email" value="This form is non-functional" />
+                            <input type="text" id="email" value="" placeholder="e-mail@example.com" />
                         </div>
                         <div>
                             <label for="comments">Your comments</label>
-                            <textarea id="comments">This form is non-functional, and exists only for demonstrating Preferences Editor functionality</textarea>
+                            <textarea id="comments" placeholder="This form is non-functional, and exists only for demonstrating Preferences Editor functionality"></textarea>
                         </div>
                         <div>
                             <button class="fl-force-right" disabled>Send</button>

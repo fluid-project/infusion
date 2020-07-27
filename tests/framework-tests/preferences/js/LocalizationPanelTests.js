@@ -1,5 +1,7 @@
 /*
-Copyright 2018 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -36,6 +38,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             template: {
                 href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-localization.html"
             }
+        },
+        stringArrayIndex: {
+            localization: [
+                "localization-default",
+                "localization-en",
+                "localization-fr",
+                "localization-es",
+                "localization-fa"
+            ]
+        },
+        controlValues: {
+            localization: ["default", "en", "fr", "es", "fa"]
         }
     });
 

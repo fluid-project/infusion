@@ -1,5 +1,7 @@
 /*
-Copyright 2013 OCAD University
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -28,14 +30,14 @@ var example = example || {};
             "default": 60,
             "minimum": 0,
             "maximum": 100,
-            "divisibleBy": 5
+            "multipleOf": 5
         },
         "example.wordsPerMinute": {
             "type": "number",
             "default": 180,
             "minimum": 130,
             "maximum": 250,
-            "divisibleBy": 10
+            "multipleOf": 10
         },
         "example.increaseSize": {
             "type": "boolean",
@@ -46,14 +48,14 @@ var example = example || {};
             "default": 2,
             "minimum": 1,
             "maximum": 5,
-            "divisibleBy": 1
+            "multipleOf": 1
         },
         "example.magnification": {
             "type": "number",
             "default": 100,
             "minimum": 100,
             "maximum": 400,
-            "divisibleBy": 10
+            "multipleOf": 10
         },
         "example.magnifierPosition": {
             "type": "string",

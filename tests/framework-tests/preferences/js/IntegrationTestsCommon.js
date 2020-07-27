@@ -1,7 +1,7 @@
 /*
-Copyright 2011-2016 OCAD University
-Copyright 2011 Lucendo Development Ltd.
-Copyright 2015 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -93,7 +93,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer({
                 uiEnhancer: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
                 }
             });
             var savedSelections;
@@ -172,6 +173,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         uiEnhancer: {
             gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.prefs.initialModel.starter"],
             tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+            tocMessage: "../../../../src/framework/preferences/messages/tableOfContents-enactor.json",
             classnameMap: {
                 "textFont": {
                     "default": "fl-font-times"
@@ -183,8 +185,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.prefs.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];
-    fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e"];
+    fluid.tests.prefs.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6"];
+    fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e", "f"];
 
     fluid.tests.prefs.testComponentIntegration = function (prefsEditor) {
         var body = $("body");
@@ -197,13 +199,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var actualTextFontStrings = prefsEditor.textFont.options.strings.textFont;
         var actualTextFontControlValues = prefsEditor.textFont.options.controlValues.textFont;
 
-        jqUnit.assertEquals("There are 5 elements in the text font string list", 5, actualTextFontStrings.length);
+        jqUnit.assertEquals("There are 6 elements in the text font string list", 6, actualTextFontStrings.length);
         jqUnit.assertEquals("The first text font string value matches", testStrings[0], actualTextFontStrings[0]);
-        jqUnit.assertEquals("The fifth text font string value matches", testStrings[4], actualTextFontStrings[4]);
+        jqUnit.assertEquals("The sixth text font string value matches", testStrings[5], actualTextFontStrings[5]);
 
-        jqUnit.assertEquals("There are 5 elements in the text font control value list", 5, actualTextFontControlValues.length);
+        jqUnit.assertEquals("There are 6 elements in the text font control value list", 6, actualTextFontControlValues.length);
         jqUnit.assertEquals("The first text font control value matches", testControlValues[0], actualTextFontControlValues[0]);
-        jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
+        jqUnit.assertEquals("The sixth text font control value matches", testControlValues[5], actualTextFontControlValues[5]);
     };
 
     fluid.defaults("fluid.tests.prefs.mungingIntegrationBase", {

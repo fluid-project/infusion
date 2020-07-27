@@ -1,12 +1,7 @@
 /*
-Copyright 2008-2010 University of Cambridge
-Copyright 2008-2009 University of Toronto
-Copyright 2008-2009 University of California, Berkeley
-Copyright 2010-2011 Lucendo Development Ltd.
-Copyright 2010-2011 OCAD University
-Copyright 2011 Charly Molter
-Copyright 2012-2013 Raising the Floor - US
-Copyright 2014-2016 Raising the Floor - International
+Copyright The Infusion copyright holders
+See the AUTHORS.md file at the top-level directory of this distribution and at
+https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -423,11 +418,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("prop1 should have been destroyed", expected, target4);
     });
 
-    jqUnit.test("copy", function () {
+    jqUnit.test("fluid.copy tests", function () {
         var array = [1, "thing", true, null];
         var copy = fluid.copy(array);
         jqUnit.assertDeepEq("Array copy", array, copy);
+        array.forEach(function (element) {
+            jqUnit.assertEquals("Primitive copy", element, fluid.copy(element));
+        });
     });
+
+    fluid.tests.circularStructure = {
+        property: 42,
+        nestedProperty: {
+        }
+    };
+
+    fluid.tests.testOneRecursion = function (message, func) {
+        jqUnit.test("Recursion bailout tests: " + message, function () {
+            jqUnit.expectFrameworkDiagnostic("Framework diagnostic on circular structure", function () {
+                func(fluid.tests.circularStructure);
+            }, ["circular", "nestedProperty"]);
+        });
+    };
+
+    fluid.tests.circularStructure.nestedProperty.furtherNested = fluid.tests.circularStructure;
+
+    fluid.tests.testOneRecursion("fluid.copy", fluid.copy);
+
+    fluid.tests.testOneRecursion("fluid.freezeRecursive", fluid.freezeRecursive);
 
     jqUnit.test("flattenObjectPaths: deep values", function () {
         var originalObject = {
@@ -1107,7 +1125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "default": 1,
                 "min": 1,
                 "max": 2,
-                "divisibleBy": 0.1
+                "multipleOf": 0.1
             }
         }
     });
