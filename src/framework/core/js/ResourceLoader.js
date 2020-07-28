@@ -473,6 +473,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
 
         /**
+         * @name ResourceFetcher#refetchOneResource
+         * @method
+         * @see fluid.fetchResources.refetchOneResource
+         * @param {String} key - The key within this fetcher's `resourceSpecs` for the resource to be fetched
+         * @return {Promise} A promise for the resolution of the resourceSpec's fetched value
+         */
+        that.refetchOneResource = function (key) {
+            return fluid.fetchResources.refetchOneResource(that.resourceSpecs[key], that);
+        };
+
+        /**
          * @name ResourceFetcher.resourceSpecs
          * @member {ResourceSpecs} The fully elaborated `resourceSpecs` structure that will be queried to fetch resources.
          * This should be considered as volatile and members such as, e.g., `locale` will be updated if the loader is
@@ -512,20 +523,64 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.fetchResources.checkCompletion(resourceFetcher.resourceSpecs, resourceFetcher);
         return resourceFetcher.completionPromise;
     };
+
+    // A list of the resourceSpec fields which are considered mutable and modified during the fetch process.
     fluid.fetchResources.mutableResourceSpecFields = ["promise", "resourceText", "parsed", "locale", "defaultLocale"];
 
-    fluid.fetchResources.refetchAll = function (resourceFetcher) {
+    /** Reinitialise a resourceFetcher and restart the process of fetching its resource. This will cancel the member `promise`,
+     * and then delete it together with all the other mutable members listed in `mutableResourceSpecFields`.
+     * If the flat `defeatInitiate` is not supplied this will also launch the overall process of refetching this resource
+     * at the `resourceFetcher` level. If `defeatInitiate` is set to `true` it is assumed that the caller will call
+     * `fluit.fetchResources.initiateRefetch` themselves once they have started the refetch for other resources.
+     * @param {resourceSpec} resourceSpec - The `resourceSpec` designating the resource which will be refetched
+     * @param {resourceFetcher} resourceFetcher - The fetcher holding the resource to be refetched
+     * @param {Boolean} [defeatInitiate] - (optional) Unless this is set to `true`, this call will immediately start the
+     * process of refetching the resource
+     * @return {Promise} A promise for the resolution of the resource to be refetched
+     */
+    fluid.fetchResources.refetchOneResource = function (resourceSpec, resourceFetcher, defeatInitiate) {
+        resourceSpec.promise.cancel();
+        fluid.fetchResources.mutableResourceSpecFields.forEach(function (field) {
+            delete resourceSpec[field];
+        });
+        fluid.fetchResources.initOneResource(resourceSpec);
+        if (!defeatInitiate) {
+            fluid.fetchResources.initiateRefetch(resourceFetcher);
+        }
+        return resourceSpec.promise;
+    };
+
+    /** Initiate the overall process of refetching any resources in the supplied `resourceFetcher` whose refetch has bee
+     * scheduled with a previous call to `fluid.fetchResources.refetchOneResource`
+     * @param {resourceFetcher} resourceFetcher - The fetcher for which all resources will be loaded
+     */
+    fluid.fetchResources.initiateRefetch = function (resourceFetcher) {
         resourceFetcher.completionPromise.cancel();
         delete resourceFetcher.completionPromise;
-        fluid.each(resourceFetcher.resourceSpecs, function (oneResourceSpec) {
-            oneResourceSpec.promise.cancel();
-            fluid.fetchResources.mutableResourceSpecFields.forEach(function (field) {
-                delete oneResourceSpec[field];
-            });
-            fluid.fetchResources.initOneResource(oneResourceSpec);
-        });
         fluid.initResourceFetcher(resourceFetcher);
-        return resourceFetcher.fetchAll();
+        fluid.fetchResources.fetchAll(resourceFetcher);
+        resourceFetcher.fetchAll();
+    };
+
+    /** Trigger the refetching of all resources managed by this `resourceFetcher`. By default, this will only fetch resources
+     * which are localisable (that is, they have resource entries with a path field which can be interpolated for a locale)
+     * @param {resourceFetcher} resourceFetcher - The fetcher for which all resources will be loaded
+     * @param {Boolean} [withoutLocales] - (Optional) Set to `true` if this should also fetch resources which are not localisable
+     * @return {Promise} The `completionPromise` for the fetcher which will yield the full state of fetched `resourceSpecs`
+     * in either success or failure
+     */
+    fluid.fetchResources.refetchAll = function (resourceFetcher, withoutLocales) {
+        var anyLaunched = false;
+        fluid.each(resourceFetcher.resourceSpecs, function (resourceSpec) {
+            if (resourceSpec.locale || withoutLocales) {
+                anyLaunched = true;
+                fluid.fetchResources.refetchOneResource(resourceSpec, resourceFetcher, true);
+            }
+        });
+        if (anyLaunched) {
+            fluid.fetchResources.initiateRefetch(resourceFetcher);
+        }
+        return resourceFetcher.completionPromise;
     };
 
     fluid.fetchResources.fireTransformEvent = function (resourceSpec, resourceFetcher) {

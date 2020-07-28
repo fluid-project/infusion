@@ -175,6 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var locale = resourceFetcher.options.locale || resourceFetcher.options.defaultLocale;
         fluid.tests.resourceLoader.assertTemplatesLoaded(resources, locale);
         if (locale === "en") {
+            // TODO: Old-fashioned test which bangs on the resourceFetcher options - should use the modelised form instead
             resourceFetcher.options.locale = "fr";
             resourceFetcher.refetchAll();
         } else {
@@ -528,6 +529,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             });
         });
+    });
+
+    /** FLUID-4982: Refetching individual resources */
+
+    fluid.defaults("fluid.tests.fluid4982refetch", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        members: {
+            remoteModel: {
+                value: 42
+            }
+        },
+        invokers: {
+            fetchModel: "fluid.identity({that}.remoteModel)"
+        },
+        model: "{that}.resources.modelSource.parsed",
+        resources: {
+            modelSource: {
+                promiseFunc: "{that}.fetchModel"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-4982: Refetching individual resource", function () {
+        var that = fluid.tests.fluid4982refetch();
+        jqUnit.assertDeepEq("Initial model correct", {value: 42}, that.model);
+        var newModel = {
+            newValue: 43
+        };
+        that.remoteModel = newModel;
+        that.resourceFetcher.refetchOneResource("modelSource");
+
+        jqUnit.assertDeepEq("Updated model correct", {newValue: 43}, that.model);
     });
 
     /** FLUID-4982: Accessing resources via MessageResolver on startup **/
