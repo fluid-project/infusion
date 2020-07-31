@@ -819,7 +819,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     outDistributions: A list of distributions registered from this component, signalling from distributeOptions to clearDistributions
     //     ownScope: A hash of names to components which are in scope from this component - populated in cacheShadowGrades
     //     childrenScope: A hash of names to components which are in scope because they are children of this component (BELOW own ownScope in resolution order)
-    //     potentia: The original potentia record as supplied to registerPotentia
+    //     potentia: The original potentia record as supplied to registerPotentia - populated in fluid.processComponentShell
+    //     createdTransactionId: The tree transaction id in which this component was created - populated in fluid.processComponentShell
     //     childComponents: Hash of key names to subcomponents
     //     lightMergeComponents, lightMergeDynamicComponents: signalling between fluid.processComponentShell and fluid.concludeComponentObservation
     //     modelSourcedDynamicComponents: signalling between fluid.processComponentShell and fluid.initModel
@@ -1781,6 +1782,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 segs: fromModelPath.concat(isBoolean ? [] : ["*"])
             },
             excludeSource: "init",
+            transactional: true,
             funcName: "fluid.lensedComponentModelListener",
             args: ["{that}", key, "{change}.path", "{change}.value", isBoolean]
         };
@@ -1857,6 +1859,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var instantiator = fluid.globalInstantiator;
         var shadow = instantiator.idToShadow[shell.id];
         shadow.potentia = potentia;
+        shadow.createdTransactionId = transRec.transactionId;
 
         var mergeOptions = shadow.mergeOptions;
 

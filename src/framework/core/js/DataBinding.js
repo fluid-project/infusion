@@ -778,9 +778,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.popActivity();
                 } else {
                     if (changeRequest && changeRequest.type === "DELETE") {
-                        existing.transaction.fireChangeRequest({type: "DELETE", segs: targetSegs});
-                    }
-                    if (newValue !== undefined) {
+                        // Rebase the incoming DELETE with respect to this relay - whilst "newValue" is correct and we could honour this by
+                        // asking fluid.notifyModelChanges to decompose this into a DELETE plus ADD, this is more efficient
+                        var deleteSegs = targetSegs.concat(changeRequest.segs.slice(sourceSegs.length));
+                        existing.transaction.fireChangeRequest({type: "DELETE", segs: deleteSegs});
+                    } else if (newValue !== undefined) {
                         existing.transaction.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
                     }
                 }
@@ -1450,6 +1452,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** CHANGE APPLIER **/
 
+    // supported, PUBLIC API function
     /** Opens a transaction against the supplied applier, deletes the value at the supplied path, applies the supplied value in its place
      * and commits the transaction. This is a useful method since the semantics of a ChangeApplier "ADD" message are accumulative - the
      * supplied value is ordinarily merged into any existing value. By using this method, a client can wholly update a value held
@@ -1475,29 +1478,58 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /*
+     * Utilities supporting fluid.model.applyHolderChangeRequest
+     */
+
+    /** Given a changeMap structure and an array of paths into it, returns the change type found along that path,
+     * or `null` if the path is unchanged
+     * @param {ChangeMap} changeMap - A "ChangeMap" structure isomorphic to the model, holding "ADD" or "DELETE" at the highest
+     * path where such a change has been received
+     * @param {String[]} segs - Array of path segments into the structure
+     * @return {("ADD"|"DELETE"|Null)} Returns "ADD" or "DELETE" if such a change is found along the supplied path, otherwise `null`.
+     */
     fluid.model.isChangedPath = function (changeMap, segs) {
         for (var i = 0; i <= segs.length; ++i) {
             if (typeof(changeMap) === "string") {
-                return true;
+                return changeMap;
             }
             if (i < segs.length && changeMap) {
                 changeMap = changeMap[segs[i]];
             }
         }
-        return false;
+        return null;
     };
 
+    /** Updates both the "changeMap" and "deltaMap" to map the type of a ChangeRequest received at a particular path
+     * @param {Object} options - An options structure with members `changeMap` and `deltaMap` which will both be updated
+     * in order to take account of the incoming ChangeRequest type and path
+     * @param {String[]} segs - An array of path segments at which a change has been received
+     * @param {("ADD"|"DELETE")} value - A string holding the ChangeRequest type
+     */
     fluid.model.setChangedPath = function (options, segs, value) {
         var notePath = function (record) {
+            var root = options;
             segs.unshift(record);
-            fluid.model.setSimple(options, segs, value);
+            // We can't use any of the standard drivers here since we i) need to create entries along as we go, like set, but
+            // ii) not attempt to set any properties on a primitive value if we find it
+            for (var i = 0; i < segs.length - 1; ++i) {
+                var seg = segs[i];
+                if (root[seg] === undefined) {
+                    root[seg] = {};
+                }
+                root = root[seg];
+            }
+            if (fluid.isPlainObject(root)) {
+                root[fluid.peek(segs)] = value;
+            }
             segs.shift();
         };
-        if (!fluid.model.isChangedPath(options.changeMap, segs)) {
+        if (fluid.model.isChangedPath(options.changeMap, segs) !== value) {
             ++options.changes;
             notePath("changeMap");
         }
-        if (!fluid.model.isChangedPath(options.deltaMap, segs)) {
+        if (fluid.model.isChangedPath(options.deltaMap, segs) !== value) {
             ++options.deltas;
             notePath("deltaMap");
         }
@@ -1575,9 +1607,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return options;
     };
 
-    // Changes: "MERGE" action abolished
-    // ADD/DELETE at root can be destructive
-    // changes tracked in optional final argument holding "changeMap: {}, changes: 0, unchanged: 0"
+    /** Central point where a ChangeRequest is applied to a model. This keeps records of which parts of the model has been
+     * invalidated both on a fine scale ("deltaMap", used for individual changes for the operation of every relay) and
+     * a coarse scale ("changeMap", used to track the overall state of the model across the whole transaction.
+     * @param {Any} holder - The object holding the model at member `model` - may be a Fluid component or a temporary structure
+     * created during a transaction
+     * @param {ChangeRequest} request - The ChangeRequest to be applied
+     * @param {Object} options - Options governing the changeApplication process. This may include members:
+     *     {ChangeMap} [changeMap, deltaMap] - Optional ChangeMap structures mapping updates to the model (see `fluid.model.setChangedPath`)
+     *     {Integer} changes, delta - Counts (pretty notional, the only real use made at present is to check whether they are 0) of updates made to the model
+     *     {Boolean} inverse - Whether the change is being applied or unapplied to the model (only used by the `fluid.model.diff` driver)
+     * @return {ChangeMap} The updated `deltaMap` if one was supplied in options
+     */
     fluid.model.applyHolderChangeRequest = function (holder, request, options) {
         options = fluid.model.defaultAccessorConfig(options);
         options.deltaMap = options.changeMap ? {} : null;
@@ -1587,7 +1628,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (atRoot) {
             pen = {root: holder, last: "model"};
         } else {
-            if (!holder.model) {
+            if (!holder.model && request.type !== "DELETE") {
                 holder.model = {};
                 fluid.model.setChangedPath(options, [], options.inverse ? "DELETE" : "ADD");
             }
@@ -1610,10 +1651,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return options.deltas ? options.deltaMap : null;
     };
 
+    // TODO: This algorithm is quite inefficient in that both models will be copied once each
+    // supported, PUBLIC API function
     /** Compare two models for equality using a deep algorithm. It is assumed that both models are JSON-equivalent and do
      * not contain circular links.
-     * @param modela The first model to be compared
-     * @param modelb The second model to be compared
+     * @param {Any} modela The first model to be compared
+     * @param {Any} modelb The second model to be compared
      * @param {Object} options - If supplied, will receive a map and summary of the change content between the objects. Structure is:
      *     changeMap: {Object/String} An isomorphic map of the object structures to values "ADD" or "DELETE" indicating
      * that values have been added/removed at that location. Note that in the case the object structure differs at the root, <code>changeMap</code> will hold
@@ -1621,10 +1664,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *     changes: {Integer} Counts the number of changes between the objects - The two objects are identical iff <code>changes === 0</code>.
      *     unchanged: {Integer} Counts the number of leaf (primitive) values at which the two objects are identical. Note that the current implementation will
      * double-count, this summary should be considered indicative rather than precise.
-     * @return <code>true</code> if the models are identical
+     * @return {Boolean} `true` if the models are identical
      */
-    // TODO: This algorithm is quite inefficient in that both models will be copied once each
-    // supported, PUBLIC API function
     fluid.model.diff = function (modela, modelb, options) {
         options = options || {changes: 0, unchanged: 0, changeMap: {}}; // current algorithm can't avoid the expense of changeMap
         var typea = fluid.typeCode(modela);
@@ -1637,15 +1678,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             // Apply both forward and reverse changes - if no changes either way, models are identical
             // "ADD" reported in the reverse direction must be accounted as a "DELETE"
-            var holdera = {
-                model: fluid.copy(modela)
-            };
-            fluid.model.applyHolderChangeRequest(holdera, {value: modelb, segs: [], type: "ADD"}, options);
             var holderb = {
                 model: fluid.copy(modelb)
             };
             options.inverse = true;
             fluid.model.applyHolderChangeRequest(holderb, {value: modela, segs: [], type: "ADD"}, options);
+            var holdera = {
+                model: fluid.copy(modela)
+            };
+            options.inverse = false;
+            fluid.model.applyHolderChangeRequest(holdera, {value: modelb, segs: [], type: "ADD"}, options);
+
             togo = options.changes === 0;
         }
         if (togo === false && options.changes === 0) { // catch all primitive cases

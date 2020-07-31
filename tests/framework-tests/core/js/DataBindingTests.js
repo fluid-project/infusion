@@ -399,25 +399,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    jqUnit.test("Transactional ChangeApplier - external transactions: " + name, function () {
+        var model = {a: 1, b: 2};
+        var holder = {model: model};
+        var applier = fluid.makeHolderChangeApplier(holder);
+        var initModel = fluid.copy(model);
 
-    fluid.tests.testExternalTrans = function (applierMaker, name) {
-        jqUnit.test("Transactional ChangeApplier - external transactions: " + name, function () {
-            var model = {a: 1, b: 2};
-            var holder = {model: model};
-            var applier = applierMaker(holder);
-            var initModel = fluid.copy(model);
-
-            var transApp = applier.initiate();
-            transApp.change("c", 3);
-            jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
-            transApp.change("d", 4);
-            jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
-            transApp.commit();
-            jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, holder.model);
-        });
-    };
-
-    fluid.tests.testExternalTrans(fluid.makeHolderChangeApplier, "new applier");
+        var transApp = applier.initiate();
+        transApp.change("c", 3);
+        jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
+        transApp.change("d", 4);
+        jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
+        transApp.commit();
+        jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, holder.model);
+    });
 
     fluid.defaults("fluid.tests.FLUID4633root", {
         gradeNames: "fluid.modelComponent",
@@ -470,6 +465,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Over-broad change triggers listener", notified);
     });
 
+
+    fluid.defaults("fluid.tests.FLUID4625root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            headings: [{
+                value1: 1
+            }]
+        }
+    });
+
+    jqUnit.test("FLUID-4625 II: Over-broad changes in a transaction with wildcard listener", function () {
+        // This is a barer test case for the same kind of model update performed by FLUID-6390 III lensed component test below
+        var values = [];
+        var recordFire = function (newValue) {
+            values.push(newValue);
+        };
+        var that = fluid.tests.FLUID4625root({
+            modelListeners: {
+                "headings.*": recordFire
+            }
+        });
+        values = [];
+        fluid.replaceModelValue(that.applier, [], {
+            headings: [{
+                value1: 1
+            }, {
+                value2: 2
+            }, {
+                value3: 3
+            }]
+        });
+        jqUnit.assertDeepEq("Expected 2 notifications of wildcard listener", [{
+            value2: 2
+        }, {
+            value3: 3
+        }], values);
+    });
 
     /** FLUID-4258: Declarative listener test **/
 
@@ -917,6 +949,307 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         jqUnit.expect(2);
     });
+
+
+    /** FLUID-6390 - Lensed components as a hash **/
+
+    fluid.defaults("fluid.tests.fluid6390child", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390hashRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: {
+                element1: {
+                    value: 42
+                },
+                element2: {
+                    value: 43
+                }
+            }
+        },
+        dynamicComponents: {
+            arenaComponents: {
+                sources: "{that}.model.arena",
+                type: "fluid.tests.fluid6390child",
+                options: {
+                    model: {
+                        arenaValue: "{source}.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390assertModelValues = function (message, that, expected) {
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        var values = fluid.getMembers(children, ["model", "arenaValue"]);
+        jqUnit.assertDeepEq(message, expected, values);
+    };
+
+    jqUnit.test("FLUID-6390: Lensed components as a hash", function () {
+        var that = fluid.tests.fluid6390hashRoot();
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        jqUnit.assertEquals("Two model-driven subcomponents created", 2, children.length);
+        fluid.tests.fluid6390assertModelValues("Initial model values are correct", that, [42, 43]);
+        that.applier.change("arena.element3.value", 44);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with new component", that, [42, 43, 44]);
+        that.applier.change("arena.element1.value", 1);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with forward relay", that, [1, 43, 44]);
+        that.applier.change("arena.element1", null, "DELETE");
+        fluid.tests.fluid6390assertModelValues("Model deletion relayed to component deletion", that, [43, 44]);
+        var component3 = that["arenaComponents-element3"];
+        jqUnit.assertTrue("Fetched component via fluid.componentForModelPath", fluid.isComponent(component3));
+        component3.applier.change("arenaValue", 3);
+        jqUnit.assertEquals("Model value propagated through backward relay", 3, that.model.arena.element3.value);
+        var component2 = that["arenaComponents-element2"];
+        component2.destroy();
+        var expectedFinalArena = {
+            element3: {
+                value: 3
+            }
+        };
+        jqUnit.assertDeepEq("Relay of component destruction back to deletion of source model", expectedFinalArena, that.model.arena);
+    });
+
+    fluid.defaults("fluid.tests.fluid6390booleanRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            shouldComponentExist: 1
+        },
+        dynamicComponents: {
+            conditionalComponent: {
+                source: "{that}.model.shouldComponentExist",
+                type: "fluid.component"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6390: Lensed components from a boolean", function () {
+        var that = fluid.tests.fluid6390booleanRoot();
+        jqUnit.assertTrue("Conditional component should have been constructed", fluid.isComponent(that.conditionalComponent));
+        that.conditionalComponent.destroy();
+        jqUnit.assertEquals("Destruction of component should have unset model value", false, that.model.shouldComponentExist);
+        jqUnit.assertUndefined("Conditional component should not have been reconstructed", that.conditionalComponent);
+        that.applier.change("shouldComponentExist", true);
+        jqUnit.assertTrue("Conditional component should have been reconstructed", fluid.isComponent(that.conditionalComponent));
+        jqUnit.assertEquals("Model flag should not have been unset", true, that.model.shouldComponentExist);
+        that.applier.change("shouldComponentExist", false);
+        jqUnit.assertUndefined("Conditional component should have been destroyed", that.conditionalComponent);
+        jqUnit.assertEquals("Model flag should not have been reset", false, that.model.shouldComponentExist);
+        var thatWithout = fluid.tests.fluid6390booleanRoot({
+            model: {
+                shouldComponentExist: null
+            }
+        });
+        jqUnit.assertUndefined("Conditional component should not have been constructed on startup", thatWithout.conditionalComponent);
+    });
+
+    /** FLUID-6390 - Hall of mirrors lensed components **/
+
+    fluid.registerNamespace("fluid.tests.fluid6390mirror");
+
+    fluid.tests.fluid6390mirror.model2 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2"
+            }]
+        }]
+    };
+
+    fluid.tests.fluid6390mirror.model6 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2",
+                headings: [{
+                    level: 3,
+                    text: "h3",
+                    url: "#h3",
+                    headings: [{
+                        level: 4,
+                        text: "h4",
+                        url: "#h4",
+                        headings: [{
+                            level: 5,
+                            text: "h5",
+                            url: "#h5",
+                            headings: [{
+                                level: 6,
+                                text: "h6",
+                                url: "#h6"
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    };
+
+    fluid.defaults("fluid.tests.fluid6390levels", {
+        gradeNames: "fluid.tests.fluid6390heading"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390heading", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format ]
+        },
+        dynamicComponents: {
+            headings: {
+                sources: "{that}.model.headings",
+                type: "fluid.tests.fluid6390heading",
+                options: {
+                    model: "{source}"
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390defaultModels = function (rootModel, depth) {
+        var togo = [], model = rootModel;
+        for (var i = 0; i < depth; ++i) {
+            togo.push(model);
+            model = fluid.getImmediate(model, ["headings", "0"]);
+        }
+        return togo;
+    };
+
+    fluid.tests.fluid6390mirrorAssert = function (levelsComponent, model, levelsCount) {
+        var headings = [levelsComponent].concat(fluid.queryIoCSelector(levelsComponent, "fluid6390heading"));
+        jqUnit.assertEquals("Correct number of headings constructed", levelsCount, headings.length);
+        var expectedModels = fluid.tests.fluid6390defaultModels(model, levelsCount);
+        var models = fluid.getMembers(headings, "model");
+        jqUnit.assertDeepEq("Nested models should be correct", expectedModels, models);
+    };
+
+    fluid.tests.fluid6390mirrorTest = function (model, levelsCount) {
+        var that = fluid.tests.fluid6390levels({
+            model: model
+        });
+        fluid.tests.fluid6390mirrorAssert(that, model, levelsCount);
+    };
+
+    jqUnit.test("FLUID-6390: Hall of mirrors lensed components", function () {
+        fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model2, 3);
+        fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model6, 7);
+    });
+
+    /** FLUID-6390 - Hall of mirrors via resource and relay **/
+
+    fluid.defaults("fluid.tests.fluid6390resource", {
+        gradeNames: "fluid.resourceLoader",
+        resources: {
+            headingsSource: {
+                promiseFunc: "{that}.fetchHeadingsModel"
+            }
+        },
+        invokers: {
+            fetchHeadingsModel: "fluid.identity({that}.headingsModel)"
+        },
+        members: { // Stick it in a member so it is updatable for the next test
+            headingsModel: "{that}.options.headingsModel"
+        },
+        model: "{that}.resources.headingsSource.parsed",
+        components: {
+            levels: {
+                type: "fluid.tests.fluid6390levels",
+                options: {
+                    model: "{fluid6390resource}.model"
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390mirrorTestII = function (model, levelsCount) {
+        var that = fluid.tests.fluid6390resource({
+            headingsModel: model
+        });
+        fluid.tests.fluid6390mirrorAssert(that.levels, model, levelsCount);
+    };
+
+    jqUnit.test("FLUID-6390 II : Hall of mirrors lensed components via resource and relay", function () {
+        fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model2, 3);
+        fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model6, 7);
+    });
+
+    fluid.tests.fluid6390mirror.model3 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2"
+            }]
+        }, {
+            level: 1,
+            text: "h1",
+            url: "#h3"
+        }, {
+            level: 1,
+            text: "h1",
+            url: "#h4"
+        }
+        ]
+    };
+
+    /** FLUID-6390 - Hall of mirrors via updating resource and relay **/
+
+    fluid.tests.fluid6390pushTransaction = function (that, holder) {
+        var shadow = fluid.shadowForComponent(that);
+        var transactionId = shadow.createdTransactionId;
+        holder.createdAtTransaction.push(transactionId);
+    };
+
+    fluid.defaults("fluid.tests.fluid6390Tracker", {
+        members: {
+            createdAtTransaction: []
+        },
+        distributeOptions: {
+            record: "fluid.tests.fluid6390Tracked",
+            target: "{that fluid.tests.fluid6390heading}.options.gradeNames"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6390Tracked", {
+        listeners: {
+            "onCreate.track": "fluid.tests.fluid6390pushTransaction({that}, {fluid6390Tracker})"
+        }
+    });
+
+    jqUnit.test("FLUID-6390 III: Hall of mirrors lensed components with update, via resource and relay", function () {
+        var that = fluid.tests.fluid6390resource({
+            gradeNames: "fluid.tests.fluid6390Tracker",
+            headingsModel: fluid.tests.fluid6390mirror.model2
+        });
+        var headings = fluid.queryIoCSelector(that, "fluid.tests.fluid6390heading");
+        jqUnit.assertEquals("There should initially be 3 headings", 3, headings.length);
+        that.createdAtTransaction = [];
+        that.headingsModel = fluid.tests.fluid6390mirror.model3;
+        that.resourceFetcher.refetchOneResource("headingsSource");
+        var newIds = that.createdAtTransaction;
+        jqUnit.assertEquals("Three components should have been created", 2, newIds.length);
+        jqUnit.assertValue("Transaction value should have been recorded for first component", newIds[0]);
+        newIds.forEach(function (id) {
+            jqUnit.assertEquals("All lensed components should have been created in the same transaction", newIds[0], id);
+        });
+
+        var afterHeadings = fluid.queryIoCSelector(that, "fluid.tests.fluid6390heading");
+        jqUnit.assertEquals("There should now be 5 headings", 5, afterHeadings.length);
+    });
+
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 
@@ -2245,7 +2578,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
     });
 
-    /* FLUID-5371: Model relay directives "forward" and "backward" */
+    /** FLUID-5371: Model relay directives "forward" and "backward" */
 
     fluid.defaults("fluid.tests.fluid5371root", {
         gradeNames: ["fluid.modelComponent"],
@@ -2390,7 +2723,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         eq: false,
         options: {
-            changes: 3,
+            changes: 4,
             changeMap: {
                 a: {
                     a: "DELETE",
@@ -2408,7 +2741,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         eq: false,
         options: { // Currently we report invalidation of arrays en bloc
-            changes: 1,
+            changes: 2,
             changeMap: {
                 a: "ADD"
             }
