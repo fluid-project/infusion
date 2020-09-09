@@ -50,13 +50,12 @@ var fluid = fluid || fluid_3_0_0;
             if (arguments.length === 2) {
                 args = args.concat($.makeArray(arguments[1]));
             }
+
             var ret = move.apply(null, args);
             this.that = function () {
                 return ret;
             };
-            var type = typeof(ret);
-            return !ret || type === "string" || type === "number" || type === "boolean" ||
-                (ret && ret.length !== undefined) ? ret : this;
+            return ret && ret.constructor && ret.constructor.name === "fluid.componentConstructor" ? this : ret;
         };
         $.fn[name] = togo;
         return togo;
@@ -240,7 +239,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /*
-     * Does does the work of unselecting an element and delegating to the client handler.
+     * Does the work of unselecting an element and delegating to the client handler.
      */
     var eraseSelection = function (selectedElement, handler) {
         if (handler && selectedElement) {
@@ -291,7 +290,7 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    var reifyIndex = function (sc_that) {
+    var reifyIndex = async function (sc_that) {
         var elements = sc_that.selectables;
         if (sc_that.activeItemIndex >= elements.length) {
             sc_that.activeItemIndex = (sc_that.options.noWrap ? elements.length - 1 : 0);
@@ -300,15 +299,15 @@ var fluid = fluid || fluid_3_0_0;
             sc_that.activeItemIndex = (sc_that.options.noWrap ? 0 : elements.length - 1);
         }
         if (sc_that.activeItemIndex >= 0) {
-            fluid.focus(elements[sc_that.activeItemIndex]);
+            return fluid.focus(elements[sc_that.activeItemIndex]);
         }
     };
 
-    var prepareShift = function (selectionContext) {
+    var prepareShift = async function (selectionContext) {
         // FLUID-3590: FF 3.6 and Safari 4.x won't fire blur() when programmatically moving focus.
         var selElm = selectionContext.selectedElement();
         if (selElm) {
-            fluid.blur(selElm);
+            await fluid.blur(selElm);
         }
 
         unselectElement(selectionContext.selectedElement(), selectionContext);
@@ -317,25 +316,25 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    var focusNextElement = function (selectionContext) {
-        prepareShift(selectionContext);
+    var focusNextElement = async function (selectionContext) {
+        await prepareShift(selectionContext);
         ++selectionContext.activeItemIndex;
-        reifyIndex(selectionContext);
+        return reifyIndex(selectionContext);
     };
 
-    var focusPreviousElement = function (selectionContext) {
-        prepareShift(selectionContext);
+    var focusPreviousElement = async function (selectionContext) {
+        await prepareShift(selectionContext);
         --selectionContext.activeItemIndex;
-        reifyIndex(selectionContext);
+        return reifyIndex(selectionContext);
     };
 
     var arrowKeyHandler = function (selectionContext, keyMap) {
-        return function (evt) {
+        return async function (evt) {
             if (evt.which === keyMap.next) {
-                focusNextElement(selectionContext);
+                await focusNextElement(selectionContext);
                 evt.preventDefault();
             } else if (evt.which === keyMap.previous) {
-                focusPreviousElement(selectionContext);
+                await focusPreviousElement(selectionContext);
                 evt.preventDefault();
             }
         };
@@ -370,7 +369,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     var containerFocusHandler = function (selectionContext) {
-        return function (evt) {
+        return async function (evt) {
             var shouldOrig = selectionContext.options.autoSelectFirstItem;
             var shouldSelect = typeof(shouldOrig) === "function" ? shouldOrig() : shouldOrig;
 
@@ -384,7 +383,7 @@ var fluid = fluid || fluid_3_0_0;
                 if (selectionContext.activeItemIndex === NO_SELECTION) {
                     selectionContext.activeItemIndex = 0;
                 }
-                fluid.focus(selectionContext.selectables[selectionContext.activeItemIndex]);
+                await fluid.focus(selectionContext.selectables[selectionContext.activeItemIndex]);
             }
 
             // Force focus not to bubble on some browsers.
@@ -401,8 +400,7 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    var makeElementsSelectable = function (container, defaults, userOptions) {
-
+    var makeElementsSelectable = async function (container, defaults, userOptions) {
         var options = $.extend(true, {}, defaults, userOptions);
 
         var keyMap = getKeyMapForDirection(options.direction);
@@ -419,7 +417,7 @@ var fluid = fluid || fluid_3_0_0;
             options: options
         };
 
-        that.selectablesUpdated = function (focusedItem) {
+        that.selectablesUpdated = async function (focusedItem) {
           // Remove selectables from the tab order and add focus/blur handlers
             if (typeof(that.options.selectablesTabindex) === "number") {
                 that.selectables.fluid("tabindex", that.options.selectablesTabindex);
@@ -436,16 +434,16 @@ var fluid = fluid || fluid_3_0_0;
                 selectElement(focusedItem, that);
             }
             else {
-                reifyIndex(that);
+                return reifyIndex(that);
             }
         };
 
-        that.refresh = function () {
+        that.refresh = async function () {
             if (!that.options.selectableSelector) {
                 fluid.fail("Cannot refresh selectable context which was not initialised by a selector");
             }
             that.selectables = container.find(options.selectableSelector);
-            that.selectablesUpdated();
+            return that.selectablesUpdated();
         };
 
         that.selectedElement = function () {
@@ -460,7 +458,7 @@ var fluid = fluid || fluid_3_0_0;
         container.focus(containerFocusHandler(that));
         container.blur(containerBlurHandler(that));
 
-        that.selectablesUpdated();
+        await that.selectablesUpdated();
 
         return that;
     };
@@ -471,9 +469,9 @@ var fluid = fluid || fluid_3_0_0;
      * Options provide configurability, including direction: and autoSelectFirstItem:
      * Currently supported directions are jQuery.a11y.directions.HORIZONTAL and VERTICAL.
      */
-    fluid.selectable = function (target, options) {
+    fluid.selectable = async function (target, options) {
         target = $(target);
-        var that = makeElementsSelectable(target, fluid.selectable.defaults, options);
+        var that = await makeElementsSelectable(target, fluid.selectable.defaults, options);
         fluid.setScopedData(target, CONTEXT_KEY, that);
         return that;
     };
@@ -481,24 +479,24 @@ var fluid = fluid || fluid_3_0_0;
     /*
      * Selects the specified element.
      */
-    fluid.selectable.select = function (target, toSelect) {
-        fluid.focus(toSelect);
+    fluid.selectable.select = async function (target, toSelect) {
+        return fluid.focus(toSelect);
     };
 
     /*
      * Selects the next matched element.
      */
-    fluid.selectable.selectNext = function (target) {
+    fluid.selectable.selectNext = async function (target) {
         target = $(target);
-        focusNextElement(fluid.getScopedData(target, CONTEXT_KEY));
+        return focusNextElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
     /*
      * Selects the previous matched element.
      */
-    fluid.selectable.selectPrevious = function (target) {
+    fluid.selectable.selectPrevious = async function (target) {
         target = $(target);
-        focusPreviousElement(fluid.getScopedData(target, CONTEXT_KEY));
+        return focusPreviousElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
     /*
