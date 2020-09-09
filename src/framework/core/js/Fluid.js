@@ -1815,6 +1815,9 @@ var fluid = fluid || fluid_3_0_0;
 
     // A function to tag the types of all Fluid components
     fluid.componentConstructor = function () {};
+    Object.defineProperty(fluid.componentConstructor, "name", {
+        value: "fluid.componentConstructor"
+    });
 
     /** Create a "type tag" component with no state but simply a type name and id. The most
      *  minimal form of Fluid component */
