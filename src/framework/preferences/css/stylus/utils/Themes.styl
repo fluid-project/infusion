@@ -2,61 +2,61 @@
 // !important is used for all styles to ensure that Preferences Framework's enactors are able to override the pages default styles.
 
 .fl-theme-bw {
-    --fColor: #000000;
-    --bColor: #ffffff;
+    --fl-fgColor: #000000;
+    --fl-bgColor: #ffffff;
 }
 
 .fl-theme-wb {
-    --fColor: #ffffff;
-    --bColor: #000000;
+    --fl-fgColor: #ffffff;
+    --fl-bgColor: #000000;
 }
 
 .fl-theme-yb {
-    --fColor: #ffff00;
-    --bColor: #000000;
+    --fl-fgColor: #ffff00;
+    --fl-bgColor: #000000;
 }
 
 .fl-theme-by {
-    --fColor: #000000;
-    --bColor: #ffff00;
+    --fl-fgColor: #000000;
+    --fl-bgColor: #ffff00;
 }
 
 .fl-theme-lgdg {
-    --fColor: #bdbdbb;
-    --bColor: #555555;
+    --fl-fgColor: #bdbdbb;
+    --fl-bgColor: #555555;
 }
 
 .fl-theme-gd {
-    --fColor: #888888;
-    --bColor: #222222;
-    --linkColor: #8080ff;
-    --disabledColor: #cc0000;
-    --selectedForegroundColor: #ffffff;
-    --selectedBackgroundColor: #008000;
-    --buttonForegroundColor: #ffffff;
-    --buttonBackgroundColor: #000000;
+    --fl-fgColor: #888888;
+    --fl-bgColor: #222222;
+    --fl-linkColor: #8080ff;
+    --fl-disabledColor: #cc0000;
+    --fl-selectedFgColor: #ffffff;
+    --fl-selectedBgColor: #008000;
+    --fl-buttonFgColor: #ffffff;
+    --fl-buttonBgColor: #000000;
 }
 
 .fl-theme-gw {
-    --fColor: #6c6c6c;
-    --bColor: #ffffff;
-    --linkColor: #6666cc;
-    --disabledColor: #993333;
-    --selectedForegroundColor: #ffffff;
-    --selectedBackgroundColor: #404080;
-    --buttonForegroundColor: #000000;
-    --buttonBackgroundColor: #ffffff;
+    --fl-fgColor: #6c6c6c;
+    --fl-bgColor: #ffffff;
+    --fl-linkColor: #6666cc;
+    --fl-disabledColor: #993333;
+    --fl-selectedFgColor: #ffffff;
+    --fl-selectedBgColor: #404080;
+    --fl-buttonFgColor: #000000;
+    --fl-buttonBgColor: #ffffff;
 }
 
 .fl-theme-bbr {
-    --fColor: #000000;
-    --bColor: #bb9966;
-    --linkColor: #000099;
-    --disabledColor: #600000;
-    --selectedForegroundColor: #ffffff;
-    --selectedBackgroundColor: #000070;
-    --buttonForegroundColor: #000000;
-    --buttonBackgroundColor: #ffd18a;
+    --fl-fgColor: #000000;
+    --fl-bgColor: #bb9966;
+    --fl-linkColor: #000099;
+    --fl-disabledColor: #600000;
+    --fl-selectedFgColor: #ffffff;
+    --fl-selectedBgColor: #000070;
+    --fl-buttonFgColor: #000000;
+    --fl-buttonBgColor: #ffd18a;
 }
 
 // For the general theme styling that applies to html elements and infusion components
@@ -65,12 +65,12 @@ build-themes-Enactors() {
         &, *, .fl-pre view-theme&,
         div, input,
         h1, h2, h3, h4, h5, h6 {
-            color: var(--fColor) !important;
-            background-color: var(--bColor) !important;
-            border-top-color: var(--fColor) !important;
-            border-right-color: var(--fColor) !important;
-            border-bottom-color: var(--fColor) !important;
-            border-left-color: var(--fColor) !important;
+            color: var(--fl-fgColor) !important;
+            background-color: var(--fl-bgColor) !important;
+            border-top-color: var(--fl-fgColor) !important;
+            border-right-color: var(--fl-fgColor) !important;
+            border-bottom-color: var(--fl-fgColor) !important;
+            border-left-color: var(--fl-fgColor) !important;
         }
 
         &:disabled,
@@ -82,27 +82,27 @@ build-themes-Enactors() {
         input[type="reset"]:disabled *,
         input[type="submit"]:disabled,
         input[type="submit"]:disabled *  {
-            color: var(--disabledColor) !important;
+            color: var(--fl-disabledColor) !important;
         }
 
         &::selection,
         ::selection {
-            color: var(--selectedFColor) !important;
-            background-color: var(--selectedBColor) !important;
+            color: var(--fl-selectedFColor) !important;
+            background-color: var(--fl-selectedBColor) !important;
         }
 
         iframe {
-            border-top-color: var(--fColor) !important;
-            border-right-color: var(--fColor) !important;
-            border-bottom-color: var(--fColor) !important;
-            border-left-color: var(--fColor) !important;
+            border-top-color: var(--fl-fgColor) !important;
+            border-right-color: var(--fl-fgColor) !important;
+            border-bottom-color: var(--fl-fgColor) !important;
+            border-left-color: var(--fl-fgColor) !important;
         }
 
         a,
         a *, {
-            color: var(--linkColor, var(--fColor)) !important;
+            color: var(--fl-linkColor, var(--fl-fgColor)) !important;
             font-weight: bold !important;
-            background-color: var(--bColor) !important;
+            background-color: var(--fl-bgColor) !important;
         }
 
         button,
@@ -115,8 +115,8 @@ build-themes-Enactors() {
         input[type="submit"] *,
         .fl-input-button,
         .fl-input-button * {
-            color: var(--buttonForegroundColor, var(--fColor)) !important;
-            background-color: var(--buttonBackgroundColor, var(--bColor)) !important;
+            color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
+            background-color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
         }
 
         ::placeholder {
@@ -128,40 +128,40 @@ build-themes-Enactors() {
         th {
             border-top-width: 0.1em;
             border-top-style: solid;
-            border-top-color: var(--fColor) !important;
+            border-top-color: var(--fl-fgColor) !important;
             border-right-width: 0.1em;
             border-right-style: solid;
-            border-right-color: var(--fColor) !important;
+            border-right-color: var(--fl-fgColor) !important;
             border-bottom-width: 0.1em;
             border-bottom-style: solid;
-            border-bottom-color: var(--fColor) !important;
+            border-bottom-color: var(--fl-fgColor) !important;
             border-left-width: 0.1em;
             border-left-style: solid;
-            border-left-color: var(--fColor) !important;
-            background-color: var(--fColor) !important;
-            color: var(--bColor) !important;
+            border-left-color: var(--fl-fgColor) !important;
+            background-color: var(--fl-fgColor) !important;
+            color: var(--fl-bgColor) !important;
         }
 
         td {
             border-top-width: 0.1em;
             border-top-style: solid;
-            border-top-color: var(--fColor) !important;
+            border-top-color: var(--fl-fgColor) !important;
             border-right-width: 0.1em;
             border-right-style: solid;
-            border-right-color: var(--fColor) !important;
+            border-right-color: var(--fl-fgColor) !important;
             border-bottom-width: 0.1em;
             border-bottom-style: solid;
-            border-bottom-color: var(--fColor) !important;
+            border-bottom-color: var(--fl-fgColor) !important;
             border-left-width: 0.1em;
             border-left-style: solid;
-            border-left-color: var(--fColor) !important;
+            border-left-color: var(--fl-fgColor) !important;
         }
 
         // Focus
         .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable {
             outline-width: 0.2em;
             outline-style: solid;
-            outline-color: var(--fColor);
+            outline-color: var(--fl-fgColor);
         }
 
         // Infusion Components
@@ -172,20 +172,20 @@ build-themes-Enactors() {
 
         // Inline edit
         .fl-inlineEdit-edit {
-            background-color: var(--fColor) !important;
-            color: var(--bColor) !important;
+            background-color: var(--fl-fgColor) !important;
+            color: var(--fl-bgColor) !important;
             border-top-width: 0.1em;
             border-top-style: solid;
-            border-top-color: var(--bColor) !important;
+            border-top-color: var(--fl-bgColor) !important;
             border-right-width: 0.1em;
             border-right-style: solid;
-            border-right-color: var(--bColor) !important;
+            border-right-color: var(--fl-bgColor) !important;
             border-bottom-width: 0.1em;
             border-bottom-style: solid;
-            border-bottom-color: var(--bColor) !important;
+            border-bottom-color: var(--fl-bgColor) !important;
             border-left-width: 0.1em;
             border-left-style: solid;
-            border-left-color: var(--bColor) !important;
+            border-left-color: var(--fl-bgColor) !important;
             padding-top: 0.1em;
             padding-right: 0.1em;
             padding-bottom: 0.1em;
@@ -198,7 +198,7 @@ build-themes-Enactors() {
 
         // Textfield Stepper
         .fl-textfieldStepper .fl-textfieldStepper-textField {
-            border: solid 1px var(--fColor);
+            border: solid 1px var(--fl-fgColor);
         }
 
         .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
@@ -206,14 +206,14 @@ build-themes-Enactors() {
         }
 
         .fl-textfieldStepper .fl-textfieldStepper-focus {
-            outline-color: var(--fColor);
+            outline-color: var(--fl-fgColor);
         }
 
         // Orator
         .fl-orator-highlight {
-            color: var(--bColor) !important;
-            background-color: var(--fColor) !important;
-            outline-color: var(--fColor);
+            color: var(--fl-bgColor) !important;
+            background-color: var(--fl-fgColor) !important;
+            outline-color: var(--fl-fgColor);
         }
 
         .fl-orator-controller-playToggle {
@@ -221,8 +221,8 @@ build-themes-Enactors() {
         }
 
         .fl-icon-orator:before {
-            background-color: var(--bColor);
-            color: var(--fColor);
+            background-color: var(--fl-bgColor);
+            color: var(--fl-fgColor);
             text-shadow: unset;
         }
 
@@ -232,31 +232,31 @@ build-themes-Enactors() {
         .fl-orator-selectionReader-control:hover,
         .fl-orator-selectionReader-control:hover .fl-icon-orator:before,
         .fl-orator-selectionReader-control:hover * {
-            background-color: var(--fColor) !important;
-            color: var(--bColor) !important;
+            background-color: var(--fl-fgColor) !important;
+            color: var(--fl-bgColor) !important;
         }
 
         .fl-orator-selectionReader-control.fl-orator-selectionReader-above:after,
         .fl-orator-selectionReader-control.fl-orator-selectionReader-above:hover:after,
         .fl-orator-selectionReader-control.fl-orator-selectionReader-above:before {
-            border-top-color: var(--fColor);
+            border-top-color: var(--fl-fgColor);
         }
 
         .fl-orator-selectionReader-control.fl-orator-selectionReader-below:after,
         .fl-orator-selectionReader-control.fl-orator-selectionReader-below:hover:after,
         .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
-            border-bottom-color: var(--fColor);
+            border-bottom-color: var(--fl-fgColor);
         }
 
         // Inverted color
         // General Styling
         &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color {
-            color: var(--bColor) !important;
-            background-color: var(--fColor) !important;
-            border-top-color: var(--bColor) !important;
-            border-right-color: var(--bColor) !important;
-            border-bottom-color: var(--bColor) !important;
-            border-left-color: var(--bColor) !important;
+            color: var(--fl-bgColor) !important;
+            background-color: var(--fl-fgColor) !important;
+            border-top-color: var(--fl-bgColor) !important;
+            border-right-color: var(--fl-bgColor) !important;
+            border-bottom-color: var(--fl-bgColor) !important;
+            border-left-color: var(--fl-bgColor) !important;
         }
 
         .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable
@@ -273,41 +273,41 @@ build-themes-Enactors() {
         .fl-focus .fl-inverted-color:focus {
             outline-width: 0.2em;
             outline-style: solid;
-            outline-color: var(--bColor);
+            outline-color: var(--fl-bgColor);
         }
 
         .fl-inverted-color {
             &, *,
             div, input,
             h1, h2, h3, h4, h5, h6 {
-                color: var(--bColor) !important;
-                background-color: var(--fColor) !important;
-                border-top-color: var(--bColor) !important;
-                border-right-color: var(--bColor) !important;
-                border-bottom-color: var(--bColor) !important;
-                border-left-color: var(--bColor) !important;
+                color: var(--fl-bgColor) !important;
+                background-color: var(--fl-fgColor) !important;
+                border-top-color: var(--fl-bgColor) !important;
+                border-right-color: var(--fl-bgColor) !important;
+                border-bottom-color: var(--fl-bgColor) !important;
+                border-left-color: var(--fl-bgColor) !important;
             }
 
             &::selection,
             ::selection {
-                color: var(--selectedBColor) !important;
-                background-color: var(--selectedFColor) !important;
+                color: var(--fl-selectedBColor) !important;
+                background-color: var(--fl-selectedFColor) !important;
             }
 
             iframe {
-                border-top-color: var(--bColor) !important;
-                border-right-color: var(--bColor) !important;
-                border-bottom-color: var(--bColor) !important;
-                border-left-color: var(--bColor) !important;
+                border-top-color: var(--fl-bgColor) !important;
+                border-right-color: var(--fl-bgColor) !important;
+                border-bottom-color: var(--fl-bgColor) !important;
+                border-left-color: var(--fl-bgColor) !important;
             }
 
             a,
             ^[0..-2] a.fl-inverted-color,
             a *,
             ^[0..-2] a.fl-inverted-color * {
-                color: var(--bColor) !important;
+                color: var(--fl-bgColor) !important;
                 font-weight: bold !important;
-                background-color: var(--linkColor, var(--fColor)) !important;
+                background-color: var(--fl-linkColor, var(--fl-fgColor)) !important;
             }
 
             button,
@@ -327,48 +327,48 @@ build-themes-Enactors() {
             &.fl-input-button,
             .fl-input-button *,
             &.fl-input-button * {
-                color: var(--buttonBackgroundColor, var(--bColor)) !important;
-                background-color: var(--buttonForegroundColor, var(--fColor)) !important;
+                color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
+                background-color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
             }
 
             // Tables
             th {
                 border-top-width: 0.1em;
                 border-top-style: solid;
-                border-top-color: var(--bColor) !important;
+                border-top-color: var(--fl-bgColor) !important;
                 border-right-width: 0.1em;
                 border-right-style: solid;
-                border-right-color: var(--bColor) !important;
+                border-right-color: var(--fl-bgColor) !important;
                 border-bottom-width: 0.1em;
                 border-bottom-style: solid;
-                border-bottom-color: var(--bColor) !important;
+                border-bottom-color: var(--fl-bgColor) !important;
                 border-left-width: 0.1em;
                 border-left-style: solid;
-                border-left-color: var(--bColor) !important;
-                background-color: var(--bColor) !important;
-                color: var(--fColor) !important;
+                border-left-color: var(--fl-bgColor) !important;
+                background-color: var(--fl-bgColor) !important;
+                color: var(--fl-fgColor) !important;
             }
 
             td {
                 border-top-width: 0.1em;
                 border-top-style: solid;
-                border-top-color: var(--bColor) !important;
+                border-top-color: var(--fl-bgColor) !important;
                 border-right-width: 0.1em;
                 border-right-style: solid;
-                border-right-color: var(--bColor) !important;
+                border-right-color: var(--fl-bgColor) !important;
                 border-bottom-width: 0.1em;
                 border-bottom-style: solid;
-                border-bottom-color: var(--bColor) !important;
+                border-bottom-color: var(--fl-bgColor) !important;
                 border-left-width: 0.1em;
                 border-left-style: solid;
-                border-left-color: var(--bColor) !important;
+                border-left-color: var(--fl-bgColor) !important;
             }
 
             // Infusion focus element
             .fl-focus:focus, .fl-focus :focus, .selectable {
                 outline-width: 0.2em;
                 outline-style: solid;
-                outline-color: var(--bColor);
+                outline-color: var(--fl-bgColor);
             }
 
             // Infusion Components
@@ -379,20 +379,20 @@ build-themes-Enactors() {
 
             // Inline Edit
             .fl-inlineEdit-edit {
-                background-color: var(--bColor) !important;
-                color: var(--fColor) !important;
+                background-color: var(--fl-bgColor) !important;
+                color: var(--fl-fgColor) !important;
                 border-top-width: 0.1em;
                 border-top-style: solid;
-                border-top-color: var(--fColor) !important;
+                border-top-color: var(--fl-fgColor) !important;
                 border-right-width: 0.1em;
                 border-right-style: solid;
-                border-right-color: var(--fColor) !important;
+                border-right-color: var(--fl-fgColor) !important;
                 border-bottom-width: 0.1em;
                 border-bottom-style: solid;
-                border-bottom-color: var(--fColor) !important;
+                border-bottom-color: var(--fl-fgColor) !important;
                 border-left-width: 0.1em;
                 border-left-style: solid;
-                border-left-color: var(--fColor) !important;
+                border-left-color: var(--fl-fgColor) !important;
                 padding-top: 0.1em;
                 padding-right: 0.1em;
                 padding-bottom: 0.1em;
@@ -405,44 +405,44 @@ build-themes-Enactors() {
 
             // Orator
             .fl-orator-highlight {
-                color: var(--fColor) !important;
-                background-color: var(--bColor) !important;
-                outline-color: var(--bColor);
+                color: var(--fl-fgColor) !important;
+                background-color: var(--fl-bgColor) !important;
+                outline-color: var(--fl-bgColor);
             }
 
             .fl-icon-orator:before {
-                background-color: var(--fColor);
-                color: var(--bColor);
+                background-color: var(--fl-fgColor);
+                color: var(--fl-bgColor);
             }
 
             .fl-orator-controller > *:not(:first-child):hover,
             .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
-                background-color: var(--bColor) !important;
-                color: var(--fColor) !important;
+                background-color: var(--fl-bgColor) !important;
+                color: var(--fl-fgColor) !important;
             }
 
             .fl-orator-selectionReader-control:hover,
             .fl-orator-selectionReader-control:hover .fl-icon-orator:before,
             .fl-orator-selectionReader-control:hover * {
-                background-color: var(--bColor) !important;
-                color: var(--fColor) !important;
+                background-color: var(--fl-bgColor) !important;
+                color: var(--fl-fgColor) !important;
             }
 
             .fl-orator-selectionReader-control.fl-orator-selectionReader-above:after,
             .fl-orator-selectionReader-control.fl-orator-selectionReader-above:hover:after,
             .fl-orator-selectionReader-control.fl-orator-selectionReader-above:before {
-                border-top-color: var(--bColor);
+                border-top-color: var(--fl-bgColor);
             }
 
             .fl-orator-selectionReader-control.fl-orator-selectionReader-below:after,
             .fl-orator-selectionReader-control.fl-orator-selectionReader-below:hover:after,
             .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
-                border-bottom-color: var(--bColor);
+                border-bottom-color: var(--fl-bgColor);
             }
 
             // TextfieldStepper
             .fl-textfieldStepper .fl-textfieldStepper-focus {
-                outline-color: var(--bColor);
+                outline-color: var(--fl-bgColor);
             }
         }
     }
