@@ -51,6 +51,8 @@
     }
 
     .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
+        background-color: var(--fl-bgColor, #fff);
+        color: var(--fl-fgColor, #2f2b2a);
         text-align: center;
         text-transform: lowercase;
         border: none;
@@ -62,8 +64,6 @@
     }
 
     .fl-prefsEditor-showHide {
-        background-color: #fff;
-        color: #2f2b2a;
         flex-grow: 1;
         flex-shrink: 2;
         text-align: left;
@@ -72,9 +72,7 @@
 
     .fl-prefsEditor-reset {
         flex-shrink: 1;
-        background-color: var(--fl-bgColor, #fff);
         border-left: 2px solid var(--fl-fgColor, #ccc);
-        color: var(--fl-fgColor, #2f2b2a);
         padding-right: 16px; // fixed padding to save space on mobile when text size adjustments are applied
     }
 
