@@ -334,4 +334,26 @@
     }
 }
 // Theming
-build-themes-prefsEditor(themes);
+[class*="fl-theme"] {
+    .fl-prefsEditor {
+        // ON/OFF switch
+        .fl-switchUI-control:focus {
+            box-shadow: 0 0 0 0.2em var(--bColor),
+                0 0 0 0.35em var(--fColor);
+        }
+
+        .fl-switchUI-controlKnob {
+            background-color: var(--fColor) !important;
+        }
+
+        .fl-prefsEditor .fl-choice label {
+            &,
+            span,
+            .fl-crossout {
+                background-color: var(--bColor) !important;
+                border-color: var(--fColor) !important;
+                color: var(--fColor) !important;
+            }
+        }
+    }
+}

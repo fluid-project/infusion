@@ -28,9 +28,10 @@
 
     .fl-panelBar {
         width: 100%;
-        background-color: #fff;
-        border-bottom: 1px solid #ccc;
+        background-color: var(--bColor, #fff);
+        border-bottom: 1px solid var(--fColor, #ccc);
         box-shadow: 0px 2px 3px 0 #6f6f6f;
+        color: var(--fColor);
         font-size: 1.6rem;
 
         // panelBar for desktop view
@@ -52,9 +53,7 @@
     .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
         text-align: center;
         text-transform: lowercase;
-        background-color: #ffffff;
         border: none;
-        color: #2f2b2a;
         font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
         white-space: nowrap;
         overflow: hidden;
@@ -63,6 +62,8 @@
     }
 
     .fl-prefsEditor-showHide {
+        background-color: #fff;
+        color: #2f2b2a;
         flex-grow: 1;
         flex-shrink: 2;
         text-align: left;
@@ -71,7 +72,9 @@
 
     .fl-prefsEditor-reset {
         flex-shrink: 1;
-        border-left: 2px solid #ccc;
+        background-color: var(--bColor, #fff);
+        border-left: 2px solid var(--fColor, #ccc);
+        color: var(--fColor, #2f2b2a);
         padding-right: 16px; // fixed padding to save space on mobile when text size adjustments are applied
     }
 
@@ -124,6 +127,10 @@
                 margin-right: 5%;
                 display: block;
                 float: right;
+
+                [class*="fl-theme"]& {
+                    box-shadow:none;
+                }
             }
         }
 
