@@ -219,17 +219,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After initialization, display has custom invitation text.", customInvitation, display.text());
         });
 
-        jqUnit.test("Focussed invitation text (Default)", function () {
+        jqUnit.asyncTest("Focussed invitation text (Default)", async function () {
             jqUnit.expect(3);
 
             var display = $("#empty-display");
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
             var button = inlineEditor.textEditButton;
-            fluid.focus(button);
+            await fluid.focus(button);
             jqUnit.assertEquals("After focus, display has default focussed invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultFocussedViewText, display.text());
-            fluid.blur(button);
+            await fluid.blur(button);
             jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
+
+            jqUnit.start();
         });
 
         jqUnit.test("Invitation text (none)", function () {
@@ -321,7 +323,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 defaultValue, text.text());
         });
 
-        jqUnit.test("Keyboard Navigation Edit", function () {
+        jqUnit.asyncTest("Keyboard Navigation Edit", async function () {
             jqUnit.expect(14);
 
             var display = $("#display");
@@ -331,7 +333,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("TextEditButton is tabbable", fluid.tabindex(button) >= 0);
             jqUnit.assertFalse("Initially display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
 
-            fluid.focus(button);
+            await fluid.focus(button);
+            console.log("after focus");
             jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.focus));
             jqUnit.isVisible("Before enter pressed, display field is visible", "#display");
             jqUnit.notVisible("Before enter pressed, edit field is hidden", "#edit-container");
@@ -351,8 +354,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
             jqUnit.isVisible("After enter pressed, button is visible", button);
 
-            fluid.blur(display);
+            await fluid.blur(button);
             jqUnit.assertFalse("After blur, display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
+
+            jqUnit.start();
         });
 
         jqUnit.test("Hover", function () {
@@ -799,14 +804,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("After editing, the textEditButton text should be", "Edit text " + text, button.text());
             });
 
-            jqUnit.test("Container styling", function () {
+            jqUnit.asyncTest("Container styling", async function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var button = editor.textEditButton;
                 var text = editor.locate("text");
 
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-inlineBlock class on focus", text.parent().hasClass(editor.options.styles.displayView));
-                fluid.focus(button);
+                await fluid.focus(button);
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-container class on focus", text.parent().hasClass(editor.options.styles.focus));
+
+                jqUnit.start();
             });
 
             jqUnit.test("Remove container from tab order", function () {
