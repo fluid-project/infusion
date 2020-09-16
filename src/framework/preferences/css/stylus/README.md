@@ -4,23 +4,19 @@ The "[stylus](./)" directory contains Stylus files for generating the Preference
 
 ## How to add a new theme
 
-Define your own themes variable that looks like:
+Define your own theme variables in `utils/Themes.styl` using the following approach.
 
 ```stylus
-    contrastThemes = {
-        "theme-selector": {
-            foregroundColor: "#000000",
-            backgroundColor: "#ffffff"
-        }
-        // ...
+    .fl-theme-selector { // The CSS class that the Preferences Framework uses to enable this contrast theme.
+        --fl-fgColor: #000000;
+        --fl-bgColor: #ffffff;
+        --fl-linkColor: #000000; // Optional, defaults to --fl-fgColor.
+        --fl-disabledColor: #cc0000; // Optional, ignored if not supplied.
+        --fl-selectedFgColor: #ffffff; // Optional, ignored if not supplied.
+        --fl-selectedBgColor: #008000; // Optional, ignored if not supplied.
+        --fl-buttonFgColor: #ffffff; // Optional, defaults to --fl-fgColor.
+        --fl-buttonBgColor: #000000; // Optional, defaults to --fl-bgColor.
     }
-```
-
-When calling Stylus mixins defined in "[utils/Themes.styl](./utils/Themes.styl)", pass in your own themes variable as a
-parameter, such as:
-
-```stylus
-    build-themes-Enactors(contrastThemes);
 ```
 
 ## How to prevent grunt from compiling utility Stylus files

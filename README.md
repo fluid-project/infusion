@@ -312,3 +312,5 @@ them when they are changed. This task can be run using the following command:
 ```bash
 grunt watch:buildStylus
 ```
+
+For more information on styling the Preferences Framework, [see here](./src/framework/preferences/css/stylus/README.md).
