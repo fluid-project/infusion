@@ -313,4 +313,4 @@ them when they are changed. This task can be run using the following command:
 grunt watch:buildStylus
 ```
 
-For more information on styling the Preferences Framework, [see here](./src/framework/preferences/css/stylus/README.md).
+For more information on styling the Preferences Framework, please review the documentation on [using Stylus with the Preferences Framework](./src/framework/preferences/css/stylus/README.md).

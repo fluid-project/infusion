@@ -7,9 +7,12 @@ The "[stylus](./)" directory contains Stylus files for generating the Preference
 Define your own theme variables in `utils/Themes.styl` using the following approach.
 
 ```stylus
-    .fl-theme-selector { // The CSS class that the Preferences Framework uses to enable this contrast theme.
-        --fl-fgColor: #000000;
-        --fl-bgColor: #ffffff;
+    // The CSS class that the Preferences Framework uses to enable this contrast theme.
+    // The convention is to give the theme a descriptive name (e.g. 'bw' for black on white)
+    // and prefix it with 'fl-theme-'.
+    .fl-theme-mytheme {
+        --fl-fgColor: #000000; // General foreground colour (used for text and borders).
+        --fl-bgColor: #ffffff; // General background colour.
         --fl-linkColor: #000000; // Optional, defaults to --fl-fgColor.
         --fl-disabledColor: #cc0000; // Optional, ignored if not supplied.
         --fl-selectedFgColor: #ffffff; // Optional, ignored if not supplied.
