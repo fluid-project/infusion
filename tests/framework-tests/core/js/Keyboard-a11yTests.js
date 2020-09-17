@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
 
-    var makeMenuSelectable = async function (additionalOptions) {
+    var makeMenuSelectable = function (additionalOptions) {
         var selectionOptions = {
             orientation: fluid.a11y.orientation.HORIZONTAL
         };
@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var mergedOptions = jQuery.extend(selectionOptions, additionalOptions, setupHandlers(),
                 {selectableElements: menuItems});
 
-        await menuContainer.fluid("selectable", mergedOptions);
+        menuContainer.fluid("selectable", mergedOptions);
 
         return {
             container: menuContainer,
@@ -82,7 +82,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var createAndFocusMenu = async function (selectionOptions) {
-        var menu = await makeMenuSelectable(selectionOptions);
+        var menu = makeMenuSelectable(selectionOptions);
         await fluid.focus(menu.container);
 
         // Sanity check.
@@ -200,7 +200,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Tabindex should be reset to 0.", 0, element.fluid("tabindex"));
     });
 
-    jqUnit.asyncTest("selectable() sets correct tabindexes", async function () {
+    jqUnit.test("selectable() sets correct tabindexes", function () {
         var menuContainer = jQuery(MENU_SEL);
         var menuItems = menuContainer.children(MENU_ITEM_SEL);
 
@@ -208,7 +208,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("There should be three selectable menu items", 3, menuItems.length);
 
         // Make them selectable; don't worry about direction or custom handlers for now.
-        await menuContainer.fluid("selectable", {selectableElements: menuItems});
+        menuContainer.fluid("selectable", {selectableElements: menuItems});
 
         // Ensure their tabindexes are set to -1, regardless of previous values
         menuItems.each(function (index, item) {
@@ -218,13 +218,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Just in case, check that the non-selectable child does not have its tabindex set.
         var nonSelectableItem = jQuery(NON_ITEM_SEL);
         jqUnit.assertFalse(nonSelectableItem.fluid("tabindex.has"));
-
-        jqUnit.start();
     });
 
     jqUnit.asyncTest("Selects first item when container is focussed by default", async function () {
         // Don't specify any options, just use the default behaviour.
-        var menu = await makeMenuSelectable();
+        var menu = makeMenuSelectable();
         await jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
 
         jqUnit.start();
@@ -235,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var options = {
             autoSelectFirstItem: true
         };
-        var menu = await makeMenuSelectable(options);
+        var menu = makeMenuSelectable(options);
         await jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
 
         jqUnit.start();
@@ -246,7 +244,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             autoSelectFirstItem: false
         };
 
-        var menu = await makeMenuSelectable(options);
+        var menu = makeMenuSelectable(options);
         // First check that nothing is selected before we focus the menu.
         jqUnit.assertNothingSelected();
 
@@ -261,7 +259,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.start();
     });
 
-    jqUnit.asyncTest("Doesn't select first item when container is focussed--function arg", async function () {
+    jqUnit.test("Doesn't select first item when container is focussed--function arg", function () {
         // Pass in a function that will be called to determine if the first item should be focussed.
         var autoSelectFirstItem = function () {
             return false;
@@ -271,17 +269,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             autoSelectFirstItem: autoSelectFirstItem
         };
 
-        var menu = await makeMenuSelectable(options);
+        var menu = makeMenuSelectable(options);
 
         // First check that nothing is selected before we focus the menu.
         jqUnit.assertNothingSelected();
 
         // Then focus the container.
         // Nothing should still be selected because our predicate function always returns false.
-        menu.container.focus();
+        menu.container.trigger("focus");
         jqUnit.assertNothingSelected();
-
-        jqUnit.start();
     });
 
     jqUnit.asyncTest("select()", async function () {
@@ -386,7 +382,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.asyncTest("selectNext() with wrapping", async function () {
-        var menu = await makeMenuSelectable();
+        var menu = makeMenuSelectable();
         await fluid.focus(menu.container);
 
         // Invoke selectNext twice. We should be on the last item.
@@ -574,7 +570,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.asyncTest("destructibleList and refresh()", async function () {
         var menuContainer = $(MENU_SEL);
-        var selThat = await $(MENU_SEL).fluid("selectable",
+        var selThat = $(MENU_SEL).fluid("selectable",
                 $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers()));
         await fluid.focus(menuContainer);
         var firstMenuItem = getFirstMenuItem();
@@ -591,30 +587,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.start();
     });
 
-    var quickMakeSelectable = async function (containerSelector, options) {
+    var quickMakeSelectable = function (containerSelector, options) {
         return $(containerSelector).fluid("selectable", options);
     };
 
     // Can not test the `onLeaveContainer` event because we are not able to synthesize the `Tab` key.
-    jqUnit.asyncTest("Leaving container: onUnselect", async function () {
+    jqUnit.test("Leaving container: onUnselect", function () {
         var wasCalled = false;
-        await quickMakeSelectable(MENU_SEL, {
+        quickMakeSelectable(MENU_SEL, {
             selectableSelector: MENU_ITEM_SEL,
             onUnselect: function () {
                 wasCalled = true;
             }
         });
-        getFirstMenuItem().focus();
-        getFirstMenuItem().blur();
+        getFirstMenuItem().trigger("focus");
+        getFirstMenuItem().trigger("blur");
 
         jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when moving focus off of the selectables container.",
                           wasCalled);
-
-        jqUnit.start();
     });
 
     jqUnit.asyncTest("No-wrap options", async function () {
-        var menu = await makeMenuSelectable({
+        var menu = makeMenuSelectable({
             noWrap: true
         });
 

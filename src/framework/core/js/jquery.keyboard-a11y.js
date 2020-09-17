@@ -400,7 +400,7 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    var makeElementsSelectable = async function (container, defaults, userOptions) {
+    var makeElementsSelectable = function (container, defaults, userOptions) {
         var options = $.extend(true, {}, defaults, userOptions);
 
         var keyMap = getKeyMapForDirection(options.direction);
@@ -458,7 +458,7 @@ var fluid = fluid || fluid_3_0_0;
         container.focus(containerFocusHandler(that));
         container.blur(containerBlurHandler(that));
 
-        await that.selectablesUpdated();
+        that.promise = that.selectablesUpdated();
 
         return that;
     };
@@ -469,9 +469,9 @@ var fluid = fluid || fluid_3_0_0;
      * Options provide configurability, including direction: and autoSelectFirstItem:
      * Currently supported directions are jQuery.a11y.directions.HORIZONTAL and VERTICAL.
      */
-    fluid.selectable = async function (target, options) {
+    fluid.selectable = function (target, options) {
         target = $(target);
-        var that = await makeElementsSelectable(target, fluid.selectable.defaults, options);
+        var that = makeElementsSelectable(target, fluid.selectable.defaults, options);
         fluid.setScopedData(target, CONTEXT_KEY, that);
         return that;
     };
