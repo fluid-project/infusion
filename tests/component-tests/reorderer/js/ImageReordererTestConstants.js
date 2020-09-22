@@ -56,9 +56,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.jById(fluid.testUtils.imageReorderer.imageReordererRootId);
     };
 
-    fluid.testUtils.imageReorderer.focusLightbox = function () {
+    fluid.testUtils.imageReorderer.focusLightbox = async function () {
         var root = fluid.testUtils.imageReorderer.fetchLightboxRoot();
-        fluid.focus(root);
+        await fluid.focus(root);
     };
 
     function findOrderableByDivAndId() {

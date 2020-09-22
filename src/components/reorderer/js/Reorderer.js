@@ -67,8 +67,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     return false;
                 }
             });
-            actualKeyDown = function (evt) {
-                var oldret = keyDownHandler(evt);
+            actualKeyDown = async function (evt) {
+                var oldret = await keyDownHandler(evt);
                 if (oldret === false) {
                     advancedPrevention = true;
                 }
@@ -343,7 +343,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // unsupported, NON-API function
-    fluid.reorderer.handleKeyDown = function (thatReorderer, styles, evt) {
+    fluid.reorderer.handleKeyDown = async function (thatReorderer, styles, evt) {
         if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
             return true;
         }
@@ -364,7 +364,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // unsupported, NON-API function
-    fluid.reorderer.handleDirectionKeyDown = function (thatReorderer, evt) {
+    fluid.reorderer.handleDirectionKeyDown = async function (thatReorderer, evt) {
         var item = thatReorderer.activeItem;
         if (!item) {
             return true;
@@ -403,8 +403,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
 
             } else if (fluid.reorderer.noModifier(evt)) {
-                fluid.blur(item);
-                fluid.focus($(relativeItem.element));
+                await fluid.blur(item);
+                await fluid.focus($(relativeItem.element));
             }
             return false;
         }
@@ -433,7 +433,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // unsupported, NON-API function
-    fluid.reorderer.requestMovement = function (thatReorderer, requestedPosition, item) {
+    fluid.reorderer.requestMovement = async function (thatReorderer, requestedPosition, item) {
         item = fluid.unwrap(item);
         // Temporary censoring to get around ModuleLayout inability to update relative to self.
         if (!requestedPosition || fluid.unwrap(requestedPosition.element) === item) {
@@ -451,7 +451,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         //$(thatReorderer.activeItem).removeClass(options.styles.selected);
 
         // refocus on the active item because moving places focus on the body
-        fluid.focus(activeItem);
+        await fluid.focus(activeItem);
 
         thatReorderer.refresh();
 
@@ -607,7 +607,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 dropManager.startDrag(e, handlePos, handleWidth, handleHeight);
                 avatar.show();
             },
-            stop: function (e, ui) {
+            stop: async function (e, ui) {
                 item.removeClass(options.styles.mouseDrag);
                 item.addClass(options.styles.selected);
                 $(thatReorderer.activeItem).attr("aria-grabbed", "false");
@@ -620,7 +620,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 thatReorderer.setDropEffects("none");
                 dropManager.endDrag();
 
-                thatReorderer.requestMovement(dropManager.lastPosition(), item);
+                await thatReorderer.requestMovement(dropManager.lastPosition(), item);
                 // refocus on the active item because moving places focus on the body
                 thatReorderer.activeItem.focus();
             },

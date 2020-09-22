@@ -68,22 +68,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * of firing the modifier followed by the modified key itself, to give realism to the process
      * of generating the composite key sequence.
      */
-    fluid.testUtils.reorderer.compositeKey = function (reorderer, event, target, keepModifierPressed) {
+    fluid.testUtils.reorderer.compositeKey = async function (reorderer, event, target, keepModifierPressed) {
         target = fluid.unwrap(target);
         var modifierEvent = $.extend(true, {}, event);
         var modifier = event.ctrlKey ? "CTRL" : event.shiftKey ? "SHIFT" : event.altKey ? "ALT" : "";
         modifierEvent.keyCode = $.ui.keyCode[modifier];
-        fluid.testUtils.reorderer.keyDown(reorderer, modifierEvent, target);
-        fluid.testUtils.reorderer.keyDown(reorderer, event, target);
+        await fluid.testUtils.reorderer.keyDown(reorderer, modifierEvent, target);
+        await fluid.testUtils.reorderer.keyDown(reorderer, event, target);
         if (!keepModifierPressed) {
             modifierEvent.ctrlKey = modifierEvent.shiftKey = modifierEvent.altKey = undefined;
         }
         fluid.testUtils.reorderer.keyUp(reorderer, modifierEvent, target);
     };
 
-    fluid.testUtils.reorderer.keyDown = function (reorderer, event, target) {
+    fluid.testUtils.reorderer.keyDown = async function (reorderer, event, target) {
         event.target = target;
-        reorderer.handleKeyDown(event);
+        return reorderer.handleKeyDown(event);
     };
 
     fluid.testUtils.reorderer.keyUp = function (reorderer, event, target) {
@@ -111,13 +111,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     // stepReorderTests
-    fluid.testUtils.reorderer.stepReorderer = function (container, options) {
+    fluid.testUtils.reorderer.stepReorderer = async function (container, options) {
         var that = fluid.invokeGlobalFunction(options.reordererOptions.reordererFn, [container, options.reordererOptions]);
+        var focusItem = $(options.itemSelector)
+        await fluid.focus(focusItem);
         for (var i = 0; i < options.expectedOrderArrays.length; i++) {
-            var focusItem = fluid.focus($(options.itemSelector));
             var expectedOrder = options.expectedOrderArrays[i];
             jqUnit.assertTrue("focus on item " + focusItem.selector, focusItem.hasClass("fl-reorderer-movable-selected"));
-            options.reordererOptions.key(that, fluid.testUtils.reorderer.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);
+            await options.reordererOptions.key(that, fluid.testUtils.reorderer.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);
             options.reordererOptions.expectOrderFn("after ctrl-" + options.direction.toLowerCase() + " the order is " + expectedOrder, expectedOrder,
                     $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);
         }

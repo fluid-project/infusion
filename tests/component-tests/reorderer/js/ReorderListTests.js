@@ -57,11 +57,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return obj;
         };
 
-        jqUnit.test("reorderList API", function () {
+        jqUnit.asyncTest("reorderList API", async function () {
             var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
             var options = assembleOptions(false);
             var listReorderer = fluid.reorderList("#list1", options);
-            var item2 = fluid.focus($("#list1item2"));
+            var item2 = $("#list1item2");
+            await fluid.focus(item2);
             var item3 = $("#list1item3");
 
             // Sniff test the reorderer that was created - keyboard selection and movement
@@ -70,17 +71,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertFalse("order hasn't changed", afterMoveCallbackWasCalled);
 
-            k.keyDown(listReorderer, k.keyEvent("DOWN"), 1);
+            await k.keyDown(listReorderer, k.keyEvent("DOWN"), 1);
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
 
-            k.compositeKey(listReorderer, k.ctrlKeyEvent("DOWN"), 2);
+            await k.compositeKey(listReorderer, k.ctrlKeyEvent("DOWN"), 2);
 
             assertItemsInOrder("after ctrl-down, order should be ", [1, 2, 4, 3, 5]);
 
             jqUnit.assertTrue("order should change", afterMoveCallbackWasCalled);
 
+            jqUnit.start();
         });
 
         jqUnit.test("reorderList with optional styles", function () {
@@ -111,7 +113,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 $("li", $("#list2")), "list2item");
         }
 
-        jqUnit.test("reorderList with multi selectors", function () {
+        jqUnit.asyncTest("reorderList with multi selectors", async function () {
             var k2 = fluid.testUtils.reorderer.bindReorderer(itemIds2);
             var options = {
                 selectors: {
@@ -126,7 +128,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var listReorderer = fluid.reorderList("#list2", options);
 
-            var item1 = fluid.focus($("#list2item1"));
+            var item1 = $("#list2item1");
+            await fluid.focus(item1);
             var item2 = $("#list2item2");
             var item3 = $("#list2item3");
 
@@ -136,28 +139,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("focus on item1 - item2 should not be selected", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order hasn't changed", afterMoveCallbackWasCalled);
 
-            k2.keyDown(listReorderer, k2.keyEvent("DOWN"), 0);
+            await k2.keyDown(listReorderer, k2.keyEvent("DOWN"), 0);
             jqUnit.assertTrue("down arrow to item2 - item1 should be default", item1.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow to item2 - item2 should be selected", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
 
-            k2.compositeKey(listReorderer, k2.ctrlKeyEvent("DOWN"), 1);
+            await k2.compositeKey(listReorderer, k2.ctrlKeyEvent("DOWN"), 1);
             assertItemsInOrder2("after ctrl-down on non-movable, expect order ", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
             jqUnit.assertFalse("after ctrl-down on non-movable, order shouldn't change", afterMoveCallbackWasCalled);
 
-            k2.keyDown(listReorderer, k2.keyEvent("DOWN"), 1);
+            await k2.keyDown(listReorderer, k2.keyEvent("DOWN"), 1);
             jqUnit.assertTrue("down arrow to item3 - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow to item3 - item3 should be selected", item3.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
 
-            k2.compositeKey(listReorderer, k2.ctrlKeyEvent("DOWN"), 2);
+            await k2.compositeKey(listReorderer, k2.ctrlKeyEvent("DOWN"), 2);
             assertItemsInOrder2("after ctrl-down on non-movable, expect order ", [1, 2, 4, 5, 3, 6, 7, 8, 9, 10]);
 
             jqUnit.assertTrue("after ctrl-down on movable, order should change", afterMoveCallbackWasCalled);
 
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderList, option set disabled wrap, user action ctrl+down", function () {
+        jqUnit.asyncTest("reorderList, option set disabled wrap, user action ctrl+down", async function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
@@ -166,10 +170,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 itemIndex: 3
             };
 
-            fluid.testUtils.reorderer.stepReorderer("#list1", options);
+            await fluid.testUtils.reorderer.stepReorderer("#list1", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderList, option set disabled wrap, user action ctrl+up", function () {
+        jqUnit.asyncTest("reorderList, option set disabled wrap, user action ctrl+up", async function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
@@ -178,7 +184,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 itemIndex: 1
             };
 
-            fluid.testUtils.reorderer.stepReorderer("#list1", options);
+            await fluid.testUtils.reorderer.stepReorderer("#list1", options);
+
+            jqUnit.start();
         });
 
     });
