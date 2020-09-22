@@ -330,25 +330,13 @@
 }
 // Theming
 [class*="fl-theme"]:not(.fl-theme-prefsEditor-default) {
-    .fl-prefsEditor {
-        // ON/OFF switch
-        .fl-switchUI-control:focus {
-            box-shadow: 0 0 0 0.2em var(--fl-bgColor),
-                0 0 0 0.35em var(--fl-fgColor);
-        }
-
-        .fl-switchUI-controlKnob {
-            background-color: var(--fl-fgColor) !important;
-        }
-
-        .fl-prefsEditor .fl-choice label {
-            &,
-            span,
-            .fl-crossout {
-                background-color: var(--fl-bgColor) !important;
-                border-color: var(--fl-fgColor) !important;
-                color: var(--fl-fgColor) !important;
-            }
+    .fl-prefsEditor .fl-choice label {
+        &,
+        span,
+        .fl-crossout {
+            background-color: var(--fl-bgColor) !important;
+            border-color: var(--fl-fgColor) !important;
+            color: var(--fl-fgColor) !important;
         }
     }
 }
