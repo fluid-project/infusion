@@ -124,10 +124,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 
     /**
-     * Base grade for adding write configuration to a dataSource.
-     *
-     * Grade linkage should be used to apply the concrete writable grade to the datasource configuration.
-     * For example fluid.makeGradeLinkage("kettle.dataSource.CouchDB.linkage", ["fluid.dataSource.writable", "kettle.dataSource.CouchDB"], "kettle.dataSource.CouchDB.writable");
+     * Base grade for adding write configuration to a dataSource. Because of issues like FLUID-5800, this is a pure
+     * mixin grade. The related writable grade to a concrete DataSource grade is listed in its "writableGrade" options,
+     * which response to the "writable: true" option via ContextAwareness.
      */
     fluid.defaults("fluid.dataSource.writable", {
         gradeNames: ["fluid.component"],
@@ -163,13 +162,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // ii) if the user has supplied an onError handler in method `options`, this is registered - otherwise
     // we register the firer of the dataSource's own onError method.
 
-    fluid.dataSource.registerStandardPromiseHandlers = function (that, promise, options) {
-        promise.then(typeof(options) === "function" ? options : null,
-            options.onError ? options.onError : that.events.onError.fire);
+    fluid.dataSource.registerStandardPromiseHandlers = function (that, promise, requestOptions) {
+        promise.then(requestOptions.callback, requestOptions.onError ? requestOptions.onError : that.events.onError.fire);
     };
 
     fluid.dataSource.defaultiseOptions = function (componentOptions, directOptions, directModel, isSet) {
-        var options = fluid.copy(directOptions) || {};
+        var options = typeof(directOptions) === "function" ? {
+            callback: directOptions
+        } : fluid.copy(directOptions) || {};
         options.directModel = directModel;
         options.operation = isSet ? "set" : "get";
         options.notFoundIsEmpty = options.notFoundIsEmpty || componentOptions.notFoundIsEmpty;
@@ -180,7 +180,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  which then proceeds through the transform chain to arrive at the final payload.
      * @param {fluid.dataSource} that - The dataSource itself
      * @param {Object} [directModel] - The direct model expressing the "coordinates" of the model to be fetched
-     * @param {Object} directOptions - A structure of options configuring the action of this get request - many of these will be specific to the particular concrete DataSource
+     * @param {Object|Function} [directOptions] - A success callback, or a structure of options configuring the action of this get request,  - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload
      */
     fluid.dataSource.get = function (that, directModel, directOptions) {
@@ -196,7 +196,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {fluid.dataSource} that - The dataSource itself
      * @param {Object} [directModel] - The direct model expressing the "coordinates" of the model to be written
      * @param {Any} model - The payload to be written to the dataSource
-     * @param {Object} [directOptions] - A structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
+     * @param {Object|Function} [directOptions] - A success callback, or a structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload (not all DataSources will provide any for a `set` method)
      */
     fluid.dataSource.set = function (that, directModel, model, directOptions) {
