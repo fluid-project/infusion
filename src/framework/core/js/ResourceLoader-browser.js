@@ -89,7 +89,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String} data - The `model` argument sent to top-level `dataSource.get/set` after it has been pushed through the transform chain
      * @return {Promise} A promise for the resolution of the I/O
      */
-    fluid.dataSource.URL.handle.http = function (that, baseOptions, data) {
+    fluid.dataSource.URL.handleHttp = function (that, baseOptions, data) {
         var promise = fluid.promise();
         var defaultOptions = {
             method: "GET",

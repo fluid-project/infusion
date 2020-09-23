@@ -222,7 +222,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         writableGrade: "fluid.dataSource.URL.writable",
         invokers: {
             resolveUrl: "fluid.dataSource.URL.resolveUrl", // url, termMap, directModel, noencode
-            handleHttp: "fluid.dataSource.URL.handle.http" // that, options, model
+            handleHttp: "fluid.dataSource.URL.handleHttp" // that, options, model
         },
         listeners: {
             "onRead.impl": {
