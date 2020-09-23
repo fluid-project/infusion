@@ -1,8 +1,5 @@
 knobSize = 1.8em;
 knobMargin = 0.2em;
-foregroundColor = currentColor;
-backgroundColor = #ffffff;
-focusColor = #000000;
 
 .fl-switchUI {
     display: flex;
@@ -12,17 +9,17 @@ focusColor = #000000;
 
 .fl-switchUI-control {
     width: knobSize * 3;
-    border: 0.15em solid foregroundColor;
+    border: 0.15em solid var(--fl-fgColor, currentColor);
     border-radius: knobSize + knobMargin;
     margin: 0 1em;
     display: flex;
     align-items: center;
-    background-color: backgroundColor;
+    background-color: var(--fl-bgColor, #ffffff);
 
     &:focus {
         outline: none;
-        box-shadow: 0 0 0 0.2em backgroundColor,
-                    0 0 0 0.35em focusColor;
+        box-shadow: 0 0 0 0.2em var(--fl-bgColor, #ffffff),
+                    0 0 0 0.35em var(--fl-fgColor, #000000);
     }
 
     &[aria-checked=true] {
@@ -33,7 +30,7 @@ focusColor = #000000;
 .fl-switchUI-controlKnob {
     height: knobSize;
     width: knobSize;
-    background-color: foregroundColor;
+    background-color: var(--fl-fgColor, currentColor) !important;
     border-radius: knobSize;
     display: inline-block;
     margin: knobMargin;
