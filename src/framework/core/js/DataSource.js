@@ -302,15 +302,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (requestOptions.hostname === "localhost") {
                 requestOptions.hostname = "127.0.0.1";
             }
-            if (requestOptions.host === "localhost") {
-                requestOptions.host = "127.0.0.1";
-            }
         }
-        var termMap = fluid.transform(requestOptions.termMap, encodeURIComponent);
-
+        requestOptions.writeMethod = requestOptions.writeMethod || componentOptions.writeMethod || "PUT";
         // TODO: do the same for "search" too?
         requestOptions.pathname = fluid.dataSource.URL.resolveUrl(requestOptions.pathname, requestOptions.termMap, directModel);
-        
+
         if (cookieJar && cookieJar.cookie && componentOptions.storeCookies) {
             requestOptions.headers.Cookie = cookieJar.cookie;
         }
