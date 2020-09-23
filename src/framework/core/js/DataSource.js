@@ -106,7 +106,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
             get: {
                 funcName: "fluid.dataSource.get",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"] // directModel, options/callback
+                args: ["{that}", "{arguments}.0", "{arguments}.1"] // directModel, directOptions
             }
         }
     });
@@ -142,7 +142,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
             set: {
                 funcName: "fluid.dataSource.set",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // directModel, model, options/callback
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // directModel, model, directOptions
             }
         }
     });
@@ -157,8 +157,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             options.onError ? options.onError : that.events.onError.fire);
     };
 
-    fluid.dataSource.defaultiseOptions = function (componentOptions, options, directModel, isSet) {
-        options = fluid.copy(options) || {};
+    fluid.dataSource.defaultiseOptions = function (componentOptions, directOptions, directModel, isSet) {
+        var options = fluid.copy(directOptions) || {};
         options.directModel = directModel;
         options.operation = isSet ? "set" : "get";
         options.notFoundIsEmpty = options.notFoundIsEmpty || componentOptions.notFoundIsEmpty;
@@ -169,13 +169,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  which then proceeds through the transform chain to arrive at the final payload.
      * @param {fluid.dataSource} that - The dataSource itself
      * @param {Object} [directModel] - The direct model expressing the "coordinates" of the model to be fetched
-     * @param {Object} options - A structure of options configuring the action of this get request - many of these will be specific to the particular concrete DataSource
+     * @param {Object} directOptions - A structure of options configuring the action of this get request - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload
      */
-    fluid.dataSource.get = function (that, directModel, options) {
-        options = fluid.dataSource.defaultiseOptions(that.options, options, directModel);
-        var promise = fluid.promise.fireTransformEvent(that.events.onRead, undefined, options);
-        fluid.dataSource.registerStandardPromiseHandlers(that, promise, options);
+    fluid.dataSource.get = function (that, directModel, directOptions) {
+        var requestOptions = fluid.dataSource.defaultiseOptions(that.options, directOptions, directModel);
+        var promise = fluid.promise.fireTransformEvent(that.events.onRead, undefined, requestOptions);
+        fluid.dataSource.registerStandardPromiseHandlers(that, promise, requestOptions);
         return promise;
     };
 
@@ -185,21 +185,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {fluid.dataSource} that - The dataSource itself
      * @param {Object} [directModel] - The direct model expressing the "coordinates" of the model to be written
      * @param {Any} model - The payload to be written to the dataSource
-     * @param {Object} [options] - A structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
+     * @param {Object} [directOptions] - A structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload (not all DataSources will provide any for a `set` method)
      */
-    fluid.dataSource.set = function (that, directModel, model, options) {
-        options = fluid.dataSource.defaultiseOptions(that.options, options, directModel, true); // shared and writeable between all participants
-        var transformPromise = fluid.promise.fireTransformEvent(that.events.onWrite, model, options);
+    fluid.dataSource.set = function (that, directModel, model, directOptions) {
+        var requestOptions = fluid.dataSource.defaultiseOptions(that.options, directOptions, directModel, true); // shared and writeable between all participants
+        var transformPromise = fluid.promise.fireTransformEvent(that.events.onWrite, model, requestOptions);
         var togo = fluid.promise();
         transformPromise.then(function (setResponse) {
-            var options2 = fluid.dataSource.defaultiseOptions(that.options, fluid.copy(options), directModel);
+            var options2 = fluid.dataSource.defaultiseOptions(that.options, fluid.copy(requestOptions), directModel);
             var retransformed = fluid.promise.fireTransformEvent(that.events.onWriteResponse, setResponse, options2);
             fluid.promise.follow(retransformed, togo);
         }, function (error) {
             togo.reject(error);
         });
-        fluid.dataSource.registerStandardPromiseHandlers(that, togo, options);
+        fluid.dataSource.registerStandardPromiseHandlers(that, togo, requestOptions);
         return togo;
     };
 
@@ -215,7 +215,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onRead.impl": {
                 funcName: "fluid.dataSource.URL.handle",
-                args: ["{that}", "{that}.options.permittedRequestOptions", "{arguments}.0", "{arguments}.1"] // options, directModel
+                args: ["{that}", "{that}.options.permittedRequestOptions", "{arguments}.0", "{arguments}.1"] // [model], options
             }
         },
         // Global name of an array of permitted requestOptions
@@ -231,7 +231,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onWrite.impl": {
                 funcName: "fluid.dataSource.URL.handle",
-                args: ["{that}", "{that}.options.permittedRequestOptions", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // options, directModel, model
+                args: ["{that}", "{that}.options.permittedRequestOptions", "{arguments}.0", "{arguments}.1"] // model, options
             }
         }
     });
@@ -296,9 +296,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         var termMap = fluid.transform(requestOptions.termMap, encodeURIComponent);
 
-        requestOptions.path = resolveUrl(requestOptions.path, requestOptions.termMap, directModel);
+        requestOptions.pathname = resolveUrl(requestOptions.pathname, requestOptions.termMap, directModel);
 
-        fluid.stringTemplate(requestOptions.path, termMap);
+        fluid.stringTemplate(requestOptions.pathname, termMap);
         if (cookieJar && cookieJar.cookie && componentOptions.storeCookies) {
             requestOptions.headers.Cookie = cookieJar.cookie;
         }
@@ -320,20 +320,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * <code>directModel</code> supplied as the 3rd argument into a concrete URL used for this
      * HTTP request.
      * @param {String} permittedRequestOptions - The global name of an array holding the list of permitted request options
-     * @param {Object} userOptions - An options block that encodes:
+     * @param {Object} [model] - [optional] the payload to be written by this write operation
+     * @param {RequestOptions} userOptions - A structure of request-specific options, including:
+     *     @param {Object}  userOptions.directModel - a model holding the coordinates of the data to be read or written
      *     @param {String}  userOptions.operation - "set"/"get"
      *     @param {Boolean} userOptions.notFoundIsEmpty - <code>true</code> if a missing file on read should count as a successful empty payload rather than a rejection
      *     writeMethod {String}: "PUT"/ "POST" (option - if not provided will be defaulted by the concrete dataSource implementation)
-     * @param {Object} directModel - a model holding the coordinates of the data to be read or written
-     * @param {Object} [model] - [optional] the payload to be written by this write operation
      * @return {Promise} a promise for the successful or failed datasource operation
      */
-    fluid.dataSource.URL.handle = function (that, permittedRequestOptions, userOptions, directModel, model) {
+    fluid.dataSource.URL.handle = function (that, permittedRequestOptions, model, userOptions) {
         var permittedOptions = fluid.getGlobalValue(permittedRequestOptions);
         // TODO: Permit this component to be used during the I/O phase of tree startup - remove after FLUID-6372
         permittedOptions.forEach(function (oneOption) {
             fluid.getForComponent(that, ["options", oneOption]);
         });
+        var directModel = userOptions.directModel;
         var url = that.resolveUrl(that.options.url, that.options.termMap, directModel);
         var parsed = fluid.filterKeys(new fluid.resourceLoader.UrlClass(url, window && window.location), fluid.dataSource.URL.urlFields);
         permittedOptions.forEach(function (oneOption) {
@@ -342,9 +343,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 delete parsed[oneOption];
             }
         });
-        var requestOptions = fluid.dataSource.URL.prepareRequestOptions(that.options, that.cookieJar, userOptions, permittedOptions, directModel, parsed, that.resolveUrl);
+        var finalRequestOptions = fluid.dataSource.URL.prepareRequestOptions(that.options, that.cookieJar, userOptions, permittedOptions, directModel, parsed, that.resolveUrl);
 
-        return that.handleHttp(that, requestOptions, model);
+        return that.handleHttp(that, finalRequestOptions, model);
     };
 
     /** After express 4.15.0 of 2017-03-01 error messages are packaged as HTML readable
