@@ -506,7 +506,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid4982fetchMessages = function (pathname) {
-        return fluid.dataSource.URL.handle.http(null, new URL(pathname, document.location));
+        return fluid.dataSource.URL.handleHttp(null, new URL(pathname, document.location));
     };
 
     fluid.tests.fluid4982OverrideFixtures = [{

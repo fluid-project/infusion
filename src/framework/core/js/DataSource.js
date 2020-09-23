@@ -239,7 +239,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.defaults("fluid.dataSource.URL.writable", {
-        gradeNames: ["fluid.dataSource.URL", "fluid.dataSource.writable"],
+        gradeNames: ["fluid.dataSource.writable"],
         listeners: {
             "onWrite.impl": {
                 funcName: "fluid.dataSource.URL.handle",
