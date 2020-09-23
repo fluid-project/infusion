@@ -268,10 +268,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return replaced;
     };
 
-    fluid.dataSource.URL.urlFields = fluid.freezeRecursive(["protocol", "auth", "hostname", "port", "pathname", "search"]);
+    fluid.dataSource.URL.urlFields = fluid.freezeRecursive(["protocol", "username", "password", "hostname", "port", "pathname", "search"]);
 
     fluid.dataSource.URL.requestOptions = fluid.dataSource.URL.urlFields.concat(
-        ["url", "host", "method", "headers", "termMap"]);
+        ["url", "method", "headers", "termMap"]);
 
     // TODO: Deal with the anomalous status of "charEncoding" - in theory it could be set per-request but currently can't be. Currently all
     // "requestOptions" have a common fate in that they end up as the arguments to http.request. We need to split these into two levels,
