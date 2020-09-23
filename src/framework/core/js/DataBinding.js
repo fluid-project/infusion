@@ -1998,7 +1998,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     trans.changeRecord.changeMap = {};
                 },
                 /** Commit this transaction. The argument `code` is for internal use only, and takes the value "relay" when
-                 * we are committing changes to relay documents partway through a full transaction.
+                 * we are committing changes to relay documents across the transaction, partway through a full transaction or at its overall conclusion.
                  * @param {String} [code] - Optional, internal use argument indicating the purpose of the commit. Can take the value "relay".
                  */
                 commit: function (code) {

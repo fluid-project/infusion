@@ -11,6 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
+/* global process */
+
 var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
@@ -201,9 +203,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return typeof(window) !== "undefined" && !!window.document;
     };
 
+    // Context awareness for the node.js environment - taken from https://stackoverflow.com/a/35813135
+
+    fluid.contextAware.isNode = function () {
+        return typeof(process) !== "undefined" && process.versions && process.versions.node;
+    };
+
     fluid.contextAware.makeChecks({
         "fluid.browser": {
             funcName: "fluid.contextAware.isBrowser"
+        },
+        "fluid.node": {
+            funcName: "fluid.contextAware.isNode"
         }
     });
 

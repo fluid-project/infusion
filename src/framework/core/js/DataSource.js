@@ -82,8 +82,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.component"],
         events: {
             // The "onRead" event is operated in a custom workflow by fluid.fireTransformEvent to
-            // process dataSource payloads during the get process. Each listener
-            // receives the data returned by the last.
+            // process dataSource payloads during the get process. Each listener receives the data returned by the last.
             onRead: null,
             onError: null
         },
@@ -123,8 +122,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.component"],
         events: {
             // events "onWrite" and "onWriteResponse" are operated in a custom workflow by fluid.fireTransformEvent to
-            // process dataSource payloads during the set process. Each listener
-            // receives the data returned by the last.
+            // process dataSource payloads during the set process. Each listener receives the data returned by the last.
             onWrite: null,
             onWriteResponse: null
         },
@@ -210,16 +208,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.dataSource.URL", {
         gradeNames: ["fluid.dataSource"],
-        readOnlyGrade: "fluid.dataSource.URL",
         invokers: {
-            resolveUrl: "fluid.dataSource.URL.resolveUrl" // url, termMap, directModel, noencode
+            resolveUrl: "fluid.dataSource.URL.resolveUrl", // url, termMap, directModel, noencode
+            handleHttp: "fluid.dataSource.URL.handle.http" // that, options, model
         },
         listeners: {
             "onRead.impl": {
                 funcName: "fluid.dataSource.URL.handle",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"] // options, directModel
+                args: ["{that}", "{that}.options.permittedRequestOptions", "{arguments}.0", "{arguments}.1"] // options, directModel
             }
         },
+        // Global name of an array of permitted requestOptions
+        permittedRequestOptions: "fluid.dataSource.URL.requestOptions",
         components: {
             cookieJar: "{cookieJar}"
         },
@@ -231,7 +231,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onWrite.impl": {
                 funcName: "fluid.dataSource.URL.handle",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // options, directModel, model
+                args: ["{that}", "{that}.options.permittedRequestOptions", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // options, directModel, model
             }
         }
     });
@@ -271,7 +271,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.dataSource.URL.urlFields = fluid.freezeRecursive(["protocol", "auth", "hostname", "port", "pathname", "search"]);
 
     fluid.dataSource.URL.requestOptions = fluid.dataSource.URL.urlFields.concat(
-        ["url", "host", "localAddress", "socketPath", "method", "headers", "agent", "termMap"]);
+        ["url", "host", "method", "headers", "termMap"]);
 
     // TODO: Deal with the anomalous status of "charEncoding" - in theory it could be set per-request but currently can't be. Currently all
     // "requestOptions" have a common fate in that they end up as the arguments to http.request. We need to split these into two levels,
@@ -286,13 +286,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var staticOptions = fluid.filterKeys(componentOptions, permittedOptions);
         var requestOptions = fluid.extend(true, {headers: {}}, userStaticOptions, staticOptions, userOptions);
         // GPII-2147: replace "localhost" with "127.0.0.1" to allow running without a network connection in windows
-        // Only do this on node.js! On the browser it will cause an XHR status 0 failure
-        // if (requestOptions.hostname === "localhost" || requestOptions.host === "localhost") {
-        //    requestOptions = fluid.extend(requestOptions, { hostname: "127.0.0.1", host: "127.0.0.1" });
-        //}
+        if (fluid.contextAware.isNode()) { // only do this in node, in the browser it results in an XHR status 0
+            if (requestOptions.hostname === "localhost") {
+                requestOptions.hostname = "127.0.0.1";
+            }
+            if (requestOptions.host === "localhost") {
+                requestOptions.host = "127.0.0.1";
+            }
+        }
         var termMap = fluid.transform(requestOptions.termMap, encodeURIComponent);
 
-        requestOptions.path = (resolveUrl || fluid.dataSource.URL.resolveUrl)(requestOptions.path, requestOptions.termMap, directModel);
+        requestOptions.path = resolveUrl(requestOptions.path, requestOptions.termMap, directModel);
 
         fluid.stringTemplate(requestOptions.path, termMap);
         if (cookieJar && cookieJar.cookie && componentOptions.storeCookies) {
@@ -315,6 +319,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {kettle.dataSource.urlResolver} that - A URLResolver that will convert the contents of the
      * <code>directModel</code> supplied as the 3rd argument into a concrete URL used for this
      * HTTP request.
+     * @param {String} permittedRequestOptions - The global name of an array holding the list of permitted request options
      * @param {Object} userOptions - An options block that encodes:
      *     @param {String}  userOptions.operation - "set"/"get"
      *     @param {Boolean} userOptions.notFoundIsEmpty - <code>true</code> if a missing file on read should count as a successful empty payload rather than a rejection
@@ -323,25 +328,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} [model] - [optional] the payload to be written by this write operation
      * @return {Promise} a promise for the successful or failed datasource operation
      */
-    fluid.dataSource.URL.handle = function (that, userOptions, directModel, model) {
-        // TODO: Most of these options are not permitted on the client
-        var permittedOptions = fluid.dataSource.URL.requestOptions;
+    fluid.dataSource.URL.handle = function (that, permittedRequestOptions, userOptions, directModel, model) {
+        var permittedOptions = fluid.getGlobalValue(permittedRequestOptions);
         // TODO: Permit this component to be used during the I/O phase of tree startup - remove after FLUID-6372
         permittedOptions.forEach(function (oneOption) {
             fluid.getForComponent(that, ["options", oneOption]);
         });
-        fluid.getForComponent(that, "resolveUrl");
         var url = that.resolveUrl(that.options.url, that.options.termMap, directModel);
-        var parsed = fluid.filterKeys(new fluid.resourceLoader.UrlClass(url, window.location), fluid.dataSource.URL.urlFields);
+        var parsed = fluid.filterKeys(new fluid.resourceLoader.UrlClass(url, window && window.location), fluid.dataSource.URL.urlFields);
         permittedOptions.forEach(function (oneOption) {
         // The WhatWG algorithm is a big step backwards and produces empty string junk in the parsed URL
             if (!parsed[oneOption]) {
                 delete parsed[oneOption];
             }
         });
-        var requestOptions = fluid.dataSource.URL.prepareRequestOptions(that.options, that.cookieJar, userOptions, permittedOptions, directModel, parsed);
+        var requestOptions = fluid.dataSource.URL.prepareRequestOptions(that.options, that.cookieJar, userOptions, permittedOptions, directModel, parsed, that.resolveUrl);
 
-        return fluid.dataSource.URL.handle.http(that, requestOptions, model);
+        return that.handleHttp(that, requestOptions, model);
     };
 
     /** After express 4.15.0 of 2017-03-01 error messages are packaged as HTML readable

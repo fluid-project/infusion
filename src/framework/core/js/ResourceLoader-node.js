@@ -19,8 +19,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fs = require("fs"),
     urlModule = require("url"),
-    http = require("http"),
-    https = require("https");
+    // TODO: External dependency on Kettle - it is not practical to operate Infusion in node without this dependency in any case
+    kettle = fluid.registerNamespace("kettle");
 
 fluid.resourceLoader.UrlClass = urlModule.URL;
 
@@ -39,7 +39,8 @@ fluid.resourceLoader.loaders.path = function (resourceSpec) {
 
 fluid.resourceLoader.loaders.url = function (resourceSpec) {
     var promise = fluid.promise();
-    var lib = resourceSpec.url.startsWith("https") ? https : http;
+    // Use Kettle's request modules so that we get access to follow-redirects
+    var lib = resourceSpec.url.startsWith("https") ? kettle.npm.https : kettle.npm.http;
     // TODO: Unify with kettle.dataSource.URL.handle.http once i) components are cheap enough we can have them everywhere,
     // ii) infusion, kettle and others are reorganised into a monorepo
     var request = lib.get(resourceSpec.url, resourceSpec.options, function (response) {
