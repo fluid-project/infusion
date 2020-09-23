@@ -294,7 +294,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * reformed as a proper merge pipeline.
      */
 
-    fluid.dataSource.URL.prepareRequestOptions = function (componentOptions, cookieJar, userOptions, permittedOptions, directModel, userStaticOptions, resolveUrl) {
+    fluid.dataSource.URL.prepareRequestOptions = function (componentOptions, cookieJar, userOptions, permittedOptions, directModel, userStaticOptions) {
         var staticOptions = fluid.filterKeys(componentOptions, permittedOptions);
         var requestOptions = fluid.extend(true, {headers: {}}, userStaticOptions, staticOptions, userOptions);
         // GPII-2147: replace "localhost" with "127.0.0.1" to allow running without a network connection in windows
@@ -308,9 +308,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         var termMap = fluid.transform(requestOptions.termMap, encodeURIComponent);
 
-        requestOptions.pathname = resolveUrl(requestOptions.pathname, requestOptions.termMap, directModel);
-
-        fluid.stringTemplate(requestOptions.pathname, termMap);
+        // TODO: do the same for "search" too?
+        requestOptions.pathname = fluid.dataSource.URL.resolveUrl(requestOptions.pathname, requestOptions.termMap, directModel);
+        
         if (cookieJar && cookieJar.cookie && componentOptions.storeCookies) {
             requestOptions.headers.Cookie = cookieJar.cookie;
         }
