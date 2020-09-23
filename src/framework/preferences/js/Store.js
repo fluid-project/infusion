@@ -80,6 +80,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.defaults("fluid.prefs.cookieStore", {
         gradeNames: ["fluid.dataSource"],
+        writableGrade: "fluid.prefs.cookieStore.writable",
         cookie: {
             name: "fluid-ui-settings"
         },
@@ -126,8 +127,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
-
-    fluid.makeGradeLinkage("fluid.prefs.cookieStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.cookieStore"], "fluid.prefs.cookieStore.writable");
 
     /**
      * Retrieve and return the value of the cookie
@@ -214,6 +213,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.defaults("fluid.prefs.tempStore", {
         gradeNames: ["fluid.dataSource", "fluid.modelComponent"],
+        writableGrade: "fluid.prefs.tempStore.writable",
         components: {
             encoding: {
                 type: "fluid.dataSource.encoding.model"
@@ -242,15 +242,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.makeGradeLinkage("fluid.prefs.tempStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.tempStore"], "fluid.prefs.tempStore.writable");
-
     fluid.defaults("fluid.prefs.globalSettingsStore", {
         gradeNames: ["fluid.component"],
         components: {
             settingsStore: {
                 type: "fluid.prefs.store",
                 options: {
-                    gradeNames: ["fluid.resolveRootSingle", "fluid.dataSource.writable"],
+                    gradeNames: ["fluid.resolveRootSingle"],
+                    writable: true,
                     singleRootType: "fluid.prefs.store"
                 }
             }

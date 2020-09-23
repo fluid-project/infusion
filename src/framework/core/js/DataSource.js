@@ -79,7 +79,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *          placed in the directModel.
      */
     fluid.defaults("fluid.dataSource", {
-        gradeNames: ["fluid.component"],
+        gradeNames: ["fluid.component", "fluid.contextAware"],
+        contextAwareness: {
+            writable: {
+                checks: {
+                    writableValue: {
+                        contextValue: "{fluid.dataSource}.options.writable",
+                        gradeNames: "{fluid.dataSource}.options.writableGrade"
+                    }
+                }
+            }
+        },
+        writable: false,
         events: {
             // The "onRead" event is operated in a custom workflow by fluid.fireTransformEvent to
             // process dataSource payloads during the get process. Each listener receives the data returned by the last.
@@ -208,6 +219,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.dataSource.URL", {
         gradeNames: ["fluid.dataSource"],
+        writableGrade: "fluid.dataSource.URL.writable",
         invokers: {
             resolveUrl: "fluid.dataSource.URL.resolveUrl", // url, termMap, directModel, noencode
             handleHttp: "fluid.dataSource.URL.handle.http" // that, options, model
@@ -227,7 +239,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.defaults("fluid.dataSource.URL.writable", {
-        gradeNames: ["fluid.dataSource.writable"],
+        gradeNames: ["fluid.dataSource.URL", "fluid.dataSource.writable"],
         listeners: {
             "onWrite.impl": {
                 funcName: "fluid.dataSource.URL.handle",
