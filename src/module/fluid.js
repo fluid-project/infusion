@@ -47,6 +47,7 @@ var context = vm.createContext({
     clearInterval: clearInterval,
     __dirname: __dirname,
     path: path,
+    process: process, // Enable straightforward ContextAwareness check
     require: require
 });
 

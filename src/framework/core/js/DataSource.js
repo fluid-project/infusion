@@ -282,6 +282,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.dataSource.URL.urlFields = fluid.freezeRecursive(["protocol", "username", "password", "hostname", "port", "pathname", "search"]);
 
+    /** Condenses a plain JSON object with the isomorphic format to a WhatWG URL object into an actual WhatWG URL object - this
+     * object can then be rendered into a string via URL.toString().
+     * @param {Object} requestOptions - A plain JSON object isomorphic to a URL - this may contain extra fields
+     * @return {URL} The equivalent URL object
+     */
     fluid.dataSource.URL.condenseUrl = function (requestOptions) {
         var togo = new fluid.resourceLoader.UrlClass("http://localhost/");
         fluid.dataSource.URL.urlFields.forEach(function (field) {
