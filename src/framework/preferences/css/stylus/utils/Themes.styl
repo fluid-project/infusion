@@ -1,535 +1,449 @@
-// Contains utility functions for building contrast themes
+// Contains colour variables for contrast themes
+
+.fl-theme-bw {
+    --fl-fgColor: #000000;
+    --fl-bgColor: #ffffff;
+}
+
+.fl-theme-wb {
+    --fl-fgColor: #ffffff;
+    --fl-bgColor: #000000;
+}
+
+.fl-theme-yb {
+    --fl-fgColor: #ffff00;
+    --fl-bgColor: #000000;
+}
+
+.fl-theme-by {
+    --fl-fgColor: #000000;
+    --fl-bgColor: #ffff00;
+}
+
+.fl-theme-lgdg {
+    --fl-fgColor: #bdbdbb;
+    --fl-bgColor: #555555;
+}
+
+.fl-theme-gd {
+    --fl-fgColor: #888888;
+    --fl-bgColor: #222222;
+    --fl-linkColor: #8080ff;
+    --fl-disabledColor: #cc0000;
+    --fl-selectedFgColor: #ffffff;
+    --fl-selectedBgColor: #008000;
+    --fl-buttonFgColor: #ffffff;
+    --fl-buttonBgColor: #000000;
+}
+
+.fl-theme-gw {
+    --fl-fgColor: #6c6c6c;
+    --fl-bgColor: #ffffff;
+    --fl-linkColor: #6666cc;
+    --fl-disabledColor: #993333;
+    --fl-selectedFgColor: #ffffff;
+    --fl-selectedBgColor: #404080;
+    --fl-buttonFgColor: #000000;
+    --fl-buttonBgColor: #ffffff;
+}
+
+.fl-theme-bbr {
+    --fl-fgColor: #000000;
+    --fl-bgColor: #bb9966;
+    --fl-linkColor: #000099;
+    --fl-disabledColor: #600000;
+    --fl-selectedFgColor: #ffffff;
+    --fl-selectedBgColor: #000070;
+    --fl-buttonFgColor: #000000;
+    --fl-buttonBgColor: #ffd18a;
+}
+
+// General theme styling that applies to html elements and infusion components.
 // !important is used for all styles to ensure that Preferences Framework's enactors are able to override the pages default styles.
+[class*="fl-theme"]:not(.fl-theme-prefsEditor-default) {
+    background-image: none !important;
 
-themes = {
-    ".fl-theme-bw": {
-        foregroundColor: #000000,
-        backgroundColor: #ffffff
+    &, *, .fl-pre view-theme&,
+    div, input,
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--fl-fgColor) !important;
+        background-color: var(--fl-bgColor) !important;
+        border-top-color: var(--fl-fgColor) !important;
+        border-right-color: var(--fl-fgColor) !important;
+        border-bottom-color: var(--fl-fgColor) !important;
+        border-left-color: var(--fl-fgColor) !important;
     }
-    ".fl-theme-wb": {
-        foregroundColor: #ffffff,
-        backgroundColor: #000000
-    }
-    ".fl-theme-yb": {
-        foregroundColor: #ffff00,
-        backgroundColor: #000000
-    }
-    ".fl-theme-by": {
-        foregroundColor: #000000,
-        backgroundColor: #ffff00
-    }
-    ".fl-theme-lgdg": {
-        foregroundColor: #bdbdbb,
-        backgroundColor: #555555
-    }
-    ".fl-theme-gd": {
-        foregroundColor: #888888,
-        backgroundColor: #222222,
-        linkColor: #8080ff,
-        disabledColor: #cc0000,
-        selectedForegroundColor: #ffffff,
-        selectedBackgroundColor: #008000,
-        buttonForegroundColor: #ffffff,
-        buttonBackgroundColor: #000000
-    }
-    ".fl-theme-gw": {
-        foregroundColor: #6c6c6c,
-        backgroundColor: #ffffff,
-        linkColor: #6666cc,
-        disabledColor: #993333,
-        selectedForegroundColor: #ffffff,
-        selectedBackgroundColor: #404080,
-        buttonForegroundColor: #000000,
-        buttonBackgroundColor: #ffffff
-    }
-    ".fl-theme-bbr": {
-        foregroundColor: #000000,
-        backgroundColor: #bb9966,
-        linkColor: #000099,
-        disabledColor: #600000,
-        selectedForegroundColor: #ffffff,
-        selectedBackgroundColor: #000070,
-        buttonForegroundColor: #000000,
-        buttonBackgroundColor: #ffd18a
-    }
-}
 
-build-themes-prefsEditor(contrastThemes) {
+    &:disabled,
+    :disabled,
+    :disabled legend,
+    input[type="button"]:disabled,
+    input[type="button"]:disabled *,
+    input[type="reset"]:disabled,
+    input[type="reset"]:disabled *,
+    input[type="submit"]:disabled,
+    input[type="submit"]:disabled *  {
+        color: var(--fl-disabledColor) !important;
+    }
 
-    for themeName in contrastThemes {
-        fColor = contrastThemes[themeName].foregroundColor;
-        bColor = contrastThemes[themeName].backgroundColor;
+    &::selection,
+    ::selection {
+        color: var(--fl-selectedFgColor) !important;
+        background-color: var(--fl-selectedBgColor) !important;
+    }
 
-        {themeName} {
-            .fl-prefsEditor {
+    iframe {
+        border-top-color: var(--fl-fgColor) !important;
+        border-right-color: var(--fl-fgColor) !important;
+        border-bottom-color: var(--fl-fgColor) !important;
+        border-left-color: var(--fl-fgColor) !important;
+    }
 
-                // ON/OFF switch
-                .fl-switchUI-control:focus {
-                    box-shadow: 0 0 0 0.2em bColor,
-                                0 0 0 0.35em fColor;
-                }
+    a,
+    a *, {
+        color: var(--fl-linkColor, var(--fl-fgColor)) !important;
+        font-weight: bold !important;
+        background-color: var(--fl-bgColor) !important;
+    }
 
-                .fl-switchUI-controlKnob {
-                    background-color: fColor !important;
-                }
-            }
+    button,
+    button *,
+    input[type="button"],
+    input[type="button"] *,
+    input[type="reset"],
+    input[type="reset"] *,
+    input[type="submit"],
+    input[type="submit"] *,
+    .fl-input-button,
+    .fl-input-button * {
+        color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
+        background-color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
+    }
+
+    ::placeholder {
+        color: currentColor;
+        font-style: italic;
+    }
+
+    // Tables
+    th {
+        border-top-width: 0.1em;
+        border-top-style: solid;
+        border-top-color: var(--fl-fgColor) !important;
+        border-right-width: 0.1em;
+        border-right-style: solid;
+        border-right-color: var(--fl-fgColor) !important;
+        border-bottom-width: 0.1em;
+        border-bottom-style: solid;
+        border-bottom-color: var(--fl-fgColor) !important;
+        border-left-width: 0.1em;
+        border-left-style: solid;
+        border-left-color: var(--fl-fgColor) !important;
+        background-color: var(--fl-fgColor) !important;
+        color: var(--fl-bgColor) !important;
+    }
+
+    td {
+        border-top-width: 0.1em;
+        border-top-style: solid;
+        border-top-color: var(--fl-fgColor) !important;
+        border-right-width: 0.1em;
+        border-right-style: solid;
+        border-right-color: var(--fl-fgColor) !important;
+        border-bottom-width: 0.1em;
+        border-bottom-style: solid;
+        border-bottom-color: var(--fl-fgColor) !important;
+        border-left-width: 0.1em;
+        border-left-style: solid;
+        border-left-color: var(--fl-fgColor) !important;
+    }
+
+    // Focus
+    .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable {
+        outline-width: 0.2em;
+        outline-style: solid;
+        outline-color: var(--fl-fgColor);
+    }
+
+    // Infusion Components
+    // Reorderer
+    .fl-reorderer-dropMarker {
+        background-color: #f00 !important;
+    }
+
+    // Inline edit
+    .fl-inlineEdit-edit {
+        background-color: var(--fl-fgColor) !important;
+        color: var(--fl-bgColor) !important;
+        border-top-width: 0.1em;
+        border-top-style: solid;
+        border-top-color: var(--fl-bgColor) !important;
+        border-right-width: 0.1em;
+        border-right-style: solid;
+        border-right-color: var(--fl-bgColor) !important;
+        border-bottom-width: 0.1em;
+        border-bottom-style: solid;
+        border-bottom-color: var(--fl-bgColor) !important;
+        border-left-width: 0.1em;
+        border-left-style: solid;
+        border-left-color: var(--fl-bgColor) !important;
+        padding-top: 0.1em;
+        padding-right: 0.1em;
+        padding-bottom: 0.1em;
+        padding-left: 0.1em;
+        margin-top: -0.1em;
+        margin-right: -0.1em;
+        margin-bottom: -0.1em;
+        margin-left: -0.1em;
+    }
+
+    // Textfield Stepper
+    .fl-textfieldStepper .fl-textfieldStepper-textField {
+        border: solid 1px var(--fl-fgColor);
+    }
+
+    .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
+        visibility: hidden;
+    }
+
+    .fl-textfieldStepper .fl-textfieldStepper-focus {
+        outline-color: var(--fl-fgColor);
+    }
+
+    // Orator
+    .fl-orator-highlight {
+        color: var(--fl-bgColor) !important;
+        background-color: var(--fl-fgColor) !important;
+        outline-color: var(--fl-fgColor);
+    }
+
+    .fl-orator-controller-playToggle {
+        text-shadow: unset;
+    }
+
+    .fl-icon-orator:before {
+        background-color: var(--fl-bgColor);
+        color: var(--fl-fgColor);
+        text-shadow: unset;
+    }
+
+    .fl-orator-controller > *:not(:first-child):hover,
+    .fl-orator-controller :hover .fl-orator-controller-playToggle,
+    .fl-orator-controller :hover .fl-orator-controller-playToggle:before,
+    .fl-orator-selectionReader-control:hover,
+    .fl-orator-selectionReader-control:hover .fl-icon-orator:before,
+    .fl-orator-selectionReader-control:hover * {
+        background-color: var(--fl-fgColor) !important;
+        color: var(--fl-bgColor) !important;
+    }
+
+    .fl-orator-selectionReader-control.fl-orator-selectionReader-above:after,
+    .fl-orator-selectionReader-control.fl-orator-selectionReader-above:hover:after,
+    .fl-orator-selectionReader-control.fl-orator-selectionReader-above:before {
+        border-top-color: var(--fl-fgColor);
+    }
+
+    .fl-orator-selectionReader-control.fl-orator-selectionReader-below:after,
+    .fl-orator-selectionReader-control.fl-orator-selectionReader-below:hover:after,
+    .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
+        border-bottom-color: var(--fl-fgColor);
+    }
+
+    // Inverted color
+    // General Styling
+    &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color {
+        color: var(--fl-bgColor) !important;
+        background-color: var(--fl-fgColor) !important;
+        border-top-color: var(--fl-bgColor) !important;
+        border-right-color: var(--fl-bgColor) !important;
+        border-bottom-color: var(--fl-bgColor) !important;
+        border-left-color: var(--fl-bgColor) !important;
+    }
+
+    .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable
+
+
+    // Focus
+    &.fl-inverted-color.fl-focus :focus,
+    &.fl-inverted-color.fl-focus:focus,
+    .fl-inverted-color.fl-focus :focus,
+    .fl-inverted-color.fl-focus:focus,
+    &.fl-focus .fl-inverted-color :focus,
+    &.fl-focus .fl-inverted-color:focus,
+    .fl-focus .fl-inverted-color :focus,
+    .fl-focus .fl-inverted-color:focus {
+        outline-width: 0.2em;
+        outline-style: solid;
+        outline-color: var(--fl-bgColor);
+    }
+
+    .fl-inverted-color {
+        &, *,
+        div, input,
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--fl-bgColor) !important;
+            background-color: var(--fl-fgColor) !important;
+            border-top-color: var(--fl-bgColor) !important;
+            border-right-color: var(--fl-bgColor) !important;
+            border-bottom-color: var(--fl-bgColor) !important;
+            border-left-color: var(--fl-bgColor) !important;
         }
 
-        .fl-prefsEditor .fl-choice label {
-            &{themeName},
-            &{themeName} span,
-            &{themeName} .fl-crossout {
-                background-color: bColor !important;
-                border-color: fColor !important;
-                color: fColor !important;
-            }
+        &::selection,
+        ::selection {
+            color: var(--fl-selectedBgColor) !important;
+            background-color: var(--fl-selectedFgColor) !important;
         }
-    }
-}
 
-// For the separated panel
-get-colors-for-separatedPanelPrefsEditor(fColor, bColor) {
-    background-color: bColor;
-    border-color: fColor;
-    color: fColor;
-}
-
-build-themes-separatedPanelPrefsEditor(contrastThemes) {
-    for themeName in contrastThemes {
-        fColor = contrastThemes[themeName].foregroundColor;
-        bColor = contrastThemes[themeName].backgroundColor;
-
-        {themeName} {
-            background-image: none !important;
-            get-colors-for-separatedPanelPrefsEditor(fColor, bColor);
-
-            .fl-prefsEditor-separatedPanel {
-                .fl-panelBar, .fl-prefsEditor-reset {
-                    get-colors-for-separatedPanelPrefsEditor(fColor, bColor);
-                }
-                .fl-prefsEditor-buttons { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
-                    box-shadow:none;
-                }
-            }
+        iframe {
+            border-top-color: var(--fl-bgColor) !important;
+            border-right-color: var(--fl-bgColor) !important;
+            border-bottom-color: var(--fl-bgColor) !important;
+            border-left-color: var(--fl-bgColor) !important;
         }
-    }
-}
 
-// For the separated panel iframe
-build-themes-separatedPanelPrefsEditorFrame(contrastThemes) {
-    for themeName in contrastThemes {
-        .fl-prefsEditor-separatedPanel{themeName} {
-            background-image: none;
+        a,
+        ^[0..-2] a.fl-inverted-color,
+        a *,
+        ^[0..-2] a.fl-inverted-color * {
+            color: var(--fl-bgColor) !important;
+            font-weight: bold !important;
+            background-color: var(--fl-linkColor, var(--fl-fgColor)) !important;
         }
-    }
-}
 
-// For the general theme styling that applies to html elements and infusion components
-build-themes-Enactors(contrastThemes) {
-    for themeName in contrastThemes {
-        fColor = contrastThemes[themeName].foregroundColor;
-        bColor = contrastThemes[themeName].backgroundColor;
-        linkColor = contrastThemes[themeName].linkColor || fColor;
-        buttonFColor = contrastThemes[themeName].buttonForegroundColor || fColor;
-        buttonBColor = contrastThemes[themeName].buttonBackgroundColor || bColor;
+        button,
+        ^[0..-2] button.fl-inverted-color,
+        button *,
+        ^[0..-2] button.fl-inverted-color *,
+        input[type="button"],
+        ^[0..-2] input[type="button"].fl-inverted-color,
+        ^[0..-2] input[type="button"].fl-inverted-color *,
+        input[type="reset"],
+        ^[0..-2] input[type="reset"].fl-inverted-color,
+        ^[0..-2] input[type="reset"].fl-inverted-color *,
+        input[type="submit"],
+        ^[0..-2] input[type="submit"].fl-inverted-color,
+        ^[0..-2] input[type="submit"].fl-inverted-color *,
+        .fl-input-button,
+        &.fl-input-button,
+        .fl-input-button *,
+        &.fl-input-button * {
+            color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
+            background-color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
+        }
 
-        disabledColor = contrastThemes[themeName].disabledColor;
-        selectedFColor = contrastThemes[themeName].selectedForegroundColor;
-        selectedBColor = contrastThemes[themeName].selectedBackgroundColor;
+        // Tables
+        th {
+            border-top-width: 0.1em;
+            border-top-style: solid;
+            border-top-color: var(--fl-bgColor) !important;
+            border-right-width: 0.1em;
+            border-right-style: solid;
+            border-right-color: var(--fl-bgColor) !important;
+            border-bottom-width: 0.1em;
+            border-bottom-style: solid;
+            border-bottom-color: var(--fl-bgColor) !important;
+            border-left-width: 0.1em;
+            border-left-style: solid;
+            border-left-color: var(--fl-bgColor) !important;
+            background-color: var(--fl-bgColor) !important;
+            color: var(--fl-fgColor) !important;
+        }
 
+        td {
+            border-top-width: 0.1em;
+            border-top-style: solid;
+            border-top-color: var(--fl-bgColor) !important;
+            border-right-width: 0.1em;
+            border-right-style: solid;
+            border-right-color: var(--fl-bgColor) !important;
+            border-bottom-width: 0.1em;
+            border-bottom-style: solid;
+            border-bottom-color: var(--fl-bgColor) !important;
+            border-left-width: 0.1em;
+            border-left-style: solid;
+            border-left-color: var(--fl-bgColor) !important;
+        }
 
-        {themeName} {
-            // General Styling
-            &, *, .fl-preview-theme&,
-            div, input,
-            h1, h2, h3, h4, h5, h6 {
-                color: fColor !important;
-                background-color: bColor !important;
-                border-top-color: fColor !important;
-                border-right-color: fColor !important;
-                border-bottom-color: fColor !important;
-                border-left-color: fColor !important;
-            }
+        // Infusion focus element
+        .fl-focus:focus, .fl-focus :focus, .selectable {
+            outline-width: 0.2em;
+            outline-style: solid;
+            outline-color: var(--fl-bgColor);
+        }
 
-            // Styling for disabled elements
-            if (disabledColor) {
-                &:disabled,
-                :disabled,
-                :disabled legend,
-                input[type="button"]:disabled,
-                input[type="button"]:disabled *,
-                input[type="reset"]:disabled,
-                input[type="reset"]:disabled *,
-                input[type="submit"]:disabled,
-                input[type="submit"]:disabled *  {
-                    color: disabledColor !important;
-                }
-            }
+        // Infusion Components
+        // Reorderer
+        .fl-reorderer-dropMarker {
+            background-color: #f00 !important;
+        }
 
-            if (selectedFColor && selectedBColor) {
-                &::selection,
-                ::selection {
-                    color: selectedFColor !important;
-                    background-color: selectedBColor !important;
-                }
-            }
+        // Inline Edit
+        .fl-inlineEdit-edit {
+            background-color: var(--fl-bgColor) !important;
+            color: var(--fl-fgColor) !important;
+            border-top-width: 0.1em;
+            border-top-style: solid;
+            border-top-color: var(--fl-fgColor) !important;
+            border-right-width: 0.1em;
+            border-right-style: solid;
+            border-right-color: var(--fl-fgColor) !important;
+            border-bottom-width: 0.1em;
+            border-bottom-style: solid;
+            border-bottom-color: var(--fl-fgColor) !important;
+            border-left-width: 0.1em;
+            border-left-style: solid;
+            border-left-color: var(--fl-fgColor) !important;
+            padding-top: 0.1em;
+            padding-right: 0.1em;
+            padding-bottom: 0.1em;
+            padding-left: 0.1em;
+            margin-top: -0.1em;
+            margin-right: -0.1em;
+            margin-bottom: -0.1em;
+            margin-left: -0.1em;
+        }
 
-            iframe {
-                border-top-color: fColor !important;
-                border-right-color: fColor !important;
-                border-bottom-color: fColor !important;
-                border-left-color: fColor !important;
-            }
+        // Orator
+        .fl-orator-highlight {
+            color: var(--fl-fgColor) !important;
+            background-color: var(--fl-bgColor) !important;
+            outline-color: var(--fl-bgColor);
+        }
 
-            a,
-            a *, {
-                color: linkColor !important;
-                font-weight: bold !important;
-                background-color: bColor !important;
-            }
+        .fl-icon-orator:before {
+            background-color: var(--fl-fgColor);
+            color: var(--fl-bgColor);
+        }
 
-            button,
-            button *,
-            input[type="button"],
-            input[type="button"] *,
-            input[type="reset"],
-            input[type="reset"] *,
-            input[type="submit"],
-            input[type="submit"] *,
-            .fl-input-button,
-            .fl-input-button * {
-                color: buttonFColor !important;
-                background-color: buttonBColor !important;
-            }
+        .fl-orator-controller > *:not(:first-child):hover,
+        .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
+            background-color: var(--fl-bgColor) !important;
+            color: var(--fl-fgColor) !important;
+        }
 
-            ::placeholder {
-                color: currentColor;
-                font-style: italic;
-            }
+        .fl-orator-selectionReader-control:hover,
+        .fl-orator-selectionReader-control:hover .fl-icon-orator:before,
+        .fl-orator-selectionReader-control:hover * {
+            background-color: var(--fl-bgColor) !important;
+            color: var(--fl-fgColor) !important;
+        }
 
-            // Tables
-            th {
-                border-top-width: 0.1em;
-                border-top-style: solid;
-                border-top-color: fColor !important;
-                border-right-width: 0.1em;
-                border-right-style: solid;
-                border-right-color: fColor !important;
-                border-bottom-width: 0.1em;
-                border-bottom-style: solid;
-                border-bottom-color: fColor !important;
-                border-left-width: 0.1em;
-                border-left-style: solid;
-                border-left-color: fColor !important;
-                background-color: fColor !important;
-                color: bColor !important;
-            }
+        .fl-orator-selectionReader-control.fl-orator-selectionReader-above:after,
+        .fl-orator-selectionReader-control.fl-orator-selectionReader-above:hover:after,
+        .fl-orator-selectionReader-control.fl-orator-selectionReader-above:before {
+            border-top-color: var(--fl-bgColor);
+        }
 
-            td {
-                border-top-width: 0.1em;
-                border-top-style: solid;
-                border-top-color: fColor !important;
-                border-right-width: 0.1em;
-                border-right-style: solid;
-                border-right-color: fColor !important;
-                border-bottom-width: 0.1em;
-                border-bottom-style: solid;
-                border-bottom-color: fColor !important;
-                border-left-width: 0.1em;
-                border-left-style: solid;
-                border-left-color: fColor !important;
-            }
+        .fl-orator-selectionReader-control.fl-orator-selectionReader-below:after,
+        .fl-orator-selectionReader-control.fl-orator-selectionReader-below:hover:after,
+        .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
+            border-bottom-color: var(--fl-bgColor);
+        }
 
-            // Focus
-            .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable {
-                outline-width: 0.2em;
-                outline-style: solid;
-                outline-color: fColor;
-            }
-
-            // Infusion Components
-            // Reorderer
-            .fl-reorderer-dropMarker {
-                background-color: #f00 !important;
-            }
-
-            // Inline edit
-            .fl-inlineEdit-edit {
-                background-color: fColor !important;
-                color: bColor !important;
-                border-top-width: 0.1em;
-                border-top-style: solid;
-                border-top-color: bColor !important;
-                border-right-width: 0.1em;
-                border-right-style: solid;
-                border-right-color: bColor !important;
-                border-bottom-width: 0.1em;
-                border-bottom-style: solid;
-                border-bottom-color: bColor !important;
-                border-left-width: 0.1em;
-                border-left-style: solid;
-                border-left-color: bColor !important;
-                padding-top: 0.1em;
-                padding-right: 0.1em;
-                padding-bottom: 0.1em;
-                padding-left: 0.1em;
-                margin-top: -0.1em;
-                margin-right: -0.1em;
-                margin-bottom: -0.1em;
-                margin-left: -0.1em;
-            }
-
-            // Textfield Stepper
-            .fl-textfieldStepper .fl-textfieldStepper-textField {
-                border: solid 1px fColor;
-            }
-
-            .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
-                visibility: hidden;
-            }
-
-            .fl-textfieldStepper .fl-textfieldStepper-focus {
-                outline-color: fColor;
-            }
-
-            // Orator
-            .fl-orator-highlight {
-                color: bColor !important;
-                background-color: fColor !important;
-                outline-color: fColor;
-            }
-
-            .fl-orator-controller-playToggle {
-                text-shadow: unset;
-            }
-
-            .fl-icon-orator:before {
-                background-color: bColor;
-                color: fColor;
-                text-shadow: unset;
-            }
-
-            .fl-orator-controller > *:not(:first-child):hover,
-            .fl-orator-controller :hover .fl-orator-controller-playToggle,
-            .fl-orator-controller :hover .fl-orator-controller-playToggle:before,
-            .fl-orator-selectionReader-control:hover,
-            .fl-orator-selectionReader-control:hover .fl-icon-orator:before,
-            .fl-orator-selectionReader-control:hover * {
-                background-color: fColor !important;
-                color: bColor !important;
-            }
-
-            .fl-orator-selectionReader-control.fl-orator-selectionReader-above:after,
-            .fl-orator-selectionReader-control.fl-orator-selectionReader-above:hover:after,
-            .fl-orator-selectionReader-control.fl-orator-selectionReader-above:before {
-                border-top-color: fColor;
-            }
-
-            .fl-orator-selectionReader-control.fl-orator-selectionReader-below:after,
-            .fl-orator-selectionReader-control.fl-orator-selectionReader-below:hover:after,
-            .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
-                border-bottom-color: fColor;
-            }
-
-            // Inverted color
-            // General Styling
-            &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color {
-                color: bColor !important;
-                background-color: fColor !important;
-                border-top-color: bColor !important;
-                border-right-color: bColor !important;
-                border-bottom-color: bColor !important;
-                border-left-color: bColor !important;
-            }
-
-            .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable
-
-
-            // Focus
-            &.fl-inverted-color.fl-focus :focus,
-            &.fl-inverted-color.fl-focus:focus,
-            .fl-inverted-color.fl-focus :focus,
-            .fl-inverted-color.fl-focus:focus,
-            &.fl-focus .fl-inverted-color :focus,
-            &.fl-focus .fl-inverted-color:focus,
-            .fl-focus .fl-inverted-color :focus,
-            .fl-focus .fl-inverted-color:focus {
-                outline-width: 0.2em;
-                outline-style: solid;
-                outline-color: bColor;
-            }
-
-            .fl-inverted-color {
-                &, *,
-                div, input,
-                h1, h2, h3, h4, h5, h6 {
-                    color: bColor !important;
-                    background-color: fColor !important;
-                    border-top-color: bColor !important;
-                    border-right-color: bColor !important;
-                    border-bottom-color: bColor !important;
-                    border-left-color: bColor !important;
-                }
-
-                if (selectedFColor && selectedBColor) {
-                    &::selection,
-                    ::selection {
-                        color: selectedBColor !important;
-                        background-color: selectedFColor !important;
-                    }
-                }
-
-                iframe {
-                    border-top-color: bColor !important;
-                    border-right-color: bColor !important;
-                    border-bottom-color: bColor !important;
-                    border-left-color: bColor !important;
-                }
-
-                a,
-                ^[0..-2] a.fl-inverted-color,
-                a *,
-                ^[0..-2] a.fl-inverted-color * {
-                    color: bColor !important;
-                    font-weight: bold !important;
-                    background-color: linkColor !important;
-                }
-
-                button,
-                ^[0..-2] button.fl-inverted-color,
-                button *,
-                ^[0..-2] button.fl-inverted-color *,
-                input[type="button"],
-                ^[0..-2] input[type="button"].fl-inverted-color,
-                ^[0..-2] input[type="button"].fl-inverted-color *,
-                input[type="reset"],
-                ^[0..-2] input[type="reset"].fl-inverted-color,
-                ^[0..-2] input[type="reset"].fl-inverted-color *,
-                input[type="submit"],
-                ^[0..-2] input[type="submit"].fl-inverted-color,
-                ^[0..-2] input[type="submit"].fl-inverted-color *,
-                .fl-input-button,
-                &.fl-input-button,
-                .fl-input-button *,
-                &.fl-input-button * {
-                    color: buttonBColor !important;
-                    background-color: buttonFColor !important;
-                }
-
-                // Tables
-                th {
-                    border-top-width: 0.1em;
-                    border-top-style: solid;
-                    border-top-color: bColor !important;
-                    border-right-width: 0.1em;
-                    border-right-style: solid;
-                    border-right-color: bColor !important;
-                    border-bottom-width: 0.1em;
-                    border-bottom-style: solid;
-                    border-bottom-color: bColor !important;
-                    border-left-width: 0.1em;
-                    border-left-style: solid;
-                    border-left-color: bColor !important;
-                    background-color: bColor !important;
-                    color: fColor !important;
-                }
-
-                td {
-                    border-top-width: 0.1em;
-                    border-top-style: solid;
-                    border-top-color: bColor !important;
-                    border-right-width: 0.1em;
-                    border-right-style: solid;
-                    border-right-color: bColor !important;
-                    border-bottom-width: 0.1em;
-                    border-bottom-style: solid;
-                    border-bottom-color: bColor !important;
-                    border-left-width: 0.1em;
-                    border-left-style: solid;
-                    border-left-color: bColor !important;
-                }
-
-                // Infusion focus element
-                .fl-focus:focus, .fl-focus :focus, .selectable {
-                    outline-width: 0.2em;
-                    outline-style: solid;
-                    outline-color: bColor;
-                }
-
-                // Infusion Components
-                // Reorderer
-                .fl-reorderer-dropMarker {
-                    background-color: #f00 !important;
-                }
-
-                // Inline Edit
-                .fl-inlineEdit-edit {
-                    background-color: bColor !important;
-                    color: fColor !important;
-                    border-top-width: 0.1em;
-                    border-top-style: solid;
-                    border-top-color: fColor !important;
-                    border-right-width: 0.1em;
-                    border-right-style: solid;
-                    border-right-color: fColor !important;
-                    border-bottom-width: 0.1em;
-                    border-bottom-style: solid;
-                    border-bottom-color: fColor !important;
-                    border-left-width: 0.1em;
-                    border-left-style: solid;
-                    border-left-color: fColor !important;
-                    padding-top: 0.1em;
-                    padding-right: 0.1em;
-                    padding-bottom: 0.1em;
-                    padding-left: 0.1em;
-                    margin-top: -0.1em;
-                    margin-right: -0.1em;
-                    margin-bottom: -0.1em;
-                    margin-left: -0.1em;
-                }
-
-                // Orator
-                .fl-orator-highlight {
-                    color: fColor !important;
-                    background-color: bColor !important;
-                    outline-color: bColor;
-                }
-
-                .fl-icon-orator:before {
-                    background-color: fColor;
-                    color: bColor;
-                }
-
-                .fl-orator-controller > *:not(:first-child):hover,
-                .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
-                    background-color: bColor !important;
-                    color: fColor !important;
-                }
-
-                .fl-orator-selectionReader-control:hover,
-                .fl-orator-selectionReader-control:hover .fl-icon-orator:before,
-                .fl-orator-selectionReader-control:hover * {
-                    background-color: bColor !important;
-                    color: fColor !important;
-                }
-
-                .fl-orator-selectionReader-control.fl-orator-selectionReader-above:after,
-                .fl-orator-selectionReader-control.fl-orator-selectionReader-above:hover:after,
-                .fl-orator-selectionReader-control.fl-orator-selectionReader-above:before {
-                    border-top-color: bColor;
-                }
-
-                .fl-orator-selectionReader-control.fl-orator-selectionReader-below:after,
-                .fl-orator-selectionReader-control.fl-orator-selectionReader-below:hover:after,
-                .fl-orator-selectionReader-control.fl-orator-selectionReader-below:before {
-                    border-bottom-color: bColor;
-                }
-
-                // TextfieldStepper
-                .fl-textfieldStepper .fl-textfieldStepper-focus {
-                    outline-color: bColor;
-                }
-            }
+        // TextfieldStepper
+        .fl-textfieldStepper .fl-textfieldStepper-focus {
+            outline-color: var(--fl-bgColor);
         }
     }
 }
