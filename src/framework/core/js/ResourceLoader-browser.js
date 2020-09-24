@@ -19,16 +19,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.resourceLoader.UrlClass = URL;
 
-    fluid.resourceLoader.condenseUrl = function (requestOptions) {
-        var togo = new fluid.resourceLoader.UrlClass("http://localhost/");
-        fluid.dataSource.URL.urlFields.forEach(function (field) {
-            if (requestOptions[field]) {
-                togo[field] = requestOptions[field];
-            }
-        });
-        return togo;
-    };
-
     fluid.resourceLoader.configureXHR = function (xhr, options) {
         fluid.resourceLoader.loaders.XHR.copyProps.forEach(function (prop) {
             if (fluid.isValue(options[prop])) {
@@ -133,7 +123,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         xhr.addEventListener("error", sendError);
 
         // username and password in XHR open has sometimes been criticised https://bugs.chromium.org/p/chromium/issues/detail?id=707761
-        xhr.open(requestOptions.method || "GET", fluid.resourceLoader.condenseUrl(requestOptions), requestOptions.async);
+        xhr.open(requestOptions.method || "GET", fluid.dataSource.URL.condenseUrl(requestOptions), requestOptions.async);
         fluid.resourceLoader.configureXHR(xhr, requestOptions);
         xhr.send(data);
         return promise;

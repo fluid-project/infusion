@@ -282,6 +282,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.dataSource.URL.urlFields = fluid.freezeRecursive(["protocol", "username", "password", "hostname", "port", "pathname", "search"]);
 
+    fluid.dataSource.URL.condenseUrl = function (requestOptions) {
+        var togo = new fluid.resourceLoader.UrlClass("http://localhost/");
+        fluid.dataSource.URL.urlFields.forEach(function (field) {
+            if (requestOptions[field]) {
+                togo[field] = requestOptions[field];
+            }
+        });
+        return togo;
+    };
+
     fluid.dataSource.URL.requestOptions = fluid.dataSource.URL.urlFields.concat(
         ["url", "method", "headers", "termMap"]);
 
