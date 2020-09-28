@@ -362,9 +362,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // remove the last segment as we only need to place separators in between the parts of the words
         segs.pop();
         fluid.each(segs, function (seg) {
-            var separator = $(separatorMarkup)[0];
-            node = node.splitText(seg.length);
-            node.parentNode.insertBefore(separator, node);
+            // Do not attempt to process empty segs, which could lead to an infinite recursion.
+            // See: https://issues.fluidproject.org/browse/FLUID-6554
+            if (seg.length) {
+                var separator = $(separatorMarkup)[0];
+                node = node.splitText(seg.length);
+                node.parentNode.insertBefore(separator, node);
+            }
         });
     };
 

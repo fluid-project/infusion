@@ -118,6 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOpts: {
             text: {
                 "en": "Global temperature has increased over the past 50 years.",
+                "en-injected": "Global temperature has in\u00ADcreased over the past 50 years.",
                 "es": "La temperatura global ha aumentado en los últimos 50 años."
             },
             syllabified: {
@@ -144,6 +145,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     type: Node.TEXT_NODE,
                     text: "creased over the past 50 years."
+                }],
+                "en-US-injected": [{
+                    type: Node.TEXT_NODE,
+                    text: "Global tem"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "per"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "a"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "ture has in"
+                }, {
+                    type: Node.ELEMENT_NODE
+                }, {
+                    type: Node.TEXT_NODE,
+                    text: "\u00ADcreased over the past 50 years."
                 }],
                 "en-GB": [{
                     type: Node.TEXT_NODE,
@@ -203,14 +228,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             injected: {
                 disabled: {
                     selector: ".flc-syllabification-injectWhenDisabled",
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
+                    text: "{that}.options.testOpts.text.en-injected",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US-injected",
                     separatorCount: 4
                 },
                 enabled: {
                     selector: ".flc-syllabification-injectWhenEnabled",
-                    text: "{that}.options.testOpts.text.en",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US",
+                    text: "{that}.options.testOpts.text.en-injected",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US-injected",
                     separatorCount: 4
                 },
                 combined: [
@@ -219,8 +244,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ]
             },
             markup: {
-                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global temperature has increased over the past 50 years.</p>",
-                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global temperature has increased over the past 50 years.</p>"
+                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global temperature has in&shy;creased over the past 50 years.</p>",
+                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global temperature has in&shy;creased over the past 50 years.</p>"
             }
         },
         modules: [{
