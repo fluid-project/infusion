@@ -118,6 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOpts: {
             text: {
                 "en": "Global temperature has increased over the past 50 years.",
+                // Soft hyphens (\u00AD) included to test https://issues.fluidproject.org/browse/FLUID-6554
                 "en-injected": "Global temperature has in\u00ADcreased over the past 50 years.",
                 "es": "La temperatura global ha aumentado en los últimos 50 años."
             },
@@ -243,6 +244,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "{that}.options.testOpts.injected.enabled"
                 ]
             },
+            // Soft hyphens (&shy;) included to test https://issues.fluidproject.org/browse/FLUID-6554
             markup: {
                 injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global temperature has in&shy;creased over the past 50 years.</p>",
                 injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global temperature has in&shy;creased over the past 50 years.</p>"
