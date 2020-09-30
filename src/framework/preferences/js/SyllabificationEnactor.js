@@ -46,7 +46,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         markup: {
             separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>",
-            softHyphePlaceholder: "<span class=\"flc-syllabification-softHyphenPlaceholder\"></span>"
+            softHyphenPlaceholder: "<span class=\"flc-syllabification-softHyphenPlaceholder\"></span>"
         },
         model: {
             enabled: false
@@ -158,7 +158,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     "{arguments}.0",
                     "{arguments}.1",
                     "{that}.options.markup.separator",
-                    "{that}.options.markup.softHyphePlaceholder"
+                    "{that}.options.markup.softHyphenPlaceholder"
                 ]
             },
             injectScript: {
@@ -379,16 +379,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Insert separators, indicating the hyphenated positions, into a text node. This will inject the specified
-     * markup as the separators and split the original textnode at the hpyhenation points. If there are no places to
+     * markup as the separators and split the original textnode at the hyphenation points. If there are no places to
      * inject a hyphenation point, the node will be left unchanged. If the original textnode inclues soft hyphens (i.e.
      * &shy;) characters, these will be used as a hyphenation point with the original location in the text node
-     * replacded with the `softHyphenPlaceholderMarkup` to allow it to be replaced when syllabification is removed.
+     * replacded with the `softHyphenPlaceholderMarkup` to allow it to be restored when syllabification is removed.
      *
      * @param {HypherHyphenator} hyphenator - an instance of a Hypher Hyphenator
      * @param {DomNode} node - a DOM node containing text to be hyphenated
      * @param {String} separatorMarkup - the markup to be injected and used to indicate the separators/hyphens
      * @param {String} softHyphenPlaceholderMarkup - the markup to be injected and used to indicate the original
-     *                                               location of any soft hyphens inclded in `node`
+     *                                               location of any soft hyphens included in `node`
      */
     fluid.prefs.enactor.syllabification.hyphenateNode = function (hyphenator, node, separatorMarkup, softHyphenPlaceholderMarkup) {
         if (!hyphenator || !node.textContent) {
@@ -428,7 +428,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             parent.normalize();
         });
 
-        // replace placeholders with soft hyphens
+        // restore soft hyphens
         that.locate("softHyphenPlaceholder").each(function (index, elm) {
             var parent = elm.parentNode;
 
