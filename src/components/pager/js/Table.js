@@ -210,13 +210,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.table.expandPaths = function (target, tree, opts) {
         for (var i in tree) {
             var val = tree[i];
-            if (fluid.isMarker(val, fluid.VALUE)) { // TODO, in theory, we could prevent copying of columnDefs
-                if (i === "valuebinding") {
-                    target[i] = opts.EL;
-                } else {
-                    target[i] = {"valuebinding" : opts.EL};
-                }
-            } else if (i === "valuebinding") {
+            if (i === "valuebinding") {
                 target[i] = fluid.table.expandPath(tree[i], opts);
             } else if (typeof (val) === "object") {
                 target[i] = val.length !== undefined ? [] : {};

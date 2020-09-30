@@ -32,7 +32,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             container: "@expand:{that}.renderContainer()"
         },
         // The DOM element which this component should inject its markup into on startup
-        parentContainer: "{that}.options.container", // should be overridden
+        parentContainer: "{that}.options.container",
         injectionType: "append",
         invokers: {
             renderMarkup: "fluid.identity({that}.options.markup.container)",
@@ -48,7 +48,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // during local workflow will evaluate them in reverse order
                 evaluateContainers: {
                     funcName: "fluid.renderer.evaluateContainers",
-                    priority: "last"
+                    priority: "last",
+                    waitIO: true
                 }
             }
         },
@@ -60,6 +61,47 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
+
+    fluid.registerNamespace("fluid.renderer");
+
+    /** A component depending on template markup resources during startup. Shared between fluid.templateRenderingView
+     * and the new renderer
+     */
+    fluid.defaults("fluid.templateResourceFetcher", {
+        gradeNames: "fluid.resourceLoader",
+        // Configure a map here of all templates which should be pre-fetched during fetchTemplates so that they are
+        // ready for renderMarkup
+        rendererTemplateResources: {
+            template: true
+        },
+        // Set to true to defeat template fetching during startup
+        skipTemplateFetch: false,
+        workflows: {
+            global: {
+                fetchTemplates: {
+                    funcName: "fluid.renderer.fetchTemplates",
+                    priority: "after:enlistModel"
+                }
+            }
+        }
+    });
+
+    fluid.renderer.fetchTemplates = function (shadows) {
+        shadows.forEach(function (shadow) {
+            var that = shadow.that;
+            if (fluid.componentHasGrade(that, "fluid.templateResourceFetcher")) {
+                var skipTemplateFetch = fluid.getForComponent(that, ["options", "skipTemplateFetch"]);
+                if (!skipTemplateFetch) {
+                    var rendererTemplateResources = fluid.getForComponent(that, ["options", "rendererTemplateResources"]);
+                    fluid.each(rendererTemplateResources, function (value, key) {
+                        if (value) {
+                            fluid.getForComponent(that, ["resources", key]);
+                        }
+                    });
+                }
+            }
+        });
+    };
 
     /**
      * Used to add an element to a parent container. Internally it can use either of jQuery's prepend or append methods.
@@ -78,8 +120,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         method = method || "append";
         $(parentContainer)[method](elm);
     };
-
-    fluid.registerNamespace("fluid.renderer");
 
     fluid.renderer.evaluateContainers = function (shadows) {
         shadows.forEach(function (shadow) {
@@ -107,41 +147,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * A fluid.containerRenderingView which fetches a template and renders it into the container.
      *
-     * The template path must be supplied either via a top level `template` option or directly to the
+     * The template path must be supplied either via a top level `templateUrl` option or directly to the
      * `resources.template` option. The path may optionally include "terms" to use as tokens which will be resolved
-     * from values specified in the `terms` option.
+     * from values specified in the `resourceOptions.terms` option --- see fluid.resourceLoader for further details.
      *
-     * The template is fetched on creation and rendered into the container after it has been fetched. After rendering
-     * the `afterRender` event is fired.
+     * The template is fetched on creation and rendered into the container after it has been fetched.
      */
     fluid.defaults("fluid.templateRenderingView", {
-        gradeNames: ["fluid.viewComponent", "fluid.resourceLoader"],
-        resources: {
-            template: "fluid.notImplemented"
-        },
-        injectionType: "append",
-        events: {
-            afterRender: null
-        },
-        listeners: {
-            "onResourcesLoaded.render": "{that}.render",
-            "onResourcesLoaded.afterRender": {
-                listener: "{that}.events.afterRender",
-                args: ["{that}"],
-                priority: "after:render"
-            }
-        },
+        gradeNames: ["fluid.containerRenderingView", "fluid.templateResourceFetcher"],
         invokers: {
-            render: {
-                funcName: "fluid.containerRenderingView.addToParent",
-                args: ["{that}.container", "{that}.resources.template.resourceText", "{that}.options.injectionType"]
-            }
+            renderMarkup: "fluid.identity({that}.resources.template.parsed)"
         },
         distributeOptions: {
             "mapTemplateSource": {
-                source: "{that}.options.template",
-                removeSource: true,
-                target: "{that}.options.resources.template"
+                source: "{that}.options.templateUrl",
+                target: "{that}.options.resources.template.url"
             }
         }
     });

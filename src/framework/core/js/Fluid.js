@@ -563,7 +563,9 @@ var fluid = fluid || fluid_3_0_0;
         for (var j = 0; j < args.length - 1; ++j) {
             transit = args[j + 1](transit, key);
         }
-        togo[key] = transit;
+        if (transit !== fluid.NO_VALUE) {
+            togo[key] = transit;
+        }
     }
 
     /** Return an array or hash of objects, transformed by one or more functions. Similar to
@@ -575,7 +577,8 @@ var fluid = fluid || fluid_3_0_0;
      * all of type Function, accepting the signature (object, index), where object is the
      * structure member to be transformed, and index is its key or index. Each function will be
      * applied in turn to each structure member, which will be replaced by the return value
-     * from the function.
+     * from the function. A function may return fluid.NO_VALUE to indicate that the key should not
+     * be assigned any value.
      * @return {Array|Object} - The finally transformed list, where each member has been replaced by the
      * original member acted on by the function or functions.
      */
@@ -1049,13 +1052,10 @@ var fluid = fluid || fluid_3_0_0;
         return Object.freeze(togo);
     };
 
-    /* A special "marker object" representing that a distinguished
-     * (probably context-dependent) value should be substituted.
-     */
-    fluid.VALUE = fluid.makeMarker("VALUE");
-
     /* A special "marker object" representing that no value is present (where
-     * signalling using the value "undefined" is not possible - e.g. the return value from a "strategy") */
+     * signalling using the value "undefined" is not possible - e.g. the return value from a "strategy"). This
+     * is intended for "ephemeral use", i.e. returned directly from strategies and transforms and should not be
+     * stored in data structures */
     fluid.NO_VALUE = fluid.makeMarker("NO_VALUE");
 
     /* A marker indicating that a value requires to be expanded after component construction begins */
@@ -1195,7 +1195,7 @@ var fluid = fluid || fluid_3_0_0;
         }
         var uncess = newValue === fluid.NO_VALUE ? 0 : 1;
         root = traverser(root, segs, initPos, config, uncess);
-        if (newValue === fluid.NO_VALUE || newValue === fluid.VALUE) { // get or custom
+        if (newValue === fluid.NO_VALUE) { // get or custom
             return returnSegs ? {root: root, segs: segs} : root;
         }
         else { // set
@@ -2059,6 +2059,7 @@ var fluid = fluid || fluid_3_0_0;
         return mergedDefaults.defaults;
     };
 
+    fluid.NO_ARGUMENTS = fluid.makeMarker("NO_ARGUMENTS");
     // unsupported, NON-API function
     /** Upgrades an element of an IoC record which designates a function to prepare for a {func, args} representation.
      * @param {Any} rec - If the record is of a primitive type,
@@ -2070,7 +2071,7 @@ var fluid = fluid || fluid_3_0_0;
         if (rec && fluid.isPrimitive(rec)) {
             var togo = {};
             togo[key || (typeof(rec) === "string" && rec.charAt(0) !== "{" ? "funcName" : "func")] = rec;
-            togo.args = fluid.NO_VALUE;
+            togo.args = fluid.NO_ARGUMENTS;
             return togo;
         } else {
             return rec;

@@ -325,6 +325,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (resourceSpec.transformEvent) {
             fluid.fail("Cannot subscribe resource ", resourceSpec, " which has already been subscribed for I/O");
         }
+        resourceSpec.key = key; // To aid debuggability
         resourceSpec.transformEvent = fluid.makeEventFirer({
             name: "Transform chain for resource \"" + key + "\"",
             ownerId: ownerComponentId
@@ -661,11 +662,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.resourceLoader.sanitizeResourceSpec = function (resourceSpec) {
         return fluid.transform(resourceSpec, function (value) {
-            if (fluid.isComponent(value)) {
-                return "<Component>";
-            } else {
-                return value;
-            }
+            return fluid.isPrimitive(value) || fluid.isPlainObject(value) && !fluid.isPromise(value) ? value : fluid.NO_VALUE;
         });
     };
 
@@ -687,8 +684,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
         if (loaders.length === 0) {
-            fluid.fail("Couldn't locate resource loader for resource spec ", fluid.resourceLoader.sanitizeResourceSpec(resourceSpec),
-                "; it should have one of the fields ", Object.keys(fluid.resourceLoader.loaders) + " filled out");
+            loaders.push({
+                loader: fluid.resourceLoader.loaders.noLoader
+            });
         } else if (loaders.length > 1) {
             fluid.fail("Resource spec ", fluid.resourceLoader.sanitizeResourceSpec(resourceSpec),
                 " is ambiguous because it has fields for multiple resource loaders filled out: at most one of the fields ",
@@ -733,6 +731,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.resourceLoader.loaders.dataSource.noPath = true;
+    fluid.resourceLoader.loaders.dataSource.parsed = true;
+
+    /** A placeholder resource which always immediately resolves with a structured message reporting that no resource was
+     * configured,
+     * @param {ResourceSpec} resourceSpec - A `ResourceSpec` for which none of the fields designating another `OneResourceLoader`
+     * have been filled out
+     * @return {Promise} An already resolved promise holding a structured message
+     */
+    fluid.resourceLoader.loaders.noLoader = function (resourceSpec) {
+        return fluid.promise().resolve({
+            noResource: true,
+            message: ["No resource was configured for resource spec ", fluid.resourceLoader.sanitizeResourceSpec(resourceSpec),
+                "; since it had none of the fields fields ", Object.keys(fluid.resourceLoader.loaders) + " filled out"]
+        });
+    };
+
+    fluid.resourceLoader.loaders.noLoader.noPath = true;
+    fluid.resourceLoader.loaders.noLoader.parsed = true;
 
     fluid.registerNamespace("fluid.resourceLoader.parsers");
 
@@ -751,7 +767,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * parser is appropriate
      */
     fluid.resourceLoader.resolveResourceParser = function (resourceSpec) {
-        return fluid.resourceLoader.parsers[resourceSpec.dataType] || fluid.identity;
+        return !resourceSpec.loader.loader.parsed && fluid.resourceLoader.parsers[resourceSpec.dataType] || fluid.identity;
     };
 
     /** Parses a fetched resource text as JSON
@@ -770,6 +786,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (!oneResource) {
                 target[name] = oneResource;
                 return;
+            // Backwards compatibility for Infusion 2.x-style resources assumes that a string resource was meant to be a url
             } else if (fluid.isPrimitive(oneResource)) {
                 oneResource = {url: oneResource};
             }

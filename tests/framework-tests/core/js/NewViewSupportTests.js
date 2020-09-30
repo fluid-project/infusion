@@ -93,24 +93,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.defaults("fluid.tests.templateRenderingView", {
             gradeNames: ["fluid.templateRenderingView"],
-            template: "../data/testTemplate1.html"
+            templateUrl: "../data/testTemplate1.html"
         });
 
-        fluid.tests.templateRenderingView.verifyInit = function (container) {
-            var children = container.children();
+        fluid.tests.templateRenderingView.verifyInit = function (that, parentContainer) {
+            var parentNode = $(parentContainer);
+            var children = parentNode.children();
             jqUnit.assertEquals("There should be two child elements in the container", 2, children.length);
             jqUnit.assertTrue("The first child should be the pre-existing element", children.eq(0).hasClass("flc-newViewSupport-templateContainer-existing"));
             jqUnit.assertTrue("The second child should be the injected template", "Test Template 1", children.eq(1).text());
+            that.destroy();
+            var newChildren = parentNode.children();
+            jqUnit.assertEquals("There should be one child element in the container", 1, newChildren.length);
+            jqUnit.assertTrue("The first child should be the pre-existing element", newChildren.eq(0).hasClass("flc-newViewSupport-templateContainer-existing"));
             jqUnit.start();
         };
 
         jqUnit.asyncTest("Init fluid.templateRenderingView", function () {
-            jqUnit.expect(3);
+            jqUnit.expect(5);
             fluid.tests.templateRenderingView(".flc-newViewSupport-templateContainer", {
                 listeners: {
-                    "afterRender.test": {
+                    "onCreate.test": {
                         listener: "fluid.tests.templateRenderingView.verifyInit",
-                        args: "{that}.container",
+                        args: ["{that}", "{that}.options.parentContainer"],
                         priority: "last:testing"
                     }
                 }

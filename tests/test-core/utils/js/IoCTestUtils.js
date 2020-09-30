@@ -189,7 +189,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (typeof(rec) === "string") {
                 rec = fluid.upgradePrimitiveFunc(rec, null);
             }
-            if (rec.args === fluid.NO_VALUE) {
+            if (rec.args === fluid.NO_ARGUMENTS) {
                 rec.args = args;
             }
             var expanded = expander(rec, localRecord, contextThat);

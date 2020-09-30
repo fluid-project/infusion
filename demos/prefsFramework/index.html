@@ -177,9 +177,8 @@
                     <script>
                         // Need to inject the SVG so that we don't have to have the entire SVG document in the markup,
                         // but still be able to style it.
-                        fluid.templateRenderingView({
-                            container: "#headTitle",
-                            template: "images/NOAA_Logo.svg",
+                        fluid.templateRenderingView("#headTitle", {
+                            templateUrl: "images/NOAA_Logo.svg",
                             injectionType: "prepend"
                         });
                     </script>

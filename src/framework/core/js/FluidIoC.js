@@ -2652,7 +2652,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.makeInvoker = function (that, invokerec, name) {
         invokerec = fluid.upgradePrimitiveFunc(invokerec); // shorthand case for direct function invokers (FLUID-4926)
-        if (invokerec.args !== undefined && invokerec.args !== fluid.NO_VALUE && !fluid.isArrayable(invokerec.args)) {
+        if (invokerec.args !== undefined && invokerec.args !== fluid.NO_ARGUMENTS && !fluid.isArrayable(invokerec.args)) {
             invokerec.args = fluid.makeArray(invokerec.args);
         }
         var func = fluid.recordToApplicable(invokerec, that);
@@ -2675,7 +2675,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.log(fluid.logLevel.WARN, "Ignoring call to invoker " + name + " of component ", that, " which has been destroyed");
             } else {
                 localRecord.arguments = arguments;
-                if (invokerec.args === undefined || invokerec.args === fluid.NO_VALUE) {
+                if (invokerec.args === undefined || invokerec.args === fluid.NO_ARGUMENTS) {
                     finalArgs = arguments;
                 } else {
                     fluid.expandImmediateImpl(invokePre, expandOptions);
@@ -2724,7 +2724,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.event.dispatchListener = function (that, listener, eventName, eventSpec, wrappedArgs) {
-        if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE && !fluid.isArrayable(eventSpec.args)) {
+        if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_ARGUMENTS && !fluid.isArrayable(eventSpec.args)) {
             eventSpec.args = fluid.makeArray(eventSpec.args);
         }
         listener = fluid.event.resolveListener(listener); // In theory this optimisation is too aggressive if global name is not defined yet
@@ -2739,7 +2739,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             var args = wrappedArgs ? arguments[0] : arguments, finalArgs;
             localRecord.arguments = args;
-            if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE) {
+            if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_ARGUMENTS) {
                 // In theory something more exotic happens here, and in makeInvoker - where "source" is an array we want to
                 // keep its base reference stable since Function.apply will fork it sufficiently, but we really need to
                 // clone each structured argument. Implies that expandImmediateImpl needs to be split in two, and operate

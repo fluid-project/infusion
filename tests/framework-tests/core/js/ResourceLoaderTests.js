@@ -446,9 +446,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-4982: Improperly filled resource blocks", function () {
-        jqUnit.expectFrameworkDiagnostic("Framework exception mentioning valid options on incomplete resource block", function () {
-            fluid.tests.FLUID4982incomplete();
-        }, ["resource loader", "url"]);
+        var that = fluid.tests.FLUID4982incomplete();
+        var message = JSON.stringify(that.resources.initModel.parsed);
+        ["No resource", "url"].forEach(function (text) {
+            jqUnit.assertTrue("Expected message text found", message.includes(text));
+        });
     });
 
     /** FLUID-4982: Overriding primary resourceLoader blocks with promise or dataSource sources */
