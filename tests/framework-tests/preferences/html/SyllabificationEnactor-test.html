@@ -49,11 +49,14 @@
         <h2 id="qunit-userAgent"></h2>
         <ol id="qunit-tests"></ol>
 
+        <p class="flc-syllabification-insertIntoTextNode">Text Content</p>
+
         <div class="flc-syllabification" lang="en-US">
-            <p class="flc-syllabification-parentLang">Global temperature has increased over the past 50 years.</p>
-            <p class="flc-syllabification-otherRegion" lang="en-gb">Global temperature has increased over the past 50 years.</p>
-            <p class="flc-syllabification-generic" lang="en">Global temperature has increased over the past 50 years.</p>
-            <p class="flc-syllabification-fallback" lang="en-CA">Global temperature has increased over the past 50 years.</p>
+            <!-- Soft hyphens (&shy;) included to test https://issues.fluidproject.org/browse/FLUID-6554 -->
+            <p class="flc-syllabification-parentLang">Global temperature has in&shy;creased over the past 50 years.</p>
+            <p class="flc-syllabification-otherRegion" lang="en-gb">Global temperature has in&shy;creased over the past 50 years.</p>
+            <p class="flc-syllabification-generic" lang="en">Global temperature has in&shy;creased over the past 50 years.</p>
+            <p class="flc-syllabification-fallback" lang="en-CA">Global temperature has in&shy;creased over the past 50 years.</p>
             <p class="flc-syllabification-notAvailable" lang="es">La temperatura global ha aumentado en los últimos 50 años.</p>
         </div>
     </body>

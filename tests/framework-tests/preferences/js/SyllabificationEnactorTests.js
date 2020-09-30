@@ -78,6 +78,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             src: src
         };
     };
+    /**************************************************************************
+     * fluid.prefs.enactor.syllabification.insertIntoTextNode tests
+     **************************************************************************/
+
+    fluid.tests.prefs.enactor.syllabification.assertNode = function (nodeName, node, expectedType, expectedContent) {
+        jqUnit.assertEquals("The " + nodeName + " node has type: " + expectedType, Node[expectedType], node.nodeType);
+        jqUnit.assertEquals("The " + nodeName + " node has content: \"" + expectedContent + "\"", expectedContent, node.textContent);
+    };
+
+    jqUnit.test("Test fluid.prefs.enactor.syllabification.insertIntoTextNode", function () {
+        var parent = $(".flc-syllabification-insertIntoTextNode")[0];
+        var toInject = $("<span>inserted </span>")[0];
+
+        jqUnit.assertEquals("The parent node originally only has a single child", 1, parent.childNodes.length);
+
+        var newNode = fluid.prefs.enactor.syllabification.insertIntoTextNode(parent.childNodes[0], toInject, 5);
+
+        // Returned node
+        fluid.tests.prefs.enactor.syllabification.assertNode("returned", newNode, "TEXT_NODE", "Content");
+
+        // Parent element
+        jqUnit.assertEquals("The parent node now has three children", 3, parent.childNodes.length);
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent, "ELEMENT_NODE", "Text inserted Content");
+
+        // First child
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent.childNodes[0], "TEXT_NODE", "Text ");
+
+        // Inserted child
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent.childNodes[1], "ELEMENT_NODE", "inserted ");
+
+        // Last child
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent.childNodes[2], "TEXT_NODE", "Content");
+    });
 
     /*******************************************************************************
      * IoC Unit tests for fluid.prefs.enactor.syllabification
@@ -117,9 +150,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             text: {
-                "en": "Global temperature has increased over the past 50 years.",
                 // Soft hyphens (\u00AD) included to test https://issues.fluidproject.org/browse/FLUID-6554
-                "en-injected": "Global temperature has in\u00ADcreased over the past 50 years.",
+                "en": "Global temperature has in\u00ADcreased over the past 50 years.",
                 "es": "La temperatura global ha aumentado en los últimos 50 años."
             },
             syllabified: {
@@ -145,30 +177,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "creased over the past 50 years."
-                }],
-                "en-US-injected": [{
-                    type: Node.TEXT_NODE,
-                    text: "Global tem"
-                }, {
-                    type: Node.ELEMENT_NODE
-                }, {
-                    type: Node.TEXT_NODE,
-                    text: "per"
-                }, {
-                    type: Node.ELEMENT_NODE
-                }, {
-                    type: Node.TEXT_NODE,
-                    text: "a"
-                }, {
-                    type: Node.ELEMENT_NODE
-                }, {
-                    type: Node.TEXT_NODE,
-                    text: "ture has in"
-                }, {
-                    type: Node.ELEMENT_NODE
-                }, {
-                    type: Node.TEXT_NODE,
+                    // Soft hyphens (\u00AD) included to test https://issues.fluidproject.org/browse/FLUID-6554
                     text: "\u00ADcreased over the past 50 years."
                 }],
                 "en-GB": [{
@@ -193,7 +202,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: Node.ELEMENT_NODE
                 }, {
                     type: Node.TEXT_NODE,
-                    text: "creased over the past 50 years."
+                    // Soft hyphens (\u00AD) included to test https://issues.fluidproject.org/browse/FLUID-6554
+                    text: "\u00ADcreased over the past 50 years."
                 }],
                 "es": [{
                     type: Node.TEXT_NODE,
@@ -229,14 +239,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             injected: {
                 disabled: {
                     selector: ".flc-syllabification-injectWhenDisabled",
-                    text: "{that}.options.testOpts.text.en-injected",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US-injected",
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US",
                     separatorCount: 4
                 },
                 enabled: {
                     selector: ".flc-syllabification-injectWhenEnabled",
-                    text: "{that}.options.testOpts.text.en-injected",
-                    syllabified: "{that}.options.testOpts.syllabified.en-US-injected",
+                    text: "{that}.options.testOpts.text.en",
+                    syllabified: "{that}.options.testOpts.syllabified.en-US",
                     separatorCount: 4
                 },
                 combined: [
