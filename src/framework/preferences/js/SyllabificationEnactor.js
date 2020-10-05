@@ -382,7 +382,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * markup as the separators and split the original textnode at the hyphenation points. If there are no places to
      * inject a hyphenation point, the node will be left unchanged. If the original textnode inclues soft hyphens (i.e.
      * &shy;) characters, these will be used as a hyphenation point with the original location in the text node
-     * replacded with the `softHyphenPlaceholderMarkup` to allow it to be restored when syllabification is removed.
+     * replaced with the `softHyphenPlaceholderMarkup` to allow it to be restored when syllabification is removed.
      *
      * @param {HypherHyphenator} hyphenator - an instance of a Hypher Hyphenator
      * @param {DomNode} node - a DOM node containing text to be hyphenated
