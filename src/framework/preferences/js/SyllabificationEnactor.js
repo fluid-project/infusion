@@ -46,7 +46,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         markup: {
             separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>",
-            softHyphenPlaceholder: "<span class=\"flc-syllabification-softHyphenPlaceholder\"></span>"
+            softHyphenPlaceholder: "<span class=\"flc-syllabification-softHyphenPlaceholder fl-syllabification-softHyphenPlaceholder\"></span>"
         },
         model: {
             enabled: false
