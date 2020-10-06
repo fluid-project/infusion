@@ -1,4 +1,4 @@
- /*
+/*
  Copyright The Infusion copyright holders
  See the AUTHORS.md file at the top-level directory of this distribution and at
  https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
@@ -11,12 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 (function () {
     "use strict";
 
-   /**
+    /*
      * Primary Schema
      * This schema defines the "heated seats" preference edited by this preferences
      * editor: its name, type, default value, etc.

@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-/* global fluid, jqUnit, speechSynthesis */
+/* global jqUnit */
 
 (function () {
     "use strict";
@@ -304,20 +304,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textToSpeech.baseTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for initialization and start/stop tests",
-         fluid.tests.checkTTSSupport,
-          fluid.tests.textToSpeech.ttsTestEnvironment,
-           fluid.test.conditionalTestUtils.bypassTest,
-           "Browser appears to support TTS start/stop", "Browser does not appear to support TTS start/stop");
+            fluid.tests.checkTTSSupport,
+            fluid.tests.textToSpeech.ttsTestEnvironment,
+            fluid.test.conditionalTestUtils.bypassTest,
+            "Browser appears to support TTS start/stop", "Browser does not appear to support TTS start/stop");
     };
 
     fluid.tests.textToSpeech.supportsPauseResumeTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests",
-         fluid.tests.checkTTSSupport,
-          function () {
-              fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment();
-              fluid.tests.textToSpeech.ttsErrorTestEnvironment();
-          },
-           fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS pause/resume", "Browser does not appear to support TTS pause/resume");
+            fluid.tests.checkTTSSupport,
+            function () {
+                fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment();
+                fluid.tests.textToSpeech.ttsErrorTestEnvironment();
+            },
+            fluid.test.conditionalTestUtils.bypassTest,
+            "Browser appears to support TTS pause/resume", "Browser does not appear to support TTS pause/resume");
     };
 
     fluid.tests.textToSpeech.isChromeOnWindows = function () {
@@ -497,10 +498,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textToSpeech.utteranceTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for Utterance tests",
-         fluid.tests.checkTTSSupport,
-          fluid.tests.textToSpeech.utteranceEnvironment,
-           fluid.test.conditionalTestUtils.bypassTest,
-           "Browser appears to support TTS", "Browser does not appear to support TTS");
+            fluid.tests.checkTTSSupport,
+            fluid.tests.textToSpeech.utteranceEnvironment,
+            fluid.test.conditionalTestUtils.bypassTest,
+            "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
     /*********************************************************************************************

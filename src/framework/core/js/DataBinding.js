@@ -1407,18 +1407,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return options.deltas ? options.deltaMap : null;
     };
 
-    /** Compare two models for equality using a deep algorithm. It is assumed that both models are JSON-equivalent and do
+    /**
+     * A map and summary of the change content between objects.
+     *
+     * @typedef {Object} ModelDiff
+     * @property {Object|String} changeMap - An isomorphic map of the object structures to values "ADD" or "DELETE"
+     * indicating that values have been added/removed at that location. Note that in the case the object structure
+     * differs at the root, `changeMap` will hold the plain String value "ADD" or "DELETE"
+     * @property {Integer} changes - Counts the number of changes between the objects - The two objects are identical if
+     * `changes === 0`.
+     * @property {Integer} unchanged - Counts the number of leaf (primitive) values at which the two objects are
+     * identical. Note that the current implementation will double-count, this summary should be considered indicative
+     * rather than precise.
+     */
+
+    /**
+     * Compare two models for equality using a deep algorithm. It is assumed that both models are JSON-equivalent and do
      * not contain circular links.
-     * @param modela The first model to be compared
-     * @param modelb The second model to be compared
-     * @param {Object} options - If supplied, will receive a map and summary of the change content between the objects. Structure is:
-     *     changeMap: {Object/String} An isomorphic map of the object structures to values "ADD" or "DELETE" indicating
-     * that values have been added/removed at that location. Note that in the case the object structure differs at the root, <code>changeMap</code> will hold
-     * the plain String value "ADD" or "DELETE"
-     *     changes: {Integer} Counts the number of changes between the objects - The two objects are identical iff <code>changes === 0</code>.
-     *     unchanged: {Integer} Counts the number of leaf (primitive) values at which the two objects are identical. Note that the current implementation will
-     * double-count, this summary should be considered indicative rather than precise.
-     * @return <code>true</code> if the models are identical
+     *
+     * @param {Object} modela - The first model to be compared
+     * @param {Object} modelb - The second model to be compared
+     * @param {ModelDiff} options - (optional) If supplied, will receive a map and summary of the change content between
+     * the objects.
+     *
+     * @return {Boolean} - `true` if the models are identical
      */
     // TODO: This algorithm is quite inefficient in that both models will be copied once each
     // supported, PUBLIC API function
@@ -1526,9 +1538,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     }
                     var invalidPath = invalidPaths[k];
                     spec.listener = fluid.event.resolveListener(spec.listener);
-                    var args = [multiplePaths ? newHolder.model : fluid.model.getSimple(newHolder, invalidPath),
-                                multiplePaths ? oldHolder.model : fluid.model.getSimple(oldHolder, invalidPath),
-                                multiplePaths ? [] : invalidPath.slice(1), changeRequest, transaction, applier];
+                    var args = [
+                        multiplePaths ? newHolder.model : fluid.model.getSimple(newHolder, invalidPath),
+                        multiplePaths ? oldHolder.model : fluid.model.getSimple(oldHolder, invalidPath),
+                        multiplePaths ? [] : invalidPath.slice(1), changeRequest, transaction, applier
+                    ];
                     // FLUID-5489: Do not notify of null changes which were reported as a result of invalidating a higher path
                     // TODO: We can improve greatly on efficiency by i) reporting a special code from fluid.matchChanges which signals the difference between invalidating a higher and lower path,
                     // ii) improving fluid.model.diff to create fewer intermediate structures and no copies
@@ -1680,7 +1694,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         /**
          * Initiate a fresh transaction on this applier, perhaps coordinated with other transactions sharing the same id across the component tree
          * Arguments all optional
-         * @param {String} localSource  - "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
+         * @param {String} localSource - "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
          * @param {String|Array|Object} globalSources - Global source identifiers common across this transaction, expressed as a single string, an array of strings, or an object with a "toString" method.
          * @param {String} transactionId - Global transaction id to enlist with.
          * @return {Object} - The component initiating the change.

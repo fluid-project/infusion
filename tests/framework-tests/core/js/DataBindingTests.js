@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -214,8 +214,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.repeatableModifyingStrategy = function (toMatch) {
         var matchSegs = fluid.model.parseEL(toMatch);
         return function (root, segment, i, segs) {
-            return fluid.pathUtil.matchSegments(matchSegs, segs, 0, i) ?
-                    fluid.tests.generateRepeatableThing("145") : undefined;
+            return fluid.pathUtil.matchSegments(matchSegs, segs, 0, i) ? fluid.tests.generateRepeatableThing("145") : undefined;
         };
     };
 
@@ -1052,7 +1051,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5695record = function (that, newValue) {
-        that.refreshes ++;
+        that.refreshes++;
         that.frozenModel = fluid.copy(newValue);
     };
 
@@ -2403,8 +2402,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "noFlashingHazard": false
                     },
                     outputValue: "unknown"
-                }
-            ]
+                }]
             }
         }]
     });

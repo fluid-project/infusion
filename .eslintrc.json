@@ -1,6 +1,9 @@
 {
     "extends": "eslint-config-fluid",
-    "globals": {
-        "fluid_3_0_0": true
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
+    "env": {
+        "es6": true
     }
 }

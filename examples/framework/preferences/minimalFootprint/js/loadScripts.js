@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
+var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
 (function (fluid) {
     "use strict";

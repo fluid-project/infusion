@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /* eslint-env node */
 "use strict";
 
-
 var fluid = require("../../src/module/fluid.js"),
     path = require("path");
 
@@ -58,8 +57,10 @@ QUnit.log(function (details) {
     if (details.source) { // "white-box" inspection of qunit.js shows that it sets this field on error
         fluid.log("Message: " + details.message + "\nSource: " + details.source);
         if (details.expected !== undefined) {
+            /* eslint-disable no-console */
             console.log("Expected: ", JSON.stringify(details.expected, null, 4));
             console.log("Actual: ", JSON.stringify(details.actual, null, 4));
+            /* eslint-enable no-console */
         }
     }
 });
@@ -120,7 +121,7 @@ jqUnit.module("Non IoC tests");
 jqUnit.test("Rendering truncation test", function () {
     var rendered = fluid.renderLoggingArg(fluid);
     jqUnit.assertTrue("Large object truncated", rendered.length < fluid.logObjectRenderChars + 100); // small allowance for extra diagnostic
-    console.log("Large log rendering object truncated to " + rendered.length + " chars");
+    console.log("Large log rendering object truncated to " + rendered.length + " chars"); // eslint-disable-line no-console
 });
 
 jqUnit.test("Test fluid.require support", function () {
@@ -169,7 +170,7 @@ fluid.tests.onUncaughtException = function () {
     fluid.onUncaughtException.removeListener("test-uncaught"); // remove ourselves - registered by the test below
     fluid.onUncaughtException.removeListener("log"); // remove "benignLogger" and restore the original listener
     fluid.invokeLater(function () { // apply this later to avoid nesting uncaught exception handler
-        console.log("Restarting jqUnit in nested handler");
+        console.log("Restarting jqUnit in nested handler"); // eslint-disable-line no-console
         jqUnit.start();
     });
 };

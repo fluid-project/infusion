@@ -306,11 +306,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Creates a new File Queue view.
      *
-     * @param container {jQuery|selector} the file queue's container DOM element
-     * @param queue {fileQueue} a file queue model instance
-     * @param options {Object} configuration options for the view
+     * @param {jQuery|selector} container - the file queue's container DOM element
+     * @param {fileQueue} queue - a file queue model instance
+     * @param {Object} options - (optional) configuration options for the view
      */
-
     fluid.defaults("fluid.uploader.fileQueueView", {
         gradeNames: ["fluid.viewComponent"],
         mergePolicy: {
@@ -470,15 +469,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return table.closest(".fl-scrollable-scroller");
     };
 
-    /**
+    /*
      * Simple component cover for the jQuery scrollTo plugin. Provides roughly equivalent
      * functionality to Uploader's old Scroller plugin.
-     *
-     * @param element {jQueryable} the element to make scrollable
-     * @param options {Object} for the component
-     * @return the scrollable component
      */
-
     fluid.defaults("fluid.scrollable", {
         gradeNames: ["fluid.viewComponent"],
         makeScrollableFn: fluid.scrollable.makeSimple, // NB - a modern style would configure an invoker
@@ -531,15 +525,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /**
+    /*
      * Wraps a table in order to make it scrollable with the jQuery.scrollTo plugin.
      * Container divs are injected to allow cross-browser support.
-     *
-     * @param table {jQueryable} the table to make scrollable
-     * @param options {Object} configuration options
-     * @return the scrollable component
      */
-
     fluid.defaults("fluid.scrollableTable", {
         gradeNames: ["fluid.scrollable"],
         makeScrollableFn: fluid.scrollable.makeTable,

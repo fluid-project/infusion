@@ -83,7 +83,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
      *
-     * @return {String|Undefined} - a valid BCP 47 language code if found, otherwise undefined.
+     * @return {String|undefined} - a valid BCP 47 language code if found, otherwise undefined.
      */
     fluid.textNodeParser.getLang = function (elm) {
         return $(elm).closest("[lang]").attr("lang");

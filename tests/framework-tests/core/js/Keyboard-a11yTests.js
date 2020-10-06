@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -70,8 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Make the container tab focussable and the children selectable.
         menuContainer.fluid("tabbable");
         // Mix in any additional options.
-        var mergedOptions = jQuery.extend(selectionOptions, additionalOptions, setupHandlers(),
-                {selectableElements: menuItems});
+        var mergedOptions = jQuery.extend(selectionOptions, additionalOptions, setupHandlers(), {selectableElements: menuItems});
 
         menuContainer.fluid("selectable", mergedOptions);
 
@@ -526,8 +525,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("destructibleList and refresh()", function () {
         var menuContainer = $(MENU_SEL);
-        var selThat = $(MENU_SEL).fluid("selectable",
-                $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();
+        var selThat = $(MENU_SEL).fluid("selectable", $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();
         fluid.focus(menuContainer);
         var firstMenuItem = getFirstMenuItem();
         jqUnit.assertSelected(firstMenuItem);
@@ -562,8 +560,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         getFirstMenuItem().focus();
         getFirstMenuItem().blur();
 
-        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when moving focus off of the selectables container.",
-                          wasCalled);
+        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when moving focus off of the selectables container.", wasCalled);
     });
 
     jqUnit.test("No-wrap options", function () {

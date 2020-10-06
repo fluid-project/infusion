@@ -152,17 +152,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-          /**
-           * Manually displays the tooltip
-           */
+            /**
+             * Manually displays the tooltip
+             */
             open: {
                 "this": "{that}.container",
                 method: "tooltip",
                 args: "open"
             },
-          /**
-           * Manually hides the tooltip
-           */
+            /**
+             * Manually hides the tooltip
+             */
             close: {
                 funcName: "fluid.tooltip.closeAll",
                 args: "{that}"

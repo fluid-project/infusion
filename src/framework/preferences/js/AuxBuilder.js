@@ -113,7 +113,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
 
             key = fluid.stringTemplate(key, templateValues);
-            value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
+            value = typeof(value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
 
             fluid.set(opts, key, value);
         });

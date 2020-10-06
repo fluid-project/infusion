@@ -68,8 +68,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.reorderImages.seekInputs = function (container, reorderform) {
         return fluid.reorderImages.seekNodesById(reorderform,
-                             "input",
-                             "^" + fluid.reorderImages.deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
+            "input",
+            "^" + fluid.reorderImages.deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
     };
 
     fluid.reorderImages.mapIdsToNames = function (container, reorderform) {
@@ -104,20 +104,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             if (reorderform && reorderform.action) {
                 var order = $(reorderform).serialize();
-                $.post(reorderform.action,
-                       order,
-                       function () { /* No-op response */ });
+                $.post(reorderform.action, order, function () { /* No-op response */ });
             }
         };
     };
 
-    // Public Lightbox API
-    /**
-     * Creates a new Lightbox instance from the specified parameters, providing full control over how
-     * the Lightbox is configured.
-     *
-     * @param container {Object}
-     * @param options {Object}
+    // Public ImageReorderer API
+    /*
+     * Creates a new ImageReorderer instance from the specified parameters, providing full control over how
+     * the ImageReorderer is configured.
      */
     fluid.defaults("fluid.reorderImages", {
         gradeNames: ["fluid.reorderer"],

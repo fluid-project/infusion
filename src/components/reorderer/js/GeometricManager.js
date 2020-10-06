@@ -288,7 +288,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 for (var j = 0; j < thisInfo.elements.length; ++j) {
                     var element = thisInfo.elements[j];
                     var cacheelem = processElement(element, thisInfo, j === 0, j === thisInfo.elements.length - 1,
-                            fluid.position.INTERLEAVED, j);
+                        fluid.position.INTERLEAVED, j);
                     if (cacheelem.clazz !== "hidden") {
                         allHidden = false;
                     }
@@ -375,9 +375,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             //   fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
             //    + " locked elem " + dumpelem(minlockedelem));
             if (lastClosest && lastClosest.position === minelem.position &&
-                    fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
-                    fluid.unwrap(lastClosest.lockedelem) === fluid.unwrap(minlockedelem.element)
-                    ) {
+                fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
+                fluid.unwrap(lastClosest.lockedelem) === fluid.unwrap(minlockedelem.element)
+            ) {
                 return fluid.dropManager.NO_CHANGE;
             }
             //fluid.log("mindistance " + mindistance + " minlockeddistance " + minlockeddistance);
@@ -405,8 +405,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             var retpos = projected.cacheelem.position;
             return {element: projected.cacheelem.element,
-                     position: retpos ? retpos : fluid.position.BEFORE
-                     };
+                position: retpos ? retpos : fluid.position.BEFORE
+            };
         };
 
         that.logicalFrom = function (element, direction, includeLocked, disableWrap) {
@@ -542,18 +542,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /* Returns the minimum squared distance between a point and a rectangle */
     fluid.geom.minPointRectangle = function (x, y, rectangle) {
         var dx = x < rectangle.left ? (rectangle.left - x) :
-                  (x > rectangle.right ? (x - rectangle.right) : 0);
+            (x > rectangle.right ? (x - rectangle.right) : 0);
         var dy = y < rectangle.top ? (rectangle.top - y) :
-                  (y > rectangle.bottom ? (y - rectangle.bottom) : 0);
+            (y > rectangle.bottom ? (y - rectangle.bottom) : 0);
         return dx * dx + dy * dy;
     };
 
     /* Returns the minimum squared distance between two rectangles */
     fluid.geom.minRectRect = function (rect1, rect2) {
         var dx = rect1.right < rect2.left ? rect2.left - rect1.right :
-                 rect2.right < rect1.left ? rect1.left - rect2.right : 0;
+            rect2.right < rect1.left ? rect1.left - rect2.right : 0;
         var dy = rect1.bottom < rect2.top ? rect2.top - rect1.bottom :
-                 rect2.bottom < rect1.top ? rect1.top - rect2.bottom : 0;
+            rect2.bottom < rect1.top ? rect1.top - rect2.bottom : 0;
         return dx * dx + dy * dy;
     };
 
@@ -564,11 +564,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    /** Determine the one amongst a set of rectangle targets which is the "best fit"
+    /**
+     * Determine the one amongst a set of rectangle targets which is the "best fit"
      * for an axial motion from a "base rectangle" (commonly arising from the case
      * of cursor key navigation).
+     *
      * @param {Rectangle} baserect - The base rectangle from which the motion is to be referred.
-     * @param {Object} direction  - The direction of motion, which should be an instance of fluid.direction.
+     * @param {Object} direction - The direction of motion, which should be an instance of fluid.direction.
      * @param {Array} targets - An array of objects "cache elements" for which the member <code>rect</code> is the
      * holder of the rectangle to be tested.
      * @param {Boolean} forSelection - Set to `true` to indicate that we are dealing with a selection.
@@ -581,10 +583,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var backSide = fluid.rectSides[axis * 15 + 5 - direction];
         var dirSign = fluid.directionSign(direction);
 
-        var penrect = {left: (7 * baserect.left + 1 * baserect.right) / 8,
-                       right: (5 * baserect.left + 3 * baserect.right) / 8,
-                       top: (7 * baserect.top + 1 * baserect.bottom) / 8,
-                       bottom: (5 * baserect.top + 3 * baserect.bottom) / 8};
+        var penrect = {
+            left: (7 * baserect.left + 1 * baserect.right) / 8,
+            right: (5 * baserect.left + 3 * baserect.right) / 8,
+            top: (7 * baserect.top + 1 * baserect.bottom) / 8,
+            bottom: (5 * baserect.top + 3 * baserect.bottom) / 8
+        };
 
         penrect[frontSide] = dirSign * SENTINEL_DIMENSION;
         penrect[backSide] = -penrect[frontSide];
@@ -606,6 +610,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 collect.minelem = cacheelem;
             }
         }
+
         var collect = makePenCollect();
         var backcollect = makePenCollect();
         var lockedcollect = makePenCollect();

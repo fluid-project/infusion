@@ -33,7 +33,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // unsupported, NON-API function
     fluid.dumpSelector = function (selectable) {
-        return typeof (selectable) === "string" ? selectable :
+        return typeof(selectable) === "string" ? selectable :
             selectable.selector ? selectable.selector : "";
     };
 
@@ -113,12 +113,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         if (!container || !container.jquery || container.length !== 1) {
-            if (typeof (containerSpec) !== "string") {
+            if (typeof(containerSpec) !== "string") {
                 containerSpec = container.selector;
             }
             var count = container.length !== undefined ? container.length : 0;
-            fluid.fail((count > 1 ? "More than one (" + count + ") container elements were"
-                    : "No container element was") + " found for selector " + containerSpec);
+            fluid.fail((count > 1 ? "More than one (" + count + ") container elements were" :
+                "No container element was") + " found for selector " + containerSpec);
         }
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
@@ -177,7 +177,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 togo = userJQuery();
             }
             else {
-                if (typeof (selector) === "function") {
+                if (typeof(selector) === "function") {
                     togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
                 } else {
                     togo = userJQuery(selector, thisContainer);
@@ -605,9 +605,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.globalDismissal = function (nodes, dismissFunc) {
         fluid.each(nodes, function (node) {
-          // Don't bother to use the real id if it is from a foreign document - we will never receive events
-          // from it directly in any case - and foreign documents may be under the control of malign fiends
-          // such as tinyMCE who allocate the same id to everything
+            // Don't bother to use the real id if it is from a foreign document - we will never receive events
+            // from it directly in any case - and foreign documents may be under the control of malign fiends
+            // such as tinyMCE who allocate the same id to everything
             var id = fluid.unwrap(node).ownerDocument === document ? fluid.allocateSimpleId(node) : fluid.allocateGuid();
             if (dismissFunc) {
                 dismissList[id] = dismissFunc;
@@ -618,7 +618,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    /* Provides an abstraction for determing the current time.
+    /*
+     * Provides an abstraction for determing the current time.
      * This is to provide a fix for FLUID-4762, where IE6 - IE8
      * do not support Date.now().
      */
@@ -627,7 +628,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
 
-    /* Sets an interation on a target control, which morally manages a "blur" for
+    /*
+     * Sets an interation on a target control, which morally manages a "blur" for
      * a possibly composite region.
      * A timed blur listener is set on the control, which waits for a short period of
      * time (options.delay, defaults to 150ms) to discover whether the reason for the
@@ -668,7 +670,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 $(excludeEl).on("focusin", that.canceller).
                     on("fluid-focus", that.canceller).
                     click(that.canceller).mousedown(that.canceller);
-    // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
+                // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
             });
         });
         if (!that.options.cancelByDefault) {

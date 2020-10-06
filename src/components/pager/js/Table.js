@@ -218,10 +218,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             } else if (i === "valuebinding") {
                 target[i] = fluid.table.expandPath(tree[i], opts);
-            } else if (typeof (val) === "object") {
+            } else if (typeof(val) === "object") {
                 target[i] = val.length !== undefined ? [] : {};
                 fluid.table.expandPaths(target[i], val, opts);
-            } else if (typeof (val) === "string") {
+            } else if (typeof(val) === "string") {
                 target[i] = fluid.table.expandVariables(val, opts);
             } else {
                 target[i] = tree[i];
@@ -273,7 +273,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
         var fullTree = {};
         fullTree[options.row] = tree;
-        if (typeof (columnDefs) === "object") {
+        if (typeof(columnDefs) === "object") {
             fullTree[options.header] = fluid.table.generateHeader(tableThat, renderThat.options, tableThat.model);
         }
         return fullTree;

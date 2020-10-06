@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -90,18 +90,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var arrayOfFilesWithoutFilesize = [{id: 1}, {id: 2}, {id: 3}];
 
-            jqUnit.assertEquals("size of fileSet should be 3000000",
-                                3000000,
-                                fluid.uploader.fileQueue.sizeOfFiles(fileSet));
+            jqUnit.assertEquals("size of fileSet should be 3000000", 3000000, fluid.uploader.fileQueue.sizeOfFiles(fileSet));
 
-            jqUnit.assertEquals("size of empty array should be 0",
-                                0,
-                                fluid.uploader.fileQueue.sizeOfFiles([]));
+            jqUnit.assertEquals("size of empty array should be 0", 0, fluid.uploader.fileQueue.sizeOfFiles([]));
 
             //The following should returns a NaN instead of 0.
             var expected_NaN = fluid.uploader.fileQueue.sizeOfFiles(arrayOfFilesWithoutFilesize);
-            jqUnit.assertFalse("size of fileset array without fileSize should be NaN",
-                                expected_NaN === 0 || expected_NaN);
+            jqUnit.assertFalse("size of fileset array without fileSize should be NaN", expected_NaN === 0 || expected_NaN);
         });
 
         jqUnit.test("Initialize fileQueue: everything is empty", function () {
@@ -109,9 +104,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var q = setupQueue();
 
-            jqUnit.assertEquals("fileQueue queue is empty at the start",
-                                0,
-                                q.totalBytes());
+            jqUnit.assertEquals("fileQueue queue is empty at the start", 0, q.totalBytes());
             jqUnit.assertEquals("fileQueue queue.files is an empty array", 0, q.files.length);
 
         });
@@ -134,39 +127,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var errorFiles = testQueue.getErroredFiles();
 
             //completed
-            jqUnit.assertEquals("filterFiles: COMPLETE have filesize 1",
-                                1,
-                                completedFiles.length);
-            jqUnit.assertEquals("filterFiles: COMPLETE should give file id 4",
-                                4,
-                                completedFiles[0].id);
+            jqUnit.assertEquals("filterFiles: COMPLETE have filesize 1", 1, completedFiles.length);
+            jqUnit.assertEquals("filterFiles: COMPLETE should give file id 4", 4, completedFiles[0].id);
 
             //queued + cancelled
-            jqUnit.assertEquals("filterFiles: QUEUED or CANCELLED have filesize 3",
-                                3,
-                                queuedFiles.length);
-            jqUnit.assertEquals("filterFiles: QUEUED should give file id 1",
-                                1,
-                                queuedFiles[0].id);
-            jqUnit.assertEquals("filterFiles: CANCELLED should give file id 2",
-                                2,
-                                queuedFiles[1].id);
-            jqUnit.assertEquals("filterFiles: QUEUED should give file id 3",
-                                3,
-                                queuedFiles[2].id);
+            jqUnit.assertEquals("filterFiles: QUEUED or CANCELLED have filesize 3", 3, queuedFiles.length);
+            jqUnit.assertEquals("filterFiles: QUEUED should give file id 1", 1, queuedFiles[0].id);
+            jqUnit.assertEquals("filterFiles: CANCELLED should give file id 2", 2, queuedFiles[1].id);
+            jqUnit.assertEquals("filterFiles: QUEUED should give file id 3", 3, queuedFiles[2].id);
 
             //errored
-            jqUnit.assertEquals("filterFiles: COMPLETE have filesize 1",
-                                1,
-                                errorFiles.length);
-            jqUnit.assertEquals("filterFiles: COMPLETE should give file id 0",
-                                0,
-                                errorFiles[0].id);
+            jqUnit.assertEquals("filterFiles: COMPLETE have filesize 1", 1, errorFiles.length);
+            jqUnit.assertEquals("filterFiles: COMPLETE should give file id 0", 0, errorFiles[0].id);
         });
 
         jqUnit.test("Test file info methods", function () {
             jqUnit.expect(6);
             var testQueue = fluid.uploader.fileQueue();
+
             /**
              * Generate an array with the given parameters defined below.
              *
@@ -227,31 +205,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             loadQueue(fileSet, testQueue);
 
             testQueue.start();
-            jqUnit.assertTrue("testQueue should set isUploading to TRUE",
-                                testQueue.isUploading);
-            jqUnit.assertFalse("testQueue should set shouldStop to FALSE",
-                                testQueue.shouldStop);
+            jqUnit.assertTrue("testQueue should set isUploading to TRUE", testQueue.isUploading);
+            jqUnit.assertFalse("testQueue should set shouldStop to FALSE", testQueue.shouldStop);
 
             testQueue.startFile();
-            jqUnit.assertEquals("testQueue uploaded files byte should be 0",
-                                0,
-                                testQueue.currentBatch.bytesUploadedForFile);
-            jqUnit.assertEquals("testQueue previous uploaded files byte should be 0",
-                                0,
-                                testQueue.currentBatch.previousBytesUploadedForFile);
-            jqUnit.assertEquals("testQueue file index should be 1",
-                                1,
-                                testQueue.currentBatch.fileIdx);
-            jqUnit.assertEquals("testQueue number of files finished should be 0",
-                                0,
-                                testQueue.currentBatch.numFilesCompleted);
+            jqUnit.assertEquals("testQueue uploaded files byte should be 0", 0, testQueue.currentBatch.bytesUploadedForFile);
+            jqUnit.assertEquals("testQueue previous uploaded files byte should be 0", 0, testQueue.currentBatch.previousBytesUploadedForFile);
+            jqUnit.assertEquals("testQueue file index should be 1", 1, testQueue.currentBatch.fileIdx);
+            jqUnit.assertEquals("testQueue number of files finished should be 0", 0, testQueue.currentBatch.numFilesCompleted);
 
             testQueue.finishFile();
-            jqUnit.assertEquals("testQueue number of files finished should now be 1",
-                                1,
-                                testQueue.currentBatch.numFilesCompleted);
+            jqUnit.assertEquals("testQueue number of files finished should now be 1", 1, testQueue.currentBatch.numFilesCompleted);
             jqUnit.assertTrue("testQueue shouldUploadNextFile() should return True since it just finished a file",
-                                testQueue.shouldUploadNextFile());
+                testQueue.shouldUploadNextFile());
         });
 
         jqUnit.test("Test file manipulation methods", function () {
@@ -266,30 +232,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             // Add another. totalBytes() should increase.
             q.addFile(oceanTestFile);
-            jqUnit.assertEquals("added Ocean, size 950000000, totalBytes should now be 950400000",
-                                950400000,
-                                q.totalBytes());
+            jqUnit.assertEquals("added Ocean, size 950000000, totalBytes should now be 950400000", 950400000, q.totalBytes());
 
             // Remove the first file, check that the total bytes are smaller.
             q.removeFile(mountainTestFile);
-            jqUnit.assertEquals("removed Mountain, size 400000, totalBytes should now be 950000000",
-                                950000000,
-                                q.totalBytes());
+            jqUnit.assertEquals("removed Mountain, size 400000, totalBytes should now be 950000000", 950000000, q.totalBytes());
 
             // Remove the second file, queue should be empty again.
             q.removeFile(oceanTestFile);
-            jqUnit.assertEquals("removed Ocean, size 950000000, totalBytes should now be 0",
-                                0,
-                                q.totalBytes());
+            jqUnit.assertEquals("removed Ocean, size 950000000, totalBytes should now be 0", 0, q.totalBytes());
         });
 
         var checkReadyFiles = function (q, numReadFiles, sizeOfReadyFiles) {
             jqUnit.assertEquals("getReadyFiles() should reflect the number of files currently in the queue.",
-                                numReadFiles,
-                                q.getReadyFiles().length);
+                numReadFiles, q.getReadyFiles().length);
             jqUnit.assertEquals("and sizeOfReadyFiles() should return the number of bytes for each ready file in the queue.",
-                                sizeOfReadyFiles,
-                                q.sizeOfReadyFiles());
+                sizeOfReadyFiles, q.sizeOfReadyFiles());
         };
 
         jqUnit.test("fileQueue: getReadyFiles() and sizeOfReadyFiles()", function () {
@@ -313,17 +271,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var checkUploadedFiles = function (q, numReadyFiles, sizeOfReadyFiles, numUploadedFiles, sizeOfUploadedFiles) {
             jqUnit.assertEquals("getReadyFiles() should reflect the number of files currently in the queue.",
-                                numReadyFiles,
-                                q.getReadyFiles().length);
+                numReadyFiles, q.getReadyFiles().length);
             jqUnit.assertEquals("----- sizeOfReadyFiles() should return the number of bytes for each ready file in the queue.",
-                                sizeOfReadyFiles,
-                                q.sizeOfReadyFiles());
+                sizeOfReadyFiles, q.sizeOfReadyFiles());
             jqUnit.assertEquals("----- and getUploadedFiles() should reflect the number of files that have been uploaded",
-                                numUploadedFiles,
-                                q.getUploadedFiles().length);
+                numUploadedFiles, q.getUploadedFiles().length);
             jqUnit.assertEquals("----- and getUploadedFiles() should return the size of all uploaded files",
-                                sizeOfUploadedFiles,
-                                q.sizeOfUploadedFiles());
+                sizeOfUploadedFiles, q.sizeOfUploadedFiles());
         };
 
         jqUnit.test("fileQueue: getUploadedFiles() and sizeOfUploadedFiles()", function () {
@@ -357,16 +311,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var checkCurrentBatch = function (q, numBatchedFiles, sizeOfBatch) {
-            jqUnit.assertNotNull("currentBatch should not be null",
-                                 q.currentBatch);
+            jqUnit.assertNotNull("currentBatch should not be null", q.currentBatch);
 
             jqUnit.assertEquals("all files QUEUED, setupCurrentBatch(), currentBatch should contain 5 files",
-                                numBatchedFiles,
-                                q.currentBatch.files.length);
+                numBatchedFiles, q.currentBatch.files.length);
 
             jqUnit.assertEquals("----- currentBatch.totalBytes should contain 3000000",
-                                sizeOfBatch,
-                                q.currentBatch.totalBytes);
+                sizeOfBatch, q.currentBatch.totalBytes);
         };
 
         jqUnit.test("fileQueue: setupCurrentBatch(), clearCurrentBatch() and updateCurrentBatch()", function () {
@@ -376,11 +327,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             loadQueue(fileSet, q);
 
             jqUnit.assertEquals("load queue, getReadyFiles() should contain 5 files at the start",
-                                5,
-                                q.getReadyFiles().length);
+                5, q.getReadyFiles().length);
 
-            jqUnit.assertNull("----- currentBatch should be null",
-                                q.currentBatch);
+            jqUnit.assertNull("----- currentBatch should be null", q.currentBatch);
 
             q.setupCurrentBatch();
             checkCurrentBatch(q, 5, totalFileSetSize);
@@ -400,16 +349,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("fileQueue: updateBatchStatus()", function () {
             jqUnit.expect(93);
             var checkCurrentBatch = function (q, expected) {
-                jqUnit.assertEquals("totalBytesUploaded is ",
-                                    expected,
-                                    q.currentBatch.totalBytesUploaded);
+                jqUnit.assertEquals("totalBytesUploaded is ", expected, q.currentBatch.totalBytesUploaded);
 
-                jqUnit.assertEquals("bytesUploadedForFile is ",
-                                    expected,
-                                    q.currentBatch.bytesUploadedForFile);
-                jqUnit.assertEquals("previousBytesUploadedForFile is ",
-                                    expected,
-                                    q.currentBatch.previousBytesUploadedForFile);
+                jqUnit.assertEquals("bytesUploadedForFile is ", expected, q.currentBatch.bytesUploadedForFile);
+                jqUnit.assertEquals("previousBytesUploadedForFile is ", expected, q.currentBatch.previousBytesUploadedForFile);
             };
 
             var q = setupQueue();

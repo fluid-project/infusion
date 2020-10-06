@@ -12,8 +12,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-/* global speechSynthesis, SpeechSynthesisUtterance*/
-
 var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
@@ -39,11 +37,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
-    * Adds a lister to a window event for each event defined on the component.
-    * The name must match a valid window event.
-    *
-    * @param {Component} that - an instance of `fluid.window`
-    */
+     * Adds a lister to a window event for each event defined on the component.
+     * The name must match a valid window event.
+     *
+     * @param {fluid.window} that - an instance of `fluid.window`
+     */
     fluid.window.bindEvents = function (that) {
         fluid.each(that.options.events, function (type, eventName) {
             window.addEventListener(eventName, that.events[eventName].fire);

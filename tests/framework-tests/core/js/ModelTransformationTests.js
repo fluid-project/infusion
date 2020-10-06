@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -3708,13 +3708,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // Test idempotency of the transform (with these particular rules).
         result = fluid.model.transform(fluid.copy(result), idempotentRules);
-        jqUnit.assertDeepEq("Running the transform on the output of itself shouldn't mangle the result.",
-                            expected, result);
+        jqUnit.assertDeepEq("Running the transform on the output of itself shouldn't mangle the result.", expected, result);
 
         // Test that a model that already matches the rules isn't mangled by the transform (with these particular rules).
         result = fluid.model.transform(fluid.copy(expected), idempotentRules);
         jqUnit.assertDeepEq("With the appropriate rules, a model that already matches the transformation rules should pass through successfully.",
-                            expected, result);
+            expected, result);
     });
 
     jqUnit.test("fluid.model.transformWithRules() with multiple rules", function () {
@@ -4288,7 +4287,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-        /* --------------- deindexIntoArrayByKey and inverse tests -------------------- */
+    /* --------------- deindexIntoArrayByKey and inverse tests -------------------- */
     fluid.tests.transforms.deindexIntoArrayByKeyTests = [
         {
             message: "Basic Array transformations",
@@ -5863,7 +5862,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-     /* --------------- fluid.transforms.inRange tests -------------------- */
+    /* --------------- fluid.transforms.inRange tests -------------------- */
     fluid.tests.transforms.inRangeTests = {
         rules: {
             minOnly: {

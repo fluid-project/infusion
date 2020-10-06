@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -32,8 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("formatFileSize()", function () {
             var testFileSize = function (testVal, expected) {
-                jqUnit.assertEquals("File size " + testVal + " bytes ", expected,
-                                    fluid.uploader.formatFileSize(testVal));
+                jqUnit.assertEquals("File size " + testVal + " bytes ", expected, fluid.uploader.formatFileSize(testVal));
             };
 
             testFileSize(0, "0.0 KB");
@@ -72,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var total = 5;
             var testPercentage = function (testVal, expected) {
                 jqUnit.assertEquals(testVal + "/" + total + " is " + expected + "%", expected,
-                                    fluid.uploader.derivePercent(testVal, total));
+                    fluid.uploader.derivePercent(testVal, total));
             };
             testPercentage(0, 0);
             testPercentage(2.5, 50);
@@ -98,8 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPercentage(Math.pow(2, 1024), Infinity);
             total = Math.pow(2, 1024);
             testPercentage(0, 0);
-            jqUnit.assertTrue(total + "/" + total + " is not a number",
-                            isNaN(fluid.uploader.derivePercent(total / total)));
+            jqUnit.assertTrue(total + "/" + total + " is not a number", isNaN(fluid.uploader.derivePercent(total / total)));
         });
 
         /*************************************************************
@@ -248,7 +246,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.uploader.checkSingleFileUploader = function (uploader) {
             // TODO: probably not possible to test error behaviour for single-file?
             jqUnit.assertTrue("The single-file uploader is in fact the single-file version",
-                                fluid.componentHasGrade(uploader, "fluid.uploader.singleFile"));
+                fluid.componentHasGrade(uploader, "fluid.uploader.singleFile"));
             jqUnit.start();
         };
 
@@ -294,10 +292,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var row = fileQueueView.locate("fileRows");
             fileQueueView.locate("fileIconBtn", row[0]).click();
 
-            jqUnit.assertEquals("File deleted from the queue",
-                                1, uploader.queue.files.length);
-            jqUnit.assertNotEquals("Remove file: update status region text",
-                                addFilesStatusRegionText, statusRegion.text());
+            jqUnit.assertEquals("File deleted from the queue", 1, uploader.queue.files.length);
+            jqUnit.assertNotEquals("Remove file: update status region text", addFilesStatusRegionText, statusRegion.text());
 
             // upload files
             uploader.locate("uploadButton").click();
@@ -319,7 +315,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.tests.uploader.uploadError = function (uploader, statusRegion, testset) {
-                        // upload files
+            // upload files
             uploader.locate("uploadButton").click();
             fluid.tests.uploader.checkUploaderButton(uploader, "browseButton", false);
             jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
@@ -350,10 +346,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             addFilesFn(uploader, testset.files);
 
             fluid.tests.uploader.checkUploaderButton(uploader, "uploadButton", true);
-            jqUnit.assertEquals("Files are added after the file dialog",
-                                testset.files.length, uploader.queue.files.length);
-            jqUnit.assertNotEquals("Add files: update status region text",
-                                   initialStatusRegionText, statusRegion.text());
+            jqUnit.assertEquals("Files are added after the file dialog", testset.files.length, uploader.queue.files.length);
+            jqUnit.assertNotEquals("Add files: update status region text", initialStatusRegionText, statusRegion.text());
 
             testset.testLoad(uploader, statusRegion, testset);
         };

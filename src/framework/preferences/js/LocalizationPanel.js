@@ -20,9 +20,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Preferences Editor Localization *
      ***********************************/
 
-    /**
-    * A sub-component of fluid.prefs that renders the "localization" panel of the user preferences interface.
-    */
+    /*
+     * A sub-component of fluid.prefs that renders the "localization" panel of the user preferences interface.
+     */
     fluid.defaults("fluid.prefs.panel.localization", {
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {

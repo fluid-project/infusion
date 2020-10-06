@@ -285,15 +285,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // CALLED WITHOUT FAIL
     fluid.fetchResources.composeCallbacks = function (internal, external) {
         return external ? (internal ?
-        function () {
-            try {
-                external.apply(null, arguments);
-            }
-            catch (e) {
-                fluid.log("Exception applying external fetchResources callback: " + e);
-            }
-            internal.apply(null, arguments); // call the internal callback without fail
-        } : external ) : internal;
+            function () {
+                try {
+                    external.apply(null, arguments);
+                }
+                catch (e) {
+                    fluid.log("Exception applying external fetchResources callback: " + e);
+                }
+                internal.apply(null, arguments); // call the internal callback without fail
+            } : external ) : internal;
     };
 
     // unsupported, NON-API function
@@ -320,7 +320,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         fluid.fetchResources.timeSuccessCallback(resourceSpec);
         options = fluid.merge(fluid.defaults("fluid.fetchResources.issueRequest").mergePolicy,
-                      options, resourceSpec.options);
+            options, resourceSpec.options);
         resourceSpec.queued = true;
         resourceSpec.initTime = new Date();
         fluid.log("Request with key " + key + " queued for " + resourceSpec.href);

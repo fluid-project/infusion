@@ -41,7 +41,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * There is a special case for the acceptor, allowing for quick deletion of elements and their children.
      * Return "delete" from your acceptor function if you want to delete the element in question.
      * Return "stop" to terminate iteration.
-
+     *
      * Implementation note - this utility exists mainly for performance reasons. It was last tested
      * carefully some time ago (around jQuery 1.2) but at that time was around 3-4x faster at raw DOM
      * filtration tasks than the jQuery equivalents, which was an important source of performance loss in the

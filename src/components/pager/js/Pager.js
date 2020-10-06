@@ -21,6 +21,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /******************
      * Pager Bar View *
      ******************/
+
     // TODO: Convert one day to the "visibility model" system (FLUID-4928)
     fluid.pager.updateStyles = function (pageListThat, newModel, oldModel) {
         if (oldModel && oldModel.pageIndex !== undefined) {
@@ -106,8 +107,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * An impl of a page strategy that will always display same number of page links (including skip place holders).
-     * @param   {Number} endLinkCount  - The number of elements first and last trunks of elements.
-     * @param   {Number} midLinkCount  - The number of elements from beside the selected number.
+     *
+     * @param   {Number} endLinkCount - The number of elements first and last trunks of elements.
+     * @param   {Number} midLinkCount - The number of elements from beside the selected number.
      * @return {Function} - A paging function.
      * @author  Eric Dalquist
      */
@@ -131,11 +133,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             for (var page = 0; page < count; page++) {
                 if (page < endLinkCount || // start pages
-                        count - page <= endLinkCount || // end pages
-                        (anchoredLeft && page < anchoredEndWidth) || // pages if no skipped pages between start and mid
-                        (anchoredRight && page >= count - anchoredEndWidth) || // pages if no skipped pages between mid and end
-                        (page >= midStart && page <= midEnd) // pages around the mid
-                        ) {
+                    count - page <= endLinkCount || // end pages
+                    (anchoredLeft && page < anchoredEndWidth) || // pages if no skipped pages between start and mid
+                    (anchoredRight && page >= count - anchoredEndWidth) || // pages if no skipped pages between mid and end
+                    (page >= midStart && page <= midEnd) // pages around the mid
+                ) {
                     pages.push(page);
                     lastSkip = false;
                 } else if (!lastSkip) {

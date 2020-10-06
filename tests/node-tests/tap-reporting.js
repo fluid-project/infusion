@@ -12,7 +12,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 /* eslint-env node */
-/* global fluid */
 
 "use strict";
 
@@ -35,7 +34,7 @@ var tapOutput = "";
 // Assumed to be used with fluid.onUncaughtException.addListener
 fluid.tests.tapOutput.outputTAPFailure = function (message) {
     if (!fluid.tests.expectFailure) {
-        console.log("not ok -  " + message);
+        console.log("not ok -  " + message); // eslint-disable-line no-console
     }
 };
 
@@ -54,8 +53,8 @@ if (fluid.tests.tapOutput.shouldOutputTAP) {
     // Additional handler for outputting TAP
     QUnit.done(function () {
         // Output the TAP header
-        console.log("1.." + fluid.tests.expectedTestCases);
+        console.log("1.." + fluid.tests.expectedTestCases); // eslint-disable-line no-console
         // Output the TAP report
-        console.log(tapOutput);
+        console.log(tapOutput); // eslint-disable-line no-console
     });
 }

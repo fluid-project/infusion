@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -288,11 +288,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          */
         jqUnit.test("HandleArrowCtrlArrowKeyDown", function () {
             var lightbox = fluid.testUtils.imageReorderer.createImageReorderer();
-            horizontalMovementTest(lightbox,  k.ctrlKeyEvent("RIGHT"),
-                                              k.ctrlKeyEvent("LEFT"));
-
-            verticalMovementTest(lightbox,    k.ctrlKeyEvent("UP"),
-                                              k.ctrlKeyEvent("DOWN"));
+            horizontalMovementTest(lightbox, k.ctrlKeyEvent("RIGHT"), k.ctrlKeyEvent("LEFT"));
+            verticalMovementTest(lightbox, k.ctrlKeyEvent("UP"), k.ctrlKeyEvent("DOWN"));
         });
 
         jqUnit.test("PersistFocus ", function () {
@@ -519,11 +516,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lightbox = fluid.testUtils.imageReorderer.createAltKeystrokeImageReorderer();
             fluid.testUtils.imageReorderer.focusLightbox();
 
-            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"),
-                                             k.modKeyEvent(["CTRL", "SHIFT"], "j"));
+            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), k.modKeyEvent(["CTRL", "SHIFT"], "j"));
             fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   k.modKeyEvent(["CTRL", "SHIFT"], "i"),
-                                             k.modKeyEvent(["CTRL", "SHIFT"], "m"));
+            verticalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "i"), k.modKeyEvent(["CTRL", "SHIFT"], "m"));
         });
 
         jqUnit.test("MultiKeySetNavigation", function () {
@@ -547,20 +542,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lightbox = fluid.testUtils.imageReorderer.createMultiKeystrokeImageReorderer();
             fluid.testUtils.imageReorderer.focusLightbox();
 
-            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"),
-                                             k.modKeyEvent(["CTRL", "SHIFT"], "j"));
+            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), k.modKeyEvent(["CTRL", "SHIFT"], "j"));
 
             fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
-            horizontalMovementTest(lightbox, k.modKeyEvent("ALT", "RIGHT"),
-                                             k.modKeyEvent("ALT", "LEFT"));
+            horizontalMovementTest(lightbox, k.modKeyEvent("ALT", "RIGHT"), k.modKeyEvent("ALT", "LEFT"));
 
             fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   k.modKeyEvent(["CTRL", "SHIFT"], "i"),
-                                             k.modKeyEvent(["CTRL", "SHIFT"], "m"));
+            verticalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "i"), k.modKeyEvent(["CTRL", "SHIFT"], "m"));
 
             fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   k.modKeyEvent("ALT", "UP"),
-                                             k.modKeyEvent("ALT", "DOWN"));
+            verticalMovementTest(lightbox, k.modKeyEvent("ALT", "UP"), k.modKeyEvent("ALT", "DOWN"));
         });
 
         jqUnit.test("MultiKeySetWrongModifier", function () {
@@ -597,20 +588,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lightbox = fluid.testUtils.imageReorderer.createMultiOverlappingKeystrokeImageReorderer();
             fluid.testUtils.imageReorderer.focusLightbox();
 
-            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"),
-                                             k.modKeyEvent(["CTRL", "SHIFT"], "j"));
+            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), k.modKeyEvent(["CTRL", "SHIFT"], "j"));
 
             fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
-            horizontalMovementTest(lightbox, k.ctrlKeyEvent("RIGHT"),
-                                             k.ctrlKeyEvent("LEFT"));
+            horizontalMovementTest(lightbox, k.ctrlKeyEvent("RIGHT"), k.ctrlKeyEvent("LEFT"));
 
             fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   k.modKeyEvent(["CTRL", "SHIFT"], "i"),
-                                             k.modKeyEvent(["CTRL", "SHIFT"], "m"));
+            verticalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "i"), k.modKeyEvent(["CTRL", "SHIFT"], "m"));
 
             fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
-            verticalMovementTest(lightbox, k.ctrlKeyEvent("UP"),
-                                           k.ctrlKeyEvent("DOWN"));
+            verticalMovementTest(lightbox, k.ctrlKeyEvent("UP"), k.ctrlKeyEvent("DOWN"));
         });
 
         /*
@@ -627,7 +614,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There should be no movable elements with the dragging style", 0, numItemsWithClass(movables, draggingClass));
 
             fluid.focus(movable); //Setting focus on the item is necessary to recreate the circumstances that caused FLUID-3288
-            compositeKey(lightbox,  k.ctrlKeyEvent("RIGHT"), index, true);
+            compositeKey(lightbox, k.ctrlKeyEvent("RIGHT"), index, true);
 
             jqUnit.assertTrue("The moved item retains the dragging class", movable.hasClass(draggingClass));
             jqUnit.assertEquals("There should only be one movable element with the dragging style", 1, numItemsWithClass(movables, draggingClass));

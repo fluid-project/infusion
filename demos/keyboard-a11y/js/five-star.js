@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 var demo = demo || {};
 
 (function ($, fluid) {
@@ -150,26 +148,19 @@ var demo = demo || {};
                 funcName: "demo.fiveStar.renderStarState",
                 args: ["{that}.stars", "{arguments}.0", "{that}.model.rank", "{that}.options.starImages"]
             },
-           /**
-            * Highlight the stars up to the given star with the hover colour
-            * @param {Number} star number
-            */
+            // Highlight the stars up to the given star with the hover colour
             hoverStars: {
                 func: "{that}.renderStarState"
             },
-           /**
-            * Restore the display of stars to reflect the ranking
-            */
+            // Restore the display of stars to reflect the ranking
             refreshView: {
                 func: "{that}.renderStarState",
                 args: 0
             },
-
             select: {
                 changePath: "containerSelected",
                 value: true
             },
-
             unselect: {
                 changePath: "containerSelected",
                 value: false

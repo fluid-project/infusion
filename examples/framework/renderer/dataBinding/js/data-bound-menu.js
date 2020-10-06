@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 var example = example || {};
 
 (function ($) {
@@ -65,27 +63,32 @@ var example = example || {};
         // The model itself will be identified to the renderer through the options parameter to
         // fluid.selfRender().
         var wineTree = {
-            children: [
-                {ID: "wines", optionlist: {valuebinding: "values"},
-                              optionnames: {valuebinding: "names"},
-                              selection: {valuebinding: "choice"}},
-                {ID: "wine-row:", children: [
+            children: [{
+                ID: "wines",
+                optionlist: {valuebinding: "values"},
+                optionnames: {valuebinding: "names"},
+                selection: {valuebinding: "choice"}
+            },{
+                ID: "wine-row:", children: [
                     {ID: "wine", choiceindex: 0, parentRelativeID: "..::wines"},
                     {ID: "wine-label", choiceindex: 0, parentRelativeID: "..::wines"}
-                ]},
-                {ID: "wine-row:", children: [
+                ]
+            }, {
+                ID: "wine-row:", children: [
                     {ID: "wine", choiceindex: 1, parentRelativeID: "..::wines"},
                     {ID: "wine-label", choiceindex: 1, parentRelativeID: "..::wines"}
-                ]},
-                {ID: "wine-row:", children: [
+                ]
+            }, {
+                ID: "wine-row:", children: [
                     {ID: "wine", choiceindex: 2, parentRelativeID: "..::wines"},
                     {ID: "wine-label", choiceindex: 2, parentRelativeID: "..::wines"}
-                ]},
-                {ID: "wine-row:", children: [
+                ]
+            }, {
+                ID: "wine-row:", children: [
                     {ID: "wine", choiceindex: 3, parentRelativeID: "..::wines"},
                     {ID: "wine-label", choiceindex: 3, parentRelativeID: "..::wines"}
-                ]}
-            ]
+                ]
+            }]
         };
 
         // This component tree will be bound to a data model; instead of providing the data directly
@@ -95,9 +98,12 @@ var example = example || {};
         // fluid.selfRender().
         var foodTree = {
             children: [
-                {ID: "food", optionlist: {valuebinding: "values"},
-                             optionnames: {valuebinding: "names"},
-                             selection: {valuebinding: "choice"}},
+                {
+                    ID: "food",
+                    optionlist: {valuebinding: "values"},
+                    optionnames: {valuebinding: "names"},
+                    selection: {valuebinding: "choice"}
+                },
                 {ID: "cheese-row:", children: [
                     {ID: "cheese", choiceindex: 0, parentRelativeID: "..::food"},
                     {ID: "cheese-label", choiceindex: 0, parentRelativeID: "..::food"}
@@ -147,9 +153,11 @@ var example = example || {};
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var wineSelectorMap = [{selector: ".example-wine-row", id: "wine-row:"},
-                               {selector: ".example-wine", id: "wine"},
-                               {selector: ".example-wine-label", id: "wine-label"}];
+        var wineSelectorMap = [
+            {selector: ".example-wine-row", id: "wine-row:"},
+            {selector: ".example-wine", id: "wine"},
+            {selector: ".example-wine-label", id: "wine-label"}
+        ];
 
         // The wine list and food list trees will be bound to a data model, which is passed to
         // fluid.selfRender() in the options parameter.
@@ -158,12 +166,14 @@ var example = example || {};
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var foodSelectorMap = [{selector: ".example-cheese-row", id: "cheese-row:"},
-                               {selector: ".example-cheese", id: "cheese"},
-                               {selector: ".example-cheese-label", id: "cheese-label"},
-                               {selector: ".example-canape-row", id: "canape-row:"},
-                               {selector: ".example-canape", id: "canape"},
-                               {selector: ".example-canape-label", id: "canape-label"}];
+        var foodSelectorMap = [
+            {selector: ".example-cheese-row", id: "cheese-row:"},
+            {selector: ".example-cheese", id: "cheese"},
+            {selector: ".example-cheese-label", id: "cheese-label"},
+            {selector: ".example-canape-row", id: "canape-row:"},
+            {selector: ".example-canape", id: "canape"},
+            {selector: ".example-canape-label", id: "canape-label"}
+        ];
 
         // The autoBind option tells the renderer to automatically update the model when the value
         // of an input changes. Without this parameter, the model must be updated manually through

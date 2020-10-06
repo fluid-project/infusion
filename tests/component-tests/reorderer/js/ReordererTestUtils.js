@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($, fluid) {
     "use strict";
@@ -119,7 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("focus on item " + focusItem.selector, focusItem.hasClass("fl-reorderer-movable-selected"));
             options.reordererOptions.key(that, fluid.testUtils.reorderer.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);
             options.reordererOptions.expectOrderFn("after ctrl-" + options.direction.toLowerCase() + " the order is " + expectedOrder, expectedOrder,
-                    $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);
+                $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);
         }
     };
 

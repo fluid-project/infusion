@@ -34,7 +34,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
         var mimeTypeMap = fluid.uploader.mimeTypeRegistry;
-        if (fluid.isArrayable(val) || typeof (val) !== "string") {
+        if (fluid.isArrayable(val) || typeof(val) !== "string") {
             return val;
         }
 

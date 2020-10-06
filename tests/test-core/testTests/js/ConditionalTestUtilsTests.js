@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function () {
     "use strict";
@@ -42,13 +42,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.conditionalTestUtilsTests.testChooseTestByPromiseResult = function (message, shouldResolve) {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult(message,
-        function () {
-            return fluid.tests.conditionalTestUtilsTests.configurableTestPromise(shouldResolve);
-        },
-          fluid.tests.conditionalTestUtilsTests.testOnPromiseResolve,
-           fluid.tests.conditionalTestUtilsTests.testOnPromiseReject,
-           "Promise resolved",
-           "Promise rejected");
+            function () {
+                return fluid.tests.conditionalTestUtilsTests.configurableTestPromise(shouldResolve);
+            },
+            fluid.tests.conditionalTestUtilsTests.testOnPromiseResolve,
+            fluid.tests.conditionalTestUtilsTests.testOnPromiseReject,
+            "Promise resolved",
+            "Promise rejected");
     };
 
     // This should result in testOnPromiseResolve being run

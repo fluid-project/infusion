@@ -71,7 +71,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Boolean} - True if all of the text content of `node` is whitespace, otherwise false.
      */
     fluid.dom.isWhitespaceNode = function (node) {
-       // Use ECMA-262 Edition 3 String and RegExp features
+        // Use ECMA-262 Edition 3 String and RegExp features
         return !(/[^\t\n\r ]/.test(node.data));
     };
 

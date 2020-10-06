@@ -95,8 +95,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         // Legacy from the SWFUpload implementation, where pausing is a combination of an UPLOAD_STOPPED error and a complete.
         that.events.onFileError.fire(file,
-                                     fluid.uploader.errorConstants.UPLOAD_STOPPED,
-                                     "The demo upload was paused by the user.");
+            fluid.uploader.errorConstants.UPLOAD_STOPPED,
+            "The demo upload was paused by the user.");
         fluid.uploader.demo.finishAndContinueOrCleanup(that, file);
         that.events.onUploadStop.fire();
     };
@@ -110,13 +110,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         setTimeout(fn, delay);
     };
 
-    /**
+    /*
      * The demo remote pretends to upload files to the server, firing all the appropriate events
      * but without sending anything over the network or requiring a server to be running.
-     *
-     * @param {Object} configuration options
      */
-
     fluid.defaults("fluid.uploader.demo.remote", {
         gradeNames: ["fluid.uploader.remote"],
         members: {
