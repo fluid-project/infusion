@@ -22,7 +22,7 @@
 /* global global */
 /* exported jQuery */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
 var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
 (function (fluid) {

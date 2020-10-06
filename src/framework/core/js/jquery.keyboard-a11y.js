@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
 var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {

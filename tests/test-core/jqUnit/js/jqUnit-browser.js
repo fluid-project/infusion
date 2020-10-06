@@ -11,8 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var jqUnit = jqUnit || {};
-var fluid_3_0_0 = fluid_3_0_0 || {};
+/* global jqUnit */
 
 // A function to load the testswarm agent if running in the testswarm environment
 // This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )

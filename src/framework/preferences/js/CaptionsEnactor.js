@@ -13,8 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* global YT */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 

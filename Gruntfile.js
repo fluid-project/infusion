@@ -466,7 +466,7 @@ module.exports = function (grunt) {
         lintAll: {
             sources: {
                 md: [ "*.md", "!./src/**/lib/**/*.md", "!./demos/**/lib/**/*.md", "!./tests/**/lib/**/*.md"],
-                js: ["*.js", "!./src/**/lib/**/*.js", "!./demos/**/lib/**/*.js", "!./dist/**/*.js", "!./tests/**/lib/**/*.js", "!./tests/**/infusion-1.5.js", "!./tests/**/node_modules/**/*.js"],
+                js: ["*.js", "!./src/**/lib/**/*.js", "!./demos/**/lib/**/*.js", "!./dist/**/*.js", "!./tests/**/lib/**/*.js", "!./tests/**/infusion-1.5.js", "!./tests/node-tests/node_modules/**/*.js"],
                 json: ["*.json", "./.nycrc", "./src/thirdPartyDependencies.json", "!./src/lib/**/*.json", "!./dist/**/*.json"],
                 other: ["./.*"]
             }

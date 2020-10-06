@@ -17,8 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          https://github.com/fluid-project/fluid-authoring/blob/FLUID-4884/src/js/ComponentGraph.js
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
