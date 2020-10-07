@@ -395,19 +395,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return;
         }
 
+        var softHyphen = "\u00AD";
         var hyphenated = hyphenator.hyphenateText(node.textContent);
 
         // split words on soft hyphens
-        var segs = hyphenated.split("\u00AD");
+        var segs = hyphenated.split(softHyphen);
 
-        // remove the last segment as we only need to place separators in between the parts of the words
-        segs.pop();
-
-        fluid.each(segs, function (seg) {
+        for (var i = 0; i < segs.length; i++) {
             // If the text content starts with a soft hyphen (\u00AD, &shy;) replace it with an empty placeholder; which
             // is used to put the soft hyphen back if syllabification is disabled.
             // See: https://issues.fluidproject.org/browse/FLUID-6554
-            if (node.textContent.startsWith("\u00AD")) {
+            if (node.textContent.startsWith(softHyphen)) {
                 // converts the softHyphenPlaceholderMarkup markup string into a Dom Node
                 var placeholder = $(softHyphenPlaceholderMarkup)[0];
                 var newNode = fluid.prefs.enactor.syllabification.insertIntoTextNode(node, placeholder, 1);
@@ -415,9 +413,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 node = newNode;
             }
 
-            var separator = $(separatorMarkup)[0]; // converts the separatorMarkup markup string into a Dom Node
-            node = fluid.prefs.enactor.syllabification.insertIntoTextNode(node, separator, seg.length);
-        });
+            // skip the last segment as we only need to place separators in between the parts of the words
+            if (i < segs.length - 1) {
+                var separator = $(separatorMarkup)[0]; // converts the separatorMarkup markup string into a Dom Node
+                node = fluid.prefs.enactor.syllabification.insertIntoTextNode(node, separator, segs[i].length);
+            }
+        }
     };
 
     fluid.prefs.enactor.syllabification.removeSyllabification = function (that) {
