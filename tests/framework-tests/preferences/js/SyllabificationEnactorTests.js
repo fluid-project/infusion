@@ -151,7 +151,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOpts: {
             text: {
                 // Soft hyphens (\u00AD) included to test https://issues.fluidproject.org/browse/FLUID-6554
-                "en": "Global temperature has in\u00ADcreased over the past 50 years.",
+                "en": "Global tem\u00ADperature has in\u00ADcreased over the past 50 years.",
                 "es": "La temperatura global ha aumentado en los últimos 50 años."
             },
             syllabified: {
@@ -161,6 +161,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     type: Node.ELEMENT_NODE,
                     selector: "separator"
+                }, {
+                    type: Node.ELEMENT_NODE,
+                    selector: "softHyphenPlaceholder"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "per"
@@ -192,6 +195,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     type: Node.ELEMENT_NODE,
                     selector: "separator"
+                }, {
+                    type: Node.ELEMENT_NODE,
+                    selector: "softHyphenPlaceholder"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "per"
@@ -268,8 +274,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             // Soft hyphens (&shy;) included to test https://issues.fluidproject.org/browse/FLUID-6554
             markup: {
-                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global temperature has in&shy;creased over the past 50 years.</p>",
-                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global temperature has in&shy;creased over the past 50 years.</p>"
+                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global tem&shy;perature has in&shy;creased over the past 50 years.</p>",
+                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global tem&shy;perature has in&shy;creased over the past 50 years.</p>"
             }
         },
         modules: [{
@@ -283,7 +289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Init", "{syllabification}", "{that}.options.testOpts.existing"]
                 }]
             }, {
-                expect: 99,
+                expect: 107,
                 name: "Add/Remove syllabification",
                 sequence: [{
                     // enabled syllabification
@@ -305,7 +311,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Syllabification Removed", "{syllabification}", "{that}.options.testOpts.existing"]
                 }]
             }, {
-                expect: 49,
+                expect: 53,
                 name: "Injected Content",
                 sequence: [{
                     // inject content, then enable syllabification
@@ -364,7 +370,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             separatorCount += testCase.separatorCount;
 
             // soft hyphens are removed from the text content when syllabification is enabled
-            var expectedText = testCase.text.replace("\u00AD", "");
+            var expectedText = testCase.text.replace(/\u00AD/g, "");
             jqUnit.assertEquals(prefix + ": The text for " + selector + " is returned correctly", expectedText, elm.text());
 
             fluid.each(testCase.syllabified, function (expected, index) {
