@@ -43,6 +43,7 @@
     },
     "devDependencies": {
         "eslint-config-fluid": "1.4.0",
+        "eslint-plugin-markdown": "1.0.2",
         "gpii-grunt-lint-all": "1.0.7",
         "gpii-testem": "2.1.11",
         "grunt": "1.1.0",

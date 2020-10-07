@@ -74,6 +74,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The new element should be the child", "new", children.eq(0).text());
         });
 
+        /** Basic containerRenderingView test with built-in markup **/
+
         fluid.defaults("fluid.tests.containerRenderingView", {
             gradeNames: ["fluid.containerRenderingView"],
             parentContainer: ".flc-newViewSupport-parentContainer",
@@ -90,6 +92,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNodeExists("The container should have been rendered", containerElm);
             jqUnit.assertDomEquals("The container should have the correct element", containerElm, that.container);
         });
+
+        /** Basic templateRenderingView test with markup fetched from a resource **/
 
         fluid.defaults("fluid.tests.templateRenderingView", {
             gradeNames: ["fluid.templateRenderingView"],
@@ -121,5 +125,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
         });
+
+        /** "CollectionSpace-style" rendering test with nested containers with their own template resources **/
+
+        fluid.defaults("fluid.tests.nestedTemplateRenderingView", {
+            gradeNames: "fluid.templateRenderingView",
+            container: ".flc-newViewSupport-nestedTemplateContainer",
+            templateUrl: "../data/testTemplateContainer.html",
+            injectionType: "replaceWith",
+            selectors: {
+                nested: ".flc-nested"
+            },
+            components: {
+                nested: {
+                    type: "fluid.templateRenderingView",
+                    container: "{that}.dom.nested",
+                    options: {
+                        templateUrl: "../data/testTemplateNested.html",
+                        injectionType: "replaceWith"
+                    }
+                }
+            }
+        });
+
+        fluid.tests.templateRenderingView.verifyNested = function (jqNested) {
+            jqUnit.assertEquals("Nested content replaced from template", "Content from the nested template", jqNested.text());
+            jqUnit.start();
+        };
+
+        jqUnit.asyncTest("Nested fluid.templateRenderingView", function () {
+            jqUnit.expect(1);
+            fluid.tests.nestedTemplateRenderingView(".flc-newViewSupport-nestedTemplateContainer", {
+                listeners: {
+                    "onCreate.test": {
+                        listener: "fluid.tests.templateRenderingView.verifyNested",
+                        args: "{that}.dom.nested"
+                    }
+                }
+            });
+        });
+
     };
 })(jQuery);

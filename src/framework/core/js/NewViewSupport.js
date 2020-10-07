@@ -159,7 +159,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             renderMarkup: "fluid.identity({that}.resources.template.parsed)"
         },
         distributeOptions: {
-            "mapTemplateSource": {
+            "mapTemplateUrl": {
                 source: "{that}.options.templateUrl",
                 target: "{that}.options.resources.template.url"
             }
