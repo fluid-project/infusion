@@ -625,7 +625,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
     grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("gpii-grunt-lint-all");
+    grunt.loadNpmTasks("fluid-grunt-lint-all");
 
     // Custom tasks:
 

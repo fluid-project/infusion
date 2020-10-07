@@ -170,7 +170,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Only disconnect the observer if the state is set to false.
      * This corresponds to the syllabification's `enabled` model path being set to false.
      *
-     * @param {Component} that - an instance of `fluid.mutationObserver`
+     * @param {fluid.mutationObserver} that - an instance of `fluid.mutationObserver`
      * @param {Boolean} state - if `false` disconnect, otherwise do nothing
      */
     fluid.prefs.enactor.syllabification.disconnectObserver = function (that, state) {
@@ -183,7 +183,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Wait for all hyphenators to be resolved. After they are resolved the `afterSyllabification` event is fired.
      * If any of the hyphenator promises is rejected, the `onError` event is fired instead.
      *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {fluid.prefs.enactor.syllabification} that - an instance of `fluid.prefs.enactor.syllabification`
      *
      * @return {Promise} - returns the sequence promise; which is constructed from the hyphenator promises.
      */
@@ -206,7 +206,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Creates a hyphenator instance making use of the pattern supplied by the path; which is injected into the Document
      * if it hasn't already been loaded. If the pattern file cannot be loaded, the onError event is fired.
      *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {fluid.prefs.enactor.syllabification} that - an instance of `fluid.prefs.enactor.syllabification`
      * @param {Object} pattern - the `file path` to the pattern file. The path may include a string template token to
      *                           resolve a portion of its path from. The token will be resolved from the component's
      *                           `terms` option. (e.g. "%patternPrefix/en-us.js");
@@ -301,7 +301,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * When creating a hyphenator, it first checks if there is configuration for the specified `lang`. If that fails,
      * it attempts to fall back to a less specific localization.
      *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {fluid.prefs.enactor.syllabification} that - an instance of `fluid.prefs.enactor.syllabification`
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
      *
@@ -349,6 +349,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    /**
+     *
+     *
+     * @param {HypherHyphenator} hyphenator - an instance of a Hypher Hyphenator
+     * @param {DomNode} node - a DOM node containing text to be hyphenated
+     * @param {String} separatorMarkup - the markup to be injected and used to indicate the separators/hyphens
+     */
     fluid.prefs.enactor.syllabification.hyphenateNode = function (hyphenator, node, separatorMarkup) {
         if (!hyphenator) {
             return;
@@ -362,9 +369,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // remove the last segment as we only need to place separators in between the parts of the words
         segs.pop();
         fluid.each(segs, function (seg) {
-            var separator = $(separatorMarkup)[0];
-            node = node.splitText(seg.length);
-            node.parentNode.insertBefore(separator, node);
+            // Do not attempt to process empty segs, which could lead to an infinite recursion.
+            // See: https://issues.fluidproject.org/browse/FLUID-6554
+            if (seg.length) {
+                var separator = $(separatorMarkup)[0]; // converts the separatorMarkup markup string into a Dom Node
+                node = node.splitText(seg.length);
+                node.parentNode.insertBefore(separator, node);
+            }
         });
     };
 
