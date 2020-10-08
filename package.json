@@ -45,6 +45,7 @@
         "eslint-config-fluid": "jobara/eslint-config-fluid#FLUID-6548",
         "fluid-grunt-lint-all": "jobara/fluid-grunt-lint-all#issue-14",
         "fluid-testem": "2.1.13",
+        "eslint-plugin-markdown": "1.0.2",
         "grunt": "1.1.0",
         "grunt-contrib-clean": "2.0.0",
         "grunt-contrib-compress": "1.6.0",
