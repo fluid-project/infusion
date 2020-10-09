@@ -44,7 +44,7 @@
     "devDependencies": {
         "eslint-config-fluid": "1.3.0",
         "eslint-plugin-markdown": "1.0.2",
-        "fluid-grunt-lint-all": "1.0.8",
+        "fluid-grunt-lint-all": "greatislander/fluid-grunt-lint-all#FLUID-6555",
         "gpii-testem": "2.1.11",
         "grunt": "1.1.0",
         "grunt-contrib-clean": "2.0.0",

@@ -5,11 +5,19 @@
 }
 
 /* Container alignment */
-.fl-force-right {float:right;}
-.fl-force-left {float:left;}
-.fl-centered {margin-left:auto; margin-right:auto; display:block;}
+.fl-force-right {
+    float: right;
+}
 
+.fl-force-left {
+    float: left;
+}
 
+.fl-centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 /* The following styles are based on 3rd party software */
 
@@ -18,11 +26,17 @@
  * http://nicolasgallagher.com/micro-clearfix-hack/
  */
 
-.fl-clearfix:before, .fl-clearfix:after {content:""; display:table;}
-.fl-clearfix:after {clear:both;}
+.fl-clearfix::before,
+.fl-clearfix::after {
+    content: "";
+    display: table;
+}
+
+.fl-clearfix::after {
+    clear: both;
+}
 
 /* End of Micro Clearfix based styles */
-
 
 /*
  * The following styles are based on css from HTML5 Boilerplate v4.3:

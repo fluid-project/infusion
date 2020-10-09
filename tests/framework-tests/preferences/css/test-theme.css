@@ -1,17 +1,17 @@
 /* Comment */
 
 table {
-  background-color: #dddddd;
-  font-size: 16px;
+    background-color: #ddd;
+    font-size: 16px;
 }
 
 .cat a {
-  background-image: url("cats.png");
-  font-size: 24px;
+    background-image: url("cats.png");
+    font-size: 24px;
 }
 
 span {
-  font-size: 12px;  /* Setting font size */
+    font-size: 12px;  /* Setting font size */
 }
 
-.sheep { cue: url( 'http://sheep.org' ); }
+.sheep { cue: url('http://sheep.org'); }

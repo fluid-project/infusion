@@ -1,43 +1,45 @@
 
 .demo-layoutReorderer-container {
-    width:95%;
-    margin-top: 3em;
     background-color: #ccd3ff;
-    overflow:auto;
+    margin-top: 3em;
+    overflow: auto;
     padding: 5px;
+    width: 95%;
 }
 
 .demo-layoutReorderer-container h2 {
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 .demo-layoutReorderer-container ul li {
-    padding-bottom:0.5em;
+    padding-bottom: 0.5em;
 }
 
 .demo-layoutReorderer-module,
-.demo-layoutReorderer-locked  {
+.demo-layoutReorderer-locked {
+    background-color: #fff;
     border: 1px solid #808285;
     margin: 6px;
-    background-color: #fff;
 }
 
 .demo-layoutReorderer-module-dragbar {
-    /* dragbar is the bar on top of each module */
-    cursor: move;
-    background-color: #A5CFEF;
+    background-color: #a5cfef;
+    background-image: url("../images/move.png");
     background-position: right 1px center;
     background-repeat: no-repeat;
-    background-image: url("../images/move.png");
+
+    /* dragbar is the bar on top of each module */
+    cursor: move;
     padding: 4px;
 }
 
 .demo-layoutReorderer-locked .demo-layoutReorderer-module-dragbar {
-    /* Locked module */
-    cursor: default;
     background-color: #fff;
     background-image: url("../images/locked.png");
     background-position: right 1px center;
+
+    /* Locked module */
+    cursor: default;
 }
 
 .demo-layoutReorderer-leftColumn,
@@ -54,19 +56,20 @@
  * actual content of the module
  */
 .demo-layoutReorderer-module-content {
+    overflow: auto;
     padding: 6px;
     width: 95%;
-    overflow: auto;
 }
 
 .demo-layoutReorderer-module-content img {
     border: 1px solid #afafaf;
-    float:left;
+    float: left;
     margin-right: 10px;
     width: 30%;
 }
 
-.demo-layoutReorderer-movable-hover, .demo-layoutReorderer-movable-selected{
+.demo-layoutReorderer-movable-hover,
+.demo-layoutReorderer-movable-selected {
     outline: 2px solid #000;
 }
 
@@ -79,11 +82,12 @@
  */
 
 .demo-layoutReorderer-avatar {
-    background-color:#9fff9f;
-    outline: 2px solid #000;
-    opacity: 0.5;
+    background-color: #9fff9f;
     filter: alpha(opacity=50); /* ie opacity fix */
+    opacity: 0.5;
+    outline: 2px solid #000;
 }
+
 .demo-layoutReorderer-avatar .demo-layoutReorderer-module-dragbar,
 .demo-layoutReorderer-avatar .demo-layoutReorderer-module-content {
     /* hide contents of the module's avatar, while dragging. */
@@ -96,25 +100,25 @@
 
 .demo-layoutReorderer-movable-mousedrag {
     /* hide the original module while being dragged. */
-    display:none;
+    display: none;
 }
 
 .demo-layoutReorderer-dropMarker {
     background-color: #00a651;
     height: 3px;
-    padding: 0 0 0 0;
     margin-left: 1em;
     margin-right: 1em;
+    padding: 0 0 0 0;
 }
 
 .demo-layoutReorderer-dropWarning {
-    border: 3px solid black;
-    background-color: #ffffff;
+    background-color: #fff;
     background-image: url('../images/info.png');
-    background-repeat: no-repeat;
     background-position: left center;
+    background-repeat: no-repeat;
+    border: 3px solid black;
     display: none;
     padding: 5px 30px;
+    width: 250px;
     z-index: 10;
-    width:250px;
 }

@@ -4,24 +4,24 @@ section {
 
 td,
 th {
-    padding: 1em 1.5em;
     border: 0 solid;
+    padding: 1em 1.5em;
 }
 
 th {
-    background: #DCDCDC;
+    background: #dcdcdc;
 }
 
 .fl-reorderer-movable-default:hover,
 .fl-reorderer-movable-selected {
-    cursor: move;
     background: #eee;
+    cursor: move;
 }
 
 .fl-reorderer-avatar,
 .fl-reorderer-movable-dragging {
-  background: #ffc !important;
-  outline: 1px solid red;
+    background: #ffc !important;
+    outline: 1px solid red;
 }
 
 .fl-reorderer-avatar {

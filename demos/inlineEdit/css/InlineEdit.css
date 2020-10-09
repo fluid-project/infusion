@@ -1,7 +1,7 @@
 /* Themed Appearance + Themed States */
 
 figure {
-    margin-left : 0;
+    margin-left: 0;
 }
 
 figure img {
@@ -10,7 +10,7 @@ figure img {
 
 .demo-inlineEdit-title,
 .demo-inlineEdit-title-edit {
-    font-size : 2em;
+    font-size: 2em;
 }
 
 .demo-inlineEdit-indent {

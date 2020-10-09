@@ -1,22 +1,22 @@
 
 .full-width {
-  width: 100%;
+    width: 100%;
 }
 
 .half-width {
-  width: 50%;
+    width: 50%;
 }
 
 /* These widths are slightly brittle in that if the width of an individual
    thumbnail is changed in ImageReorderer.css these will need to be updated. */
 .width-3-thumb {
-  width: 500px;
+    width: 500px;
 }
 
 .width-4-thumb {
-  width: 675px;
+    width: 675px;
 }
 
 .width-all-thumb {
-  width: 2400px;
+    width: 2400px;
 }

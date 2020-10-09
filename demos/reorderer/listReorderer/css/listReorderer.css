@@ -4,38 +4,39 @@
 }
 
 .demo-listReorderer-container ol li {
-    padding: 5px;
-    margin-bottom: 5px;
-    list-style-position: inside;
     border-right: 3px solid #6d6e71; /* thicker right border acts as a grab indicator. */
+    list-style-position: inside;
+    margin-bottom: 5px;
+    padding: 5px;
 }
 
 .demo-listReorderer-container ul {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
+    margin-top: 0;
 }
 
 .demo-listReorderer-container ul li {
-    margin:0px;
-    padding:0px;
-    padding-left:1em;
     border-right: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 1em;
 }
 
-.demo-listReorderer-movable-default{
+.demo-listReorderer-movable-default {
     background-color: #e7e8e9;
 }
 
-.demo-listReorderer-movable-hover, .demo-listReorderer-movable-selected{
+.demo-listReorderer-movable-hover,
+.demo-listReorderer-movable-selected {
     background-color: #fff;
-    outline: none;
-    cursor: move;
+    border-bottom: 1px solid #00a651;
+    border-left: 1px solid #00a651;
 
     /* Change the left, top, and bottom borders on hover and select.
        Leave the right border alone as it serves as the grab indicator. */
     border-top: 1px solid #00a651;
-    border-left: 1px solid #00a651;
-    border-bottom: 1px solid #00a651;
+    cursor: move;
+    outline: none;
 
     /* set the 5px padding inherited (ol li) to 4px to compensate for
        1px hover border. */
@@ -43,10 +44,10 @@
 }
 
 .demo-listReorderer-movable-dragging {
-    position: relative;
-    left: 10px;
-    border: 1px solid #00a651;
     background-color: #d2f7d8;
+    border: 1px solid #00a651;
+    left: 10px;
+    position: relative;
 }
 
 .demo-listReorderer-movable-mousedrag {
@@ -54,20 +55,20 @@
 }
 
 .demo-listReorderer-avatar {
-    opacity: 0.55;
-    filter: alpha(opacity=55); /* ie opacity fix */
+    background-color: #2bb673;
     border: 0;
     color: #2bb673;
-    background-color: #2bb673;
+    filter: alpha(opacity=55); /* ie opacity fix */
+    opacity: 0.55;
 }
 
 .demo-listReorderer-dropMarker {
-    background-color : #00a651;
-    height:3px;
-    padding:0 0 0 0;
-    border-width: 0px;
-    list-style-type:none;
-    font-size:0px;
-    line-height:0px;
-    overflow:hidden;
+    background-color: #00a651;
+    border-width: 0;
+    font-size: 0;
+    height: 3px;
+    line-height: 0;
+    list-style-type: none;
+    overflow: hidden;
+    padding: 0 0 0 0;
 }

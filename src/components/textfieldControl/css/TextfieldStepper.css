@@ -1,10 +1,10 @@
 /* Default Textfield Stepper styling */
 
 .fl-textfieldStepper {
+    align-items: center;
     display: flex;
     flex-basis: auto;
     justify-content: center;
-    align-items: center;
 }
 
 .fl-textfieldStepper *:focus {
@@ -12,26 +12,26 @@
 }
 
 .fl-textfieldStepper-focus {
-    outline: solid 0.2rem #000000;
+    outline: solid 0.2rem #000;
 }
 
 .fl-textfieldStepper-focusContainer {
-    padding: 0.2rem;
     margin: 0 0.5rem;
+    padding: 0.2rem;
 }
 
 /* Textfield Styling */
 
 .fl-textfieldStepper .fl-textfieldStepper-textField {
     margin: 0 0.5rem;
-    width: 7rem;
     text-align: center;
+    width: 7rem;
 }
 
 /* Textfield Button Styling */
 
 .fl-textfieldStepper .fl-textfieldStepper-button {
-    border: 2px solid #000000;
+    border: 2px solid #000;
     border-radius: 0.4rem;
     height: 2.4375rem;
     width: 2.4375rem;
