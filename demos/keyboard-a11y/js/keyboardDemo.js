@@ -80,7 +80,7 @@ var demo = demo || {};
         thumbContainer.fluid("activatable", handler);
 
         // add the same handler to the click event of the thumbs
-        thumbnails.click(handler);
+        thumbnails.on("click", handler);
     };
 
     demo.fiveStar.getRank = function (model) {

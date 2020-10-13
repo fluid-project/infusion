@@ -185,7 +185,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.changeElementValue = function (node, value) {
         node = $(node);
-        node.val(value).change();
+        node.val(value).trigger("change");
     };
 
 })(jQuery, fluid_3_0_0);

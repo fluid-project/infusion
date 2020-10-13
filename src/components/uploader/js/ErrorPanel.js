@@ -212,10 +212,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.uploader.errorPanel.section.bindHandlers = function (that) {
         // Bind delete button
-        that.locate("deleteErrorButton").click(that.clear);
+        that.locate("deleteErrorButton").on("click", that.clear);
 
         // Bind hide/show error details link
-        that.locate("showHideFilesToggle").click(that.toggleDetails);
+        that.locate("showHideFilesToggle").on("click", that.toggleDetails);
     };
 
     fluid.uploader.errorPanel.section.renderHeader = function (that) {

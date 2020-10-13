@@ -153,7 +153,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             if (headclazz) {
                 var split = headclazz.split(" ");
                 for (i = 0; i < split.length; ++i) {
-                    var simpleCut = simpleClassCutpoints[$.trim(split[i])];
+                    var simpleCut = simpleClassCutpoints[split[i].trim()];
                     if (simpleCut) {
                         return simpleCut;
                     }

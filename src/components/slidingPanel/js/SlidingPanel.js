@@ -40,8 +40,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onCreate.bindClick": {
                 "this": "{that}.dom.toggleButton",
-                "method": "click",
-                "args": ["{that}.togglePanel"]
+                "method": "on",
+                "args": ["click", "{that}.togglePanel"]
             },
             "onCreate.bindModelChange": {
                 listener: "{that}.applier.modelChanged.addListener",

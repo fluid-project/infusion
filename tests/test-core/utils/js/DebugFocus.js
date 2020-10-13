@@ -35,8 +35,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var addFocusChangeListeners = function (jQueryElements) {
-            jQueryElements.focus(focusOutputter);
-            jQueryElements.blur(blurOutputter);
+            jQueryElements.on("focus", focusOutputter);
+            jQueryElements.on("blur", blurOutputter);
         };
 
         return {

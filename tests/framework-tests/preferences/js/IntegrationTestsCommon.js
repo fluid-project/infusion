@@ -115,24 +115,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
 
                 var saveButton = prefsEditor.locate("save");
-                saveButton.click();
+                saveButton.trigger("click");
                 fluid.tests.prefs.checkModelSelections("model from bwSkin", fluid.tests.prefs.bwSkin, prefsEditor.model);
                 jqUnit.assertDeepEq("Save event fired with selections", fluid.tests.prefs.bwSkin, savedSelections);
                 jqUnit.assertDeepEq("Direct save event fired with selections", fluid.tests.prefs.bwSkin, savedSelections2);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.ybSkin);
 
                 var cancelButton = prefsEditor.locate("cancel");
-                cancelButton.click();
+                cancelButton.trigger("click");
                 fluid.tests.prefs.checkModelSelections("model from bwSkin (unchanged after cancel", fluid.tests.prefs.bwSkin, prefsEditor.model);
 
                 var resetButton = prefsEditor.locate("reset");
-                resetButton.click();
+                resetButton.trigger("click");
                 fluid.tests.prefs.checkModelSelections("model from original", initialModel, prefsEditor.model);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset)",
                     (resetShouldSave ? initialModel.preferences : fluid.tests.prefs.bwSkin.preferences), globalUIEnhancer.model);
 
-                cancelButton.click();
+                cancelButton.trigger("click");
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset and cancel)",
                     (resetShouldSave ? initialModel : fluid.tests.prefs.bwSkin), prefsEditor.model);
 

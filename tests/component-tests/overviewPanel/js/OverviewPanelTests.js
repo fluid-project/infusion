@@ -153,22 +153,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.overviewPanel.verifyCloseControlListener = function (that) {
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
-        that.locate("closeControl").click();
+        that.locate("closeControl").trigger("click");
         fluid.tests.overviewPanel.assertPanelIsClosed(that);
-        that.locate("closeControl").click();
+        that.locate("closeControl").trigger("click");
         fluid.tests.overviewPanel.assertPanelIsClosed(that);
         jqUnit.start();
     };
 
     fluid.tests.overviewPanel.verifyToggleControlListener = function (that) {
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
-        that.locate("toggleControl").click();
+        that.locate("toggleControl").trigger("click");
         fluid.tests.overviewPanel.assertPanelIsClosed(that);
-        that.locate("toggleControl").click();
+        that.locate("toggleControl").trigger("click");
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
-        that.locate("closeControl").click();
+        that.locate("closeControl").trigger("click");
         fluid.tests.overviewPanel.assertPanelIsClosed(that);
-        that.locate("toggleControl").click();
+        that.locate("toggleControl").trigger("click");
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
         jqUnit.start();
     };

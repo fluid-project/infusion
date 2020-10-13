@@ -71,12 +71,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{separatedPanel}"]
             }
         },
-        invokers: {
-            bindReset: {
-                funcName: "fluid.bind",
-                args: ["{separatedPanel}.dom.reset", "click", "{arguments}.0"]
-            }
-        },
         components: {
             slidingPanel: {
                 type: "fluid.slidingPanel",
@@ -170,8 +164,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     },
                     listeners: {
                         "onCreate.bindReset": {
-                            listener: "{separatedPanel}.bindReset",
-                            args: ["{that}.reset"]
+                            "this": "{separatedPanel}.dom.reset",
+                            method: "on",
+                            args: ["click", "{that}.reset"]
                         },
                         "afterReset.applyChanges": "{that}.applyChanges",
                         // Scroll to active panel after opening the separate Panel.

@@ -161,11 +161,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 },
                 {
                     type: "jQuery",
-                    func: "click",
-                    args: function (event) {
+                    func: "on",
+                    args: ["click", function (event) {
                         initiatePageChange.fire({pageIndex: page});
                         event.preventDefault();
-                    }
+                    }]
                 }
             ]
         };
@@ -389,13 +389,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             onCreate: {
                 "this": "{that}.container",
-                method: "change",
-                args: {
-                    expander: {
-                        funcName: "fluid.pager.directPageSize.onChange",
-                        args: ["{pager}.events.initiatePageSizeChange", "{that}.container"]
+                method: "on",
+                args: [
+                    "change",
+                    {
+                        expander: {
+                            funcName: "fluid.pager.directPageSize.onChange",
+                            args: ["{pager}.events.initiatePageSizeChange", "{that}.container"]
+                        }
                     }
-                }
+                ]
             }
         },
         modelListeners: {

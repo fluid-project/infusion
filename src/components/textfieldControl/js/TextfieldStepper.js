@@ -233,8 +233,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onCreate.bindClick": {
                 "this": "{that}.container",
-                "method": "click",
-                "args": "{that}.events.onClick.fire"
+                "method": "on",
+                "args": ["click", "{that}.events.onClick.fire"]
             },
             "onCreate.addLabel": {
                 "this": "{that}.container",

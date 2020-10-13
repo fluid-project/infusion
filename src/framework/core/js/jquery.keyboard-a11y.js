@@ -452,11 +452,11 @@ var fluid = fluid || fluid_3_0_0;
 
         // Add various handlers to the container.
         if (keyMap && !that.options.noBubbleListeners) {
-            container.keydown(arrowKeyHandler(that, keyMap));
+            container.on("keydown", arrowKeyHandler(that, keyMap));
         }
-        container.keydown(tabKeyHandler(that));
-        container.focus(containerFocusHandler(that));
-        container.blur(containerBlurHandler(that));
+        container.on("keydown", tabKeyHandler(that));
+        container.on("focus", containerFocusHandler(that));
+        container.on("blur", containerBlurHandler(that));
 
         that.promise = that.selectablesUpdated();
 
@@ -588,7 +588,7 @@ var fluid = fluid || fluid_3_0_0;
         // Add listeners for each key binding.
         for (var i = 0; i < bindings.length; ++i) {
             var binding = bindings[i];
-            elements.keydown(makeActivationHandler(binding));
+            elements.on("keydown", makeActivationHandler(binding));
         }
         elements.on("fluid-activate", function (evt, handler) {
             handler = handler || onActivateHandler;

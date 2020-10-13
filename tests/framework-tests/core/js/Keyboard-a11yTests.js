@@ -249,7 +249,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNothingSelected();
 
         // Then focus the container. Nothing should still be selected.
-        menu.container.focus();
+        menu.container.trigger("focus");
         jqUnit.assertNothingSelected();
 
         // Now call selectNext() and assert that the first item is focussed.
@@ -429,7 +429,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Move focus to another element altogether.
         // Need to simulate browser behaviour by calling blur on the selected item, which is scary.
         var link = $(LINK_AFTER_SEL);
-        await menu.container.fluid("selectable.currentSelection").blur();
+        await menu.container.fluid("selectable.currentSelection").trigger("blur");
         await fluid.focus(link);
 
         // Now check to see that the item isn't still selected once we've moved focus off the widget.

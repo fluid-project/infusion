@@ -78,7 +78,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var escHandler = function (evt) {
             var code = keyCode(evt);
             if (code === $.ui.keyCode.ESCAPE) {
-                button.focus();
+                button.trigger("focus");
                 fluid.inlineEdit.cancel(that);
                 return false;
             }
@@ -87,19 +87,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var code = keyCode(evt);
 
             if (code !== $.ui.keyCode.ENTER) {
-                button.blur();
+                button.trigger("blur");
                 return true;
             } else {
                 fluid.inlineEdit.finish(that);
-                button.focus();
+                button.trigger("focus");
             }
 
             return false;
         };
         if (that.options.submitOnEnter) {
-            that.editContainer.keypress(finishHandler);
+            that.editContainer.on("keypress", finishHandler);
         }
-        that.editContainer.keydown(escHandler);
+        that.editContainer.on("keydown", escHandler);
     };
 
     fluid.inlineEdit.bindBlurHandler = function (that) {
@@ -112,7 +112,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
                 return false;
             };
-            that.editField.blur(blurHandler);
+            that.editField.on("blur", blurHandler);
         }
     };
 
@@ -149,7 +149,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.
         setTimeout(function () {
-            that.editField.focus();
+            that.editField.trigger("focus");
             if (that.options.selectOnEdit) {
                 that.editField[0].select();
             }
@@ -359,7 +359,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.inlineEdit.positionEditModeInstruction = function (editModeInstruction, editContainer, editField) {
         editContainer.append(editModeInstruction);
 
-        editField.focus(function () {
+        editField.on("focus", function () {
             editModeInstruction.show();
 
             var editFieldPosition = editField.offset();
@@ -468,7 +468,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var out = function () {
             displayModeRenderer.removeClass(invitationStyle);
         };
-        displayModeRenderer.hover(over, out);
+        displayModeRenderer.on("mouseenter", over);
+        displayModeRenderer.on("mouseleave", out);
     };
 
     /**
@@ -494,8 +495,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             };
         };
-        element.focus(makeFocusSwitcher(true));
-        element.blur(makeFocusSwitcher(false));
+        element.on("focus", makeFocusSwitcher(true));
+        element.on("blur", makeFocusSwitcher(false));
     };
 
     /**
@@ -509,7 +510,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         element = $(element);
 
         var triggerGuard = fluid.inlineEdit.makeEditTriggerGuard(element, edit);
-        element.click(function (e) {
+        element.on("click", function (e) {
             triggerGuard(e);
             return false;
         });
@@ -636,7 +637,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.inlineEdit.showNothing(componentThat);
         }
         // If necessary, pad the view element enough that it will be evident to the user.
-        if ($.trim(componentThat.viewEl.text()).length === 0) {
+        if (componentThat.viewEl.text().trim().length === 0) {
             componentThat.viewEl.addClass(componentThat.options.styles.emptyDefaultViewText);
 
             if (componentThat.existingPadding < componentThat.options.paddings.minimumView) {

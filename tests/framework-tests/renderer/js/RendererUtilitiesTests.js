@@ -453,13 +453,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             listeners: { // Test binding of FLUID-4878 style "this-ist" jQuery listeners
                 afterRender: [ {
                     "this": "{that}.dom.input",
-                    method: "click",
-                    args: "{that}.clickField"
+                    method: "on",
+                    args: ["click", "{that}.clickField"]
                 },
                 {
                     "this": "{that}.dom.input2",
-                    method: "click",
-                    args: "{that}.clickField"
+                    method: "on",
+                    args: ["click", "{that}.clickField"]
                 }
                 ]
             }
@@ -504,7 +504,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var input2 = that.locate("input2");
             jqUnit.assertEquals("Field 2 rendered", "value2", input2.val());
             var inputs = [input, input2];
-            fluid.each(inputs, function (element) {element.click();});
+            fluid.each(inputs, function (element) {element.trigger("click");});
             jqUnit.assertDomEquals("Click handlers registered by afterRender", inputs, that.clicked);
         });
 
@@ -1602,7 +1602,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             var child = that.iframeHead.iframeChild;
                             var furtherExpando = child.container.constructor.expando;
                             jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
-                            child.locate("checkbox").prop("checked", false).change();
+                            child.locate("checkbox").prop("checked", false).trigger("change");
                             jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
                             jqUnit.start();
                         }

@@ -365,11 +365,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var testItem = fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]);
 
                 assertItemDefault("Before test item gets focus, it should be in default state", 0);
-                testItem.focus( function () {
+                testItem.on("focus", function () {
                     assertItemFocused("After test item gets focus, it should be in selected state", 0);
                     jqUnit.assertTrue("onSelect listener should be called ", selected);
 
-                    testItem.blur();
+                    testItem.trigger("blur");
                     assertItemDefault("After test item gets blur, it should be in default state", 0);
                     jqUnit.start();
                 });
@@ -542,7 +542,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             await fluid.testUtils.imageReorderer.focusLightbox();
 
             await horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), k.modKeyEvent(["CTRL", "SHIFT"], "j"));
-            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
+            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).trigger("focus");
             await verticalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "i"), k.modKeyEvent(["CTRL", "SHIFT"], "m"));
 
             jqUnit.start();
@@ -572,13 +572,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             await horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), k.modKeyEvent(["CTRL", "SHIFT"], "j"));
 
-            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
+            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).trigger("focus");
             await horizontalMovementTest(lightbox, k.modKeyEvent("ALT", "RIGHT"), k.modKeyEvent("ALT", "LEFT"));
 
-            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
+            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).trigger("focus");
             await verticalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "i"), k.modKeyEvent(["CTRL", "SHIFT"], "m"));
 
-            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
+            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).trigger("focus");
             await verticalMovementTest(lightbox, k.modKeyEvent("ALT", "UP"), k.modKeyEvent("ALT", "DOWN"));
 
             jqUnit.start();
@@ -621,13 +621,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             await horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), k.modKeyEvent(["CTRL", "SHIFT"], "j"));
 
-            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
+            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).trigger("focus");
             await horizontalMovementTest(lightbox, k.ctrlKeyEvent("RIGHT"), k.ctrlKeyEvent("LEFT"));
 
-            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
+            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).trigger("focus");
             await verticalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "i"), k.modKeyEvent(["CTRL", "SHIFT"], "m"));
 
-            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).focus();
+            fluid.jById(fluid.testUtils.imageReorderer.orderableIds[0]).trigger("focus");
             await verticalMovementTest(lightbox, k.ctrlKeyEvent("UP"), k.ctrlKeyEvent("DOWN"));
 
             jqUnit.start();

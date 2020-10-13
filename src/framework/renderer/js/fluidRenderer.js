@@ -600,13 +600,13 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.applyBoundChange(fluid.byId(finalID, renderOptions.document), undefined, applier);
             }
             if (renderOptions.autoBind && /input|select|textarea/.test(tagname) && !renderedbindings[finalID]) {
-                var decorators = [{jQuery: ["change", applyFunc]}];
+                var decorators = [{jQuery: ["on", "change", applyFunc]}];
                 // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
                 if ($.browser.msie && tagname === "input" && /radio|checkbox/.test(trc.attrcopy.type)) {
-                    decorators.push({jQuery: ["click", applyFunc]});
+                    decorators.push({jQuery: ["on", "click", applyFunc]});
                 }
                 if ($.browser.safari && tagname === "input" && trc.attrcopy.type === "radio") {
-                    decorators.push({jQuery: ["keyup", applyFunc]});
+                    decorators.push({jQuery: ["on", "keyup", applyFunc]});
                 }
                 outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
             }
@@ -1500,7 +1500,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         if (lastId) {
             var element = fluid.byId(lastId, options.document);
             if (element) {
-                options.jQuery(element).focus();
+                options.jQuery(element).trigger("focus");
             }
         }
 

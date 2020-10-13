@@ -133,9 +133,9 @@ fluid.dataBindingExample = (function ($) {
         // Note that the wine-list data model is NOT auto-bound to the UI, and so despite the
         // input listeners, the user won't see any changes to the model until they
         // activate the "apply changes" button
-        $("#wine-list input").click(dumpWineModel);
-        $("#cheese-list input").click(dumpCheeseModel);
-        $("#canape-list input").click(dumpCanapeModel);
+        $("#wine-list input").on("click", dumpWineModel);
+        $("#cheese-list input").on("click", dumpCheeseModel);
+        $("#canape-list input").on("click", dumpCanapeModel);
     };
 
     example.programmaticTreeMenu = function () {

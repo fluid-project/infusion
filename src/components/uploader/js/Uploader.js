@@ -261,7 +261,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (queueLength > 0) {
             fluid.uploader[queueLength === that.options.queueSettings.fileUploadLimit ? "setStateFull" : "setStateLoaded"](that);
             fluid.uploader.renderUploadTotalMessage(that);
-            that.locate(that.options.focusWithEvent.afterFileDialog).focus();
+            that.locate(that.options.focusWithEvent.afterFileDialog).trigger("focus");
         }
     };
 
@@ -410,7 +410,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(focusWithEvent, function (element, event) {
             if (!noAutoFocus[event]) {
                 events[event].addListener(function () {
-                    dom.locate(element).focus();
+                    dom.locate(element).trigger("focus");
                 });
             }
         });
@@ -579,12 +579,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             { // TODO: These two part of the "new renderer" as "new decorators"
                 "this": "{that}.dom.uploadButton",
-                method: "click",
-                args: "{that}.start"
+                method: "on",
+                args: ["click", "{that}.start"]
             }, {
                 "this": "{that}.dom.pauseButton",
-                method: "click",
-                args: "{that}.stop"
+                method: "on",
+                args: ["click", "{that}.stop"]
             }, {
                 "this": "{that}.dom.totalFileStatusText",
                 method: "attr",

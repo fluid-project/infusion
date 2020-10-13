@@ -100,7 +100,7 @@ fluid.defaults("fluid.tests.buttonChild", {
 });
 
 fluid.tests.buttonChild.bindClick = function (that) {
-    that.container.click(function () {
+    that.container.on("click", function () {
         setTimeout(that.events.buttonClicked.fire, 1);
     });
 };
@@ -210,7 +210,7 @@ fluid.tests.startRendering = function (asyncTest, instantiator) {
     var decorators = fluid.renderer.getDecoratorComponents(asyncTest, instantiator);
     var decArray = fluid.values(decorators);
     jqUnit.assertEquals("Constructed one component", 1, decArray.length);
-    asyncTest.locate("button").click();
+    asyncTest.locate("button").trigger("click");
 };
 
 /** Global driver function **/

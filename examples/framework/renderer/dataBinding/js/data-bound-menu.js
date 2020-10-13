@@ -173,8 +173,8 @@ var example = example || {};
 
         // when the user changes a selection, automatically update the display of the model,
         // to illustrate what happens to the model
-        jQuery("#wine-list input").click(dumpWineModel);
-        jQuery("#food-list input").click(dumpFoodModel);
+        jQuery("#wine-list input").on("click", dumpWineModel);
+        jQuery("#food-list input").on("click", dumpFoodModel);
     };
 
     example.dataBoundMenu = function () {

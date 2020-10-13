@@ -53,7 +53,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         var lines = text.split("\n");
         var contin, key, valueComp, valueRaw, valueEsc;
         for (var i = 0; i < lines.length; ++i) {
-            var line = $.trim(lines[i]);
+            var line = lines[i].trim();
             if (!line || line.charAt(0) === "#" || line.charAt(0) === "!") {
                 continue;
             }
@@ -65,10 +65,10 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                     valueRaw = "";
                 }
                 else {
-                    key = $.trim(line.substring(0, breakpos + 1)); // +1 since first char is escape exclusion
-                    valueRaw = $.trim(line.substring(breakpos + 2));
+                    key = line.substring(0, breakpos + 1).trim(); // +1 since first char is escape exclusion
+                    valueRaw = line.substring(breakpos + 2).trim();
                     if (valueRaw.charAt(0) === ":" || valueRaw.charAt(0) === "=") {
-                        valueRaw = $.trim(valueRaw.substring(1));
+                        valueRaw = valueRaw.substring(1).trim();
                     }
                 }
 

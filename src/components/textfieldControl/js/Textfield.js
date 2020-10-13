@@ -53,8 +53,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onCreate.bindChangeEvt": {
                 "this": "{that}.container",
-                "method": "change",
-                "args": ["{that}.setModel"]
+                "method": "on",
+                "args": ["change", "{that}.setModel"]
             },
             "onCreate.initTextfieldAttributes": {
                 "this": "{that}.container",

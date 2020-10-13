@@ -169,7 +169,7 @@ var demo = demo || {};
     demo.shoppingDemo.verifyInventory = function (that) {
         var submitButton = that.locate("submitButton");
         that.timer.start();
-        submitButton.blur();
+        submitButton.trigger("blur");
 
         // disable the button
         submitButton.prop("disabled", true);

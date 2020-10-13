@@ -74,8 +74,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             };
         }
-        container.keydown(actualKeyDown);
-        container.keyup(keyUpHandler);
+        container.on("keydown", actualKeyDown);
+        container.on("keyup", keyUpHandler);
     };
 
     // unsupported, NON-API function
@@ -510,7 +510,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var handleClick = function (evt) {
             var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
             if (fluid.dom.isContainer(handle, evt.target)) {
-                $(this).focus();
+                $(this).trigger("focus");
             }
         };
 
@@ -521,8 +521,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 selectable.addClass(thatReorderer.options.styles.defaultStyle);
 
                 selectable.on("blur.fluid.reorderer", handleBlur);
-                selectable.focus(handleFocus);
-                selectable.click(handleClick);
+                selectable.on("focus", handleFocus);
+                selectable.on("click", handleClick);
 
                 selectable.attr("role", thatReorderer.options.containerRole.item);
                 selectable.attr("aria-selected", "false");
@@ -562,17 +562,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var styles = options.styles;
         item.attr("aria-grabbed", "false");
 
-        item.mouseover(
-            function () {
-                thatReorderer.events.onHover.fire(item, true);
-            }
-        );
+        item.on("mouseover", function () {
+            thatReorderer.events.onHover.fire(item, true);
+        });
 
-        item.mouseout(
-            function () {
-                thatReorderer.events.onHover.fire(item, false);
-            }
-        );
+        item.on("mouseout", function () {
+            thatReorderer.events.onHover.fire(item, false);
+        });
         var avatar;
         var handle = thatReorderer.dom.fastLocate("grabHandle", item);
 
@@ -597,7 +593,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var handlePos = fluid.dom.computeAbsolutePosition(handle);
                 var handleWidth = handle.offsetWidth;
                 var handleHeight = handle.offsetHeight;
-                item.focus();
+                item.trigger("focus");
                 item.removeClass(options.styles.selected);
                 // all this junk should happen in handler for a new event - although note that mouseDrag style might cause display: none,
                 // invalidating dimensions
@@ -622,7 +618,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
                 await thatReorderer.requestMovement(dropManager.lastPosition(), item);
                 // refocus on the active item because moving places focus on the body
-                thatReorderer.activeItem.focus();
+                thatReorderer.activeItem.trigger("focus");
             },
             // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
             // See https://github.com/jquery/jquery-ui/pull/963

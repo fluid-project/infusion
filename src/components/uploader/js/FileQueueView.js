@@ -124,7 +124,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 row.removeClass(styles.hover);
             }
         };
-        row.hover(over, out);
+        row.on("mouseenter", over);
+        row.on("mouseleave", out);
     };
 
     fluid.uploader.fileQueueView.bindDeleteKey = function (that, row) {
@@ -145,7 +146,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.uploader.fileQueueView.bindHover(row, that.options.styles);
         }
 
-        that.locate("fileIconBtn", row).click(function () {
+        that.locate("fileIconBtn", row).on("click", function () {
             fluid.uploader.fileQueueView.removeFileForRow(that, row);
         });
 

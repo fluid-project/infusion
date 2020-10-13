@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var node = $("#flc-changeElementValue");
         var value = "Value";
 
-        node.change(function (evt) {
+        node.on("change", function (evt) {
             jqUnit.assertTrue("The change event is fired", true);
             jqUnit.assertTrue("The value has been set correctly", value, evt.target.value);
             jqUnit.start();

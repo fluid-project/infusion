@@ -57,7 +57,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.component.updateModel(that.initialModel, that);
             that.state = fluid.undo.STATE_REVERTED;
             fluid.undo.refreshView(that);
-            that.locate("redoControl").focus();
+            that.locate("redoControl").trigger("focus");
         }
         return false;
     };
@@ -67,7 +67,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.component.updateModel(that.extremalModel, that);
             that.state = fluid.undo.STATE_CHANGED;
             fluid.undo.refreshView(that);
-            that.locate("undoControl").focus();
+            that.locate("undoControl").trigger("focus");
         }
         return false;
     };
@@ -137,13 +137,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onCreate.refreshView": "fluid.undo.refreshView",
             "onCreate.bindUndoClick": {
                 "this": "{that}.dom.undoControl",
-                method: "click",
-                args: "{that}.undoControlClick"
+                method: "on",
+                args: ["click", "{that}.undoControlClick"]
             },
             "onCreate.bindRedoClick": {
                 "this": "{that}.dom.redoControl",
-                method: "click",
-                args: "{that}.redoControlClick"
+                method: "on",
+                args: ["click", "{that}.redoControlClick"]
             },
             "{fluid.undoable}.events.modelChanged": {
                 funcName: "fluid.undo.modelChanged",

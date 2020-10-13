@@ -252,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     fluid.log("Apply " + provokeOp + " to " + provokeTarget);
                     var element = blurTester.locate(provokeTarget);
                     if (provokeOp === "click") {
-                        element.click();
+                        element.trigger("click");
                     } else {
                         fluid[provokeOp](element);
                     }

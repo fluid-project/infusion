@@ -443,14 +443,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");
             if (saveButton.length > 0) {
-                saveButton.click(that.saveAndApply);
+                saveButton.on("click", that.saveAndApply);
                 var form = fluid.findForm(saveButton);
-                $(form).submit(function () {
+                $(form).on("submit", function () {
                     that.saveAndApply();
                 });
             }
-            that.locate("reset").click(that.reset);
-            that.locate("cancel").click(that.cancel);
+            that.locate("reset").on("click", that.reset);
+            that.locate("cancel").on("click", that.cancel);
         };
 
         that.container.append(that.options.resources.template.resourceText);

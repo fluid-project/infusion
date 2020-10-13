@@ -149,7 +149,7 @@ var jqUnit = jqUnit || {};
                 messageExt = " - node name";
             }
             else if (key === "nodeText") {
-                attr = jQuery.trim(fluid.dom.getElementText(node));
+                attr = fluid.dom.getElementText(node).trim();
             }
             else if (key === "nodeHTML") {
                 attr = $(node).html();

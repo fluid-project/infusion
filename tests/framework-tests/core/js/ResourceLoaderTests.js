@@ -41,18 +41,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // The template with a templating path of prefixTerm + name
         jqUnit.assertEquals("The template1 url has been set correctly", "../data/testTemplate1.html", resources.template1.url);
         jqUnit.assertTrue("\"forceCache\" option for the template1 has been set", resources.template1.forceCache);
-        jqUnit.assertEquals("The content of the template1 has been loaded correctly", "<div>Test Template 1</div>", $.trim(resources.template1.resourceText));
+        jqUnit.assertEquals("The content of the template1 has been loaded correctly", "<div>Test Template 1</div>", resources.template1.resourceText.trim());
 
         // The template with a full path
         jqUnit.assertEquals("The template2 url has been set correctly", "../data/testTemplate2.html", resources.template2.url);
         jqUnit.assertTrue("\"forceCache\" option for the template2 has been set", resources.template2.forceCache);
-        jqUnit.assertEquals("The content of the template2 has been loaded correctly", "<div>Test Template 2</div>", $.trim(resources.template2.resourceText));
+        jqUnit.assertEquals("The content of the template2 has been loaded correctly", "<div>Test Template 2</div>", resources.template2.resourceText.trim());
 
         // The localised template with a templating path of prefixTerm + name
-        jqUnit.assertEquals("The content of the template3 has been loaded correctly", "<div>Test Template 3 Localised</div>", $.trim(resources.template3.resourceText));
+        jqUnit.assertEquals("The content of the template3 has been loaded correctly", "<div>Test Template 3 Localised</div>", resources.template3.resourceText.trim());
 
         // The localised template with a full path
-        jqUnit.assertEquals("The content of the template4 has been loaded correctly", "<div>Test Template 4 Localised</div>", $.trim(resources.template4.resourceText));
+        jqUnit.assertEquals("The content of the template4 has been loaded correctly", "<div>Test Template 4 Localised</div>", resources.template4.resourceText.trim());
 
         jqUnit.start();
     };
@@ -113,7 +113,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testUI = function (that) {
         var containerContent = that.renderUI.container.html();
-        jqUnit.assertEquals("The content of the template1 has been added to the container 1", "<div>Test Template 1</div>", $.trim(containerContent));
+        jqUnit.assertEquals("The content of the template1 has been added to the container 1", "<div>Test Template 1</div>", containerContent.trim());
 
         jqUnit.start();
     };
