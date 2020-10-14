@@ -60,7 +60,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // FLUID-1598 and others: Opera will refuse to honour a "preventDefault" on a keydown.
         // http://forums.devshed.com/javascript-development-115/onkeydown-preventdefault-opera-485371.html
         if ($.browser.opera) {
-            container.keypress(function (evt) {
+            container.on("keypress", function (evt) {
                 if (advancedPrevention) {
                     advancedPrevention = false;
                     evt.preventDefault();
@@ -618,7 +618,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
                 await thatReorderer.requestMovement(dropManager.lastPosition(), item);
                 // refocus on the active item because moving places focus on the body
-                thatReorderer.activeItem.trigger("focus");
+                thatReorderer.activeItem.focus();
             },
             // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
             // See https://github.com/jquery/jquery-ui/pull/963
