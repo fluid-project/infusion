@@ -154,19 +154,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // while returning a promise to notify when their actions have  completed. The promise will resolve with the
     // corresponding event object.
 
-    function applyOp(node, func) {
+    async function applyOp(node, func) {
         node = $(node)[0];
 
-        // Wrapping the event listener in a promise so that the promise is resolved when the event fires. The listener
-        // is setup such that it will only be activated once.
-        // Note: if the event doesn't fire, the promise will never resolve. For example if focus is called on an
-        // unfocusable element.
-        var promise = new Promise(function (resolve) {
-            node.addEventListener(func, resolve, { once: true });
-        });
-        node[func]();
+        // Only attempt to call the `func` if the node exists.
+        if (node) {
+            // Wrapping the event listener in a promise so that the promise is resolved when the event fires. The listener
+            // is setup such that it will only be activated once.
+            // Note: if the event doesn't fire, the promise will never resolve. For example if focus is called on an
+            // unfocusable element.
+            var promise = new Promise(function (resolve) {
+                node.addEventListener(func, resolve, { once: true });
+            });
+            node[func]();
 
-        return promise;
+            return promise;
+        }
     }
 
     $.each(["focus", "blur"], function (i, name) {
