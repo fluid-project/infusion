@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.fetchResources(resources, function (resourceSpecs) {
             var bundle = JSON.parse(resourceSpecs.bundle.resourceText);
             fluid.overviewPanel(".flc-overviewPanel", {

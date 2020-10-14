@@ -857,7 +857,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Test Initialization *
      ***********************/
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.parseAuxSchema",
             "fluid.tests.generateGrade",

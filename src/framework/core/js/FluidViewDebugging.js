@@ -658,7 +658,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.debug.browser("body");
     });
 

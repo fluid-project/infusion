@@ -115,7 +115,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The description text is " + messageBase.description, messageBase.description, that.locate("localizationDescr").text());
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.localizationPanelTests"
         ]);

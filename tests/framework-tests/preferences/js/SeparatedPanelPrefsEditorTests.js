@@ -433,7 +433,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("All of the resources should have loaded", expectedResources, actualResources);
     };
 
-    $(document).ready(function () {
+    $(function () {
 
         fluid.tests.prefs.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);

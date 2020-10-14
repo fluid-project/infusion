@@ -140,7 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     }
 
-    $(document).ready(function () {
+    $(function () {
         $("#run-tests").on("click", runTests);
     });
 

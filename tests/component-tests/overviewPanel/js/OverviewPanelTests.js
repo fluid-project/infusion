@@ -252,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         strings: fluid.tests.overviewPanel.labels
     });
 
-    $(document).ready(function () {
+    $(function () {
 
         jqUnit.module("OverviewPanel Tests");
 

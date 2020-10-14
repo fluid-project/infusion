@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
         jqUnit.module("Reorder Grid Tests");
 
         var k = fluid.testUtils.reorderer.bindReorderer(fluid.testUtils.imageReorderer.orderableIds);
