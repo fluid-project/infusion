@@ -120,9 +120,17 @@ em {
     margin-right: 3px;
 }
 
-#footer a:link { color: #0057a5; }
-#footer a:visited { color: #0057a5; }
-#footer a:hover { color: #00a0e1; }
+#footer a:link {
+    color: #0057a5;
+}
+
+#footer a:visited {
+    color: #0057a5;
+}
+
+#footer a:hover {
+    color: #00a0e1;
+}
 
 /** Header **/
 #headTitle {

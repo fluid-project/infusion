@@ -38,11 +38,25 @@
     padding: 0.5em 0.2em;
 }
 
-.example-pager-head-select { width: 5%; }
-.example-pager-head-members { width: 25%; }
-.example-pager-head-email { width: 25%; }
-.example-pager-head-role { width: 15%; }
-.example-pager-head-comments { color: #000; }
+.example-pager-head-select {
+    width: 5%;
+}
+
+.example-pager-head-members {
+    width: 25%;
+}
+
+.example-pager-head-email {
+    width: 25%;
+}
+
+.example-pager-head-role {
+    width: 15%;
+}
+
+.example-pager-head-comments {
+    color: #000;
+}
 
 .example-pager-table-data {
     clear: both;
