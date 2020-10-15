@@ -1,3 +1,18 @@
-.dropdown {position:relative;}
-.dropdown .selectbox {position:absolute; top:0; left:0; padding:0; margin:0;}
-.dropdown .selectbox-wrapper {position:absolute; top:18px; left:0; margin:0;}
+.dropdown {
+    position: relative;
+}
+
+.dropdown .selectbox {
+    left: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+}
+
+.dropdown .selectbox-wrapper {
+    left: 0;
+    margin: 0;
+    position: absolute;
+    top: 18px;
+}

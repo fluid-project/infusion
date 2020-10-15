@@ -3,25 +3,27 @@ body {
 }
 
 main.content {
-    width: 95%;
-    max-width: none;
     margin: 0;
+    max-width: none;
     padding-left: 2rem;
+    width: 95%;
 }
 
 h1 {
     font-size: 1.4em;
-    margin-bottom: 1em;
     font-weight: bold;
+    margin-bottom: 1em;
 }
+
 .backButton {
-    background-color: #0071BC;
+    background-color: #0071bc;
     padding: 10px;
 }
+
 .backButton a {
-    color: white;
-    text-decoration: none;
-    padding-left: 25px;
     background-image: url("../images/arrow_left.png");
     background-repeat: no-repeat;
+    color: white;
+    padding-left: 25px;
+    text-decoration: none;
 }

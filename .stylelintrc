@@ -4,6 +4,8 @@
 		"stylelint-order"
 	],
 	rules: {
+        "block-opening-brace-newline-after": "always",
+        "block-closing-brace-newline-before": "always",
         "indentation": 4,
 		"no-descending-specificity": null,
 		"order/order": [
