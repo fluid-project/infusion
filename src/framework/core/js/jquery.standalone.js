@@ -12,7 +12,7 @@
  * Copyright 2011, John Resig
  * Copyright The Infusion copyright holders
  * See the AUTHORS.md file at the top-level directory of this distribution and at
- * https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+ * https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
  *
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
