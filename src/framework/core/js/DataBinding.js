@@ -656,7 +656,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!transId) {
             fluid.fail("Cannot get transaction record without transaction id");
         }
-        var instantiator = fluid.isComponent(that) && !fluid.isDestroyed(that) ? fluid.globalInstantiator : null;
+        var instantiator = fluid.isComponent(that) && !fluid.isDestroyed(that, true) ? fluid.globalInstantiator : null;
         if (!instantiator) {
             return null;
         }
@@ -1220,7 +1220,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.destroyLensedComponentSource = function (that, isBoolean) {
         var shadow = fluid.shadowForComponent(that);
         var sourceModelReference = shadow.localRecord.sourceModelReference;
-        if (sourceModelReference && !fluid.isDestroyed(sourceModelReference.that)) {
+        if (sourceModelReference && !fluid.isDestroyed(sourceModelReference.that, true)) {
             sourceModelReference.that.applier.change(sourceModelReference.modelSegs, false, isBoolean ? "ADD" : "DELETE");
         }
     };
@@ -1387,7 +1387,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.resolveModelListener = function (that, record) {
         var togo = function () {
-            if (fluid.isDestroyed(that)) { // first guarding point to resolve FLUID-5592
+            if (fluid.isDestroyed(that, true)) { // first guarding point to resolve FLUID-5592
                 return;
             }
             var change = fluid.modelChangedToChange(arguments);

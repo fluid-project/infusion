@@ -1021,7 +1021,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.cacheShadowGrades(child, childShadow);
     };
 
-    fluid.clearChildrenScope = function (instantiator, parentShadow, child, childShadow, memberName) {
+    fluid.clearChildrenScope = function (parentShadow, child, childShadow, memberName) {
         var keys = fluid.keys(childShadow.contextHash);
         keys.push(memberName); // Add local name in case we are clearing an injected component - FLUID-6444
         keys.forEach(function (context) {
@@ -1031,13 +1031,43 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    // unsupported, NON-API function
-    fluid.doDestroy = function (that, name, parent) {
-        if (that.lifecycleStatus === "destroyed") {
-            fluid.fail("Cannot destroy " + fluid.dumpComponentAndPath(that) + " which has already been destroyed");
-        }
-        fluid.fireEvent(that, "onDestroy", [that, name || "", parent]);
-        that.lifecycleStatus = "destroyed";
+    /** Clear indexes held of the location of an injected or concrete component.
+     * @param {fluid.instantiator} instantiator - The instantiator holding records to be cleared
+     * @param {DestroyRec} destroyRec - A "destroy record" as allocated within instantiator.clearComponent
+     */
+    fluid.clearComponentIndexes = function (instantiator, destroyRec) {
+        var shadow = destroyRec.shadow;
+        fluid.clearChildrenScope(shadow, destroyRec.child, destroyRec.childShadow, destroyRec.name);
+        // Note that "pathToComponent" will not be available during afterDestroy. This is so that we can synchronously recreate the component
+        // in an afterDestroy listener (FLUID-5931). We don't clear up the shadow itself until after afterDestroy.
+        delete instantiator.pathToComponent[destroyRec.childPath];
+        delete shadow.childComponents[destroyRec.name];
+    };
+
+    /** Operate the process of destroying a concrete component, as encoded in a `DestroyRec` structure. This takes the
+     * following sequence:
+     *  - Other injected sites of this component are cleared
+     *  - The path and scope records of the component are cleared
+     *  - Listeners registered by this component's construction are removed
+     *  - Events and appliers are destroyed
+     *  - The `afterDestroy` event is fired on the component
+     *  - We remove the lookup of this component's id in instantiator.idToShadow
+     * @param {fluid.instantiator} instantiator - The instantiator holding records to be cleared
+     * @param {DestroyRec} destroyRec - A "destroy record" as allocated within instantiator.clearComponent
+     */
+    fluid.doDestroy = function (instantiator, destroyRec) {
+        var shadow = destroyRec.childShadow,
+            that = destroyRec.child;
+        // Clear injected instance of this component from all other paths - historically we didn't bother
+        // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
+        fluid.each(shadow.injectedPaths, function (troo, injectedPath) {
+            var parentPath = fluid.model.getToTailPath(injectedPath);
+            var otherParent = instantiator.pathToComponent[parentPath];
+            instantiator.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), that);
+        });
+        fluid.clearComponentIndexes(instantiator, destroyRec);
+        fluid.clearDistributions(shadow);
+        fluid.clearListeners(shadow);
         for (var key in that.events) {
             if (key !== "afterDestroy" && typeof(that.events[key].destroy) === "function") {
                 that.events[key].destroy();
@@ -1046,6 +1076,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (that.applier) { // TODO: Break this out into the grade's destroyer
             that.applier.destroy();
         }
+        that.lifecycleStatus = "destroyed"; // This will cause invokers to be nulled
+        fluid.fireEvent(destroyRec.child, "afterDestroy", [destroyRec.child, destroyRec.name, destroyRec.component]);
+        delete instantiator.idToShadow[destroyRec.child.id];
     };
 
     // potentia II records look a lot like change records -
@@ -1151,26 +1184,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         };
 
-        that.clearConcreteComponent = function (destroyRec) {
-            var shadow = destroyRec.childShadow;
-            // Clear injected instance of this component from all other paths - historically we didn't bother
-            // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
-            fluid.each(shadow.injectedPaths, function (troo, injectedPath) {
-                var parentPath = fluid.model.getToTailPath(injectedPath);
-                var otherParent = that.pathToComponent[parentPath];
-                that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), destroyRec.child);
-            });
-            fluid.clearDistributions(shadow);
-            fluid.clearListeners(shadow);
-            fluid.fireEvent(destroyRec.child, "afterDestroy", [destroyRec.child, destroyRec.name, destroyRec.component]);
-            delete that.idToShadow[destroyRec.child.id];
-        };
-
         that.clearComponent = function (component, name, child, options, nested, path) {
             // options are visitor options for recursive driving
             var shadow = that.idToShadow[component.id];
             // use flat recursion since we want to use our own recursion rather than rely on "visited" records
-            options = options || {flat: true, instantiator: that, destroyRecs: []};
+            options = options || {flat: true, destroyRecs: []};
             child = child || component[name];
             path = path || shadow.path;
             if (path === undefined) {
@@ -1185,34 +1203,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             var created = childShadow.path === childPath;
             that.events.onComponentClear.fire(child, childPath, component, created);
+            var destroyRec = {child: child, childShadow: childShadow, name: name, component: component, shadow: shadow, childPath: childPath};
 
             // only recurse on components which were created in place - if the id record disagrees with the
             // recurse path, it must have been injected
             if (created) {
                 if (fluid.isDestroyed(child)) {
-                    fluid.fail("Cannot destroy component which is already in status ", child.lifecycleStatus);
+                    fluid.fail("Cannot destroy component which is already in status \"" + child.lifecycleStatus + "\"");
                 }
                 child.lifecycleStatus = "destroying";
                 fluid.visitComponentChildren(child, function (gchild, gchildname, segs, i) {
                     var parentPath = that.composeSegments.apply(null, segs.slice(0, i));
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, that.parseEL(childPath));
-                fluid.doDestroy(child, name, component); // call "onDestroy", null out events and invokers, setting lifecycleStatus to "destroyed"
-                options.destroyRecs.push({child: child, childShadow: childShadow, name: name, component: component, shadow: shadow});
+                fluid.fireEvent(child, "onDestroy", [child, name || "", component]);
+                // fluid.fireDestroy(child, name, component);
+                options.destroyRecs.push(destroyRec);
             } else {
                 fluid.remove_if(childShadow.injectedPaths, function (troo, path) {
                     return path === childPath;
                 });
+                fluid.clearComponentIndexes(that, destroyRec);
             }
-            fluid.clearChildrenScope(that, shadow, child, childShadow, name);
-            // Note that "pathToComponent" will not be available during afterDestroy. This is so that we can synchronously recreate the component
-            // in an afterDestroy listener (FLUID-5931). We don't clear up the shadow itself until after afterDestroy.
-            delete that.pathToComponent[childPath];
-            delete shadow.childComponents[name];
             if (!nested) {
                 delete component[name]; // there may be no entry - if creation is not concluded
                 // Do actual destruction for the whole tree here, including "afterDestroy" and deleting shadows
-                options.destroyRecs.forEach(that.clearConcreteComponent);
+                options.destroyRecs.forEach(function (destroyRec) {
+                    fluid.doDestroy(that, destroyRec);
+                });
             }
         };
         return that;

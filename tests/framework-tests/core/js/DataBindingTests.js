@@ -3257,7 +3257,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Property should have been deleted on startup", "initialValue" in that2.model);
     });
 
-    // FLUID-5592: Error received using model relay to destroyed component
+    /** FLUID-5592: Error received using model relay to destroyed component **/
 
     fluid.tests.fluid5592destruct = function (that, value) {
         if (value === 2) { // do not destroy on init relay, but only on manual change
@@ -3311,6 +3311,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("The change request has destroyed the child component", that.child);
     });
 
+    /** FLUID-5632: Model value of NaN causes infinite recursion **/
+
     fluid.defaults("fluid.tests.fluid5632root1", {
         gradeNames: ["fluid.modelComponent"],
         model: {
@@ -3353,7 +3355,111 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "settling");
     });
 
-    /* FLUID-5885: Correct context for indirect model relay */
+    /** FLUID-6558: Error when notifying relay rule during onDestroy**/
+
+    fluid.defaults("fluid.tests.fluid6558editor", {
+        gradeNames: ["fluid.modelComponent"],
+        model: {
+            uploadCounters: {
+                uploads: 0,
+                errors: 0
+            }
+        },
+        distributeOptions: {
+            "uploadStateToCounters": {
+                target: "{that uploader}.options.modelListeners",
+                record: {
+                    "uploadState": {
+                        funcName: "fluid.tests.fluid6558updateUploadCounters",
+                        args: ["{change}.oldValue", "{change}.value", "{fluid6558editor}"],
+                        namespace: "uploadStateToCounters"
+                    }
+                }
+            }
+        },
+        components: {
+            uploader: {
+                type: "fluid.tests.fluid6558uploader"
+            }
+        }
+    });
+
+    fluid.tests.fluid6558updateUploadCounters = function (previousState, newState, storyEdit) {
+        var counters = fluid.copy(storyEdit.model.uploadCounters);
+        if (newState === "uploading") {
+            counters.uploads++;
+        }
+        if (previousState === "uploading") {
+            counters.uploads--;
+        }
+        if (newState === "errorReceived") {
+            counters.errors++;
+        }
+        if (previousState === "errorReceived") {
+            counters.errors--;
+        }
+
+        storyEdit.applier.change(["uploadCounters"], counters);
+    };
+
+    fluid.defaults("fluid.tests.fluid6558uploader", {
+        gradeNames: ["fluid.modelComponent"],
+        model: {
+            uploadState: "ready"
+        },
+        modelRelay: {
+            "uploadState": {
+                target: "{fluid6558editor}.model",
+                singleTransform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "uploadState",
+                    match: {
+                        "ready": {
+                            outputValue: {
+                                previewVisible: true,
+                                progressAreaVisible: false,
+                                responseAreaVisible: false,
+                                uploadButtonDisabled: false
+                            }
+                        },
+                        "uploading": {
+                            outputValue: {
+                                previewVisible: false,
+                                progressAreaVisible: true,
+                                responseAreaVisible: false,
+                                uploadButtonDisabled: true
+                            }
+                        },
+                        "errorReceived": {
+                            outputValue: {
+                                previewVisible: true,
+                                progressAreaVisible: false,
+                                responseAreaVisible: true,
+                                uploadButtonDisabled: false
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        listeners: {
+            "onDestroy.resetUploadState": {
+                changePath: "uploadState",
+                value: "ready"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6558: Error when notifying relay rule during onDestroy", function () {
+        var that = fluid.tests.fluid6558editor();
+        that.uploader.applier.change("uploadState", "uploading");
+        jqUnit.assertEquals("One uploader is uploading", 1, that.model.uploadCounters.uploads);
+        that.uploader.destroy();
+        jqUnit.assertEquals("Zero uploaders are uploading", 0, that.model.uploadCounters.uploads);
+    });
+
+
+    /** FLUID-5885: Correct context for indirect model relay */
 
     fluid.defaults("fluid.tests.fluid5885root", {
         gradeNames: "fluid.modelComponent",

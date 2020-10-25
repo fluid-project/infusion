@@ -2906,13 +2906,14 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.peek(segs);
     };
 
-    /** Returns <code>true</code> if the supplied reference holds a component which has been destroyed
+    /** Returns <code>true</code> if the supplied reference holds a component which has been destroyed or for which destruction has started
      * @param {Component} that - A reference to a component
+     * @param {Boolean} [strict] - If `true`, the test will only check whether the component has been fully destroyed
      * @return {Boolean} `true` if the reference is to a component which has been destroyed
      **/
 
-    fluid.isDestroyed = function (that) {
-        return that.lifecycleStatus === "destroyed" || that.lifecycleStatus === "destroying";
+    fluid.isDestroyed = function (that, strict) {
+        return that.lifecycleStatus === "destroyed" || (!strict && that.lifecycleStatus === "destroying");
     };
 
     // Computes a name for a component appearing at the global root which is globally unique, from its nickName and id
