@@ -43,7 +43,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // ID of an element that is controlled by the switch.
             // "aria-controls": ""
             role: "switch",
-            tabindex: 0
         },
         model: {
             enabled: false
@@ -70,10 +69,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "this": "{that}.dom.off",
                 method: "text",
                 args: ["{that}.options.strings.off"]
-            },
-            "onCreate.activateable": {
-                listener: "fluid.activatable",
-                args: ["{that}.dom.control", "{that}.activateHandler"]
             },
             "onCreate.bindClick": {
                 "this": "{that}.dom.control",
