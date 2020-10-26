@@ -67,29 +67,5 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             that.locate("control").trigger("click");
             fluid.tests.assertState(that, false);
         });
-
-        jqUnit.test("Toggle State - ENTER Key", function () {
-            var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
-            var keyEvent = $.Event("keydown");
-            keyEvent.which = $.ui.keyCode.ENTER;
-
-            that.locate("control").trigger(keyEvent);
-            fluid.tests.assertState(that, true);
-
-            that.locate("control").trigger(keyEvent);
-            fluid.tests.assertState(that, false);
-        });
-
-        jqUnit.test("Toggle State - SPACEBAR Key", function () {
-            var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
-            var keyEvent = $.Event("keydown");
-            keyEvent.which = $.ui.keyCode.SPACE;
-
-            that.locate("control").trigger(keyEvent);
-            fluid.tests.assertState(that, true);
-
-            that.locate("control").trigger(keyEvent);
-            fluid.tests.assertState(that, false);
-        });
     });
 })(jQuery);
