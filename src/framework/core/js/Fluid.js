@@ -389,8 +389,8 @@ var fluid = fluid || fluid_3_0_0;
                && totest.constructor.prototype.jquery);
     };
 
-    /** Determines whether the supplied object is an array. The strategy used is an optimised
-     * approach taken from an earlier version of jQuery - detecting whether the toString() version
+    /** Determines whether the supplied object can be treated as an array (primarily, by iterating over numeric keys bounded from 0 to length.
+     * The strategy used is an optimised approach taken from an earlier version of jQuery - detecting whether the toString() version
      * of the object agrees with the textual form [object Array], or else whether the object is a
      * jQuery object (the most common source of "fake arrays").
      * @param {Any} totest - The value to be tested
@@ -545,13 +545,13 @@ var fluid = fluid || fluid_3_0_0;
 
     /** Pushes an element or elements onto an array, initialising the array as a member of a holding object if it is
      * not already allocated.
-     * @param {Array|Object} holder - The holding object whose member is to receive the pushed element(s).
+     * @param {Object} holder - The holding object whose member is to receive the pushed element(s).
      * @param {String} member - The member of the <code>holder</code> onto which the element(s) are to be pushed
-     * @param {Array|Object} topush - If an array, these elements will be added to the end of the array using Array.push.apply. If an object, it will be pushed to the end of the array using Array.push.
+     * @param {Array|Any} topush - If an array, these elements will be added to the end of the array using Array.push.apply. If a non-array, it will be pushed to the end of the array using Array.push.
      */
     fluid.pushArray = function (holder, member, topush) {
         var array = holder[member] ? holder[member] : (holder[member] = []);
-        if (fluid.isArrayable(topush)) {
+        if (Array.isArray(topush)) {
             array.push.apply(array, topush);
         } else {
             array.push(topush);

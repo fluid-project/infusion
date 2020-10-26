@@ -173,6 +173,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     });
 
+    jqUnit.test("fluid.pushArray with jQuery", function () {
+        var holder = {};
+        fluid.pushArray(holder, "m1", $([document, document]));
+        jqUnit.assertEquals("Only one element pushed", 1, holder.m1.length);
+    });
+
     function isOdd(i) {
         return i % 2 === 1;
     }
