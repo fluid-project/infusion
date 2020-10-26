@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Use the mouse or keyboard to adjust the value via the slider thumb.</li><li>Enter a value between 0 and 10 in the textfield</li><li>Use the mouse or keyboard to trigger the \"-\" or \"+\" buttons to decrease or increase the value respectively.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/textfieldControl",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/textfieldControl",
         "apiLink": "http://docs.fluidproject.org/infusion/development/TextfieldAPI.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Textfield%20Control%20feedback"
     }

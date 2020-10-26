@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Try using the page links to jump to the first, last, and the 'middle' pages easily.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/pager",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/pager",
         "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/PagerAPI.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Pager%20feedback"
     }

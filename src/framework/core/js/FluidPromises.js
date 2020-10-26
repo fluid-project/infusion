@@ -2,7 +2,7 @@
  Copyright 2011 unscriptable.com / John Hann
  Copyright The Infusion copyright holders
  See the AUTHORS.md file at the top-level directory of this distribution and at
- https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
  License MIT
 */
