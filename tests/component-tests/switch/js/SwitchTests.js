@@ -40,7 +40,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.tests.assertInit = function (that) {
             var control = that.locate("control");
             jqUnit.assertEquals("The switch role is added", "switch", control.attr("role"));
-            jqUnit.assertEquals("Tabindex is set", "0", control.attr("tabindex"));
             jqUnit.assertEquals("The aria-label is set", that.options.strings.label, control.attr("aria-label"));
             jqUnit.assertEquals("The aria-labelledby is set", "label", control.attr("aria-labelledby"));
             jqUnit.assertEquals("The on text is set", that.options.strings.on, that.locate("on").text());
