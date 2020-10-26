@@ -1,13 +1,13 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
  Licensed under the Educational Community License (ECL), Version 2.0 or the New
  BSD license. You may not use this file except in compliance with one these
  Licenses.
  You may obtain a copy of the ECL 2.0 License and BSD License at
- https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  */
 
 /* global fluid, QUnit */
@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
 
     // Insanely, we need both the teardown function and the log subversion because qunit-composite.js uses a completely
     // different strategy to the standard QUnit UI for accounting for test failures:
-    // https://github.com/fluid-project/infusion/blob/master/tests/lib/qunit/addons/composite/qunit-composite.js#L79 .
+    // https://github.com/fluid-project/infusion/blob/main/tests/lib/qunit/addons/composite/qunit-composite.js#L79 .
     // If we just use failingTeardown, the main QUnit UI works fine, but the "failures" are rendered as real failures in the iframe-based all-tests.html driver.
     // When will the "industry" learn that integration is the first priority?
     QUnit.log(function (data) {

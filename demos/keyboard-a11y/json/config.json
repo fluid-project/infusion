@@ -10,7 +10,7 @@
         "instructions": "<ul><li>Tab to the images. Arrow keys move the focus, and 'Space,' 'Return' or 'Enter' open the current image in the viewer.</li><li>Try tabbing to the 'five star rating' widget and using the arrow keys and Enter to rate the image.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/keyboard-a11y",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/keyboard-a11y",
         "apiLink": "http://wiki.fluidproject.org/display/docs/Keyboard+Accessibility+Plugin+API",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Keyboard%20Accessibility%20Plugin%20feedback"
     }

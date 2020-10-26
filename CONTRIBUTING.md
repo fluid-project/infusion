@@ -22,12 +22,12 @@ clear agreement to share code under terms amenable to
 ## Process/Workflow
 
 Fluid Infusion's [source code](https://github.com/fluid-project/infusion) is hosted on GitHub. All of the code that is
-included in an Infusion release lives in the master branch.
-[Continuous Integration Builds](https://build.fluidproject.org) are generated and releases are all cut from the master
+included in an Infusion release lives in the main branch.
+[Continuous Integration Builds](https://build.fluidproject.org) are generated and releases are all cut from the main
 branch of the project repository. The project repository should always be in a working state.
 
-Fluid Infusion uses a workflow where contributors fork the project repository, work in a branch created off of master,
-and submit a pull request against the project repo's master branch to merge their contributions.
+Fluid Infusion uses a workflow where contributors fork the project repository, work in a branch created off of main,
+and submit a pull request against the project repo's main branch to merge their contributions.
 
 (See: [Coding and Commit Standards](https://wiki.fluidproject.org/display/fluid/Coding+and+Commit+Standards) for more
 details on expectations for code contributions).

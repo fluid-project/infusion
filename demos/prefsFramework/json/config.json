@@ -9,7 +9,7 @@
         "instructions": "<ul><li>To access the preference editor on this page, click the 'Show Display Preferences' tab in the upper right corner of the window.</li><li>Try adjusting the controls in the panel that opens. You will see the changes applied to the page immediately.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/prefsFramework",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/prefsFramework",
         "apiLink": "http://docs.fluidproject.org/infusion/development/PreferencesFramework.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Preferences%20Framework%20feedback"
     }

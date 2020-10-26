@@ -1,4 +1,4 @@
-The version of the jquery.selectbox plugin included in this folder was created from the master branch of the fluid-project fork:
+The version of the jquery.selectbox plugin included in this folder was created from the main branch of the fluid-project fork:
 
 https://github.com/fluid-project/jquery.selectbox
 

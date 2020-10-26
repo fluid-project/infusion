@@ -7,7 +7,7 @@
         "instructions": "<ul><li>Click on the play button to start the self voicing.</li><li>Click the pause button to temporarily stop the self voicing.</li><li>Selecting text will display a play button to read back only the selection.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/orator",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/orator",
         "apiLink": "https://docs.fluidproject.org/infusion/development/to-do/OratorAPI.html",
         "designLink": "https://wiki.fluidproject.org/display/fluid/%28Floe%29+UI+Options+Design+Walkthrough%2C+C.1",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Orator%20feedback"
