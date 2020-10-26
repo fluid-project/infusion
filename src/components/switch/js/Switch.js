@@ -42,7 +42,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // "aria-label": "{that}.options.strings.label",
             // ID of an element that is controlled by the switch.
             // "aria-controls": ""
-            role: "switch",
+            role: "switch"
         },
         model: {
             enabled: false
