@@ -44,9 +44,9 @@
     "devDependencies": {
         "@fluid-project/hyphenation-patterns": "0.2.2-dev.20181115T221631Z.b2d0651",
         "eslint-config-fluid": "jobara/eslint-config-fluid#FLUID-6548",
-        "eslint-plugin-jsdoc": "30.6.3",
+        "eslint-plugin-jsdoc": "30.7.3",
         "eslint-plugin-markdown": "1.0.2",
-        "fluid-grunt-lint-all": "jobara/fluid-grunt-lint-all#issue-14",
+        "fluid-grunt-lint-all": "2.0.0",
         "fluid-testem": "2.1.13",
         "grunt": "1.1.0",
         "grunt-contrib-clean": "2.0.0",
