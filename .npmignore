@@ -21,3 +21,5 @@ products/
 provisioning/
 reports/
 tests/
+!tests/lib
+!tests/test-core
