@@ -1,7 +1,7 @@
 # Infusion
 
 ![CI build status badge](https://github.com/fluid-project/infusion/workflows/CI/badge.svg)
-[![Coverage status badge](https://codecov.io/github/fluid-project/infusion/coverage.svg?branch=master)](https://codecov.io/github/fluid-project/infusion?branch=master)
+[![Coverage status badge](https://codecov.io/github/fluid-project/infusion/coverage.svg?branch=main)](https://codecov.io/github/fluid-project/infusion?branch=main)
 
 ## What Is Infusion?
 
