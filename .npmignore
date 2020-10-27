@@ -2,11 +2,12 @@
 .editorconfig
 .eslintignore
 .eslintrc.json
-.settings
+.github
 .gitignore
 .npmignore
 .nycrc
 .project
+.settings
 .vagrant
 Dockerfile
 Gruntfile.js
