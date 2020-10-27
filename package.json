@@ -38,10 +38,15 @@
     "engines": {
         "node": ">=0.10.0"
     },
+    "browserslist": [
+        "extends browserslist-config-fluid"
+    ],
     "dependencies": {
         "fluid-resolve": "1.3.0"
     },
     "devDependencies": {
+        "@fluid-project/hyphenation-patterns": "0.2.2-dev.20181115T221631Z.b2d0651",
+        "browserslist-config-fluid": "github:greatislander/browserslist-config-fluid",
         "eslint-config-fluid": "1.3.0",
         "eslint-plugin-markdown": "1.0.2",
         "fluid-grunt-lint-all": "1.0.8",
@@ -57,7 +62,6 @@
         "grunt-modulefiles": "0.4.0",
         "grunt-shell": "3.0.1",
         "hypher": "0.2.5",
-        "@fluid-project/hyphenation-patterns": "0.2.2-dev.20181115T221631Z.b2d0651",
         "jquery": "3.3.1",
         "jquery-mockjax": "2.5.1",
         "jquery-simulate": "1.0.2",
