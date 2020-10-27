@@ -5,9 +5,7 @@ coverage:
         target: 90%
         threshold: 2%
 
-comment:
-  layout: "diff,flags,tree"
-  after_n_builds: 6
+comment: false
 
 parsers:
   javascript:
