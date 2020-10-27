@@ -4019,6 +4019,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     jqUnit.test("FLUID-6408: Obnoxious free component disrupts workflow", function () {
         jqUnit.expect(1);
+        fluid.beginLog = true;
         fluid.tests.fluid6408root();
     });
 
@@ -4082,6 +4083,67 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var that = fluid.tests.fluid6410root();
         jqUnit.assertValue("First component model constructed", that.dynamic.model);
         jqUnit.assertValue("Second component model constructed", that["dynamic-1"].model);
+    });
+
+    /** FLUID-6564 - Failure in creating nested lensed components in onCreate **/
+
+    fluid.tests.fluid6564fetch = function () {
+        var togo = fluid.promise();
+        fluid.invokeLater(function () {
+            togo.resolve(42);
+        });
+        return togo;
+    };
+
+    fluid.defaults("fluid.tests.fluid6564root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null,
+            respondIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                type: "fluid.modelComponent",
+                createOnEvent: "createIt",
+                options: {
+                    gradeNames: "fluid.resourceLoader",
+                    resources: {
+                        modelSource: {
+                            promiseFunc: "fluid.tests.fluid6564fetch"
+                        }
+                    },
+                    model: "{that}.resources.modelSource.parsed",
+                    dynamicComponents: {
+                        subDynamic: {
+                            type: "fluid.modelComponent",
+                            source: "{dynamic}.model",
+                            options: {
+                                model: "{source}",
+                                listeners: {
+                                    "onCreate.respondIt": "{fluid6564root}.events.respondIt.fire({that}.model)"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        listeners: {
+            "onCreate.createThem": "{fluid6564root}.events.createIt.fire"
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-6564: Failure creating nested lensed components", function () {
+        jqUnit.expect(1);
+        var listener = function (value) {
+            jqUnit.assertEquals("Should have received lensed value", 42, value);
+            jqUnit.start();
+        };
+        fluid.tests.fluid6564root({
+            listeners: {
+                respondIt: listener
+            }
+        });
     });
 
     /** FLUID-6411 - Failure when cleaning up model resource listener **/

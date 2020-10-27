@@ -2127,6 +2127,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         var sequence;
         var waitIOTask = function () {
+            // TODO: Think about clearing out old resolved I/O from this list
             return transRec.pendingIO.length ? (sequence = fluid.promise.sequence(bracketIO(transRec.pendingIO))) : null;
         };
         waitIOTask.taskName = "waitIO";
@@ -2173,6 +2174,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 workQueued = true;
             }
         });
+        if (transRec.maximumWorkflowStage === transRec.workflowStageBreak) {
+            // Hack for FLUID-6564 - if we have enqueued anything to the maximum level, any fresh components should start from scratch
+            transRec.maximumWorkflowStage = 0;
+            transRec.restartLastWorkflowShadow = transRec.lastWorkflowShadow;
+        }
         return workQueued;
     };
 
@@ -2196,7 +2202,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // They must all be level - bring the level of all shadows to final level
             for (var workflowStage = transRec.maximumWorkflowStage; workflowStage < transRec.workflowStageBreak; ++workflowStage) {
                 var workQueued = fluid.enqueueWorkflowBlock(transRec, shadows, workflowStage, workflowStage + 1,
-                    0, shadows.length, sequencer);
+                    transRec.restartLastWorkflowShadow, shadows.length, sequencer);
                 if (workQueued) {
                     return workQueued;
                 }
@@ -2246,22 +2252,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * as well as any further potentiae which become enqueued through construction of these, potentially in multiple phases
      * @param {String} transactionId - The id of the tree transaction to be committed - this must already have been started
      * with `fluid.beginTreeTransaction`.
+     * @param {fluid.sequencer} [resumeSequencer] - Used to signal a resumptive dispatch to self
      * @return {Shadow|Undefined} The shadow record for the first component to be constructed during the transaction phase, if any.
      */
-    fluid.commitPotentiae = function (transactionId) {
+    fluid.commitPotentiae = function (transactionId, resumeSequencer) {
         var instantiator = fluid.globalInstantiator;
         var transRec = instantiator.treeTransactions[transactionId];
         ++transRec.commitDepth;
         var lastWorkflowShadow = transRec.lastWorkflowShadow;
         var rootSequencer = transRec.rootSequencer;
-        var sequencer;
-        var topSequencer = fluid.getImmediate(fluid.peek(rootSequencer.sources), ["sequencer"]);
-        if (!topSequencer || topSequencer.hasStartedConcludeInit || topSequencer.promise.disposition) {
-            sequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
-            sequencer.promise.sequencer = sequencer; // So we can reference it from the stack of sources
-            rootSequencer.sources.push(sequencer.promise);
-        } else {
-            sequencer = topSequencer;
+        var sequencer = resumeSequencer;
+        if (!sequencer) {
+            var topSequencer = fluid.getImmediate(fluid.peek(rootSequencer.sources), ["sequencer"]);
+            if (!topSequencer || topSequencer.hasStartedConcludeInit) {
+                sequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
+                sequencer.promise.sequencer = sequencer; // So we can reference it from the stack of sources
+                rootSequencer.sources.push(sequencer.promise);
+            } else {
+                sequencer = topSequencer;
+            }
         }
         fluid.tryCatch(function commitPotentiae() {
             if (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
@@ -2270,7 +2279,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var workflowEnqueued = fluid.applyWorkflowPhase(transRec, sequencer);
             if (workflowEnqueued) { // Redispatch to ourselves if any workflow work was enqueued
                 sequencer.sources.push(function () {
-                    fluid.commitPotentiae(transactionId);
+                    if (!sequencer.hasStartedConcludeInit) {
+                        fluid.commitPotentiae(transactionId, sequencer);
+                    }
                 });
             }
             if (!sequencer.sequenceStarted) {
@@ -2285,7 +2296,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
         --transRec.commitDepth;
-        if (transRec.commitDepth === 0) {
+        if (transRec.commitDepth === 0 && !resumeSequencer) {
             instantiator.currentTreeTransactionId = null;
         }
         return transRec.outputShadows[lastWorkflowShadow];
@@ -2358,10 +2369,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         transRec.rootSequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
         transRec.restoreRecords = fluid.blankPotentiaList(); // accumulate a list of records to be executed in case the transaction is backed out
         transRec.initModelTransaction = {};
-        transRec.outputShadows = [];         // All shadows output during this transaction
-        transRec.lastWorkflowShadow = 0;     // The last index of a shadow which has entered workflow
-        transRec.maximumWorkflowStage = 0;   // The maximum workflow stage so far attained by any component
-        transRec.deferredDistributions = []; // distributeOptions may decide to defer application of a distribution for FLUID-6193
+        transRec.outputShadows = [];            // All shadows output during this transaction
+        transRec.lastWorkflowShadow = 0;        // The last index of a shadow which has entered workflow
+        transRec.maximumWorkflowStage = 0;      // The maximum workflow stage so far attained by any component
+        transRec.restartLastWorkflowShadow = 0; // Point at which workflow was restarted for FLUID-6564
+        transRec.deferredDistributions = [];    // distributeOptions may decide to defer application of a distribution for FLUID-6193
     };
 
     /** Begin a fresh transaction against the global component tree. Any further calls to `fluid.registerPotentia`,
@@ -2456,7 +2468,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 transRec.pendingPotentiae = transRec.restoreRecords;
                 transRec.cancelled = true;
                 fluid.clearTreeTransaction(transRec);
-                fluid.commitPotentiae(transactionId, true);
+                fluid.commitPotentiae(transactionId);
             } catch (e) {
                 fluid.log(fluid.logLevel.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
                 transRec.restoreRecords.creates.forEach(function (potentia) {

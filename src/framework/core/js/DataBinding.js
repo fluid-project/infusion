@@ -432,10 +432,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
             if (!initTransaction) {
                 trans.commit();
+            } else {
+                that.applier.preCommit.fire(trans, that);
             }
         };
         resourceSpec.onFetched.addListener(resourceUpdateListener);
         fluid.recordListener(resourceSpec.onFetched, resourceUpdateListener, fluid.shadowForComponent(that));
+    };
+
+    fluid.resolveResourceModelWorkflow = function (shadows, treeTransaction) {
+        var initModelTransaction = treeTransaction.initModelTransaction;
+        // TODO: Original comment from when this action was in operateInitialTransaction, now incomprehensible
+        // Do this afterwards so that model listeners can be fired by concludeComponentInit
+        shadows.forEach(function (shadow) {
+            var that = shadow.that;
+            fluid.registerMergedModelListeners(that, that.options.modelListeners);
+            fluid.each(shadow.modelSourcedDynamicComponents, function (componentRecord, key) {
+                fluid.constructLensedComponents(shadow, initModelTransaction[that.id], componentRecord.sourcesParsed, key);
+            });
+        });
     };
 
     // Condense the resource map so that it is indexed by resource id, so that all model paths affected by the same
@@ -1259,14 +1274,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
             var initModelTransaction = treeTransaction.initModelTransaction;
             fluid.operateInitialTransaction(initModelTransaction, transId);
-            // Do this afterwards so that model listeners can be fired by concludeComponentInit
-            shadows.forEach(function (shadow) {
-                var that = shadow.that;
-                fluid.registerMergedModelListeners(that, that.options.modelListeners);
-                fluid.each(shadow.modelSourcedDynamicComponents, function (componentRecord, key) {
-                    fluid.constructLensedComponents(shadow, initModelTransaction[that.id], componentRecord.sourcesParsed, key);
-                });
-            });
         }, function (e) {
             treeTransaction.initModelTransaction = {};
             treeTransaction.initModelTransactionId = null;
@@ -1322,7 +1329,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     funcName: "fluid.enlistModelWorkflow"
                 },
                 resolveResourceModel: {
-                    funcName: "fluid.identity",
+                    funcName: "fluid.resolveResourceModelWorkflow",
                     priority: "after:enlistModel",
                     waitIO: true
                 }

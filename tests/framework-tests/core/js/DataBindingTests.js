@@ -1147,6 +1147,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     /** FLUID-6390 - Hall of mirrors via resource and relay **/
 
+    fluid.tests.resolveLater = function (value) {
+        var togo = fluid.promise();
+        fluid.invokeLater(function () {
+            togo.resolve(value);
+        });
+        return togo;
+    };
+
     fluid.defaults("fluid.tests.fluid6390resource", {
         gradeNames: "fluid.resourceLoader",
         resources: {
@@ -1155,7 +1163,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         },
         invokers: {
-            fetchHeadingsModel: "fluid.identity({that}.headingsModel)"
+            fetchHeadingsModel: "fluid.tests.resolveLater({that}.headingsModel)"
         },
         members: { // Stick it in a member so it is updatable for the next test
             headingsModel: "{that}.options.headingsModel"
@@ -1172,15 +1180,35 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid6390mirrorTestII = function (model, levelsCount) {
-        var that = fluid.tests.fluid6390resource({
-            headingsModel: model
-        });
-        fluid.tests.fluid6390mirrorAssert(that.levels, model, levelsCount);
+        return function () {
+            var promise = fluid.promise();
+            var assert = function (levels) {
+                fluid.tests.fluid6390mirrorAssert(levels, model, levelsCount);
+                promise.resolve();
+            };
+            fluid.tests.fluid6390resource({
+                headingsModel: model,
+                listeners: {
+                    "onCreate.test": {
+                        func: assert,
+                        args: "{that}.levels"
+                    }
+                }
+            });
+            return promise;
+        };
     };
 
-    jqUnit.test("FLUID-6390 II : Hall of mirrors lensed components via resource and relay", function () {
-        fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model2, 3);
-        fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model6, 7);
+    jqUnit.asyncTest("FLUID-6390 II: Hall of mirrors lensed components via resource and relay", function () {
+        var tasks = [
+            fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model2, 3),
+            fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model6, 7)
+        ];
+        fluid.beginLog = true;
+        var sequence = fluid.promise.sequence(tasks);
+        sequence.then(function () {
+            jqUnit.start();
+        });
     });
 
     fluid.tests.fluid6390mirror.model3 = {
@@ -1232,6 +1260,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     jqUnit.test("FLUID-6390 III: Hall of mirrors lensed components with update, via resource and relay", function () {
         var that = fluid.tests.fluid6390resource({
             gradeNames: "fluid.tests.fluid6390Tracker",
+            invokers: { // This time test the synchronous route
+                fetchHeadingsModel: "fluid.identity({that}.headingsModel)"
+            },
             headingsModel: fluid.tests.fluid6390mirror.model2
         });
         var headings = fluid.queryIoCSelector(that, "fluid.tests.fluid6390heading");
