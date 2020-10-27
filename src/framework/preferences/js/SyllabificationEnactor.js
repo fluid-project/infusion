@@ -1,14 +1,14 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
@@ -37,14 +37,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
-            separator: ".flc-syllabification-separator"
+            separator: ".flc-syllabification-separator",
+            softHyphenPlaceholder: ".flc-syllabification-softHyphenPlaceholder"
         },
         strings: {
             languageUnavailable: "Syllabification not available for %lang",
             patternLoadError: "The pattern file %src could not be loaded. %errorMsg"
         },
         markup: {
-            separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>"
+            separator: "<span class=\"flc-syllabification-separator fl-syllabification-separator\"></span>",
+            softHyphenPlaceholder: "<span class=\"flc-syllabification-softHyphenPlaceholder fl-syllabification-softHyphenPlaceholder\"></span>"
         },
         model: {
             enabled: false
@@ -152,7 +154,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             getPattern: "fluid.prefs.enactor.syllabification.getPattern",
             hyphenateNode: {
                 funcName: "fluid.prefs.enactor.syllabification.hyphenateNode",
-                args: ["{arguments}.0", "{arguments}.1", "{that}.options.markup.separator"]
+                args: [
+                    "{arguments}.0",
+                    "{arguments}.1",
+                    "{that}.options.markup.separator",
+                    "{that}.options.markup.softHyphenPlaceholder"
+                ]
             },
             injectScript: {
                 this: "$",
@@ -170,7 +177,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Only disconnect the observer if the state is set to false.
      * This corresponds to the syllabification's `enabled` model path being set to false.
      *
-     * @param {Component} that - an instance of `fluid.mutationObserver`
+     * @param {fluid.mutationObserver} that - an instance of `fluid.mutationObserver`
      * @param {Boolean} state - if `false` disconnect, otherwise do nothing
      */
     fluid.prefs.enactor.syllabification.disconnectObserver = function (that, state) {
@@ -183,7 +190,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Wait for all hyphenators to be resolved. After they are resolved the `afterSyllabification` event is fired.
      * If any of the hyphenator promises is rejected, the `onError` event is fired instead.
      *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {fluid.prefs.enactor.syllabification} that - an instance of `fluid.prefs.enactor.syllabification`
      *
      * @return {Promise} - returns the sequence promise; which is constructed from the hyphenator promises.
      */
@@ -206,7 +213,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Creates a hyphenator instance making use of the pattern supplied by the path; which is injected into the Document
      * if it hasn't already been loaded. If the pattern file cannot be loaded, the onError event is fired.
      *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {fluid.prefs.enactor.syllabification} that - an instance of `fluid.prefs.enactor.syllabification`
      * @param {Object} pattern - the `file path` to the pattern file. The path may include a string template token to
      *                           resolve a portion of its path from. The token will be resolved from the component's
      *                           `terms` option. (e.g. "%patternPrefix/en-us.js");
@@ -301,7 +308,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * When creating a hyphenator, it first checks if there is configuration for the specified `lang`. If that fails,
      * it attempts to fall back to a less specific localization.
      *
-     * @param {Component} that - an instance of `fluid.prefs.enactor.syllabification`
+     * @param {fluid.prefs.enactor.syllabification} that - an instance of `fluid.prefs.enactor.syllabification`
      * @param {String} lang - a valid BCP 47 language code. (NOTE: supported lang codes are defined in the
      *                        `patterns`) option.
      *
@@ -349,53 +356,85 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    fluid.prefs.enactor.syllabification.hyphenateNode = function (hyphenator, node, separatorMarkup) {
-        if (!hyphenator) {
-            return;
-        }
-
-        // remove \u200B characters added hyphenateText
-        var hyphenated = hyphenator.hyphenateText(node.textContent).replace(/\u200B/gi, "");
-
-        // split words on soft hyphens
-        var segs = hyphenated.split("\u00AD");
-        // remove the last segment as we only need to place separators in between the parts of the words
-        segs.pop();
-        fluid.each(segs, function (seg) {
-            var separator = $(separatorMarkup)[0];
-            node = node.splitText(seg.length);
-            node.parentNode.insertBefore(separator, node);
-        });
+    /**
+     * Splits a text node at the specified `position` into two text nodes and inserts the specified `toInsert` content
+     * between them.
+     *
+     * @param {DomNode} node - The text node to be split by the inserted content
+     * @param {DomNode|DomElement} toInsert - The node/element to insert into the original content from the `node`
+     * @param {Number} position - The position to split `node`. At this point the `node` will be split into two new text
+     *                            nodes and the `toInsert` node placed between them. The position is the 0 based index
+     *                            where the content would be inserted into the original text node. That is, the portion
+     *                            before `position` will be included before the inserted node, and those including and
+     *                            after `position` will be included after the inserted node.
+     *
+     * @return {DomNode} - The newly created text node after executing the split. That is, the second portion of the
+     *                     severed text node.
+     */
+    fluid.prefs.enactor.syllabification.insertIntoTextNode = function (node, toInsert, position) {
+        node = node.splitText(position);
+        node.parentNode.insertBefore(toInsert, node);
+        return node;
     };
 
     /**
-     * Collapses adjacent text nodes within an element.
-     * Similar to NODE.normalize() but works in IE 11.
-     * See: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8727426/
+     * Insert separators, indicating the hyphenated positions, into a text node. This will inject the specified
+     * markup as the separators and split the original textnode at the hyphenation points. If there are no places to
+     * inject a hyphenation point, the node will be left unchanged. If the original textnode inclues soft hyphens (i.e.
+     * &shy;) characters, these will be used as a hyphenation point with the original location in the text node
+     * replaced with the `softHyphenPlaceholderMarkup` to allow it to be restored when syllabification is removed.
      *
-     * @param {jQuery|DomElement} elm - The element to normalize.
+     * @param {HypherHyphenator} hyphenator - an instance of a Hypher Hyphenator
+     * @param {DomNode} node - a DOM node containing text to be hyphenated
+     * @param {String} separatorMarkup - the markup to be injected and used to indicate the separators/hyphens
+     * @param {String} softHyphenPlaceholderMarkup - the markup to be injected and used to indicate the original
+     *                                               location of any soft hyphens included in `node`
      */
-    fluid.prefs.enactor.syllabification.normalize = function (elm) {
-        elm = fluid.unwrap(elm);
-        var childNode = elm.childNodes[0];
-        while (childNode && childNode.nextSibling) {
-            var nextSibling = childNode.nextSibling;
-            if (childNode.nodeType === Node.TEXT_NODE && nextSibling.nodeType === Node.TEXT_NODE) {
-                childNode.textContent += nextSibling.textContent;
-                elm.removeChild(nextSibling);
-            } else {
-                childNode = nextSibling;
+    fluid.prefs.enactor.syllabification.hyphenateNode = function (hyphenator, node, separatorMarkup, softHyphenPlaceholderMarkup) {
+        if (!hyphenator || !node.textContent) {
+            return;
+        }
+
+        var softHyphen = "\u00AD";
+        var hyphenated = hyphenator.hyphenateText(node.textContent);
+
+        // split words on soft hyphens
+        var segs = hyphenated.split(softHyphen);
+
+        for (var i = 0; i < segs.length; i++) {
+            // If the text content starts with a soft hyphen (\u00AD, &shy;) replace it with an empty placeholder; which
+            // is used to put the soft hyphen back if syllabification is disabled.
+            // See: https://issues.fluidproject.org/browse/FLUID-6554
+            if (node.textContent.startsWith(softHyphen)) {
+                // converts the softHyphenPlaceholderMarkup markup string into a Dom Node
+                var placeholder = $(softHyphenPlaceholderMarkup)[0];
+                var newNode = fluid.prefs.enactor.syllabification.insertIntoTextNode(node, placeholder, 1);
+                node.remove();
+                node = newNode;
+            }
+
+            // skip the last segment as we only need to place separators in between the parts of the words
+            if (i < segs.length - 1) {
+                var separator = $(separatorMarkup)[0]; // converts the separatorMarkup markup string into a Dom Node
+                node = fluid.prefs.enactor.syllabification.insertIntoTextNode(node, separator, segs[i].length);
             }
         }
     };
 
     fluid.prefs.enactor.syllabification.removeSyllabification = function (that) {
+        // remove separators
         that.locate("separator").each(function (index, elm) {
             var parent = elm.parentNode;
             $(elm).remove();
-            // Because Node.normalize doesn't work properly in IE 11, we use a custom function
-            // to normalize the text nodes in the parent.
-            fluid.prefs.enactor.syllabification.normalize(parent);
+            parent.normalize();
+        });
+
+        // restore soft hyphens
+        that.locate("softHyphenPlaceholder").each(function (index, elm) {
+            var parent = elm.parentNode;
+
+            elm.replaceWith(document.createTextNode("\u00AD"));
+            parent.normalize();
         });
     };
 

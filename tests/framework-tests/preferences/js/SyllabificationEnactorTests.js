@@ -1,14 +1,14 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 /* global fluid, jqUnit */
@@ -78,6 +78,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             src: src
         };
     };
+    /**************************************************************************
+     * fluid.prefs.enactor.syllabification.insertIntoTextNode tests
+     **************************************************************************/
+
+    fluid.tests.prefs.enactor.syllabification.assertNode = function (nodeName, node, expectedType, expectedContent) {
+        jqUnit.assertEquals("The " + nodeName + " node has type: " + expectedType, Node[expectedType], node.nodeType);
+        jqUnit.assertEquals("The " + nodeName + " node has content: \"" + expectedContent + "\"", expectedContent, node.textContent);
+    };
+
+    jqUnit.test("Test fluid.prefs.enactor.syllabification.insertIntoTextNode", function () {
+        var parent = $(".flc-syllabification-insertIntoTextNode")[0];
+        var toInject = $("<span>inserted </span>")[0];
+
+        jqUnit.assertEquals("The parent node originally only has a single child", 1, parent.childNodes.length);
+
+        var newNode = fluid.prefs.enactor.syllabification.insertIntoTextNode(parent.childNodes[0], toInject, 5);
+
+        // Returned node
+        fluid.tests.prefs.enactor.syllabification.assertNode("returned", newNode, "TEXT_NODE", "Content");
+
+        // Parent element
+        jqUnit.assertEquals("The parent node now has three children", 3, parent.childNodes.length);
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent, "ELEMENT_NODE", "Text inserted Content");
+
+        // First child
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent.childNodes[0], "TEXT_NODE", "Text ");
+
+        // Inserted child
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent.childNodes[1], "ELEMENT_NODE", "inserted ");
+
+        // Last child
+        fluid.tests.prefs.enactor.syllabification.assertNode("first", parent.childNodes[2], "TEXT_NODE", "Content");
+    });
 
     /*******************************************************************************
      * IoC Unit tests for fluid.prefs.enactor.syllabification
@@ -117,7 +150,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             text: {
-                "en": "Global temperature has increased over the past 50 years.",
+                // Soft hyphens (\u00AD) included to test https://issues.fluidproject.org/browse/FLUID-6554
+                "en": "Global tem\u00ADperature has in\u00ADcreased over the past 50 years.",
                 "es": "La temperatura global ha aumentado en los últimos 50 años."
             },
             syllabified: {
@@ -125,22 +159,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: Node.TEXT_NODE,
                     text: "Global tem"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
+                }, {
+                    type: Node.ELEMENT_NODE,
+                    selector: "softHyphenPlaceholder"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "per"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "a"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "ture has in"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
+                }, {
+                    type: Node.ELEMENT_NODE,
+                    selector: "softHyphenPlaceholder"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "creased over the past 50 years."
@@ -149,22 +193,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: Node.TEXT_NODE,
                     text: "Global tem"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
+                }, {
+                    type: Node.ELEMENT_NODE,
+                    selector: "softHyphenPlaceholder"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "per"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "at"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "ure has in"
                 }, {
-                    type: Node.ELEMENT_NODE
+                    type: Node.ELEMENT_NODE,
+                    selector: "separator"
+                }, {
+                    type: Node.ELEMENT_NODE,
+                    selector: "softHyphenPlaceholder"
                 }, {
                     type: Node.TEXT_NODE,
                     text: "creased over the past 50 years."
@@ -218,9 +272,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "{that}.options.testOpts.injected.enabled"
                 ]
             },
+            // Soft hyphens (&shy;) included to test https://issues.fluidproject.org/browse/FLUID-6554
             markup: {
-                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global temperature has increased over the past 50 years.</p>",
-                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global temperature has increased over the past 50 years.</p>"
+                injectWhenDisabled: "<p class=\"flc-syllabification-injectWhenDisabled\">Global tem&shy;perature has in&shy;creased over the past 50 years.</p>",
+                injectWhenEnabled: "<p class=\"flc-syllabification-injectWhenEnabled\">Global tem&shy;perature has in&shy;creased over the past 50 years.</p>"
             }
         },
         modules: [{
@@ -234,7 +289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Init", "{syllabification}", "{that}.options.testOpts.existing"]
                 }]
             }, {
-                expect: 91,
+                expect: 107,
                 name: "Add/Remove syllabification",
                 sequence: [{
                     // enabled syllabification
@@ -256,7 +311,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["Syllabification Removed", "{syllabification}", "{that}.options.testOpts.existing"]
                 }]
             }, {
-                expect: 45,
+                expect: 53,
                 name: "Injected Content",
                 sequence: [{
                     // inject content, then enable syllabification
@@ -313,7 +368,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var elm = $(selector);
             var childNodes = elm[0].childNodes;
             separatorCount += testCase.separatorCount;
-            jqUnit.assertEquals(prefix + ": The text for " + selector + " is returned correctly", testCase.text, elm.text());
+
+            // soft hyphens are removed from the text content when syllabification is enabled
+            var expectedText = testCase.text.replace(/\u00AD/g, "");
+            jqUnit.assertEquals(prefix + ": The text for " + selector + " is returned correctly", expectedText, elm.text());
 
             fluid.each(testCase.syllabified, function (expected, index) {
                 var childNode = childNodes[index];
@@ -322,7 +380,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 if (expected.type === Node.TEXT_NODE) {
                     jqUnit.assertEquals(prefix + ": The childNode of " + selector + ", at index \"" + index + "\", has the correct text content", expected.text, childNode.textContent);
                 } else {
-                    jqUnit.assertTrue(prefix + ": The childNode of " + selector + ", at index \"" + index + "\", is a separator", $(childNode).is(that.options.selectors.separator));
+                    jqUnit.assertTrue(prefix + ": The childNode of " + selector + ", at index \"" + index + "\", is a separator", $(childNode).is(that.options.selectors[expected.selector]));
                 }
             });
         });
