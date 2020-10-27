@@ -7,7 +7,7 @@
         "instructions": "<ul><li>Click the 'Browse Files' buttonto select files to be added to the queue.</li><li>Use the red 'X' delete button to remove files from the queue.</li><li>Click the 'Add More' button to add more files to the queue.</li><li>Click 'Upload' to start the upload.</li><li>Click 'Stop Upload' to pause the upload.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/uploader",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/uploader",
         "apiLink": "http://docs.fluidproject.org/infusion/development/UploaderAPI.html",
         "designLink": "http://wiki.fluidproject.org/display/Infusion13/Uploader+Design+Overview",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Uploader%20feedback"

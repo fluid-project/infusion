@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Try reordering the items using the mouse.</li><li>Try reordering the items using only the keyboard: Direction keys (left and right arrow keys, or i and m) move focus; CTRL + direction keys move the item.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/reorderer/listReorderer",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/reorderer/listReorderer",
         "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/ListReordererAPI.html",
         "designLink": "http://wiki.fluidproject.org/display/Infusion13/List+Reorderer+Design+Overview",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=List%20Reorderer%20feedback"
