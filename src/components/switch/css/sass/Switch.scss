@@ -1,5 +1,5 @@
-knobSize = 1.8em;
-knobMargin = 0.2em;
+$knobSize: 1.8em;
+$knobMargin: 0.2em;
 
 .fl-switchUI {
     display: flex;
@@ -8,9 +8,9 @@ knobMargin = 0.2em;
 }
 
 .fl-switchUI-control {
-    width: knobSize * 3;
+    width: ($knobSize * 3);
     border: 0.15em solid var(--fl-fgColor, currentColor);
-    border-radius: knobSize + knobMargin;
+    border-radius: ($knobSize + $knobMargin);
     box-sizing: content-box;
     margin: 0 1em;
     padding: 0;
@@ -30,12 +30,12 @@ knobMargin = 0.2em;
 }
 
 .fl-switchUI-controlKnob {
-    height: knobSize;
-    width: knobSize;
+    height: $knobSize;
+    width: $knobSize;
     background-color: var(--fl-fgColor, currentColor) !important;
-    border-radius: knobSize;
+    border-radius: $knobSize;
     display: inline-block;
-    margin: knobMargin;
+    margin: $knobMargin;
 }
 
 .fl-switchUI-text {

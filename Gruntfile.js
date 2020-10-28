@@ -146,12 +146,12 @@ module.exports = function (grunt) {
     };
 
     var verifyFilesListCSSRenameFunc = function (dest, src) {
-        var replaced = dest + src.replace("styl", "css");
+        var replaced = dest + src.replace("scss", "css");
         return replaced;
     };
 
     var verifyFilesListMinifiedCSSRenameFunc = function (dest, src) {
-        var replaced = dest + src.replace("styl", "min.css");
+        var replaced = dest + src.replace("scss", "min.css");
         return replaced;
     };
 
@@ -181,8 +181,8 @@ module.exports = function (grunt) {
         clean: {
             build: "build",
             products: "products",
-            stylus: ["src/components/switch/css/*.css", "src/framework/preferences/css/*.css"],
-            stylusDist: "dist/assets/**/stylus", // removes the empty stylus directory from the distribution
+            sass: ["src/components/switch/css/*.css", "src/framework/preferences/css/*.css"],
+            sassDist: "dist/assets/**/sass", // removes the empty Sass directory from the distribution
             ciArtifacts: ["*.tap"],
             dist: "dist",
             postBuild: {
@@ -464,37 +464,50 @@ module.exports = function (grunt) {
                 other: ["./.*"]
             }
         },
-        stylus: {
+        "dart-sass": {
             compile: {
                 options: {
-                    compress: "<%= buildSettings.compress %>",
-                    relativeDest: ".."
+                    outputStyle: "<% buildSettings.compress ? print('compressed') : print('expanded') %>"
                 },
-                files: [{
-                    expand: true,
-                    src: ["src/**/css/stylus/*.styl"],
-                    ext: ".css"
-                }]
+                files: [
+                    {
+                        expand: true,
+                        cwd: "src/framework/preferences/css/sass/",
+                        src: ["*.scss"],
+                        dest: "src/framework/preferences/css/",
+                        ext: ".css"
+                    },
+                    {
+                        src: "src/components/switch/css/sass/Switch.scss",
+                        dest: "src/components/switch/css/Switch.css"
+                    }
+                ]
             },
             dist: {
                 options: {
-                    compress: "<%= buildSettings.compress %>",
-                    relativeDest: ".."
+                    outputStyle: "<% buildSettings.compress ? print('compressed') : print('expanded') %>"
                 },
-                files: [{
-                    expand: true,
-                    src: ["src/**/css/stylus/*.styl"],
-                    ext: "<% buildSettings.compress ? print('.min.css') : print('.css') %>",
-                    dest: "dist/assets/"
-                }]
+                files: [
+                    {
+                        expand: true,
+                        cwd: "src/framework/preferences/css/sass/",
+                        src: ["*.scss"],
+                        dest: "dist/assets/src/framework/preferences/css/",
+                        ext: ".min.css"
+                    },
+                    {
+                        src: "src/components/switch/css/sass/Switch.scss",
+                        dest: "dist/assets/src/components/switch/css/Switch.min.css"
+                    }
+                ]
             }
         },
-        // grunt-contrib-watch task to watch and rebuild stylus files
-        // automatically when doing stylus development
+        // grunt-contrib-watch task to watch and rebuild Sass files
+        // automatically when doing Sass development
         watch: {
-            buildStylus: {
-                files: ["src/**/css/stylus/*.styl", "src/**/css/stylus/utils/*.styl"],
-                tasks: "buildStylus"
+            buildSass: {
+                files: ["src/**/css/sass/*.scss", "src/**/css/sass/utils/*.scss"],
+                tasks: "buildSass"
             }
         },
         distributions:
@@ -591,29 +604,29 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        src: ["*.styl"],
-                        cwd: "src/framework/preferences/css/stylus/",
+                        src: ["*.scss"],
+                        cwd: "src/framework/preferences/css/sass/",
                         dest: "dist/assets/src/framework/preferences/css/",
                         rename: verifyFilesListCSSRenameFunc
                     },
                     {
                         expand: true,
-                        src: ["*.styl"],
-                        cwd: "src/framework/preferences/css/stylus/",
+                        src: ["*.scss"],
+                        cwd: "src/framework/preferences/css/sass/",
                         dest: "dist/assets/src/framework/preferences/css/",
                         rename: verifyFilesListMinifiedCSSRenameFunc
                     },
                     {
                         expand: true,
-                        src: ["*.styl"],
-                        cwd: "src/components/switch/css/stylus/",
+                        src: ["*.scss"],
+                        cwd: "src/components/switch/css/sass/",
                         dest: "dist/assets/src/components/switch/css/",
                         rename: verifyFilesListCSSRenameFunc
                     },
                     {
                         expand: true,
-                        src: ["*.styl"],
-                        cwd: "src/components/switch/css/stylus/",
+                        src: ["*.scss"],
+                        cwd: "src/components/switch/css/sass/",
                         dest: "dist/assets/src/components/switch/css/",
                         rename: verifyFilesListMinifiedCSSRenameFunc
                     }
@@ -629,7 +642,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-modulefiles");
-    grunt.loadNpmTasks("grunt-contrib-stylus");
+    grunt.loadNpmTasks("grunt-dart-sass");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("fluid-grunt-lint-all");
 
@@ -667,7 +680,7 @@ module.exports = function (grunt) {
             "clean",
             "copy:dependencies",
             "lint",
-            "stylus:compile",
+            "dart-sass:compile",
             "modulefiles:" + target,
             "setPostBuildCleanUp:" + target,
             "pathMap:" + target,
@@ -698,7 +711,7 @@ module.exports = function (grunt) {
         var concatTask = options.compress ? "uglify:" : "concat:";
         var tasks = [
             "cleanForDist",
-            "stylus:dist",
+            "dart-sass:dist",
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
             "copy:" + options.target,
@@ -718,7 +731,7 @@ module.exports = function (grunt) {
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
             "verifyDistFiles",
-            "buildStylus" // put back stylus files needed for development
+            "buildSass" // Put back Sass files needed for development
         ];
         grunt.task.run(tasks);
     });
@@ -744,8 +757,8 @@ module.exports = function (grunt) {
         verifyFilesTaskFunc(message, expectedFiles);
     });
 
-    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylusDist", "clean:ciArtifacts"]);
-    grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
+    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:sassDist", "clean:ciArtifacts"]);
+    grunt.registerTask("buildSass", ["clean:sass", "dart-sass:compile"]);
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
