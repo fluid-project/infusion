@@ -80,7 +80,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             global: {
                 fetchTemplates: {
                     funcName: "fluid.renderer.fetchTemplates",
-                    priority: "after:enlistModel"
+                    priority: "after:resolveResourceModel"
                 }
             }
         }
