@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   lint:
     runs-on: ubuntu-latest
