@@ -493,11 +493,11 @@ module.exports = function (grunt) {
                         cwd: "src/framework/preferences/css/sass/",
                         src: ["*.scss"],
                         dest: "dist/assets/src/framework/preferences/css/",
-                        ext: ".min.css"
+                        ext: "<% buildSettings.compress ? print('.min.css') : print('.css') %>"
                     },
                     {
                         src: "src/components/switch/css/sass/Switch.scss",
-                        dest: "dist/assets/src/components/switch/css/Switch.min.css"
+                        dest: "<%= 'dist/assets/src/components/switch/css/Switch' %><% buildSettings.compress ? print('.min.css') : print('.css') %>"
                     }
                 ]
             }
