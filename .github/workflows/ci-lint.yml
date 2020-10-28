@@ -1,4 +1,4 @@
-name: CI
+name: Code linting
 
 on:
   push:
@@ -11,7 +11,7 @@ defaults:
     shell: bash
 
 jobs:
-  tests:
+  lint:
     runs-on: ${{ matrix.os }}
 
     timeout-minutes: 20
@@ -50,14 +50,5 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
 
-    - name: Code linter
+    - name: Run code linter
       run: npm run lint
-
-    - name: Browser tests
-      run: npm run test:browser
-
-    - name: Node.js tests
-      run: npm run test:node
-
-    - name: Code coverage
-      run: npm run posttest
