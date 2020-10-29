@@ -109,186 +109,24 @@ https://docs.fluidproject.org/infusion/development/) site.
 
 ## Supported Browsers
 
-Infusion 3.0.0 was tested with the following browsers:
+Infusion 3.0.0 is tested with the latest versions of the following desktop browsers:
 
-Additional testing for mobile devices was performed with the following:
+* [Chrome](https://google.com/chrome/)
+* [Edge](https://microsoft.com/edge/)
+* [Firefox](https://mozilla.org/firefox/)
+* [Safari](https://apple.com/safari/)
 
-For more information see the [Fluid Infusion browser support](
-https://wiki.fluidproject.org/display/fluid/Prior+Browser+Support) wiki page.
+Additional testing is performed with the following mobile browsers:
 
-### Testing Configurations
+* [Android Chrome](https://play.google.com/store/apps/details?id=com.android.chrome)
+* [iOS Safari](https://apple.com/safari/)
 
-<table>
-    <summary>Testing Configurations</summary>
-    <thead>
-        <tr>
-            <th rowspan="2">Testing Task</th>
-            <th colspan="5">Desktop Browser</th>
-            <th colspan="2">Mobile Browser</th>
-        </tr>
-        <tr>
-            <th>Chrome</th>
-            <th>Firefox</th>
-            <th>IE 11</th>
-            <th>MS Edge</th>
-            <th>Safari</th>
-            <th>Chrome for Android</th>
-            <th>Safari iOS</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>Run All Unit Tests</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Smoke Tests - All Manual Tests</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Smoke Tests - All Demos</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Smoke Tests - All Examples</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Inline Edit QA Test Plan - Simple Text</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Keyboard Accessibility QA Test Plan</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Pager QA Test Plan</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Progress QA Test Plan</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Reorderer QA Test Plan - Image Reorderer</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Reorderer QA Test Plan - Layout Reorderer</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Reorderer QA Test Plan - List Reorderer</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Reorderer QA Test Plan - Grid Reorderer</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Preferences Framework QA Test Plan</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>UI Options QA Test Plan - Separated Panel</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Uploader QA Test Plan</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
+The Fluid Project also maintains a [shareable configuration](https://github.com/fluid-project/browserslist-config-fluid)
+for [Browserslist](https://github.com/browserslist/browserslist). In the future, this configuration will be used within
+Fluid Infusion.
+
+For more information see the [Fluid Infusion browser support](https://wiki.fluidproject.org/display/fluid/Browser+Support)
+wiki page.
 
 ## Known Issues
 
