@@ -1,4 +1,4 @@
-FROM node:12.18.0-alpine AS builder
+FROM node:14.15.0-alpine AS builder
 
 USER node
 COPY --chown=node . /src
