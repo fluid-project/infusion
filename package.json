@@ -26,9 +26,6 @@
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
         "test:browserBundles": "node node_modules/testem/testem.js ci --file tests/bundle-tests/testem.js",
         "test:node": "node node_modules/nyc/bin/nyc.js node tests/node-tests/basic-node-tests.js",
-        "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
-        "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
-        "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html -r json",
         "buildDists": "grunt buildDists",
         "buildSass": "grunt buildSass",
@@ -73,7 +70,7 @@
         "rimraf": "3.0.2",
         "roboto-fontface": "0.10.0",
         "sinon": "9.0.2",
-        "testem": "3.0.4",
+        "testem": "3.2.0",
         "url-polyfill": "1.1.8"
     }
 }
