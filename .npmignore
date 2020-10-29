@@ -9,7 +9,6 @@
 .nycrc
 .project
 .settings
-.vagrant
 build/
 coverage/
 demos/
@@ -18,7 +17,6 @@ examples/
 Gruntfile.js
 instrumented/
 products/
-provisioning/
 report.tap
 reports/
 tests/component-tests/
@@ -29,4 +27,3 @@ tests/node-tests/
 tests/test-core/testTests/
 tests/all-tests.html
 tests/testem.js
-Vagrantfile
