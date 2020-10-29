@@ -3,10 +3,10 @@
 var fluid = require("../../src/module/fluid");
 fluid.setLogging(true);
 
-require("gpii-testem");
+require("fluid-testem");
 
 fluid.defaults("fluid.tests.bundle.testem", {
-    gradeNames: ["gpii.testem.coverage"],
+    gradeNames: ["fluid.testem.coverage"],
     testPages:  [
         "tests/bundle-tests/infusion-all.html",
         "tests/bundle-tests/infusion-all-min.html",
