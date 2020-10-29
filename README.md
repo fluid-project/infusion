@@ -295,23 +295,23 @@ If you make changes to Infusion, repeat the steps to build the image and start a
 
 ## Developing with the Preferences Framework
 
-Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing.
-CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the GitHub
-repository.
+Infusion uses [Sass](http://sass-lang.com/) for CSS pre-processing.
+CSS files for the Preferences Framework are written in Sass. Only Sass files are included
+in the GitHub repository.
 
-For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
+For developing the Preferences Framework, run the following from the project root to compile Sass files to CSS:
 
 ```bash
-grunt buildStylus
+grunt buildSass
 ```
 
 A `watch` task using [grunt-contrib-watch](https://github.com/gruntjs/grunt-contrib-watch) is also supplied to ease
-Stylus development. This task launches a process that watches all Stylus files in the `src` directory and recompiles
+Sass development. This task launches a process that watches all Sass files in the `src` directory and recompiles
 them when they are changed. This task can be run using the following command:
 
 ```bash
-grunt watch:buildStylus
+grunt watch:buildSass
 ```
 
 For more information on styling the Preferences Framework, please review the documentation on
-[using Stylus with the Preferences Framework](./src/framework/preferences/css/stylus/README.md).
+[using Sass with the Preferences Framework](./src/framework/preferences/css/sass/README.md).

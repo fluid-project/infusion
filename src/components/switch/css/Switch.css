@@ -1,0 +1,44 @@
+.fl-switchUI {
+    --fl-switch-knobSize: 1.8em;
+    --fl-switch-knobMargin: 0.2em;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fl-switchUI-control {
+    width: calc(var(--fl-switch-knobSize) * 3);
+    border: 0.15em solid var(--fl-fgColor, currentColor);
+    border-radius: calc(var(--fl-switch-knobSize) + var(--fl-switch-knobMargin));
+    box-sizing: content-box;
+    margin: 0 1em;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    background-color: var(--fl-bgColor, #ffffff);
+}
+
+.fl-switchUI-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2em var(--fl-bgColor, #ffffff),
+                0 0 0 0.35em var(--fl-fgColor, #000000);
+}
+
+.fl-switchUI-control[aria-checked=true] {
+    justify-content: flex-end;
+}
+
+.fl-switchUI-controlKnob {
+    height: var(--fl-switch-knobSize);
+    width: var(--fl-switch-knobSize);
+    background-color: var(--fl-fgColor, currentColor) !important;
+    border-radius: var(--fl-switch-knobSize);
+    display: inline-block;
+    margin: var(--fl-switch-knobMargin);
+}
+
+.fl-switchUI-text {
+    text-transform: uppercase;
+    font-weight: 600;
+}
