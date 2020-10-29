@@ -1,5 +1,8 @@
 # Infusion
 
+![CI build status badge](https://github.com/fluid-project/infusion/workflows/CI/badge.svg)
+[![Coverage status badge](https://codecov.io/github/fluid-project/infusion/coverage.svg?branch=main)](https://codecov.io/github/fluid-project/infusion?branch=main)
+
 ## What Is Infusion?
 
 Infusion is a different kind of JavaScript framework. Our approach is to leave you in control—it's your interface,

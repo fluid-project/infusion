@@ -29,7 +29,7 @@
         "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
         "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
         "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
-        "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html",
+        "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html -r json",
         "buildDists": "grunt buildDists",
         "buildSass": "grunt buildSass",
         "loadDependencies": "grunt loadDependencies",

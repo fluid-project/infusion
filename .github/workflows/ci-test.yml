@@ -78,3 +78,9 @@ jobs:
 
     - name: Update code coverage
       run: npm run posttest
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./reports/coverage-final.json
+        flags: unit-tests
