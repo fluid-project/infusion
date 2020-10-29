@@ -25,5 +25,6 @@ Define your own theme variables in `utils/Themes.scss` using the following appro
 ## How to prevent grunt from compiling utility Sass files
 
 Some Sass files may only contain mixins or functions for other Sass files to import. Those files should not be
-compiled into CSS. To prevent the grunt task `grunt buildSass` from compiling them, place these files in the
-"[utils](./utils)" directory.
+compiled into CSS. To prevent the grunt task `grunt buildSass` from compiling them, ensure that their filename
+begins with an underscore, e.g. `_fonts.scss`. For more information about this convention see
+[Sass's documentation on partials](https://sass-lang.com/guide#topic-4).
