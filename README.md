@@ -296,7 +296,7 @@ If you make changes to Infusion, repeat the steps to build the image and start a
 ## Developing with the Preferences Framework
 
 Infusion uses [Sass](http://sass-lang.com/) for CSS pre-processing.
-CSS files for the Switch component and the Preferences Framework are written in Sass. Only Sass files are included
+CSS files for the Preferences Framework are written in Sass. Only Sass files are included
 in the GitHub repository.
 
 For developing the Preferences Framework, run the following from the project root to compile Sass files to CSS:

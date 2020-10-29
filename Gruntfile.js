@@ -181,8 +181,8 @@ module.exports = function (grunt) {
         clean: {
             build: "build",
             products: "products",
-            sass: ["src/components/switch/css/*.css", "src/framework/preferences/css/*.css"],
-            sassDist: "dist/assets/**/sass", // removes the empty Sass directory from the distribution
+            sass: ["src/framework/preferences/css/*.css"],
+            sassDist: "dist/assets/**/sass", // Removes the empty Sass directory from the distribution
             ciArtifacts: ["*.tap"],
             dist: "dist",
             postBuild: {
@@ -476,10 +476,6 @@ module.exports = function (grunt) {
                         src: ["*.scss"],
                         dest: "src/framework/preferences/css/",
                         ext: ".css"
-                    },
-                    {
-                        src: "src/components/switch/css/sass/Switch.scss",
-                        dest: "src/components/switch/css/Switch.css"
                     }
                 ]
             },
@@ -494,10 +490,6 @@ module.exports = function (grunt) {
                         src: ["*.scss"],
                         dest: "dist/assets/src/framework/preferences/css/",
                         ext: "<% buildSettings.compress ? print('.min.css') : print('.css') %>"
-                    },
-                    {
-                        src: "src/components/switch/css/sass/Switch.scss",
-                        dest: "<%= 'dist/assets/src/components/switch/css/Switch' %><% buildSettings.compress ? print('.min.css') : print('.css') %>"
                     }
                 ]
             }
@@ -614,20 +606,6 @@ module.exports = function (grunt) {
                         src: ["*.scss"],
                         cwd: "src/framework/preferences/css/sass/",
                         dest: "dist/assets/src/framework/preferences/css/",
-                        rename: verifyFilesListMinifiedCSSRenameFunc
-                    },
-                    {
-                        expand: true,
-                        src: ["*.scss"],
-                        cwd: "src/components/switch/css/sass/",
-                        dest: "dist/assets/src/components/switch/css/",
-                        rename: verifyFilesListCSSRenameFunc
-                    },
-                    {
-                        expand: true,
-                        src: ["*.scss"],
-                        cwd: "src/components/switch/css/sass/",
-                        dest: "dist/assets/src/components/switch/css/",
                         rename: verifyFilesListMinifiedCSSRenameFunc
                     }
                 ]
