@@ -50,4 +50,4 @@ jobs:
     - name: Run build script
       run: |
         npm run buildDists
-        npm test:browserBundles
+        npm run test:browserBundles
