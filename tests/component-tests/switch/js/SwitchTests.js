@@ -40,7 +40,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.tests.assertInit = function (that) {
             var control = that.locate("control");
             jqUnit.assertEquals("The switch role is added", "switch", control.attr("role"));
-            jqUnit.assertEquals("Tabindex is set", "0", control.attr("tabindex"));
             jqUnit.assertEquals("The aria-label is set", that.options.strings.label, control.attr("aria-label"));
             jqUnit.assertEquals("The aria-labelledby is set", "label", control.attr("aria-labelledby"));
             jqUnit.assertEquals("The on text is set", that.options.strings.on, that.locate("on").text());
@@ -66,30 +65,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fluid.tests.assertState(that, true);
 
             that.locate("control").trigger("click");
-            fluid.tests.assertState(that, false);
-        });
-
-        jqUnit.test("Toggle State - ENTER Key", function () {
-            var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
-            var keyEvent = $.Event("keydown");
-            keyEvent.which = $.ui.keyCode.ENTER;
-
-            that.locate("control").trigger(keyEvent);
-            fluid.tests.assertState(that, true);
-
-            that.locate("control").trigger(keyEvent);
-            fluid.tests.assertState(that, false);
-        });
-
-        jqUnit.test("Toggle State - SPACEBAR Key", function () {
-            var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
-            var keyEvent = $.Event("keydown");
-            keyEvent.which = $.ui.keyCode.SPACE;
-
-            that.locate("control").trigger(keyEvent);
-            fluid.tests.assertState(that, true);
-
-            that.locate("control").trigger(keyEvent);
             fluid.tests.assertState(that, false);
         });
     });
