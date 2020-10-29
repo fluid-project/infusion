@@ -2,7 +2,11 @@
  * General prefs editor styling used to apply preferences
  * !important is used for all styles to ensure that Preferences Framework's enactors are able to override the page's default styles.
  */
-@import "utils/fonts";
+@use "utils/fonts";
+@use "utils/themes";
+
+// Fonts
+@include fonts.build-fonts-Enactors(fonts.$fonts, fonts.$fontFaces);
 
 // UI Enhancer "Enlarge text" input/button options
 .fl-input-enhanced button,
@@ -27,9 +31,3 @@
 .fl-syllabification-softHyphenPlaceholder:before {
     content: "\00AD"; // SOFT HYPHEN
 }
-
-// Themes
-@import "utils/themes";
-
-// Fonts
-@include build-fonts-Enactors($fonts, $fontFaces);
