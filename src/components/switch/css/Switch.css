@@ -2,27 +2,28 @@
     --fl-switch-knobSize: 1.8em;
     --fl-switch-knobMargin: 0.2em;
 
+    align-items: center;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 .fl-switchUI-control {
-    width: calc(var(--fl-switch-knobSize) * 3);
+    align-items: center;
+    background-color: var(--fl-bgColor, #fff);
     border: 0.15em solid var(--fl-fgColor, currentColor);
     border-radius: calc(var(--fl-switch-knobSize) + var(--fl-switch-knobMargin));
     box-sizing: content-box;
+    display: flex;
     margin: 0 1em;
     padding: 0;
-    display: flex;
-    align-items: center;
-    background-color: var(--fl-bgColor, #ffffff);
+    width: calc(var(--fl-switch-knobSize) * 3);
 }
 
 .fl-switchUI-control:focus {
+    box-shadow:
+        0 0 0 0.2em var(--fl-bgColor, #fff),
+        0 0 0 0.35em var(--fl-fgColor, #000);
     outline: none;
-    box-shadow: 0 0 0 0.2em var(--fl-bgColor, #ffffff),
-                0 0 0 0.35em var(--fl-fgColor, #000000);
 }
 
 .fl-switchUI-control[aria-checked=true] {
@@ -30,15 +31,15 @@
 }
 
 .fl-switchUI-controlKnob {
-    height: var(--fl-switch-knobSize);
-    width: var(--fl-switch-knobSize);
     background-color: var(--fl-fgColor, currentColor) !important;
     border-radius: var(--fl-switch-knobSize);
     display: inline-block;
+    height: var(--fl-switch-knobSize);
     margin: var(--fl-switch-knobMargin);
+    width: var(--fl-switch-knobSize);
 }
 
 .fl-switchUI-text {
-    text-transform: uppercase;
     font-weight: 600;
+    text-transform: uppercase;
 }

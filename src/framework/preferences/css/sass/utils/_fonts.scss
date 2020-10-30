@@ -43,11 +43,11 @@ $fontFaces: (
     // Build any necessary @font-face definitions
     @each $key, $properties in $fontFaces {
         @each $key, $definition in map-get($properties, "definitions") {
-                @font-face {
-                    font-family: map-get($properties, "fontFamily");
-                    src: url(#{map-get($properties, "fontDirectory")}#{map-get($definition, "filename")});
-                    font-weight: map-get($definition, "fontWeight");
-                    font-style: map-get($definition, "fontStyle");
+            @font-face {
+                font-family: map-get($properties, "fontFamily");
+                font-style: map-get($definition, "fontStyle");
+                font-weight: map-get($definition, "fontWeight");
+                src: url(#{map-get($properties, "fontDirectory")}#{map-get($definition, "filename")});
             }
         }
     }
