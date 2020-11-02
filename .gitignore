@@ -4,7 +4,6 @@
 /node_modules/
 /src/framework/preferences/css/*.css
 /.bundle/
-/.vagrant/
 /src/lib/hypher/
 /src/lib/jquery/
 /src/lib/normalize/

@@ -13,14 +13,12 @@
 Dockerfile
 Gruntfile.js
 report.tap
-Vagrantfile
 build/
 coverage/
 demos/
 examples/
 instrumented/
 products/
-provisioning/
 reports/
 tests/
 !tests/lib
