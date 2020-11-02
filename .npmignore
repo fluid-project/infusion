@@ -9,6 +9,7 @@
 .nycrc
 .project
 .settings
+bin/
 build/
 coverage/
 demos/
@@ -24,6 +25,6 @@ tests/configs/
 tests/framework-tests/
 tests/manual-tests/
 tests/node-tests/
-tests/test-core/testTests/
+tests/test-core/testingFramework/
 tests/all-tests.html
 tests/testem.js

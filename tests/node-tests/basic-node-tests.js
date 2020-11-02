@@ -111,7 +111,7 @@ jqUnit.test("FLUID-6188 test: fluid.loadTestingSupport is idempotent and will on
     jqUnit.assert("fluid.loadTestingSupport is idempotent");
 });
 
-fluid.loadInContext("../../tests/test-core/testTests/js/IoCTestingTests.js");
+fluid.loadInContext("../../tests/test-core/TestingFramework/js/IoCTestingTests.js");
 
 fluid.test.runTests(["fluid.tests.myTestTree"]);
 

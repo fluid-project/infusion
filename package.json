@@ -29,6 +29,8 @@
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html -r json",
         "buildDists": "grunt buildDists",
         "buildSass": "grunt buildSass",
+        "buildLatest": "grunt --source && grunt copy:all && npm run build:manifest",
+        "buildManifest": "node bin/build-manifest.js",
         "loadDependencies": "grunt loadDependencies",
         "lint": "grunt lint"
     },
@@ -46,6 +48,7 @@
         "browserslist-config-fluid": "0.1.0",
         "eslint-config-fluid": "1.3.0",
         "eslint-plugin-markdown": "1.0.2",
+        "fast-glob": "3.2.4",
         "fluid-grunt-lint-all": "1.0.8",
         "fluid-testem": "2.1.13",
         "grunt": "1.3.0",
