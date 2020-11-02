@@ -20,6 +20,4 @@ examples/
 instrumented/
 products/
 reports/
-tests/
-!tests/lib
-!tests/test-core
+tests/*-tests
