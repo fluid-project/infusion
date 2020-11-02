@@ -63,7 +63,7 @@
 [class*="fl-theme"]:not(.fl-theme-prefsEditor-default) {
     background-image: none !important;
 
-    &, *, .fl-pre view-theme&,
+    &, *, .fl-pre view-theme &,
     div, input,
     h1, h2, h3, h4, h5, h6 {
         color: var(--fl-fgColor) !important;
@@ -251,7 +251,7 @@
 
     // Inverted color
     // General Styling
-    &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color {
+    &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme &.fl-inverted-color {
         color: var(--fl-bgColor) !important;
         background-color: var(--fl-fgColor) !important;
         border-top-color: var(--fl-bgColor) !important;
@@ -259,9 +259,6 @@
         border-bottom-color: var(--fl-bgColor) !important;
         border-left-color: var(--fl-bgColor) !important;
     }
-
-    .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable
-
 
     // Focus
     &.fl-inverted-color.fl-focus :focus,
@@ -303,27 +300,20 @@
         }
 
         a,
-        ^[0..-2] a.fl-inverted-color,
-        a *,
-        ^[0..-2] a.fl-inverted-color * {
+        a * {
             color: var(--fl-bgColor) !important;
             font-weight: bold !important;
             background-color: var(--fl-linkColor, var(--fl-fgColor)) !important;
         }
 
         button,
-        ^[0..-2] button.fl-inverted-color,
         button *,
-        ^[0..-2] button.fl-inverted-color *,
         input[type="button"],
-        ^[0..-2] input[type="button"].fl-inverted-color,
-        ^[0..-2] input[type="button"].fl-inverted-color *,
+        input[type="button"] *,
         input[type="reset"],
-        ^[0..-2] input[type="reset"].fl-inverted-color,
-        ^[0..-2] input[type="reset"].fl-inverted-color *,
+        input[type="reset"] *,
         input[type="submit"],
-        ^[0..-2] input[type="submit"].fl-inverted-color,
-        ^[0..-2] input[type="submit"].fl-inverted-color *,
+        input[type="submit"] *,
         .fl-input-button,
         &.fl-input-button,
         .fl-input-button *,
@@ -445,5 +435,24 @@
         .fl-textfieldStepper .fl-textfieldStepper-focus {
             outline-color: var(--fl-bgColor);
         }
+    }
+
+    a.fl-inverted-color,
+    a.fl-inverted-color * {
+        color: var(--fl-bgColor) !important;
+        font-weight: bold !important;
+        background-color: var(--fl-linkColor, var(--fl-fgColor)) !important;
+    }
+
+    button.fl-inverted-color,
+    button.fl-inverted-color *,
+    input[type="button"].fl-inverted-color,
+    input[type="button"].fl-inverted-color *,
+    input[type="reset"].fl-inverted-color,
+    input[type="reset"].fl-inverted-color *,
+    input[type="submit"].fl-inverted-color,
+    input[type="submit"].fl-inverted-color * {
+        color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
+        background-color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
     }
 }
