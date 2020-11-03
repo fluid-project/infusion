@@ -9,7 +9,6 @@
 .nycrc
 .project
 .settings
-.vagrant
 Dockerfile
 Gruntfile.js
 report.tap
