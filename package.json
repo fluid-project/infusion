@@ -29,7 +29,7 @@
         "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html -r json",
         "buildDists": "grunt buildDists",
         "buildSass": "grunt buildSass",
-        "buildLatest": "grunt --source && grunt copy:all && npm run build:manifest",
+        "buildLatest": "grunt --source && grunt copy:all && npm run buildManifest",
         "buildManifest": "node bin/build-manifest.js",
         "loadDependencies": "grunt loadDependencies",
         "lint": "grunt lint"
