@@ -368,7 +368,10 @@ module.exports = function (grunt) {
             options: {
                 compress: grunt.config.get("buildSettings.compress") ? true : false,
                 mangle: false,
-                sourceMap: true
+                sourceMap: true,
+                output: {
+                    preamble: "<%= banner %>"
+                }
             },
             all: {
                 files: [{
