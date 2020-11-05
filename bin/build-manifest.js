@@ -1,9 +1,11 @@
 /* eslint-env node */
 "use strict";
 
+var execSync = require("child_process").execSync;
 var fg = require("fast-glob").sync;
 var fs = require("fs");
 var lowerCase = require("lodash").lowerCase;
+var template = require("lodash").template;
 var upperFirst = require("lodash").upperFirst;
 
 /**
@@ -200,5 +202,49 @@ var writeJson = function (data, path) {
     }
 };
 
+/**
+ * Write an index file with grouped links to demos, examples and tests to the filesystem.
+ *
+ * @param {Object} data The JSON data to transfrom into HTML.
+ * @param {String} path The path to the output HTML file.
+ */
+var writeIndex = function (data, path) {
+    var revision = execSync("git rev-parse --verify --short HEAD").toString().trim();
+    var html = "<!DOCTYPE html>\n";
+    html += "<html lang=\"en\">\n";
+    html += "<head>\n";
+    html += "<meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\">\n";
+    html += "<title>Infusion Build at " + revision + "</title>\n";
+    html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"/src/lib/normalize/css/normalize.css\"/>\n";
+    html += "</head>\n";
+    html += "<body>\n";
+    html += "<main id=\"main\">\n";
+    html += "<h1>Infusion Build at <a href=\"http://github.com/fluid-project/infusion/commit/" + revision + "/\">" + revision + "</a></h1>\n";
+    for (var [key, group] of Object.entries(data)) {
+        var heading = template("<h2><%= groupName %></h2>\n");
+        html += heading({groupName: key});
+        for (var [key, subgroup] of Object.entries(group)) {
+            var subheading = template("<h3><%= subgroupName %></h3>\n");
+            html += subheading({subgroupName: key});
+            html += "<ul>\n";
+            for (var [url, name] of Object.entries(subgroup)) {
+                var item = template("<li><a href=\"<%= url %>\"><%= name %></a></li>\n");
+                html += item({url, name});
+            }
+            html += "</ul>\n";
+        }
+    }
+    html += "</main>\n";
+    html += "</body>\n";
+    html += "</html>\n";
+
+    try {
+        fs.writeFileSync(path, html);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 var data = generateJson();
 writeJson(data, "./build/manifest.json");
+writeIndex(data, "./build/index.html");
