@@ -364,12 +364,11 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        uglify: {
+        terser: {
             options: {
-                banner: "<%= banner %>",
+                compress: grunt.config.get("buildSettings.compress") ? true : false,
                 mangle: false,
-                sourceMap: true,
-                sourceMapIncludeSources: true
+                sourceMap: true
             },
             all: {
                 files: [{
@@ -414,27 +413,6 @@ module.exports = function (grunt) {
                     var buildPath = "build/";
                     return str.startsWith(buildPath) ? str : buildPath + str;
                 }
-            }
-        },
-        // Still need the concat task as uglify does not honour the {compress: false} option
-        // see: https://github.com/mishoo/UglifyJS2/issues/696
-        concat: {
-            options: {
-                separator: ";\n",
-                banner: "<%= banner %>",
-                sourceMap: true
-            },
-            all: {
-                nonull: true,
-                cwd: "./build/", // Src matches are relative to this path.
-                src: "<%= modulefiles.all.output.files %>",
-                dest: "./build/<%= allBuildName %>.js"
-            },
-            custom: {
-                nonull: true,
-                cwd: "./build/", // Src matches are relative to this path.
-                src: "<%= modulefiles.custom.output.files %>",
-                dest: "./build/<%= customBuildName %>.js"
             }
         },
         compress: {
@@ -614,10 +592,9 @@ module.exports = function (grunt) {
     });
 
     // Load the plugins:
-    grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-terser");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-dart-sass");
@@ -653,7 +630,6 @@ module.exports = function (grunt) {
             compress: !grunt.option("source"),
             target: target
         });
-        var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
             "copy:dependencies",
@@ -664,14 +640,14 @@ module.exports = function (grunt) {
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
-            concatTask + target,
+            "terser:" + target,
             "compress:" + target,
             "clean:postBuild"
         ];
         grunt.task.run(tasks);
     });
 
-    grunt.registerMultiTask("distributions", "Enables a project to split its files into a set of modules. A module's information is stored in a json file containing a name for the module, the files it contains, and other modules it depends on. The module files can then be accumulated into various configurations of included and excluded modules, which can be fed into other plugins (e.g. grunt-contrib-concat) for packaging.", function () {
+    grunt.registerMultiTask("distributions", "Enables a project to split its files into a set of modules. A module's information is stored in a json file containing a name for the module, the files it contains, and other modules it depends on. The module files can then be accumulated into various configurations of included and excluded modules, which can be fed into other plugins for packaging.", function () {
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
             name: this.target,
@@ -686,7 +662,6 @@ module.exports = function (grunt) {
 
         setBuildSettings(options);
 
-        var concatTask = options.compress ? "uglify:" : "concat:";
         var tasks = [
             "cleanForDist",
             "dart-sass:dist",
@@ -694,7 +669,7 @@ module.exports = function (grunt) {
             "pathMap:" + options.target,
             "copy:" + options.target,
             "copy:necessities",
-            concatTask + options.target,
+            "terser:" + options.target,
             "copy:distJS",
             "copy:distAssets"
         ];
