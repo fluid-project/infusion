@@ -1,6 +1,2 @@
 [build]
   command = "npm run buildLatest"
-
-[[redirects]]
-  from = "/"
-  to = "https://build.fluidproject.org/"
