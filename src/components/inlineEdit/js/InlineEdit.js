@@ -16,12 +16,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.inlineEdit");
 
-    fluid.inlineEdit.sendKey = function (control, event, virtualCode, charCode) {
-        var kE = document.createEvent("KeyEvents");
-        kE.initKeyEvent(event, 1, 1, null, 0, 0, 0, 0, virtualCode, charCode);
-        control.dispatchEvent(kE);
-    };
-
     fluid.inlineEdit.switchToViewMode = function (that) {
         that.editContainer.hide();
         that.displayModeRenderer.show();
