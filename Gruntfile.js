@@ -177,7 +177,7 @@ module.exports = function (grunt) {
         allBuildName: "<%= pkg.name %>-all",
         buildSettings: {}, // set by the build tasks
         customBuildName: "<%= pkg.name %>-<%= buildSettings.name %>",
-        banner: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
+        preamble: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
         clean: {
             build: "build",
             products: "products",
@@ -370,7 +370,7 @@ module.exports = function (grunt) {
                 mangle: false,
                 sourceMap: true,
                 output: {
-                    preamble: "<%= banner %>"
+                    preamble: "<%= preamble %>"
                 }
             },
             all: {
