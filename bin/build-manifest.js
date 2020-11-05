@@ -1,12 +1,10 @@
 /* eslint-env node */
 "use strict";
 
+var _ = require("lodash");
 var execSync = require("child_process").execSync;
 var fg = require("fast-glob").sync;
 var fs = require("fs");
-var lowerCase = require("lodash").lowerCase;
-var template = require("lodash").template;
-var upperFirst = require("lodash").upperFirst;
 
 /**
  * Clean up output to ensure that special terms, acronyms,
@@ -38,8 +36,8 @@ var replaceValuesInString = function (str) {
 };
 
 var normalizeCase = function (str) {
-    str = lowerCase(str);
-    return upperFirst(str);
+    str = _.lowerCase(str);
+    return _.upperFirst(str);
 };
 
 /**
@@ -220,20 +218,20 @@ var writeIndex = function (data, path) {
     html += "<body>\n";
     html += "<main id=\"main\">\n";
     html += "<h1>Infusion Build at <a href=\"http://github.com/fluid-project/infusion/commit/" + revision + "/\">" + revision + "</a></h1>\n";
-    for (var [key, group] of Object.entries(data)) {
-        var heading = template("<h2><%= groupName %></h2>\n");
+    _.forEach(data, function (group, key) {
+        var heading = _.template("<h2><%= groupName %></h2>\n");
         html += heading({groupName: key});
-        for (var [key, subgroup] of Object.entries(group)) {
-            var subheading = template("<h3><%= subgroupName %></h3>\n");
+        _.forEach(group, function (subgroup, key) {
+            var subheading = _.template("<h3><%= subgroupName %></h3>\n");
             html += subheading({subgroupName: key});
             html += "<ul>\n";
-            for (var [url, name] of Object.entries(subgroup)) {
-                var item = template("<li><a href=\"<%= url %>\"><%= name %></a></li>\n");
-                html += item({url, name});
-            }
+            _.forEach(subgroup, function (name, url) {
+                var item = _.template("<li><a href=\"<%= url %>\"><%= name %></a></li>\n");
+                html += item({url: url, name: name});
+            });
             html += "</ul>\n";
-        }
-    }
+        });
+    });
     html += "</main>\n";
     html += "</body>\n";
     html += "</html>\n";
@@ -243,7 +241,7 @@ var writeIndex = function (data, path) {
     } catch (err) {
         console.error(err);
     }
-}
+};
 
 var data = generateJson();
 writeJson(data, "./build/manifest.json");
