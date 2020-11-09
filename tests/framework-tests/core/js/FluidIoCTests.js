@@ -5007,7 +5007,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.countHeapRecurse = function (map, root, path) {
-        if (!map.has(root) && path !== "fluid.global") {
+        if (!map.has(root) && path !== "fluid.global" && root !== window) {
             map.set(root, path);
             fluid.each(root, function (child, seg) {
                 fluid.tests.countHeapRecurse(map, child, path + "." + seg);
