@@ -70,11 +70,8 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
 
-    - name: Run build script
-      run: npm run test:browser:prepare
-
     - name: Run browser tests
-      run: npm run test:browser:run
+      run: npm run test:browser
 
     - name: Run Node.js tests
       run: npm run test:node
