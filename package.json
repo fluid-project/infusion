@@ -22,7 +22,7 @@
         "prepare": "run-s deps build:sass",
         "prepublishOnly": "run-s test:bundles",
         "pretest": "rimraf reports/* coverage/*",
-        "test": "run-s build:dists test:*",
+        "test": "run-s test:browser test:node",
         "test:browser": "run-s test:browser:*",
         "test:browser:prepare": "run-s build:all:source",
         "test:browser:run": "testem ci --file tests/testem.js",
