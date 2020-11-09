@@ -240,7 +240,7 @@ module.exports = function (grunt) {
                     src: "<%= allBuildName %>.*",
                     dest: "dist/",
                     rename: function (dest, src) {
-                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src) : dest + src;
+                        return grunt.config.get("buildSettings.expanded") ? dest + src : addMinifyToFilename(dest, src);
                     }
                 }, {
                     expand: true,
@@ -248,7 +248,7 @@ module.exports = function (grunt) {
                     src: "<%= customBuildName %>.*",
                     dest: "dist/",
                     rename: function (dest, src) {
-                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src, "js") : dest + src;
+                        return grunt.config.get("buildSettings.expanded") ? dest + src : addMinifyToFilename(dest, src, "js");
                     }
                 }]
             },
@@ -366,10 +366,11 @@ module.exports = function (grunt) {
         },
         terser: {
             options: {
-                compress: grunt.config.get("buildSettings.compress") ? true : false,
+                compress: false,
                 mangle: false,
                 sourceMap: true,
                 output: {
+                    beautify: "<%= buildSettings.expanded %>",
                     preamble: "<%= preamble %>"
                 }
             },
@@ -448,7 +449,7 @@ module.exports = function (grunt) {
         "dart-sass": {
             compile: {
                 options: {
-                    outputStyle: "<% buildSettings.compress ? print('compressed') : print('expanded') %>"
+                    outputStyle: "<% buildSettings.expanded ? print('expanded') : print('compressed') %>"
                 },
                 files: [
                     {
@@ -462,7 +463,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 options: {
-                    outputStyle: "<% buildSettings.compress ? print('compressed') : print('expanded') %>"
+                    outputStyle: "<% buildSettings.expanded ? print('expanded') : print('compressed') %>"
                 },
                 files: [
                     {
@@ -470,7 +471,7 @@ module.exports = function (grunt) {
                         cwd: "src/framework/preferences/css/sass/",
                         src: ["*.scss"],
                         dest: "dist/assets/src/framework/preferences/css/",
-                        ext: "<% buildSettings.compress ? print('.min.css') : print('.css') %>"
+                        ext: "<% buildSettings.expanded ? print('.css') : print('.min.css') %>"
                     }
                 ]
             }
@@ -488,7 +489,7 @@ module.exports = function (grunt) {
             "all": {},
             "all.min": {
                 options: {
-                    compress: true
+                    expanded: false
                 }
             },
             "all-no-jquery": {
@@ -499,7 +500,7 @@ module.exports = function (grunt) {
             "all-no-jquery.min": {
                 options: {
                     exclude: "jQuery, jQueryUI",
-                    compress: true
+                    expanded: false
                 }
             },
             "framework": {
@@ -510,7 +511,7 @@ module.exports = function (grunt) {
             "framework.min": {
                 options: {
                     include: "framework",
-                    compress: true
+                    expanded: false
                 }
             },
             "framework-no-jquery": {
@@ -523,7 +524,7 @@ module.exports = function (grunt) {
                 options: {
                     include: "framework",
                     exclude: "jQuery, jQueryUI",
-                    compress: true
+                    expanded: false
                 }
             },
             "uio": {
@@ -534,7 +535,7 @@ module.exports = function (grunt) {
             "uio.min": {
                 options: {
                     include: "uiOptions",
-                    compress: true
+                    expanded: false
                 }
             },
             "uio-no-jquery": {
@@ -547,7 +548,7 @@ module.exports = function (grunt) {
                 options: {
                     include: "uiOptions",
                     exclude: "jQuery, jQueryUI",
-                    compress: true
+                    expanded: false
                 }
             }
         },
@@ -630,7 +631,7 @@ module.exports = function (grunt) {
             name: grunt.option("name") || "custom",
             exclude: grunt.option("exclude"),
             include: grunt.option("include"),
-            compress: !grunt.option("source"),
+            expanded: grunt.option("source"),
             target: target
         });
         var tasks = [
@@ -656,7 +657,7 @@ module.exports = function (grunt) {
             name: this.target,
             source: true,
             target: "all",
-            compress: false
+            expanded: true
         });
 
         if (options.exclude || options.include) {
