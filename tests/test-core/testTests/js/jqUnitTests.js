@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepNeq("{} is not equal to true", {}, true);
     });
 
-    jqUnit.promiseTest("jqUnit.promiseTest basic support (FLUID-6577)", function () {
+    jqUnit.test("jqUnit.promiseTest basic support (FLUID-6577)", function () {
         jqUnit.expect(1);
         var togo = fluid.promise();
         fluid.invokeLater(function () {
@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("eq4", null, {p1: "thing1"});
     });
 
-    jqUnit.promiseTest("This test should fail - testing promise rejection", function () {
+    jqUnit.test("This test should fail - testing promise rejection", function () {
         jqUnit.expect(1);
         var togo = fluid.promise();
         fluid.invokeLater(function () {
