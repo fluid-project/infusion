@@ -195,6 +195,16 @@ var jqUnit = jqUnit || {};
     // Mix these compatibility functions into the jqUnit namespace.
     $.extend(jqUnit, jsUnitCompat);
 
+    // Implement promise wrapper for FLUID-6577
+    jqUnit.promiseTest = function (name, func) {
+        jqUnit.asyncTest(name, function () {
+            var promise = func();
+            promise.then(jqUnit.start, function (err) {
+                jqUnit.fail(err);
+                jqUnit.start()
+            });
+        });
+    };
 
     /** Sort a component tree into canonical order, to facilitate comparison with
      * deepEq */
