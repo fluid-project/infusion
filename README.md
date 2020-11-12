@@ -254,10 +254,8 @@ To run only the browser tests:
 npm run test:browser
 ```
 
-Any browsers that Testem finds on your system will be launched sequentially with each browser running the full Infusion
-test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. Once you have
-run `npm install`, you can use the command `npx testem launchers` from the root of this repository to get a list of
-browsers that Testem can launch on your system.
+Testem will attempt to launch Chrome and Firefox sequentially with each browser running the full Infusion test suite.
+The results will be returned in your terminal in the [TAP](https://testanything.org/) format.
 
 If you would like to debug individual tests or view the test summary in a browser, you can:
 
