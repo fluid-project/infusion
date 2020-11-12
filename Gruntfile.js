@@ -371,6 +371,7 @@ module.exports = function (grunt) {
                 sourceMap: true,
                 output: {
                     beautify: "<%= buildSettings.expanded %>",
+                    comments: "<%= buildSettings.expanded %>",
                     preamble: "<%= preamble %>"
                 }
             },
