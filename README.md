@@ -259,10 +259,16 @@ The results will be returned in your terminal in the [TAP](https://testanything.
 
 If you would like to debug individual tests or view the test summary in a browser, you can:
 
-1. Host the working directory, for example, using a command like the following from the root of the repository:
-   `python -m SimpleHTTPServer 4102`
+1. Host the working directory:
+
+   ```bash
+   npm start
+   ```
+
+   Your terminal will show you the local address for the working directory, which will normally be <http://localhost:5000>.
+
 2. Open the "rollup" file `tests/all-tests.html` that runs all tests in a browser.  Continuing the above example, you
-   would load the URL `http://localhost:4102/tests/all-tests.html`.
+   would load the URL <http://localhost:5000/tests/all-tests.html>.
 
 To run tests of Infusion's distribution bundles:
 
@@ -303,6 +309,13 @@ Infusion will be available at [http://localhost:8000](http://localhost:8000)
 If you make changes to Infusion, repeat the steps to build the image and start a new container.
 
 ## Other Scripts
+
+Host the working directory (this will make it available at <http://localhost:5000> and let you access demos, examples,
+and tests in your browser):
+
+```bash
+npm start
+```
 
 Copy Infusion's dependencies from "node_modules" into the "src/lib" directory:
 
