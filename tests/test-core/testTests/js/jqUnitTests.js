@@ -44,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("1 is deep equal to 1", 1, 1);
         jqUnit.assertDeepNeq("{} is not equal to true", {}, true);
     });
-    
+
     jqUnit.promiseTest("jqUnit.promiseTest basic support (FLUID-6577)", function () {
         jqUnit.expect(1);
         var togo = fluid.promise();

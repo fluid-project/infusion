@@ -201,7 +201,7 @@ var jqUnit = jqUnit || {};
             var promise = func();
             promise.then(jqUnit.start, function (err) {
                 jqUnit.fail(err);
-                jqUnit.start()
+                jqUnit.start();
             });
         });
     };
