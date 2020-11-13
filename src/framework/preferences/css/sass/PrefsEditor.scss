@@ -153,7 +153,7 @@
             }
 
             input:focus ~ label {
-                outline: 2px solid black;
+                outline: 2px solid var(--fl-fgColor, black);
             }
         }
     }
