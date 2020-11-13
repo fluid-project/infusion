@@ -83,7 +83,7 @@ task. You may also wish to setup linting in your IDE.
 
 ```bash
 # Runs Infusion's linting tasks
-grunt lint
+npm run lint
 ```
 
 ### Pull Requests
