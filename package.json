@@ -40,6 +40,7 @@
         "build:sass": "grunt buildSass",
         "deps": "grunt loadDependencies",
         "lint": "grunt lint",
+        "start": "serve",
         "watch:sass": "grunt watch:buildSass"
     },
     "engines": {
@@ -84,6 +85,7 @@
         "opensans-webkit": "1.1.0",
         "rimraf": "3.0.2",
         "roboto-fontface": "0.10.0",
+        "serve": "11.3.2",
         "sinon": "9.0.2",
         "testem": "3.2.0",
         "url-polyfill": "1.1.8"
