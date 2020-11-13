@@ -18,7 +18,7 @@ var jqUnit = jqUnit || {};
 (function ($, fluid) {
     "use strict";
 
-    var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
+    var QUnitPassthroughs = ["module", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
 
     for (var i = 0; i < QUnitPassthroughs.length; ++i) {
@@ -195,6 +195,20 @@ var jqUnit = jqUnit || {};
     // Mix these compatibility functions into the jqUnit namespace.
     $.extend(jqUnit, jsUnitCompat);
 
+    // Implement promise wrapper for FLUID-6577 - this is actually consistent with QUnit's behaviour since 1.16.0
+    jqUnit.test = function (name, func) {
+        QUnit.asyncTest(name, function () {
+            var promise = func();
+            if (promise) {
+                promise.then(jqUnit.start, function (err) {
+                    jqUnit.fail(err);
+                    jqUnit.start();
+                });
+            } else {
+                jqUnit.start();
+            }
+        });
+    };
 
     /** Sort a component tree into canonical order, to facilitate comparison with
      * deepEq */

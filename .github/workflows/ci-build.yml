@@ -48,6 +48,7 @@ jobs:
       run: npm install
 
     - name: Run build script
-      run: npm run buildDists
+      run: npm run test:bundles:prepare
+
     - name: Run browser bundle tests
-      run: npm run test:browserBundles
+      run: npm run test:bundles:run
