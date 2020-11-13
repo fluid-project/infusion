@@ -45,6 +45,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepNeq("{} is not equal to true", {}, true);
     });
 
+    jqUnit.test("jqUnit.promiseTest basic support (FLUID-6577)", function () {
+        jqUnit.expect(1);
+        var togo = fluid.promise();
+        fluid.invokeLater(function () {
+            jqUnit.assert("Asynchronous assertion passed");
+            togo.resolve();
+        });
+        return togo;
+    });
+
     /** From here on, EVERY TEST MUST FAIL **/
 
     jqUnit.module("jqUnit tests which must each fail", {
@@ -68,6 +78,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("eq10", [1, 2], [1, 2, 3]);
         jqUnit.assertDeepEq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
         jqUnit.assertDeepEq("eq4", null, {p1: "thing1"});
+    });
+
+    jqUnit.test("This test should fail - testing promise rejection", function () {
+        jqUnit.expect(1);
+        var togo = fluid.promise();
+        fluid.invokeLater(function () {
+            togo.reject("Test failed asynchronously");
+        });
+        return togo;
     });
 
 })();
