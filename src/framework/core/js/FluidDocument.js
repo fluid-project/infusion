@@ -68,6 +68,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         $.browser = browser;
     }
 
+    // TODO: "Scoped data system" will be replaced by persistent lookup of DOM element ids to components
+
     // Private constants.
     var NAMESPACE_KEY = "fluid-scoped-data";
 

@@ -47,6 +47,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
+        events: {
+            onDomBind: null
+        },
+        // Note that we apply the same timing as the pref's framework's panels for old-style components, to avoid
+        // confusing its timing before it is rewritten, which has a whole bunch of createOnEvent: "onDomBind" subcomponents.
+        // The renderer and all modern components will fire this in a timely way when the DOM binder is actually constructed
+        listeners: {
+            "onCreate.onDomBind": "{that}.events.onDomBind"
+        },
         members: {
             dom: "@expand:fluid.createDomBinder({that}.container, {that}.options.selectors)"
         },

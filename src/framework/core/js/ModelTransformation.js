@@ -611,10 +611,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} source - the model to transform
      * @param {Object} rules - a rules object containing instructions on how to transform the model
      * @param {Object} options - a set of rules governing the transformations. At present this may contain
-     * the values <code>isomorphic: true</code> indicating that the output model is to be governed by the
-     * same schema found in the input model, or <code>flatSchema</code> holding a flat schema object which
+     * the values:
+     * @param {Boolean} options.isomorphic - `true` indicating that the output model is to be governed by the
+     * same schema found in the input model
+     * @param {Object} options.flatSchema - holding a flat schema object which
      * consists of a hash of EL path specifications with wildcards, to the values "array"/"object" defining
      * the schema to be used to construct missing trunk values.
+     * @param {ChangeApplier} options.finalApplier - A changeApplier to receive changes caused by output values
+     * @param {Object} options.oldTarget - A target model resulting from a previous round of updates
+     * @param {Object} options.oldSource - The source model which led output to `options.oldTarget`
      * @return {Any} The transformed model.
      */
     fluid.model.transformWithRules = function (source, rules, options) {
@@ -631,6 +636,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // TODO: This should default to undefined to allow return of primitives, etc.
                 model: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", 0, [""])) : {}
             },
+            oldSource: options.oldSource,
+            oldTarget: options.oldTarget,
             resolverGetConfig: getConfig,
             resolverSetConfig: setConfig,
             collectedFlatSchemaOpts: undefined, // to hold options for flat schema collected during transforms

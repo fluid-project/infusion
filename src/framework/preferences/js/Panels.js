@@ -60,6 +60,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.prefs.panel", {
         gradeNames: ["fluid.prefs.msgLookup", "fluid.rendererComponent"],
+        // TODO: This event moved into fluid.viewComponent
+        /*
         events: {
             onDomBind: null
         },
@@ -68,7 +70,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // when used as a subpanel, it will be triggered by the resetDomBinder invoker.
         listeners: {
             "onCreate.onDomBind": "{that}.events.onDomBind"
-        },
+        },*/
         components: {
             msgResolver: {
                 type: "fluid.messageResolver"

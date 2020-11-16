@@ -664,6 +664,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return parsed;
     };
 
+    fluid.registerNamespace("fluid.materialiserRegistry"); // Currently see FluidView-browser.js
+    // Naturally this will be put into component grades, along with workflows, once we get rid of our insufferably inefficient options system
+
+    fluid.matchMaterialiserSpec = function (record, segs) {
+        var trundle = record;
+        for (var i = 0; i < segs.length; ++i) {
+            var seg = segs[i];
+            trundle = trundle[seg] || trundle["*"];
+            if (!trundle) {
+                return null;
+            }
+        }
+        return trundle;
+    };
+
+    fluid.materialiseRelayPath = function (that, segs) {
+        fluid.each(fluid.materialiserRegistry, function (gradeRecord, grade) {
+            if (fluid.componentHasGrade(that, grade)) {
+                var record = fluid.matchMaterialiserSpec(gradeRecord, segs);
+                if (record) {
+                    fluid.invokeGlobalFunction(record.materialiser, [that, segs]);
+                }
+            }
+        });
+    };
+
     // Gets global record for a particular transaction id, allocating if necessary - looks up applier id to transaction,
     // as well as looking up source id (linkId in below) to count/true
     // Through poor implementation quality, not every access passes through this function - some look up instantiator.modelTransactions directly
@@ -743,7 +769,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * held in `options.targetApplier`.
      * @param {Object} target - The target component at the end of the relay.
      * @param {String[]} targetSegs - String segments representing the path in the target where outgoing changes are to be fired
-     * @param {Component|null} source - The source component from where changes will be listened to. May be null if the change source is a relay document.
+     * @param {Component|null} source - The source component from where changes will be listened to. May be null if the change source is a relay document. *actually not null*
      * @param {String[]} sourceSegs - String segments representing the path in the source component's model at which changes will be listened to
      * @param {String} linkId - The unique id of this relay arc. This will be used as a key within the active transaction record to look up dynamic information about
      *     activation of the link within that transaction (currently just an activation count)
@@ -762,6 +788,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSegs, linkId, transducer, options, npOptions) {
         var targetApplier = options.targetApplier || target.applier; // first branch implies the target is a relay document
         var sourceApplier = options.sourceApplier || source.applier; // first branch implies the source is a relay document - listener will be transactional
+        if (!options.targetApplier) {
+            fluid.materialiseRelayPath(target, targetSegs);
+        }
+        if (!options.sourceApplier) {
+            fluid.materialiseRelayPath(source, sourceSegs);
+        }
         var applierId = targetApplier.applierId;
         targetSegs = fluid.makeArray(targetSegs);
         sourceSegs = fluid.makeArray(sourceSegs); // take copies since originals will be trashed
@@ -771,7 +803,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (applier && trans && !transRec[applier.applierId]) { // don't trash existing record which may contain "options" (FLUID-5397)
                 transRec[applier.applierId] = {transaction: trans}; // enlist the outer user's original transaction
             }
-            var existing = transRec[applierId];
+            var transEl = transRec[applierId];
             transRec[linkId] = transRec[linkId] || 0;
             // Crude "oscillation prevention" system limits each link to maximum of 2 operations per cycle (presumably in opposite directions)
             var relay = true; // TODO: See FLUID-5303 - we currently disable this check entirely to solve FLUID-5293 - perhaps we might remove link counts entirely
@@ -780,8 +812,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (transRec[linkId] > fluid.relayRecursionBailout) {
                     fluid.fail("Error in model relay specification at component ", target, " - operated more than " + fluid.relayRecursionBailout + " relays without model value settling - current model contents are ", trans.newHolder.model);
                 }
-                if (!existing) {
-                    existing = fluid.registerRelayTransaction(transRec, targetApplier, transId, options, npOptions);
+                if (!transEl) {
+                    transEl = fluid.registerRelayTransaction(transRec, targetApplier, transId, options, npOptions);
                 }
                 if (transducer && !options.targetApplier) {
                     // TODO: This censoring of newValue is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
@@ -789,16 +821,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     // the "forwardAdapter"
                     fluid.pushActivity("relayTransducer", "computing modelRelay output for rule with target path \"%targetSegs\" and namespace \"%namespace\"",
                         {targetSegs: targetSegs, namespace: npOptions.namespace});
-                    transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs, changeRequest);
+                    transducer(transEl.transaction, options.sourceApplier ? undefined : newValue, source, sourceSegs, targetSegs, changeRequest);
                     fluid.popActivity();
                 } else {
                     if (changeRequest && changeRequest.type === "DELETE") {
                         // Rebase the incoming DELETE with respect to this relay - whilst "newValue" is correct and we could honour this by
                         // asking fluid.notifyModelChanges to decompose this into a DELETE plus ADD, this is more efficient
                         var deleteSegs = targetSegs.concat(changeRequest.segs.slice(sourceSegs.length));
-                        existing.transaction.fireChangeRequest({type: "DELETE", segs: deleteSegs});
+                        transEl.transaction.fireChangeRequest({type: "DELETE", segs: deleteSegs});
                     } else if (newValue !== undefined) {
-                        existing.transaction.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
+                        transEl.transaction.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
                     }
                 }
             }
@@ -815,6 +847,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.log(fluid.logLevel.TRACE, "Adding relay listener with listenerId " + spec.listenerId + " to source applier with id " +
                 sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
         }
+        // TODO: Actually, source is never null - the case ii) driver below passes it on - check the effect of this registration
         if (source) { // TODO - we actually may require to register on THREE sources in the case modelRelay is attached to a
             // component which is neither source nor target. Note there will be problems if source, say, is destroyed and recreated,
             // and holder is not - relay will in that case be lost. Need to integrate relay expressions with IoCSS.
@@ -924,12 +957,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.transformToAdapter = function (transform, targetPath) {
         var basedTransform = {};
         basedTransform[targetPath] = transform; // TODO: Faulty with respect to escaping rules
-        return function (trans, newValue, sourceSegs, targetSegs, changeRequest) {
+        return function (trans, newValue, source, sourceSegs, targetSegs, changeRequest) {
             if (changeRequest && changeRequest.type === "DELETE") {
                 trans.fireChangeRequest({type: "DELETE", path: targetPath}); // avoid mouse droppings in target document for FLUID-5585
             }
+            var oldTarget = fluid.getImmediate(trans.oldHolder.model, targetSegs);
+            var oldSource = fluid.getImmediate(source.model, sourceSegs); // TODO: check whether this could ever diverge from trans oldHolder?
             // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
-            fluid.model.transformWithRules(newValue, basedTransform, {finalApplier: trans});
+            // TODO: Also avoid recreating all the transform machinery inside
+            fluid.model.transformWithRules(newValue, basedTransform, {
+                finalApplier: trans,
+                oldTarget: oldTarget,
+                oldSource: oldSource
+            });
         };
     };
 
@@ -969,6 +1009,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         that.forwardApplier = fluid.makeHolderChangeApplier(that.forwardHolder);
         that.forwardApplier.isRelayApplier = true; // special annotation so these can be discovered in the transaction record
+        // This event is fired from fluid.model.updateRelays with the component's own transaction as the argument (2nd argument, overall transRec unused)
         that.invalidator = fluid.makeEventFirer({name: "Invalidator for model relay with applier " + that.forwardApplier.applierId});
         if (sourcePath !== null) {
             // TODO: backwardApplier is unused
@@ -997,8 +1038,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.singleTransformToFull = function (singleTransform) {
-        var withPath = $.extend(true, {inputPath: ""}, singleTransform);
+        var expanded = typeof(singleTransform) === "string" ? {
+            type: singleTransform
+        } : singleTransform;
+        // TODO 11/20: This is nuts, why do we have to specify inputPath here?
+        var withPath = $.extend(true, {inputPath: ""}, expanded);
         return {
+        // TODO: Also nuts - why can't the thing accept "transform" as a top-level key?
             "": {
                 transform: withPath
             }
@@ -1013,20 +1059,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         always:   {}
     };
 
-    /** Parse a relay condition specification, e.g. of the form `{includeSource: "init"}` or `never` into a hash representation
-     * suitable for rapid querying.
-     * @param {String|Object} condition - A relay condition specification, appearing in the section `forward` or `backward` of a
-     * relay definition
-     * @return {RelayCondition} The parsed condition, holding members `includeSource` and `excludeSource` each with a hash to `true`
-     * of referenced sources
-     */
-    fluid.model.parseRelayCondition = function (condition) {
+    fluid.model.expandRelayCondition = function (condition) {
+        var exclusionRec;
         if (condition === "initOnly") {
             fluid.log(fluid.logLevel.WARN, "The relay condition \"initOnly\" is deprecated: Please use the form 'includeSource: \"init\"' instead");
         } else if (condition === "liveOnly") {
             fluid.log(fluid.logLevel.WARN, "The relay condition \"liveOnly\" is deprecated: Please use the form 'excludeSource: \"init\"' instead");
         }
-        var exclusionRec;
         if (!condition) {
             exclusionRec = {};
         } else if (typeof(condition) === "string") {
@@ -1037,7 +1076,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             exclusionRec = condition;
         }
-        return fluid.parseSourceExclusionSpec({}, exclusionRec);
+        return exclusionRec;
+    };
+
+    /** Parse a relay condition specification, e.g. of the form `{includeSource: "init"}` or `never` into a hash representation
+     * suitable for rapid querying.
+     * @param {String|Object} conditions - A relay condition specification, appearing in the section `forward` or `backward` of a
+     * relay definition
+     * @return {RelayCondition} The parsed condition, holding members `includeSource` and `excludeSource` each with a hash to `true`
+     * of referenced sources
+     */
+    fluid.model.parseRelayConditions = function (conditions) {
+        var expanded = conditions.map(fluid.model.expandRelayCondition);
+        var mergeArgs = [true, {}].concat(expanded);
+        var merged = fluid.extend.apply(null, mergeArgs);
+        return fluid.parseSourceExclusionSpec({}, merged);
     };
 
     /** Parse a single model relay record as appearing nested within the `modelRelay` block in a model component's
@@ -1054,11 +1107,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
         var namespace = mrrec.namespace || key;
 
-        var transform = mrrec.singleTransform ? fluid.singleTransformToFull(mrrec.singleTransform) : mrrec.transform;
-        if (!transform) {
-            fluid.fail("Cannot parse modelRelay record without element \"singleTransform\" or \"transform\":", mrrec);
-        }
-        var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
+        var singleTransform = typeof(mrrec.singleTransform) === "string" ? {
+            type: mrrec.singleTransform
+        } : mrrec.singleTransform;
+
+        var transform = mrrec.transform || fluid.singleTransformToFull(
+            singleTransform || {
+                type: "fluid.transforms.identity"
+            });
+        var upDefaults = singleTransform ? fluid.defaults(singleTransform.type) : null;
+        var relayOptions = upDefaults && upDefaults.relayOptions || {};
+
+        var forwardCond = fluid.model.parseRelayConditions([relayOptions.forward, mrrec.forward]),
+            backwardCond = fluid.model.parseRelayConditions([relayOptions.backward, mrrec.backward]);
 
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond, namespace, mrrec.priority);
         if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
@@ -1105,8 +1166,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 value = fluid.isComponent(parsed.that) ? fluid.getForComponent(parsed.that, parsed.segs) : fluid.getImmediate(parsed.that, parsed.segs);
                 if (value instanceof fluid.fetchResources.FetchOne) {
                     that.applier.resourceMap.push({segs: fluid.makeArray(segs), fetchOne: value});
-                    // We don't support compositing of resource references since we couldn't apply this if their
-                    // value changes
+                    // We don't support compositing of resource references since we couldn't apply this if their value changes
                     return null;
                 }
             } else {
@@ -1418,7 +1478,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 listener: func, // for initModelEvent
                 listenerId: fluid.allocateGuid(), // external declarative listeners may often share listener handle, identify here
                 segsArray: fluid.getMembers(parsedArray, "modelSegs"),
-                pathArray: fluid.getMembers(parsedArray, "path"),
                 includeSource: record.includeSource,
                 excludeSource: record.excludeSource,
                 priority: fluid.expandOptions(record.priority, that),
@@ -1426,6 +1485,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             };
             // update "spec" so that we parse priority information just once
             spec = parsed.applier.modelChanged.addListener(spec, func, namespace, record.softNamespace);
+            fluid.materialiseRelayPath(that, spec.segsArray);
 
             fluid.recordChangeListener(that, parsed.applier, func, spec.listenerId);
         });

@@ -1281,6 +1281,39 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("There should now be 5 headings", 5, afterHeadings.length);
     });
 
+    /** FLUID-6580: Integration constant lenses **/
+
+    fluid.defaults("fluid.tests.fluid6580root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            clicked: 0,
+            enabled: false
+        },
+        modelRelay: {
+            clickRelay: {
+                source: "clicked",
+                target: "enabled",
+                singleTransform: "fluid.transforms.toggle"
+            }
+        }
+    });
+
+    fluid.tests.fluid6850test = function (initEnabled) {
+        jqUnit.test("FLUID-6580 I: fluid.transforms.toggle relay", function () {
+            var that = fluid.tests.fluid6580root({
+                model: {
+                    enabled: initEnabled
+                }
+            });
+            jqUnit.assertDeepEq("Initial model as expected", {clicked: 0, enabled: initEnabled}, that.model);
+            that.applier.change("clicked", 1);
+            jqUnit.assertDeepEq("Middle model as expected", {clicked: 1, enabled: !initEnabled}, that.model);
+            that.applier.change("clicked", 2);
+            jqUnit.assertDeepEq("Final model as expected", {clicked: 2, enabled: initEnabled}, that.model);
+        });
+    };
+
+    fluid.tests.fluid6850test(true);
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 
@@ -3840,8 +3873,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.test.runTests([
+/*    fluid.test.runTests([
         "fluid.tests.fluid5659root"
     ]);
+*/
 
 })(jQuery);

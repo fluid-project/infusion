@@ -867,6 +867,69 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             (transformSpec.max === undefined ||  transformSpec.max >= value) ? true : false;
     };
 
+    /** Toggle transformer which maps an increasing integer count into the space true/false - suitable for mapping
+     * e.g. a stream of click counts onto a toggle state.
+     */
+
+    fluid.defaults("fluid.transforms.toggle", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.pocketLens"],
+        invertConfiguration: "fluid.transforms.toggle.invert",
+        relayOptions: {
+            forward: {
+                excludeSource: "init"
+            },
+            backward: {
+                includeSource: "init"
+            }
+        }
+    });
+
+    /** @param {Number} source - Numeric value to be converted
+     * @param {Object} transformSpec - The transformation specification document
+     * @param {Transformer} transformer - Reference to the transformer machinery
+     * @return {Boolean} Updated target value
+     */
+    fluid.transforms.toggle = function (source, transformSpec, transformer) {
+        // Note that this use of oldSource/oldTarget is dependent in the particular driver in the singleTransform modelRelay system that
+        // assumes there is a single transform covering the entire document. If we ever want to support these transforms in free-form
+        // model relay documents (very unlikely) we will have to reform this - more likely we will dismantle free-form model relays
+        var oldSource = transformer.oldSource, oldTarget = transformer.oldTarget;
+        var phase = transformer.oldSource === undefined ? 0 : oldSource - fluid.transforms.inverseToggle.base(oldTarget);
+        return fluid.transforms.toggle.base(source + phase);
+    };
+
+
+    // The base transform
+    fluid.transforms.toggle.base = function (source) {
+        return source % 2 === 1;
+    };
+
+    fluid.transforms.toggle.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.inverseToggle";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.inverseToggle", {
+        // This transform is only expected to arise as the inverse of fluid.transforms.toggle and so it does not
+        // produce an inverse.
+        gradeNames: ["fluid.standardTransformFunction", "fluid.pocketLens"]
+    });
+
+    /** @param {Boolean} source - Boolean toggle value to be converted
+     * @param {Object} transformSpec - The transformation specification document
+     * @param {Transformer} transformer - Reference to the transformer machinery
+     * @return {Number} Updated target count
+     */
+    fluid.transforms.inverseToggle = function (source, transformSpec, transformer) {
+    // TODO: It looks like this leg should never update the original source (our target) since one must assume the state change arose from elsewhere
+    // Check whether we can always get away with returning undefined
+        return transformer.originalTarget || undefined;
+    };
+
+    fluid.transforms.inverseToggle.base = function (source) {
+        return source ? 1 : 0;
+    };
+
     /**
      *
      * Convert a string to a Boolean, for example, when working with HTML form element values.

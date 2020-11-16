@@ -19,6 +19,95 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    fluid.registerNamespace("fluid.materialisers");
+
+    fluid.makeDomMaterialiserManager = function () {
+        // In future we will want to track listeners and other elements in order to invalidate them, but currently
+        // there are no use cases
+        var that = {
+            idToModelListeners: {}
+        };
+        return that;
+    };
+
+    fluid.domMaterialiserManager = fluid.makeDomMaterialiserManager();
+
+    // Passive - pushes out to text
+    fluid.materialisers.domText = function (that, segs) {
+        var shadow = fluid.shadowForComponent(that);
+        var materialisedPath = ["materialisedPaths"].concat(segs);
+        if (fluid.getImmediate(shadow, materialisedPath)) {
+            return;
+        }
+        fluid.model.setSimple(shadow, materialisedPath, true);
+        var listener = function (value) {
+            if (that.dom) {
+                that.dom.locate(segs[1]).text(value);
+            }
+        };
+        fluid.pushArray(fluid.domMaterialiserManager.idToModelListeners, that.id, listener);
+        that.applier.modelChanged.addListener({segs: segs}, listener);
+        that.events.onDomBind.addListener(function () {
+            listener(fluid.getImmediate(that.model, segs));
+        });
+        // For "read" materialisers, if the DOM has shorter lifetime than the component, the binder will still function
+    };
+
+    // Active - received clicks
+    fluid.materialisers.domClicked = function (that, segs) {
+        that.applier.change(segs, 0);
+        var listener = function () {
+            // TODO: Add a change source, and stick "event" on the stack somehow
+            that.applier.change(segs, fluid.getImmediate(that.model, segs) + 1);
+        };
+        // TODO: ensure that we don't miss the initial DOM bind event - unlikely, since models are resolved first
+        // We assume that an outdated DOM will cease to generate events and be GCed
+        that.events.onDomBind.addListener(function () {
+            that.dom.locate(segs[1]).click(listener);
+        });
+    };
+
+    // Bidirectional - pushes and receives values
+    fluid.materialisers.domValue = function (that, segs) {
+        that.events.onDomBind.addListener(function () {
+            var element = that.dom.locate(segs[1]);
+
+            var domListener = function () {
+                that.applier.change(segs, element.val(), "ADD", "DOM");
+            };
+
+            var listener = function (value) {
+                element.val(value);
+            };
+
+            that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, listener);
+
+            that.dom.locate(segs[1]).change(domListener);
+        });
+    };
+
+    // Remember, naturally all this stuff will go into defaults when we can afford it
+    fluid.registerNamespace("fluid.materialiserRegistry");
+
+
+    fluid.materialiserRegistry["fluid.viewComponent"] = {
+        "dom": {
+            "*": {
+                "text": {
+                    materialiser: "fluid.materialisers.domText"
+                },
+                "clicked": {
+                    materialiser: "fluid.materialisers.domClicked"
+                },
+                "value": {
+                    materialiser: "fluid.materialisers.domValue"
+                }
+            }
+        }
+    };
+
+    // TODO: Most of these utilities below are not general purpose, and should either be packaged with individual components
+    // such as the Reorderer if they are still appropriate, or else abolished once the new renderer is fully rolled out
 
     // DOM Utilities.
 
@@ -210,6 +299,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // DOCUMENT_NODE - guide to node types at https://developer.mozilla.org/en/docs/Web/API/Node/nodeType
         return node.nodeType === 9 ? node : node.ownerDocument;
     };
+
+    // END DOM UTILITIES which are probably not general purpose
 
     /** Fluid ARIA Labeller **/
 

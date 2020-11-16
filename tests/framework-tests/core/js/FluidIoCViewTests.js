@@ -247,4 +247,58 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("Elements should have been removed", 0, elements.length);
     });
 
+    /** Integral binding **/
+
+    // Simple integral binding relaying model out to field text
+    fluid.defaults("fluid.tests.simpleIntegral", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-simple-field"
+        },
+        modelRelay: {
+            source: "{that}.model.field",
+            target: "{that}.model.dom.field.text"
+        }
+    });
+
+    jqUnit.test("Simple integral binding", function () {
+        var that = fluid.tests.simpleIntegral(".flc-tests-simple-integral", {
+            model: {
+                field: "Label"
+            }
+        });
+        jqUnit.assertEquals("Label should have been rendered", "Label", that.locate("field").text());
+    });
+
+    // Toggle integral binding relaying click count onto model
+    fluid.defaults("fluid.tests.toggleIntegral", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            button: ".flc-tests-toggle-button"
+        },
+        model: {
+            enabled: false
+        },
+        modelRelay: {
+            source: "{that}.model.dom.button.clicked",
+            target: "{that}.model.enabled",
+            singleTransform: "fluid.transforms.toggle"
+        }
+    });
+
+    fluid.tests.toggleIntegral.test = function (initEnabled) {
+        jqUnit.test("Toggle integral binding: initial value " + initEnabled, function () {
+            var that = fluid.tests.toggleIntegral(".flc-tests-toggle-integral", {
+                model: {
+                    enabled: initEnabled
+                }
+            });
+            jqUnit.assertEquals("Initial model enabled state should be uncorrupted", initEnabled, that.model.enabled);
+            that.locate("button").click();
+            jqUnit.assertEquals("Click should " + (initEnabled ? "disable" : "enable") + " model", !initEnabled, that.model.enabled);
+            that.locate("button").click();
+            jqUnit.assertEquals("Click should " + (initEnabled ? "enable" : "disable") + " model again", initEnabled, that.model.enabled);
+        });
+    };
+
 })();
