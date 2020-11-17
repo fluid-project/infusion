@@ -301,4 +301,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     };
 
+    fluid.tests.toggleIntegral.test(false);
+    fluid.tests.toggleIntegral.test(true);
+
 })();

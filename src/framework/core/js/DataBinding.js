@@ -345,18 +345,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // Enlist this model component as part of the "initial transaction" wave - note that "special transaction" init
-    // is indexed by component, not by applier, and has special record type (completeOnInit + initModel), in addition to transaction
+    // is indexed by component id, not by applier, and has special record type (completeOnInit + initModel), in addition to transaction
     fluid.enlistModelComponent = function (that) {
-        var initModelTransaction = fluid.currentTreeTransaction().initModelTransaction;
+        var treeTransaction = fluid.currentTreeTransaction();
+        var transId = treeTransaction.initModelTransactionId;
+        var initModelTransaction = treeTransaction.initModelTransaction;
         var enlist = initModelTransaction[that.id];
         if (!enlist) {
             var shadow = fluid.shadowForComponent(that);
             enlist = {
                 that: that,
                 applier: fluid.getForComponent(that, "applier"),
-                completeOnInit: !!shadow.initTransactionId
+                completeOnInit: !!shadow.initTransactionId,
+                transaction: that.applier.initiate(null, "init", transId)
             };
             initModelTransaction[that.id] = enlist;
+            var transRec = fluid.getModelTransactionRec(fluid.rootComponent, transId);
+            transRec[that.applier.applierId] = {transaction: enlist.transaction};
         }
         return enlist;
     };
@@ -477,17 +482,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
      * @param {Object} initModelTransaction The record for the init transaction. This is a hash indexed by component id
-     * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `complete`.
+     * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `completeOnInit`.
      * @param {String} transId The id of the model transaction corresponding to the init model transaction
      */
     fluid.operateInitialTransaction = function (initModelTransaction, transId) {
-        var transRec = fluid.getModelTransactionRec(fluid.rootComponent, transId);
         var transacs = fluid.transform(initModelTransaction, function (recel) {
+            /*
             var transac = recel.that.applier.initiate(null, "init", transId);
             // Note that here we (probably unnecessarily) trash any old transactions since all we are after is newHolder
             transRec[recel.that.applier.applierId] = {transaction: transac};
             // Also store it in the init transaction record so it can be easily globbed onto in applier.fireChangeRequest
             recel.transaction = transac;
+            */
             return recel.transaction;
         });
         // Compute the graph of init transaction relays for FLUID-6234 - one day we will have to do better than this, since there
@@ -510,6 +516,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         recs.sort(function (reca, recb) {
             return reca.initPriority - recb.initPriority;
         });
+        var transRec = fluid.getModelTransactionRec(fluid.rootComponent, transId);
         // Pass 1: Apply all raw new (initial) values to their respective models in the correct dependency order, before attempting to apply any
         // relay rules in case these end up mutually overwriting (especially likely with freshly constructed lensed components)
         recs.forEach(function applyInitialModelTransactionValues(recel) {
@@ -680,14 +687,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.materialiseRelayPath = function (that, segs) {
-        fluid.each(fluid.materialiserRegistry, function (gradeRecord, grade) {
-            if (fluid.componentHasGrade(that, grade)) {
-                var record = fluid.matchMaterialiserSpec(gradeRecord, segs);
-                if (record) {
-                    fluid.invokeGlobalFunction(record.materialiser, [that, segs]);
+        var shadow = fluid.shadowForComponent(that);
+        var materialisedPath = ["materialisedPaths"].concat(segs);
+        if (!fluid.getImmediate(shadow, materialisedPath)) {
+            fluid.each(fluid.materialiserRegistry, function (gradeRecord, grade) {
+                if (fluid.componentHasGrade(that, grade)) {
+                    var record = fluid.matchMaterialiserSpec(gradeRecord, segs);
+                    if (record && record.materialiser) {
+                        fluid.model.setSimple(shadow, materialisedPath, {});
+                        fluid.invokeGlobalFunction(record.materialiser, [that, segs]);
+                    }
                 }
-            }
-        });
+            });
+        }
     };
 
     // Gets global record for a particular transaction id, allocating if necessary - looks up applier id to transaction,
@@ -1325,14 +1337,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             shadowRecord.isBoolean, localRecordContributor);
     };
 
+    // No longer a top-level workflow function, but tagged from the end of fluid.enlistModelWorkflow
     fluid.operateInitialTransactionWorkflow = function (shadows, treeTransaction) {
-        var transId = treeTransaction.initModelTransactionId;
-        if (!transId) {
-            transId = fluid.allocateGuid();
-            treeTransaction.initModelTransactionId = transId;
-        }
         fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
             var initModelTransaction = treeTransaction.initModelTransaction;
+            var transId = treeTransaction.initModelTransactionId;
             fluid.operateInitialTransaction(initModelTransaction, transId);
         }, function (e) {
             treeTransaction.initModelTransaction = {};
@@ -1343,6 +1352,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.enlistModelWorkflow = function (shadows, treeTransaction) {
+        var transId = treeTransaction.initModelTransactionId;
+        if (!transId) {
+            transId = fluid.allocateGuid();
+            treeTransaction.initModelTransactionId = transId;
+        }
         shadows.forEach(function (shadow) {
             fluid.getForComponent(shadow.that, "modelRelay"); // invoke fluid.establishModelRelay and enlist each component
         });

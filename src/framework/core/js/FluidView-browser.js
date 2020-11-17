@@ -34,12 +34,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Passive - pushes out to text
     fluid.materialisers.domText = function (that, segs) {
-        var shadow = fluid.shadowForComponent(that);
-        var materialisedPath = ["materialisedPaths"].concat(segs);
-        if (fluid.getImmediate(shadow, materialisedPath)) {
-            return;
-        }
-        fluid.model.setSimple(shadow, materialisedPath, true);
         var listener = function (value) {
             if (that.dom) {
                 that.dom.locate(segs[1]).text(value);
