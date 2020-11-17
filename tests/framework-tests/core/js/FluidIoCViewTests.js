@@ -304,4 +304,30 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.toggleIntegral.test(false);
     fluid.tests.toggleIntegral.test(true);
 
+    // Bidirectional integral binding relaying bound value to input field
+    fluid.defaults("fluid.tests.bidiIntegral", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-bidi-field"
+        },
+        modelRelay: {
+            source: "{that}.model.field",
+            target: "{that}.model.dom.field.value"
+        }
+    });
+
+    jqUnit.test("Bidirectional integral binding", function () {
+        var that = fluid.tests.bidiIntegral(".flc-tests-bidi-integral", {
+            model: {
+                field: "Model value"
+            }
+        });
+        var field = that.locate("field");
+        jqUnit.assertEquals("Field should have been rendered with model value", "Model value", field.val());
+        fluid.changeElementValue(field, "Updated value");
+        jqUnit.assertEquals("Changed value should have been propagated into model", "Updated value", that.model.field);
+        that.applier.change("field", "Updated model value");
+        jqUnit.assertEquals("Field should have been rendered with updated model value", "Updated model value", field.val());
+    });
+
 })();

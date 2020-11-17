@@ -77,6 +77,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, listener);
 
             that.dom.locate(segs[1]).change(domListener);
+            // Pull the initial value from the model
+            listener(fluid.getImmediate(that.model, segs));
+            // TODO: How do we know not to pull the value from the DOM on startup? Are we expected to introspect into
+            // the relay rule connecting it? Surely not. In practice this should use the same rule as "outlying init
+            // values" in the main ChangeApplier which we have done, but now there is no mechanism to override it.
         });
     };
 
