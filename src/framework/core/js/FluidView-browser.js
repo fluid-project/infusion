@@ -64,10 +64,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Bidirectional - pushes and receives values
     fluid.materialisers.domValue = function (that, segs) {
         that.events.onDomBind.addListener(function () {
+
             var element = that.dom.locate(segs[1]);
+            var isCheckbox = element[0].type === "checkbox";
 
             var domListener = function () {
-                that.applier.change(segs, element.val(), "ADD", "DOM");
+                var val = fluid.materialisers.domValue.getFieldValue(isCheckbox, element);
+                that.applier.change(segs, val, "ADD", "DOM");
             };
 
             var listener = function (value) {
@@ -76,13 +79,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, listener);
 
-            that.dom.locate(segs[1]).change(domListener);
+            var options = that.options.bindingOptions[fluid.model.composeSegments.apply(null, segs)];
+            var changeEvent = options && options.changeEvent || "change";
+
+            that.dom.locate(segs[1]).on(changeEvent, domListener);
             // Pull the initial value from the model
             listener(fluid.getImmediate(that.model, segs));
             // TODO: How do we know not to pull the value from the DOM on startup? Are we expected to introspect into
             // the relay rule connecting it? Surely not. In practice this should use the same rule as "outlying init
             // values" in the main ChangeApplier which we have done, but now there is no mechanism to override it.
         });
+    };
+
+    // Historically such logic was fused inside fluid.value but we will eventually break it apart
+    fluid.materialisers.domValue.getFieldValue = function (isCheckbox, element) {
+        return (isCheckbox ? fluid.transforms.stringToBoolean : fluid.identity) (element.val());
     };
 
     // Remember, naturally all this stuff will go into defaults when we can afford it
