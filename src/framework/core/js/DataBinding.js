@@ -695,7 +695,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     var record = fluid.matchMaterialiserSpec(gradeRecord, segs);
                     if (record && record.materialiser) {
                         fluid.model.setSimple(shadow, materialisedPath, {});
-                        fluid.invokeGlobalFunction(record.materialiser, [that, segs]);
+                        var args = fluid.makeArray(record.args);
+                        fluid.invokeGlobalFunction(record.materialiser, [that, segs].concat(args));
                     }
                 }
             });

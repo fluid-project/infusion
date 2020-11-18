@@ -1846,7 +1846,7 @@ var fluid = fluid || fluid_3_0_0;
     fluid.makeMergeListenersPolicy = function (merger, modelRelay) {
         return function (target, source) {
             target = target || {};
-            if (modelRelay && (fluid.isArrayable(source) || typeof(source.target) === "string")) { // This form allowed for modelRelay
+            if (modelRelay && (fluid.isArrayable(source) || "target" in source && (typeof(source.target) === "string" || source.target.segs))) { // This form allowed for modelRelay
                 target[""] = merger(target[""], source, "");
             } else {
                 fluid.each(source, function (listeners, key) {

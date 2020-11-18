@@ -350,4 +350,59 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", false, [false, true, false]);
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", true, [false, true, false]);
+
+    // Binary relay out tests
+    fluid.defaults("fluid.tests.booleanOut", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-target-field"
+        },
+        model: {
+            state: false
+        },
+        modelRelay: {
+            source: "{that}.model.state",
+            target: {
+                segs: ["dom", "field", "{that}.options.materialiser"]
+            }
+        }
+    });
+
+    fluid.tests.booleanOut.materialisers = {
+        visible: {
+            selector: ":visible"
+        },
+        enabled: {
+            selector: ":enabled"
+        }
+    };
+
+    fluid.tests.booleanOut.test = function (materialiser, initState) {
+        var record = fluid.tests.booleanOut.materialisers[materialiser];
+        jqUnit.test("Toggle relay out boolean binding for materialiser " + materialiser + ": initial value " + initState, function () {
+            var that = fluid.tests.booleanOut(".flc-tests-boolean-state", {
+                model: {
+                    state: initState
+                },
+                materialiser: materialiser
+            });
+            var checkDomState = function () {
+                var element = that.locate("field");
+                var selector = record.selector;
+                jqUnit.assertEquals("Condition of selector " + selector + " matches model", that.model.state, element.is(selector));
+            };
+            jqUnit.assertEquals("Initial model enabled state should be uncorrupted", initState, that.model.state);
+            checkDomState();
+            that.applier.change("state", !initState);
+            checkDomState();
+            that.applier.change("state", initState);
+            checkDomState();
+        });
+    };
+
+    fluid.tests.booleanOut.test("visible", false);
+    fluid.tests.booleanOut.test("visible", true);
+    fluid.tests.booleanOut.test("enabled", false);
+    fluid.tests.booleanOut.test("enabled", true);
+
 })();

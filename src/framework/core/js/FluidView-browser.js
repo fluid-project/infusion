@@ -32,14 +32,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.domMaterialiserManager = fluid.makeDomMaterialiserManager();
 
-    // Passive - pushes out to text
-    fluid.materialisers.domText = function (that, segs) {
+    // Passive - pushes out to single-arg jQuery method
+    fluid.materialisers.domOutput = function (that, segs, type, options) {
         var listener = function (value) {
             if (that.dom) {
-                that.dom.locate(segs[1]).text(value);
+                var element = that.dom.locate(segs[1]);
+                if (type === "jQuery") {
+                    element[options.method](value);
+                } else if (type === "booleanAttr") {
+                    var attrValue = options.negate ? !value : value;
+                    if (attrValue) {
+                        element.attr(options.attr, options.attr);
+                    } else {
+                        element.removeAttr(options.attr);
+                    }
+                }
             }
         };
-        fluid.pushArray(fluid.domMaterialiserManager.idToModelListeners, that.id, listener);
+//        fluid.pushArray(fluid.domMaterialiserManager.idToModelListeners, that.id, listener);
         that.applier.modelChanged.addListener({segs: segs}, listener);
         that.events.onDomBind.addListener(function () {
             listener(fluid.getImmediate(that.model, segs));
@@ -49,6 +59,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Active - received clicks
     fluid.materialisers.domClicked = function (that, segs) {
+        // Note that we reorganised fluid.enlistModelComponent to support this new use of the ChangeApplier to supply
+        // an initial value whilst model relays are still being set up
         that.applier.change(segs, 0);
         var listener = function () {
             // TODO: Add a change source, and stick "event" on the stack somehow
@@ -104,7 +116,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         "dom": {
             "*": {
                 "text": {
-                    materialiser: "fluid.materialisers.domText"
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "text"}]
+                },
+                "visible": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "toggle"}]
+                },
+                "enabled": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["booleanAttr", {attr: "disabled", negate: true}]
                 },
                 "clicked": {
                     materialiser: "fluid.materialisers.domClicked"
