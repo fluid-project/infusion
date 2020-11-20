@@ -291,7 +291,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelRelay: [{
             target: "parseIndex",
             backward: "never",
-            excludeSource: ["utteranceOnPause"],
+            forward: {
+                excludeSource: ["utteranceOnPause", "init"]
+            },
             namespace: "getClosestIndex",
             singleTransform: {
                 type: "fluid.transforms.free",

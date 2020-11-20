@@ -969,7 +969,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // TODO: This rather crummy function is the only site with a hard use of "path" as String
     fluid.transformToAdapter = function (transform, targetPath) {
         var basedTransform = {};
-        basedTransform[targetPath] = transform; // TODO: Faulty with respect to escaping rules
+        // TODO: This should never work - it only does because we drive transformWithRules in a configuration which is escaping-blind and so faulty
+        basedTransform[targetPath] = transform;
         return function (trans, newValue, source, sourceSegs, targetSegs, changeRequest) {
             if (changeRequest && changeRequest.type === "DELETE") {
                 trans.fireChangeRequest({type: "DELETE", path: targetPath}); // avoid mouse droppings in target document for FLUID-5585
@@ -1064,6 +1065,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
+    fluid.funcToSingleTransform = function (that, mrrec) {
+        if (mrrec.func) {
+            if (mrrec.args ^ mrrec.source) {
+                fluid.fail("Error in model relay definition: short-form relay must specify either args or a source and not both");
+            }
+            return {
+                type: "fluid.transforms.free",
+                func: mrrec.func,
+                args: mrrec.args ? mrrec.args : [fluid.isIoCReference(mrrec.source) ? mrrec.source : "{that}.model." + mrrec.source]
+            };
+        } else {
+            return null;
+        }
+    };
+
     // Convert old-style "relay conditions" to source includes/excludes as used in model listeners
     fluid.model.relayConditions = {
         initOnly: {includeSource: "init"},
@@ -1115,6 +1131,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String} key -
      */
     fluid.parseModelRelay = function (that, mrrec, key) {
+        fluid.pushActivity("parseModelRelay", "parsing modelRelay definition with key \"%key\" and body \"%body\" attached to component \"%that\"",
+                    {key: key, body: mrrec, that: that});
         var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
             {path: null, modelSegs: null};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
@@ -1124,8 +1142,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             type: mrrec.singleTransform
         } : mrrec.singleTransform;
 
+        var shortSingleTransform = fluid.funcToSingleTransform(that, mrrec);
+
         var transform = mrrec.transform || fluid.singleTransformToFull(
-            singleTransform || {
+            singleTransform || shortSingleTransform || {
                 type: "fluid.transforms.identity"
             });
         var upDefaults = singleTransform ? fluid.defaults(singleTransform.type) : null;
@@ -1141,12 +1161,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
                 fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
         } else {
-            if (parsedSource.modelSegs) {
+            if (parsedSource.modelSegs && !shortSingleTransform) {
                 fluid.fail("Error in model relay definition: If a relay transform has a model dependency, you can not specify a \"source\" entry - please instead enter this as \"input\" in the transform specification. Definition was ", mrrec, " for component ", that);
             }
             // Case ii): Binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
             fluid.connectModelRelay(that, null, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
         }
+        fluid.popActivity();
     };
 
     /** Traverses a model document written within a component's options, parsing any IoC references looking for
@@ -1272,11 +1293,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         var enlist = fluid.enlistModelComponent(that);
         fluid.each(optionsMR, function (mrrec, key) {
-            for (var i = 0; i < mrrec.length; ++i) {
-                fluid.pushActivity("parseModelRelay", "parsing modelRelay definition with key \"%key\" and body \"%body\" attached to component \"%that\"",
-                    {key: key, body: mrrec[i], that: that});
-                fluid.parseModelRelay(that, mrrec[i], key);
-                fluid.popActivity();
+            if (key === "") {
+                for (var i = 0; i < mrrec.length; ++i) {
+                    fluid.parseModelRelay(that, mrrec[i], key);
+                }
+            } else {
+                var lightMerge = fluid.extend.apply(null, [true, {}].concat(mrrec));
+                fluid.parseModelRelay(that, lightMerge, key);
             }
         });
 
@@ -1458,7 +1481,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    // Note - has only one call, from resolveModelListener
+    // Two calls: fluid.resolveModelListener and fluid.transforms.free
     fluid.event.invokeListener = function (listener, args, localRecord, mergeRecord) {
         if (typeof(listener) === "string") {
             listener = fluid.event.resolveListener(listener); // just resolves globals

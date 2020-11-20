@@ -817,7 +817,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!transformSpec.func) {
             fluid.fail("Error in transform specification ", transformSpec, " required member \"func\" was not set");
         }
-        return fluid.invokeGlobalFunction(transformSpec.func, args);
+        return fluid.event.invokeListener(transformSpec.func, args);
     };
 
     fluid.defaults("fluid.transforms.quantize", {

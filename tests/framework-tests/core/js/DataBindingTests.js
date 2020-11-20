@@ -1281,6 +1281,76 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("There should now be 5 headings", 5, afterHeadings.length);
     });
 
+    /** FLUID-6570: Short-form free transforms **/
+
+    fluid.defaults("fluid.tests.fluid6570root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            selectedId: null
+        },
+        modelRelay: {
+            shortForm: {
+                source: "selectedId",
+                target: "anySelected",
+                func: "fluid.isValue"
+            }
+        }
+    });
+
+    fluid.tests.fluid6570func = function (value) {
+        return value !== null;
+    };
+
+    fluid.tests.fluid6570forms = {
+        "function name": {
+            source: "selectedId",
+            func: "fluid.isValue"
+        },
+        "literal function": {
+            source: "selectedId",
+            func: fluid.tests.fluid6570func
+        },
+        "free transform with function name": {
+            source: "selectedId",
+            singleTransform: {
+                type: "fluid.transforms.free",
+                func: "fluid.isValue"
+            }
+        },
+        "free transform with literal function": {
+            source: "selectedId",
+            singleTransform: {
+                type: "fluid.transforms.free",
+                func: "fluid.isValue"
+            }
+        },
+        "free transform with args": {
+            singleTransform: {
+                type: "fluid.transforms.free",
+                func: "fluid.isValue",
+                args: "{that}.model.selectedId"
+            }
+        }
+    };
+
+    fluid.tests.fluid6570test = function (value, name) {
+        jqUnit.test("FLUID-6570: Short-form free transforms - " + name, function (rec) {
+            var testRelay = function (that) {
+                jqUnit.assertEquals("Correct initial relayed value", false, that.model.anySelected);
+                that.applier.change("selectedId", 0);
+                jqUnit.assertEquals("Correct updated relayed value", true, that.model.anySelected);
+            };
+            var that = fluid.tests.fluid6570root({
+                modelRelay: {
+                    shortForm: rec
+                }
+            });
+            testRelay(that);
+        });
+    };
+
+    fluid.each(fluid.tests.fluid6570forms, fluid.tests.fluid6570test);
+
     /** FLUID-6580: Integration constant lenses **/
 
     fluid.defaults("fluid.tests.fluid6580root", {
@@ -1314,6 +1384,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.fluid6850test(true);
+    fluid.tests.fluid6850test(false);
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 
@@ -3419,7 +3490,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, "settling");
     });
 
-    /** FLUID-6558: Error when notifying relay rule during onDestroy**/
+    /** FLUID-6558: Error when notifying relay rule during onDestroy **/
 
     fluid.defaults("fluid.tests.fluid6558editor", {
         gradeNames: ["fluid.modelComponent"],
