@@ -356,6 +356,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             enlist = {
                 that: that,
                 applier: fluid.getForComponent(that, "applier"),
+                initModels: [],
                 completeOnInit: !!shadow.initTransactionId,
                 transaction: that.applier.initiate(null, "init", transId)
             };
@@ -526,7 +527,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (recel.completeOnInit) {
                 // Play the stabilised model value of previously complete components into the relay network
                 fluid.notifyModelChanges(applier.listeners.sortedListeners, "ADD", transac.oldHolder, fluid.emptyHolder, null, transac, applier, that);
-
             } else {
                 fluid.each(recel.initModels, function (oneInitModel) {
                     if (oneInitModel !== undefined) {
@@ -578,8 +578,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * structure containing
      *     segs: {String[]} An array of model path segments to be dereferenced in the target component (will become `modelSegs` in the final return)
      *     context: {String} An IoC reference to the component holding the model
-     * @param {Boolean} implicitRelay - <code>true</code> if the reference was being resolved for an implicit model relay - that is,
-     * whether it occured within the `model` block itself. In this case, references to non-model material are not a failure and will simply be resolved
+     * @param {Boolean} permitNonModel - <code>true</code> If `true`, references to non-model material are not a failure and will simply be resolved
      * (by the caller) onto their targets (as constants). Otherwise, this function will issue a failure on discovering a reference to non-model material.
      * @return {ParsedModelReference} - A structure holding:
      *    that {Component|Any} The component whose model is the target of the reference. This may end up being constructed as part of the act of resolving the reference.
@@ -590,7 +589,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    nonModel {Boolean} Set if <code>implicitRelay</code> was true and the reference was not into a model (modelSegs/path will not be set in this case)
      *    segs {String[]} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
      */
-    fluid.parseValidModelReference = function (that, name, ref, implicitRelay) {
+    fluid.parseValidModelReference = function (that, name, ref, permitNonModel) {
         var localRecord = fluid.shadowForComponent(that).localRecord;
         var reject = function () {
             var failArgs = ["Error in " + name + ": ", ref].concat(fluid.makeArray(arguments));
@@ -605,7 +604,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 parsed = fluid.parseModelReference(that, ref);
                 var modelPoint = parsed.segs.indexOf("model");
                 if (modelPoint === -1) {
-                    if (implicitRelay) {
+                    if (permitNonModel) {
                         parsed.nonModel = true;
                     } else {
                         reject(" must be a reference into a component model via a path including the segment \"model\"");
@@ -1133,7 +1132,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.parseModelRelay = function (that, mrrec, key) {
         fluid.pushActivity("parseModelRelay", "parsing modelRelay definition with key \"%key\" and body \"%body\" attached to component \"%that\"",
                     {key: key, body: mrrec, that: that});
-        var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
+        var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source, true) :
             {path: null, modelSegs: null};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
         var namespace = mrrec.namespace || key;
@@ -1155,17 +1154,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             backwardCond = fluid.model.parseRelayConditions([relayOptions.backward, mrrec.backward]);
 
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond, namespace, mrrec.priority);
-        if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
-            // Case i): Bind changes emitted from the relay ends to each other, synchronously
-            fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs,
-            // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
-                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
-        } else {
-            if (parsedSource.modelSegs && !shortSingleTransform) {
-                fluid.fail("Error in model relay definition: If a relay transform has a model dependency, you can not specify a \"source\" entry - please instead enter this as \"input\" in the transform specification. Definition was ", mrrec, " for component ", that);
+
+        if (parsedSource.nonModel) {
+            if (transform[""].transform.type !== "fluid.transforms.identity") {
+                fluid.fail("Cannot apply relay from non-model source " + mrrec.source + " with a transformation"); // TODO: In theory we could run it through transformPackage before slinging it to implicit
+            } else { // Reuse this part of implicit workflow to subscribe to models - then replicate the initModel logic in the fluid.establishModelRelay driver
+                var initValue = fluid.parseImplicitRelay(parsedTarget.that, mrrec.source, parsedTarget.modelSegs);
+                var enlist = fluid.enlistModelComponent(parsedTarget.that);
+                var initModel = {};
+                fluid.model.setSimple(initModel, parsedTarget.modelSegs, initValue);
+                enlist.initModels.push(initModel);
             }
-            // Case ii): Binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
-            fluid.connectModelRelay(that, null, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
+        } else {
+            if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
+                // Case i): Bind changes emitted from the relay ends to each other, synchronously
+                fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs,
+                // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
+                    fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
+            } else {
+                if (parsedSource.modelSegs && !shortSingleTransform) {
+                    fluid.fail("Error in model relay definition: If a relay transform has a model dependency, you can not specify a \"source\" entry - please instead enter this as \"input\" in the transform specification. Definition was ", mrrec, " for component ", that);
+                }
+                // Case ii): Binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
+                fluid.connectModelRelay(that, null, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
+            }
         }
         fluid.popActivity();
     };
@@ -1201,7 +1213,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (value instanceof fluid.fetchResources.FetchOne) {
                     that.applier.resourceMap.push({segs: fluid.makeArray(segs), fetchOne: value});
                     // We don't support compositing of resource references since we couldn't apply this if their value changes
-                    return null;
+                    return undefined;
                 }
             } else {
                 ++options.refCount; // This count is used from within fluid.makeTransformPackage
@@ -1277,7 +1289,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** The main entry point for enlisting a model component in the initial transaction. Positioned as a "fake member"
      * which evalutes to null. Calls `fluid.enlistModelComponent` to register record in treeTransaction.initModelTransaction
      * @param {fluid.modelComponent} that - The `fluid.modelComponent` which is about to initialise
-     * @param {Object} optionsModel - Reference into `{that}.options.model`
+     * @param {fluid.mergingArray} optionsModel - Reference into `{that}.options.model`
      * @param {Object} optionsML - Reference into `{that}.options.modelListeners`
      * @param {Object} optionsMR - Reference into `{that}.options.modelRelay`
      * @param {fluid.changeApplier} applier - Reference into `{that}.applier`
@@ -1292,6 +1304,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         var enlist = fluid.enlistModelComponent(that);
+
+        // Note: this particular instance of "refCount" is disused. We only use the count made within fluid.makeTransformPackge
+        var initModels = (optionsModel || []).map(function (modelRec) {
+            return fluid.parseImplicitRelay(that, modelRec, [], {refCount: 0, priority: "first"});
+        });
+        Array.prototype.push.apply(enlist.initModels, initModels);
+
         fluid.each(optionsMR, function (mrrec, key) {
             if (key === "") {
                 for (var i = 0; i < mrrec.length; ++i) {
@@ -1302,12 +1321,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.parseModelRelay(that, lightMerge, key);
             }
         });
-
-        // Note: this particular instance of "refCount" is disused. We only use the count made within fluid.makeTransformPackge
-        var initModels = fluid.transform(optionsModel, function (modelRec) {
-            return fluid.parseImplicitRelay(that, modelRec, [], {refCount: 0, priority: "first"});
-        });
-        enlist.initModels = initModels;
 
         var instantiator = fluid.getInstantiator(that);
 

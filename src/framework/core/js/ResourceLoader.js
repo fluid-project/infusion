@@ -330,9 +330,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             name: "Transform chain for resource \"" + key + "\"",
             ownerId: ownerComponentId
         });
-        resourceSpec.transformEvent.addListener(fluid.fetchResources.noteParsed, "parsed", "last");
+        resourceSpec.transformEvent.addListener(fluid.fetchResources.noteParsed, "noteParsed", "last");
         var parser = fluid.resourceLoader.resolveResourceParser(resourceSpec);
-        resourceSpec.transformEvent.addListener(parser, "parser", "before:parsed");
+        resourceSpec.transformEvent.addListener(parser, "parser", "before:noteParsed");
+        resourceSpec.transformEvent.addListener(function (parsed) {
+            return fluid.resourceLoader.renderImmutable(parsed, resourceSpec);
+        }, "renderImmutable", "after:parser");
         resourceSpec.transformEvent.addListener(fluid.fetchResources.noteResourceText, "resourceText", "before:parser");
         resourceSpec.transformEvent.addListener(fluid.fetchResources.resolveLoaderTask(resourceSpec, resourceSpec.loader.loader),
             "loader", "before:resourceText");
@@ -664,6 +667,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.transform(resourceSpec, function (value) {
             return fluid.isPrimitive(value) || fluid.isPlainObject(value) && !fluid.isPromise(value) ? value : fluid.NO_VALUE;
         });
+    };
+
+    // "Immutable model resources" for FLUID-6581
+
+    fluid.ImmutableArray = function () {};
+    fluid.ImmutableArray.prototype = [];
+
+    fluid.ImmutableObject = function () {};
+    // fluid.ImmutableObject.prototype = {};
+
+    fluid.resourceLoader.renderImmutable = function (parsed, resourceSpec) {
+        if (resourceSpec.immutableModelResource) {
+            var newContainer = fluid.isArrayable(parsed) ? new fluid.ImmutableArray() : new fluid.ImmutableObject();
+            fluid.each(parsed, function (value, key) {
+                newContainer[key] = value;
+            });
+            return newContainer;
+        } else {
+            return parsed;
+        }
     };
 
     /** Given a resourceSpec, look up an appropriate `OneResourceLoader` function for fetching its value based on

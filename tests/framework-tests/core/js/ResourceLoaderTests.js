@@ -696,6 +696,67 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-6581: Immutable model resources **/
+
+    fluid.defaults("fluid.tests.fluid6581root", {
+        gradeNames: ["fluid.resourceLoader", "fluid.modelComponent"],
+        resources: {
+            messages: {
+                dataType: "json",
+                url: "../data/messages1.json",
+                locale: "en"
+            }
+        },
+        model: {
+            messages: {},
+            messageIndex: "courses"
+        },
+        modelRelay: {
+            loadMessages: {
+                source: "{that}.resources.messages.parsed",
+                target: "messages"
+            },
+            indexMessage: {
+                source: "messages",
+                target: "oneMessage",
+                func: // (messages, index) => messages[index],
+                    function (messages, index) {
+                        return messages[index];
+                    },
+                args: ["{that}.model.messages", "{that}.model.messageIndex"]
+            }
+        }
+    });
+
+    fluid.tests.fluid6581test = (function (immutable) {
+        jqUnit.asyncTest("FLUID-6581: Immutable model resources plus resource relay - immutable " + immutable, function () {
+            var testResolution = function (that) {
+                jqUnit.assertEquals("Model resource copyable state", immutable, fluid.isUncopyable(that.model.messages));
+                var originalMessages = that.model.messages;
+                originalMessages.trace = "thing";
+                jqUnit.assertEquals("Resolved indirected model resource", "These courses will require a lot of grading", that.model.oneMessage);
+                that.applier.change("messageIndex", "directions");
+                that.model.messages.trace = "new thing";
+                jqUnit.assertEquals("Resolved updated indirected model resource", "Stop at the first traffic light", that.model.oneMessage);
+                jqUnit.assertTrue("Message reference changed status", (that.model.messages === originalMessages) === immutable);
+                jqUnit.start();
+            };
+            fluid.tests.fluid6581root({
+                listeners: {
+                    onCreate: testResolution
+                },
+                resources: {
+                    messages: {
+                        immutableModelResource: immutable
+                    }
+                }
+            });
+        });
+    });
+
+    fluid.tests.fluid6581test(false);
+    fluid.tests.fluid6581test(true);
+
     /** FLUID-4982: Recoverable async failure on loading invalid JSON **/
 
     fluid.defaults("fluid.tests.FLUID4982.badJSONMocks", {
