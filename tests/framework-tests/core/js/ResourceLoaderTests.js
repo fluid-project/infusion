@@ -733,10 +733,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var testResolution = function (that) {
                 jqUnit.assertEquals("Model resource copyable state", immutable, fluid.isUncopyable(that.model.messages));
                 var originalMessages = that.model.messages;
-                originalMessages.trace = "thing";
                 jqUnit.assertEquals("Resolved indirected model resource", "These courses will require a lot of grading", that.model.oneMessage);
                 that.applier.change("messageIndex", "directions");
-                that.model.messages.trace = "new thing";
                 jqUnit.assertEquals("Resolved updated indirected model resource", "Stop at the first traffic light", that.model.oneMessage);
                 jqUnit.assertTrue("Message reference changed status", (that.model.messages === originalMessages) === immutable);
                 jqUnit.start();

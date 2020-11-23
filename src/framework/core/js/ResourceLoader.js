@@ -675,7 +675,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.ImmutableArray.prototype = [];
 
     fluid.ImmutableObject = function () {};
-    // fluid.ImmutableObject.prototype = {};
 
     fluid.resourceLoader.renderImmutable = function (parsed, resourceSpec) {
         if (resourceSpec.immutableModelResource) {
