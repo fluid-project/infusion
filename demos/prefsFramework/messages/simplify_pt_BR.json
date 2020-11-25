@@ -1,0 +1,6 @@
+{
+    "label": "Simplificar",
+    "description": "Mostrar apenas o conteúdo principal",
+    "switchOn": "LIGAR",
+    "switchOff": "DESLIGAR"
+}
