@@ -301,6 +301,21 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     });
 
+    jqUnit.test("Simple fluid.hashToArray configuration", function () {
+        var hash = {
+            a: 1,
+            b: 2
+        };
+        var expected = [1, 2];
+        jqUnit.assertDeepEq("Simple driver with key loss", expected, fluid.hashToArray(hash));
+        var hash2 = {
+            a: {thing: 1},
+            b: {thing: 2}
+        };
+        var expected2 = [{thing: 1, key: "a"}, {thing: 2, key: "b"}];
+        jqUnit.assertDeepEq("Simple driver with key hoisting", expected2, fluid.hashToArray(hash2, "key"));
+    });
+
     fluid.tests.roundToDecimalTests = [
         {num: 1.555, scale: 5, round: 1.555, ceil: 1.555, floor: 1.555},
         {num: 1.555, scale: 4, round: 1.555, ceil: 1.555, floor: 1.555},

@@ -626,8 +626,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             parsed = {
                 context: ref.context,
-                modelSegs: fluid.expandOptions(ref.segs, that)
+                modelSegs: fluid.expandImmediate(ref.segs, that)
             };
+            fluid.each(parsed.modelSegs, function (seg, index) {
+                if (!fluid.isValue(seg)) {
+                    reject(" did not resolve path segment reference " + ref.segs[index] + " at index " + index);
+                }
+            });
         }
         var contextTarget, target; // resolve target component, which defaults to "that"
         if (parsed.context) {
@@ -1123,7 +1128,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Parse a single model relay record as appearing nested within the `modelRelay` block in a model component's
      * options. By various calls to `fluid.connectModelRelay` this will set up the structure operating the live
-     * relay during the component#s lifetime.
+     * relay during the component's lifetime.
      * @param {Component} that - The component holding the record, currently instantiating
      * @param {Object} mrrec - The model relay record. This must contain either a member `singleTransform` or `transform` and may also contain
      * members `namespace`, `path`, `priority`, `forward` and `backward`

@@ -34,9 +34,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Passive - pushes out to single-arg jQuery method
     fluid.materialisers.domOutput = function (that, segs, type, options) {
+        var selectorName = segs[1];
         var listener = function (value) {
             if (that.dom) {
-                var element = that.dom.locate(segs[1]);
+                var element = that.dom.locate(selectorName);
+                if (!element || !element.length) {
+                    fluid.fail("Could not locate element for selector " + selectorName + " for component " + fluid.dumpComponentAndPath(that));
+                }
                 if (type === "jQuery") {
                     element[options.method](value);
                 } else if (type === "booleanAttr") {

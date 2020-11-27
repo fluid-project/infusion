@@ -372,6 +372,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.pager.summary.onModelChange = function (node, message, newModel) {
         var text = fluid.stringTemplate(message, {
+            // TODO: Absurd, these fields should be modelised rather than computed
             first: newModel.pageIndex * newModel.pageSize + 1,
             last: fluid.pager.computePageLimit(newModel),
             total: newModel.totalRange,

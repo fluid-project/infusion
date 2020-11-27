@@ -397,8 +397,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (!value || !fluid.isArrayable(value)) {
             fluid.fail("arrayToSetMembership didn't find array at inputPath nor passed as value.");
         }
-        var output = {};
+
         transformSpec = transformSpec || {};
+        var output = transformSpec.arrayValue ? [] : {};
         var presentValue = (transformSpec.presentValue === undefined) ? true : transformSpec.presentValue,
             missingValue = (transformSpec.missingValue === undefined) ? false : transformSpec.missingValue,
             options = transformSpec.options;
@@ -457,7 +458,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      *
      * Transform the input object into an array based upon the options provided to the specification. Accepts
-     * an object as its first argument and an optional second argument (an object) which contains the
+     * an object or array as its first argument and an optional second argument (an object) which contains the
      * specifications for the resulting output.
      *
      * An error will be thrown if the input to be transformed is not an object.
@@ -498,8 +499,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      */
     fluid.transforms.setMembershipToArray = function (input, transformSpec) {
-        // <input> should be an object.
-        if (!fluid.isPlainObject(input, true)) {
+        // <input> should be an object or array
+        if (!fluid.isPlainObject(input)) {
             fluid.fail("setMembershipToArray didn't find object at inputPath nor passed as value.");
         }
         var outputArr = [];

@@ -1707,6 +1707,27 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
     });
 
+
+    /** FLUID-5695: No bare exception when failing to resolve segment reference **/
+
+    fluid.defaults("fluid.tests.fluid5695badroot", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            layoutListener: {
+                source: {
+                    segs: ["windowHolders", "{that}.options.ourWindow"]
+                },
+                target: "ourWindow"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5695: Framework exception with bad relay segment", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework exception with bad relay segment", function () {
+            fluid.tests.fluid5695badroot();
+        }, "ourWindow");
+    });
+
     /** FLUID-6127: Wildcards in modelListeners, and support for deletion **/
 
     fluid.defaults("fluid.tests.fluid6127root", {

@@ -66,6 +66,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.pagedTable.directModelFilter = function (model, pagerModel, perm) {
         var togo = [];
+        // TODO: Logic redundant with that in summary subcomponent
         var limit = fluid.pager.computePageLimit(pagerModel);
         for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++i) {
             var index = perm ? perm[i] : i;

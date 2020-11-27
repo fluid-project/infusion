@@ -5385,6 +5385,35 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         weaklyInvertible: true
     }, {
+        message: "setMembershipToArray() with array input",
+        model: {
+            a: [false, true, true, false]
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    arrayValue: true,
+                    inputPath: "a"
+                }
+            }
+        },
+        expected: {
+            b: [1, 2]
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    arrayValue: true,
+                    outputPath: "a",
+                    inputPath: "b"
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
         message: "setMembershipToArray() should return a fully invertible array when each key has value equal to the passed or the default presentValue.",
         model: {
             a: {

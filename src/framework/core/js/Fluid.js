@@ -845,9 +845,8 @@ var fluid = fluid || fluid_3_0_0;
 
     /** Converts an array into an object whose keys are the elements of the array, each with the value "true"
      * @param {String[]} array - The array to be converted to a hash
-     * @return hash {Object} An object with value <code>true</code> for each key taken from a member of <code>array</code>
+     * @return {Object} hash An object with value <code>true</code> for each key taken from a member of <code>array</code>
      */
-
     fluid.arrayToHash = function (array) {
         var togo = {};
         fluid.each(array, function (el) {
@@ -862,7 +861,6 @@ var fluid = fluid || fluid_3_0_0;
      * @param {Array} array - The array to be sorted. This input array will be modified in place.
      * @param {Function} func - A comparator returning >0, 0, or <0 on pairs of elements representing their sort order (same contract as Array.sort comparator)
      */
-
     fluid.stableSort = function (array, func) {
         for (var i = 0; i < array.length; i++) {
             var j, k = array[i];
@@ -873,19 +871,26 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /* Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
+    /** Converts a hash into an array by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
      * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect as transform fluid.transforms.deindexIntoArrayByKey).
      * The supplied hash will not be modified, unless the supplied function explicitly does so by modifying its 2nd argument.
+     * @param {Object} hash - The object to be converted to an array
+     * @param {String} [keyName] - (optional) The key name within output array elements that the hash key should be assigned into
+     * @param {Function} [func] - (optional) A "replacer" function that accepts signature (new array element, old hash element, key) whose return value will replace (new array element) if it is truthy
+     * @return {Array} The hash converted into an array
      */
     fluid.hashToArray = function (hash, keyName, func) {
         var togo = [];
         fluid.each(hash, function (el, key) {
-            var newEl = {};
-            newEl[keyName] = key;
+            var newEl = el;
+            if (keyName !== undefined) {
+                newEl = {};
+                newEl[keyName] = key;
+            }
             if (func) {
                 newEl = func(newEl, el, key) || newEl;
-            } else {
+            } else if (newEl !== el) {
                 $.extend(true, newEl, el);
             }
             togo.push(newEl);
