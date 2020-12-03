@@ -192,7 +192,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
                 var record = fluid.driveStrategy(options, [recordPath, name], optionsStrategy);
                 if (record === undefined) {
-                    return;
+                    if (prefix.length > 0) {
+                        fluid.fail("Reference to " + recordPath + " record with name " + name + " which is not registered for component " + fluid.dumpComponentAndPath(that));
+                    } else {
+                        return;
+                    }
                 }
                 fluid.set(target, [name], fluid.inEvaluationMarker);
                 var member = recordMaker(record, name, that);
@@ -858,7 +862,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 return fluid.getForComponent(next, segs.slice(1));
             } else {
                 var inEvaluationPaths = instantiator.inEvaluationPaths;
-                var inEvaluationPath = component.id + ":" + path;
+                var inEvaluationPath = component.id + ":" + path; // TODO: Need to reconstitute from segs since path may be segs
                 if (fluid.pathInEvaluation(inEvaluationPath, inEvaluationPaths)) {
                     fluid.fail("Error in component configuration - a circular reference was found during evaluation of path " + path + " for component " + fluid.dumpComponentAndPath(component) +
                         ": a circular set of references was found - for more details, see the activity records following this message in the console");

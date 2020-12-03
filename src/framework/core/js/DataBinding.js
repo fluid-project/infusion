@@ -439,6 +439,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (!initTransaction) {
                 trans.commit();
             } else {
+                var transRec = fluid.getModelTransactionRec(fluid.rootComponent, trans.id);
+                fluid.clearLinkCounts(transRec, true);
                 that.applier.preCommit.fire(trans, that);
             }
         };
@@ -548,7 +550,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     fluid.subscribeResourceModelUpdates(that, resourceMapEntry);
                 });
                 // Repeatedly flush arrived values through relays to ensure that the rest of the model is maximally contextualised
-                applier.preCommit.fire(transac, that);
                 applier.earlyModelResolved.fire(that.model);
                 applier.preCommit.fire(transac, that);
                 // Note that if there is a further operateInitialTransaction for this same init transaction, next time we should treat it as stabilised
@@ -710,6 +711,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Gets global record for a particular transaction id, allocating if necessary - looks up applier id to transaction,
     // as well as looking up source id (linkId in below) to count/true
     // Through poor implementation quality, not every access passes through this function - some look up instantiator.modelTransactions directly
+    // The supplied component is actually irrelevant for now, implementation merely looks up the instantiator's modelTransaction
     fluid.getModelTransactionRec = function (that, transId) {
         if (!transId) {
             fluid.fail("Cannot get transaction record without transaction id");
@@ -921,6 +923,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, null, {
                     transactional: false,
                     targetApplier: options.targetApplier,
+                    refCount: options.refCount,
                     update: options.update
                 }, npOptions);
             } else { // case ii), contextualised relay overall output
@@ -1071,7 +1074,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.funcToSingleTransform = function (that, mrrec) {
         if (mrrec.func) {
-            if (mrrec.args ^ mrrec.source) {
+            if (!!mrrec.args ^ !mrrec.source) {
                 fluid.fail("Error in model relay definition: short-form relay must specify either args or a source and not both");
             }
             return {
@@ -1275,7 +1278,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.sortByPriority(transRec.relays);
         fluid.each(transRec.relays, function (transEl) {
             // TODO: We have a bit of a problem here in that we only process updatable relays by priority - plain relays get to act non-transactionally
-            if (transEl.transaction.changeRecord.changes > 0 && transEl.relayCount < 2 && transEl.options.update) {
+            // FLUID-5303: We really need to remove this relay count entirely - there could really be as many updates as there are upstream relay rules.
+            // Primarily this is here as a tripwire to remind us that this system is wholly faulty
+            var maxRelay = transEl.options.refCount ? transEl.options.refCount * 4 : 4;
+            if (transEl.transaction.changeRecord.changes > 0 && transEl.relayCount < maxRelay && transEl.options.update) {
                 transEl.relayCount++;
                 fluid.clearLinkCounts(transRec);
                 transEl.options.update(transEl.transaction, transRec);
@@ -1284,6 +1290,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
         return updates;
     };
+
 
     fluid.concludeModelTransaction = function (transaction) {
         var instantiator = fluid.globalInstantiator;

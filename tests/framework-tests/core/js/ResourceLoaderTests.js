@@ -717,7 +717,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 target: "messages"
             },
             indexMessage: {
-                source: "messages",
                 target: "oneMessage",
                 func: // (messages, index) => messages[index],
                     function (messages, index) {

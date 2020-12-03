@@ -1281,6 +1281,88 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("There should now be 5 headings", 5, afterHeadings.length);
     });
 
+    /** FLUID-6390 - Lensed components via a couple of relays and init value **/
+    // Structure of this example taken from fluid-covid-map-viz. In practice this is a further test of old-fashioned FLUID-5303 relay saturation which
+    // needs to be abolished - bug in practice was nothing to do with asynchrony nor lensed components
+    fluid.defaults("fluid.tests.fluid6390relayChild", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390relayRoot", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        model: {
+            resourceSource: [],
+            filteredSource: [],
+            lensSource: [],
+            preFilter: undefined, // Leaving this undefined is essential to increase the startup relay count of the preFilter to 2
+            maxRange: 5
+        },
+        resources: {
+            resourceSource: {
+                promiseFunc: "fluid.tests.resolveLater",
+                promiseArgs: [[1, 2, 3, 4, 5]]
+            }
+        },
+        modelRelay: {
+            initialise: {
+                target: "resourceSource",
+                source: "{that}.resources.resourceSource.parsed"
+            },
+            preFilter: {
+                target: "filteredSource",
+                func: function (array, howMany) {
+                    return array.slice(0, howMany);
+                },
+                args: ["{that}.model.resourceSource", "{that}.model.preFilter"]
+            },
+            constrain: {
+                target: "preFilter",
+                singleTransform: {
+                    type: "fluid.transforms.limitRange",
+                    input: "4",
+                    min: 0,
+                    max: "{that}.model.maxRange"
+                }
+            },
+            toLensSource: {
+                source: "filteredSource",
+                target: "lensSource",
+                func: function (array) {
+                    return array.slice(0, 3);
+                }
+            }
+        },
+        components: {
+            relayHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: {
+                        lensSource: "{fluid6390relayRoot}.model.lensSource"
+                    },
+                    dynamicComponents: {
+                        lensed: {
+                            type: "fluid.tests.fluid6390relayChild",
+                            sources: "{that}.model.lensSource"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-6390 IV: Lensed components via a couple of relays and init value", function () {
+        var resume = function (that) {
+            var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390relayChild");
+            jqUnit.assertEquals("Three lensed components constructed during startup", 3, children.length);
+            jqUnit.start();
+        };
+        fluid.tests.fluid6390relayRoot({
+            listeners: {
+                onCreate: resume
+            }
+        });
+    });
+
     /** FLUID-6570: Short-form free transforms **/
 
     fluid.defaults("fluid.tests.fluid6570root", {
