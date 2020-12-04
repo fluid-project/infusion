@@ -50,6 +50,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 increasing: {
                     "container": ".fluid-tests-composite-increasing",
                     "template": "%templatePrefix/increaseTemplate.html",
+                    "message": "%messagePrefix/increase.json",
                     "type": "fluid.tests.composite.increase",
                     "panels": {
                         "always": ["fluid.tests.composite.pref.increaseSize"],
@@ -64,28 +65,32 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 panel: {
                     type: "fluid.tests.cmpPanel.speak",
                     container: ".fluid-tests-composite-speaking-onOff",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             },
             "fluid.tests.composite.pref.increaseSize": {
                 panel: {
                     type: "fluid.tests.cmpPanel.incSize",
                     container: ".fluid-tests-composite-increasing-onOff",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             },
             "fluid.tests.composite.pref.magnification": {
                 panel: {
                     type: "fluid.tests.cmpPanel.magFactor",
                     container: ".fluid-tests-composite-increasing-magFactor",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             },
             "fluid.tests.composite.pref.lineSpace": {
                 panel: {
                     type: "fluid.tests.cmpPanel.lineSpace",
                     container: ".fluid-tests-composite-increasing-lineSpace",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             }
         }
@@ -93,9 +98,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.composite.increase", {
         gradeNames: ["fluid.prefs.compositePanel"],
-        messageBase: {
+// Removed - we can't support this fallback from nonexistent resource behaviour after FLUID-6580
+/*        messageBase: {
             increaseHeader: "increase"
         },
+*/
         selectors: {
             header: ".flc-prefsEditor-header",
             label: ".fluid-tests-composite-increase-header"
