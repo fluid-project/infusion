@@ -38,11 +38,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var listener = function (value) {
             if (that.dom) {
                 var element = that.dom.locate(selectorName);
+
                 if (!element || !element.length) {
                     fluid.fail("Could not locate element for selector " + selectorName + " for component " + fluid.dumpComponentAndPath(that));
                 }
                 if (type === "jQuery") {
-                    element[options.method](value);
+                    var model = {
+                        value: value,
+                        segs: segs
+                    };
+                    var args = options.args.map(function (arg) {
+                        return fluid.getImmediate(model, arg);
+                    });
+                    element[options.method].apply(element, args);
                 } else if (type === "booleanAttr") {
                     var attrValue = options.negate ? !value : value;
                     if (attrValue) {
@@ -121,11 +129,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "*": {
                 "text": {
                     materialiser: "fluid.materialisers.domOutput",
-                    args: ["jQuery", {method: "text"}]
+                    args: ["jQuery", {method: "text", args: [["value"]]}]
                 },
                 "visible": {
                     materialiser: "fluid.materialisers.domOutput",
-                    args: ["jQuery", {method: "toggle"}]
+                    args: ["jQuery", {method: "toggle", args: [["value"]]}]
                 },
                 "enabled": {
                     materialiser: "fluid.materialisers.domOutput",
@@ -136,6 +144,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 },
                 "value": {
                     materialiser: "fluid.materialisers.domValue"
+                },
+                "class": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "toggleClass", args: [["segs", "3"], ["value"]]}]
                 }
             }
         }

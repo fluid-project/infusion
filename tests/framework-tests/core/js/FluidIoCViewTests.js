@@ -405,4 +405,47 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.booleanOut.test("enabled", false);
     fluid.tests.booleanOut.test("enabled", true);
 
+    // Class toggle tests
+    fluid.defaults("fluid.tests.toggleClass", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-simple-field"
+        },
+        styles: {
+            myClazz: ".flc-tests-clazz"
+        },
+        model: {
+            state: false
+        },
+        modelRelay: {
+            source: "{that}.model.state",
+            target: {
+                segs: ["dom", "field", "class", "{that}.options.styles.myClazz"]
+            }
+        }
+    });
+
+    fluid.tests.toggleClass.test = function (initState) {
+        jqUnit.test("Toggle integral binding: initial state " + initState, function () {
+            var that = fluid.tests.toggleClass(".flc-tests-simple-integral", {
+                model: {
+                    state: initState
+                }
+            });
+
+            var checkState = function (expected) {
+                jqUnit.assertEquals("Model state expected as " + expected, expected, that.model.state);
+                jqUnit.assertEquals("Markup state expected as " + expected, expected, that.locate("field").hasClass(that.options.styles.myClazz));
+            };
+            checkState(initState);
+            that.applier.change("state", !that.model.state);
+            checkState(!initState);
+            that.applier.change("state", !that.model.state);
+            checkState(initState);
+        });
+    };
+
+    fluid.tests.toggleClass.test(false);
+    fluid.tests.toggleClass.test(true);
+
 })();

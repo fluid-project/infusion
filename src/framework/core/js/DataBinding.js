@@ -686,9 +686,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             trundle = trundle[seg] || trundle["*"];
             if (!trundle) {
                 return null;
+            } else if (trundle.materialiser) {
+                return trundle;
             }
         }
-        return trundle;
+        return null;
     };
 
     fluid.materialiseRelayPath = function (that, segs) {
