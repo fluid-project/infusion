@@ -1074,7 +1074,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.funcToSingleTransform = function (that, mrrec) {
         if (mrrec.func) {
-            if (!!mrrec.args ^ !mrrec.source) {
+            if (mrrec.args !== undefined ^ mrrec.source === undefined) {
                 fluid.fail("Error in model relay definition: short-form relay must specify either args or a source and not both");
             }
             return {
