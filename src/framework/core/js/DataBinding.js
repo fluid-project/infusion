@@ -1832,7 +1832,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    fluid.outputMatches = function (matches, outSegs, root) {
+    fluid.outputWildcardMatches = function (matches, outSegs, root) {
         fluid.each(root, function (value, key) {
             matches.push(outSegs.concat(key));
         });
@@ -1864,12 +1864,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         if (map) {
             if (wildcard) {
-                if (map === "DELETE") {
-                    fluid.outputMatches(togo, outSegs, oldRoot);
-                } else if (map === "ADD") {
-                    fluid.outputMatches(togo, outSegs, newRoot);
+                if (typeof(map) === "string") {
+                    var allKeys = fluid.extend({}, oldRoot, newRoot);
+                    fluid.outputWildcardMatches(togo, outSegs, allKeys);
                 } else {
-                    fluid.outputMatches(togo, outSegs, map);
+                    fluid.outputWildcardMatches(togo, outSegs, map);
                 }
             } else {
                 togo.push(outSegs);

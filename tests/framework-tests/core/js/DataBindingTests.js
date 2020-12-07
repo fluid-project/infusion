@@ -1363,6 +1363,37 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-6390 - Updating lensed components from an array **/
+
+    fluid.defaults("fluid.tests.fluid6390arrayRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: [1, 2, 3]
+        },
+        dynamicComponents: {
+            arenaComponents: {
+                sources: "{that}.model.arena",
+                type: "fluid.tests.fluid6390child",
+                options: {
+                    model: {
+                        arenaValue: "{source}"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6390 V: Updating lensed components as an array", function () {
+        var that = fluid.tests.fluid6390arrayRoot();
+        fluid.tests.fluid6390assertModelValues("Initial model values are correct", that, [1, 2, 3]);
+        that.applier.change("arena", [4, 5, 6]);
+        fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, [4, 5, 6]);
+        fluid.replaceModelValue(that.applier, "arena", [7, 8]);
+        fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, [7, 8]);
+        fluid.replaceModelValue(that.applier, "arena", []);
+        fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, []);
+    });
+
     /** FLUID-6570: Short-form free transforms **/
 
     fluid.defaults("fluid.tests.fluid6570root", {

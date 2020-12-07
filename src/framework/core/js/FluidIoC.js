@@ -1405,7 +1405,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 
     fluid.computeDynamicComponentKey = function (recordKey, sourceKey) {
-        return recordKey + (sourceKey === 0 ? "" : "-" + sourceKey); // TODO: configurable name strategies
+        return recordKey + (sourceKey === 0 || sourceKey === "0" ? "" : "-" + sourceKey); // TODO: configurable name strategies
     };
 
     /** Conclude any tree transaction which is currently in progress. A "catch-all" that is currently operated in the following two situations:
