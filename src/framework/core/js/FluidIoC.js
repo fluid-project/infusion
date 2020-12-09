@@ -2658,10 +2658,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.changeToApplicable = function (record, that) {
+        fluid.getForComponent(that, "applier");
+        var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
+        fluid.materialiseModelPath(parsed.that, parsed.modelSegs);
         return {
             // These extra arguments get in via fluid.event.invokeListener and resolveModelListener
             apply: function (noThis, args, localRecord, mergeRecord) {
-                var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
                 var value = fluid.expandImmediate(record.value, that, fluid.extend(localRecord, {"arguments": args}));
                 var sources = mergeRecord && mergeRecord.source && mergeRecord.source.length ? fluid.makeArray(record.source).concat(mergeRecord.source) : record.source;
                 parsed.applier.change(parsed.modelSegs, value, record.type, sources); // FLUID-5586 now resolved

@@ -328,13 +328,37 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("Non-integral button click", function () {
+    jqUnit.test("Non-integral button click onto model", function () {
         var that = fluid.tests.nonIntegralButton(".flc-tests-nonintegral-button");
         jqUnit.assertEquals("No button initially pressed", null, that.model.lastButton);
         that.locate("button1").click();
         jqUnit.assertEquals("Button 1 is last button", "button1", that.model.lastButton);
         that.locate("button2").click();
         jqUnit.assertEquals("Button 2 is last button", "button2", that.model.lastButton);
+    });
+
+    // Non-integral button onto enabled via changePath - tests that a changePath is enough to materialise something
+
+    fluid.defaults("fluid.tests.nonIntegralChange", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            button1: ".flc-tests-button-1",
+            button2: ".flc-tests-button-2"
+        },
+        modelListeners: {
+            button1Click: {
+                path: "dom.button1.click",
+                changePath: "dom.button2.enabled",
+                value: false
+            }
+        }
+    });
+
+    jqUnit.test("Non-integral button click to changePath", function () {
+        var that = fluid.tests.nonIntegralChange(".flc-tests-nonintegral-button");
+        jqUnit.assertTrue("Button 2 is initially enabled", that.locate("button2").is(":enabled"));
+        that.locate("button1").click();
+        jqUnit.assertFalse("Button 2 has become disabled", that.locate("button2").is(":enabled"));
     });
 
     // Relay hover onto style

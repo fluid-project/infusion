@@ -604,18 +604,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     /** FLUID-3674: New model semantic tests **/
 
-    fluid.defaults("fluid.tests.changer", {
-        gradeNames: ["fluid.component"],
-        invokers: {
-            change: {
-                changePath: "{arguments}.0",
-                value: "{arguments.1"
-            }
-        }
-    });
-
     fluid.defaults("fluid.tests.fluid3674head", {
-        gradeNames: ["fluid.modelComponent", "fluid.tests.changer", "fluid.tests.changeRecorder"],
+        gradeNames: ["fluid.modelComponent", "fluid.tests.changeRecorder"],
         model: { // test forward reference as well as transactional initialisation
             innerModel: "{child}.model.nested1"
         },
@@ -624,7 +614,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.tests.changer",
+                type: "fluid.modelComponent",
                 options: {
                     gradeNames: ["fluid.modelComponent"],
                     model: {

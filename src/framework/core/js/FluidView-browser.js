@@ -32,7 +32,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.domMaterialiserManager = fluid.makeDomMaterialiserManager();
 
-    // Passive - pushes out to single-arg jQuery method
+    // Passive - pushes out to single-arg jQuery method, active in acquiring initial markup value for booleanAttr
     fluid.materialisers.domOutput = function (that, segs, type, options) {
         var selectorName = segs[1];
         var listener = function (value) {
@@ -50,11 +50,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     var args = options.makeArgs ? options.makeArgs(model) : [model.value];
                     element[options.method].apply(element, args);
                 } else if (type === "booleanAttr") {
-                    var attrValue = options.negate ? !value : value;
-                    if (attrValue) {
-                        element.attr(options.attr, options.attr);
+                    if (value === undefined) {
+                        var markupValue = !!element.attr(options.attr);
+                        that.applier.change(segs, options.negate ? !markupValue : markupValue);
                     } else {
-                        element.removeAttr(options.attr);
+                        var attrValue = options.negate ? !value : value;
+                        if (attrValue) {
+                            element.attr(options.attr, options.attr);
+                        } else {
+                            element.removeAttr(options.attr);
+                        }
                     }
                 }
             }
@@ -62,7 +67,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 //        fluid.pushArray(fluid.domMaterialiserManager.idToModelListeners, that.id, listener);
         that.applier.modelChanged.addListener({segs: segs}, listener);
         that.events.onDomBind.addListener(function () {
-            listener(fluid.getImmediate(that.model, segs));
+            var modelValue = fluid.getImmediate(that.model, segs);
+            listener(modelValue);
         });
         // For "read" materialisers, if the DOM has shorter lifetime than the component, the binder will still function
     };
