@@ -56,6 +56,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onCreate.onDomBind": "{that}.events.onDomBind"
         },
+        selectors: {
+        },
         members: {
             dom: "@expand:fluid.createDomBinder({that}.container, {that}.options.selectors)"
         },
@@ -190,7 +192,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             selector = selectors[name];
             if (selector === undefined) {
-                return undefined;
+                if (name === "container") {
+                    selector = "";
+                } else { // TODO: This should become an error case
+                    return undefined;
+                }
             }
             thisContainer = localContainer ? $(localContainer) : container;
             if (!thisContainer) {
@@ -200,7 +206,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 togo = thisContainer;
             }
             else if (!selector) {
-                togo = userJQuery();
+                togo = userJQuery(); // TODO: This is not reasonable and must be made into an error case
             }
             else {
                 if (typeof (selector) === "function") {

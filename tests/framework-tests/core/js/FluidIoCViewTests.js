@@ -280,7 +280,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             enabled: false
         },
         modelRelay: {
-            source: "{that}.model.dom.button.clicked",
+            source: "{that}.model.dom.button.click",
             target: "{that}.model.enabled",
             singleTransform: "fluid.transforms.toggle"
         }
@@ -303,6 +303,67 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.tests.toggleIntegral.test(false);
     fluid.tests.toggleIntegral.test(true);
+
+    // Non-integral button via modelListeners
+    fluid.defaults("fluid.tests.nonIntegralButton", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            button1: ".flc-tests-button-1",
+            button2: ".flc-tests-button-2"
+        },
+        model: {
+            lastButton: null
+        },
+        modelListeners: {
+            button1Click: {
+                path: "dom.button1.click",
+                changePath: "lastButton",
+                value: "button1"
+            },
+            button2Click: {
+                path: "dom.button2.click",
+                changePath: "lastButton",
+                value: "button2"
+            }
+        }
+    });
+
+    jqUnit.test("Non-integral button click", function () {
+        var that = fluid.tests.nonIntegralButton(".flc-tests-nonintegral-button");
+        jqUnit.assertEquals("No button initially pressed", null, that.model.lastButton);
+        that.locate("button1").click();
+        jqUnit.assertEquals("Button 1 is last button", "button1", that.model.lastButton);
+        that.locate("button2").click();
+        jqUnit.assertEquals("Button 2 is last button", "button2", that.model.lastButton);
+    });
+
+    // Relay hover onto style
+    fluid.defaults("fluid.tests.hoverStyle", {
+        gradeNames: "fluid.viewComponent",
+        styles: {
+            hoverStyle: ".flc-tests-hover"
+        },
+        modelRelay: {
+            source: "dom.container.hover",
+            target: {
+                segs: ["dom", "container", "class", "{that}.options.styles.hoverStyle"]
+            }
+        }
+    });
+
+    fluid.tests.triggerMouseEvent = function (element, eventName) {
+        var event = new MouseEvent(eventName);
+        element.dispatchEvent(event);
+    };
+
+    jqUnit.test("Relay hover onto style", function () {
+        var that = fluid.tests.hoverStyle(".flc-tests-simple-integral");
+        jqUnit.assertFalse("No initial hover style", that.container.hasClass(that.options.styles.hoverStyle));
+        fluid.tests.triggerMouseEvent(that.container[0], "mouseover"); // Note that jQuery delegates mouseenter to mouseover - white box testing
+        jqUnit.assertTrue("Hover style set by interaction", that.container.hasClass(that.options.styles.hoverStyle));
+        fluid.tests.triggerMouseEvent(that.container[0], "mouseout"); // Similarly, jQuery delegates mouseleave to mouseout
+        jqUnit.assertFalse("Final hover style unset", that.container.hasClass(that.options.styles.hoverStyle));
+    });
 
     // Bidirectional integral binding relaying bound value to input field
     fluid.defaults("fluid.tests.bidiIntegral", {
@@ -351,7 +412,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", false, [false, true, false]);
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", true, [false, true, false]);
 
-    // Binary relay out tests
+    // Binary relay out tests - visible and enabled
     fluid.defaults("fluid.tests.booleanOut", {
         gradeNames: "fluid.viewComponent",
         selectors: {

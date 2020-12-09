@@ -47,9 +47,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: value,
                         segs: segs
                     };
-                    var args = options.args.map(function (arg) {
-                        return fluid.getImmediate(model, arg);
-                    });
+                    var args = options.makeArgs ? options.makeArgs(model) : [model.value];
                     element[options.method].apply(element, args);
                 } else if (type === "booleanAttr") {
                     var attrValue = options.negate ? !value : value;
@@ -69,19 +67,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // For "read" materialisers, if the DOM has shorter lifetime than the component, the binder will still function
     };
 
-    // Active - received clicks
-    fluid.materialisers.domClicked = function (that, segs) {
-        // Note that we reorganised fluid.enlistModelComponent to support this new use of the ChangeApplier to supply
-        // an initial value whilst model relays are still being set up
-        that.applier.change(segs, 0);
+    // Active - count of received clicks
+    fluid.materialisers.domClick = function (that, segs) {
+        // Note that we no longer supply an initial value to avoid confusing non-integral modelListeners
+        // that.applier.change(segs, 0);
         var listener = function () {
             // TODO: Add a change source, and stick "event" on the stack somehow
-            that.applier.change(segs, fluid.getImmediate(that.model, segs) + 1);
+            var oldValue = fluid.getImmediate(that.model, segs) || 0;
+            that.applier.change(segs, oldValue + 1);
         };
         // TODO: ensure that we don't miss the initial DOM bind event - unlikely, since models are resolved first
         // We assume that an outdated DOM will cease to generate events and be GCed
         that.events.onDomBind.addListener(function () {
             that.dom.locate(segs[1]).click(listener);
+        });
+    };
+
+    // Active - hover state
+    fluid.materialisers.hover = function (that, segs) {
+        var makeListener = function (state) {
+            return function () {
+                // TODO: Add a change source, and stick "event" on the stack somehow
+                that.applier.change(segs, state);
+            };
+        };
+        // TODO: For this and click, integralise over the entire document and add just one single listener - also, preferably eliminate jQuery
+        // Perhaps a giant WeakMap of all DOM binder cache contents?
+        that.events.onDomBind.addListener(function () {
+            that.dom.locate(segs[1]).hover(makeListener(true), makeListener(false));
         });
     };
 
@@ -111,7 +124,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             listener(fluid.getImmediate(that.model, segs));
             // TODO: How do we know not to pull the value from the DOM on startup? Are we expected to introspect into
             // the relay rule connecting it? Surely not. In practice this should use the same rule as "outlying init
-            // values" in the main ChangeApplier which we have done, but now there is no mechanism to override it.
+            // values" in the main ChangeApplier which we have done, but so far there is no mechanism to override it.
         });
     };
 
@@ -129,25 +142,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "*": {
                 "text": {
                     materialiser: "fluid.materialisers.domOutput",
-                    args: ["jQuery", {method: "text", args: [["value"]]}]
+                    args: ["jQuery", {method: "text"}]
                 },
                 "visible": {
                     materialiser: "fluid.materialisers.domOutput",
-                    args: ["jQuery", {method: "toggle", args: [["value"]]}]
+                    args: ["jQuery", {method: "toggle"}]
                 },
                 "enabled": {
                     materialiser: "fluid.materialisers.domOutput",
                     args: ["booleanAttr", {attr: "disabled", negate: true}]
                 },
-                "clicked": {
-                    materialiser: "fluid.materialisers.domClicked"
+                "click": {
+                    materialiser: "fluid.materialisers.domClick"
+                },
+                "hover": {
+                    materialiser: "fluid.materialisers.hover"
                 },
                 "value": {
                     materialiser: "fluid.materialisers.domValue"
                 },
                 "class": {
                     materialiser: "fluid.materialisers.domOutput",
-                    args: ["jQuery", {method: "toggleClass", args: [["segs", "3"], ["value"]]}]
+                    args: ["jQuery", {method: "toggleClass", makeArgs: function (model) {
+                        return [ model.segs[3], !!model.value];
+                    }}]
                 }
             }
         }

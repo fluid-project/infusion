@@ -832,7 +832,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     //     modelRelayEstablished: anticorruption check in fluid.establishModelRelay
     //     modelComplete: self-guard in notifyInitModelWorkflow
     //     initTransactionId: signalling from fluid.operateInitialTransaction to fluid.enlistModelComponent
-    //     materialisedPaths: self-guard in fluid.materialiseRelayPath
+    //     materialisedPaths: self-guard in fluid.materialiseModelPath
 
     fluid.shadowForComponent = function (component) {
         var instantiator = fluid.getInstantiator(component);

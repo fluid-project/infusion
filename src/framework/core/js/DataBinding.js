@@ -693,7 +693,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return null;
     };
 
-    fluid.materialiseRelayPath = function (that, segs) {
+    /** Given a path into a component's model, look up a "materialiser" in the materialiser registry that will bind it onto
+     * some environmental source or sink of state (these are initially just DOM-based, but in future will include things such
+     * as resource-based models backed by DataSources etc.)
+     * This is intended to be called during early component startup as we parse modelRelay, modelListener and changePath records
+     * found in the component's configuration.
+     * This method is idempotent - the same path may be materialised any number of times during startup with no further effect
+     * after the first call.
+     * @param {Component} that - The component holding the model path
+     * @param {String[]} segs - Array of path segments into the component's model to be materialised
+     */
+    fluid.materialiseModelPath = function (that, segs) {
         var shadow = fluid.shadowForComponent(that);
         var materialisedPath = ["materialisedPaths"].concat(segs);
         if (!fluid.getImmediate(shadow, materialisedPath)) {
@@ -810,10 +820,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var targetApplier = options.targetApplier || target.applier; // first branch implies the target is a relay document
         var sourceApplier = options.sourceApplier || source.applier; // first branch implies the source is a relay document - listener will be transactional
         if (!options.targetApplier) {
-            fluid.materialiseRelayPath(target, targetSegs);
+            fluid.materialiseModelPath(target, targetSegs);
         }
         if (!options.sourceApplier) {
-            fluid.materialiseRelayPath(source, sourceSegs);
+            fluid.materialiseModelPath(source, sourceSegs);
         }
         var applierId = targetApplier.applierId;
         targetSegs = fluid.makeArray(targetSegs);
@@ -1550,7 +1560,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             };
             // update "spec" so that we parse priority information just once
             spec = parsed.applier.modelChanged.addListener(spec, func, namespace, record.softNamespace);
-            fluid.materialiseRelayPath(that, spec.segsArray);
+            spec.segsArray.forEach(function (segs) {
+                fluid.materialiseModelPath(that, segs);
+            });
 
             fluid.recordChangeListener(that, parsed.applier, func, spec.listenerId);
         });

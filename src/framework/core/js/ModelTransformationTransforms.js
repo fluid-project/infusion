@@ -895,14 +895,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // assumes there is a single transform covering the entire document. If we ever want to support these transforms in free-form
         // model relay documents (very unlikely) we will have to reform this - more likely we will dismantle free-form model relays
         var oldSource = transformer.oldSource, oldTarget = transformer.oldTarget;
-        var phase = transformer.oldSource === undefined ? 0 : oldSource - fluid.transforms.inverseToggle.base(oldTarget);
+        var phase = (oldSource || 0) - fluid.transforms.inverseToggle.base(oldTarget);
         return fluid.transforms.toggle.base(source + phase);
     };
 
 
     // The base transform
     fluid.transforms.toggle.base = function (source) {
-        return source % 2 === 1;
+        return (source || 0) % 2 === 1;
     };
 
     fluid.transforms.toggle.invert = function (transformSpec) {
