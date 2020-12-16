@@ -37,14 +37,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         gradeNames: ["fluid.viewComponent"],
         components: {
             sub1: {
-                type: "fluid.tests.subComponent",
+                type: "fluid.viewComponent",
                 container: "{testComponent2}.container",
                 options: {
                     "crossDefault": "{testComponent2}.sub2.options.value"
                 }
             },
             sub2: {
-                type: "fluid.tests.subComponent",
+                type: "fluid.viewComponent",
                 container: "{testComponent2}.container",
                 options: {
                     value: "Subcomponent 2 default"
@@ -53,15 +53,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.makeComponents({
-        "fluid.tests.subComponent":       "fluid.viewComponent",
-        "fluid.tests.childView":          "fluid.viewComponent"
-    });
-
     jqUnit.module("Fluid IoC View Tests");
 
     fluid.setLogging(true);
-
 
     jqUnit.test("construct", function () {
         jqUnit.expect(2);
@@ -141,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         gradeNames: ["fluid.viewComponent"],
         components: {
             defaultedChildView: {
-                type: "fluid.tests.subComponent",
+                type: "fluid.viewComponent",
                 container: "{parentView}.dom.defaultedChildContainer"
             }
         },
@@ -195,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertValue("Successfully constructed component with this-ist listener", that);
     });
 
-    /** Self-rendering and unrendering **/
+    /** Shallow Self-rendering and unrendering using fluid.containerRenderingView **/
 
     fluid.defaults("fluid.tests.selfRenderLensed", {
         gradeNames: "fluid.viewComponent",
@@ -245,6 +239,60 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         that.applier.change("arena", null, "DELETE");
         elements = that.locate("element");
         jqUnit.assertEquals("Elements should have been removed", 0, elements.length);
+    });
+
+    /** FLUID-6584 tests - markup-sourced dynamic components from templated content **/
+    // This is what the Pager's "summary" component did/does
+    fluid.defaults("fluid.tests.fluid6584test", {
+        gradeNames: "fluid.templateRenderingView",
+        templateUrl: "../data/testFluid6584Template.html",
+        selectors: {
+            sources: ".flc-nested-container"
+        },
+        dynamicComponents: {
+            elements: {
+                type: "fluid.tests.fluid6584child",
+                sources: "{that}.dom.sources",
+                container: "{source}"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6584child", {
+        gradeNames: "fluid.viewComponent",
+        components: {
+            resourceLoader: {
+                type: "fluid.resourceLoader",
+                options: {
+                    resources: {
+                        messages: {
+                            url: "../data/initModel.json",
+                            dataType: "json"
+                        }
+                    },
+                    model: "{that}.resources.messages.parsed"
+                }
+            }
+        }
+    });
+
+
+    jqUnit.asyncTest("FLUID-6584: Markup-sourced dynamic components from templated content with nested resources", function () {
+        var assertions = function (that) {
+            var children = fluid.queryIoCSelector(that, "fluid.resourceLoader");
+            jqUnit.assertEquals("Constructed two markup-driven components", 2, children.length);
+            children.forEach(function (child) {
+                jqUnit.assertDeepEq("Child's model initialised from resource", {
+                    "initValue": 42
+                }, child.model);
+            });
+            jqUnit.start();
+        };
+        fluid.tests.fluid6584test(".FLUID6584-container", {
+            listeners: {
+                onCreate: assertions
+            }
+        });
     });
 
     /** Integral binding **/

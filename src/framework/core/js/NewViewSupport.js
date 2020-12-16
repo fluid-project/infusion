@@ -22,12 +22,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    // This grade only exists to signal for FLUID-6584 that a view component by some means uses the "new workflow" of
+    // firing onDomBind before onCreate - the exact mechanism is left up to the component but will likely be a workflow function
+    fluid.defaults("fluid.newViewComponent", {
+        gradeNames: "fluid.viewComponent",
+        listeners: {
+            // Override this definition from fluid.viewComponent
+            "onCreate.onDomBind": null
+        }
+    });
+
     /**
      * A viewComponent which renders its own markup including its container, into a
      * specified parent container.
      */
     fluid.defaults("fluid.containerRenderingView", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.newViewComponent"],
         members: {
             container: "@expand:{that}.renderContainer()"
         },
@@ -124,6 +134,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.renderer.evaluateContainers = function (shadows) {
         shadows.forEach(function (shadow) {
             fluid.getForComponent(shadow.that, "container");
+        });
+        shadows.forEach(function (shadow) {
+            shadow.that.events.onDomBind.fire(shadow.that);
         });
     };
 

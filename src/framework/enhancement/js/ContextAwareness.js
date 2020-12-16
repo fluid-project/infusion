@@ -131,7 +131,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // cf. core of distributeOptions!
         var targetRef = fluid.parseContextReference(reference);
         var targetComponent = fluid.resolveContext(targetRef.context, that);
-        var path = targetRef.path || ["options", "value"];
+        var path = targetRef.path || (fluid.isComponent(targetComponent) && fluid.componentHasGrade(targetComponent, "fluid.contextAware.marker") ? ["options", "value"] : []);
         var value = fluid.getForComponent(targetComponent, path);
         return value;
     };

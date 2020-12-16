@@ -116,15 +116,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             options: {
             }
         },
-        invokers: {
-            acquireDefaultRange: {
-                funcName: "fluid.identity",
-                args: "{that}.dataModel.length"
-            }
-        },
         modelFilter: fluid.pagedTable.directModelFilter,
         model: {
-            pageSize: 10
+            pageSize: 10,
+            totalRange: "{that}.dataModel.length"
         }
     });
 

@@ -1190,6 +1190,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     jqUnit.asyncTest("FLUID-6390 II: Hall of mirrors lensed components via resource and relay", function () {
+        // Note that these components being created back-to-back via an onCreate listener is an intrinsic part of this test
         var tasks = [
             fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model2, 3),
             fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model6, 7)

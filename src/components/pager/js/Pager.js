@@ -23,11 +23,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      ******************/
     // TODO: Convert one day to the "visibility model" system (FLUID-4928)
     fluid.pager.updateStyles = function (pageListThat, newModel, oldModel) {
+        var pageLinks = pageListThat.locate("pageLinks");
         if (oldModel && oldModel.pageIndex !== undefined) {
-            var oldLink = pageListThat.pageLinks.eq(oldModel.pageIndex);
+            var oldLink = pageLinks.eq(oldModel.pageIndex);
             oldLink.removeClass(pageListThat.options.styles.currentPage);
         }
-        var pageLink = pageListThat.pageLinks.eq(newModel.pageIndex);
+        var pageLink = pageLinks.eq(newModel.pageIndex);
         pageLink.addClass(pageListThat.options.styles.currentPage);
     };
 
@@ -60,20 +61,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.defaults("fluid.pager.directPageList", {
-        gradeNames: ["fluid.pager.pageList"],
+        gradeNames: ["fluid.pager.pageList", "fluid.contextAware"],
+        contextAwareness: {
+            isInPager: {
+                checks: {
+                    isInPager: {
+                        contextValue: "{fluid.pager}",
+                        gradeNames: "fluid.pager.directPageListInPager"
+                    }
+                }
+            }
+        },
         listeners: {
             onCreate: {
                 funcName: "fluid.pager.bindLinkClicks",
-                args: ["{that}.pageLinks", "{pager}.events.initiatePageChange"]
+                args: ["{that}.dom.pageLinks", "{pager}.events.initiatePageChange"]
             }
         },
         modelListeners: {
             "{pager}.model": "fluid.pager.updateStyles({that}, {change}.value, {change}.oldValue)"
-        },
-        members: {
-            pageLinks: "{that}.dom.pageLinks",
-            defaultModel: {
-                totalRange: "{that}.pageLinks.length"
+        }
+    });
+
+    // Interactional grade reporting number of page links up to pager
+    fluid.defaults("fluid.pager.directPageListInPager", {
+        listeners: {
+            "onDomBind.countPageLinks": {
+                changePath: "{fluid.pager}.model.totalRange",
+                value: "{that}.dom.pageLinks.length"
             }
         }
     });
@@ -241,8 +256,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         events: {
             onRenderPageLinks: "{pager}.events.onRenderPageLinks"
         },
+        // Relay the model since we will miss its initialisation due to now being createOnEvent onCreate via onDomBind
+        model: "{pager}.model",
         modelListeners: {
-            "{pager}.model": "fluid.pager.renderedPageList.onModelChange({that}, {change}.value)"
+            "": "fluid.pager.renderedPageList.onModelChange({that}, {change}.value)"
         },
         invokers: {
             produceTree: {
@@ -437,11 +454,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         model: {
             pageIndex: 0,
             pageSize: 1,
-            totalRange: {
-                expander: {
-                    func: "{that}.acquireDefaultRange"
-                }
-            }
+            totalRange: undefined // Must be supplied by integrator
         },
         selectors: {
             pagerBar: ".flc-pager-top, .flc-pager-bottom",
@@ -467,26 +480,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
             }
         },
-        modelRelay: [{
-            target: "pageCount",
-            singleTransform: {
-                type: "fluid.transforms.free",
+        modelRelay: {
+            pageCount: {
+                target: "pageCount",
+                func: "fluid.pager.computePageCount",
                 args: {
                     "totalRange": "{that}.model.totalRange",
                     "pageSize": "{that}.model.pageSize"
-                },
-                func: "fluid.pager.computePageCount"
+                }
+            },
+            limitRange: {
+                target: "pageIndex",
+                singleTransform: {
+                    type: "fluid.transforms.limitRange",
+                    input: "{that}.model.pageIndex",
+                    min: 0,
+                    max: "{that}.model.pageCount",
+                    excludeMax: 1
+                }
             }
-        }, {
-            target: "pageIndex",
-            singleTransform: {
-                type: "fluid.transforms.limitRange",
-                input: "{that}.model.pageIndex",
-                min: 0,
-                max: "{that}.model.pageCount",
-                excludeMax: 1
-            }
-        }],
+        },
         modelListeners: {
             "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue, {that})"
         },
@@ -498,14 +511,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "initiatePageSizeChange.updateModel": {
                 changePath: "pageSize",
                 value: "{arguments}.0"
-            }
-        },
-        invokers: {
-            acquireDefaultRange: {
-                // TODO: problem here - pagerBar, etc. are dynamic components and so cannot be constructed gingerly
-                // This is why current (pre-FLUID-4925) framework must construct components before invokers
-                funcName: "fluid.identity",
-                args: "{that}.pagerBar.pageList.defaultModel.totalRange"
             }
         },
         dynamicComponents: {

@@ -1710,7 +1710,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             type: "create",
             segs: newSegs,
             lightMerge: lightMerge,
-            //records: [record],
+            // records: [record],
             // This is awkward - what if we accumulate multiple records with different localRecords?
             // Can't do much about this without "local mergePolicies" and provenance
             localRecord: localRecord
@@ -1838,6 +1838,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         shadow.mergeOptions.updateBlocks();
     };
 
+    fluid.pushMarkupSourcedDynamicComponentListener = function (shell, key, sourcesParsed, registerDynamicComponents) {
+        var namespace = shell.id + "-markupDynamicComponents-" + key;
+        var context = fluid.resolveContext(sourcesParsed.context, shell);
+        // cf. logic in fluid.test.decoders.event - we really need to potentialise listener registrations properly when we abolish them for FLUID-6365
+        if (context.events.onDomBind) {
+            context.events.onDomBind.addListener(registerDynamicComponents, namespace);
+        } else {
+            var targetShadow = fluid.shadowForComponent(context);
+            fluid.addLensedComponentBlocks([{
+                listeners: {
+                    "onDomBind": {
+                        namespace: namespace,
+                        listener: registerDynamicComponents
+                    }
+                }
+            }], {}, targetShadow);
+        }
+    };
+
     /** Schematic checking utility which verifies that a supplied record contains exactly one field set (with value other than
      * `undefined` from a list of options. If zero or more than 1 of the members are found, `fluid.fail` will be invoked with
      * a diagnostic message.
@@ -1912,12 +1931,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     recordSources = lightMerge.source;
                     isBoolean = true;
                 }
-                var sources;
                 if (fluid.isIoCReference(recordSources)) {
                     var sourcesParsed = fluid.parseValidModelReference(shell, "dynamicComponents source", recordSources, true);
-                    if (sourcesParsed.nonModel) {
-                        sources = fluid.getForComponent(sourcesParsed.that, sourcesParsed.segs);
+                    var registerDynamicComponents = function () {
+                        var sources = fluid.getForComponent(sourcesParsed.that, sourcesParsed.segs);
                         fluid.registerSourcedDynamicComponentsTriage(potentia, shell, sources, lightMerge, key, null, isBoolean);
+                    };
+                    if (sourcesParsed.nonModel) {
+                        if (sourcesParsed.segs[0] === "dom") { // Special treatment for FLUID-6584 markup-sourced dynamic components
+                            fluid.pushMarkupSourcedDynamicComponentListener(shell, key, sourcesParsed, registerDynamicComponents);
+                        } else {
+                            registerDynamicComponents();
+                        }
                     } else {
                         fluid.set(shadow, ["modelSourcedDynamicComponents", key], {
                             sourcesParsed: sourcesParsed,
@@ -1927,7 +1952,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         // Construction will now be handled after fluid.initModelTransaction in DataBinding.js
                     }
                 } else {
-                    sources = fluid.expandImmediate(recordSources, shell, potentia.localRecord); // it still might be an expander
+                    var sources = fluid.expandImmediate(recordSources, shell, potentia.localRecord); // it still might be an expander
                     fluid.registerSourcedDynamicComponentsTriage(potentia, shell, sources, lightMerge, key, null, isBoolean);
                 }
             }
@@ -2273,7 +2298,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var sequencer = resumeSequencer;
         if (!sequencer) {
             var topSequencer = fluid.getImmediate(fluid.peek(rootSequencer.sources), ["sequencer"]);
-            if (!topSequencer || topSequencer.hasStartedConcludeInit) {
+            if (!topSequencer || topSequencer.hasStartedConcludeInit || topSequencer.promise.disposition) {
                 sequencer = fluid.promise.makeSequencer([], {}, fluid.promise.makeSequenceStrategy());
                 sequencer.promise.sequencer = sequencer; // So we can reference it from the stack of sources
                 rootSequencer.sources.push(sequencer.promise);
@@ -2290,6 +2315,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 sequencer.sources.push(function () {
                     if (!sequencer.hasStartedConcludeInit) {
                         fluid.commitPotentiae(transactionId, sequencer);
+                    } else if (sequencer === fluid.peek(rootSequencer.sources).sequencer) {
+                        fluid.commitPotentiae(transactionId, null);
                     }
                 });
             }
@@ -2323,6 +2350,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (potentia.type === "destroy") {
             potentiaList.destroys.push(potentia);
             potentiaList.activeCount++;
+            // Clear out any unapplied creates that are for components nested below a destroy. This only became relevant with
+            // FLUID-6584-style onDomBind -> onCreate components created in droves, e.g. in the Pager 
+            fluid.remove_if(potentiaList.creates, function (create) {
+                if (!create.applied && create.path.startsWith(potentia.path)) {
+                    potentiaList.activeCount--;
+                    return true;
+                }
+            });
         } else {
             var newPotentia = potentia;
             if (potentia.type === "create") {
