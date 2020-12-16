@@ -2351,7 +2351,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             potentiaList.destroys.push(potentia);
             potentiaList.activeCount++;
             // Clear out any unapplied creates that are for components nested below a destroy. This only became relevant with
-            // FLUID-6584-style onDomBind -> onCreate components created in droves, e.g. in the Pager 
+            // FLUID-6584-style onDomBind -> onCreate components created in droves, e.g. in the Pager
             fluid.remove_if(potentiaList.creates, function (create) {
                 if (!create.applied && create.path.startsWith(potentia.path)) {
                     potentiaList.activeCount--;
