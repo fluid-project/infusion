@@ -1832,6 +1832,45 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, "ourWindow");
     });
 
+    /** FLUID-6586 - {sourcePath} within relay segments **/
+
+    fluid.defaults("fluid.tests.fluid6586root", {
+        gradeNames: "fluid.modelComponent",
+        sources: {
+            key1: true,
+            key2: true
+        },
+        model: {
+            structure: {
+                key1: "a",
+                key2: "b"
+            }
+        },
+        dynamicComponents: {
+            dynamic: {
+                sources: "{that}.options.sources",
+                type: "fluid.modelComponent",
+                options: {
+                    modelRelay: {
+                        source: {
+                            context: "fluid6586root",
+                            segs: ["structure", "{sourcePath}"]
+                        },
+                        target: "value"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6586: {sourcePath} within relay segments", function () {
+        var that = fluid.tests.fluid6586root();
+        var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
+        jqUnit.assertEquals("Two children should have been constructed", 2, children.length);
+        var values = fluid.getMembers(children, ["model", "value"]);
+        jqUnit.assertDeepEq("Values should have been relayed via segments", ["a", "b"], values);
+    });
+
     /** FLUID-6127: Wildcards in modelListeners, and support for deletion **/
 
     fluid.defaults("fluid.tests.fluid6127root", {

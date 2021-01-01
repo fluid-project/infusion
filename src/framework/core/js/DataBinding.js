@@ -627,7 +627,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             parsed = {
                 context: ref.context,
-                modelSegs: fluid.expandImmediate(ref.segs, that)
+                modelSegs: fluid.expandImmediate(ref.segs, that, localRecord)
             };
             fluid.each(parsed.modelSegs, function (seg, index) {
                 if (!fluid.isValue(seg)) {

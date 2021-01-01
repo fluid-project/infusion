@@ -873,7 +873,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.defaults("fluid.transforms.toggle", {
-        gradeNames: ["fluid.standardTransformFunction", "fluid.pocketLens"],
+        gradeNames: ["fluid.standardTransformFunction"],
         invertConfiguration: "fluid.transforms.toggle.invert",
         relayOptions: {
             forward: {
@@ -913,7 +913,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.transforms.inverseToggle", {
         // This transform is only expected to arise as the inverse of fluid.transforms.toggle and so it does not
         // produce an inverse.
-        gradeNames: ["fluid.standardTransformFunction", "fluid.pocketLens"]
+        gradeNames: ["fluid.standardTransformFunction"]
     });
 
     /** @param {Boolean} source - Boolean toggle value to be converted

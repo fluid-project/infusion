@@ -619,7 +619,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * the schema to be used to construct missing trunk values.
      * @param {ChangeApplier} options.finalApplier - A changeApplier to receive changes caused by output values
      * @param {Object} options.oldTarget - A target model resulting from a previous round of updates
-     * @param {Object} options.oldSource - The source model which led output to `options.oldTarget`
+     * @param {Object} options.oldSource - The source model which led output to `options.oldTarget`. Currently only read
+     * by specialised transforms such as fluid.transforms.toggle
      * @return {Any} The transformed model.
      */
     fluid.model.transformWithRules = function (source, rules, options) {

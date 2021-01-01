@@ -73,14 +73,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // For "read" materialisers, if the DOM has shorter lifetime than the component, the binder will still function
     };
 
+    fluid.incrementModel = function (that, segs) {
+        var oldValue = fluid.getImmediate(that.model, segs) || 0;
+        that.applier.change(segs, oldValue + 1);
+    };
+
     // Active - count of received clicks
     fluid.materialisers.domClick = function (that, segs) {
         // Note that we no longer supply an initial value to avoid confusing non-integral modelListeners
         // that.applier.change(segs, 0);
         var listener = function () {
+            fluid.incrementModel(that, segs);
             // TODO: Add a change source, and stick "event" on the stack somehow
-            var oldValue = fluid.getImmediate(that.model, segs) || 0;
-            that.applier.change(segs, oldValue + 1);
         };
         // TODO: ensure that we don't miss the initial DOM bind event - unlikely, since models are resolved first
         // We assume that an outdated DOM will cease to generate events and be GCed
