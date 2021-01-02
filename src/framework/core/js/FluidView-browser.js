@@ -126,7 +126,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, listener);
 
-            var options = that.options.bindingOptions[fluid.model.composeSegments.apply(null, segs)];
+            var options = fluid.getImmediate(that, ["options", "bindingOptions", fluid.model.composeSegments.apply(null, segs)]);
             var changeEvent = options && options.changeEvent || "change";
 
             that.dom.locate(segs[1]).on(changeEvent, domListener);

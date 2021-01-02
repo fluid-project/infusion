@@ -459,11 +459,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 model: {
                     field: values[0]
                 },
-                bindingOptions: {
+                bindingOptions: onInput ? {
                     "dom.field.value": {
-                        changeEvent: onInput ? "input" : null
+                        changeEvent: "input"
                     }
-                }
+                } : null // Use this structure to test complete absence of bindingOptions
             });
             var field = that.locate("field");
             jqUnit.assertEquals("Field should have been rendered with model value", values[0], getFieldValue(field));
