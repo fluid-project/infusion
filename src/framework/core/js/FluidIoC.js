@@ -2694,12 +2694,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.changeToApplicable = function (record, that) {
         fluid.getForComponent(that, "applier");
+        // TODO: Record the address of such records for better diagnostics
         var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
         fluid.materialiseModelPath(parsed.that, parsed.modelSegs);
         return {
             // These extra arguments get in via fluid.event.invokeListener and resolveModelListener
             apply: function (noThis, args, localRecord, mergeRecord) {
-                var value = fluid.expandImmediate(record.value, that, fluid.extend(localRecord, {"arguments": args}));
+                var value;
+                if (record.func || record.funcName) {
+                    var invoker = fluid.makeInvoker(that, fluid.filterKeys(record, ["func", "funcName", "args"]), "changePath listener record", localRecord);
+                    value = invoker();
+                } else {
+                    value = fluid.expandImmediate(record.value, that, fluid.extend(localRecord, {"arguments": args}));
+                }
                 var sources = mergeRecord && mergeRecord.source && mergeRecord.source.length ? fluid.makeArray(record.source).concat(mergeRecord.source) : record.source;
                 parsed.applier.change(parsed.modelSegs, value, record.type, sources); // FLUID-5586 now resolved
             }
@@ -2726,14 +2733,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.getGlobalValue(funcName);
     };
 
-    fluid.makeInvoker = function (that, invokerec, name) {
+    fluid.makeInvoker = function (that, invokerec, name, localRecord) {
         invokerec = fluid.upgradePrimitiveFunc(invokerec); // shorthand case for direct function invokers (FLUID-4926)
         if (invokerec.args !== undefined && invokerec.args !== fluid.NO_ARGUMENTS && !fluid.isArrayable(invokerec.args)) {
             invokerec.args = fluid.makeArray(invokerec.args);
         }
         var func = fluid.recordToApplicable(invokerec, that);
         var invokePre = fluid.preExpand(invokerec.args);
-        var localRecord = {};
+        localRecord = localRecord || {};
         var expandOptions = fluid.makeStackResolverOptions(that, localRecord, true);
         func = func || (invokerec.funcName ? fluid.getGlobalValueNonComponent(invokerec.funcName, "an invoker") : fluid.expandImmediate(invokerec.func, that));
         if (!func || !func.apply) {

@@ -4301,6 +4301,30 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("Flag updated via expander", true, that.model.flag);
     });
 
+    /** FLUID-6428 II - Direct syntax for producing changePath value **/
+
+    fluid.defaults("fluid.tests.fluid6428direct", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            count: 0
+        },
+        invokers: {
+            increment: {
+                changePath: "count",
+                func: function (value) {
+                    return value + 1;
+                },
+                args: "{that}.model.count"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6428 II: Direct func and args for changePath records", function () {
+        var that = fluid.tests.fluid6428direct();
+        that.increment();
+        jqUnit.assertEquals("Count updated via direct changePath function", 1, that.model.count);
+    });
+
     /** FLUID-6433 - Priority in scope for memberName **/
 
     fluid.defaults("fluid.tests.fluid6433trial", {
