@@ -479,7 +479,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-text", true, ["Model value", "Updated value", "Updated model value"]);
 
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", false, [false, true, false]);
-    fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", true, [false, true, false]);
+    fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", false, [true, false, true]);
 
     // Binary relay out tests - visible and enabled
     fluid.defaults("fluid.tests.booleanOut", {

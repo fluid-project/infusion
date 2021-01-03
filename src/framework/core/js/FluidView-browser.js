@@ -111,13 +111,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Bidirectional - pushes and receives values
     fluid.materialisers.domValue = function (that, segs) {
         that.events.onDomBind.addListener(function () {
-
             var element = that.dom.locate(segs[1]);
-            var isCheckbox = element[0].type === "checkbox";
 
             var domListener = function () {
                 var val = fluid.value(element);
-                that.applier.change(segs, isCheckbox ? fluid.isValue(val) : val, "ADD", "DOM");
+                that.applier.change(segs, val, "ADD", "DOM");
             };
 
             var modelListener = function (value) {
