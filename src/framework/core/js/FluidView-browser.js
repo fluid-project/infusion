@@ -116,31 +116,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var isCheckbox = element[0].type === "checkbox";
 
             var domListener = function () {
-                var val = fluid.materialisers.domValue.getFieldValue(isCheckbox, element);
-                that.applier.change(segs, val, "ADD", "DOM");
+                var val = fluid.value(element);
+                that.applier.change(segs, isCheckbox ? fluid.isValue(val) : val, "ADD", "DOM");
             };
 
-            var listener = function (value) {
-                element.val(value);
+            var modelListener = function (value) {
+                if (value !== undefined) {
+                    fluid.value(element, value);
+                }
             };
 
-            that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, listener);
+            that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, modelListener);
 
             var options = fluid.getImmediate(that, ["options", "bindingOptions", fluid.model.composeSegments.apply(null, segs)]);
             var changeEvent = options && options.changeEvent || "change";
 
-            that.dom.locate(segs[1]).on(changeEvent, domListener);
+            element.on(changeEvent, domListener);
             // Pull the initial value from the model
-            listener(fluid.getImmediate(that.model, segs));
+            modelListener(fluid.getImmediate(that.model, segs));
             // TODO: How do we know not to pull the value from the DOM on startup? Are we expected to introspect into
             // the relay rule connecting it? Surely not. In practice this should use the same rule as "outlying init
             // values" in the main ChangeApplier which we have done, but so far there is no mechanism to override it.
         });
-    };
-
-    // Historically such logic was fused inside fluid.value but we will eventually break it apart
-    fluid.materialisers.domValue.getFieldValue = function (isCheckbox, element) {
-        return (isCheckbox ? fluid.transforms.stringToBoolean : fluid.identity) (element.val());
     };
 
     // Remember, naturally all this stuff will go into defaults when we can afford it
@@ -181,6 +178,74 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /** A generalisation of jQuery.val to correctly handle the case of acquiring and setting the value of clustered
+     * radio button/checkbox sets, potentially, given a node corresponding to just one element.
+     * @param {jQuery} nodeIn The node whose value is to be read or written
+     * @param {Any} newValue If `undefined`, the value will be read, otherwise, the supplied value will be applied to the node
+     * @return {Any} The queried value, if `newValue` was undefined
+     */
+    fluid.value = function (nodeIn, newValue) {
+        var node = fluid.unwrap(nodeIn);
+        var isMultiple = false;
+        if (node.nodeType === undefined && node.length > 1) {
+            node = node[0];
+            isMultiple = true;
+        }
+        if ("input" !== node.nodeName.toLowerCase() || !/radio|checkbox/.test(node.type)) {
+            // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
+            return newValue === undefined ? $(node).val() : $(node).val(newValue);
+        }
+        var name = node.name;
+        var elements;
+        if (isMultiple || name === "") {
+            elements = nodeIn;
+        } else {
+            elements = node.ownerDocument.getElementsByName(name);
+            var scope = fluid.findForm(node);
+            elements = $.grep(elements, function (element) {
+                if (element.name !== name) {
+                    return false;
+                }
+                return !scope || fluid.dom.isContainer(scope, element);
+            });
+            // TODO: "Code to the test" for old renderer - remove all HTML 1.0 behaviour when old renderer is abolished
+            isMultiple = elements.length > 1;
+        }
+        if (newValue !== undefined) {
+            if (typeof(newValue) === "boolean") {
+                newValue = (newValue ? "true" : "false");
+            }
+            // jQuery gets this partially right, but when dealing with radio button array will
+            // set all of their values to "newValue" rather than setting the checked property
+            // of the corresponding control.
+            $.each(elements, function () {
+                this.checked = (newValue instanceof Array ?
+                    newValue.indexOf(this.value) !== -1 : newValue === this.value);
+            });
+        } else { // it is a checkbox - jQuery fails on this - see https://stackoverflow.com/questions/5621324/jquery-val-and-checkboxes
+            var checked = $.map(elements, function (element) {
+                return element.checked ? element.value : null;
+            });
+            return node.type === "radio" ? checked[0] :
+               isMultiple ? checked : !!checked[0]; // else it's a checkbox
+        }
+    };
+
+
+    /* Sets the value to the DOM element and triggers the change event on the element.
+     * Note: when using jQuery val() function to change the node value, the change event would
+     * not be fired automatically, it requires to be initiated by the user.
+     *
+     * @param {A jQueryable DOM element} node - A selector, a DOM node, or a jQuery instance
+     * @param {String|Number|Array} value - A string of text, a number, or an array of strings
+     * corresponding to the value of each matched element to set in the node
+     */
+    fluid.changeElementValue = function (node, value) {
+        node = $(node);
+        fluid.value(node, value);
+        node.change();
+    };
+
     // TODO: Most of these utilities below are not general purpose, and should either be packaged with individual components
     // such as the Reorderer if they are still appropriate, or else abolished once the new renderer is fully rolled out
 
@@ -218,58 +283,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return newValue === undefined ? node[method]() : node[method](newValue);
         };
     });
-
-    /* A generalisation of jQuery.val to correctly handle the case of acquiring and
-     * setting the value of clustered radio button/checkbox sets, potentially, given
-     * a node corresponding to just one element.
-     */
-    fluid.value = function (nodeIn, newValue) {
-        var node = fluid.unwrap(nodeIn);
-        var multiple = false;
-        if (node.nodeType === undefined && node.length > 1) {
-            node = node[0];
-            multiple = true;
-        }
-        if ("input" !== node.nodeName.toLowerCase() || !/radio|checkbox/.test(node.type)) {
-            // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
-            return newValue === undefined ? $(node).val() : $(node).val(newValue);
-        }
-        var name = node.name;
-        if (name === undefined) {
-            fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
-        }
-        var elements;
-        if (multiple) {
-            elements = nodeIn;
-        } else {
-            elements = node.ownerDocument.getElementsByName(name);
-            var scope = fluid.findForm(node);
-            elements = $.grep(elements, function (element) {
-                if (element.name !== name) {
-                    return false;
-                }
-                return !scope || fluid.dom.isContainer(scope, element);
-            });
-        }
-        if (newValue !== undefined) {
-            if (typeof(newValue) === "boolean") {
-                newValue = (newValue ? "true" : "false");
-            }
-            // jQuery gets this partially right, but when dealing with radio button array will
-            // set all of their values to "newValue" rather than setting the checked property
-            // of the corresponding control.
-            $.each(elements, function () {
-                this.checked = (newValue instanceof Array ?
-                    newValue.indexOf(this.value) !== -1 : newValue === this.value);
-            });
-        } else { // this part jQuery will not do - extracting value from <input> array
-            var checked = $.map(elements, function (element) {
-                return element.checked ? element.value : null;
-            });
-            return node.type === "radio" ? checked[0] : checked;
-        }
-    };
-
 
     fluid.BINDING_ROOT_KEY = "fluid-binding-root";
 
@@ -314,9 +327,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var fossil = root.fossils[name];
         if (!fossil) {
             fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
-        }
-        if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
-            newValue = newValue[0] ? true : false;
         }
         var EL = root.fossils[name].EL;
         if (applier) {

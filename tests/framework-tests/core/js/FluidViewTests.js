@@ -44,6 +44,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
 
+        jqUnit.asyncTest("fluid.changeElementValue()", function () {
+            jqUnit.expect(2);
+
+            var node = $("#flc-changeElementValue");
+            var value = "Value";
+
+            node.change(function (evt) {
+                jqUnit.assertTrue("The change event is fired", true);
+                jqUnit.assertTrue("The value has been set correctly", value, evt.target.value);
+                jqUnit.start();
+            });
+
+            fluid.changeElementValue(node, value);
+        });
 
         fluid.registerNamespace("fluid.tests.fluid5821");
 

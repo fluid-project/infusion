@@ -451,9 +451,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.tests.bidiIntegral.test = function (container, onInput, values) {
         var fieldType = typeof(values[0]) === "boolean" ? "checkbox" : "text";
-        var getFieldValue = function (field) {
-            return fluid.materialisers.domValue.getFieldValue(fieldType === "checkbox", field);
-        };
         jqUnit.test("Bidirectional integral binding for " + fieldType + " - changeEvent of " + (onInput ? "input" : "change"), function () {
             var that = fluid.tests.bidiIntegral(container, {
                 model: {
@@ -466,7 +463,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 } : null // Use this structure to test complete absence of bindingOptions
             });
             var field = that.locate("field");
-            jqUnit.assertEquals("Field should have been rendered with model value", values[0], getFieldValue(field));
+            jqUnit.assertEquals("Field should have been rendered with model value", values[0], fluid.value(field));
             if (onInput) {
                 field.val("Updated value").trigger("input");
             } else {
@@ -474,7 +471,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
             jqUnit.assertEquals("Changed value should have been propagated into model", values[1], that.model.field);
             that.applier.change("field", values[2]);
-            jqUnit.assertEquals("Field should have been rendered with updated model value", values[2], getFieldValue(field));
+            jqUnit.assertEquals("Field should have been rendered with updated model value", values[2], fluid.value(field));
         });
     };
 
