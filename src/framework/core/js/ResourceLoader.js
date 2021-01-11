@@ -676,13 +676,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.ImmutableObject = function () {};
 
+    fluid.copyImmutableResource = function (tocopy) {
+        var newContainer = fluid.isArrayable(tocopy) ? new fluid.ImmutableArray() : new fluid.ImmutableObject();
+        fluid.each(tocopy, function (value, key) {
+            newContainer[key] = value;
+        });
+        return newContainer;
+    };
+
+    // TODO: Break out the impl into a reusable function
     fluid.resourceLoader.renderImmutable = function (parsed, resourceSpec) {
         if (resourceSpec.immutableModelResource) {
-            var newContainer = fluid.isArrayable(parsed) ? new fluid.ImmutableArray() : new fluid.ImmutableObject();
-            fluid.each(parsed, function (value, key) {
-                newContainer[key] = value;
-            });
-            return newContainer;
+            return fluid.copyImmutableResource(parsed);
         } else {
             return parsed;
         }

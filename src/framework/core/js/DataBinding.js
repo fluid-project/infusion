@@ -1154,6 +1154,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     {key: key, body: mrrec, that: that});
         var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source, true) :
             {path: null, modelSegs: null};
+        // TODO: We seem to have lost validation that the relay definition must contain "target" - currently bare exception
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
         var namespace = mrrec.namespace || key;
 
