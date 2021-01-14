@@ -620,6 +620,106 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.tests.fluid4982messageResolver2();
     });
 
+    /** FLUID-6588 - Timing of createOnEvent and onResourcesLoaded **/
+
+    fluid.tests.delayedResource = function (payload, delay) {
+        var togo = fluid.promise();
+        setTimeout(function () {
+            togo.resolve(payload);
+        }, delay);
+        return togo;
+    };
+
+    // Models /tests/browser-fixtures/js/tests-templateAware-serverResourceAware.js
+    fluid.defaults("fluid.tests.fluid6588root", {
+        gradeNames: "fluid.component",
+        events: {
+            mainRendered: null,
+            containedRendered: null,
+            allRendered: {
+                events: {
+                    mainRendered: "mainRendered",
+                    containedRendered: "containedRendered"
+                }
+            }
+        },
+        components: {
+            main: {
+                type: "fluid.tests.fluid6588child",
+                options: {
+                    listeners: {
+                        "onRendererAvailable.notifyParent": {
+                            func: "{fluid.tests.fluid6588root}.events.mainRendered.fire"
+                        }
+                    },
+                    resources: {
+                        messages: {
+                            promiseFunc: "fluid.tests.delayedResource",
+                            promiseArgs: [42, 1]
+                        }
+                    }
+                }
+            },
+            contained: {
+                type: "fluid.tests.fluid6588child",
+                options: {
+                    listeners: {
+                        "onRendererAvailable.notifyParent": {
+                            func: "{fluid.tests.fluid6588root}.events.containedRendered.fire"
+                        }
+                    },
+                    resources: {
+                        messages: {
+                            promiseFunc: "fluid.tests.delayedResource",
+                            promiseArgs: [43, 100]
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Models %fluid-handlebars/src/js/client/serverResourceAware.js
+    fluid.defaults("fluid.tests.fluid6588child", {
+        gradeNames: ["fluid.resourceLoader", "fluid.modelComponent"],
+        events: {
+            onRendererAvailable: null
+        },
+        model: {
+            messages: "{that}.resources.messages.parsed"
+        },
+        resources: {
+            messages: {
+            }
+        },
+        components: {
+            renderer: {
+                type: "fluid.component",
+                createOnEvent: "{fluid.tests.fluid6588child}.events.onResourcesLoaded",
+                options: {
+                    listeners: {
+                        "onCreate.notifyParent": {
+                            func: "{fluid.tests.fluid6588child}.events.onRendererAvailable.fire"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-6588: Timing of createOnEvent and onResourcesLoaded", function () {
+        jqUnit.expect(1);
+        var resume = function () {
+            jqUnit.assert("All subcomponents created");
+            jqUnit.start();
+        };
+        fluid.tests.fluid6588root({
+            listeners: {
+                allRendered: resume
+            }
+        });
+    });
+
     /** FLUID-6413 I - Elementary failure with asynchronous activities during init transaction **/
 
     fluid.defaults("fluid.tests.fluid6413child", {

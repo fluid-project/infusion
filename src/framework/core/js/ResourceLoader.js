@@ -941,8 +941,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {fluid.resourceLoader} that - The loader for which the I/O fetch process is to be started
      */
     fluid.resourceLoader.subscribeCompletion = function (completionPromise, resourceLoader) {
-        completionPromise.then(function () {
+        var fire = function () {
             resourceLoader.events.onResourcesLoaded.fire(resourceLoader.resourceFetcher.resourceSpecs);
+        };
+        completionPromise.then(function () {
+            // Special-case timings for FLUID-6588. Rather than fix up createOnEvent so that it can be used for events before onCreate, we just
+            // enlaten this event so that it fires after onCreate. We mean to abolish createOnEvent components and so there is no point making them
+            // any more usable. Note that would be hugely helpful at this point to either have a promise for overall component construction or else
+            // the onCreate event (see FLUID-4883 "latched events").
+            if (resourceLoader.lifecycleStatus === "constructed" || resourceLoader.lifecycleStatus === "treeConstructed") {
+                fire();
+            } else if (resourceLoader.lifecycleStatus !== "destroyed") {
+                resourceLoader.events.onCreate.addListener(fire, "fireOnResourcesLoaded");
+            }
         }, function (error) {
             // Note that if the failure was for a resource demanded during startup, this component will already have
             // been destroyed.
