@@ -178,7 +178,7 @@ if (highestInfusionIndex !== undefined) {
     // this path which should be reported as an uncaught exception
     var highestInfusionPath = moduleInfo.paths[highestInfusionIndex];
     var infusionModule = require(highestInfusionPath);
-    if (infusionModule.module && infusionModule.module.modules.infusion.baseDir !== moduleBaseDir) {
+    if ("module" in infusionModule && infusionModule.module.modules.infusion.baseDir !== moduleBaseDir) {
         // eslint-disable-next-line no-console
         console.log("Pre-inspection from path " + __dirname + " resolved to infusion at higher path " + highestInfusionPath);
         module.exports = infusionModule;
