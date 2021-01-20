@@ -328,6 +328,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return requestOptions;
     };
 
+    fluid.dataSource.URL.parse = function (url, permittedOptions) {
+        var parsed = fluid.filterKeys(new fluid.resourceLoader.UrlClass(url, typeof(window) !== "undefined" && window.location || undefined), fluid.dataSource.URL.urlFields);
+        permittedOptions.forEach(function (oneOption) {
+        // The WhatWG algorithm is a big step backwards and produces empty string junk in the parsed URL
+            if (!parsed[oneOption]) {
+                delete parsed[oneOption];
+            }
+        });
+        return parsed;
+    };
+
     /** Given an HTTP status code as returned by node's `http.IncomingMessage` class (or otherwise), determine whether it corresponds to
      * an error status. This performs a simple-minded check to see if it a number outside the range [200, 300).
      * @param {Number} statusCode The HTTP status code to be tested
@@ -358,15 +369,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.getForComponent(that, ["options", oneOption]);
         });
         var directModel = userOptions.directModel;
+        // cf.sequence in KettleTestUtils.http.js kettle.test.request.http.prepareRequestOptions
         var url = that.resolveUrl(that.options.url, that.options.termMap, directModel);
-        var parsed = fluid.filterKeys(new fluid.resourceLoader.UrlClass(url, window && window.location), fluid.dataSource.URL.urlFields);
-        permittedOptions.forEach(function (oneOption) {
-        // The WhatWG algorithm is a big step backwards and produces empty string junk in the parsed URL
-            if (!parsed[oneOption]) {
-                delete parsed[oneOption];
-            }
-        });
-        var finalRequestOptions = fluid.dataSource.URL.prepareRequestOptions(that.options, that.cookieJar, userOptions, permittedOptions, directModel, parsed, that.resolveUrl);
+        var parsed = fluid.dataSource.URL.parse(url, permittedOptions);
+
+        var finalRequestOptions = fluid.dataSource.URL.prepareRequestOptions(that.options, that.cookieJar, userOptions, permittedOptions, directModel, parsed);
 
         return that.handleHttp(that, finalRequestOptions, model);
     };
