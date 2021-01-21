@@ -177,7 +177,7 @@ module.exports = function (grunt) {
         allBuildName: "<%= pkg.name %>-all",
         buildSettings: {}, // set by the build tasks
         customBuildName: "<%= pkg.name %>-<%= buildSettings.name %>",
-        banner: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
+        preamble: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
         clean: {
             build: "build",
             products: "products",
@@ -240,7 +240,7 @@ module.exports = function (grunt) {
                     src: "<%= allBuildName %>.*",
                     dest: "dist/",
                     rename: function (dest, src) {
-                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src) : dest + src;
+                        return grunt.config.get("buildSettings.expanded") ? dest + src : addMinifyToFilename(dest, src);
                     }
                 }, {
                     expand: true,
@@ -248,7 +248,7 @@ module.exports = function (grunt) {
                     src: "<%= customBuildName %>.*",
                     dest: "dist/",
                     rename: function (dest, src) {
-                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src, "js") : dest + src;
+                        return grunt.config.get("buildSettings.expanded") ? dest + src : addMinifyToFilename(dest, src, "js");
                     }
                 }]
             },
@@ -364,12 +364,16 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        uglify: {
+        terser: {
             options: {
-                banner: "<%= banner %>",
+                compress: false,
                 mangle: false,
                 sourceMap: true,
-                sourceMapIncludeSources: true
+                output: {
+                    beautify: "<%= buildSettings.expanded %>",
+                    comments: "<%= buildSettings.expanded %>",
+                    preamble: "<%= preamble %>"
+                }
             },
             all: {
                 files: [{
@@ -416,27 +420,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        // Still need the concat task as uglify does not honour the {compress: false} option
-        // see: https://github.com/mishoo/UglifyJS2/issues/696
-        concat: {
-            options: {
-                separator: ";\n",
-                banner: "<%= banner %>",
-                sourceMap: true
-            },
-            all: {
-                nonull: true,
-                cwd: "./build/", // Src matches are relative to this path.
-                src: "<%= modulefiles.all.output.files %>",
-                dest: "./build/<%= allBuildName %>.js"
-            },
-            custom: {
-                nonull: true,
-                cwd: "./build/", // Src matches are relative to this path.
-                src: "<%= modulefiles.custom.output.files %>",
-                dest: "./build/<%= customBuildName %>.js"
-            }
-        },
         compress: {
             all: {
                 options: {
@@ -468,7 +451,7 @@ module.exports = function (grunt) {
         "dart-sass": {
             compile: {
                 options: {
-                    outputStyle: "<% buildSettings.compress ? print('compressed') : print('expanded') %>"
+                    outputStyle: "<% buildSettings.expanded ? print('expanded') : print('compressed') %>"
                 },
                 files: [
                     {
@@ -482,7 +465,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 options: {
-                    outputStyle: "<% buildSettings.compress ? print('compressed') : print('expanded') %>"
+                    outputStyle: "<% buildSettings.expanded ? print('expanded') : print('compressed') %>"
                 },
                 files: [
                     {
@@ -490,7 +473,7 @@ module.exports = function (grunt) {
                         cwd: "src/framework/preferences/css/sass/",
                         src: ["*.scss"],
                         dest: "dist/assets/src/framework/preferences/css/",
-                        ext: "<% buildSettings.compress ? print('.min.css') : print('.css') %>"
+                        ext: "<% buildSettings.expanded ? print('.css') : print('.min.css') %>"
                     }
                 ]
             }
@@ -508,7 +491,7 @@ module.exports = function (grunt) {
             "all": {},
             "all.min": {
                 options: {
-                    compress: true
+                    expanded: false
                 }
             },
             "all-no-jquery": {
@@ -519,7 +502,7 @@ module.exports = function (grunt) {
             "all-no-jquery.min": {
                 options: {
                     exclude: "jQuery, jQueryUI",
-                    compress: true
+                    expanded: false
                 }
             },
             "framework": {
@@ -530,7 +513,7 @@ module.exports = function (grunt) {
             "framework.min": {
                 options: {
                     include: "framework",
-                    compress: true
+                    expanded: false
                 }
             },
             "framework-no-jquery": {
@@ -543,7 +526,7 @@ module.exports = function (grunt) {
                 options: {
                     include: "framework",
                     exclude: "jQuery, jQueryUI",
-                    compress: true
+                    expanded: false
                 }
             },
             "uio": {
@@ -554,7 +537,7 @@ module.exports = function (grunt) {
             "uio.min": {
                 options: {
                     include: "uiOptions",
-                    compress: true
+                    expanded: false
                 }
             },
             "uio-no-jquery": {
@@ -567,7 +550,7 @@ module.exports = function (grunt) {
                 options: {
                     include: "uiOptions",
                     exclude: "jQuery, jQueryUI",
-                    compress: true
+                    expanded: false
                 }
             }
         },
@@ -615,10 +598,9 @@ module.exports = function (grunt) {
     });
 
     // Load the plugins:
-    grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-terser");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-dart-sass");
@@ -651,10 +633,9 @@ module.exports = function (grunt) {
             name: grunt.option("name") || "custom",
             exclude: grunt.option("exclude"),
             include: grunt.option("include"),
-            compress: !grunt.option("source"),
+            expanded: grunt.option("source"),
             target: target
         });
-        var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
             "copy:dependencies",
@@ -665,20 +646,20 @@ module.exports = function (grunt) {
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
-            concatTask + target,
+            "terser:" + target,
             "compress:" + target,
             "clean:postBuild"
         ];
         grunt.task.run(tasks);
     });
 
-    grunt.registerMultiTask("distributions", "Enables a project to split its files into a set of modules. A module's information is stored in a json file containing a name for the module, the files it contains, and other modules it depends on. The module files can then be accumulated into various configurations of included and excluded modules, which can be fed into other plugins (e.g. grunt-contrib-concat) for packaging.", function () {
+    grunt.registerMultiTask("distributions", "Enables a project to split its files into a set of modules. A module's information is stored in a json file containing a name for the module, the files it contains, and other modules it depends on. The module files can then be accumulated into various configurations of included and excluded modules, which can be fed into other plugins for packaging.", function () {
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
             name: this.target,
             source: true,
             target: "all",
-            compress: false
+            expanded: true
         });
 
         if (options.exclude || options.include) {
@@ -687,7 +668,6 @@ module.exports = function (grunt) {
 
         setBuildSettings(options);
 
-        var concatTask = options.compress ? "uglify:" : "concat:";
         var tasks = [
             "cleanForDist",
             "dart-sass:dist",
@@ -695,7 +675,7 @@ module.exports = function (grunt) {
             "pathMap:" + options.target,
             "copy:" + options.target,
             "copy:necessities",
-            concatTask + options.target,
+            "terser:" + options.target,
             "copy:distJS",
             "copy:distAssets"
         ];
