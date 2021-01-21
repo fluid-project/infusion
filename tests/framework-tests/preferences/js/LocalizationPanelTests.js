@@ -29,7 +29,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "localization-en_US": "English (USA)",
             "localization-es": "Spanish",
             "localization-fa": "Farsi",
-            "localization-fr": "French"
+            "localization-fr": "French",
+            "localization-pt_BR": "Português (Brazil)"
         },
         model: {
             value: "en"

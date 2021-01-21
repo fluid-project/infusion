@@ -58,13 +58,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "fluid.prefs.localization": {
                 "type": "string",
                 "default": "",
-                "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa"],
+                "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa", "pt_BR"],
                 "enumLabels": [
                     "localization-default",
                     "localization-en",
                     "localization-fr",
                     "localization-es",
-                    "localization-fa"
+                    "localization-fa",
+                    "localization-pt_BR"
                 ]
             }
         }
