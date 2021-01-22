@@ -12,6 +12,7 @@
 Dockerfile
 Gruntfile.js
 report.tap
+bin/
 build/
 coverage/
 demos/
