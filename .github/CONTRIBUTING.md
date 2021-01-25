@@ -78,8 +78,8 @@ confident in our ability to avoid regressions. Please view the Documentation for
 ### Linting
 
 JavaScript is a highly dynamic and loose language, and many common errors are not picked up until run time. In order to
-avoid errors and common pitfalls in the language, all code should be regularly checked using the provided Grunt lint
-task. You may also wish to setup linting in your IDE.
+avoid errors and common pitfalls in the language, all code should be regularly checked using the provided lint task. You
+may also wish to setup linting in your IDE.
 
 ```bash
 # Runs Infusion's linting tasks

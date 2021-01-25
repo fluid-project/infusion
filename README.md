@@ -323,7 +323,7 @@ Copy Infusion's dependencies from "node_modules" into the "src/lib" directory:
 npm run deps
 ```
 
-Lint JavaScript, JSON, and Markdown files using [fluid-grunt-lint-all](https://github.com/fluid-project/fluid-grunt-lint-all):
+Lint JavaScript, JSON, Markdown and other files using [fluid-lint-all](https://github.com/fluid-project/fluid-lint-all):
 
 ```bash
 npm run lint

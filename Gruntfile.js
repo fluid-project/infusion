@@ -463,14 +463,6 @@ module.exports = function (grunt) {
                 files: "<%= compress.all.files %>"
             }
         },
-        lintAll: {
-            sources: {
-                md: [ "*.md", "!./src/**/lib/**/*.md", "!./demos/**/lib/**/*.md", "!./tests/**/lib/**/*.md"],
-                js: ["*.js", "!./src/**/lib/**/*.js", "!./demos/**/lib/**/*.js", "!./dist/**/*.js", "!./tests/**/lib/**/*.js", "!./tests/**/infusion-1.5.js", "!./tests/node-tests/node_modules/**/*.js"],
-                json: ["*.json", "./.nycrc", "./src/thirdPartyDependencies.json", "!./src/lib/**/*.json", "!./dist/**/*.json"],
-                other: ["./.*"]
-            }
-        },
         "dart-sass": {
             compile: {
                 options: {
@@ -629,7 +621,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-dart-sass");
     grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("fluid-grunt-lint-all");
 
     // Custom tasks:
 
@@ -664,7 +655,6 @@ module.exports = function (grunt) {
         var tasks = [
             "clean",
             "copy:dependencies",
-            "lint",
             "dart-sass:compile",
             "modulefiles:" + target,
             "setPostBuildCleanUp:" + target,
@@ -712,7 +702,6 @@ module.exports = function (grunt) {
         var tasks = [
             "clean",
             "copy:dependencies",
-            "lint",
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
             "verifyDistFiles",
@@ -748,6 +737,5 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
 
-    grunt.registerTask("lint", "Perform all standard lint checks.", ["lint-all"]);
     grunt.registerTask("loadDependencies", "Load lib files from node_modules", ["clean:dependencies", "copy:dependencies"]);
 };
