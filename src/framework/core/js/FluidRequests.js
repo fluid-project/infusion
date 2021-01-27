@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -285,15 +283,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // CALLED WITHOUT FAIL
     fluid.fetchResources.composeCallbacks = function (internal, external) {
         return external ? (internal ?
-        function () {
-            try {
-                external.apply(null, arguments);
-            }
-            catch (e) {
-                fluid.log("Exception applying external fetchResources callback: " + e);
-            }
-            internal.apply(null, arguments); // call the internal callback without fail
-        } : external ) : internal;
+            function () {
+                try {
+                    external.apply(null, arguments);
+                }
+                catch (e) {
+                    fluid.log("Exception applying external fetchResources callback: " + e);
+                }
+                internal.apply(null, arguments); // call the internal callback without fail
+            } : external ) : internal;
     };
 
     // unsupported, NON-API function
@@ -320,7 +318,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         fluid.fetchResources.timeSuccessCallback(resourceSpec);
         options = fluid.merge(fluid.defaults("fluid.fetchResources.issueRequest").mergePolicy,
-                      options, resourceSpec.options);
+            options, resourceSpec.options);
         resourceSpec.queued = true;
         resourceSpec.initTime = new Date();
         fluid.log("Request with key " + key + " queued for " + resourceSpec.href);

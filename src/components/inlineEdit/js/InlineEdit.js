@@ -1,28 +1,20 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
 
     fluid.registerNamespace("fluid.inlineEdit");
-
-    fluid.inlineEdit.sendKey = function (control, event, virtualCode, charCode) {
-        var kE = document.createEvent("KeyEvents");
-        kE.initKeyEvent(event, 1, 1, null, 0, 0, 0, 0, virtualCode, charCode);
-        control.dispatchEvent(kE);
-    };
 
     fluid.inlineEdit.switchToViewMode = function (that) {
         that.editContainer.hide();
@@ -186,6 +178,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.inlineEdit.clearEmptyViewStyles(that.viewEl, that.options.styles, that.existingPadding);
     };
 
+    /**
+     * Updates the state of the inline editor in the DOM, based on changes that may have
+     * happened to the model.
+     *
+     * @param {fluid.inlineEdit} that - an instance of `fluid.inlineEdit`
+     * @param {Object} source - (optional) An object identifying the source of the change (see ChangeApplier documentation)
+     */
     fluid.inlineEdit.refreshView = function (that, source) {
         that.displayView.refreshView(that, source);
         if (that.editView) {
@@ -193,6 +192,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /**
+     * Pushes external changes to the model into the inline editor, refreshing its
+     * rendering in the DOM. The modelChanged event will fire.
+     *
+     * @param {fluid.inlineEdit} that - an instance of `fluid.inlineEdit`
+     * @param {String} newValue - The bare value of the model, i.e. the string being edited
+     * @param {Object} [source] - (optional) "source" (perhaps a DOM element) which triggered this event
+     */
     fluid.inlineEdit.updateModelValue = function (that, newValue, source) {
         var comparator = that.options.modelComparator;
         var unchanged = comparator ? comparator(that.model.value, newValue) :
@@ -680,6 +687,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.isEditingState = state;
     };
 
+    /**
+     * Determines if the tooltip feature is enabled.
+     *
+     * @param {Boolean} useTooltip - A boolean indicating fi the tooltip should be enabled (true) or disabled (false)
+     *
+     * @return {Boolean} - Returns true if the tooltip feature is turned on, false if not
+     */
     fluid.inlineEdit.tooltipEnabled = function (useTooltip) {
         return useTooltip && $.fn.tooltip;
     };
@@ -734,57 +748,41 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-            /** Switches to edit mode. */
+            // Switches to edit mode.
             edit: {
                 funcName: "fluid.inlineEdit.editHandler",
                 args: "{that}"
             },
-            /** Determines if the component is currently in edit mode.
-              * @return true if edit mode shown, false if view mode is shown
-              */
+            // Determines if the component is currently in edit mode.
+            // Returns true if edit mode shown, false if view mode is shown
             isEditing: {
                 funcName: "fluid.identity",
                 args: "{that}.isEditingState"
             },
-            /** Finishes editing, switching back to view mode. */
+            // Finishes editing, switching back to view mode.
             finish: {
                 funcName: "fluid.inlineEdit.finish",
                 args: "{that}"
             },
-            /** Cancels the in-progress edit and switches back to view mode */
+            // Cancels the in-progress edit and switches back to view mode
             cancel: {
                 funcName: "fluid.inlineEdit.cancel",
                 args: "{that}"
             },
-            /** Determines if the tooltip feature is enabled.
-              * @return true if the tooltip feature is turned on, false if not
-              */
+            // Determines if the tooltip feature is enabled.
             tooltipEnabled: {
                 funcName: "fluid.inlineEdit.tooltipEnabled",
                 args: "{that}.options.useTooltip"
             },
-            /** Updates the state of the inline editor in the DOM, based on changes that may have
-              * happened to the model.
-              * @param {Object} [source] - An optional source object identifying the source of the change (see ChangeApplier documentation)
-              */
+            // Updates the state of the inline editor in the DOM
             refreshView: {
                 funcName: "fluid.inlineEdit.refreshView",
                 args: ["{that}", "{arguments}.0"]
             },
-            /** Pushes external changes to the model into the inline editor, refreshing its
-              * rendering in the DOM. The modelChanged event will fire.
-              * @param {String} newValue - The bare value of the model, that is, the string being edited
-              * @param {Object} [source] - An optional "source" (perhaps a DOM element) which triggered this event
-              */
             updateModelValue: {
                 funcName: "fluid.inlineEdit.updateModelValue",
                 args: ["{that}", "{arguments}.0", "{arguments}.1"] // newValue, source
             },
-            /** Pushes external changes to the model into the inline editor, refreshing its
-              * rendering in the DOM. The modelChanged event will fire. This honours the "fluid.undoable" contract
-              * @param {Object} newValue - The full value of the new model, that is, a model object which contains the editable value as the element named "value"
-              * @param {Object} [source] - An optional "source" (perhaps a DOM element) which triggered this event
-              */
             updateModel: {
                 funcName: "fluid.inlineEdit.updateModelValue",
                 args: ["{that}", "{arguments}.0.value", "{arguments}.1"] // newModel, source

@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -119,8 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("fluid.container: bind to a DOM element", function () {
             var container = document.getElementById("main-container");
             var result = fluid.container(container);
-            jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
-                                container, result[0]);
+            jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.", container, result[0]);
         });
 
         jqUnit.test("fluid.container: garbage object", function () {

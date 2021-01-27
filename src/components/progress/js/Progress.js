@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -32,6 +30,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }, speed);
     };
 
+    /**
+     * Shows the progress bar if is currently hidden.
+     *
+     * @param {fluid.progress} that - an instance of `fluid.progress`
+     * @param {Object} animation - (optional) a custom animation used when showing the progress bar
+     */
     fluid.progress.showProgress = function (that, animation) {
         var firer = that.events.onProgressBegin.fire;
         if (animation === false) {
@@ -42,6 +46,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /**
+     * Hides the progress bar if it is visible.
+     *
+     * @param {fluid.progress} that - an instance of `fluid.progress`
+     * @param {Number} delay - the amount of time to wait before hiding
+     * @param {Object} animation - (optional) a custom animation used when hiding the progress bar
+     */
     fluid.progress.hideProgress = function (that, delay, animation) {
         if (delay) {
             // use a setTimeout to delay the hide for n millis, note use of recursion
@@ -121,6 +132,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.progress.refreshRelativeWidth(that);
     };
 
+    /**
+     * Updates the state of the progress bar.
+     * This will automatically show the progress bar if it is currently hidden.
+     * Percentage is specified as a decimal value, but will be automatically converted if needed.
+     *
+     * @param {fluid.progress} that - an instance of `fluid.progress`
+     * @param {Number|String} percent - the current percentage, specified as a "float-ish" value
+     * @param {String} labelText - the value to set for the label; this can be an HTML string
+     * @param {Object} animationForShow - (optional) the animation to use when showing the progress bar if it is hidden
+     */
     fluid.progress.updateProgress = function (that, percent, labelText, animationForShow) {
         // show progress before updating, jQuery will handle the case if the object is already displayed
         fluid.progress.showProgress(that, animationForShow);
@@ -147,13 +168,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         element.toggle(!shouldHide);
     };
 
-   /**
-    * Instantiates a new Progress component.
-    *
-    * @param container {jQuery|Selector|Element} the DOM element in which the Uploader lives
-    * @param options {Object} configuration options for the component.
-    */
-
+    /**
+     * Instantiates a new Progress component.
+     *
+     * @param {jQuery|Selector|Element} container - the DOM element in which the Uploader lives
+     * @param {Object} options - (optional) configuration options for the component.
+     */
     fluid.defaults("fluid.progress", {
         gradeNames: ["fluid.viewComponent"],
         members: {
@@ -188,31 +208,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-           /**
-            * Shows the progress bar if is currently hidden.
-            * @param animation {Object} a custom animation used when showing the progress bar
-            */
+            // Shows the progress bar if is currently hidden.
             show: {
                 funcName: "fluid.progress.showProgress",
                 args: ["{that}", "{arguments}.0"]
             },
-           /**
-            * Hides the progress bar if it is visible.
-            * @param delay {Number} the amount of time to wait before hiding
-            * @param animation {Object} a custom animation used when hiding the progress bar
-            */
+            // Hides the progress bar if it is visible.
             hide: {
                 funcName: "fluid.progress.hideProgress",
                 args: ["{that}", "{arguments}.0", "{arguments}.1"]
             },
-           /**
-            * Updates the state of the progress bar.
-            * This will automatically show the progress bar if it is currently hidden.
-            * Percentage is specified as a decimal value, but will be automatically converted if needed.
-            * @param percentage {Number|String} the current percentage, specified as a "float-ish" value
-            * @param labelValue {String} the value to set for the label; this can be an HTML string
-            * @param animationForShow {Object} the animation to use when showing the progress bar if it is hidden
-            */
+            // Updates the state of the progress bar.
             update: {
                 funcName: "fluid.progress.updateProgress",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]

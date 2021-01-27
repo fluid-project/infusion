@@ -153,7 +153,7 @@
             }
 
             input:focus ~ label {
-                outline: 2px solid black;
+                outline: 2px solid var(--fl-fgColor, black);
             }
         }
     }
@@ -202,7 +202,7 @@
 
     // ON/OFF Switch
     .fl-prefsEditor-onoff {
-        @import "../../../../components/switch/css/stylus/Switch.styl"
+        @import "../../../../components/switch/css/Switch"
     }
 
     // Font Icons

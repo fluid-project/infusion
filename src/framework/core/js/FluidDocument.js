@@ -2,20 +2,22 @@
 Copyright 2005-2013 jQuery Foundation, Inc. and other contributors
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/** This file contains functions which depend on the presence of a DOM document
- * but which do not depend on the contents of Fluid.js **/
+/*
+ * This file contains functions which depend on the presence of a DOM document
+ * but which do not depend on the contents of Fluid.js
+ */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";

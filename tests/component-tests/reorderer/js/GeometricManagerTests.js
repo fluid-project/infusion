@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -53,7 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var targetElements = $("#permuteTest2 .orderable");
 
                 fluid.dom.permuteDom(sourceElements[source], targetElements[target],
-                       position, sourceElements, targetElements);
+                    position, sourceElements, targetElements);
                 jqUnit.expect(2);
                 assertOrder(name, "permuteTest", expected1);
                 assertOrder(name, "permuteTest2", expected2);
@@ -136,11 +136,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.registerNamespace("fluid.testUtils.reorderer");
 
         fluid.testUtils.reorderer.offsetGridTestRects = [
-        // column 1, 3x3 squares spaced by 1, middle skew 1 to the right
+            // column 1, 3x3 squares spaced by 1, middle skew 1 to the right
             {left: 1, top: 1, right: 4, bottom: 4},
             {left: 2, top: 5, right: 5, bottom: 8},
             {left: 1, top: 9, right: 4, bottom: 12},
-        // column 2, same dimensions but offset down by 1
+            // column 2, same dimensions but offset down by 1
             {left: 6, top: 2, right: 9, bottom: 5},
             {left: 6, top: 6, right: 9, bottom: 9}
         ];

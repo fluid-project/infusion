@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -85,7 +83,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             var path = instantiator.idToPath(thatStack[thatStack.length - 1].id);
             var segs = instantiator.parseEL(path);
-                // TODO: we should now have no longer shortness in the stack
+            // TODO: we should now have no longer shortness in the stack
             segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
             return segs;
         }
@@ -900,10 +898,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         return true; // YOUR VISIT IS AT AN END!!
                     }
                     if (fluid.getForComponent(component, ["options", "components", context]) && !component[context]) {
-          // This is an expensive guess since we make it for every component up the stack - must apply the WAVE OF EXPLOSIONS (FLUID-4925) to discover all components first
-          // This line attempts a hopeful construction of components that could be guessed by nickname through finding them unconstructed
-          // in options. In the near future we should eagerly BEGIN the process of constructing components, discovering their
-          // types and then attaching them to the tree VERY EARLY so that we get consistent results from different strategies.
+                        // This is an expensive guess since we make it for every component up the stack - must apply the WAVE OF EXPLOSIONS (FLUID-4925) to discover all components first
+                        // This line attempts a hopeful construction of components that could be guessed by nickname through finding them unconstructed
+                        // in options. In the near future we should eagerly BEGIN the process of constructing components, discovering their
+                        // types and then attaching them to the tree VERY EARLY so that we get consistent results from different strategies.
                         foundComponent = fluid.getForComponent(component, context);
                         return true;
                     }
@@ -1166,7 +1164,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.constructRootComponents(fluid.globalInstantiator); // currently a singleton - in future, alternative instantiators might come back
 
-    /** Expand a set of component options either immediately, or with deferred effect.
+    /*
+     * Expand a set of component options either immediately, or with deferred effect.
      *  The current policy is to expand immediately function arguments within fluid.assembleCreatorArguments which are not the main options of a
      *  component. The component's own options take <code>{defer: true}</code> as part of
      *  <code>outerExpandOptions</code> which produces an "expandOptions" structure holding the "strategy" and "initter" pattern
@@ -1175,8 +1174,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  of the IoC API structure especially with respect to the first arguments.
      */
 
-// TODO: Can we move outerExpandOptions to 2nd place? only user of 3 and 4 is fluid.makeExpandBlock
-// TODO: Actually we want localRecord in 2nd place since outerExpandOptions is now almost disused
+    // TODO: Can we move outerExpandOptions to 2nd place? only user of 3 and 4 is fluid.makeExpandBlock
+    // TODO: Actually we want localRecord in 2nd place since outerExpandOptions is now almost disused
     fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
         if (!args) {
             return args;
@@ -1308,7 +1307,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /** Given a typeName, determine the final concrete
+    /*
+     * Given a typeName, determine the final concrete
      * "invocation specification" consisting of a concrete global function name
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
@@ -1357,12 +1357,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.each(argMap, function (index, name) {
             var arg;
             if (name === "options") {
-                arg = {marker: fluid.EXPAND,
-                           localRecord: localDynamic,
-                           mergeRecords: mergeRecords,
-                           instantiator: fluid.getInstantiator(parentThat),
-                           parentThat: parentThat,
-                           memberName: options.memberName};
+                arg = {
+                    marker: fluid.EXPAND,
+                    localRecord: localDynamic,
+                    mergeRecords: mergeRecords,
+                    instantiator: fluid.getInstantiator(parentThat),
+                    parentThat: parentThat,
+                    memberName: options.memberName
+                };
             } else {
                 var value = localRecord[name];
                 arg = fluid.expandImmediate(value, parentThat, localRecord);
@@ -1377,10 +1379,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /** Instantiate the subcomponent with the supplied name of the supplied top-level component. Although this method
+    /**
+     * Instantiate the subcomponent with the supplied name of the supplied top-level component. Although this method
      * is published as part of the Fluid API, it should not be called by general users and may not remain stable. It is
      * currently the only mechanism provided for instantiating components whose definitions are dynamic, and will be
      * replaced in time by dedicated declarative framework described by FLUID-5022.
+     *
      * @param {Component} that - The parent component for which the subcomponent is to be instantiated
      * @param {String} name - The name of the component - the index of the options block which configures it as part of the
      * <code>components</code> section of its parent's options
@@ -1433,7 +1437,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             event.addListener(function () {
                 fluid.pushActivity("initDeferred", "instantiating deferred component %componentName of parent %that due to event %eventName",
-                 {componentName: componentName, that: that, eventName: eventName});
+                    {componentName: componentName, that: that, eventName: eventName});
                 if (that[componentName]) {
                     fluid.globalInstantiator.clearComponent(that, componentName);
                 }
@@ -1447,7 +1451,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.priorityForComponent = function (component) {
         return component.priority ? component.priority :
             (component.type === "fluid.typeFount" || fluid.hasGrade(fluid.defaults(component.type), "fluid.typeFount")) ?
-            "first" : undefined;
+                "first" : undefined;
     };
 
     fluid.initDependents = function (that) {
@@ -1532,7 +1536,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return instantiator.parseEL(shadow.path);
     };
 
-    /** Construct a component with the supplied options at the specified path in the component tree. The parent path of the location must already be a component.
+    /**
+     * Construct a component with the supplied options at the specified path in the component tree. The parent path of the location must already be a component.
+     *
      * @param {String|String[]} path - Path where the new component is to be constructed, represented as a string or array of string segments
      * @param {Object} options - Top-level options supplied to the component - must at the very least include a field <code>type</code> holding the component's type
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
@@ -1548,7 +1554,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.initDependent(record.parent, record.memberName);
     };
 
-    /** Destroys a component held at the specified path. The parent path must represent a component, although the component itself may be nonexistent
+    /**
+     * Destroys a component held at the specified path. The parent path must represent a component, although the component itself may be nonexistent
+     *
      * @param {String|String[]} path - Path where the new component is to be destroyed, represented as a string or array of string segments
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be destroyed - if blank, the global instantiator will be used.
      * @return {Object} - An object containing a reference to the parent of the destroyed element, and the member name of the destroyed component.
@@ -1573,11 +1581,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-   /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
-    * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
-    * @param {String|Object} options - Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
-    * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
-    */
+    /**
+     * Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
+     *
+     * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
+     * @param {String|Object} options - Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
+     * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+     */
     fluid.constructSingle = function (parentPath, options, instantiator) {
         instantiator = instantiator || fluid.globalInstantiator;
         parentPath = parentPath || "";
@@ -1602,11 +1612,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.construct(segs, options, instantiator);
     };
 
-    /** Destroy an instance created by `fluid.constructSingle`
+    /**
+     * Destroy an instance created by `fluid.constructSingle`
+     *
      * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
      * @param {String} typeName - The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
-    */
+     */
     fluid.destroySingle = function (parentPath, typeName, instantiator) {
         instantiator = instantiator || fluid.globalInstantiator;
         var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
@@ -1615,8 +1627,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.destroy(segs, instantiator);
     };
 
-    /** Registers and constructs a "linkage distribution" which will ensure that wherever a set of "input grades" co-occur, they will
+    /**
+     * Registers and constructs a "linkage distribution" which will ensure that wherever a set of "input grades" co-occur, they will
      * always result in a supplied "output grades" in the component where they co-occur.
+     *
      * @param {String} linkageName - The name of the grade which will broadcast the resulting linkage. If required, this linkage can be destroyed by supplying this name to `fluid.destroySingle`.
      * @param {String[]} inputNames - An array of grade names which will be tested globally for co-occurrence
      * @param {String|String[]} outputNames - A single grade name or array of grade names which will be output into the co-occuring component
@@ -1632,10 +1646,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.constructSingle([], linkageName);
     };
 
-    /** Retrieves a component by global path.
-    * @param {String|String[]} path - The global path of the component to look up, expressed as a string or as an array of segments.
-    * @return {Object} - The component at the specified path, or undefined if none is found.
-    */
+    /**
+     * Retrieves a component by global path.
+     *
+     * @param {String|String[]} path - The global path of the component to look up, expressed as a string or as an array of segments.
+     * @return {Object} - The component at the specified path, or undefined if none is found.
+     */
     fluid.componentForPath = function (path) {
         return fluid.globalInstantiator.pathToComponent[fluid.isArrayable(path) ? path.join(".") : path];
     };
@@ -1994,6 +2010,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** BEGIN unofficial IoC material **/
+
     // The following three functions are unsupported ane only used in the renderer expander.
     // The material they produce is no longer recognised for component resolution.
 
@@ -2151,10 +2168,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return EL ? {path: EL} : EL;
     };
 
-    /** Parse the string form of a contextualised IoC reference into an object.
+    /**
+     * Parse the string form of a contextualised IoC reference into an object.
+     *
      * @param {String} reference - The reference to be parsed. The character at position `index` is assumed to be `{`
-     * @param {String} [index] - [optional] The index into the string to start parsing at, if omitted, defaults to 0
-     * @param {Character} [delimiter] - [optional] A character which will delimit the end of the context expression. If omitted, the expression continues to the end of the string.
+     * @param {String} [index] - (optional) The index into the string to start parsing at, if omitted, defaults to 0
+     * @param {Character} [delimiter] - (optional) A character which will delimit the end of the context expression. If omitted, the expression continues to the end of the string.
      * @return {ParsedContext} A structure holding the parsed structure, with members
      *    context {String|ParsedContext} The context portion of the reference. This will be a `string` for a flat reference, or a further `ParsedContext` for a recursive reference
      *    path {String} The string portion of the reference
@@ -2290,7 +2309,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.expandSource = function (options, target, i, segs, deliverer, source, policy, recurse) {
         var expanded, isTrunk;
         var thisPolicy = fluid.derefMergePolicy(policy);
-        if (typeof (source) === "string" && !thisPolicy.noexpand) {
+        if (typeof(source) === "string" && !thisPolicy.noexpand) {
             if (!options.defaultEL || source.charAt(0) === "{") { // hard-code this for performance
                 fluid.pushActivity("expandContextValue", "expanding context value %source held at path %path", {source: source, path: fluid.path.apply(null, segs.slice(0, i))});
                 expanded = fluid.resolveContextValue(source, options);

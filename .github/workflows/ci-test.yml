@@ -1,17 +1,37 @@
-name: CI
+name: Automated tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
+    paths:
+        - '.nycrc'
+        - 'package.json'
+        - 'Gruntfile.js'
+        - 'src/**/*.html'
+        - 'src/**/*.js'
+        - 'src/**/*.json'
+        - 'tests/**/*.html'
+        - 'tests/**/*.js'
+        - 'tests/**/*.json'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
+    paths:
+        - '.nycrc'
+        - 'package.json'
+        - 'Gruntfile.js'
+        - 'src/**/*.html'
+        - 'src/**/*.js'
+        - 'src/**/*.json'
+        - 'tests/**/*.html'
+        - 'tests/**/*.js'
+        - 'tests/**/*.json'
 
 defaults:
   run:
     shell: bash
 
 jobs:
-  tests:
+  test:
     runs-on: ${{ matrix.os }}
 
     timeout-minutes: 20
@@ -50,14 +70,17 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
 
-    - name: Code linter
-      run: npm run lint
-
-    - name: Browser tests
+    - name: Run browser tests
       run: npm run test:browser
 
-    - name: Node.js tests
+    - name: Run Node.js tests
       run: npm run test:node
 
-    - name: Code coverage
+    - name: Update code coverage
       run: npm run posttest
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./reports/coverage-final.json
+        flags: unit-tests

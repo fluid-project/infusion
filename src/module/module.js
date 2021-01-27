@@ -3,19 +3,19 @@ Infusion Module System
 
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 /* eslint-env node */
 /* eslint strict: ["error", "global"] */
-/* global fluid, path */
+/* global path */
 
 "use strict";
 
@@ -31,7 +31,8 @@ fluid.registerNamespace("fluid.module");
 
 fluid.module.modules = {};
 
-/* A module which has just loaded will call this API to register itself into
+/*
+ * A module which has just loaded will call this API to register itself into
  * the Fluid module loader's records. The call will generally take the form:
  * <code>fluid.module.register("my-module", __dirname, require)</code>
  */
@@ -43,7 +44,9 @@ fluid.module.register = function (name, baseDir, moduleRequire) {
     };
 };
 
-/** Given a directory, return an array of slash-terminated parent directories, starting with the parent drive or filesystem
+/**
+ * Given a directory, return an array of slash-terminated parent directories, starting with the parent drive or filesystem
+ *
  * @param {String} baseDir - A directory name.
  * @return {String[]} - An array of nested directory names, starting with the parent drive or filesystem root and ending
  * with `baseDir`
@@ -59,9 +62,11 @@ fluid.module.pathsToRoot = function (baseDir) {
     return paths;
 };
 
-/** Returns a decoded version of the package.json file if the supplied directory contains one, or else `null`
- * @param {String} dir  - A directory name.
- * @return {Object|Null} - The decoded package.json file found in this directory, or `null` if there is not one.
+/**
+ * Returns a decoded version of the package.json file if the supplied directory contains one, or else `null`
+ *
+ * @param {String} dir - A directory name.
+ * @return {Object|null} - The decoded package.json file found in this directory, or `null` if there is not one.
  */
 fluid.module.hasPackage = function (dir) {
     var packagePath = dir + path.sep + "package.json";
@@ -72,8 +77,10 @@ fluid.module.hasPackage = function (dir) {
     }
 };
 
-/** Given a directory, return a structure recording at each level of directory containment whether it contains a valid
+/**
+ * Given a directory, return a structure recording at each level of directory containment whether it contains a valid
  * node module, by inspecting it for a package.json file and inspecting any such file for a `name` entry
+ *
  * @param {String} [root] - [optional] A directory name - if omitted, will use the directory of this module
  * @return {Object} - A structure holding the following aligned arrays:
  *    paths: {String[]} an array of the parent directory names as returned from `fluid.module.pathsToRoot`
@@ -127,7 +134,8 @@ fluid.module.terms = function () {
     return fluid.module.getDirs();
 };
 
-/** Resolve a path expression which may begin with a module reference of the form,
+/**
+ * Resolve a path expression which may begin with a module reference of the form,
  * say, %moduleName, into an absolute path relative to that module, using the
  * database of base directories registered previously with fluid.module.register.
  * If the path does not begin with such a module reference, it is returned unchanged.
@@ -139,24 +147,28 @@ fluid.module.resolvePath = function (path) {
 
 fluid.module.moduleRegex = /^%([^\W._][\w\.-]*)/;
 
-/** Determine whether ths supplied string begins with the pattern %module-name for
+/**
+ * Determine whether ths supplied string begins with the pattern %module-name for
  * some `module-name` which is considered a valid module name by npm by its legacy rules (see
  * https://github.com/npm/validate-npm-package-name ).
- * Returns the matched module name if the string matches, or falsy if it does not.
+ *
+ * @param {String} ref - the string to check
+ * @return {String|Boolean} - the matched module name if the string matches, or falsy if it does not.
  */
-
 fluid.module.refToModuleName = function (ref) {
     var matches = ref.match(fluid.module.moduleRegex);
     return matches && matches[1];
 };
 
-/** Load a node-aware JavaScript file using either a supplied or the native
-  * Fluid require function. The module name may start with a module reference
-  * of the form %module-name to indicate a base reference into either an already
-  * loaded module that was previously registered using fluid.module.register, or
-  * a module which can be loaded from the point of view of the caller.
-  * If the <code>namespace</code> argument is supplied, the module's export
-  * object will be written to that path in the global Fluid namespace */
+/*
+ * Load a node-aware JavaScript file using either a supplied or the native
+ * Fluid require function. The module name may start with a module reference
+ * of the form %module-name to indicate a base reference into either an already
+ * loaded module that was previously registered using fluid.module.register, or
+ * a module which can be loaded from the point of view of the caller.
+ * If the <code>namespace</code> argument is supplied, the module's export
+ * object will be written to that path in the global Fluid namespace
+ */
 
 // TODO: deprecation/change of meaning for 2nd argument. The docs bizarrely say
 // "to be used after interpolation" which makes no sense - if interpolation could be

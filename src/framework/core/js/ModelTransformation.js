@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -109,7 +107,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // FLUID-5867 - actually helpful behaviour here rather than the insane original default of expecting a short-form value document
             togo = fluid.isPrimitive(value) ? value :
                 ("literalValue" in value ? value.literalValue :
-                (value.transform === undefined ? value : transformer.expand(value)));
+                    (value.transform === undefined ? value : transformer.expand(value)));
         }
         return togo;
     };
@@ -149,9 +147,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // ii) without "partial match mode" (the default), we simply count matches, with any mismatch giving 0
         // iii) with "partial match mode", a "perfect score" in the top 24 bits is
         // penalised for each mismatch, with a positive score of matches store in the bottom 24 bits
-        return stats.unchanged === 0 ? 0
-            : (partialMatches ? 0xffffff000000 - 0x1000000 * stats.changes + stats.unchanged :
-            (stats.changes ? 0 : 0xffffff000000 + stats.unchanged));
+        return stats.unchanged === 0 ? 0 :
+            (partialMatches ? 0xffffff000000 - 0x1000000 * stats.changes + stats.unchanged :
+                (stats.changes ? 0 : 0xffffff000000 + stats.unchanged));
     };
 
     fluid.model.transform.invertPaths = function (transformSpec, transformer) {
@@ -530,7 +528,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var keys = fluid.model.sortByKeyLength(flatSchema);
         return function (root, segment, index, segs) {
             var path = getConfig.parser.compose.apply(null, segs.slice(0, index));
-          // TODO: clearly this implementation could be much more efficient
+            // TODO: clearly this implementation could be much more efficient
             for (var i = 0; i < keys.length; ++i) {
                 var key = keys[i];
                 if (fluid.pathUtil.matchPath(key, path, true) !== null) {
@@ -654,8 +652,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             $.extend(transformer.collectedFlatSchemaOpts, options.flatSchema);
             schemaStrategy = fluid.model.transform.flatSchemaStrategy(transformer.collectedFlatSchemaOpts, getConfig);
         }
-        rootSetConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
-                : fluid.model.defaultCreatorStrategy];
+        rootSetConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy) :
+            fluid.model.defaultCreatorStrategy];
         transformer.finalApplier = options.finalApplier || fluid.makeHolderChangeApplier(transformer.target, {resolverSetConfig: rootSetConfig});
 
         if (transformer.queuedTransforms.length > 0) {

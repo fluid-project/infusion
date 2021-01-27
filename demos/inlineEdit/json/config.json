@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Click on or tab to either of the editable text fields.</li><li>Type something and hit Enter or Tab</li><li>Try the Undo/Redo button.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/inlineEdit",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/main/demos/inlineEdit",
         "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/InlineEditAPI.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Simple%20Text%20Inline%20Edit%20feedback"
     }

@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 /* eslint-env node */
-/* global global */
+
 "use strict";
 
 var fs = require("fs"),
@@ -102,7 +102,7 @@ fluid.renderNodeLoggingArgs = function (args) {
 };
 
 fluid.doNodeLog = function (args) {
-    console.log(args.join(""));
+    console.log(args.join("")); // eslint-disable-line no-console
 };
 
 fluid.loggingEvent.addListener(fluid.doNodeLog, "log");
@@ -177,7 +177,8 @@ if (highestInfusionIndex !== undefined) {
     // this path which should be reported as an uncaught exception
     var highestInfusionPath = moduleInfo.paths[highestInfusionIndex];
     var infusionModule = require(highestInfusionPath);
-    if (infusionModule.module && infusionModule.module.modules.infusion.baseDir !== moduleBaseDir) {
+    if ("module" in infusionModule && infusionModule.module.modules.infusion.baseDir !== moduleBaseDir) {
+        // eslint-disable-next-line no-console
         console.log("Pre-inspection from path " + __dirname + " resolved to infusion at higher path " + highestInfusionPath);
         module.exports = infusionModule;
         return;
@@ -200,10 +201,12 @@ if (upInfusionPath) {
 // on the same version of Infusion results in an empty object since we have not completed our own assignment to
 // module.exports yet
 if (upInfusion && upInfusion.module) {
+    // eslint-disable-next-line no-console
     console.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
     module.exports = upInfusion;
     return;
 } else {
+    // eslint-disable-next-line no-console
     console.log("Infusion at path " + moduleBaseDir + " is at top level ");
 }
 
@@ -253,7 +256,7 @@ fluid.handlerPriorities = {
 fluid.logUncaughtException = function (err) {
     var message = "FATAL ERROR: Uncaught exception: " + err.message;
     fluid.log(fluid.logLevel.FATAL, message);
-    console.log(err.stack);
+    console.log(err.stack); // eslint-disable-line no-console
 };
 
 fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",

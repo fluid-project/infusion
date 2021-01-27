@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -218,10 +216,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             } else if (i === "valuebinding") {
                 target[i] = fluid.table.expandPath(tree[i], opts);
-            } else if (typeof (val) === "object") {
+            } else if (typeof(val) === "object") {
                 target[i] = val.length !== undefined ? [] : {};
                 fluid.table.expandPaths(target[i], val, opts);
-            } else if (typeof (val) === "string") {
+            } else if (typeof(val) === "string") {
                 target[i] = fluid.table.expandVariables(val, opts);
             } else {
                 target[i] = tree[i];
@@ -273,7 +271,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
         var fullTree = {};
         fullTree[options.row] = tree;
-        if (typeof (columnDefs) === "object") {
+        if (typeof(columnDefs) === "object") {
             fullTree[options.header] = fluid.table.generateHeader(tableThat, renderThat.options, tableThat.model);
         }
         return fullTree;

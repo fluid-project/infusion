@@ -1,22 +1,20 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
 
-    /** NOTE: Much of this work originated from https://github.com/fluid-project/kettle/blob/master/lib/dataSource-core.js **/
+    /** NOTE: Much of this work originated from https://github.com/fluid-project/kettle/blob/main/lib/dataSource-core.js **/
 
     /** Some common content encodings - suitable to appear as the "encoding" subcomponent of a dataSource **/
 
@@ -168,12 +166,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Operate the core "transforming promise workflow" of a dataSource's `get` method. The initial listener provides the initial payload;
      *  which then proceeds through the transform chain to arrive at the final payload.
-     * @param that {Component} The dataSource itself
-     * @param directModel {Object} The direct model expressing the "coordinates" of the model to be fetched
-     * @param options {Object} A structure of options configuring the action of this get request - many of these will be specific to the particular concrete DataSource
+     * @param {fluid.dataSource} that - The dataSource itself
+     * @param {Object} directModel - The direct model expressing the "coordinates" of the model to be fetched
+     * @param {Object} options - (optional) A structure of options configuring the action of this get request - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload
      */
-
     fluid.dataSource.get = function (that, directModel, options) {
         options = fluid.dataSource.defaultiseOptions(that.options, options, directModel);
         var promise = fluid.promise.fireTransformEvent(that.events.onRead, undefined, options);
@@ -181,16 +178,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
-    /** Operate the core "transforming promise workflow" of a dataSource's `set` method.
+    /**
+     * Operate the core "transforming promise workflow" of a dataSource's `set` method.
      * Any return from this is then pushed forwards through a range of the transforms (typically, e.g. just decoding it as JSON)
      * on its way back to the user via the onWriteResponse event.
-     * @param that {Component} The dataSource itself
-     * @param directModel {Object} The direct model expressing the "coordinates" of the model to be written
-     * @param model {Object} The payload to be written to the dataSource
-     * @param options {Object} A structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
+     *
+     * @param {fluid.dataSource} that - The dataSource itself
+     * @param {Object} directModel - The direct model expressing the "coordinates" of the model to be written
+     * @param {Object} model - The payload to be written to the dataSource
+     * @param {Object} options - (optional) A structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload (not all DataSources will provide any for a `set` method)
      */
-
     fluid.dataSource.set = function (that, directModel, model, options) {
         options = fluid.dataSource.defaultiseOptions(that.options, options, directModel, true); // shared and writeable between all participants
         var transformPromise = fluid.promise.fireTransformEvent(that.events.onWrite, model, options);

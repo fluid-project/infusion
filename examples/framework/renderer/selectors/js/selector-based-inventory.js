@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-/* global fluid */
 
 var example = example || {};
 
@@ -36,37 +34,43 @@ fluid.inventoryExample =  (function () {
                 // In this selector-based example, these rsf IDs are not present in the HTML template.
                 // The selectorMap below maps these components to the elements in the template
                 // via selectors.
-                {ID: "table-row:",
-                children: [
-                    {ID: "sku", value: "23-23874"},
-                    {ID: "quantity", value: 43},
-                    {ID: "item", value: "Helmet"},
-                    {ID: "description", value: "Red baseball helmet. Size: Large."}
-                ]},
-                {ID: "table-row:",
-                children: [
-                    {ID: "sku", value: "48-38835"},
-                    {ID: "quantity", value: 84},
-                    {ID: "item", value: "Football"},
-                    {ID: "description", value: "Leather football."}
-                ]},
-                {ID: "table-row:",
-                children: [
-                    {ID: "sku", value: "84-84848"},
-                    {ID: "quantity", value: 31},
-                    {ID: "item", value: "Goggles"},
-                    {ID: "description", value: "Light blue swim goggles."}
-                ]}
+                {
+                    ID: "table-row:",
+                    children: [
+                        {ID: "sku", value: "23-23874"},
+                        {ID: "quantity", value: 43},
+                        {ID: "item", value: "Helmet"},
+                        {ID: "description", value: "Red baseball helmet. Size: Large."}
+                    ]
+                }, {
+                    ID: "table-row:",
+                    children: [
+                        {ID: "sku", value: "48-38835"},
+                        {ID: "quantity", value: 84},
+                        {ID: "item", value: "Football"},
+                        {ID: "description", value: "Leather football."}
+                    ]
+                }, {
+                    ID: "table-row:",
+                    children: [
+                        {ID: "sku", value: "84-84848"},
+                        {ID: "quantity", value: 31},
+                        {ID: "item", value: "Goggles"},
+                        {ID: "description", value: "Light blue swim goggles."}
+                    ]
+                }
             ]
         };
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var selectorMap = [{selector: ".item-row", id: "table-row:"},
-                           {selector: ".sku-container", id: "sku"},
-                           {selector: ".quantity-container", id: "quantity"},
-                           {selector: ".item-container", id: "item"},
-                           {selector: ".description-container", id: "description"}];
+        var selectorMap = [
+            {selector: ".item-row", id: "table-row:"},
+            {selector: ".sku-container", id: "sku"},
+            {selector: ".quantity-container", id: "quantity"},
+            {selector: ".item-container", id: "item"},
+            {selector: ".description-container", id: "description"}
+        ];
 
         // fluid.selfRender() and fluid.reRender() return the original template. This template
         // can be re-used by fluid.reRender().
@@ -112,11 +116,13 @@ fluid.inventoryExample =  (function () {
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var selectorMap = [{selector: ".item-row", id: "table-row:"},
-                           {selector: ".sku-container", id: "sku"},
-                           {selector: ".quantity-container", id: "quantity"},
-                           {selector: ".item-container", id: "item"},
-                           {selector: ".description-container", id: "description"}];
+        var selectorMap = [
+            {selector: ".item-row", id: "table-row:"},
+            {selector: ".sku-container", id: "sku"},
+            {selector: ".quantity-container", id: "quantity"},
+            {selector: ".item-container", id: "item"},
+            {selector: ".description-container", id: "description"}
+        ];
 
         // fluid.selfRender() and fluid.reRender() return the original template. This template
         // can be re-used by fluid.reRender().

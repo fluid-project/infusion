@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -350,7 +348,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
         var jActiveItem = $(thatReorderer.activeItem);
         if (!jActiveItem.hasClass(styles.dragging) && thatReorderer.isMove(evt)) {
-           // Don't treat the active item as dragging unless it is a movable.
+            // Don't treat the active item as dragging unless it is a movable.
             if (thatReorderer.isActiveItemMovable()) {
                 jActiveItem.removeClass(styles.selected);
                 jActiveItem.addClass(styles.dragging);
@@ -472,7 +470,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             thatReorderer.events.afterMove.addListener(function () {
                 var layoutHandler = thatReorderer.layoutHandler;
                 var model = layoutHandler.getModel ? layoutHandler.getModel() :
-                        options.acquireModel(thatReorderer);
+                    options.acquireModel(thatReorderer);
                 $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
         }
@@ -806,8 +804,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Labelling *
      *************/
 
-    /** ARIA labeller component which decorates the reorderer with the function of announcing the current
-      * focused position of the reorderer as well as the coordinates of any requested move */
+    /*
+     * ARIA labeller component which decorates the reorderer with the function of announcing the current
+     * focused position of the reorderer as well as the coordinates of any requested move
+     */
 
     fluid.defaults("fluid.reorderer.labeller", {
         gradeNames: ["fluid.component"],
@@ -940,7 +940,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             recentStatus = that.resolver.resolve("recentStatus", {position: recentPosition});
         }
         var topModel = {
-            item: typeof (labelSource) === "string" ? labelSource : fluid.dom.getElementText(fluid.unwrap(labelSource)),
+            item: typeof(labelSource) === "string" ? labelSource : fluid.dom.getElementText(fluid.unwrap(labelSource)),
             position: that.positionTemplate.resolveFunc(that.positionTemplate.template, indices),
             movable: that.resolver.resolve(elementClass === "locked" ? "fixed" : "movable"),
             recentStatus: recentStatus || ""

@@ -3,17 +3,17 @@ IoC Testing Framework View-aware Tests
 
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 /* eslint strict: ["error", "global"] */
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 "use strict";
 
@@ -22,11 +22,11 @@ fluid.registerNamespace("fluid.tests");
 fluid.defaults("fluid.tests.initTree", {
     gradeNames: ["fluid.test.testEnvironment"],
     components: {
-// natural place for this configuration is here - however, moved into driver to test FLUID-5132
-//        initTest: {
-//            type: "fluid.tests.initTest",
-//            createOnEvent: "{initTester}.events.onTestCaseStart"
-//        },
+        // natural place for this configuration is here - however, moved into driver to test FLUID-5132
+        //    initTest: {
+        //        type: "fluid.tests.initTest",
+        //        createOnEvent: "{initTester}.events.onTestCaseStart"
+        //    },
         initTester: {
             type: "fluid.tests.initTester"
         }

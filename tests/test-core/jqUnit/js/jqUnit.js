@@ -1,24 +1,24 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid_3_0_0, QUnit */
+/* global QUnit */
 
 var jqUnit = jqUnit || {};
 
 (function ($, fluid) {
     "use strict";
 
-    var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
+    var QUnitPassthroughs = ["module", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
 
     for (var i = 0; i < QUnitPassthroughs.length; ++i) {
@@ -62,8 +62,8 @@ var jqUnit = jqUnit || {};
         /**
          * Called to listen for a function's invocation and record its details in the transcript.
          *
-         * @param {Object} fnName the function name to listen for
-         * @param {Object} onObject the object on which to invoke the method
+         * @param {Object} fnName - the function name to listen for
+         * @param {Object} onObject - the object on which to invoke the method
          */
         that.intercept = function (fnName, onObject) {
             onObject = onObject || window;
@@ -195,6 +195,20 @@ var jqUnit = jqUnit || {};
     // Mix these compatibility functions into the jqUnit namespace.
     $.extend(jqUnit, jsUnitCompat);
 
+    // Implement promise wrapper for FLUID-6577 - this is actually consistent with QUnit's behaviour since 1.16.0
+    jqUnit.test = function (name, func) {
+        QUnit.asyncTest(name, function () {
+            var promise = func();
+            if (promise) {
+                promise.then(jqUnit.start, function (err) {
+                    jqUnit.fail(err);
+                    jqUnit.start();
+                });
+            } else {
+                jqUnit.start();
+            }
+        });
+    };
 
     /** Sort a component tree into canonical order, to facilitate comparison with
      * deepEq */
@@ -262,9 +276,9 @@ var jqUnit = jqUnit || {};
     /** Assert that the supplied callback will produce a framework diagnostic, containing the supplied text
      * somewhere in its error message - that is, the framework will invoke fluid.fail with a message containing
      * <code>errorText</code>.
-     * @param message {String} The message prefix to be supplied for all the assertions this function issues
-     * @param toInvoke {Function} A no-arg function holding the code to be tested for emission of the diagnostic
-     * @param errorTexts {String} or {Array of String} Either a single string or array of strings which the <code>message</code> field
+     * @param {String} message - The message prefix to be supplied for all the assertions this function issues
+     * @param {Function} toInvoke - A no-arg function holding the code to be tested for emission of the diagnostic
+     * @param {String} errorTexts - or {Array of String} Either a single string or array of strings which the <code>message</code> field
      * of the thrown exception will be tested against - each string must appear as a substring in the text
      */
 

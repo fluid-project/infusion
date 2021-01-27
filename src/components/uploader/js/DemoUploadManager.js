@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -95,8 +93,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         // Legacy from the SWFUpload implementation, where pausing is a combination of an UPLOAD_STOPPED error and a complete.
         that.events.onFileError.fire(file,
-                                     fluid.uploader.errorConstants.UPLOAD_STOPPED,
-                                     "The demo upload was paused by the user.");
+            fluid.uploader.errorConstants.UPLOAD_STOPPED,
+            "The demo upload was paused by the user.");
         fluid.uploader.demo.finishAndContinueOrCleanup(that, file);
         that.events.onUploadStop.fire();
     };
@@ -110,13 +108,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         setTimeout(fn, delay);
     };
 
-    /**
+    /*
      * The demo remote pretends to upload files to the server, firing all the appropriate events
      * but without sending anything over the network or requiring a server to be running.
-     *
-     * @param {Object} configuration options
      */
-
     fluid.defaults("fluid.uploader.demo.remote", {
         gradeNames: ["fluid.uploader.remote"],
         members: {

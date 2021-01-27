@@ -3,10 +3,10 @@
 var fluid = require("../src/module/fluid");
 fluid.setLogging(true);
 
-require("gpii-testem");
+require("fluid-testem");
 
 fluid.defaults("fluid.tests.testem", {
-    gradeNames: ["gpii.testem.instrumentation"],
+    gradeNames: ["fluid.testem.instrumentation"],
     coverageDir: "coverage",
     reportsDir: "reports",
     testPages:  ["tests/all-tests.html"],
@@ -25,7 +25,7 @@ fluid.defaults("fluid.tests.testem", {
         tests:   "%infusion/tests"
     },
     testemOptions: {
-        launch: "Headless Chrome,Firefox",
+        launch: "Headless Chrome,Headless Firefox",
         ignore_missing_launchers: true,
         disable_watching: true,
         tap_quiet_logs: true

@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
@@ -42,8 +40,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     outputPath: "",
                     merge: true,
                     input: {
-                        transform: [{ // TODO: We could recover the old compact form of this with some dedicated form of transform
-                                      // TODO: This part of the transform is untested
+                        transform: [{
+                            // TODO: We could recover the old compact form of this with some dedicated form of transform
+                            // TODO: This part of the transform is untested
                             type: "fluid.transforms.value",
                             outputPath: "strategy.options.styles",
                             inputPath: "decorators.0.options.styles"

@@ -1,20 +1,16 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 */
-
-/* global speechSynthesis, SpeechSynthesisUtterance*/
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -39,11 +35,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
-    * Adds a lister to a window event for each event defined on the component.
-    * The name must match a valid window event.
-    *
-    * @param {Component} that - an instance of `fluid.window`
-    */
+     * Adds a lister to a window event for each event defined on the component.
+     * The name must match a valid window event.
+     *
+     * @param {fluid.window} that - an instance of `fluid.window`
+     */
     fluid.window.bindEvents = function (that) {
         fluid.each(that.options.events, function (type, eventName) {
             window.addEventListener(eventName, that.events[eventName].fire);

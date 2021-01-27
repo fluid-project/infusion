@@ -12,18 +12,18 @@
  * Copyright 2011, John Resig
  * Copyright The Infusion copyright holders
  * See the AUTHORS.md file at the top-level directory of this distribution and at
- * https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+ * https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
  *
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
-/* global jQuery:true, global */
+/* global global */
 /* exported jQuery */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
 (function (fluid) {
     "use strict";
@@ -151,4 +151,4 @@ var fluid = fluid || fluid_3_0_0;
 
 })(fluid_3_0_0);
 
-var jQuery = fluid.jQueryStandalone;
+var jQuery = fluid.jQueryStandalone; // eslint-disable-line no-redeclare

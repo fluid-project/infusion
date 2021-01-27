@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -88,8 +88,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
-                expectedOrderArrays: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 9, 13],
-                                      [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 9, 13]],
+                expectedOrderArrays: [
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 9, 13],
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 9, 13]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[9]),
                 itemIndex: 9
             };
@@ -103,8 +105,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "DOWN",
-                expectedOrderArrays: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 9, 13],
-                                      [9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13]],
+                expectedOrderArrays: [
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 9, 13],
+                    [9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[9]),
                 itemIndex: 9
             };
@@ -118,8 +122,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
-                expectedOrderArrays: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                                      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
+                expectedOrderArrays: [
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]),
                 itemIndex: 1
             };
@@ -133,9 +139,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "UP",
-                expectedOrderArrays: [[0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1],
-                                      [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 11, 12, 13],
-                                      [0, 2, 3, 4, 5, 6, 7, 1, 8, 9, 10, 11, 12, 13]],
+                expectedOrderArrays: [
+                    [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1],
+                    [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 11, 12, 13],
+                    [0, 2, 3, 4, 5, 6, 7, 1, 8, 9, 10, 11, 12, 13]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]),
                 itemIndex: 1
             };
@@ -149,8 +157,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "RIGHT",
-                expectedOrderArrays: [[0, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                                      [0, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
+                expectedOrderArrays: [
+                    [0, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                    [0, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]),
                 itemIndex: 1
             };
@@ -164,8 +174,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "RIGHT",
-                expectedOrderArrays: [[0, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                                      [0, 2, 3, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
+                expectedOrderArrays: [
+                    [0, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                    [0, 2, 3, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]),
                 itemIndex: 1
             };
@@ -179,8 +191,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "LEFT",
-                expectedOrderArrays: [[1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                                      [1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]],
+                expectedOrderArrays: [
+                    [1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                    [1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]),
                 itemIndex: 1
             };
@@ -194,8 +208,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "LEFT",
-                expectedOrderArrays: [[1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                                      [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1]],
+                expectedOrderArrays: [
+                    [1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                    [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]),
                 itemIndex: 1
             };

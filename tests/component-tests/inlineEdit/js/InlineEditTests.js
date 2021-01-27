@@ -1,18 +1,18 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
  */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -20,11 +20,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(function () {
 
         jqUnit.module("InlineEdit Tests");
-        var customOptions = {selectors: {
-            text: ".customText",
-            editContainer: ".customEditContainer",
-            edit: ".customEdit"
-        },
+        var customOptions = {
+            selectors: {
+                text: ".customText",
+                editContainer: ".customEditContainer",
+                edit: ".customEdit"
+            },
             styles: {
                 invitation: "customInvitation",
                 focus: "customFocus"
@@ -93,14 +94,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         options: customOptions
                     };
                     fluid.selfRender(root,
-                        [{ID: "inline-edit",
-                            decorators: decorator},
-                            {ID: "inline-edit-control",
-                                valuebinding: "value"}],
-                         {cutpoints: [{id: "inline-edit", selector: "#inline-edit-custom"},
-                                      {id: "inline-edit-control", selector: "#edit-custom"}],
+                        [{
+                            ID: "inline-edit",
+                            decorators: decorator
+                        }, {
+                            ID: "inline-edit-control",
+                            valuebinding: "value"
+                        }],
+                        {
+                            cutpoints: [
+                                {id: "inline-edit", selector: "#inline-edit-custom"},
+                                {id: "inline-edit-control", selector: "#edit-custom"}
+                            ],
                             model: model,
-                            autoBind: true});
+                            autoBind: true
+                        }
+                    );
                     inlineEditor = decorator.that;
                 } else {
                     inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
@@ -311,16 +320,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             // Sanity check first.
             jqUnit.assertEquals("Before editing, the model should have the default value.",
-                                defaultValue, inlineEditor.model.value);
+                defaultValue, inlineEditor.model.value);
 
             // Now edit and cancel. The default value should be restored.
             inlineEditor.edit();
             editField.val("foo");
             inlineEditor.cancel();
             jqUnit.assertEquals("After cancelling, the model's value should be the default again.",
-                                defaultValue, inlineEditor.model.value);
+                defaultValue, inlineEditor.model.value);
             jqUnit.assertEquals("After cancelling, the view text should return to its default.",
-                                defaultValue, text.text());
+                defaultValue, text.text());
         });
 
         jqUnit.asyncTest("Keyboard Navigation Edit", async function () {
@@ -594,17 +603,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // Edit the first field.
                 toggleEditOnAndOff(editors[0]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.",
-                                  1, textFieldIds.length);
+                    1, textFieldIds.length);
                 jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.",
-                                    "edit", textFieldIds[0]);
+                    "edit", textFieldIds[0]);
 
                 // Edit the last field.
                 textFieldIds = [];
                 toggleEditOnAndOff(editors[1]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.",
-                                  1, textFieldIds.length);
+                    1, textFieldIds.length);
                 jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.",
-                                    "edit2", textFieldIds[0]);
+                    "edit2", textFieldIds[0]);
             });
 
             var testMultiInlineEdits = function (containerId, numEditors, hasUndo, options) {
@@ -649,10 +658,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // edit injector, we expect an edit container div and an inner textfield.
                 jqUnit.assertNotUndefined("The self-rendered edit container should not be undefined.", editorContainer);
                 jqUnit.assertEquals("There should be one new element matching 'inline-edit-self-render-edit-container'",
-                                   1, editorContainer.length);
+                    1, editorContainer.length);
 
                 jqUnit.assertEquals("There should be one new text field within the edit container.",
-                                    1, editor.editField.length);
+                    1, editor.editField.length);
             });
 
             var assertInViewMode = function (component) {
@@ -675,7 +684,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 assertInEditMode(editor);
 
                 jqUnit.assertEquals("The contents of the edit field should be the same as the view text.",
-                                    $(textSel).text(), editor.editField.prop("value"));
+                    $(textSel).text(), editor.editField.prop("value"));
                 editor.finish();
                 assertInViewMode(editor);
             });

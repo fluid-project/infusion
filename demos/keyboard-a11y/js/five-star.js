@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-/* global fluid */
 
 var demo = demo || {};
 
@@ -153,26 +151,19 @@ var demo = demo || {};
                 funcName: "demo.fiveStar.renderStarState",
                 args: ["{that}.stars", "{arguments}.0", "{that}.model.rank", "{that}.options.starImages"]
             },
-           /**
-            * Highlight the stars up to the given star with the hover colour
-            * @param {Number} star number
-            */
+            // Highlight the stars up to the given star with the hover colour
             hoverStars: {
                 func: "{that}.renderStarState"
             },
-           /**
-            * Restore the display of stars to reflect the ranking
-            */
+            // Restore the display of stars to reflect the ranking
             refreshView: {
                 func: "{that}.renderStarState",
                 args: 0
             },
-
             select: {
                 changePath: "containerSelected",
                 value: true
             },
-
             unselect: {
                 changePath: "containerSelected",
                 value: false

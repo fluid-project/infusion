@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -76,8 +74,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
+     *
      * @param {JSON} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {Array} typeFilter   - A list of all necessarry top level preference names.
+     * @param {Array} typeFilter - A list of all necessarry top level preference names.
      * @param {JSON} primarySchema - Primary schema provided as an option to the primary builder.
      * @return {Array} - A list of schema grades.
      */

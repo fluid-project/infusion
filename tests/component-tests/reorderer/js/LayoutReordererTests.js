@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -59,13 +59,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item",
                 fluid.testUtils.moduleLayout.portletIds[2], reorderer.activeItem.id);
-           // This test for FLUID-1690 cannot be made to work in the jqUnit environment yet
-           // var blurred = false;
-           // text2.blur(function() {blurred = true;});
+            // This test for FLUID-1690 cannot be made to work in the jqUnit environment yet
+            // var blurred = false;
+            // text2.blur(function() {blurred = true;});
 
-           // $("#portlet2 .title").simulate("mousedown");
-           // $("#portlet2 .title").simulate("mouseup");
-           // jqUnit.assertTrue("After mouseDown on title, text field should be blurred", blurred);
+            // $("#portlet2 .title").simulate("mousedown");
+            // $("#portlet2 .title").simulate("mouseup");
+            // jqUnit.assertTrue("After mouseDown on title, text field should be blurred", blurred);
 
             jqUnit.start();
 
@@ -110,7 +110,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.notVisible("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning");
 
             jqUnit.assertTrue("Label is updated to account for temporary moved state",
-            portlet3.attr("aria-label").indexOf("moved from") > -1);
+                portlet3.attr("aria-label").indexOf("moved from") > -1);
 
             await fluid.blur(portlet3[0]);
             // focus on portlet 8
@@ -118,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             await fluid.focus($(portlet8));
 
             jqUnit.assertTrue("Temporary moved state is cleared",
-            portlet3.attr("aria-label").indexOf("moved from") === -1);
+                portlet3.attr("aria-label").indexOf("moved from") === -1);
 
             // move portlet 8 down
             // Press the ctrl key
@@ -320,8 +320,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
                 direction: "RIGHT",
-                expectedOrderArrays: [[1, 2, 4, 5, 6, 3, 7, 8, 9], [1, 2, 4, 5, 6, 7, 8, 3, 9],
-                                      [1, 2, 4, 5, 6, 7, 8, 9, 3], [1, 2, 4, 5, 6, 7, 8, 9, 3]],
+                expectedOrderArrays: [
+                    [1, 2, 4, 5, 6, 3, 7, 8, 9],
+                    [1, 2, 4, 5, 6, 7, 8, 3, 9],
+                    [1, 2, 4, 5, 6, 7, 8, 9, 3],
+                    [1, 2, 4, 5, 6, 7, 8, 9, 3]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[3])
             };
 
@@ -335,9 +339,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // TODO: HACK to resolve FLUID-5859 on Linux - these portlets may appear in either order in the left column due to layout variation
                 reordererOptions: assembleOptions(true, ".locked", [3, 9]),
                 direction: "LEFT",
-                expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 9, 7, 8], [1, 2, 3, 9, 4, 5, 6, 7, 8],
-                // FLUID-5859: variant order here to test the test
-                                      [1, 2, 9, 3, 4, 5, 6, 7, 8]],
+                expectedOrderArrays: [
+                    [1, 2, 3, 4, 5, 6, 9, 7, 8],
+                    [1, 2, 3, 9, 4, 5, 6, 7, 8],
+                    // FLUID-5859: variant order here to test the test
+                    [1, 2, 9, 3, 4, 5, 6, 7, 8]
+                ],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[9])
             };
 

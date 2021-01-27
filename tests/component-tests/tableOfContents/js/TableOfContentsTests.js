@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -455,10 +455,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.isVisible("After calling show, the component is visible.", tocContainer);
         });
 
-        /**
-          * Test anchor links created by TOC.  Check if the heading table a href link maps to the correct header
-          * @precondition   Must be rendered
-          */
+        /*
+         * Test anchor links created by TOC. Check if the heading table a href link maps to the correct header
+         *
+         * NOTE: Must be rendered
+         */
         var renderTOCAnchorTest = function () {
             var anchorLinks = $(".flc-toc-levels-link");
             anchorLinks.each(function (anchorIndex) {
@@ -467,9 +468,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
 
-        /**
-         * Test component and make sure the number of links, text and anchors are set correctly.
-         */
+        // Test component and make sure the number of links, text and anchors are set correctly.
         jqUnit.asyncTest("Component test headings", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadings = {
@@ -500,9 +499,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        /**
-         * #FLUID-4352: Test component with no headings. Make sure no <ul> is set
-         */
+        // FLUID-4352: Test component with no headings. Make sure no <ul> is set
         jqUnit.asyncTest("Component test empty headings", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadings = {
@@ -523,9 +520,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
 
-        /**
-         * #FLUID-4723: Test that the output includes an actual header
-         */
+        // FLUID-4723: Test that the output includes an actual header
         jqUnit.asyncTest("Output includes a heading", function () {
             fluid.tableOfContents("#flc-toc", {
                 listeners: {
@@ -543,9 +538,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // TODO: This test and the component is faulty - if the template loads asynchronously, rendering will fail
-        /**
-         * #FLUID-5110: refreshView updates headings
-         */
+
+        // FLUID-5110: refreshView updates headings
         jqUnit.asyncTest("Component test refreshView", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadingRefreshed = {
@@ -579,9 +573,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        /**
-        * #FLUID-5567: Test that table of contents header is localizable
-        */
+        // FLUID-5567: Test that table of contents header is localizable
         jqUnit.asyncTest("FLUID-5567: Table of Contents header localization", function () {
             fluid.tableOfContents("#flc-toc-l10n", {
                 strings: {
@@ -599,9 +591,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        /**
-        * #FLUID-5697: Test the exclusion of headers
-        */
+        // FLUID-5697: Test the exclusion of headers
         jqUnit.asyncTest("FLUID-5697: Header exclusion", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadings = {

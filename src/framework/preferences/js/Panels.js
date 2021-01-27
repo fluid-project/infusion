@@ -1,18 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 
 (function ($, fluid) {
     "use strict";
@@ -151,7 +148,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.subPanel.resetDomBinder = function (that) {
         // TODO: The line below to find the container jQuery instance was copied from the framework code -
-        // https://github.com/fluid-project/infusion/blob/master/src/framework/core/js/FluidView.js#L145
+        // https://github.com/fluid-project/infusion/blob/main/src/framework/core/js/FluidView.js#L145
         // in order to reset the dom binder when panels are in an iframe.
         // It can be be eliminated once we have the new renderer.
         var userJQuery = that.container.constructor;
@@ -608,7 +605,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.compositePanel.produceTree = function (that) {
         var produceTreeOption = that.options.produceTree;
         var ownTree = produceTreeOption ?
-            (typeof (produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption)(that) :
+            (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption)(that) :
             that.expandProtoTree();
         var subPanelTree = that.produceSubPanelTrees();
         var tree = {

@@ -1,18 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 
 (function ($, fluid) {
     "use strict";
@@ -113,7 +110,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
 
             key = fluid.stringTemplate(key, templateValues);
-            value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
+            value = typeof(value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
 
             fluid.set(opts, key, value);
         });
@@ -378,7 +375,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // required for building the preferences editor, uiEnhancer and the settings store. These grade components
     // are: panels, enactors, initialModel, messageLoader, templateLoader and terms.
     // These grades are consumed and integrated by builder.js
-    // (https://github.com/fluid-project/infusion/blob/master/src/framework/preferences/js/Builder.js)
+    // (https://github.com/fluid-project/infusion/blob/main/src/framework/preferences/js/Builder.js)
     fluid.prefs.expandSchema = function (schemaToExpand, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
         var auxSchema = fluid.prefs.expandSchemaImpl(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();

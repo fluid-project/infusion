@@ -1,18 +1,18 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 */
 
-/* global fluid, jqUnit, speechSynthesis */
+/* global jqUnit */
 
 (function () {
     "use strict";
@@ -188,7 +188,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{tts}.applier.modelChanged",
                     path: "paused"
                 }, {
-                    func: "{tts}.resume"
+                    listener: "fluid.tests.textToSpeech.testStop",
+                    args: ["{tts}"],
+                    priority: "last:testing",
+                    event: "{tts}.events.onStop"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testUtteranceDetached",
+                    args: ["The utterance should not be attached", "{tts}"],
+                    priority: "last:testing",
+                    event: "{tts}.utterance.events.afterDestroy"
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.ttsCancelTests", {
+        gradeNames: "fluid.test.testEnvironment",
+        components: {
+            tts: {
+                type: "fluid.tests.textToSpeech",
+                createOnEvent: "{ttsTester}.events.onTestCaseStart"
+            },
+            ttsTester: {
+                type: "fluid.tests.textToSpeech.ttsCancel"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.ttsCancel", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.textToSpeech",
+            tests: [{
+                expect: 6,
+                name: "Test Cancel",
+                sequence: [{
+                    func: "{tts}.queueSpeech",
+                    args: "Testing cancel of utterances in queue"
+                }, {
+                    // Trigger cancel immediately so we can test cancelling utterances in queue
+                    listener: "{tts}.cancel",
+                    event: "{tts}.events.onStart"
                 }, {
                     listener: "fluid.tests.textToSpeech.testStop",
                     args: ["{tts}"],
@@ -304,20 +344,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textToSpeech.baseTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for initialization and start/stop tests",
-         fluid.tests.checkTTSSupport,
-          fluid.tests.textToSpeech.ttsTestEnvironment,
-           fluid.test.conditionalTestUtils.bypassTest,
-           "Browser appears to support TTS start/stop", "Browser does not appear to support TTS start/stop");
+            fluid.tests.checkTTSSupport,
+            function () {
+                fluid.tests.textToSpeech.ttsTestEnvironment();
+                fluid.tests.textToSpeech.ttsCancelTests();
+            },
+            fluid.test.conditionalTestUtils.bypassTest,
+            "Browser appears to support TTS start/stop", "Browser does not appear to support TTS start/stop");
     };
 
     fluid.tests.textToSpeech.supportsPauseResumeTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests",
-         fluid.tests.checkTTSSupport,
-          function () {
-              fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment();
-              fluid.tests.textToSpeech.ttsErrorTestEnvironment();
-          },
-           fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS pause/resume", "Browser does not appear to support TTS pause/resume");
+            fluid.tests.checkTTSSupport,
+            function () {
+                fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment();
+                fluid.tests.textToSpeech.ttsErrorTestEnvironment();
+            },
+            fluid.test.conditionalTestUtils.bypassTest,
+            "Browser appears to support TTS pause/resume", "Browser does not appear to support TTS pause/resume");
     };
 
     fluid.tests.textToSpeech.isChromeOnWindows = function () {
@@ -497,10 +541,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textToSpeech.utteranceTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for Utterance tests",
-         fluid.tests.checkTTSSupport,
-          fluid.tests.textToSpeech.utteranceEnvironment,
-           fluid.test.conditionalTestUtils.bypassTest,
-           "Browser appears to support TTS", "Browser does not appear to support TTS");
+            fluid.tests.checkTTSSupport,
+            fluid.tests.textToSpeech.utteranceEnvironment,
+            fluid.test.conditionalTestUtils.bypassTest,
+            "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
     /*********************************************************************************************

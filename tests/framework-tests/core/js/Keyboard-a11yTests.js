@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -70,8 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Make the container tab focussable and the children selectable.
         menuContainer.fluid("tabbable");
         // Mix in any additional options.
-        var mergedOptions = jQuery.extend(selectionOptions, additionalOptions, setupHandlers(),
-                {selectableElements: menuItems});
+        var mergedOptions = jQuery.extend(selectionOptions, additionalOptions, setupHandlers(), {selectableElements: menuItems});
 
         menuContainer.fluid("selectable", mergedOptions);
 
@@ -570,8 +569,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.asyncTest("destructibleList and refresh()", async function () {
         var menuContainer = $(MENU_SEL);
-        var selThat = $(MENU_SEL).fluid("selectable",
-                $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers()));
+        var selThat = $(MENU_SEL).fluid("selectable", $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers()));
         await fluid.focus(menuContainer);
         var firstMenuItem = getFirstMenuItem();
         jqUnit.assertSelected(firstMenuItem);
@@ -603,8 +601,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         getFirstMenuItem().trigger("focus");
         getFirstMenuItem().trigger("blur");
 
-        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when moving focus off of the selectables container.",
-                          wasCalled);
+        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when moving focus off of the selectables container.", wasCalled);
     });
 
     jqUnit.asyncTest("No-wrap options", async function () {

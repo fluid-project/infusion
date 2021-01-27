@@ -1,17 +1,15 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -68,8 +66,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.reorderImages.seekInputs = function (container, reorderform) {
         return fluid.reorderImages.seekNodesById(reorderform,
-                             "input",
-                             "^" + fluid.reorderImages.deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
+            "input",
+            "^" + fluid.reorderImages.deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
     };
 
     fluid.reorderImages.mapIdsToNames = function (container, reorderform) {
@@ -104,20 +102,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             if (reorderform && reorderform.action) {
                 var order = $(reorderform).serialize();
-                $.post(reorderform.action,
-                       order,
-                       function () { /* No-op response */ });
+                $.post(reorderform.action, order, function () { /* No-op response */ });
             }
         };
     };
 
-    // Public Lightbox API
-    /**
-     * Creates a new Lightbox instance from the specified parameters, providing full control over how
-     * the Lightbox is configured.
-     *
-     * @param container {Object}
-     * @param options {Object}
+    // Public ImageReorderer API
+    /*
+     * Creates a new ImageReorderer instance from the specified parameters, providing full control over how
+     * the ImageReorderer is configured.
      */
     fluid.defaults("fluid.reorderImages", {
         gradeNames: ["fluid.reorderer"],

@@ -1,17 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($, fluid) {
     "use strict";
@@ -120,7 +120,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("focus on item " + focusItem.selector, focusItem.hasClass("fl-reorderer-movable-selected"));
             await options.reordererOptions.key(that, fluid.testUtils.reorderer.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);
             options.reordererOptions.expectOrderFn("after ctrl-" + options.direction.toLowerCase() + " the order is " + expectedOrder, expectedOrder,
-                    $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);
+                $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);
         }
     };
 

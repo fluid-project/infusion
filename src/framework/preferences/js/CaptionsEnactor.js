@@ -1,19 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 /* global YT */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -225,7 +223,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * video element if one does not already exist.
      *
      * @param {Component} that - the component
-
+     *
      * @return {YTPlayer} - an instance of a YouTube player controlling the embedded video
      */
     fluid.prefs.enactor.captions.youTubePlayer.initYTPlayer = function (that) {

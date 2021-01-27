@@ -22,12 +22,12 @@ clear agreement to share code under terms amenable to
 ## Process/Workflow
 
 Fluid Infusion's [source code](https://github.com/fluid-project/infusion) is hosted on GitHub. All of the code that is
-included in an Infusion release lives in the master branch.
-[Continuous Integration Builds](https://build.fluidproject.org) are generated and releases are all cut from the master
+included in an Infusion release lives in the main branch.
+[Continuous Integration Builds](https://build.fluidproject.org) are generated and releases are all cut from the main
 branch of the project repository. The project repository should always be in a working state.
 
-Fluid Infusion uses a workflow where contributors fork the project repository, work in a branch created off of master,
-and submit a pull request against the project repo's master branch to merge their contributions.
+Fluid Infusion uses a workflow where contributors fork the project repository, work in a branch created off of main,
+and submit a pull request against the project repo's main branch to merge their contributions.
 
 (See: [Coding and Commit Standards](https://wiki.fluidproject.org/display/fluid/Coding+and+Commit+Standards) for more
 details on expectations for code contributions).
@@ -78,12 +78,12 @@ confident in our ability to avoid regressions. Please view the Documentation for
 ### Linting
 
 JavaScript is a highly dynamic and loose language, and many common errors are not picked up until run time. In order to
-avoid errors and common pitfalls in the language, all code should be regularly checked using the provided Grunt lint
-task. You may also wish to setup linting in your IDE.
+avoid errors and common pitfalls in the language, all code should be regularly checked using the provided lint task. You
+may also wish to setup linting in your IDE.
 
 ```bash
 # Runs Infusion's linting tasks
-grunt lint
+npm run lint
 ```
 
 ### Pull Requests

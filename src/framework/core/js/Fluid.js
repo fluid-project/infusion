@@ -6,19 +6,19 @@
  *
  * Copyright The Infusion copyright holders
  * See the AUTHORS.md file at the top-level directory of this distribution and at
- * https://github.com/fluid-project/infusion/raw/master/AUTHORS.md
+ * https://github.com/fluid-project/infusion/raw/main/AUTHORS.md
  */
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 Includes code from Underscore.js 1.4.3
 http://underscorejs.org
@@ -26,10 +26,8 @@ http://underscorejs.org
 Underscore may be freely distributed under the MIT license.
 */
 
-/* global console */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";
@@ -205,27 +203,26 @@ var fluid = fluid || fluid_3_0_0;
      * Signals an error to the framework. The default behaviour is to log a structured error message and throw an exception. This strategy may be configured using the legacy
      * API <code>fluid.pushSoftFailure</code> or else by adding and removing suitably namespaced listeners to the special event <code>fluid.failureEvent</code>
      *
-     * @param {String} message - The error message to log.
+     * @param {...String} messages - The error messages to log.
      *
      * All arguments after the first are passed on to (and should be suitable to pass on to) the native console.log
      * function.
      */
-    fluid.fail = function (/* message, ... */) {
-        var args = fluid.makeArray(arguments);
+    fluid.fail = function (...messages) {
         var activity = fluid.makeArray(fluid.describeActivity()); // Take copy since we will destructively modify
         fluid.popActivity(activity.length); // clear any current activity - TODO: the framework currently has no exception handlers, although it will in time
         if (fluid.failureEvent) { // notify any framework failure prior to successfully setting up the failure event below
-            fluid.failureEvent.fire(args, activity);
+            fluid.failureEvent.fire(messages, activity);
         } else {
-            fluid.logFailure(args, activity);
-            fluid.builtinFail(args, activity);
+            fluid.logFailure(messages, activity);
+            fluid.builtinFail(messages, activity);
         }
     };
 
     // TODO: rescued from kettleCouchDB.js - clean up in time
     fluid.expect = function (name, target, members) {
         fluid.transform(fluid.makeArray(members), function (key) {
-            if (typeof target[key] === "undefined") {
+            if (typeof(target[key]) === "undefined") {
                 fluid.fail(name + " missing required parameter " + key);
             }
         });
@@ -296,13 +293,15 @@ var fluid = fluid || fluid_3_0_0;
      * @param {Array} args - The complete array of arguments to be logged
      */
     fluid.doBrowserLog = function (args) {
-        if (typeof (console) !== "undefined") {
+        /* eslint-disable no-console */
+        if (typeof(console) !== "undefined") {
             if (console.debug) {
                 console.debug.apply(console, args);
-            } else if (typeof (console.log) === "function") {
+            } else if (typeof(console.log) === "function") {
                 console.log.apply(console, args);
             }
         }
+        /* eslint-enable no-console */
     };
 
     /* Log a message to a suitable environmental console. If the first argument to fluid.log is
@@ -326,7 +325,9 @@ var fluid = fluid || fluid_3_0_0;
 
     // Type checking functions
 
-    /** Check whether the argument is a value other than null or undefined
+    /**
+     * Check whether the argument is a value other than null or undefined
+     *
      * @param {Any} value - The value to be tested
      * @return {Boolean} `true` if the supplied value is other than null or undefined
      */
@@ -334,17 +335,21 @@ var fluid = fluid || fluid_3_0_0;
         return value !== undefined && value !== null;
     };
 
-    /** Check whether the argument is a primitive type
+    /**
+     * Check whether the argument is a primitive type
+     *
      * @param {Any} value - The value to be tested
      * @return {Boolean} `true` if the supplied value is a JavaScript (ES5) primitive
      */
     fluid.isPrimitive = function (value) {
-        var valueType = typeof (value);
+        var valueType = typeof(value);
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
 
-    /** Determines whether the supplied object is an jQuery object. The strategy uses optimised inspection of the
+    /**
+     * Determines whether the supplied object is an jQuery object. The strategy uses optimised inspection of the
      * constructor prototype since jQuery may not actually be loaded
+     *
      * @param {Any} totest - The value to be tested
      * @return {Boolean} `true` if the supplied value is a jQuery object
      */
@@ -353,10 +358,12 @@ var fluid = fluid || fluid_3_0_0;
                && totest.constructor.prototype.jquery);
     };
 
-    /** Determines whether the supplied object is an array. The strategy used is an optimised
+    /**
+     * Determines whether the supplied object is an array. The strategy used is an optimised
      * approach taken from an earlier version of jQuery - detecting whether the toString() version
      * of the object agrees with the textual form [object Array], or else whether the object is a
      * jQuery object (the most common source of "fake arrays").
+     *
      * @param {Any} totest - The value to be tested
      * @return {Boolean} `true` if the supplied value is an array
      */
@@ -365,8 +372,10 @@ var fluid = fluid || fluid_3_0_0;
         return Boolean(totest) && (Object.prototype.toString.call(totest) === "[object Array]" || fluid.isJQuery(totest));
     };
 
-    /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
+    /**
+     * Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
      * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays.
+     *
      * @param {Any} totest - The object to be tested
      * @param {Boolean} [strict] - (optional) If `true`, plain Arrays will fail the test rather than passing.
      * @return {Boolean} - `true` if `totest` is a plain object, `false` otherwise.
@@ -381,9 +390,11 @@ var fluid = fluid || fluid_3_0_0;
         return !totest.constructor || !totest.constructor.prototype || Object.prototype.hasOwnProperty.call(totest.constructor.prototype, "isPrototypeOf");
     };
 
-    /** Returns a string typeCode representing the type of the supplied value at a coarse level.
+    /**
+     * Returns a string typeCode representing the type of the supplied value at a coarse level.
      * Returns <code>primitive</code>, <code>array</code> or <code>object</code> depending on whether the supplied object has
      * one of those types, by use of the <code>fluid.isPrimitive</code>, <code>fluid.isPlainObject</code> and <code>fluid.isArrayable</code> utilities
+     *
      * @param {Any} totest - The value to be tested
      * @return {String} Either `primitive`, `array` or `object` depending on the type of the supplied value
      */
@@ -397,10 +408,10 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.isDOMNode = function (obj) {
-      // This could be more sound, but messy:
-      // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
-      // The real problem is browsers like IE6, 7 and 8 which still do not feature a "constructor" property on DOM nodes
-        return obj && typeof (obj.nodeType) === "number";
+        // This could be more sound, but messy:
+        // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+        // The real problem is browsers like IE6, 7 and 8 which still do not feature a "constructor" property on DOM nodes
+        return obj && typeof(obj.nodeType) === "number";
     };
 
     fluid.isComponent = function (obj) {
@@ -425,10 +436,12 @@ var fluid = fluid || fluid_3_0_0;
         fluid.fail("This operation is not implemented");
     };
 
-    /** Returns the first of its arguments if it is not `undefined`, otherwise returns the second.
+    /**
+     * Returns the first of its arguments if it is not `undefined`, otherwise returns the second.
+     *
      * @param {Any} a - The first argument to be tested for being `undefined`
      * @param {Any} b - The fallback argument, to be returned if `a` is `undefined`
-     * @return {Any} `a` if it is not `undefined`, else `b`.
+     * @return {Any} - `a` if it is not `undefined`, else `b`.
      */
     fluid.firstDefined = function (a, b) {
         return a === undefined ? b : a;
@@ -439,8 +452,10 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.isArrayable(tocopy) ? [] : {};
     };
 
-    /** Determine whether the supplied object path exceeds the maximum strategy recursion depth of fluid.strategyRecursionBailout -
+    /**
+     * Determine whether the supplied object path exceeds the maximum strategy recursion depth of fluid.strategyRecursionBailout -
      * if it does, fluid.fail will be issued with a diagnostic
+     *
      * @param {String} funcName - The name of the function to appear in the diagnostic if issued
      * @param {String[]} segs - The segments of the path that the strategy has reached
      */
@@ -493,11 +508,14 @@ var fluid = fluid || fluid_3_0_0;
         return togo;
     };
 
-    /** Pushes an element or elements onto an array, initialising the array as a member of a holding object if it is
+    /**
+     * Pushes an element or elements onto an array, initialising the array as a member of a holding object if it is
      * not already allocated.
+     *
      * @param {Array|Object} holder - The holding object whose member is to receive the pushed element(s).
      * @param {String} member - The member of the <code>holder</code> onto which the element(s) are to be pushed
-     * @param {Array|Object} topush - If an array, these elements will be added to the end of the array using Array.push.apply. If an object, it will be pushed to the end of the array using Array.push.
+     * @param {Array|Object} topush - If an array, these elements will be added to the end of the array using
+     * `Array.push.apply`. If an object, it will be pushed to the end of the array using Array.push.
      */
     fluid.pushArray = function (holder, member, topush) {
         var array = holder[member] ? holder[member] : (holder[member] = []);
@@ -508,20 +526,22 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    function transformInternal(source, togo, key, args) {
+    function transformInternal(source, togo, key, transformations) {
         var transit = source[key];
-        for (var j = 0; j < args.length - 1; ++j) {
-            transit = args[j + 1](transit, key);
+        for (var j = 0; j < transformations.length; ++j) {
+            transit = transformations[j](transit, key);
         }
         togo[key] = transit;
     }
 
-    /** Return an array or hash of objects, transformed by one or more functions. Similar to
+    /**
+     * Return an array or hash of objects, transformed by one or more functions. Similar to
      * jQuery.map, only will accept an arbitrary list of transformation functions and also
      * works on non-arrays.
+     *
      * @param {Array|Object} source - The initial container of objects to be transformed. If the source is
      * neither an array nor an object, it will be returned untransformed
-     * @param {...Function} fn1, fn2, etc. - An arbitrary number of optional further arguments,
+     * @param {...Function} transformations - An arbitrary number of optional further arguments,
      * all of type Function, accepting the signature (object, index), where object is the
      * structure member to be transformed, and index is its key or index. Each function will be
      * applied in turn to each structure member, which will be replaced by the return value
@@ -529,24 +549,26 @@ var fluid = fluid || fluid_3_0_0;
      * @return {Array|Object} - The finally transformed list, where each member has been replaced by the
      * original member acted on by the function or functions.
      */
-    fluid.transform = function (source) {
+    fluid.transform = function (source, ...transformations) {
         if (fluid.isPrimitive(source)) {
             return source;
         }
         var togo = fluid.freshContainer(source);
         if (fluid.isArrayable(source)) {
             for (var i = 0; i < source.length; ++i) {
-                transformInternal(source, togo, i, arguments);
+                transformInternal(source, togo, i, transformations);
             }
         } else {
             for (var key in source) {
-                transformInternal(source, togo, key, arguments);
+                transformInternal(source, togo, key, transformations);
             }
         }
         return togo;
     };
 
-    /** Better jQuery.each which works on hashes as well as having the arguments the right way round.
+    /**
+     * Better jQuery.each which works on hashes as well as having the arguments the right way round.
+     *
      * @param {Arrayable|Object} source - The container to be iterated over
      * @param {Function} func - A function accepting (value, key) for each iterated
      * object.
@@ -849,11 +871,11 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-   /**
-    * @param {Boolean} ascending <code>true</code> if a comparator is to be returned which
-    * sorts strings in descending order of length.
-    * @return {Function} - A comparison function.
-    */
+    /**
+     * @param {Boolean} ascending -  <code>true</code> if a comparator is to be returned which
+     * sorts strings in descending order of length.
+     * @return {Function} - A comparison function.
+     */
     fluid.compareStringLength = function (ascending) {
         return ascending ? function (a, b) {
             return a.length - b.length;
@@ -864,6 +886,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Returns the converted integer if the input string can be converted to an integer. Otherwise, return NaN.
+     *
      * @param {String} string - A string to be returned in integer form.
      * @return {Number|NaN} - The numeric value if the string can be converted, otherwise, returns NaN.
      */
@@ -907,6 +930,7 @@ var fluid = fluid || fluid_3_0_0;
      * Copied from Underscore.js 1.4.3 - see licence at head of this file
      *
      * Will execute the passed in function after the specified amount of time since it was last executed.
+     *
      * @param {Function} func - the function to execute
      * @param {Number} wait - the number of milliseconds to wait before executing the function
      * @param {Boolean} immediate - Whether to trigger the function at the start (true) or end (false) of
@@ -934,8 +958,10 @@ var fluid = fluid || fluid_3_0_0;
     };
 
 
-    /** Calls Object.freeze at each level of containment of the supplied object.
-     * @param {Any} tofreeze  - The material to freeze.
+    /**
+     * Calls Object.freeze at each level of containment of the supplied object.
+     *
+     * @param {Any} tofreeze - The material to freeze.
      * @param {String[]} [segs] - Implementation-internal - path segments that recursion has reached.
      * @return {Any} - The supplied argument, recursively frozen.
      */
@@ -954,11 +980,13 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /* A set of special "marker values" used in signalling in function arguments and return values,
+    /*
+     * A set of special "marker values" used in signalling in function arguments and return values,
      * to partially compensate for JavaScript's lack of distinguished types. These should never appear
      * in JSON structures or other kinds of static configuration. An API specifically documents if it
      * accepts or returns any of these values, and if so, what its semantic is  - most are of private
-     * use internal to the framework */
+     * use internal to the framework
+     */
 
     fluid.marker = function () {};
 
@@ -1412,7 +1440,9 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /** Parse a hash containing prioritised records (for example, as found in a ContextAwareness record) and return a sorted array of these records in priority order.
+    /**
+     * Parse a hash containing prioritised records (for example, as found in a ContextAwareness record) and return a sorted array of these records in priority order.
+     *
      * @param {Object} records - A hash of key names to prioritised records. Each record may contain an member `namespace` - if it does not, the namespace will be taken from the
      * record's key. It may also contain a `String` member `priority` encoding a priority with respect to these namespaces as document at http://docs.fluidproject.org/infusion/development/Priorities.html .
      * @param {String} name - A human-readable name describing the supplied records, which will be incorporated into the message of any error encountered when resolving the priorities
@@ -1484,10 +1514,12 @@ var fluid = fluid || fluid_3_0_0;
         return eventName + " of " + fluid.nameComponent(that);
     };
 
-    /** Construct an "event firer" object which can be used to register and deregister
+    /**
+     * Construct an "event firer" object which can be used to register and deregister
      * listeners, to which "events" can be fired. These events consist of an arbitrary
      * function signature. General documentation on the Fluid events system is at
      * http://docs.fluidproject.org/infusion/development/InfusionEventSystem.html .
+     *
      * @param {Object} options - A structure to configure this event firer. Supported fields:
      *     {String} name - a readable name for this firer to be used in diagnostics and debugging
      *     {Boolean} preventable - If <code>true</code> the return value of each handler will
@@ -1569,15 +1601,18 @@ var fluid = fluid || fluid_3_0_0;
             addListener: function () {
                 lazyInit.apply(null, arguments);
             },
-            /** Removes a listener previously registered with this event.
-              * @param {Function|String} toremove - Either the listener function, the namespace of a listener (in which case a previous listener with that namespace may be uncovered) or an id sent to the undocumented
-              * `listenerId` argument of `addListener
-              */
+            /**
+             * Removes a listener previously registered with this event.
+             *
+             * @param {Function|String} listener - Either the listener function, the namespace of a listener
+             * (in which case a previous listener with that namespace may be uncovered) or an id sent to the
+             * undocumented `listenerId` argument of `addListener
+             */
             // Can be supplied either listener, namespace, or id (which may match either listener function's guid or original listenerId argument)
             removeListener: function (listener) {
                 if (!that.listeners) { return; }
                 var namespace, id, record;
-                if (typeof (listener) === "string") {
+                if (typeof(listener) === "string") {
                     namespace = listener;
                     record = that.listeners[namespace];
                     if (!record) { // it was an id and not a namespace - take the namespace from its record later
@@ -1650,9 +1685,9 @@ var fluid = fluid || fluid_3_0_0;
             for (var i = 0; i < value.length; ++i) {
                 fluid.event.addListenerToFirer(firer, value[i], namespace, wrapper);
             }
-        } else if (typeof (value) === "function" || typeof (value) === "string") {
+        } else if (typeof(value) === "function" || typeof(value) === "string") {
             wrapper(firer).addListener(value, namespace);
-        } else if (value && typeof (value) === "object") {
+        } else if (value && typeof(value) === "object") {
             wrapper(firer).addListener(value.listener, namespace || value.namespace, value.priority, value.softNamespace, value.listenerId);
         }
     };
@@ -1694,7 +1729,7 @@ var fluid = fluid || fluid_3_0_0;
 
     // unsupported, NON-API function
     fluid.eventFromRecord = function (eventSpec, eventKey, that) {
-        var isIoCEvent = eventSpec && (typeof (eventSpec) !== "string" || fluid.isIoCReference(eventSpec));
+        var isIoCEvent = eventSpec && (typeof(eventSpec) !== "string" || fluid.isIoCReference(eventSpec));
         var event;
         if (isIoCEvent) {
             if (!fluid.event.resolveEvent) {
@@ -1722,7 +1757,7 @@ var fluid = fluid || fluid_3_0_0;
 
     // unsupported, NON-API function
     fluid.mergeListenerPolicy = function (target, source, key) {
-        if (typeof (key) !== "string") {
+        if (typeof(key) !== "string") {
             fluid.fail("Error in listeners declaration - the keys in this structure must resolve to event names - got " + key + " from ", source);
         }
         // cf. triage in mergeListeners
@@ -1796,13 +1831,14 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
+     *
      * @param {Number|Function} condition - Supply either a function, which will be called with two arguments, args (the complete arguments to
      * fluid.fail) and activity, an array of strings describing the current framework invocation state.
      * Or, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
      * be popped off the stack
      */
     fluid.pushSoftFailure = function (condition) {
-        if (typeof (condition) === "function") {
+        if (typeof(condition) === "function") {
             fluid.failureEvent.addListener(condition, "fail");
         } else if (condition === -1) {
             fluid.failureEvent.removeListener("fail");
@@ -1819,8 +1855,10 @@ var fluid = fluid || fluid_3_0_0;
         value: "fluid.componentConstructor"
     });
 
-    /** Create a "type tag" component with no state but simply a type name and id. The most
-     *  minimal form of Fluid component */
+    /*
+     * Create a "type tag" component with no state but simply a type name and id. The most
+     * minimal form of Fluid component
+     */
     // No longer a publically supported function - we don't abolish this because it is too annoying to prevent
     // circularity during the bootup of the IoC system if we try to construct full components before it is complete
     // unsupported, non-API function
@@ -1937,7 +1975,9 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     // unsupported, NON-API function
-    /** Upgrades an element of an IoC record which designates a function to prepare for a {func, args} representation.
+    /**
+     * Upgrades an element of an IoC record which designates a function to prepare for a {func, args} representation.
+     *
      * @param {Any} rec - If the record is of a primitive type,
      * @param {String} key - The key in the returned record to hold the function, this will default to `funcName` if `rec` is a `string` *not*
      * holding an IoC reference, or `func` otherwise
@@ -2009,12 +2049,14 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /** Evaluates an index specification over all the defaults records registered into the system.
+    /**
+     * Evaluates an index specification over all the defaults records registered into the system.
+     *
      * @param {String} indexName - The name of this index record (currently ignored)
      * @param {Object} indexSpec - Specification of the index to be performed - fields:
      *     gradeNames: {String|String[]} List of grades that must be matched by this indexer
      *     indexFunc:  {String|Function} An index function which accepts a defaults record and returns an array of keys
-     * @return A structure indexing keys to arrays of matched gradenames
+     * @return {Object} - A structure indexing keys to arrays of matched gradenames
      */
     // The expectation is that this function is extremely rarely used with respect to registration of defaults
     // in the system, so currently we do not make any attempts to cache the results. The field "indexName" is
@@ -2030,6 +2072,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Retrieves and stores a grade's configuration centrally.
+     *
      * @param {String} componentName - The name of the grade whose options are to be read or written
      * @param {Object} [options] - An (optional) object containing the options to be set
      * @return {Object|undefined} - If `options` is omitted, returns the defaults for `componentName`.  Otherwise,
@@ -2324,7 +2367,8 @@ var fluid = fluid || fluid_3_0_0;
         return !source ? undefined : source[seg];
     };
 
-    /** Merge a collection of options structures onto a target, following an optional policy.
+    /**
+     * Merge a collection of options structures onto a target, following an optional policy.
      * This method is now used only for the purpose of merging "dead" option documents in order to
      * cache graded component defaults. Component option merging is now performed by the
      * fluid.makeMergeOptions pathway which sets up a deferred merging process. This function
@@ -2332,18 +2376,18 @@ var fluid = fluid || fluid_3_0_0;
      * directly.
      * The behaviour of this function is explained more fully on
      * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
+     *
      * @param {Object|String} policy - A "policy object" specifiying the type of merge to be performed.
      * If policy is of type {String} it should take on the value "replace" representing
      * a static policy. If it is an
      * Object, it should contain a mapping of EL paths onto these String values, representing a
      * fine-grained policy. If it is an Object, the values may also themselves be EL paths
      * representing that a default value is to be taken from that path.
-     * @param {...Object} options1, options2, .... - an arbitrary list of options structure which are to
+     * @param {...Object} sources - an arbitrary list of options structure which are to
      * be merged together. These will not be modified.
      */
 
-    fluid.merge = function (policy /*, ... sources */) {
-        var sources = Array.prototype.slice.call(arguments, 1);
+    fluid.merge = function (policy , ...sources) {
         var compiled = fluid.compileMergePolicy(policy).builtins;
         var options = fluid.makeMergeOptions(compiled, sources, {});
         options.initter();
@@ -2460,7 +2504,9 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /** Delete the value in the supplied object held at the specified path
+    /**
+     * Delete the value in the supplied object held at the specified path
+     *
      * @param {Object} target - The object holding the value to be deleted (possibly empty)
      * @param {String[]} segs - the path of the value to be deleted
      */
@@ -2480,6 +2526,8 @@ var fluid = fluid || fluid_3_0_0;
      * to fetch the default options from store. By recommendation, this should be the global
      * name of the component's creator function.
      * @param {Object} userOptions - the user-specified configuration options for this component
+     * @param {Object} [localOptions] - (optional) for backwards compatibility.
+     * @return {Object} - the merged options
      */
     // unsupported, NON-API function
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
@@ -2493,8 +2541,10 @@ var fluid = fluid || fluid_3_0_0;
             mergeBlocks = mergeBlocks.concat(fluid.expandComponentOptions(sharedMergePolicy, defaults, userOptions, that));
         }
         else {
-            mergeBlocks = mergeBlocks.concat([fluid.simpleGingerBlock(defaults, "defaults"),
-                                              fluid.simpleGingerBlock(userOptions, "user")]);
+            mergeBlocks = mergeBlocks.concat([
+                fluid.simpleGingerBlock(defaults, "defaults"),
+                fluid.simpleGingerBlock(userOptions, "user")
+            ]);
         }
         var options = {}; // ultimate target
         var sourceStrategies = [], sources = [];
@@ -2585,8 +2635,10 @@ var fluid = fluid || fluid_3_0_0;
 
     fluid.defaults("fluid.function", {});
 
-    /** Invoke a global function by name and named arguments. A courtesy to allow declaratively encoded function calls
+    /**
+     * Invoke a global function by name and named arguments. A courtesy to allow declaratively encoded function calls
      * to use named arguments rather than bare arrays.
+     *
      * @param {String} name - A global name which can be resolved to a Function. The defaults for this name must
      * resolve onto a grade including "fluid.function". The defaults record should also contain an entry
      * <code>argumentMap</code>, a hash of argument names onto indexes.
@@ -2731,7 +2783,10 @@ var fluid = fluid || fluid_3_0_0;
      * View-like features such as the DOM Binder or events
      *
      * @param {Object} name - The name of the little component to create
-     * @param {Object} options - User-supplied options to merge with the defaults
+     * @param {Object} userOptions - User-supplied options to merge with the defaults
+     * @param {Object} [localOptions] - (optional) for backwards compatibility
+     * @param {Object} [receiver] - (optional) for backwards compatibility
+     * @return {Object} - an instantiated Component
      */
     // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
     // just to allow backward compatibility whilst grade specifications are not mandatory - similarly for 4th arg "receiver"
@@ -2826,8 +2881,8 @@ var fluid = fluid || fluid_3_0_0;
     // unsupported, NON-API function
     fluid.initSubcomponentImpl = function (that, entry, args) {
         var togo;
-        if (typeof (entry) !== "function") {
-            var entryType = typeof (entry) === "string" ? entry : entry.type;
+        if (typeof(entry) !== "function") {
+            var entryType = typeof(entry) === "string" ? entry : entry.type;
             togo = entryType === "fluid.emptySubcomponent" ?
                 null : fluid.invokeGlobalFunction(entryType, args);
         } else {
@@ -2863,7 +2918,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     var childSeg = new RegExp("\\s*(>)?\\s*", "g");
-//    var whiteSpace = new RegExp("^\\w*$");
+    // var whiteSpace = new RegExp("^\\w*$");
 
     // Parses a selector expression into a data structure holding a list of predicates
     // 2nd argument is a "strategy" structure, e.g.  fluid.simpleCSSMatcher or fluid.IoCSSMatcher

@@ -1,18 +1,17 @@
 /*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
-https://github.com/fluid-project/infusion/raw/master/AUTHORS.md.
+https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 /* eslint-env node */
-/* global fluid */
 
 "use strict";
 
@@ -35,7 +34,7 @@ var tapOutput = "";
 // Assumed to be used with fluid.onUncaughtException.addListener
 fluid.tests.tapOutput.outputTAPFailure = function (message) {
     if (!fluid.tests.expectFailure) {
-        console.log("not ok -  " + message);
+        console.log("not ok -  " + message); // eslint-disable-line no-console
     }
 };
 
@@ -54,8 +53,8 @@ if (fluid.tests.tapOutput.shouldOutputTAP) {
     // Additional handler for outputting TAP
     QUnit.done(function () {
         // Output the TAP header
-        console.log("1.." + fluid.tests.expectedTestCases);
+        console.log("1.." + fluid.tests.expectedTestCases); // eslint-disable-line no-console
         // Output the TAP report
-        console.log(tapOutput);
+        console.log(tapOutput); // eslint-disable-line no-console
     });
 }
