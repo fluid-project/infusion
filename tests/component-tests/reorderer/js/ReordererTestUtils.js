@@ -113,7 +113,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     // stepReorderTests
     fluid.testUtils.reorderer.stepReorderer = async function (container, options) {
         var that = fluid.invokeGlobalFunction(options.reordererOptions.reordererFn, [container, options.reordererOptions]);
-        var focusItem = $(options.itemSelector)
+        var focusItem = $(options.itemSelector);
         await fluid.focus(focusItem);
         for (var i = 0; i < options.expectedOrderArrays.length; i++) {
             var expectedOrder = options.expectedOrderArrays[i];

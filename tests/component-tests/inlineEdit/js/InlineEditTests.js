@@ -343,7 +343,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertFalse("Initially display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
 
             await fluid.focus(button);
-            console.log("after focus");
+
             jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.focus));
             jqUnit.isVisible("Before enter pressed, display field is visible", "#display");
             jqUnit.notVisible("Before enter pressed, edit field is hidden", "#edit-container");
