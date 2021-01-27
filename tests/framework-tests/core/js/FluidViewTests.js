@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -119,8 +119,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.test("fluid.container: bind to a DOM element", function () {
             var container = document.getElementById("main-container");
             var result = fluid.container(container);
-            jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
-                                container, result[0]);
+            jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.", container, result[0]);
         });
 
         jqUnit.test("fluid.container: garbage object", function () {

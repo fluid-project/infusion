@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 var demo = demo || {};
 
 (function ($, fluid) {
@@ -58,7 +56,7 @@ var demo = demo || {};
         var tinyEditor = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE", tinyMCEOptions);
         makeButtons(tinyEditor);
 
-                // Create a TinyMCE-based Rich Inline Edit component.
+        // Create a TinyMCE-based Rich Inline Edit component.
         var tinyEditor2 = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE-2", tinyMCEOptions);
         makeButtons(tinyEditor2);
 

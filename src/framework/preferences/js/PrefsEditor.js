@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -20,11 +18,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Preferences Editor Loader *
      *****************************/
 
-    /**
+    /*
      * An Preferences Editor top-level component that reflects the collaboration between prefsEditor, templateLoader and messageLoader.
      * This component is the only Preferences Editor component that is intended to be called by the outside world.
-     *
-     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
         gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "fluid.viewComponent"],
@@ -236,24 +232,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         uiEnhancer.updateModel(newModel);
     };
 
-    /**
+    /*
      * A component that works in conjunction with the UI Enhancer component
      * to allow users to set personal user interface preferences. The Preferences Editor component provides a user
      * interface for setting and saving personal preferences, and the UI Enhancer component carries out the
      * work of applying those preferences to the user interface.
-     *
-     * @param container {Object}
-     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
         gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "fluid.remoteModelComponent", "fluid.viewComponent"],
         invokers: {
-            /**
-             * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
-             *
-             * @param newModel {Object}
-             * @param source {Object}
-             */
+            // Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
             fetchImpl: {
                 funcName: "fluid.prefs.prefsEditor.fetchImpl",
                 args: ["{that}"]
@@ -376,7 +364,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Sends the prefsEditor.model to the store and fires onSave
-     * @param {Object} that: A fluid.prefs.prefsEditor instance
+     *
+     * @param {fluid.prefs.prefsEditor} that - A `fluid.prefs.prefsEditor` instance
      * @return {Promise} A promise that will be resolved with the saved model or rejected on error.
      */
     fluid.prefs.prefsEditor.save = function (that) {

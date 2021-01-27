@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -718,8 +718,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertValue("Retrieved defaults should be immutable", assignException);
 
         // Try to access defaults for a component that doesn't exist.
-        jqUnit.assertNoValue("The defaults for a nonexistent component should be null.",
-                          fluid.defaults("timemachine"));
+        jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", fluid.defaults("timemachine"));
     });
 
     jqUnit.test("FLUID-4842 test - configurable \"soft failure\"", function () {

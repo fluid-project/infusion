@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -134,9 +132,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.defaults("fluid.transforms.linearScale", {
-        gradeNames: ["fluid.multiInputTransformFunction",
-                     "fluid.standardTransformFunction",
-                     "fluid.lens" ],
+        gradeNames: [
+            "fluid.multiInputTransformFunction",
+            "fluid.standardTransformFunction",
+            "fluid.lens"
+        ],
         invertConfiguration: "fluid.transforms.linearScale.invert",
         inputVariables: {
             factor: 1,
@@ -455,7 +455,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
-     *
      * Transform the input object into an array based upon the options provided to the specification. Accepts
      * an object as its first argument and an optional second argument (an object) which contains the
      * specifications for the resulting output.
@@ -495,7 +494,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} input - The object to be transformed into an array.
      * @param {Object} [transformSpec] - (optional) The options provided to the transformation rule.
      * @return {Array} - The transformed array
-     *
      */
     fluid.transforms.setMembershipToArray = function (input, transformSpec) {
         // <input> should be an object.
@@ -746,7 +744,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.transforms.indexOf = function (value, transformSpec) {
         // We do not allow a positive number as 'notFound' value, as it threatens invertibility
-        if (typeof (transformSpec.notFound) === "number" && transformSpec.notFound >= 0) {
+        if (typeof(transformSpec.notFound) === "number" && transformSpec.notFound >= 0) {
             fluid.fail("A positive number is not allowed as 'notFound' value for indexOf");
         }
         var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "indexOf");
@@ -767,7 +765,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.transforms.dereference = function (value, transformSpec) {
-        if (typeof (value) !== "number") {
+        if (typeof(value) !== "number") {
             return undefined;
         }
         var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "dereference");

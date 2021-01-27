@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function () {
     "use strict";
@@ -51,8 +51,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         gradeNames: ["fluid.component", "fluid.contextAware"],
         // should contain one or more contextAwareness checks
         // see TestToSpeechTests or TestingTests for concrete usage examples,
-        // contextAwareness: {
-        // },
+        // contextAwareness: {},
         listeners: {
             "onCreate.runTests": {
                 funcName: "fluid.test.conditionalTestUtils.runTests",
@@ -67,8 +66,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
         // key-value pairs; values are zero-arg test funcNames to be run
         // by the onCreate listener after contextAware grade merging
-        // tests: {
-        // }
+        // tests: {}
     });
 
     fluid.test.conditionalTestUtils.runTests = function (that) {

@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 var example = example || {};
 
 fluid.dataBindingExample = (function ($) {
@@ -96,9 +94,11 @@ fluid.dataBindingExample = (function ($) {
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var wineSelectorMap = [{selector: ".example-wine-row", id: "wine-row:"},
-                               {selector: ".example-wine-option", id: "wine-option"},
-                               {selector: ".example-wine-label", id: "wine-label"}];
+        var wineSelectorMap = [
+            {selector: ".example-wine-row", id: "wine-row:"},
+            {selector: ".example-wine-option", id: "wine-option"},
+            {selector: ".example-wine-label", id: "wine-label"}
+        ];
 
         // The component trees are generated programmatically from the data model.
         var wineTree = buildSelectionTreeFromModel(wineModel, "wine");
@@ -107,9 +107,11 @@ fluid.dataBindingExample = (function ($) {
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var cheeseSelectorMap = [{selector: ".example-cheese-row", id: "cheese-row:"},
-                                 {selector: ".example-cheese-option", id: "cheese-option"},
-                                 {selector: ".example-cheese-label", id: "cheese-label"}];
+        var cheeseSelectorMap = [
+            {selector: ".example-cheese-row", id: "cheese-row:"},
+            {selector: ".example-cheese-option", id: "cheese-option"},
+            {selector: ".example-cheese-label", id: "cheese-label"}
+        ];
 
         // The autoBind option tells the renderer to automatically update the model when the value
         // of an input changes. Without this parameter, the model must be updated manually through
@@ -120,9 +122,11 @@ fluid.dataBindingExample = (function ($) {
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var canapeSelectorMap = [{selector: ".example-canape-row", id: "canape-row:"},
-                                 {selector: ".example-canape-option", id: "canape-option"},
-                                 {selector: ".example-canape-label", id: "canape-label"}];
+        var canapeSelectorMap = [
+            {selector: ".example-canape-row", id: "canape-row:"},
+            {selector: ".example-canape-option", id: "canape-option"},
+            {selector: ".example-canape-label", id: "canape-label"}
+        ];
 
         var canapeTree = buildSelectionTreeFromModel(canapeModel, "canape");
         fluid.selfRender($("#canape-list"), canapeTree, {model: canapeModel, autoBind: true, cutpoints: canapeSelectorMap});

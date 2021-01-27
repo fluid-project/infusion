@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 /************
  * Uploader *
  ************/
@@ -173,14 +171,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
 
-   /**
-    * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
-    *
-    * @param {Number} bytes - The file's size, specified as in number bytes.
-    * @return {String} - The file size as a string.
-    */
+    /**
+     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
+     *
+     * @param {Number} bytes - The file's size, specified as in number bytes.
+     * @return {String} - The file size as a string.
+     */
     fluid.uploader.formatFileSize = function (bytes) {
-        if (typeof (bytes) === "number") {
+        if (typeof(bytes) === "number") {
             if (bytes === 0) {
                 return "0.0 KB";
             } else if (bytes > 0) {
@@ -233,7 +231,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // and set up the errorStr so that we can use it in the totalProgressStr
         if (numErroredFiles > 0) {
             var errorLabelString = (numErroredFiles === 1) ? that.options.strings.progress.singleError :
-                                                             that.options.strings.progress.pluralErrors;
+                that.options.strings.progress.pluralErrors;
             fluid.uploader.setTotalProgressStyle(that, true);
             errorStr = fluid.stringTemplate(that.options.strings.progress.numberOfErrors, {
                 errorsN: numErroredFiles,
@@ -333,11 +331,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Instantiates a new Uploader component.
-     *
-     * @param container {Object} the DOM element in which the Uploader lives
-     * @param options {Object} configuration options for the component.
      */
-
     fluid.defaults("fluid.uploader", {
         gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
         contextAwareness: {
@@ -378,6 +372,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /**
+     * Removes the specified file from the upload queue.
+     *
+     * @param {fluid.uploader.fileQueue} queue - an instance of the `fluid.uploader.fileQueue` component
+     * @param {fluid.uploader.local} localStrategy - an instance of the `fluid.uploader.local` component
+     * @param {InfusionEvent} afterFileRemoved - An event to be fired after the file has been removed
+     * @param {File} file - the file to remove
+     */
     fluid.uploader.removeFile = function (queue, localStrategy, afterFileRemoved, file) {
         queue.removeFile(file);
         localStrategy.removeFile(file);
@@ -441,11 +443,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.uploader.browse",
                 args: ["{that}.queue", "{that}.strategy.local"]
             },
-            /**
-             * Removes the specified file from the upload queue.
-             *
-             * @param file {File} the file to remove
-             */
+            // Removes the specified file from the upload queue.
             removeFile: {
                 funcName: "fluid.uploader.removeFile",
                 args: ["{that}.queue", "{that}.strategy.local", "{that}.events.afterFileRemoved", "{arguments}.0"]
@@ -744,8 +742,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**************************************************
      * Error constants for the Uploader               *
      **************************************************/
-     // Partial TODO: The values of these keys are now our own - however, the key
-     // values themselves still align with those from SWFUpload
+
+    // Partial TODO: The values of these keys are now our own - however, the key
+    // values themselves still align with those from SWFUpload
     fluid.uploader.queueErrorConstants = {
         QUEUE_LIMIT_EXCEEDED:    "queue limit exceeded",
         FILE_EXCEEDS_SIZE_LIMIT: "file exceeds size limit",
@@ -774,15 +773,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         CANCELLED:   "cancelled"
     };
 
-    /**
+    /*
      * Single file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you only want a standard single file uploader.
      * But why would you want that?
-     *
-     * @param container {jQueryable} the component's container
-     * @param options {Object} configuration options
      */
-
     fluid.defaults("fluid.uploader.singleFile", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {

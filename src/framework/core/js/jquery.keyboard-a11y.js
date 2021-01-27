@@ -11,8 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";
@@ -65,10 +65,10 @@ var fluid = fluid || fluid_3_0_0;
     fluid.thatistBridge("fluid", fluid);
     fluid.thatistBridge("fluid_3_0_0", fluid_3_0_0);
 
-/*************************************************************************
- * Tabindex normalization - compensate for browser differences in naming
- * and function of "tabindex" attribute and tabbing order.
- */
+    /*************************************************************************
+     * Tabindex normalization - compensate for browser differences in naming
+     * and function of "tabindex" attribute and tabbing order.
+     *************************************************************************/
 
     // -- Private functions --
 
@@ -420,7 +420,7 @@ var fluid = fluid || fluid_3_0_0;
         };
 
         that.selectablesUpdated = function (focusedItem) {
-          // Remove selectables from the tab order and add focus/blur handlers
+            // Remove selectables from the tab order and add focus/blur handlers
             if (typeof(that.options.selectablesTabindex) === "number") {
                 that.selectables.fluid("tabindex", that.options.selectablesTabindex);
             }
@@ -552,12 +552,13 @@ var fluid = fluid || fluid_3_0_0;
             if (!fluid.enabled(target)) {
                 return;
             }
-// The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
-// that causes keyboard simulation to fail in Safari, causing our tests to fail:
-//     http://ui.jquery.com/bugs/ticket/3229
-// The replacement 'if' clause works around this bug.
-// When this issue is resolved, we should revert to the original clause.
-//            if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
+            // The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
+            // that causes keyboard simulation to fail in Safari, causing our tests to fail:
+            //     http://ui.jquery.com/bugs/ticket/3229
+            // The replacement 'if' clause works around this bug.
+            // When this issue is resolved, we should revert to the original clause.
+
+            // if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
             var code = evt.which ? evt.which : evt.keyCode;
             if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
                 var event = $.Event("fluid-activate");

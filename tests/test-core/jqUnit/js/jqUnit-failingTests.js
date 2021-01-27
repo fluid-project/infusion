@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
  https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  */
 
-/* global fluid, QUnit */
+/* global QUnit */
 
 (function () {
     "use strict";

@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -228,15 +228,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
             addFileAndRefresh(errorPanel, errorPanel.numFilesErrorSection, testFiles[1]);
             jqUnit.isVisible("After a file has been added to a section, the error panel should be visible.",
-                    errorPanel.container);
+                errorPanel.container);
 
             addFileAndRefresh(errorPanel, errorPanel.fileSizeErrorSection, testFiles[0]);
             jqUnit.isVisible("After a file has been added to the other section, the error panel should still be visible.",
-                    errorPanel.container);
+                errorPanel.container);
 
             clearAndRefresh(errorPanel, errorPanel.fileSizeErrorSection);
             jqUnit.isVisible("When one section has been cleared but the other still has errors, the container should still be visible.",
-                    errorPanel.container);
+                errorPanel.container);
 
             clearAndRefresh(errorPanel, errorPanel.numFilesErrorSection);
             jqUnit.notVisible("When all sections have been cleared, the error panel should be hidden again.",

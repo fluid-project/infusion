@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 var demo = demo || {};
 
 (function ($, fluid) {
@@ -49,9 +47,9 @@ var demo = demo || {};
 
     /**
      * Used to simulate an application that would call Progress.
-     * @param {Object} that             the component to source the model and applier from
-     * @param {Function} stepFunction   the function to update the progress component
-     * @param {Function} finishFunction the function to enable the submit button, hide the progress simulation and update the text
+     * @param {Object} that - the component to source the model and applier from
+     * @param {Function} stepFunction - the function to update the progress component
+     * @param {Function} finishFunction - the function to enable the submit button, hide the progress simulation and update the text
      */
     demo.timer.simulateTime = function (that, stepFunction, finishFunction) {
         var steps = that.model.steps;

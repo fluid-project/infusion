@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function () {
     "use strict";
@@ -53,10 +53,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var dependencies = {
             objects: {
                 funcName: "cspace.recordList",
-                args: [".object-records-group",
-                        makeArrayExpander("objects"),
-                        "{pageBuilder}.uispec.objects",
-                        "stringOptions"]
+                args: [
+                    ".object-records-group",
+                    makeArrayExpander("objects"),
+                    "{pageBuilder}.uispec.objects",
+                    "stringOptions"
+                ]
             },
             proceduresIntake: {
                 funcName: "cspace.recordList",
@@ -108,11 +110,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var expectedRes = {
             objects: {
                 funcName: "cspace.recordList",
-                args: [".object-records-group",
-                        {items: [1, 2, 3],
-                         selectionIndex: -1},
-                        "These Objects",
-                        "stringOptions"]
+                args: [
+                    ".object-records-group",
+                    {items: [1, 2, 3],
+                        selectionIndex: -1},
+                    "These Objects",
+                    "stringOptions"
+                ]
             },
             proceduresIntake: {
                 funcName: "cspace.recordList",

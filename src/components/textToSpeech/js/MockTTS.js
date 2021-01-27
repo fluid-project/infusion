@@ -12,9 +12,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 */
 
-/* global fluid */
-
-(function () {
+(function (fluid) {
     "use strict";
 
     /*********************************************************************************************
@@ -201,4 +199,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     };
 
-})();
+})(fluid_3_0_0);

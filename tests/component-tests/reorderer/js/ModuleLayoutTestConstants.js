@@ -16,8 +16,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * testing with the data in the portlets.html file.
  */
 
-/* global fluid */
-
 (function () {
     "use strict";
 
