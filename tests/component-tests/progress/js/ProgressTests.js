@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -88,10 +88,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fluid.progress("#progress-container");
             // 1.1
             jqUnit.notVisible("Before update, ensure default progress bar is not visible",
-                    ".flc-progress");
+                ".flc-progress");
             // 1.2
             jqUnit.assertNodeNotExists("Before update, ensure update text doesn't exist",
-                         ":contains(" + text + ")");
+                ":contains(" + text + ")");
         });
 
         // 2
@@ -113,7 +113,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             progressBar.hide(0, false);
             // 2.4
             jqUnit.notVisible("After hide, ensure default progress bar is not visible",
-                    ".flc-progress");
+                ".flc-progress");
         });
 
         // 3
@@ -126,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.isVisible("After update, ensure default progress bar is visible", ".flc-progress");
             // 3.2
             jqUnit.assertNodeNotExists("After update with out text, ensure update text doesn't exist",
-                             ":contains(" + text + ")");
+                ":contains(" + text + ")");
             // don't test widths here because the animate function will make them fail
         });
 
@@ -141,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 ".flc-progress");
             // 4.2
             jqUnit.assertNodeExists("After update with out percentage, ensure the new text exists",
-                 ":contains(" + text + ")");
+                ":contains(" + text + ")");
             // 4.3
             jqUnit.assertEquals("We didn't update the percent so the indicator width should still be at the minimum default width of " + progressBar.options.minWidth + "px; actual ",
                 progressBar.options.minWidth, progressBar.indicator.width());
@@ -150,27 +150,27 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             progressBar.update(null, newText);
             // 4.4
             jqUnit.assertNodeExists("New text with out a percentage update, ensure the new text exists",
-                 ":contains(" + newText + ")");
+                ":contains(" + newText + ")");
             // 4.5
             // update with null text. It should be the same.
             progressBar.update(null, null);
             jqUnit.assertNodeExists("After update with null text, ensure the old text remains",
-                 ":contains(" + newText + ")");
+                ":contains(" + newText + ")");
             // 4.6
             // update with undefined text
             progressBar.update(null);
             jqUnit.assertNodeExists("After updating the Progressor with out label text defined, the label should be unchanged",
-                 ":contains(" + newText + ")");
+                ":contains(" + newText + ")");
             // 4.7
             // update with empty text
             progressBar.update(null, "");
             jqUnit.assertTrue("After updating text with an empty string, the label should be empty",
-                 progressBar.label.text() === "");
+                progressBar.label.text() === "");
             // 4.8
             // update with string template
             progressBar.update(10, "%percentComplete% Complete");
             jqUnit.assertTrue("After updating text with an string template, the label should include the rendered temlpate",
-                 progressBar.label.text() === "10% Complete");
+                progressBar.label.text() === "10% Complete");
         });
 
         jqUnit.module("Progress Tests (No animation)");
@@ -186,21 +186,21 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 ".flc-progress");
             // 5.2
             jqUnit.assertTrue("After updating only pixels the label should still be empty",
-                 progressBar.label.text() === "");
+                progressBar.label.text() === "");
             // 5.3
             jqUnit.assertFalse("After update, width of indicator should no longer be 5px",
                 progressBar.indicator.width() === 5);
             // 5.4
             jqUnit.assertEquals("After update of the number 50, width of indicator should be",
-                  updateNum, progressBar.indicator.width());
+                updateNum, progressBar.indicator.width());
             // update with null
             progressBar.update(null);
-             // 5.5
+            // 5.5
             jqUnit.assertEquals("After update with percent = null, indicator should still be",
-                  updateNum, progressBar.indicator.width());
+                updateNum, progressBar.indicator.width());
             // update with 0
             progressBar.update(0);
-             // 5.6
+            // 5.6
             jqUnit.assertEquals("After update with percent = 0, width of indicator should be the default minimum width",
                 progressBar.options.minWidth, progressBar.indicator.width());
         });
@@ -214,7 +214,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             progressBar.update(updateString);
             // 6.1
             jqUnit.isVisible("After update, ensure default progress bar is visible",
-                    ".flc-progress");
+                ".flc-progress");
             // 6.2
             jqUnit.assertTrue("After updating only pixels the label should still be empty",
                 progressBar.label.text() === "");
@@ -223,7 +223,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 progressBar.indicator.width() === progressBar.options.minWidth);
             // 6.4
             jqUnit.assertTrue("After update, width of indicator should be " + updateString,
-                  numericEquivalent, progressBar.indicator.width());
+                numericEquivalent, progressBar.indicator.width());
         });
 
         // 7
@@ -260,7 +260,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 progressBar.label.text() === "");
             // 8.3
             jqUnit.assertFalse("After update, width of indicator should no longer be 5px",
-                  progressBar.indicator.width() === 5);
+                progressBar.indicator.width() === 5);
             // 8.4
             jqUnit.assertTrue("After update, width of indicator should be 50px",
                 progressBar.indicator.width() === 50);
@@ -268,10 +268,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             progressBar.update(null, text);
             // 8.5
             jqUnit.assertTrue("After updating only text the label should be: '" + text + "'",
-                 progressBar.label.text() === text);
+                progressBar.label.text() === text);
             // 8.6
             jqUnit.assertTrue("and width should still only be 50px",
-                 progressBar.indicator.width() === 50);
+                progressBar.indicator.width() === 50);
         });
 
         jqUnit.module("Progress Tests (Other Defaults)");
@@ -286,7 +286,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.isVisible("After show, ensure default progress bar is visible", ".flc-progress");
             // 9.2
             jqUnit.assertTrue("After show, expected indicator width: 0; actual: " + progressBar.indicator.width(),
-                  progressBar.indicator.width() === 0);
+                progressBar.indicator.width() === 0);
             // update with just percentage
             progressBar.update(50);
             // 9.3

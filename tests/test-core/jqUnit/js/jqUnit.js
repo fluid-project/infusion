@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid_3_0_0, QUnit */
+/* global QUnit */
 
 var jqUnit = jqUnit || {};
 
@@ -62,8 +62,8 @@ var jqUnit = jqUnit || {};
         /**
          * Called to listen for a function's invocation and record its details in the transcript.
          *
-         * @param {Object} fnName the function name to listen for
-         * @param {Object} onObject the object on which to invoke the method
+         * @param {Object} fnName - the function name to listen for
+         * @param {Object} onObject - the object on which to invoke the method
          */
         that.intercept = function (fnName, onObject) {
             onObject = onObject || window;
@@ -276,9 +276,9 @@ var jqUnit = jqUnit || {};
     /** Assert that the supplied callback will produce a framework diagnostic, containing the supplied text
      * somewhere in its error message - that is, the framework will invoke fluid.fail with a message containing
      * <code>errorText</code>.
-     * @param message {String} The message prefix to be supplied for all the assertions this function issues
-     * @param toInvoke {Function} A no-arg function holding the code to be tested for emission of the diagnostic
-     * @param errorTexts {String} or {Array of String} Either a single string or array of strings which the <code>message</code> field
+     * @param {String} message - The message prefix to be supplied for all the assertions this function issues
+     * @param {Function} toInvoke - A no-arg function holding the code to be tested for emission of the diagnostic
+     * @param {String} errorTexts - or {Array of String} Either a single string or array of strings which the <code>message</code> field
      * of the thrown exception will be tested against - each string must appear as a substring in the text
      */
 

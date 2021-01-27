@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
  * Instead, users should add this file manually if backwards compatibility is needed. *
@@ -34,7 +32,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
         var mimeTypeMap = fluid.uploader.mimeTypeRegistry;
-        if (fluid.isArrayable(val) || typeof (val) !== "string") {
+        if (fluid.isArrayable(val) || typeof(val) !== "string") {
             return val;
         }
 

@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -53,17 +51,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
         events.onFileError.fire(file,
-                                fluid.uploader.errorConstants.UPLOAD_FAILED,
-                                xhr.status,
-                                xhr);
+            fluid.uploader.errorConstants.UPLOAD_FAILED,
+            xhr.status,
+            xhr);
         events.onFileComplete.fire(file);
     };
 
     fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
         events.onFileError.fire(file,
-                                fluid.uploader.errorConstants.UPLOAD_STOPPED,
-                                xhr.status,
-                                xhr);
+            fluid.uploader.errorConstants.UPLOAD_STOPPED,
+            xhr.status,
+            xhr);
         events.onFileComplete.fire(file);
     };
 

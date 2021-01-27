@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($, fluid) {
     "use strict";
@@ -98,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.tests.delegateTest.assertVisible = function (trackTooltips, visibleAnchors) {
         fluid.tests.tooltip.assertVisible("Correct tooltips visible", trackTooltips, visibleAnchors,
-                fluid.tests.delegateTest.idToContent, fluid.tests.tooltip.stringToNode);
+            fluid.tests.delegateTest.idToContent, fluid.tests.tooltip.stringToNode);
     };
 
     fluid.tests.tooltip.closer = function (tooltip) {

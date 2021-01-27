@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global CKEDITOR, tinyMCE */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
+fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";

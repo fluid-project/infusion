@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
  https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";

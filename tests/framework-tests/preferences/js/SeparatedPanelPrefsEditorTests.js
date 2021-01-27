@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 
 (function ($) {
@@ -268,9 +268,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
-             pageEnhancer.options.classnameMap.textFont["default"]);
+            pageEnhancer.options.classnameMap.textFont["default"]);
         jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
-             separatedPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
+            separatedPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
 
         // "slidingPanel" option mapping
         jqUnit.assertFalse("Preferences EditorPanel is hidden", isSlidingPanelShown);

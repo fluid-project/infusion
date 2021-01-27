@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -20,10 +18,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Calculate the location of the item and the column in which it resides.
-     * @param {Object} - The item.
-     * @param {Object} - The layout object.
-     * @return  An object with column index and item index (within that column) properties.
-     *          These indices are -1 if the item does not exist in the grid.
+     *
+     * @param {Object} item - The item.
+     * @param {Object} layout - The layout object.
+     * @return {Object} - An object with column index and item index (within that column) properties.
+     *                    These indices are -1 if the item does not exist in the grid.
      */
     // unsupported - NON-API function
     fluid.moduleLayout.findColumnAndItemIndices = function (item, layout) {
@@ -41,7 +40,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }, -1);
     };
 
-    /**
+    /*
      * Move an item within the layout object.
      */
     // unsupported - NON-API function
@@ -59,8 +58,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var relativeItemIndices = fluid.moduleLayout.findColumnAndItemIndices(target, layout);
             targetCol = layout.columns[relativeItemIndices.columnIndex].elements;
             position = fluid.dom.normalisePosition(position,
-                  itemIndices.columnIndex === relativeItemIndices.columnIndex,
-                  relativeItemIndices.itemIndex, itemIndices.itemIndex);
+                itemIndices.columnIndex === relativeItemIndices.columnIndex,
+                relativeItemIndices.itemIndex, itemIndices.itemIndex);
             var relative = position === fluid.position.BEFORE ? 0 : 1;
             targetCol.splice(relativeItemIndices.itemIndex + relative, 0, item);
         }
@@ -68,6 +67,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Builds a layout object from a set of columns and modules.
+     *
      * @param {jQuery} container - The container element.
      * @param {jQuery} columns - One or more jQuery objects representing columns of data.
      * @param {jQuery} portlets - One or more "portlet" elements to include in the layout.
@@ -81,7 +81,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 return {
                     container: column,
                     elements: fluid.makeArray(portlets.filter(function () {
-                          // is this a bug in filter? would have expected "this" to be 1st arg
+                        // is this a bug in filter? would have expected "this" to be 1st arg
                         return fluid.dom.isContainer(column, this);
                     }))
                 };
@@ -233,17 +233,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.moduleLayout.getGeometricInfo = function (that) {
         var options = that.options;
         var extents = [];
-        var togo = {extents: extents,
-                    sentinelize: options.sentinelize};
+        var togo = {extents: extents, sentinelize: options.sentinelize};
         togo.elementMapper = function (element) {
             return that.isLocked(element) ? "locked" : null;
         };
         togo.elementIndexer = function (element) {
             var indices = fluid.moduleLayout.findColumnAndItemIndices(element, that.layout);
             return {
-                index:        indices.itemIndex,
-                length:       that.layout.columns[indices.columnIndex].elements.length,
-                moduleIndex:  indices.columnIndex,
+                index: indices.itemIndex,
+                length: that.layout.columns[indices.columnIndex].elements.length,
+                moduleIndex: indices.columnIndex,
                 moduleLength: that.layout.columns.length
             };
         };
@@ -254,8 +253,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 elements: fluid.makeArray(column.elements),
                 parentElement: column.container
             };
-          //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" +
-          //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
+            //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" +
+            //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
             extents.push(thisEls);
         }
         return togo;
@@ -302,6 +301,5 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.moduleLayout.onMoveListener = function (item, requestedPosition, layout) {
         fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
     };
-
 
 })(jQuery, fluid_3_0_0);

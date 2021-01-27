@@ -13,8 +13,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit, QUnit */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -241,10 +239,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var task = testCaseState.expandFunction(fixture.task, "task executor", fixture.args, null, fixture.contextThat);
                 var promise = task.apply(null);
                 var handlers = fixture.resolve ?
-                    [fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "resolve"),
-                     fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "reject", "resolve")] :
-                    [fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "resolve", "reject"),
-                     fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "reject")];
+                    [
+                        fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "resolve"),
+                        fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "reject", "resolve")
+                    ] :
+                    [
+                        fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "resolve", "reject"),
+                        fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "reject")
+                    ];
                 promise.then(handlers[0], handlers[1]);
             }
         };
@@ -459,7 +461,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var spec = fixture.path === undefined ? fixture.spec : {path: fixture.path};
             if (spec === undefined || spec.path === undefined) {
                 fluid.fail("Error in changeEvent fixture ", fixture,
-                   ": could not find path specification named \"path\" or \"spec\"");
+                    ": could not find path specification named \"path\" or \"spec\"");
             }
             spec.listenerId = listenerId;
             spec.transactional = true;
@@ -492,7 +494,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /** EXECUTOR APPARATUS
+    /*
+     * EXECUTOR APPARATUS
      * Operates on a stream of the "mini-thats" decoded from the sequence by the decoder infrastructure.
      * These need to be bound in a slightly odd way because of the nature of the passive "binder" records.
      * These require a listener to be registered on the target at the latest possible time before the
@@ -506,17 +509,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         jqUnit.setMessageSuffix("");
     };
 
-    /** Operate the `bind` action of an bind-type executor (a decoded sequence element) which acts either
-      * i) After an exec-type executor has concluded, OR
-      * ii) After a bind-type executor has just begun its "fire" action
-      * Note that the executor itself will have been constructed by `fluid.test.makeBinder` which operates the unbind/bind
-      * logic within the wrapper it constructs for the listener to be fired
-      * @param binder {Binder} An object with a member `bind` accepting two nullary functions as dispensed from `fluid.test.makeBinder`
-      * @param preWrap {Function()} A nullary function to be invoked before the binding action
-      * @param postWrap {Function()} A nullary function to be invoked before the unbinding action
-      * @param sequenceText {String} A string representing the sequence position that the binder occupies
-      */
-
+    /**
+     * Operate the `bind` action of an bind-type executor (a decoded sequence element) which acts either
+     * i) After an exec-type executor has concluded, OR
+     * ii) After a bind-type executor has just begun its "fire" action
+     * Note that the executor itself will have been constructed by `fluid.test.makeBinder` which operates the unbind/bind
+     * logic within the wrapper it constructs for the listener to be fired
+     *
+     * @param {Binder} binder - An object with a member `bind` accepting two nullary functions as dispensed from `fluid.test.makeBinder`
+     * @param {Function} preWrap - A nullary function to be invoked before the binding action
+     * @param {Function} postWrap - A nullary function to be invoked before the unbinding action
+     * @param {String} sequenceText - A string representing the sequence position that the binder occupies
+     */
     fluid.test.bindExecutor = function (binder, preWrap, postWrap, sequenceText) {
         function preFunc() {
             jqUnit.setMessageSuffix(" - at sequence position " + sequenceText);
@@ -837,13 +841,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
-    /** Top-level driver function for users. Supply an array of grade names holding the
-     *  list of the testing environments to be executed in sequence
-     *  @param envs (Array of string/object) The testing environments to be executed - either a simple
-     *  string holding the testing environment's name, or a record {type: typeName, options: options} holding
-     *  IoC configuration for the environment as if for a subcomponent.
+    /**
+     * Top-level driver function for users. Supply an array of grade names holding the
+     * list of the testing environments to be executed in sequence
+     *
+     * @param {String[]|Object[]} envs - The testing environments to be executed - either a simple
+     * string holding the testing environment's name, or a record {type: typeName, options: options} holding
+     * IoC configuration for the environment as if for a subcomponent.
      */
-
     fluid.test.runTests = function (envs) {
         if (!fluid.test.iocTestState) {
             fluid.test.iocTestState = fluid.test.makeTestRunner();

@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -60,9 +58,10 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** "Renderer component" infrastructure **/
-  // TODO: fix this up with IoC and improved handling of templateSource as well as better
-  // options layout (model appears in both rOpts and eOpts)
-  // "options" here is the original "rendererFnOptions"
+
+    // TODO: fix this up with IoC and improved handling of templateSource as well as better
+    // options layout (model appears in both rOpts and eOpts)
+    // "options" here is the original "rendererFnOptions"
     fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
@@ -84,8 +83,9 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
-            if (nativeModel) { // check necessary since the component insanely supports the possibility the model is not the component's model!
-                               // and the pagedTable uses this.
+            if (nativeModel) {
+                // check necessary since the component insanely supports the possibility the model is not the component's model!
+                // and the pagedTable uses this.
                 rendererOptions.model = parentThat.model; // fix FLUID-5664
             }
             var renderTarget = $(options.renderTarget ? options.renderTarget : container);
@@ -430,7 +430,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    /** Create a "protoComponent expander" with the supplied set of options.
+    /*
+     * Create a "protoComponent expander" with the supplied set of options.
      * The returned value will be a function which accepts a "protoComponent tree"
      * as argument, and returns a "fully expanded" tree suitable for supplying
      * directly to the renderer.
@@ -451,7 +452,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.renderer.makeProtoExpander = function (expandOptions, parentThat) {
-      // shallow copy of options - cheaply avoid destroying model, and all others are primitive
+        // shallow copy of options - cheaply avoid destroying model, and all others are primitive
         var options = $.extend({
             ELstyle: "${}"
         }, expandOptions); // shallow copy of options
@@ -491,9 +492,9 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                 proto = {};
             }
             var EL;
-            if (typeof (value) === "string") {
+            if (typeof(value) === "string") {
                 var fetched = fetchEL(value);
-                EL = typeof (fetched) === "string" ? fetched : null;
+                EL = typeof(fetched) === "string" ? fetched : null;
                 value = fluid.get(fetched, "value") || value;
             }
             if (EL) {
@@ -602,8 +603,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             if (componentType) {
                 pusher(componentType === "UIBound" ? expandBound(entry, true) : expandLeaf(entry, componentType));
             } else {
-              // we couldn't recognise it as a leaf, so it must be a cond
-              // this may be illegal if we are already in a cond.
+                // we couldn't recognise it as a leaf, so it must be a cond
+                // this may be illegal if we are already in a cond.
                 if (!target) {
                     fluid.fail("Illegal cond->cond transition");
                 }
