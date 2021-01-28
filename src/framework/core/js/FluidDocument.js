@@ -153,8 +153,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
 
 
     // These functions, `fluid.focus`() and `fluid.blur`, provide a means for programatically triggering focus/blur
-    // while returning a promise to notify when their actions have  completed. The promise will resolve with the
-    // corresponding event object.
+    // while returning a promise to notify when their actions have completed. The promise will resolve with the
+    // corresponding event object. Any code which triggers focus or blur synthetically throughout the framework and
+    // client code must use this function, especially if correct cross-platform interaction is required with the
+    // "deadMansBlur" function.
 
     async function applyOp(node, func) {
         node = $(node)[0];

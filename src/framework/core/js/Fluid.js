@@ -1851,6 +1851,10 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
     // A function to tag the types of all Fluid components
     fluid.componentConstructor = function () {};
+
+    // Define the `name` property to be `"fluid.componentConstructor"` as a means to inspect if an Object is actually
+    // an Infusion component instance; while being agnostic of the Infusion codebase being present. For example this
+    // technique is used in the jquery.keyboard-a11y plugin for `fluid.thatistBridge`.
     Object.defineProperty(fluid.componentConstructor, "name", {
         value: "fluid.componentConstructor"
     });
