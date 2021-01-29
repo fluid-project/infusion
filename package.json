@@ -55,7 +55,7 @@
         "browserslist-config-fluid": "0.1.0",
         "eslint-config-fluid": "2.0.0",
         "eslint-plugin-jsdoc": "30.7.3",
-        "fluid-lint-all": "1.0.3",
+        "fluid-lint-all": "1.0.4-dev.20210129T151721Z.b9ddeaa.GH-12-1",
         "fluid-testem": "2.1.13",
         "grunt": "1.3.0",
         "grunt-contrib-clean": "2.0.0",
