@@ -30,7 +30,7 @@
             "./tests/**/*.css"
         ],
         "scss": [
-            "./src/framework/preferences/**/*.scss"
+            "./src/framework/**/*.scss"
         ]
     },
     "eslint": {
