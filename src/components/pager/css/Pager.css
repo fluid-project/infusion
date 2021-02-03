@@ -3,8 +3,6 @@
  * Data and UI separated into 2 parts: Layout and Color Themes
  */
 
-/**********************************************************   */
-
 /** LAYOUT **/
 
 /* Pager data */
@@ -65,8 +63,6 @@
     cursor: default;
     text-decoration: none;
 }
-
-/**********************************************************   */
 
 /** THEMES - High Contrast **/
 
