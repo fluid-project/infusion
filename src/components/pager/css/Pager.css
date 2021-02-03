@@ -6,10 +6,6 @@
 /** LAYOUT **/
 
 /* Pager data */
-.fl-pager .fl-pager-data {
-    /* Is this required? */
-}
-
 .fl-pager .fl-pager-data .fl-pager-desc {
     background: url(../images/arrow-up.png) no-repeat right;
 }
@@ -66,11 +62,6 @@
 
 /** THEMES - High Contrast **/
 
-/* Pager data */
-.fl-theme-bw .fl-pager .fl-pager-data {
-    /* Is this required? */
-}
-
 .fl-theme-bw .fl-pager .fl-pager-data .fl-pager-desc {
     background: url(../images/arrow-up.png) no-repeat right;
 }
@@ -78,5 +69,3 @@
 .fl-theme-bw .fl-pager .fl-pager-data .fl-pager-asc {
     background: url(../images/arrow-dn.png) no-repeat right;
 }
-
-/* Pager UI */
