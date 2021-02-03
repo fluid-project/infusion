@@ -21,7 +21,7 @@
 
 /* automatically applied as the mouse hovers over re-orderable item */
 .fl-reorderer-movable-hover {
-    background-color: lightyellow; /* !important;; */
+    background-color: lightyellow;
 }
 
 /* automatically applied the keyboard selected re-orderable item */
