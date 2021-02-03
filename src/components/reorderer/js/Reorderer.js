@@ -402,7 +402,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
             } else if (fluid.reorderer.noModifier(evt)) {
                 await fluid.blur(item);
-                await fluid.focus($(relativeItem.element));
+                await fluid.focus(relativeItem.element);
             }
             return false;
         }
@@ -505,10 +505,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             return evt.stopPropagation();
         };
 
-        var handleClick = function (evt) {
+        var handleClick = async function (evt) {
             var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
             if (fluid.dom.isContainer(handle, evt.target)) {
-                $(this).trigger("focus");
+                await fluid.focus(this);
             }
         };
 
@@ -591,7 +591,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 var handlePos = fluid.dom.computeAbsolutePosition(handle);
                 var handleWidth = handle.offsetWidth;
                 var handleHeight = handle.offsetHeight;
-                item.trigger("focus");
+                fluid.focus(item);
                 item.removeClass(options.styles.selected);
                 // all this junk should happen in handler for a new event - although note that mouseDrag style might cause display: none,
                 // invalidating dimensions
@@ -616,7 +616,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
                 await thatReorderer.requestMovement(dropManager.lastPosition(), item);
                 // refocus on the active item because moving places focus on the body
-                thatReorderer.activeItem.focus();
+                await fluid.focus(thatReorderer.activeItem);
             },
             // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
             // See https://github.com/jquery/jquery-ui/pull/963
