@@ -1,37 +1,39 @@
 main {
-    width: 95%;
     max-width: 950px;
+    width: 95%;
 }
 
 /* Scoped colours for theme swapping */
+
 /*
     Font color: #3E606F
     Button blue: #0071BC
  */
 .prefsEditor-demo-theme {
-    color: #3E606F;
-    background-color: #E8EBE0;
+    background-color: #e8ebe0;
+    color: #3e606f;
 }
+
 .prefsEditor-demo-theme a {
-    color: #3E606F;
+    color: #3e606f;
 }
 
 .prefsEditor-demo-theme .demo-goTo-link {
-    padding: 10px;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    padding: 10px;
 }
 
 .prefsEditor-demo-theme .demo-goTo-link a {
+    background-color: #3e606f;
+    border: 2px solid #3e606f;
+    color: #fff;
     padding: 10px;
-    background-color: #3E606F;
-    color: #FFFFFF;
-    border: 2px solid #3E606F;
     text-decoration: none;
 }
 
-.prefsEditor-demo-theme .demo-goTo-link a:after {
+.prefsEditor-demo-theme .demo-goTo-link a::after {
     content: "⇨";
     padding-left: 5px;
 }

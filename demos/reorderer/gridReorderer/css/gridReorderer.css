@@ -1,35 +1,35 @@
 .demo-gridReorderer-alphabetGrid {
-    width    : 15em;
     display: flex;
     flex-wrap: wrap;
+    width: 15em;
 }
 
 .demo-gridReorderer-alphabetGrid div,
 div.demo-gridReorderer-avatar {
-    width       : 2em;
-    height      : 2em;
-    margin      : 5px;
-    display     : flex;
-    justify-content: center;
     align-items: center;
-    font-size   : 2em;
+    display: flex;
+    font-size: 2em;
     font-weight: bold;
-    outline     : 1px solid #CCC;
+    height: 2em;
+    justify-content: center;
+    margin: 5px;
+    outline: 1px solid #ccc;
+    width: 2em;
 }
 
 div.demo-gridReorderer-dragging,
 .demo-gridReorderer-avatar {
-    outline          : 2px solid #000;
-    background-color : #9fff9f;
-    filter           : alpha(opacity=75);
-    opacity          : 0.75;
+    background-color: #9fff9f;
+    filter: alpha(opacity=75);
+    opacity: 0.75;
+    outline: 2px solid #000;
 }
 
-.demo-gridReorderer-container  div.demo-gridReorderer-selected {
-    cursor : move;
+.demo-gridReorderer-container div.demo-gridReorderer-selected {
+    cursor: move;
 }
 
 .demo-gridReorderer-container div.demo-gridReorderer-dropMarker {
-    outline: 3px solid #008800;
-    width            : 0;
+    outline: 3px solid #080;
+    width: 0;
 }

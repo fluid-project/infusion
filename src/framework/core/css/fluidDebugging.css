@@ -1,10 +1,10 @@
 .fl-debug-holder {
-    position: fixed;
+    background-color: #dff;
     bottom: 0;
+    height: 0;
+    position: fixed;
     right: 0;
     width: 100%;
-    height: 0px;
-    background-color: #dff;
 }
 
 .fl-debug-holder-open {
@@ -12,16 +12,16 @@
 }
 
 .fl-debug-holder-closed {
-    height: 0px;
+    height: 0;
 }
 
 .fl-debug-open-pane-trigger {
-    width: 32px;
+    background: url("../images/debug_tab.png");
     height: 32px;
     position: absolute;
-    top: -37px;
     right: 5px;
-    background: url("../images/debug_tab.png");
+    top: -37px;
+    width: 32px;
 }
 
 .fl-debug-open-pane-trigger:hover {
@@ -29,19 +29,19 @@
 }
 
 .fl-debug-pane {
-    width: 100%;
-    height: 100%;
-    font-family: OpenSans, 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif;
-    font-size: 16px;
     color: black;
-    padding-top: 40px;
-    overflow-y: scroll;
+    font-family: OpenSans, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    height: 100%;
     overflow-x: hidden;
+    overflow-y: scroll;
+    padding-top: 40px;
+    width: 100%;
 }
 
 .fl-debug-pane thead {
-    padding-bottom: 2px;
     font-weight: bold;
+    padding-bottom: 2px;
 }
 
 .fl-debug-pointer-events-none {
@@ -49,34 +49,34 @@
 }
 
 .fl-debug-highlightElement {
-    z-index: 999999;
-    position: absolute;
-    width: 100%;
     height: 100%;
     pointer-events: none;
+    position: absolute;
+    width: 100%;
+    z-index: 999999;
 }
 
 .fl-debug-highlightRoot {
-    position: absolute;
-    width: 100%;
     height: 100%;
     overflow: hidden;
+    position: absolute;
+    width: 100%;
 }
 
 .flc-debug-pane-indexel {
-    width: 2em;
+    border: 2px solid black;
     height: 1em;
     margin: 0.2em;
-    border: 2px solid black
+    width: 2em;
 }
 
 .fl-debug-inspect-trigger {
-    width: 32px;
+    background: url("../images/magnifying_glass.png");
     height: 32px;
+    left: 5px;
     position: absolute;
     top: 5px;
-    left: 5px;
-    background: url("../images/magnifying_glass.png");
+    width: 32px;
 }
 
 .fl-debug-inspect-trigger:hover {
@@ -92,8 +92,8 @@
 }
 
 .fl-debug-selector-cell {
-    text-align: right;
     padding-right: 1em;
+    text-align: right;
 }
 
 /* See http://stackoverflow.com/questions/14765817/why-does-css-td-width-not-work */
@@ -119,12 +119,12 @@
 }
 
 .fl-debug-tooltip {
-    width: 40em;
-    font-size: 10px;
-    position: absolute;
-    background-color: #FFC;
+    background-color: #ffc;
     border: 2px solid #444;
+    font-size: 10px;
     padding: 0.5em;
+    position: absolute;
+    width: 40em;
 }
 
 .flc-debug-tooltip-trigger:hover {

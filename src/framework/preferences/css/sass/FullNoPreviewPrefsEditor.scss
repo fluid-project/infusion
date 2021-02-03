@@ -8,16 +8,16 @@ body {
 .fl-prefsEditor-fullNoPreview {
     // Category separator
     .fl-prefsEditor-category {
-        border-top: 2px solid #dddddd;
+        border-top: 2px solid #ddd;
+        break-inside: avoid;
         clear: both;
         -webkit-column-break-inside: avoid;
         page-break-inside: avoid;
-        break-inside: avoid;
 
         // Section header icons
         h2 img {
-            padding-top: 10px;
             margin-bottom: -4px;
+            padding-top: 10px;
         }
     }
 
@@ -41,7 +41,8 @@ body {
         }
     }
 
-    label, .fl-inputs {
+    label,
+    .fl-inputs {
         margin-bottom: 15px;        // adds space between label, inputs when browser window is narrow
     }
 }

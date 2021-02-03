@@ -1,22 +1,22 @@
 @font-face {
     font-family: "OpenSans";
-    src: url("../../../lib/opensans/fonts/OpenSans-Light.woff");
+    font-style: normal;
     font-weight: 300;
-    font-style: normal;
+    src: url("../../../lib/opensans/fonts/OpenSans-Light.woff");
 }
 
 @font-face {
     font-family: 'OpenSans';
-    src:url('../../../lib/opensans/fonts/OpenSans-Regular.woff');
+    font-style: normal;
     font-weight: normal;
-    font-style: normal;
+    src: url('../../../lib/opensans/fonts/OpenSans-Regular.woff');
 }
 
 @font-face {
     font-family: 'OpenSans';
-    src:url('../../../lib/opensans/fonts/OpenSans-SemiBold.woff');
-    font-weight: 600;
     font-style: normal;
+    font-weight: 600;
+    src: url('../../../lib/opensans/fonts/OpenSans-SemiBold.woff');
 }
 
 html {
@@ -33,45 +33,45 @@ html {
 .fl-prefsEditor-separatedPanel {
     background-color: #bcb5ad;
     background-image: none;
+    color: #5d5652;
     height: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    color: #5d5652;
 
     .fl-prefsEditor {
-        font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+        font-family: 'OpenSans', "Myriad Pro", Helvetica, Arial, sans-serif;
         line-height: 1.2 !important; // FLUID-4959: fix the line height so it doesn't scale with the Preferences Editor line space scaling.
+        min-width: 100%;
+        overflow-x: scroll;
 
         // Required to force the iframe to fit the device width and scroll on iOS
         width: 1px;
-        min-width: 100%;
-        overflow-x: scroll;
     }
 
     // Preference Panels
     .fl-prefsEditor-panels {
-        white-space: nowrap;
         display: table;
         margin: 0;
+        white-space: nowrap;
 
         .fl-prefsEditor-panel {
+            background-color: #fff;
             border: 1px solid #615e59;
+            display: table-cell;
             // minus 2px because of borders
             min-width: calc(100vw - 2px);
-            background-color: #fff;
-            white-space: normal;
-            display: table-cell;
             padding: 16px 0.5rem;
+            white-space: normal;
 
             h2 {
+                align-items: center;
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-                width: 100%;
                 min-height: 3.6rem;
+                pointer-events: none;
                 text-transform: lowercase;
                 white-space: nowrap;
-                pointer-events: none;
+                width: 100%;
 
                 [class*='fl-icon-'] {
                     display: none;
@@ -84,26 +84,27 @@ html {
                 }
 
                 // for right and left arrows
-                &:before, &:after {
+                &::before,
+                &::after {
                     font-family: "Times New Roman", Georgia, Times, serif !important;
-                    speak: none;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-variant: normal;
-                    text-transform: none;
-                    -webkit-font-smoothing: antialiased;
                     font-size: 3rem;
+                    -webkit-font-smoothing: antialiased;
+                    font-style: normal;
+                    font-variant: normal;
+                    font-weight: normal;
                     pointer-events: auto;
+                    speak: none;
+                    text-transform: none;
                 }
 
                 // Single Left-Pointing Angle Quotation Mark
-                &:before {
+                &::before {
                     content: "\2039";
                     margin-left: 1rem;
                 }
 
                 // Single Right-Pointing Angle Quotation Mark
-                &:after {
+                &::after {
                     content: "\203a";
                     margin-right: 1rem;
                 }
@@ -116,7 +117,8 @@ html {
                     display: block;
                     text-align: center;
 
-                    &:before, &:after {
+                    &::before,
+                    &::after {
                         content: none;
                     }
                 }
@@ -124,8 +126,8 @@ html {
 
             // hide left arrow from first panel
             // hide right arrow from last panel
-            &:first-of-type h2:before,
-            &:last-of-type h2:after {
+            &:first-of-type h2::before,
+            &:last-of-type h2::after {
                 visibility: hidden;
             }
 
@@ -154,9 +156,9 @@ html {
                 }
 
                 .fl-textfieldStepper-focusContainer {
+                    align-items: center;
                     display: flex;
                     justify-content: center;
-                    align-items: center
                 }
             }
         }
@@ -164,36 +166,36 @@ html {
 
     // large screen / desktop view
     @media screen and (min-width: 40em) {
-
-        padding: 1px 0px;
-        margin: 0px;
+        margin: 0;
+        padding: 1px 0;
 
         // Preference Panels
         .fl-prefsEditor-panels {
+            border-spacing: 20px 0;
             margin: 1rem auto;
-            border-spacing: 20px 0px;
 
             .fl-prefsEditor-panel {
-                padding: 1.5rem;
-                padding-top: 1rem;
                 border-radius: 5px;
                 box-shadow: 2px 2px #7a766d;
                 min-width: 25rem;
+                padding: 1.5rem;
+                padding-top: 1rem;
 
                 h2 {
-                    justify-content: flex-start;
-                    margin: 0 0 1.8rem 0;
                     border-bottom: solid #ccc 1px;
-                    box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
+                    box-shadow: 0 6px 7px -6px rgba(0, 0, 0, 0.3);
                     font-size: 1.2rem;
                     height: 3rem;
+                    justify-content: flex-start;
+                    margin: 0 0 1.8rem 0;
                     white-space: normal;
 
                     [class*='fl-icon-'] {
                         display: inline;
                     }
 
-                    &:before, &:after {
+                    &::before,
+                    &::after {
                         content: none;
                     }
                 }
@@ -211,8 +213,8 @@ html {
                 .fl-textfieldStepper {
                     [class*='fl-icon-'] {
                         display: inline;
-                        margin: 0 0.3em;
                         font-size: 1.4em;
+                        margin: 0 0.3em;
                         padding-top: 0.3em;
                     }
                 }

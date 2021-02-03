@@ -1,12 +1,12 @@
 .awe-instructions {
-    background-color: #EEEEEE;
+    background-color: #eee;
     padding: 1em;
     width: 50em;
 }
 
 .awe-panel {
-    padding: 1em;
     border: 1px solid black;
+    padding: 1em;
     width: 50%;
 }
 

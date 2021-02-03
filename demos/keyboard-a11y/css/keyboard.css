@@ -1,46 +1,41 @@
-/**/
 /* Main image viewer */
-/**/
 .demo-container-imageViewer {
-    width: 100%;
-    height: 24em;
     border: 0.1em solid #000;
-    text-align:center;
+    height: 24em;
+    text-align: center;
+    width: 100%;
 }
 
 /* Stretch the image to fit the height view container, while maintaining the aspect ratio. */
 .demo-image-mainImage {
-    height:100%;
-    max-width: calc(100vw - 2em - 2px)
+    height: 100%;
+    max-width: calc(100vw - 2em - 2px);
 }
 
-
-/**/
 /* Thumbnails */
-/**/
-.demo-container-imageThumbnails  {
-    max-width: calc(100vw - 2em - 2px);
-    padding: 1em;
-    background-color:#CCCBE4;
+.demo-container-imageThumbnails {
+    background-color: #cccbe4;
     border: 1px solid #000;
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
+    list-style: none outside none;
+    max-width: calc(100vw - 2em - 2px);
     overflow-x: auto;
-    list-style:none outside none;
+    padding: 1em;
 }
 
 .demo-container-imageThumbnails li {
-    display:inline-block;
+    display: inline-block;
     flex: 0 0 auto;
     padding-left: 0.5em;
     padding-right: 0.5em;
-    text-align:center;
+    text-align: center;
 }
 
 .demo-container-imageThumbnails img {
-    max-height:7em;
-    border:5px solid #fff;
+    border: 5px solid #fff;
+    max-height: 7em;
 }
 
 .demo-container-imageThumbnails .demo-selected,
@@ -48,17 +43,15 @@
     border: 5px solid black;
 }
 
-/**/
 /* Five Star Widget */
-/**/
 .demo-container-fiveStar {
-    background-color:#CCCBE4;
-    border-top: 1px solid #000;
-    border-right: 1px solid #000;
+    background-color: #cccbe4;
     border-left: 1px solid #000;
-    text-align:center;
+    border-right: 1px solid #000;
+    border-top: 1px solid #000;
+    margin-top: 1em;
     padding: 1em 0;
-    margin-top:1em;
+    text-align: center;
 }
 
 .demo-container-fiveStar #demo-ranking {

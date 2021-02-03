@@ -1,13 +1,13 @@
 /* progress demo styles */
 
 .demo-progress-container {
-    position: relative;
-    min-height: 300px;
-    padding: 1em;
     background-color: white;
     border: 3px solid black;
-    max-width: 30em;
     margin-top: 3em;
+    max-width: 30em;
+    min-height: 300px;
+    padding: 1em;
+    position: relative;
 }
 
 .demo-progress-container h1 {
@@ -15,57 +15,58 @@
 }
 
 .demo-progress-container abbr {
-    border:0px;
+    border: 0;
 }
 
 /* progress bar */
 .demo-progress-popUp {
-    display: none;
-    text-align: center;
     color: black;
-    margin: 0px auto;
+    display: none;
+    margin: 0 auto;
+    text-align: center;
     width: 20em;
     z-index: 3000;
 }
 
 .demo-progress-theBar-label {
-    margin-top: 0.6em;
     margin-bottom: 0;
+    margin-top: 0.6em;
 }
 
 .demo-progress-theBar {
-    text-align: left;
+    background-attachment: fixed;
+    background-color: white;
     background-image: url('../images/progress-bar-animation.gif');
     background-position: left top;
     background-repeat: repeat;
-    background-attachment: fixed;
-    background-color: white;
     border: 1px solid #000;
     border-left-width: 2px;
-    border-right-width: 2px;
-    overflow: hidden;
     -moz-border-radius: 0.2em;
     -webkit-border-radius: 0.2em;
+    border-right-width: 2px;
+    overflow: hidden;
+    text-align: left;
 }
 
 .demo-progress-indicator {
-    height: 16px;
-    width: 5px;
-    border: 1px solid #2D3E76;
-    border-right-width: 2px;
-    border-left-width: 0px;
-    background-color: #7B7EAE;
+    background-color: #7b7eae;
+    border: 1px solid #2d3e76;
     -moz-border-radius: 0.1em;
+    -webkit-border-bottom-left-radius: 0.1em;
+    -webkit-border-bottom-right-radius: 0;
+    border-left-width: 0;
     -moz-border-radius-bottomright: 0;
     -moz-border-radius-topright: 0;
-    -webkit-border-radius: 0.1em;
-    -webkit-border-bottom-right-radius: 0;
+    border-right-width: 2px;
+    -webkit-border-top-left-radius: 0.1em;
     -webkit-border-top-right-radius: 0;
+    height: 16px;
+    width: 5px;
 }
 
-.demo-progress-status-container{
+.demo-progress-status-container {
     background-color: #afddc5;
-    padding:1em;
+    padding: 1em;
 }
 
 .demo-progress-liveRegion {
@@ -73,63 +74,63 @@
 }
 
 .demo-progress-liveRegion > * {
-    border:0;
-    margin-top:1em;
+    border: 0;
+    margin-top: 1em;
 }
 
 /* hide on start */
 .demo-progress-restart {
-    display: none;
     color: #006095;
+    display: none;
 }
 
 /* table styles */
 
 .demo-progress-table-container {
-    margin: 10px 0px 10px 0px;
-    border:3px solid #d2d3d5;
-    padding: 0px 30px 0px 30px;
+    border: 3px solid #d2d3d5;
+    margin: 10px 0 10px 0;
+    padding: 0 30px 0 30px;
 }
 
 .demo-progress-table-container table {
-    width: 100%;
-    border: 0px;
+    border: 0;
     margin-top: 10px;
+    width: 100%;
 }
 
 .demo-progress-table-container th {
-    font-weight:bold;
-    text-align:left;
-    border: 0px;
+    border: 0;
+    font-weight: bold;
     padding: 2px;
+    text-align: left;
 }
 
 .demo-progress-table-container td {
-    border: 0px;
+    border: 0;
     padding: 2px;
 }
 
 .demo-progress-total-label {
-    width:18em;
+    width: 18em;
 }
 
 /* Submit controls */
 
 .progress-demo-submit {
-    text-align:right;
-    clear:both;
+    clear: both;
+    text-align: right;
 }
 
 .progress-demo-submit button {
     background-color: #8bc5eb;
     border: 1px solid black;
-    padding:3px 15px 3px 15px;
     color: black;
+    padding: 3px 15px 3px 15px;
 }
 
 .progress-demo-submit button:disabled {
     background-color: #cbe5f6;
     border: 1px solid #cdcccc;
-    padding:3px 15px 3px 15px;
     color: #cdcccc;
+    padding: 3px 15px 3px 15px;
 }

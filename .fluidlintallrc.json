@@ -21,6 +21,16 @@
             "./examples/**/*.md",
             "./src/**/*.md",
             "./tests/**/*.md"
+        ],
+        "css": [
+            "./demos/**/*.css",
+            "./examples/**/*.css",
+            "./src/components/**/*.css",
+            "./src/framework/**/*.css",
+            "./tests/**/*.css"
+        ],
+        "scss": [
+            "./src/framework/**/*.scss"
         ]
     },
     "eslint": {
@@ -70,6 +80,12 @@
         ]
     },
     "stylelint": {
-        "enabled": false
+        "excludes": [
+            "./build/**/*.css",
+            "./dist/**/*.css",
+            "./src/framework/preferences/css/*.css",
+            "./src/lib/**/*.css",
+            "./tests/**/lib/**/*.css"
+        ]
     }
 }
