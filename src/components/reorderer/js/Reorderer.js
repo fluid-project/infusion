@@ -591,6 +591,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 var handlePos = fluid.dom.computeAbsolutePosition(handle);
                 var handleWidth = handle.offsetWidth;
                 var handleHeight = handle.offsetHeight;
+                // Typically with `fluid.focus` we'd use async/await to wait for it to complete. However, with this
+                // function that can result in breaking the drag and drop interaction. For example with the layout
+                // reorderer, after reordering some items, clicking outside of the orderable element retains focus on
+                // the reoderable element, but it may no longer be reorderable.
+                // see: https://github.com/fluid-project/infusion/pull/1008#discussion_r569525065
                 fluid.focus(item);
                 item.removeClass(options.styles.selected);
                 // all this junk should happen in handler for a new event - although note that mouseDrag style might cause display: none,
