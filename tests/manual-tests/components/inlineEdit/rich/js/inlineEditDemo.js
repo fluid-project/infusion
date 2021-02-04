@@ -22,12 +22,12 @@ var demo = demo || {};
          * @param {Object} editor - The editor.
          */
         var makeButtons = function (editor) {
-            $(".demo-save", editor.container).click(function () {
+            $(".demo-save", editor.container).on("click", function () {
                 editor.finish();
                 return false;
             });
 
-            $(".demo-cancel", editor.container).click(function () {
+            $(".demo-cancel", editor.container).on("click", function () {
                 editor.cancel();
                 return false;
             });

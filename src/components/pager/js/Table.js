@@ -171,7 +171,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         ID: fluid.table.IDforColumn(columnDef, options.keyPrefix, {}).ID,
                         value: columnDef.label,
                         decorators: [
-                            {"jQuery": ["click", fluid.table.generateColumnClick(tableThat, options, newModel, columnDef)]},
+                            {"jQuery": ["on", "click", fluid.table.generateColumnClick(tableThat, options, newModel, columnDef)]},
                             {identify: "header:" + columnDef.key},
                             {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : options.strings.sortableColumnText}}
                         ].concat(fluid.table.fetchHeaderDecorators(options.decorators, columnDef))

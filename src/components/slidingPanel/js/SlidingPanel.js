@@ -38,8 +38,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         listeners: {
             "onCreate.bindClick": {
                 "this": "{that}.dom.toggleButton",
-                "method": "click",
-                "args": ["{that}.togglePanel"]
+                "method": "on",
+                "args": ["click", "{that}.togglePanel"]
             },
             "onCreate.bindModelChange": {
                 listener: "{that}.applier.modelChanged.addListener",

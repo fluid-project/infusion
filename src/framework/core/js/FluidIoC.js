@@ -2069,12 +2069,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
         if (openPos !== -1 && closePos !== -1) {
             var trail = string.substring(closePos + 1);
-            if ($.trim(trail) !== "") {
+            if (trail.trim() !== "") {
                 fluid.fail("Badly-formed compact " + type + " record " + string + " - unexpected material following close parenthesis: " + trail);
             }
             var prefix = string.substring(0, openPos);
-            var body = $.trim(string.substring(openPos + 1, closePos));
-            var args = body === "" ? [] : fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
+            var body = string.substring(openPos + 1, closePos).trim();
+            var args = body === "" ? [] : fluid.transform(body.split(","), function (str) {return str.trim();}, fluid.coerceToPrimitive);
             var togo = fluid.upgradePrimitiveFunc(prefix, null);
             togo.args = args;
             return togo;

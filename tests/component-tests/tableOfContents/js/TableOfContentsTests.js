@@ -315,7 +315,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     };
 
-    $(document).ready(function () {
+    $(function () {
 
         jqUnit.module("Table of Contents: Heading Calculator Tests");
 

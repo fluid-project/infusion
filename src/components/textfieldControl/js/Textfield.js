@@ -51,8 +51,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         listeners: {
             "onCreate.bindChangeEvt": {
                 "this": "{that}.container",
-                "method": "change",
-                "args": ["{that}.setModel"]
+                "method": "on",
+                "args": ["change", "{that}.setModel"]
             },
             "onCreate.initTextfieldAttributes": {
                 "this": "{that}.container",

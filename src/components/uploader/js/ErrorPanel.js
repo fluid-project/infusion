@@ -210,10 +210,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.uploader.errorPanel.section.bindHandlers = function (that) {
         // Bind delete button
-        that.locate("deleteErrorButton").click(that.clear);
+        that.locate("deleteErrorButton").on("click", that.clear);
 
         // Bind hide/show error details link
-        that.locate("showHideFilesToggle").click(that.toggleDetails);
+        that.locate("showHideFilesToggle").on("click", that.toggleDetails);
     };
 
     fluid.uploader.errorPanel.section.renderHeader = function (that) {

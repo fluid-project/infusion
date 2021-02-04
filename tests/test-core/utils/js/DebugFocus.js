@@ -33,8 +33,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         };
 
         var addFocusChangeListeners = function (jQueryElements) {
-            jQueryElements.focus(focusOutputter);
-            jQueryElements.blur(blurOutputter);
+            jQueryElements.on("focus", focusOutputter);
+            jQueryElements.on("blur", blurOutputter);
         };
 
         return {
@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     }) (); // End of fluid.debug namespace.
 
     // Call listenForFocusEvents when the document is ready.
-    jQuery(document).ready(function () {
+    jQuery(function () {
         fluid.debug.listenForFocusEvents();
     });
 })();

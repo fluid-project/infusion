@@ -136,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         $(elm).css("letter-spacing", "");
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.letterSpaceTests",
             "fluid.tests.letterSpaceExistingTests"

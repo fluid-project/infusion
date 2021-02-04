@@ -267,7 +267,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      ********************/
 
     fluid.uploader.bindEventsToFileInput = function (that, fileInput) {
-        fileInput.click(function () {
+        fileInput.on("click", function () {
             that.events.onBrowse.fire();
         });
 
@@ -290,18 +290,18 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             });
         }
 
-        fileInput.change(function () {
+        fileInput.on("change", function () {
             var files = fileInput[0].files;
             that.renderFreshMultiFileInput();
             that.events.onFilesQueued.fire(files);
         });
 
-        fileInput.focus(function () {
+        fileInput.on("focus", function () {
             that.browseButton.addClass("focus");
             that.events.onFocusFileInput.fire(that, fileInput, true);
         });
 
-        fileInput.blur(function () {
+        fileInput.on("blur", function () {
             that.browseButton.removeClass("focus");
             that.events.onFocusFileInput.fire(that, fileInput, false);
         });

@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
         jqUnit.module("SlidingPanel Tests");
 
         fluid.registerNamespace("fluid.tests.slidingPanel");

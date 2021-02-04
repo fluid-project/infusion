@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
 
         // Only run tests in browsers that support HTML5 upload
         if (!window.FormData) {
@@ -332,7 +332,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     if (focus) {
                         input[0].focus();
                     } else { // a Firefox bug makes a direct "blur" on the element itself ineffective at transferring focus away
-                        $("#focusTarget").focus();
+                        $("#focusTarget").trigger("focus");
                     }
                 }, 100); // This delay is necessary on Firefox since there seems an initial "refractory period" on load where the upload control will not accept focus
             };

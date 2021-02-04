@@ -25,7 +25,7 @@ var demo = demo || {};
         });
 
         // Create new reorderable elements
-        jQuery("#newElm").click(function () {
+        jQuery("#newElm").on("click", function () {
             var orderables = jQuery(".myorderable");
             var nextOrderableNum = orderables.length + 1;
             var nextOrderable = orderables.eq(0).clone();

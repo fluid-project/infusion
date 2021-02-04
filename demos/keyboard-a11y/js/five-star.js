@@ -84,25 +84,28 @@ var demo = demo || {};
             onCreate: [{
                 "this": "{that}.stars",
                 method: "mouseover",
-                args: {
-                    expander: {
-                        funcName: "demo.fiveStar.makeStarHandler",
-                        args: ["{that}", "{that}.hoverStars"]
+                args: [
+                    "mouseover",
+                    {
+                        expander: {
+                            funcName: "demo.fiveStar.makeStarHandler",
+                            args: ["{that}", "{that}.hoverStars"]
+                        }
                     }
-                }
+                ]
             }, {
                 "this": "{that}.container",
-                method: "mouseout",
-                args: "{that}.refreshView"
+                method: "on",
+                args: ["mouseout", "{that}.refreshView"]
             }, {
                 "this": "{that}.stars",
-                method: "click",
-                args: {
+                method: "on",
+                args: ["click", {
                     expander: {
                         funcName: "demo.fiveStar.makeStarHandler",
                         args: ["{that}", "{that}.setRank"]
                     }
-                }
+                }]
             }, {
                 funcName: "demo.fiveStar.setARIA",
                 args: ["{that}.container", "{that}.stars"]

@@ -146,7 +146,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertUndefined("The \"" + subComponentName + "\" subcomponent should not have been initialized yet.", that[subComponentName]);
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.selfVoicingTests"
         ]);

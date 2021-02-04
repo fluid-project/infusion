@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         results.push("Concluded in " + (Date.now() - now) + "ms");
     }
 
-    $(document).ready(function () {
+    $(function () {
         fluid.each(results, function (result) {
             var resultElm = $("<li>").text(result);
             $(".results").append(resultElm);

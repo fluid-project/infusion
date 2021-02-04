@@ -252,20 +252,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 q.locate("fileIconBtn", q.container.find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
         });
 
-        jqUnit.test("Keyboard navigation", function () {
+        jqUnit.asyncTest("Keyboard navigation", async function () {
             // Setup the queue.
             var q = createFileQueue();
             q.addFile(mountainTestFile);
             q.addFile(oceanTestFile);
 
-            fluid.focus($("#qunit-fixture .flc-uploader-queue"));
+            await fluid.focus($("#qunit-fixture .flc-uploader-queue"));
             // Ensure that the first item is focussed.
             jqUnit.assertTrue("The first row should be selected.", locateRows(q).eq(0).hasClass(q.options.styles.selected));
 
             // And that the second item is also selectable.
-            fluid.selectable.selectNext(q.container);
+            await fluid.selectable.selectNext(q.container);
             jqUnit.assertTrue("The second row should now be selected.", locateRows(q).eq(1).hasClass(q.options.styles.selected));
             jqUnit.assertFalse("The first row should no longer be selected.", locateRows(q).eq(0).hasClass(q.options.styles.selected));
+
+            jqUnit.start();
         });
 
         /********************

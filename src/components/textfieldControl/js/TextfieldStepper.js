@@ -231,8 +231,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         listeners: {
             "onCreate.bindClick": {
                 "this": "{that}.container",
-                "method": "click",
-                "args": "{that}.events.onClick.fire"
+                "method": "on",
+                "args": ["click", "{that}.events.onClick.fire"]
             },
             "onCreate.addLabel": {
                 "this": "{that}.container",

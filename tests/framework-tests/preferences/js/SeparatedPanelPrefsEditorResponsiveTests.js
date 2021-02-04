@@ -337,7 +337,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }]
     });
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.prefs.responsive.separatedPanelResponsive",
             "fluid.tests.prefs.responsive.separatedPanelInitialPanelIndex"

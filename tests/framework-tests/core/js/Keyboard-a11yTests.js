@@ -80,9 +80,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         };
     };
 
-    var createAndFocusMenu = function (selectionOptions) {
+    var createAndFocusMenu = async function (selectionOptions) {
         var menu = makeMenuSelectable(selectionOptions);
-        fluid.focus(menu.container);
+        await fluid.focus(menu.container);
 
         // Sanity check.
         if (!selectionOptions || selectionOptions.autoSelectFirstItem) {
@@ -96,8 +96,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return menu;
     };
 
-    var createActivatableMenu = function () {
-        var menu = createAndFocusMenu();
+    var createActivatableMenu = async function () {
+        var menu = await createAndFocusMenu();
         menu.items.fluid("activatable", function (evt) {
             menu.activatedItem = evt.target;
         });
@@ -134,19 +134,19 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         onElement.dispatchEvent(keyEvent);
     }
 
-    function selectMiddleChildThenLeaveAndRefocus(menu) {
+    async function selectMiddleChildThenLeaveAndRefocus(menu) {
         // Select the middle child.
-        menu.container.fluid("selectable.selectNext");
+        await menu.container.fluid("selectable.selectNext");
         jqUnit.assertSelected(getSecondMenuItem());
 
         // Move focus to another element altogether.
-        fluid.blur(getSecondMenuItem());
+        await fluid.blur(getSecondMenuItem());
         var link = jQuery(LINK_AFTER_SEL);
-        fluid.focus(link);
+        await fluid.focus(link);
         jqUnit.assertNothingSelected();
 
         // Move focus back to the menu.
-        fluid.focus(menu.container);
+        await fluid.focus(menu.container);
     }
 
     // Mix in additional test-specific asserts.
@@ -165,12 +165,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertFalse("An unselected element should not have the selected class.", jQuery(element).hasClass("selected"));
         },
 
-        assertFirstMenuItemIsSelectedOnFocus: function (menu) {
+        assertFirstMenuItemIsSelectedOnFocus: async function (menu) {
             // First, check that nothing is selected before we focus the menu.
             this.assertNothingSelected();
 
             // Then focus the menu container and check that the first item is actually selected.
-            fluid.focus(menu.container);
+            await fluid.focus(menu.container);
             this.assertSelected(getFirstMenuItem());
         }
     };
@@ -219,22 +219,26 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertFalse(nonSelectableItem.fluid("tabindex.has"));
     });
 
-    jqUnit.test("Selects first item when container is focussed by default", function () {
+    jqUnit.asyncTest("Selects first item when container is focussed by default", async function () {
         // Don't specify any options, just use the default behaviour.
         var menu = makeMenuSelectable();
-        jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
+        await jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
+
+        jqUnit.start();
     });
 
-    jqUnit.test("Selects first item when container is focussed--explicit argument", function () {
+    jqUnit.asyncTest("Selects first item when container is focussed--explicit argument", async function () {
         // Explicitly set the selectFirstItemOnFocus option.
         var options = {
             autoSelectFirstItem: true
         };
         var menu = makeMenuSelectable(options);
-        jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
+        await jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
+
+        jqUnit.start();
     });
 
-    jqUnit.test("Doesn't select first item when container is focussed--boolean arg", function () {
+    jqUnit.asyncTest("Doesn't select first item when container is focussed--boolean arg", async function () {
         var options = {
             autoSelectFirstItem: false
         };
@@ -244,12 +248,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertNothingSelected();
 
         // Then focus the container. Nothing should still be selected.
-        menu.container.focus();
+        menu.container.trigger("focus");
         jqUnit.assertNothingSelected();
 
         // Now call selectNext() and assert that the first item is focussed.
-        menu.container.fluid("selectable.selectNext");
+        await menu.container.fluid("selectable.selectNext");
         jqUnit.assertSelected(getFirstMenuItem());
+
+        jqUnit.start();
     });
 
     jqUnit.test("Doesn't select first item when container is focussed--function arg", function () {
@@ -269,169 +275,201 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         // Then focus the container.
         // Nothing should still be selected because our predicate function always returns false.
-        menu.container.focus();
+        menu.container.trigger("focus");
         jqUnit.assertNothingSelected();
     });
 
-    jqUnit.test("select()", function () {
-        var menu = createAndFocusMenu();
+    jqUnit.asyncTest("select()", async function () {
+        var menu = await createAndFocusMenu();
 
         // Select the third item and ensure it was actually selected.
-        menu.items.fluid("selectable.select", getThirdMenuItem());
+        await menu.items.fluid("selectable.select", getThirdMenuItem());
         jqUnit.assertSelected(getThirdMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
 
         // Now select the second.
-        menu.items.fluid("selectable.select", getSecondMenuItem());
+        await menu.items.fluid("selectable.select", getSecondMenuItem());
         jqUnit.assertSelected(getSecondMenuItem());
         jqUnit.assertNotSelected(getThirdMenuItem());
+
+        jqUnit.start();
     });
 
     // Checks behaviour when a user attempts to select something that wasn't initially denoted as selectable.
-    jqUnit.test("Doesn't select non-selectables", function () {
-        var menu = createAndFocusMenu();
+    jqUnit.asyncTest("Doesn't select non-selectables", async function () {
+        var menu = await createAndFocusMenu();
 
         // Try selecting something that isn't selectable. Assume things stay the same.
         var nonSelectable = jQuery(NON_ITEM_SEL);
-        menu.items.fluid("selectable.select", nonSelectable);
-        jqUnit.assertNotSelected(nonSelectable);
-        jqUnit.assertSelected(getFirstMenuItem());
+
+        var selectionPromise = menu.items.fluid("selectable.select", nonSelectable);
+        var timeoutID = setTimeout(function () {
+            jqUnit.assertNotSelected(nonSelectable);
+            jqUnit.assertSelected(getFirstMenuItem());
+            jqUnit.start();
+        }, 200);
+
+        selectionPromise.then(function () {
+            clearTimeout(timeoutID);
+            jqUnit.fail("Focus should not have fired for a non selectable item.");
+            jqUnit.start();
+        });
     });
 
-    jqUnit.test("Allows selection via programmatic focus() calls.", function () {
+    jqUnit.asyncTest("Allows selection via programmatic focus() calls.", async function () {
         // Setup a menu, then programmatically throw focus onto the selectables. They should be correctly selected.
         var options = {
             autoSelectFirstItem: false
         };
-        var menu = createAndFocusMenu(options);
+        var menu = await createAndFocusMenu(options);
 
         // Programmatically throw focus onto the first menu item. It should be selected.
-        fluid.focus(getThirdMenuItem());
+        await fluid.focus(getThirdMenuItem());
         jqUnit.assertSelected(getThirdMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
 
         // Now try another. It should still work.
-        fluid.focus(getFirstMenuItem());
+        await fluid.focus(getFirstMenuItem());
         jqUnit.assertSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
         jqUnit.assertNotSelected(getThirdMenuItem());
 
         // Now switch to selection via the plugin API. It should know the current state.
-        menu.container.fluid("selectable.selectNext");
+        await menu.container.fluid("selectable.selectNext");
         jqUnit.assertSelected(getSecondMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getThirdMenuItem());
 
         // And finally, switch back to programmatically calling focus.
-        fluid.focus(getThirdMenuItem());
+        await fluid.focus(getThirdMenuItem());
         jqUnit.assertSelected(getThirdMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
+
+        jqUnit.start();
     });
 
-    jqUnit.test("selectNext()", function () {
-        var menu = createAndFocusMenu();
+    jqUnit.asyncTest("selectNext()", async function () {
+        var menu = await createAndFocusMenu();
 
         // Select the next item.
-        menu.container.fluid("selectable.selectNext");
+        await menu.container.fluid("selectable.selectNext");
 
         // Check that the previous item is no longer selected and that the next one is.
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertSelected(getSecondMenuItem());
         jqUnit.assertNotSelected(getThirdMenuItem());
+
+        jqUnit.start();
     });
 
-    jqUnit.test("selectPrevious()", function () {
-        var menu = createAndFocusMenu();
+    jqUnit.asyncTest("selectPrevious()", async function () {
+        var menu = await createAndFocusMenu();
 
         // Select the next item.
-        menu.container.fluid("selectable.selectNext");
+        await menu.container.fluid("selectable.selectNext");
         jqUnit.assertSelected(getSecondMenuItem());
-        menu.container.fluid("selectable.selectPrevious");
+        await menu.container.fluid("selectable.selectPrevious");
 
         // Check that the second item is no longer selected and that the first one is.
         jqUnit.assertNotSelected(getSecondMenuItem());
         jqUnit.assertSelected(getFirstMenuItem());
+
+        jqUnit.start();
     });
 
-    jqUnit.test("selectNext() with wrapping", function () {
+    jqUnit.asyncTest("selectNext() with wrapping", async function () {
         var menu = makeMenuSelectable();
-        fluid.focus(menu.container);
+        await fluid.focus(menu.container);
 
         // Invoke selectNext twice. We should be on the last item.
         for (var x = 0; x < 2; x += 1) {
-            menu.container.fluid("selectable.selectNext");
+            await menu.container.fluid("selectable.selectNext");
         }
         jqUnit.assertSelected(getLastMenuItem());
 
         // Now invoke it again. We should be back at the top.
-        menu.container.fluid("selectable.selectNext");
+        await menu.container.fluid("selectable.selectNext");
         jqUnit.assertSelected(getFirstMenuItem());
+
+        jqUnit.start();
     });
 
-    jqUnit.test("selectPrevious() with wrapping", function () {
-        var menu = createAndFocusMenu();
+    jqUnit.asyncTest("selectPrevious() with wrapping", async function () {
+        var menu = await createAndFocusMenu();
 
         // Select the previous element.
-        menu.container.fluid("selectable.selectPrevious");
+        await menu.container.fluid("selectable.selectPrevious");
 
         // Since we're at the beginning, we should wrap to the last.
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertSelected(getLastMenuItem());
+
+        jqUnit.start();
     });
 
-    jqUnit.test("Focus persists after leaving container", function () {
-        var menu = createAndFocusMenu();
-        selectMiddleChildThenLeaveAndRefocus(menu);
+    jqUnit.asyncTest("Focus persists after leaving container", async function () {
+        var menu = await createAndFocusMenu();
+        await selectMiddleChildThenLeaveAndRefocus(menu);
 
         // Ensure that the middle child still has focus.
         jqUnit.assertSelected(getSecondMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getThirdMenuItem());
+
+        jqUnit.start();
     });
 
-    jqUnit.test("Selection is cleaned up upon blur", function () {
-        var menu = createAndFocusMenu();
+    jqUnit.asyncTest("Selection is cleaned up upon blur", async function () {
+        var menu = await createAndFocusMenu();
 
         // Move focus to another element altogether.
         // Need to simulate browser behaviour by calling blur on the selected item, which is scary.
         var link = $(LINK_AFTER_SEL);
-        menu.container.fluid("selectable.currentSelection").blur();
-        fluid.focus(link);
+        await menu.container.fluid("selectable.currentSelection").trigger("blur");
+        await fluid.focus(link);
 
         // Now check to see that the item isn't still selected once we've moved focus off the widget.
         jqUnit.assertNotSelected(getFirstMenuItem());
 
         // And just to be safe, check that nothing is selected.
         jqUnit.assertNothingSelected();
+
+        jqUnit.start();
     });
 
-    jqUnit.test("activate()", function () {
+    jqUnit.asyncTest("activate()", async function () {
         // Tests that we can programmatically activate elements with the default handler.
-        var menu = createActivatableMenu();
+        var menu = await createActivatableMenu();
         getFirstMenuItem().fluid("activate");
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
 
         getThirdMenuItem().fluid("activate");
         jqUnit.assertEquals("The menu.activatedItem should be set to the third item.", getThirdMenuItem()[0], menu.activatedItem);
+
+        jqUnit.start();
     });
 
-    jqUnit.test("activate with Enter key", function () {
-        var menu = createActivatableMenu();
+    jqUnit.asyncTest("activate with Enter key", async function () {
+        var menu = await createActivatableMenu();
         simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.ENTER});
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
+
+        jqUnit.start();
     });
 
-    jqUnit.test("activate with Spacebar", function () {
-        var menu = createActivatableMenu();
+    jqUnit.asyncTest("activate with Spacebar", async function () {
+        var menu = await createActivatableMenu();
         simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.SPACE});
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
+
+        jqUnit.start();
     });
 
-    jqUnit.test("One custom activate binding", function () {
-        var menu = createAndFocusMenu();
+    jqUnit.asyncTest("One custom activate binding", async function () {
+        var menu = await createAndFocusMenu();
         var eventTarget = null;
 
         var defaultActivate = function () {
@@ -460,11 +498,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertNotUndefined("The menu should have been activated by the down arrow key.", menu.wasActivated);
         jqUnit.assertTrue("The menu should have been activated by the down arrow key.", menu.wasActivated);
         jqUnit.assertEquals("The event target for activation should have been the item ", item[0], eventTarget);
+
+        jqUnit.start();
     });
 
     function makeCustomActivateTest(enabled) {
-        jqUnit.test("Multiple custom activate bindings" + (enabled ? "" : " - disabled"), function () {
-            var menu = createAndFocusMenu();
+        jqUnit.asyncTest("Multiple custom activate bindings" + (enabled ? "" : " - disabled"), async function () {
+            var menu = await createAndFocusMenu();
 
             // Define additional key bindings.
             var downBinding = {
@@ -507,49 +547,50 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
             jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") +
                 " have been activated by the ctrl key.", enabled ? "foo" : false, menu.wasActivated);
+
+            jqUnit.start();
         });
     }
 
     makeCustomActivateTest(true);
     makeCustomActivateTest(false);
 
-    jqUnit.test("currentSelection", function () {
-        var menu = createAndFocusMenu();
-        menu.container.fluid("selectable.selectNext");
+    jqUnit.asyncTest("currentSelection", async function () {
+        var menu = await createAndFocusMenu();
+        await menu.container.fluid("selectable.selectNext");
         var secondMenuItem = getSecondMenuItem();
         jqUnit.assertSelected(secondMenuItem);
         var selectedItem = menu.container.fluid("selectable.currentSelection");
         jqUnit.assertTrue("The current selection should be a jQuery instance.", selectedItem.jquery);
         jqUnit.assertEquals("The current selection should be the second menu item.", secondMenuItem[0], selectedItem[0]);
+
+        jqUnit.start();
     });
 
-    jqUnit.test("destructibleList and refresh()", function () {
+    jqUnit.asyncTest("destructibleList and refresh()", async function () {
         var menuContainer = $(MENU_SEL);
-        var selThat = $(MENU_SEL).fluid("selectable", $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();
-        fluid.focus(menuContainer);
+        var selThat = $(MENU_SEL).fluid("selectable", $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers()));
+        await fluid.focus(menuContainer);
         var firstMenuItem = getFirstMenuItem();
         jqUnit.assertSelected(firstMenuItem);
         firstMenuItem.remove();
-        selThat.refresh();
+        await selThat.refresh();
         var secondMenuItem = getSecondMenuItem();
         jqUnit.assertSelected(secondMenuItem);
         secondMenuItem.remove();
-        selThat.refresh();
+        await selThat.refresh();
         var thirdMenuItem = getThirdMenuItem();
         jqUnit.assertSelected(thirdMenuItem);
+
+        jqUnit.start();
     });
 
     var quickMakeSelectable = function (containerSelector, options) {
-        return $(containerSelector).fluid("selectable", options).that();
+        return $(containerSelector).fluid("selectable", options);
     };
 
     // Can not test the `onLeaveContainer` event because we are not able to synthesize the `Tab` key.
     jqUnit.test("Leaving container: onUnselect", function () {
-        // This test does not work on IE11, so we skip it. When IE 11 is no longer supported, this should be removed.
-        if ($.browser.msie) {
-            jqUnit.expect(0);
-            return;
-        }
         var wasCalled = false;
         quickMakeSelectable(MENU_SEL, {
             selectableSelector: MENU_ITEM_SEL,
@@ -557,27 +598,28 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 wasCalled = true;
             }
         });
-        getFirstMenuItem().focus();
-        getFirstMenuItem().blur();
+        getFirstMenuItem().trigger("focus");
+        getFirstMenuItem().trigger("blur");
 
         jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when moving focus off of the selectables container.", wasCalled);
     });
 
-    jqUnit.test("No-wrap options", function () {
+    jqUnit.asyncTest("No-wrap options", async function () {
         var menu = makeMenuSelectable({
             noWrap: true
         });
 
-        menu.items.fluid("selectable.select", getFirstMenuItem());
+        await menu.items.fluid("selectable.select", getFirstMenuItem());
         simulateKeyDown(getFirstMenuItem(), {keyCode: $.ui.keyCode.UP});
         jqUnit.assertSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getLastMenuItem());
 
-        menu.items.fluid("selectable.select", getLastMenuItem());
+        await menu.items.fluid("selectable.select", getLastMenuItem());
         simulateKeyDown(getLastMenuItem(), {keyCode: $.ui.keyCode.DOWN});
         jqUnit.assertSelected(getLastMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
 
+        jqUnit.start();
     });
 
 })(jQuery);

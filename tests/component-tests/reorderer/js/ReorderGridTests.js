@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
         jqUnit.module("Reorder Grid Tests");
 
         var k = fluid.testUtils.reorderer.bindReorderer(fluid.testUtils.imageReorderer.orderableIds);
@@ -36,11 +36,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             return obj;
         };
 
-        jqUnit.test("reorderGrid API", function () {
+        jqUnit.asyncTest("reorderGrid API", async function () {
             var options = assembleOptions(false);
             var containerSelector = "[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']";
             var gridReorderer = fluid.reorderGrid(containerSelector, options);
-            var item2 = fluid.focus(fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]));
+            var item2 = fluid.jById(fluid.testUtils.imageReorderer.orderableIds[1]);
+            await fluid.focus(item2);
             var item3 = fluid.jById(fluid.testUtils.imageReorderer.orderableIds[2]);
             var item5 = fluid.jById(fluid.testUtils.imageReorderer.orderableIds[4]);
 
@@ -50,14 +51,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("focus on item2 - item5 should be default", item5.hasClass("fl-reorderer-movable-default"));
 
-            k.keyDown(gridReorderer, k.keyEvent("DOWN"), 1);
+            await k.keyDown(gridReorderer, k.keyEvent("DOWN"), 1);
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow - grid is 3 wide - item5 should be selected", item5.hasClass("fl-reorderer-movable-selected"));
 
-            k.compositeKey(gridReorderer, k.ctrlKeyEvent("DOWN"), 4);
+            await k.compositeKey(gridReorderer, k.ctrlKeyEvent("DOWN"), 4);
 
             fluid.testUtils.reorderer.assertItemsInOrder("after ctrl-down", [0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11, 12, 13], $("img", $(containerSelector)), "fluid.img.");
+
+            jqUnit.start();
         });
 
         jqUnit.test("reorderGrid with optional styles", function () {
@@ -81,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         });
 
-        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+down", function () {
+        jqUnit.asyncTest("reorderGrid, option set disabled wrap, user action ctrl+down", async function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
@@ -93,10 +96,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 9
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+down", function () {
+        jqUnit.asyncTest("reorderGrid, option set enabled wrap, user action ctrl+down", async function () {
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "DOWN",
@@ -108,10 +113,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 9
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+up", function () {
+        jqUnit.asyncTest("reorderGrid, option set disabled wrap, user action ctrl+up", async function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
@@ -123,10 +130,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 1
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+up", function () {
+        jqUnit.asyncTest("reorderGrid, option set enabled wrap, user action ctrl+up", async function () {
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "UP",
@@ -139,10 +148,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 1
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+right", function () {
+        jqUnit.asyncTest("reorderGrid, option set disabled wrap, user action ctrl+right", async function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "RIGHT",
@@ -154,10 +165,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 1
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+right", function () {
+        jqUnit.asyncTest("reorderGrid, option set enabled wrap, user action ctrl+right", async function () {
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "RIGHT",
@@ -169,10 +182,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 1
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+left", function () {
+        jqUnit.asyncTest("reorderGrid, option set disabled wrap, user action ctrl+left", async function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "LEFT",
@@ -184,10 +199,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 1
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
-        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+left", function () {
+        jqUnit.asyncTest("reorderGrid, option set enabled wrap, user action ctrl+left", async function () {
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "LEFT",
@@ -199,7 +216,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 itemIndex: 1
             };
 
-            fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+            await fluid.testUtils.reorderer.stepReorderer("[id='" + fluid.testUtils.imageReorderer.imageReordererRootId + "']", options);
+
+            jqUnit.start();
         });
 
     });

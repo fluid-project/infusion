@@ -1479,7 +1479,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     };
 
-    $(document).ready(function () {
+    $(function () {
         var tests = ["fluid.tests.orator.controllerTests"];
         var ttsTests = [
             "fluid.tests.orator.domReaderTests",

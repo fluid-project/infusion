@@ -122,7 +122,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 row.removeClass(styles.hover);
             }
         };
-        row.hover(over, out);
+        row.on("mouseenter", over);
+        row.on("mouseleave", out);
     };
 
     fluid.uploader.fileQueueView.bindDeleteKey = function (that, row) {
@@ -143,7 +144,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fluid.uploader.fileQueueView.bindHover(row, that.options.styles);
         }
 
-        that.locate("fileIconBtn", row).click(function () {
+        that.locate("fileIconBtn", row).on("click", function () {
             fluid.uploader.fileQueueView.removeFileForRow(that, row);
         });
 

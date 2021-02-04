@@ -74,8 +74,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     fluid.tests.bindFocusNotify = function (that) {
-        that.container.focusin(that.events.notifyFocusChange.fire);
-        that.container.focusout(that.events.notifyFocusChange.fire);
+        that.container.on("focusin", that.events.notifyFocusChange.fire);
+        that.container.on("focusout", that.events.notifyFocusChange.fire);
     };
 
     fluid.defaults("fluid.tests.focusNotifier", {

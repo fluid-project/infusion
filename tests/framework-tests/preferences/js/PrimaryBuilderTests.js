@@ -220,7 +220,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         verifySchema(contributedSchema, finalSchema);
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.contributedSchema"
         ]);

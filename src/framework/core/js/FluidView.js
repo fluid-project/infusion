@@ -585,7 +585,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
 
     var dismissList = {};
 
-    $(document).click(function (event) {
+    $(document).on("click", function (event) {
         var target = fluid.resolveEventTarget(event);
         while (target) {
             if (dismissList[target.id]) {
@@ -671,7 +671,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
             fluid.each(exclusion, function (excludeEl) {
                 $(excludeEl).on("focusin", that.canceller).
                     on("fluid-focus", that.canceller).
-                    click(that.canceller).mousedown(that.canceller);
+                    on("click", that.canceller).
+                    on("mousedown", that.canceller);
                 // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
             });
         });

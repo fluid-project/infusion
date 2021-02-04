@@ -149,7 +149,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 messageExt = " - node name";
             }
             else if (key === "nodeText") {
-                attr = jQuery.trim(fluid.dom.getElementText(node));
+                attr = fluid.dom.getElementText(node).trim();
             }
             else if (key === "nodeHTML") {
                 attr = $(node).html();

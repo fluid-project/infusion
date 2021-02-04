@@ -200,7 +200,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * @param {fluid.orator.controller} that - an instance of the component
      */
     fluid.orator.controller.bindClick = function (that) {
-        that.locate("playToggle").click(function () {
+        that.locate("playToggle").on("click", function () {
             that.toggle("playing");
         });
     };
@@ -1139,7 +1139,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.orator.selectionReader.createControl = function (that) {
         var control = $(that.options.markup.control);
         control.addClass(that.options.styles.control);
-        control.click(function () {
+        control.on("click", function () {
             // wrapped in an empty function so as not to pass along the jQuery event object
             that.events.onToggleControl.fire();
         });

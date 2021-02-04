@@ -286,7 +286,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
                         ID: "species",
                         value: row.species,
                         decorators: {
-                            jQuery: ["click", function () {
+                            jQuery: ["on", "click", function () {
                                 changeBack(i, "species");
                             }],
                             identify: "species-" + i,
@@ -298,10 +298,13 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
                         value: row.score,
                         decorators: [{
                             type: "$",
-                            func: "change",
-                            args: function () {
-                                changeBack(i, "score");
-                            }
+                            func: "on",
+                            args: [
+                                "change",
+                                function () {
+                                    changeBack(i, "score");
+                                }
+                            ]
                         }, {
                             type: "identify",
                             key: "score-" + i
@@ -321,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
             jqUnit.assertEquals("Identified by idMap", 1, el.length);
             jqUnit.assertTrue("Decorated by addClass", el.hasClass("CATTclick1"));
             jqUnit.assertFalse("Undecorated by removeClass", el.hasClass("CATTclick3"));
-            el.click();
+            el.trigger("click");
             jqUnit.assertEquals("Decorated by click", 7, indexChange);
             jqUnit.assertValue("Received column", columnChange); // TODO: Actually validate this value
             changeBack(null, null);
@@ -836,7 +839,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
             singleSelectionRadioRenderTests(node);
             var inputs = $("input", node);
             fluid.value(inputs, "Enchiridion");
-            $(inputs[0]).change();
+            $(inputs[0]).trigger("change");
             if (!opts) {
                 fluid.applyBoundChange(inputs);
             }
@@ -892,7 +895,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
             multipleSelectionCheckboxRenderTests(node);
             var inputs = $("input", node);
             fluid.value(inputs, ["Exomologesis", "Apocatastasis"]);
-            $(inputs[0]).change();
+            $(inputs[0]).trigger("change");
             if (!opts) {
                 fluid.applyBoundChange(inputs);
             }
@@ -995,11 +998,11 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
                 checked: undefined
             }, checkbox);
             fluid.value(checkbox, true); // irregularity in jQuery.val() would force us to use jQuery.checked otherwise
-            checkbox.change();
+            checkbox.trigger("change");
             jqUnit.assertEquals("Model updated", true, model["boolean"]);
 
             fluid.value(checkbox, false);
-            checkbox.change();
+            checkbox.trigger("change");
             jqUnit.assertEquals("Model updated", false, model["boolean"]);
         });
 
@@ -1675,7 +1678,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
                     }]
                 };
                 var rendered = fluid.renderTemplates(templates, tree, options, fossils);
-                jqUnit.assertEquals("Template is rendered correctly", "<p class=\"my-paragraph\">TEST</p>", $.trim(rendered));
+                jqUnit.assertEquals("Template is rendered correctly", "<p class=\"my-paragraph\">TEST</p>", rendered.trim());
                 jqUnit.start();
             });
         });

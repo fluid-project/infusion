@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
         jqUnit.module("Uploader Basic Tests");
 
         fluid.contextAware.forgetChecks(["fluid.browser.supportsFormData", "fluid.browser.supportsBinaryXHR"]);
@@ -290,18 +290,18 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var addFilesStatusRegionText = statusRegion.text();
             var fileQueueView = uploader.fileQueueView;
             var row = fileQueueView.locate("fileRows");
-            fileQueueView.locate("fileIconBtn", row[0]).click();
+            fileQueueView.locate("fileIconBtn", row[0]).trigger("click");
 
             jqUnit.assertEquals("File deleted from the queue", 1, uploader.queue.files.length);
             jqUnit.assertNotEquals("Remove file: update status region text", addFilesStatusRegionText, statusRegion.text());
 
             // upload files
-            uploader.locate("uploadButton").click();
+            uploader.locate("uploadButton").trigger("click");
             fluid.tests.uploader.checkUploaderButton(uploader, "browseButton", false);
             jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
 
             // stop uploading files
-            uploader.locate("pauseButton").click();
+            uploader.locate("pauseButton").trigger("click");
             fluid.tests.uploader.checkUploaderButton(uploader, "uploadButton", true);
             jqUnit.assertFalse("Uploading has stopped", uploader.queue.isUploading);
 
@@ -316,7 +316,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         fluid.tests.uploader.uploadError = function (uploader, statusRegion, testset) {
             // upload files
-            uploader.locate("uploadButton").click();
+            uploader.locate("uploadButton").trigger("click");
             fluid.tests.uploader.checkUploaderButton(uploader, "browseButton", false);
             jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
             var uploadComplete = false;

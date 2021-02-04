@@ -62,7 +62,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.inlineEdit.normalizeHTML = function (value) {
-        var togo = $.trim(value.replace(/\s+/g, " "));
+        var togo = value.replace(/\s+/g, " ").trim();
         togo = togo.replace(/\s+<\//g, "</");
         togo = togo.replace(/<([a-z0-9A-Z\/]+)>/g, function (match) {
             return match.toLowerCase();
@@ -84,8 +84,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             displayModeRenderer.removeClass(invitationStyle);
         };
 
-        element.focus(focusOn);
-        element.blur(focusOff);
+        element.on("focus", focusOn);
+        element.on("blur", focusOff);
     };
 
     fluid.inlineEdit.setupRichTextEditButton = function (that) {
@@ -293,7 +293,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.inlineEdit.CKEditor.focus = function (editor) {
         setTimeout(function () {
             // CKEditor won't focus itself except in a timeout.
-            editor.focus();
+            editor.trigger("focus");
         }, 0);
     };
 

@@ -151,7 +151,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             if (headclazz) {
                 var split = headclazz.split(" ");
                 for (i = 0; i < split.length; ++i) {
-                    var simpleCut = simpleClassCutpoints[$.trim(split[i])];
+                    var simpleCut = simpleClassCutpoints[split[i].trim()];
                     if (simpleCut) {
                         return simpleCut;
                     }

@@ -1254,7 +1254,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
         inputs.prop("checked", false);
         var matchingInput = inputs.filter("[value='" + newValue + "']");
-        matchingInput.prop("checked", "checked").change();
+        matchingInput.prop("checked", "checked").trigger("change");
     };
 
     fluid.defaults("fluid.tests.contrastTester", {
@@ -1604,7 +1604,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }]
     });
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.textFontPanel",
             "fluid.tests.textFontPanelOverride",

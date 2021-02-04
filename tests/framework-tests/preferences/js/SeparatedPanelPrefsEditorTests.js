@@ -158,7 +158,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.assertThirdShow = function (separatedPanel) {
-        separatedPanel.locate("reset").click();
+        separatedPanel.locate("reset").trigger("click");
 
         var initialModel = separatedPanel.initialModel;
         var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
@@ -274,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         // "slidingPanel" option mapping
         jqUnit.assertFalse("Preferences EditorPanel is hidden", isSlidingPanelShown);
-        separatedPanel.slidingPanel.locate("toggleButton").click();
+        separatedPanel.slidingPanel.locate("toggleButton").trigger("click");
         jqUnit.assertTrue("Preferences EditorPanel is shown", isSlidingPanelShown);
 
         // "iframe" option mapping
@@ -433,7 +433,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("All of the resources should have loaded", expectedResources, actualResources);
     };
 
-    $(document).ready(function () {
+    $(function () {
 
         fluid.tests.prefs.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);

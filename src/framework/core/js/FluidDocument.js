@@ -151,22 +151,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
         return event.target;
     };
 
-    // These function (fluid.focus() and fluid.blur()) serve several functions. They should be used by
-    // all implementation both in test cases and component implementation which require to trigger a focus
-    // event. Firstly, they restore the old behaviour in jQuery versions prior to 1.10 in which a focus
-    // trigger synchronously relays to a focus handler. In newer jQueries this defers to the real browser
-    // relay with numerous platform and timing-dependent effects.
-    // Secondly, they are necessary since simulation of focus events by jQuery under IE
-    // is not sufficiently good to intercept the "focusin" binding. Any code which triggers
-    // focus or blur synthetically throughout the framework and client code must use this function,
-    // especially if correct cross-platform interaction is required with the "deadMansBlur" function.
 
-    function applyOp(node, func) {
-        node = $(node);
-        node.trigger("fluid-" + func);
-        node.triggerHandler(func);
-        node[func]();
-        return node;
+    // These functions, `fluid.focus`() and `fluid.blur`, provide a means for programatically triggering focus/blur
+    // while returning a promise to notify when their actions have completed. The promise will resolve with the
+    // corresponding event object. Any code which triggers focus or blur synthetically throughout the framework and
+    // client code must use this function, especially if correct cross-platform interaction is required with the
+    // "deadMansBlur" function.
+
+    async function applyOp(node, func) {
+        node = $(node)[0];
+
+        // Only attempt to call the `func` if the node exists.
+        if (node) {
+            // Wrapping the event listener in a promise so that the promise is resolved when the event fires. The listener
+            // is setup such that it will only be activated once.
+            // Note: if the event doesn't fire, the promise will never resolve. For example if focus is called on an
+            // unfocusable element.
+            var promise = new Promise(function (resolve) {
+                node.addEventListener(func, resolve, { once: true });
+            });
+            node[func]();
+
+            return promise;
+        }
     }
 
     $.each(["focus", "blur"], function (i, name) {
@@ -185,7 +192,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
      */
     fluid.changeElementValue = function (node, value) {
         node = $(node);
-        node.val(value).change();
+        node.val(value).trigger("change");
     };
 
 })(jQuery, fluid_3_0_0);

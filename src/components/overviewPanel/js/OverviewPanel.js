@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.overviewPanel.makeBooleanListener = function (that, selector, method, path, value) {
         var elem = that.locate(selector);
-        elem[method](function (evt) {
+        elem.on(method, function (evt) {
             that.applier.change(path, value === "toggle" ? !that.model[path] : value);
             evt.preventDefault();
         });

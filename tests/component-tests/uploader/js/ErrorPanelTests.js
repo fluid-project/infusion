@@ -194,7 +194,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("The section's model should have a file in it.", 1, section.model.files.length);
             jqUnit.isVisible("The section's container.should be visible before closing it.", section.container);
 
-            section.locate("deleteErrorButton").click();
+            section.locate("deleteErrorButton").trigger("click");
             jqUnit.assertEquals("The section's model should have been cleared.", 0, section.model.files.length);
             jqUnit.notVisible("The section's container.should be hidden after closing it.", section.container);
 

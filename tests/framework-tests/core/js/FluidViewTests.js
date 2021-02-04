@@ -213,7 +213,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
 
         function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) {
-            jqUnit.asyncTest("Dead man's blur test - " + message, function () {
+            jqUnit.asyncTest("Dead man's blur test - " + message, async function () {
 
                 noteTime();
 
@@ -238,7 +238,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
                 excluded.append($("<input></input>").addClass("excluded"));
 
-                fluid.focus(input);
+                await fluid.focus(input);
 
                 var blurOutwaiter = function () {
                     jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
@@ -246,12 +246,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     jqUnit.start();
                 };
 
-                fluid.blur(input);
+                await fluid.blur(input);
                 window.setTimeout(function () {
                     fluid.log("Apply " + provokeOp + " to " + provokeTarget);
                     var element = blurTester.locate(provokeTarget);
                     if (provokeOp === "click") {
-                        element.click();
+                        element.trigger("click");
                     } else {
                         fluid[provokeOp](element);
                     }
