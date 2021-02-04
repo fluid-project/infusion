@@ -247,7 +247,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
-
+// TODO: Note that no client currently sends "noencode"
+// TODO: Note that "pathname" gets resolved a 2nd time, with no polymorphism
+// TODO: Perform courtesies such as removing params which are substituted away, and CSV encoding compound params as per typical REST idioms
     /**
      * Resolves (expands) a url or path with respect to the `directModel` supplied to a dataSource's API (get or set). There are three rounds of expansion - firstly, the string
      * entries as the values in "termMap" will be looked up as paths within `directModel`. The resulting values will then be URI Encoded, unless their value
