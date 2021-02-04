@@ -122,8 +122,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         xhr.addEventListener("error", sendError);
 
+        var url = fluid.dataSource.URL.condenseUrl(requestOptions);
         // username and password in XHR open has sometimes been criticised https://bugs.chromium.org/p/chromium/issues/detail?id=707761
-        xhr.open(requestOptions.method || "GET", fluid.dataSource.URL.condenseUrl(requestOptions), requestOptions.async);
+        xhr.open(requestOptions.method || "GET", url.toString(), requestOptions.async);
         fluid.resourceLoader.configureXHR(xhr, requestOptions);
         xhr.send(data);
         return promise;

@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
+/* global fluid, sinon */
 
 (function () {
     "use strict";
@@ -339,10 +339,97 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.sinonServer", {
+        gradeNames: "fluid.component",
+        members: {
+            sinonServer: "@expand:fluid.tests.createSinonServer({that}.options.respondWith, {that}.options.sinonOptions)"
+        },
+        respondWith: { // Hash of key to {response, [method], [url]}
+        },
+        sinonOptions: {
+            autoRespond: true
+        },
+        listeners: {
+            "onDestroy.restore": "fluid.tests.restoreSinon"
+        }
+    });
+
+    fluid.tests.restoreSinon = function (that) {
+        if (that.sinonServer.restore) {
+            that.sinonServer.restore();
+        }
+    };
+
+    fluid.tests.createSinonServer = function (respondWith, sinonOptions) {
+        var server = sinon.createFakeServer(sinonOptions);
+        fluid.each(respondWith, function (oneWith) {
+            var statusCode = oneWith.response.statusCode || 200;
+            var headers = oneWith.response.headers || { "Content-Type": "application/json" };
+            var json = headers["Content-Type"] === "application/json";
+            var payload = (json ? JSON.stringify : fluid.identity)(oneWith.response.payload);
+            var response = [statusCode, headers, payload];
+            if (oneWith.url) {
+                if (oneWith.method) {
+                    server.respondWith(oneWith.method, oneWith.url, response);
+                } else {
+                    server.respondWith(oneWith.url, response);
+                }
+            } else {
+                server.respondWith(response);
+            }
+        });
+        return server;
+    };
+
+    fluid.defaults("fluid.tests.dataSource.URL.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            sinonServer: {
+                type: "fluid.tests.sinonServer",
+                options: {
+                    respondWith: {
+                        initModel: {
+                            method: "GET",
+                            url: "/initModel.json",
+                            response: {
+                                payload: fluid.tests.dataSource.testData.json.object
+                            }
+                        }
+                    }
+                }
+            },
+            dsRead: {
+                type: "fluid.dataSource.URL",
+                options: {
+                    url: "/initModel.json"
+                }
+            },
+            dataSourceTester: {
+                type: "fluid.tests.dataSource.URL.tester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.dataSource.URL.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "URL DataSource with JSON encoding",
+            tests: [{
+                expect: 1,
+                name: "Get JSON",
+                sequence: [{
+                    task: "{dsRead}.get",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Expected should be returned", fluid.tests.dataSource.testData.json.object, "{arguments}.0"]
+                }]
+            }]
+        }]
+    });
+
     fluid.test.runTests([
+        "fluid.tests.dataSource.URL.tests",
         "fluid.tests.dataSource.plainText.tests",
         "fluid.tests.dataSource.json.tests"
     ]);
-
 
 })();
