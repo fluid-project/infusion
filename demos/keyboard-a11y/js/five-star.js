@@ -83,7 +83,7 @@ var demo = demo || {};
         listeners: {
             onCreate: [{
                 "this": "{that}.stars",
-                method: "mouseover",
+                method: "on",
                 args: [
                     "mouseover",
                     {
