@@ -853,8 +853,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 }
                 // Constructs a component of type fluid.test.testEnvironment whose onCreate will then execute fluid.test.testEnvironment.runTests
                 // and whose afterDestroy (scheduled internally) will invoke our nextLater
-                fluid.invokeGlobalFunction(env.type, [options]);
                 that.index++;
+                fluid.invokeGlobalFunction(env.type, [options]);
             } else {
                 that.stopped = true;
                 QUnit.config.testsArriving = false;

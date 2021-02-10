@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 xhr[prop] = options[prop];
             }
         });
-        fluid.each(options.requestHeaders, function (value, key) {
+        fluid.each(options.headers, function (value, key) {
             var values = fluid.makeArray(value);
             values.forEach(function (oneValue) {
                 xhr.setRequestHeader(key, oneValue);

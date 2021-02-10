@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global sinon */
+/* global sinon, jqUnit */
 
 (function () {
     "use strict";
@@ -342,7 +342,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.sinonServer", {
         gradeNames: "fluid.component",
         members: {
-            sinonServer: "@expand:fluid.tests.createSinonServer({that}.options.respondWith, {that}.options.sinonOptions)"
+            sinonServer: "@expand:fluid.tests.createSinonServer({that}, {that}.options.respondWith, {that}.options.sinonOptions)"
         },
         respondWith: { // Hash of key to {response, [method], [url]}
         },
@@ -360,14 +360,19 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.createSinonServer = function (respondWith, sinonOptions) {
+    fluid.tests.createSinonServer = function (that, respondWith, sinonOptions) {
         var server = sinon.createFakeServer(sinonOptions);
         fluid.each(respondWith, function (oneWith) {
-            var statusCode = oneWith.response.statusCode || 200;
-            var headers = oneWith.response.headers || { "Content-Type": "application/json" };
-            var json = headers["Content-Type"] === "application/json";
-            var payload = (json ? JSON.stringify : fluid.identity)(oneWith.response.payload);
-            var response = [statusCode, headers, payload];
+            var response;
+            if (oneWith.response.func || oneWith.response.funcName) {
+                response = fluid.makeInvoker(that, fluid.filterKeys(oneWith.response, ["func", "funcName", "args"]), "sinonServer responder");
+            } else {
+                var statusCode = oneWith.response.statusCode || 200;
+                var headers = oneWith.response.headers || { "Content-Type": "application/json" };
+                var json = headers["Content-Type"] === "application/json";
+                var payload = (json ? JSON.stringify : fluid.identity)(oneWith.response.payload);
+                response = [statusCode, headers, payload];
+            }
             if (oneWith.url) {
                 if (oneWith.method) {
                     server.respondWith(oneWith.method, oneWith.url, response);
@@ -381,7 +386,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return server;
     };
 
-    fluid.defaults("fluid.tests.dataSource.URL.tests", {
+    fluid.defaults("fluid.tests.dataSource.URL.json.tests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             sinonServer: {
@@ -405,12 +410,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 }
             },
             dataSourceTester: {
-                type: "fluid.tests.dataSource.URL.tester"
+                type: "fluid.tests.dataSource.URL.json.tester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.dataSource.URL.tester", {
+    fluid.defaults("fluid.tests.dataSource.URL.json.tester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "URL DataSource with JSON encoding",
@@ -420,14 +425,73 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 sequence: [{
                     task: "{dsRead}.get",
                     resolve: "jqUnit.assertDeepEq",
-                    resolveArgs: ["Expected should be returned", fluid.tests.dataSource.testData.json.object, "{arguments}.0"]
+                    resolveArgs: ["Expected object should be returned", fluid.tests.dataSource.testData.json.object, "{arguments}.0"]
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.dataSource.URL.headers.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            sinonServer: {
+                type: "fluid.tests.sinonServer",
+                options: {
+                    respondWith: {
+                        initModel: {
+                            method: "GET",
+                            url: "/",
+                            response: {
+                                funcName: "fluid.tests.dataSource.URL.headers.checkHeaders"
+                            }
+                        }
+                    }
+                }
+            },
+            dsRead: {
+                type: "fluid.dataSource.URL",
+                options: {
+                    url: "/",
+                    headers: {
+                        "Content-Type": "text/html;charset=utf-8"
+                    },
+                    components: {
+                        encoding: {
+                            type: "fluid.dataSource.encoding.none"
+                        }
+                    }
+                }
+            },
+            dataSourceTester: {
+                type: "fluid.tests.dataSource.URL.headers.tester"
+            }
+        }
+    });
+
+    fluid.tests.dataSource.URL.headers.checkHeaders = function (xhr) {
+        jqUnit.assertEquals("Expected request header sent", "text/html;charset=utf-8", xhr.requestHeaders["Content-Type"]);
+        xhr.respond(200, { "Content-Type": "application/json" }, "<html></html>");
+    };
+
+    fluid.defaults("fluid.tests.dataSource.URL.headers.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "URL DataSource with HTML content type and header",
+            tests: [{
+                expect: 2,
+                name: "Get HTML",
+                sequence: [{
+                    task: "{dsRead}.get",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Expected markup should be returned", "<html></html>", "{arguments}.0"]
                 }]
             }]
         }]
     });
 
     fluid.test.runTests([
-        "fluid.tests.dataSource.URL.tests",
+        "fluid.tests.dataSource.URL.headers.tests",
+        "fluid.tests.dataSource.URL.json.tests",
         "fluid.tests.dataSource.plainText.tests",
         "fluid.tests.dataSource.json.tests"
     ]);
