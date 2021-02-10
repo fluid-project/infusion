@@ -193,8 +193,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     priority: "last:testing",
                     event: "{tts}.events.onStop"
                 }, {
-                    listener: "fluid.tests.textToSpeech.testUtteranceDetached",
-                    args: ["The utterance should not be attached", "{tts}"],
+                    // This was formerly the site of FLUID-6418
+                    listener: "jqUnit.assertUndefined",
+                    args: ["The utterance should not be attached", "{tts}.utterance"],
                     priority: "last:testing",
                     event: "{tts}.utterance.events.afterDestroy"
                 }]
