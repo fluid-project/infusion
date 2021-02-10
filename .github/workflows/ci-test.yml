@@ -67,6 +67,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
+    - name: Use NPM 6.x
+      run: npm install -g npm@6
+
     - name: Install Node.js dependencies
       run: npm install
 
