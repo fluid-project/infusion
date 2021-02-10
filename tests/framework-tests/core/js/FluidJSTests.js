@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -89,17 +89,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     jqUnit.test("isInteger tests", function () {
         var fixtures = [
-        {value: null, isInt: false},
-        {value: NaN,  isInt: false},
-        {value: Infinity, isInt: false},
-        {value: "1",  isInt: false},
-        {value: {},   isInt: false},
-        {value: true, isInt: false},
-        {value: [],   isInt: false},
-        {value: 3.5,  isInt: false},
-        {value: 4,    isInt: true},
-        {value: -4,   isInt: true},
-        {value: 0,    isInt: true}
+            {value: null, isInt: false},
+            {value: NaN,  isInt: false},
+            {value: Infinity, isInt: false},
+            {value: "1",  isInt: false},
+            {value: {},   isInt: false},
+            {value: true, isInt: false},
+            {value: [],   isInt: false},
+            {value: 3.5,  isInt: false},
+            {value: 4,    isInt: true},
+            {value: -4,   isInt: true},
+            {value: 0,    isInt: true}
         ];
         fixtures.forEach(function (fixture, index) {
             jqUnit.assertEquals("IsInteger fixture " + index, fluid.isInteger(fixture.value), fixture.isInt);
@@ -758,8 +758,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertValue("Retrieved defaults should be immutable", assignException);
 
         // Try to access defaults for a component that doesn't exist.
-        jqUnit.assertNoValue("The defaults for a nonexistent component should be null.",
-                          fluid.defaults("timemachine"));
+        jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", fluid.defaults("timemachine"));
     });
 
     jqUnit.test("FLUID-4842 test - configurable \"soft failure\"", function () {

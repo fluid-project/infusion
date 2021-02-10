@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* eslint-env node */
 /* eslint strict: ["error", "global"] */
-/* global fluid */
 
 "use strict";
 

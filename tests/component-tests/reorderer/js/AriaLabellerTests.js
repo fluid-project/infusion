@@ -11,12 +11,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
         fluid.setLogging(true);
 
         fluid.registerNamespace("fluid.tests");
@@ -42,17 +42,19 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         });
 
-        jqUnit.test("IoC instantiation", function () {
+        jqUnit.asyncTest("IoC instantiation", async function () {
 
             var labellerTester = fluid.tests.labellerTester("#list1");
             jqUnit.assertNotUndefined("reorderer created", labellerTester.reorderer);
 
-            fluid.focus($("#list1item3"));
-            k.compositeKey(labellerTester.reorderer, fluid.testUtils.reorderer.ctrlKeyEvent("DOWN"), 2);
+            await fluid.focus($("#list1item3"));
+            await k.compositeKey(labellerTester.reorderer, fluid.testUtils.reorderer.ctrlKeyEvent("DOWN"), 2);
             assertItemsInOrder("after ctrl-down, order should be ", [1, 2, 4, 3, 5]);
 
             var region = fluid.jById(fluid.defaults("fluid.ariaLabeller").liveRegionId);
             jqUnit.assertNotUndefined("Live region should exist", region);
+
+            jqUnit.start();
         });
     });
 })(jQuery);

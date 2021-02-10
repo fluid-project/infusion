@@ -3,14 +3,14 @@ html {
 }
 
 .fl-demo-container {
+    align-items: center;
+    display: flex;
+    justify-content: center;
     margin-top: 1rem;
-    display:flex;
-    justify-content:center;
-    align-items:center;
 }
 
 .fl-demo-content {
-    max-width: 50rem;
-    margin-top: 4rem;
     border: 1rem solid transparent;
+    margin-top: 4rem;
+    max-width: 50rem;
 }

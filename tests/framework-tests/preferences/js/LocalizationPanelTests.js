@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -29,7 +29,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "localization-en_US": "English (USA)",
             "localization-es": "Spanish",
             "localization-fa": "Farsi",
-            "localization-fr": "French"
+            "localization-fr": "French",
+            "localization-pt_BR": "Português (Brazil)"
         },
         model: {
             value: "en"
@@ -115,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("The description text is " + messageBase.description, messageBase.description, that.locate("localizationDescr").text());
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.localizationPanelTests"
         ]);

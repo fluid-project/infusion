@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($, fluid) {
     "use strict";
@@ -408,7 +408,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             };
             function clickNext() {
                 var page = fluid.jById("page-link:link" + i);
-                page.click();
+                page.trigger("click");
                 var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
                 allPagesAfterClicked.each(allPagesAfterClickedEachFn);
                 if (i === expectedPages - 1) {
@@ -506,7 +506,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 currentHeaders = pager.locate("headerSortStylisticOffset");
                 var currentHeader = currentHeaders.eq(aria_index);
                 //first click is ascending order
-                $("a", currentHeader).click();
+                $("a", currentHeader).trigger("click");
             };
 
             //sort each column individually, and check aria-sort on all columns after every sort.
@@ -598,9 +598,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             //Go through all pages 1 by 1 , and click all page dynamically each time
             function clickNext() {
                 var page = fluid.jById("page-link:link" + i);
-                page.click();
+                page.trigger("click");
                 jqUnit.assertEquals("Verify number of top page links", totalPages,
-                                    pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);
+                    pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);
                 var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
                 allPagesAfterClicked.each(allPagesAfterClickedEachFn);
                 if (i === expectedPages - 1) {

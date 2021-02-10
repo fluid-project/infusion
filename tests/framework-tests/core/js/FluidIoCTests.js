@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit, Float32Array, Map */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -4053,8 +4053,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     /** FLUID-6410 - Failure in hybrid time through 0-element sequence reuse **/
 
-// This currently tests the final branch of the test in fluid.commitPotentiae:
-//         if (!topSequencer || topSequencer.hasStartedConcludeInit || topSequencer.promise.disposition) {
+    // This currently tests the final branch of the test in fluid.commitPotentiae:
+    //         if (!topSequencer || topSequencer.hasStartedConcludeInit || topSequencer.promise.disposition) {
     fluid.defaults("fluid.tests.fluid6410root", {
         gradeNames: "fluid.component",
         events: {
@@ -4412,7 +4412,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     /** FLUID-6414 - Dynamic grades via expanders **/
-// Also tests FLUID-6415 corruption in graph structure
+    // Also tests FLUID-6415 corruption in graph structure
     fluid.defaults("fluid.tests.fluid6414root", {
         gradeNames: "fluid.modelComponent",
         model: {
@@ -6177,7 +6177,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "onCreate.constructIt": "fluid.tests.FLUID6148destructors.construct",
             "onDestroy.destroyIt": "fluid.tests.FLUID6148destructors.destroy"
         }
-        /** Still worse, we could write the following, which will presumably always be forbidden since it might execute
+        /* Still worse, we could write the following, which will presumably always be forbidden since it might execute
         as late as "observation" which is at the end of local workflows
         members: {
             freeComponent: "@expand:fluid.component()"

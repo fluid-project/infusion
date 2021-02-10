@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -142,20 +142,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var i;
             for (i = 0; i < transcript.length; i++) {
                 jqUnit.assertEquals("In each event callback, the file id should be correctly set.",
-                                    file.id, transcript[i].args[0].id);
+                    file.id, transcript[i].args[0].id);
             }
 
             // Then check the file sequence.
             var lastEvent = transcript.length - 1;
-            jqUnit.assertEquals("We should get onFileStart first.",
-                                "onFileStart", transcript[0].name);
-            jqUnit.assertEquals("The second to last event should be onFileSuccess.",
-                                "onFileSuccess", transcript[lastEvent - 1].name);
-            jqUnit.assertEquals("And the last event should be afterFileComplete.",
-                                "afterFileComplete", transcript[lastEvent].name);
+            jqUnit.assertEquals("We should get onFileStart first.", "onFileStart", transcript[0].name);
+            jqUnit.assertEquals("The second to last event should be onFileSuccess.", "onFileSuccess", transcript[lastEvent - 1].name);
+            jqUnit.assertEquals("And the last event should be afterFileComplete.", "afterFileComplete", transcript[lastEvent].name);
             for (i = 1; i < lastEvent - 1; i++) {
-                jqUnit.assertEquals("Then an onFileProgress.",
-                                    "onFileProgress", transcript[i].name);
+                jqUnit.assertEquals("Then an onFileProgress.", "onFileProgress", transcript[i].name);
             }
         };
 
@@ -174,9 +170,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 jqUnit.assertEquals("We should have received seven upload events.", 6, transcript.length);
                 checkEventSequenceForFile(transcript.slice(0, transcript.length - 1), file1);
                 jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
-                             "afterUploadComplete", fluid.peek(transcript).name);
+                    "afterUploadComplete", fluid.peek(transcript).name);
                 jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
-                                    transcript.files, fluid.peek(transcript).args[0]);
+                    transcript.files, fluid.peek(transcript).args[0]);
 
                 jqUnit.start();
             });
@@ -197,9 +193,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 checkEventSequenceForFile(transcript.slice(11, transcript.length - 1), file3);
 
                 jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
-                                    "afterUploadComplete", fluid.peek(transcript).name);
+                    "afterUploadComplete", fluid.peek(transcript).name);
                 jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
-                                    transcript.files, fluid.peek(transcript).args[0]);
+                    transcript.files, fluid.peek(transcript).args[0]);
                 jqUnit.start();
             });
         });
@@ -208,13 +204,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             uploadFirstFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
-                                    200000, transcript[1].args[1]);
+                    200000, transcript[1].args[1]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
-                                    400000, transcript[1].args[2]);
+                    400000, transcript[1].args[2]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes complete.",
-                                    400000, transcript[2].args[1]);
+                    400000, transcript[2].args[1]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
-                                    400000, transcript[2].args[2]);
+                    400000, transcript[2].args[2]);
                 jqUnit.start();
             });
         });
@@ -223,11 +219,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             uploadSmallFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes complete.",
-                                    165432, transcript[1].args[1]);
+                    165432, transcript[1].args[1]);
                 jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes in total.",
-                                    165432, transcript[1].args[2]);
+                    165432, transcript[1].args[2]);
                 jqUnit.assertNotEquals("There is only one onFileProgress event in the transcript.",
-                                       "onFileProgress", transcript[3].name);
+                    "onFileProgress", transcript[3].name);
                 jqUnit.start();
             });
         });
@@ -236,15 +232,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             uploadNotMultipleFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
-                                    200000, transcript[1].args[1]);
+                    200000, transcript[1].args[1]);
                 jqUnit.assertEquals("The second onFileProgress event should have 200000 more bytes complete.",
-                                    400000, transcript[2].args[1]);
+                    400000, transcript[2].args[1]);
                 jqUnit.assertEquals("The third onFileProgress event should have 200000 more bytes complete.",
-                                    600000, transcript[3].args[1]);
+                    600000, transcript[3].args[1]);
                 jqUnit.assertEquals("The fourth onFileProgress event should have 200000 more bytes complete.",
-                                    800000, transcript[4].args[1]);
+                    800000, transcript[4].args[1]);
                 jqUnit.assertEquals("The last onFileProgress event should have 12345 more bytes complete.",
-                                    812345, transcript[5].args[1]);
+                    812345, transcript[5].args[1]);
                 jqUnit.start();
             });
         });

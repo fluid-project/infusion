@@ -3,31 +3,31 @@ body {
 }
 
 main.content {
-    width: 95%;
-    max-width: none;
     margin: 0;
+    max-width: none;
     padding-left: 2rem;
+    width: 95%;
 }
 
 h1 {
     font-size: 1.4em;
-    margin-bottom: 1em;
     font-weight: bold;
+    margin-bottom: 1em;
 }
 
 .demo-backButton {
-    padding: 20px 0px;
+    padding: 20px 0;
 }
 
 .demo-backButton a {
+    background-color: #3e606f;
+    border: 2px solid #3e606f;
+    color: #fff;
     padding: 10px;
-    background-color: #3E606F;
-    color: #FFFFFF;
-    border: 2px solid #3E606F;
     text-decoration: none;
 }
 
-.demo-backButton a:before {
+.demo-backButton a::before {
     content: "⇦";
     padding-right: 5px;
 }

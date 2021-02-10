@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function () {
     "use strict";
@@ -241,7 +241,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.tests.testUI = function (that) {
         var containerContent = that.renderUI.container.html();
-        jqUnit.assertEquals("The content of the template1 has been added to the container 1", "<div>Test Template 1</div>", $.trim(containerContent));
+        jqUnit.assertEquals("The content of the template1 has been added to the container 1", "<div>Test Template 1</div>", containerContent.trim());
 
         jqUnit.start();
     };
@@ -517,7 +517,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     }, {
         grade: "fluid.tests.fluid4982overrideDerived",
         expected: "upper, middle, lower"
-    }, , {
+    }, {
         grade: "fluid.tests.fluid4982overridePromise",
         expected: "These courses will require a lot of grading"
     }];

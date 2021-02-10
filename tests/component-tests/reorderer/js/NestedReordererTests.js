@@ -11,12 +11,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
 
         jqUnit.module("Nested Reorderer Tests");
 
@@ -39,8 +39,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             return obj;
         };
 
-        var assembleAndTestReorderer = function (container, movables, itemSelector, itemIndex, prefix, indexes, expected) {
-            fluid.testUtils.reorderer.stepReorderer(container, {
+        var assembleAndTestReorderer = async function (container, movables, itemSelector, itemIndex, prefix, indexes, expected) {
+            return fluid.testUtils.reorderer.stepReorderer(container, {
                 reordererOptions: assembleOptions(true, movables, prefix, indexes),
                 direction: "UP",
                 expectedOrderArrays: [expected],
@@ -49,11 +49,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             });
         };
 
-        jqUnit.test("Nested reorderer, user action ctrl+up on outer then inner reorderers", function () {
-            assembleAndTestReorderer("#outer_list", ".outer", $("#list1item4"),
+        jqUnit.asyncTest("Nested reorderer, user action ctrl+up on outer then inner reorderers", async function () {
+            await assembleAndTestReorderer("#outer_list", ".outer", $("#list1item4"),
                 3, "list1item", [1, 2, 3, 4], [1, 2, 4, 3]);
-            assembleAndTestReorderer("#list1item4", ".inner", $("#list2item2"),
+            await assembleAndTestReorderer("#list1item4", ".inner", $("#list2item2"),
                 1, "list2item", [1, 2, 3], [2, 1, 3]);
+
+            jqUnit.start();
         });
     });
 })(jQuery);

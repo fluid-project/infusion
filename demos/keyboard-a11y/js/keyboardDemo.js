@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 var demo = demo || {};
 
 (function ($, fluid) {
@@ -80,7 +78,7 @@ var demo = demo || {};
         thumbContainer.fluid("activatable", handler);
 
         // add the same handler to the click event of the thumbs
-        thumbnails.click(handler);
+        thumbnails.on("click", handler);
     };
 
     demo.fiveStar.getRank = function (model) {

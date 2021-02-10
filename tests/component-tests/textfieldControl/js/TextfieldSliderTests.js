@@ -11,12 +11,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
 
         jqUnit.module("TextfieldSlider Tests");
 
@@ -60,7 +60,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         };
 
         fluid.tests.textfieldSlider.assertSliderEntry = function (valToTest, expected, that) {
-            that.slider.container.val(valToTest).change();
+            that.slider.container.val(valToTest).trigger("change");
             jqUnit.assertEquals("Textfield value should be " + expected, expected, +that.locate("textfield").val());
             jqUnit.assertEquals("Model value should be " + expected, expected, that.model.value);
         };

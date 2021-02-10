@@ -3,12 +3,12 @@ table {
 }
 
 thead {
+    background-color: #cdcdee;
     color: #343499;
-    background-color: #CDCDEE;
 }
 
 td {
-    padding: .5em .2em;
+    padding: 0.5em 0.2em;
 }
 
 input {
@@ -19,36 +19,41 @@ input {
     display: none;
 }
 
-.fl-pager-top,.fl-pager-bottom {
-    padding: .5em;
-    background-color: #EEEEEE;
+.fl-pager-top,
+.fl-pager-bottom {
+    background-color: #eee;
+    padding: 0.5em;
     text-align: center;
 }
 
-.fl-pager-top li,.fl-pager-bottom li {
-    display:inline;
-    padding-right:.3em;
+.fl-pager-top li,
+.fl-pager-bottom li {
+    display: inline;
+    padding-right: 0.3em;
 }
 
-.fl-pager-pageLink a,.fl-pager-previous a,.fl-pager-next a {
+.fl-pager-pageLink a,
+.fl-pager-previous a,
+.fl-pager-next a {
+    border-bottom: solid 0.1em;
     color: #00759c;
-    font-size: .9em;
+    font-size: 0.9em;
     text-decoration: none;
-    border-bottom: solid .1em;
 }
 
-.fl-pager-previous,.fl-pager-next {
+.fl-pager-previous,
+.fl-pager-next {
     padding: 0 1.3em 0 1em !important;
 }
 
 .fl-pager-currentPage a {
-    color: #000000;
     border: 0;
+    color: #000;
     text-decoration: none;
 }
 
 .fl-pager-disabled a {
-    color: #6c6c6c;
     border: 0;
+    color: #6c6c6c;
     text-decoration: none;
 }

@@ -2,42 +2,47 @@
 
 /* Define font families */
 @font-face {
-  font-family: Lato;
-  src: url(../fonts/Lato-Regular.woff);
-}
-@font-face {
-  font-family: LatoLight;
-  src: url(../fonts/Lato-Light.woff);
-}
-@font-face {
-  font-family: LatoLightItalic;
-  src: url(../fonts/Lato-LightItalic.woff);
-}
-@font-face {
-  font-family: LatoBlack;
-  src: url(../fonts/Lato-Black.woff);
-}
-@font-face {
-  font-family: LatoRegular;
-  src: url(../fonts/Lato-Regular.woff);
-}
-@font-face {
-  font-family: LoveYaLikeASister;
-  src: url(../fonts/LoveYaLikeASister.ttf);
+    font-family: Lato;
+    src: url(../fonts/Lato-Regular.woff);
 }
 
+@font-face {
+    font-family: LatoLight;
+    src: url(../fonts/Lato-Light.woff);
+}
+
+@font-face {
+    font-family: LatoLightItalic;
+    src: url(../fonts/Lato-LightItalic.woff);
+}
+
+@font-face {
+    font-family: LatoBlack;
+    src: url(../fonts/Lato-Black.woff);
+}
+
+@font-face {
+    font-family: LatoRegular;
+    src: url(../fonts/Lato-Regular.woff);
+}
+
+@font-face {
+    font-family: LoveYaLikeASister;
+    src: url(../fonts/LoveYaLikeASister.ttf);
+}
 
 body {
     font-family: LatoLight, Helvetica, Tahoma, Verdana, sans-serif;
 }
+
 img {
-    box-shadow: rgba(0,0,0,0.4) 0px 0px 5px 1px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0 0 5px 1px;
     margin-bottom: 10px;
 }
 
 main {
-    width: 95%;
     max-width: 950px;
+    width: 95%;
 }
 
 .demo-columns {
@@ -47,84 +52,100 @@ main {
 }
 
 .demo-column {
+    break-inside: avoid;
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
-    break-inside: avoid;
 }
 
 .content h2 {
-    margin-bottom: 0.5em;
-    font-weight: normal;
     font-size: 1.6em;
+    font-weight: normal;
+    margin-bottom: 0.5em;
 }
+
 .header,
 .instructions {
     font-size: 1.3em;
 }
+
 .header h1 {
     font-family: LoveYaLikeASister, "Courier New, Courier", monospace;
     font-size: 3em;
     margin-bottom: 20px;
 }
+
 .header .tagline {
     font-family: LatoLightItalic, Helvetica, Tahoma, Verdana, sans-serif;
     font-size: 1.3em;
     font-style: italic;
 }
+
 .header .disp-pref {
     font-weight: bold;
 }
+
 .instructions h2 {
     font-family: LatoBlack, Helvetica, Tahoma, Verdana, sans-serif;
     font-weight: normal;
     margin-bottom: 0.5em;
 }
+
 .instructions ol {
     margin-left: 1.5em;
-    margin-top: 0px;
+    margin-top: 0;
 }
+
 .instructions li {
     font-size: 1.25em;
     margin-bottom: 1em;
 }
+
 .instructions .instruction-comment {
     font-size: 0.8em;
 }
+
 .content {
+    border-top: dashed 1px #426088;
     margin-top: 1em;
     padding: 10px 0;
-    border-top: dashed 1px #426088;
 }
+
 .feedback-form input,
 .feedback-form textarea {
-    width: 95%;
-    padding: 5px;
     margin: 5px 0 10px 0;
+    padding: 5px;
+    width: 95%;
 }
+
 .feedback-form textarea {
     height: 8em;
 }
+
 .feedback-form label {
     font-family: LatoRegular, Helvetica, Tahoma, Verdana, sans-serif;
 }
+
 .feedback-form .optional {
     font-style: italic;
 }
 
 /* Scoped colours for theme swapping */
+
 /*
     Font color: #3E606F
     Button blue: #0071BC
  */
 .prefsEditor-demo-theme {
-    color: #3E606F;
     background-image: url("../images/background_texture.png");
     background-position: left top;
     background-repeat: repeat;
+    color: #3e606f;
 }
+
 .prefsEditor-demo-theme a {
-    color: #3E606F;
+    color: #3e606f;
 }
+
 .prefsEditor-demo-theme .feedback-form input,
 .prefsEditor-demo-theme .feedback-form textarea {
     color: grey;
@@ -132,20 +153,21 @@ main {
 
 /* Overriding some of the default colours of Preference Editor - separated panel */
 .prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-buttons {
-    background-color: #0071BC;
+    background-color: #0071bc;
 }
+
 .fl-prefsEditor-separatedPanel .fl-panelBar button {
-    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
     border: 0;
     border-radius: 0;
+    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
 }
 
 .prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-showHide,
-.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset  {
-    background-color: #0071BC;
+.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset {
+    background-color: #0071bc;
     color: white;
 }
 
-.fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset  {
+.fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset {
     border-left: 1px solid #fff;
 }

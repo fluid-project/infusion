@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -60,22 +58,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // FLUID-1598 and others: Opera will refuse to honour a "preventDefault" on a keydown.
         // http://forums.devshed.com/javascript-development-115/onkeydown-preventdefault-opera-485371.html
         if ($.browser.opera) {
-            container.keypress(function (evt) {
+            container.on("keypress", function (evt) {
                 if (advancedPrevention) {
                     advancedPrevention = false;
                     evt.preventDefault();
                     return false;
                 }
             });
-            actualKeyDown = function (evt) {
-                var oldret = keyDownHandler(evt);
+            actualKeyDown = async function (evt) {
+                var oldret = await keyDownHandler(evt);
                 if (oldret === false) {
                     advancedPrevention = true;
                 }
             };
         }
-        container.keydown(actualKeyDown);
-        container.keyup(keyUpHandler);
+        container.on("keydown", actualKeyDown);
+        container.on("keyup", keyUpHandler);
     };
 
     // unsupported, NON-API function
@@ -343,14 +341,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // unsupported, NON-API function
-    fluid.reorderer.handleKeyDown = function (thatReorderer, styles, evt) {
+    fluid.reorderer.handleKeyDown = async function (thatReorderer, styles, evt) {
         if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
             return true;
         }
         // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
         var jActiveItem = $(thatReorderer.activeItem);
         if (!jActiveItem.hasClass(styles.dragging) && thatReorderer.isMove(evt)) {
-           // Don't treat the active item as dragging unless it is a movable.
+            // Don't treat the active item as dragging unless it is a movable.
             if (thatReorderer.isActiveItemMovable()) {
                 jActiveItem.removeClass(styles.selected);
                 jActiveItem.addClass(styles.dragging);
@@ -364,7 +362,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // unsupported, NON-API function
-    fluid.reorderer.handleDirectionKeyDown = function (thatReorderer, evt) {
+    fluid.reorderer.handleDirectionKeyDown = async function (thatReorderer, evt) {
         var item = thatReorderer.activeItem;
         if (!item) {
             return true;
@@ -403,8 +401,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
 
             } else if (fluid.reorderer.noModifier(evt)) {
-                fluid.blur(item);
-                fluid.focus($(relativeItem.element));
+                await fluid.blur(item);
+                await fluid.focus(relativeItem.element);
             }
             return false;
         }
@@ -433,7 +431,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // unsupported, NON-API function
-    fluid.reorderer.requestMovement = function (thatReorderer, requestedPosition, item) {
+    fluid.reorderer.requestMovement = async function (thatReorderer, requestedPosition, item) {
         item = fluid.unwrap(item);
         // Temporary censoring to get around ModuleLayout inability to update relative to self.
         if (!requestedPosition || fluid.unwrap(requestedPosition.element) === item) {
@@ -451,7 +449,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         //$(thatReorderer.activeItem).removeClass(options.styles.selected);
 
         // refocus on the active item because moving places focus on the body
-        fluid.focus(activeItem);
+        await fluid.focus(activeItem);
 
         thatReorderer.refresh();
 
@@ -472,7 +470,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             thatReorderer.events.afterMove.addListener(function () {
                 var layoutHandler = thatReorderer.layoutHandler;
                 var model = layoutHandler.getModel ? layoutHandler.getModel() :
-                        options.acquireModel(thatReorderer);
+                    options.acquireModel(thatReorderer);
                 $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
         }
@@ -507,10 +505,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return evt.stopPropagation();
         };
 
-        var handleClick = function (evt) {
+        var handleClick = async function (evt) {
             var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
             if (fluid.dom.isContainer(handle, evt.target)) {
-                $(this).focus();
+                await fluid.focus(this);
             }
         };
 
@@ -521,8 +519,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 selectable.addClass(thatReorderer.options.styles.defaultStyle);
 
                 selectable.on("blur.fluid.reorderer", handleBlur);
-                selectable.focus(handleFocus);
-                selectable.click(handleClick);
+                selectable.on("focus", handleFocus);
+                selectable.on("click", handleClick);
 
                 selectable.attr("role", thatReorderer.options.containerRole.item);
                 selectable.attr("aria-selected", "false");
@@ -562,17 +560,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var styles = options.styles;
         item.attr("aria-grabbed", "false");
 
-        item.mouseover(
-            function () {
-                thatReorderer.events.onHover.fire(item, true);
-            }
-        );
+        item.on("mouseover", function () {
+            thatReorderer.events.onHover.fire(item, true);
+        });
 
-        item.mouseout(
-            function () {
-                thatReorderer.events.onHover.fire(item, false);
-            }
-        );
+        item.on("mouseout", function () {
+            thatReorderer.events.onHover.fire(item, false);
+        });
         var avatar;
         var handle = thatReorderer.dom.fastLocate("grabHandle", item);
 
@@ -597,7 +591,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var handlePos = fluid.dom.computeAbsolutePosition(handle);
                 var handleWidth = handle.offsetWidth;
                 var handleHeight = handle.offsetHeight;
-                item.focus();
+                // Typically with `fluid.focus` we'd use async/await to wait for it to complete. However, with this
+                // function that can result in breaking the drag and drop interaction. For example with the layout
+                // reorderer, after reordering some items, clicking outside of the orderable element retains focus on
+                // the reoderable element, but it may no longer be reorderable.
+                // see: https://github.com/fluid-project/infusion/pull/1008#discussion_r569525065
+                fluid.focus(item);
                 item.removeClass(options.styles.selected);
                 // all this junk should happen in handler for a new event - although note that mouseDrag style might cause display: none,
                 // invalidating dimensions
@@ -607,7 +606,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 dropManager.startDrag(e, handlePos, handleWidth, handleHeight);
                 avatar.show();
             },
-            stop: function (e, ui) {
+            stop: async function (e, ui) {
                 item.removeClass(options.styles.mouseDrag);
                 item.addClass(options.styles.selected);
                 $(thatReorderer.activeItem).attr("aria-grabbed", "false");
@@ -620,9 +619,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 thatReorderer.setDropEffects("none");
                 dropManager.endDrag();
 
-                thatReorderer.requestMovement(dropManager.lastPosition(), item);
+                await thatReorderer.requestMovement(dropManager.lastPosition(), item);
                 // refocus on the active item because moving places focus on the body
-                thatReorderer.activeItem.focus();
+                await fluid.focus(thatReorderer.activeItem);
             },
             // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
             // See https://github.com/jquery/jquery-ui/pull/963
@@ -810,8 +809,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Labelling *
      *************/
 
-    /** ARIA labeller component which decorates the reorderer with the function of announcing the current
-      * focused position of the reorderer as well as the coordinates of any requested move */
+    /*
+     * ARIA labeller component which decorates the reorderer with the function of announcing the current
+     * focused position of the reorderer as well as the coordinates of any requested move
+     */
 
     fluid.defaults("fluid.reorderer.labeller", {
         gradeNames: ["fluid.component"],
@@ -944,7 +945,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             recentStatus = that.resolver.resolve("recentStatus", {position: recentPosition});
         }
         var topModel = {
-            item: typeof (labelSource) === "string" ? labelSource : fluid.dom.getElementText(fluid.unwrap(labelSource)),
+            item: typeof(labelSource) === "string" ? labelSource : fluid.dom.getElementText(fluid.unwrap(labelSource)),
             position: that.positionTemplate.resolveFunc(that.positionTemplate.template, indices),
             movable: that.resolver.resolve(elementClass === "locked" ? "fixed" : "movable"),
             recentStatus: recentStatus || ""

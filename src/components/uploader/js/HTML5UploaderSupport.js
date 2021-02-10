@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -53,17 +51,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
         events.onFileError.fire(file,
-                                fluid.uploader.errorConstants.UPLOAD_FAILED,
-                                xhr.status,
-                                xhr);
+            fluid.uploader.errorConstants.UPLOAD_FAILED,
+            xhr.status,
+            xhr);
         events.onFileComplete.fire(file);
     };
 
     fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
         events.onFileError.fire(file,
-                                fluid.uploader.errorConstants.UPLOAD_STOPPED,
-                                xhr.status,
-                                xhr);
+            fluid.uploader.errorConstants.UPLOAD_STOPPED,
+            xhr.status,
+            xhr);
         events.onFileComplete.fire(file);
     };
 
@@ -269,7 +267,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      ********************/
 
     fluid.uploader.bindEventsToFileInput = function (that, fileInput) {
-        fileInput.click(function () {
+        fileInput.on("click", function () {
             that.events.onBrowse.fire();
         });
 
@@ -292,18 +290,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
         }
 
-        fileInput.change(function () {
+        fileInput.on("change", function () {
             var files = fileInput[0].files;
             that.renderFreshMultiFileInput();
             that.events.onFilesQueued.fire(files);
         });
 
-        fileInput.focus(function () {
+        fileInput.on("focus", function () {
             that.browseButton.addClass("focus");
             that.events.onFocusFileInput.fire(that, fileInput, true);
         });
 
-        fileInput.blur(function () {
+        fileInput.on("blur", function () {
             that.browseButton.removeClass("focus");
             that.events.onFocusFileInput.fire(that, fileInput, false);
         });

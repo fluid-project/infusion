@@ -14,8 +14,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /** This file contains functions which depend on the presence of a browser-style DOM document
  *  and which depend on the contents of Fluid.js **/
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -64,7 +62,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         };
-//        fluid.pushArray(fluid.domMaterialiserManager.idToModelListeners, that.id, listener);
+        //        fluid.pushArray(fluid.domMaterialiserManager.idToModelListeners, that.id, listener);
         that.applier.modelChanged.addListener({segs: segs}, listener);
         that.events.onDomBind.addListener(function () {
             var modelValue = fluid.getImmediate(that.model, segs);
@@ -178,8 +176,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** A generalisation of jQuery.val to correctly handle the case of acquiring and setting the value of clustered
      * radio button/checkbox sets, potentially, given a node corresponding to just one element.
-     * @param {jQuery} nodeIn The node whose value is to be read or written
-     * @param {Any} newValue If `undefined`, the value will be read, otherwise, the supplied value will be applied to the node
+     * @param {jQuery} nodeIn - The node whose value is to be read or written
+     * @param {Any} newValue - If `undefined`, the value will be read, otherwise, the supplied value will be applied to the node
      * @return {Any} The queried value, if `newValue` was undefined
      */
     fluid.value = function (nodeIn, newValue) {
@@ -225,7 +223,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 return element.checked ? element.value : null;
             });
             return node.type === "radio" ? checked[0] :
-               isMultiple ? checked : !!checked[0]; // else it's a checkbox
+                isMultiple ? checked : !!checked[0]; // else it's a checkbox
         }
     };
 
@@ -485,9 +483,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.globalDismissal = function (nodes, dismissFunc) {
         fluid.each(nodes, function (node) {
-          // Don't bother to use the real id if it is from a foreign document - we will never receive events
-          // from it directly in any case - and foreign documents may be under the control of malign fiends
-          // such as tinyMCE who allocate the same id to everything
+            // Don't bother to use the real id if it is from a foreign document - we will never receive events
+            // from it directly in any case - and foreign documents may be under the control of malign fiends
+            // such as tinyMCE who allocate the same id to everything
             var id = fluid.unwrap(node).ownerDocument === document ? fluid.allocateSimpleId(node) : fluid.allocateGuid();
             if (dismissFunc) {
                 dismissList[id] = dismissFunc;
@@ -539,7 +537,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 $(excludeEl).on("focusin", that.canceller).
                     on("fluid-focus", that.canceller).
                     click(that.canceller).mousedown(that.canceller);
-    // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
+                // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
             });
         });
         if (!that.options.cancelByDefault) {

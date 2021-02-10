@@ -13,8 +13,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global YT */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -225,7 +223,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * video element if one does not already exist.
      *
      * @param {Component} that - the component
-
+     *
      * @return {YTPlayer} - an instance of a YouTube player controlling the embedded video
      */
     fluid.prefs.enactor.captions.youTubePlayer.initYTPlayer = function (that) {

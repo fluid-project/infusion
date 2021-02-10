@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
  */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -220,7 +220,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.uiOptions.prefsEditorCustomTocTest",
             "fluid.tests.uiOptions.prefsEditorLocalizedTest"

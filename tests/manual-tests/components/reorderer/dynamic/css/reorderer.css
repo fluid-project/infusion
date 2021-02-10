@@ -1,15 +1,16 @@
 
 .myorderable {
-  background-color: green;
-  border: solid;
+    background-color: green;
+    border: solid;
 }
 
 .fl-reorderer-avatar {
     background-color: pink;
     opacity: 0.75;
 }
+
 .fl-reorderer-dropMarker {
-    background-color: #F00;
-    padding: 4px 0 0 0;
+    background-color: #f00;
     height: 0;
+    padding: 4px 0 0 0;
 }

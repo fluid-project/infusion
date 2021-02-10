@@ -1,0 +1,91 @@
+{
+    "sources": {
+        "js": [
+            "./*.js",
+            "./demos/**/*.js",
+            "./examples/**/*.js",
+            "./src/**/*.js",
+            "./tests/**/*.js"
+        ],
+        "json": [
+            "./*.json",
+            "./.nycrc",
+            "./demos/**/*.json",
+            "./examples/**/*.json",
+            "./src/**/*.json",
+            "./tests/**/*.json"
+        ],
+        "md": [
+            "./*.md",
+            "./.github/**/*.md",
+            "./examples/**/*.md",
+            "./src/**/*.md",
+            "./tests/**/*.md"
+        ],
+        "css": [
+            "./demos/**/*.css",
+            "./examples/**/*.css",
+            "./src/components/**/*.css",
+            "./src/framework/**/*.css",
+            "./tests/**/*.css"
+        ],
+        "scss": [
+            "./src/framework/**/*.scss"
+        ]
+    },
+    "eslint": {
+        "js": {
+            "excludes": [
+                "./src/**/lib/**/*.js",
+                "./demos/**/lib/**/*.js",
+                "./tests/**/lib/**/*.js",
+                "./tests/**/infusion-1.5.js"
+            ]
+        },
+        "md": {
+            "excludes": [
+                "./src/**/lib/**/*.md",
+                "./demos/**/lib/**/*.md",
+                "./tests/**/lib/**/*.md"
+            ]
+        }
+    },
+    "json5lint": {
+        "enabled": false
+    },
+    "lintspaces": {
+        "newlines": {
+            "excludes": [
+                "./src/**/*.woff",
+                "./src/**/lib/**/*",
+                "./src/framework/preferences/css/*.css",
+                "./demos/**/lib/**/*",
+                "./tests/**/lib/**/*",
+                "./tests/**/infusion-1.5.js"
+            ]
+        }
+    },
+    "markdownlint": {
+        "excludes": [
+            "./src/**/lib/**/*.md",
+            "./demos/**/lib/**/*.md",
+            "./tests/**/lib/**/*.md"
+        ]
+    },
+    "mdjsonlint": {
+        "excludes": [
+            "./src/**/lib/**/*.md",
+            "./demos/**/lib/**/*.md",
+            "./tests/**/lib/**/*.md"
+        ]
+    },
+    "stylelint": {
+        "excludes": [
+            "./build/**/*.css",
+            "./dist/**/*.css",
+            "./src/framework/preferences/css/*.css",
+            "./src/lib/**/*.css",
+            "./tests/**/lib/**/*.css"
+        ]
+    }
+}

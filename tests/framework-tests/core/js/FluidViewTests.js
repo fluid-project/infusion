@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -133,8 +133,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.test("fluid.container: bind to a DOM element", function () {
             var container = document.getElementById("main-container");
             var result = fluid.container(container);
-            jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
-                                container, result[0]);
+            jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.", container, result[0]);
         });
 
         jqUnit.test("fluid.container: garbage object", function () {
@@ -242,7 +241,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
 
         function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) {
-            jqUnit.asyncTest("Dead man's blur test - " + message, function () {
+            jqUnit.asyncTest("Dead man's blur test - " + message, async function () {
 
                 noteTime();
 
@@ -267,7 +266,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
                 excluded.append($("<input></input>").addClass("excluded"));
 
-                fluid.focus(input);
+                await fluid.focus(input);
 
                 var blurOutwaiter = function () {
                     jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
@@ -275,12 +274,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     jqUnit.start();
                 };
 
-                fluid.blur(input);
+                await fluid.blur(input);
                 window.setTimeout(function () {
                     fluid.log("Apply " + provokeOp + " to " + provokeTarget);
                     var element = blurTester.locate(provokeTarget);
                     if (provokeOp === "click") {
-                        element.click();
+                        element.trigger("click");
                     } else {
                         fluid[provokeOp](element);
                     }

@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 // TODO: This is a very old-style file that is largely kept around for reference purposes, and
 // has largely been supplanted by new support for bubbling focus events in more recent versions
 // of jQuery - please communicate with the Fluid team if you find yourself thinking of using it
@@ -35,8 +33,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         };
 
         var addFocusChangeListeners = function (jQueryElements) {
-            jQueryElements.focus(focusOutputter);
-            jQueryElements.blur(blurOutputter);
+            jQueryElements.on("focus", focusOutputter);
+            jQueryElements.on("blur", blurOutputter);
         };
 
         return {
@@ -47,9 +45,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 var everything = context ? jQuery("*", context) : jQuery("*");
                 fluid.log("Everything: " + everything.length);
                 everything.each(function () {
-                   //if (jQuery(this).hasTabindex()) {
+                    //if (jQuery(this).hasTabindex()) {
                     focussableElements.push(this);
-                  // }
+                    // }
                 });
 
                 addFocusChangeListeners(jQuery(focussableElements));
@@ -58,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     }) (); // End of fluid.debug namespace.
 
     // Call listenForFocusEvents when the document is ready.
-    jQuery(document).ready(function () {
+    jQuery(function () {
         fluid.debug.listenForFocusEvents();
     });
 })();

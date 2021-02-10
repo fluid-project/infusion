@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var jqUnit = jqUnit || {};
+/* global jqUnit */
 
 // A function to load the testswarm agent if running in the testswarm environment
 // This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )
@@ -149,7 +149,7 @@ var jqUnit = jqUnit || {};
                 messageExt = " - node name";
             }
             else if (key === "nodeText") {
-                attr = jQuery.trim(fluid.dom.getElementText(node));
+                attr = fluid.dom.getElementText(node).trim();
             }
             else if (key === "nodeHTML") {
                 attr = $(node).html();

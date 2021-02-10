@@ -3,10 +3,6 @@
 .fl-prefsEditor-fullPreview {
     min-width: 800px;
 
-    ul li {
-        clear: left;
-    }
-
     .fl-prefsEditor-fullPreview-adjusters {
         width: 60%;
     }
@@ -17,7 +13,7 @@
 
     // Control section headers
     h2 {
-        border-top: 2px solid #dddddd;
+        border-top: 2px solid #ddd;
         margin-bottom: 20px;
     }
 
@@ -27,9 +23,10 @@
 
     // Controls
     ul {
-        margin-left: 0px;
+        margin-left: 0;
 
         li {
+            clear: left;
             list-style: none;
             width: 100%;
         }
@@ -37,7 +34,7 @@
 
     // Slider
     .fl-slider {
-        float:left;
+        float: left;
     }
 
     // Text controls
@@ -47,22 +44,23 @@
     }
 
     // Layout and link controls
-    .fl-prefsEditor-layout li, .fl-prefsEditor-links li {
+    .fl-prefsEditor-layout li,
+    .fl-prefsEditor-links li {
         padding-bottom: 10px;
     }
 
     // Preview Area
     .fl-prefsEditor-preview iframe {
+        border: 2px solid #d7d7d7;
         height: 480px;
         width: 100%;
-        border: 2px solid #d7d7d7;
     }
 
     .fl-prefsEditor-preview h2 {
-        font-weight: lighter;
+        color: #4d4d4d;
         font-size: 1.8em;
-        color: #4D4D4D;
-        padding: 18px 0px 0px 0px;
+        font-weight: lighter;
+        padding: 18px 0 0 0;
     }
 }
 

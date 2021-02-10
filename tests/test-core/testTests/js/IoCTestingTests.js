@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 /* eslint strict: ["error", "global"] */
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 "use strict";
 

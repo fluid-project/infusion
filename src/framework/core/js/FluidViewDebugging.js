@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -28,7 +26,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.debug.bindToggleClick = function (element, applier, path) {
-        element.click(function () {
+        element.on("click", function () {
             var state = fluid.get(applier.holder.model, path);
             applier.change(path, !state);
         });
@@ -59,7 +57,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.debug.highlighter.renderRoot = function (that) {
         var highlightRoot = $(that.options.markup.highlightRoot);
         that.container.append(highlightRoot);
-        highlightRoot.click(that.events.highlightClick.fire);
+        highlightRoot.on("click", that.events.highlightClick.fire);
     };
 
     fluid.debug.highlighter.clear = function (highlightRoot) {
@@ -661,7 +659,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.debug.browser("body");
     });
 

@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -69,12 +67,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onCreate.hideReset": {
                 listener: "fluid.prefs.separatedPanel.hideReset",
                 args: ["{separatedPanel}"]
-            }
-        },
-        invokers: {
-            bindReset: {
-                funcName: "fluid.bind",
-                args: ["{separatedPanel}.dom.reset", "click", "{arguments}.0"]
             }
         },
         components: {
@@ -170,8 +162,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     },
                     listeners: {
                         "onCreate.bindReset": {
-                            listener: "{separatedPanel}.bindReset",
-                            args: ["{that}.reset"]
+                            "this": "{separatedPanel}.dom.reset",
+                            method: "on",
+                            args: ["click", "{that}.reset"]
                         },
                         "afterReset.applyChanges": "{that}.applyChanges",
                         // Scroll to active panel after opening the separate Panel.

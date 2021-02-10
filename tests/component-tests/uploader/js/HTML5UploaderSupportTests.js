@@ -11,12 +11,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
 
         // Only run tests in browsers that support HTML5 upload
         if (!window.FormData) {
@@ -153,10 +153,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             };
 
             var checkEventForFile = function (eventName, file, transcriptEntry) {
-                jqUnit.assertEquals("An " + eventName + " event should have been fired.",
-                                    eventName, transcriptEntry.name);
-                jqUnit.assertEquals("The event should have be passed the correct file",
-                                    file, transcriptEntry.args[0]);
+                jqUnit.assertEquals("An " + eventName + " event should have been fired.", eventName, transcriptEntry.name);
+                jqUnit.assertEquals("The event should have be passed the correct file", file, transcriptEntry.args[0]);
             };
 
             var checkEventOrderForFiles = function (eventOrder, files, transcript) {
@@ -167,26 +165,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
             var checkOnFileCompleteEvent = function (transcript) {
                 var lastTranscriptEntry = fluid.peek(transcript);
-                jqUnit.assertEquals("The last event should be onFileComplete",
-                                    "onFileComplete", lastTranscriptEntry.name);
-                jqUnit.assertEquals("One argument should have been passed to onFileComplete",
-                                    1, lastTranscriptEntry.args.length);
+                jqUnit.assertEquals("The last event should be onFileComplete", "onFileComplete", lastTranscriptEntry.name);
+                jqUnit.assertEquals("One argument should have been passed to onFileComplete", 1, lastTranscriptEntry.args.length);
             };
 
             var checkAfterFileDialogEvent = function (expectedNumFiles, transcript) {
                 var lastTranscriptEntry = fluid.peek(transcript);
-                jqUnit.assertEquals("The last event should be afterFileDialog",
-                                    "afterFileDialog", lastTranscriptEntry.name);
-                jqUnit.assertEquals("One argument should have been passed to afterFileDialog",
-                                    1, lastTranscriptEntry.args.length);
+                jqUnit.assertEquals("The last event should be afterFileDialog", "afterFileDialog", lastTranscriptEntry.name);
+                jqUnit.assertEquals("One argument should have been passed to afterFileDialog", 1, lastTranscriptEntry.args.length);
+
                 jqUnit.assertEquals(expectedNumFiles + " files should have been passed to afterFileDialog",
-                                    expectedNumFiles, lastTranscriptEntry.args[0]);
+                    expectedNumFiles, lastTranscriptEntry.args[0]);
             };
 
             var checkEventSequenceForAddedFiles = function (eventOrder, expectedNumFilesAdded, files, transcript) {
                 var expectedNumEvents = eventOrder.length + 1;
-                jqUnit.assertEquals(expectedNumEvents + " events should have been fired.",
-                                    expectedNumEvents, transcript.length);
+                jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", expectedNumEvents, transcript.length);
                 checkEventOrderForFiles(eventOrder, files, transcript);
                 checkAfterFileDialogEvent(expectedNumFilesAdded, transcript);
             };
@@ -229,7 +223,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 var eventOrder = ["onFileSuccess", "onFileComplete"];
                 var expectedNumEvents = eventOrder.length;
                 jqUnit.assertEquals(expectedNumEvents + " events should have been fired.",
-                                    expectedNumEvents, transcript.length);
+                    expectedNumEvents, transcript.length);
                 checkEventOrderForFiles(eventOrder, files, transcript);
                 checkOnFileCompleteEvent(transcript);
             });
@@ -253,8 +247,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
                 var eventOrder = ["onFileError", "onFileComplete"];
                 var expectedNumEvents = eventOrder.length;
-                jqUnit.assertEquals(expectedNumEvents + " events should have been fired.",
-                                    expectedNumEvents, transcript.length);
+                jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", expectedNumEvents, transcript.length);
                 checkEventOrderForFiles(eventOrder, files, transcript);
                 checkOnFileCompleteEvent(transcript);
             });
@@ -278,8 +271,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
                 var eventOrder = ["onFileError", "onFileComplete"];
                 var expectedNumEvents = eventOrder.length;
-                jqUnit.assertEquals(expectedNumEvents + " events should have been fired.",
-                                    expectedNumEvents, transcript.length);
+                jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", expectedNumEvents, transcript.length);
                 checkEventOrderForFiles(eventOrder, files, transcript);
                 checkOnFileCompleteEvent(transcript);
             });
@@ -341,7 +333,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     if (focus) {
                         input[0].focus();
                     } else { // a Firefox bug makes a direct "blur" on the element itself ineffective at transferring focus away
-                        $("#focusTarget").focus();
+                        $("#focusTarget").trigger("focus");
                     }
                 }, 100); // This delay is necessary on Firefox since there seems an initial "refractory period" on load where the upload control will not accept focus
             };

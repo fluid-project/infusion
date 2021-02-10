@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 (function ($) {
     "use strict";
 
@@ -132,7 +130,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }]
     });
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.localizationPrefsEditorTests"
         ]);

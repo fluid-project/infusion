@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -25,7 +23,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * preferences defined at the top level and under the `properties` path.
      * The format is based on JSON Schema. see: https://github.com/GPII/gpii-json-schema/blob/master/docs/gss.md
      *
-     * @typedef {PrimarySchema}
+     * @typedef {Object} PrimarySchema
      * @property {Object} [properties] - Preference definitions may be grouped under this path, or all specified at the
      *                                   top level. Preferences are always keyed off of the preference name.
      */
@@ -89,12 +87,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
-     * @param {Object} schemaIndex - A global index of all primary schema grades registered with the framework.
-     * @param {String[]} preferences   - A list of the requested preferences.
-     * @param {PrimarySchema} [primarySchema] - Primary schema provided directly; not sourced from the `schemaIndex`.
-     *                                          This allows a means of supplying a Primary Schema without first having
-     *                                          to define a `fluid.prefs.schemas` grade to wrap it.
      *
+     * @param {Object} schemaIndex - A global index of all schema grades registered with the framework.
+     * @param {String[]} preferences - A list of all necessary top level preference names.
+     * @param {PrimarySchema} primarySchema - Primary schema provided directly; not sourced from the `schemaIndex`.
+     * This allows a means of supplying a Primary Schema without first having
+     * to define a `fluid.prefs.schemas` grade to wrap it.
      * @return {String[]} - A list of schema grades.
      */
     fluid.prefs.primaryBuilder.buildPrimary = function (schemaIndex, preferences, primarySchema) {

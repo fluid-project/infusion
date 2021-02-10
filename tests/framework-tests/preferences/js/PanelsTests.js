@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -970,7 +970,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"]
     });
 
-    /**
+    /*
 
     // This test is very faulty and has been commented out. There are several problems, including
     // i) registering an onCreate listener after a component has been created
@@ -1291,7 +1291,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
         inputs.prop("checked", false);
         var matchingInput = inputs.filter("[value='" + newValue + "']");
-        matchingInput.prop("checked", "checked").change();
+        matchingInput.prop("checked", "checked").trigger("change");
     };
 
     fluid.defaults("fluid.tests.contrastTester", {
@@ -1641,7 +1641,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }]
     });
 
-    $(document).ready(function () {
+    $(function () {
         fluid.test.runTests([
             "fluid.tests.textFontPanel",
             "fluid.tests.textFontPanelOverride",

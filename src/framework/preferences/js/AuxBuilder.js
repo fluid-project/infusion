@@ -11,9 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
-
 (function ($, fluid) {
     "use strict";
 
@@ -122,28 +119,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @property {CompositePanelsAuxConfig} [groups] - The configuration defining the composition of groups of preferences
      */
 
-     /**
-      * A processed, or processing, version of an {AuxiliarySchema}. The defined {PreferenceAuxConfig} preferences
-      * remain, but other top level properties are transformed into the various grade definition options.
-      *
-      * @typedef {Object} AuxSchema
-      * @property {Object} templateLoader - Definition for constructing the `templateLoader` component
-      * @property {Object} messageLoader - Definition for constructing the `messageLoader` component
-      * @property {Object} terms - Definition for constructing a grade containing the `terms` options
-      * @property {String} namespace - A namespace to use for the generated grades.
-      * @property {Object} [panels] - Definition for constructing the Preference Editor component, including the
-      *                               required panels (adjusters).
-      * @property {Object} [enactors] - Definition for constructing the UI Enhancer component, including the required
-      *                                 enactors.
-      * @property {Object} [initialModel] - Definition for constructing a grade containing the default model values of
-      *                                     the included preferences.
-      * @property {Object} [aliases_prefsEditor] - Definition for constructing a grade containing the model relays from
-      *                                            the preference model values to their aliases. Applied to the
-      *                                            Preference Editor model.
-      * @property {Object} [aliases_enhancer] - Definition for constructing a grade containing the model relays from
-      *                                         the preference model values to their aliases. Applied to the UI Enhancer
-      *                                         model.
-      */
+    /**
+     * A processed, or processing, version of an {AuxiliarySchema}. The defined {PreferenceAuxConfig} preferences
+     * remain, but other top level properties are transformed into the various grade definition options.
+     *
+     * @typedef {Object} AuxSchema
+     * @property {Object} templateLoader - Definition for constructing the `templateLoader` component
+     * @property {Object} messageLoader - Definition for constructing the `messageLoader` component
+     * @property {Object} terms - Definition for constructing a grade containing the `terms` options
+     * @property {String} namespace - A namespace to use for the generated grades.
+     * @property {Object} [panels] - Definition for constructing the Preference Editor component, including the
+     *                               required panels (adjusters).
+     * @property {Object} [enactors] - Definition for constructing the UI Enhancer component, including the required
+     *                                 enactors.
+     * @property {Object} [initialModel] - Definition for constructing a grade containing the default model values of
+     *                                     the included preferences.
+     * @property {Object} [aliases_prefsEditor] - Definition for constructing a grade containing the model relays from
+     *                                            the preference model values to their aliases. Applied to the
+     *                                            Preference Editor model.
+     * @property {Object} [aliases_enhancer] - Definition for constructing a grade containing the model relays from
+     *                                         the preference model values to their aliases. Applied to the UI Enhancer
+     *                                         model.
+     */
 
     fluid.defaults("fluid.prefs.auxSchema", {
         gradeNames: ["fluid.component"],
@@ -192,7 +189,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param  {Object} commonOptions - The options to apply to the `root` object at the specified `path`. May include
      *                                  string tokens (%tokenName) to be sourced from `templateValues`.
      * @param  {Object.<String.String>} templateValues - A map of token names to the values which should be interpolated
-     * @return {Object|Undefined} - When successful nothing (Undefined) is returned and the `root` object is modified
+     * @return {Object|undefined} - When successful nothing (Undefined) is returned and the `root` object is modified
      *                              directly. When there is no existing value in the `root` object at the specified
      *                              `path`, the `root` object itself is returned without any modifications.
      */
@@ -226,7 +223,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
 
             key = fluid.stringTemplate(key, templateValues);
-            value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
+            value = typeof(value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
 
             fluid.set(opts, key, value);
         });
@@ -372,10 +369,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param  {AuxSchema} auxSchema - The {AuxiliarySchema} being processed to expand the composite panel definitions
      * @param  {CompositePanelsAuxConfig} compositePanelList - The groups of preference panels.
-     * @param  {[type]} panelCommonOptions - Additional configuration needed to mix into the panel component.
-     * @param  {[type]} subPanelCommonOptions - Additional configuration needed by sub panels.
-     * @param  {[type]} compositePanelBasedOnSubCommonOptions [description]
-     * @param  {[type]} panelModelCommonOptions - Configuration for relaying the panel component's model to the one used
+     * @param  {Object} panelCommonOptions - Additional configuration needed to mix into the panel component.
+     * @param  {Object} subPanelCommonOptions - Additional configuration needed by sub panels.
+     * @param  {Object} compositePanelBasedOnSubCommonOptions - [description]
+     * @param  {Object} panelModelCommonOptions - Configuration for relaying the panel component's model to the one used
      *                                            by the parent Prefs Editor. The configuration can include string
      *                                            tokens for "%internalModelName" and "%externalModelName" which will be
      *                                            interpolated with values from the `preferenceMap` and the flattened

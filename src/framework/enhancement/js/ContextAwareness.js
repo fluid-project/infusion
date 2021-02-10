@@ -13,8 +13,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global process */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -36,9 +34,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
 
     };
-    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a structure suitable for being sent to `fluid.contextAware.makeCheckMarkers` -
+
+    /**
+     * Peforms the computation for `fluid.contextAware.makeChecks` and returns a structure suitable for being sent to `fluid.contextAware.makeCheckMarkers` -
      *
-     * @return A hash of marker type names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
+     * @param {Object} checkHash - a hash of context awareness checks to compute
+     * @return {Object} - A hash of marker type names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
      */
     // unsupported, NON-API function
     fluid.contextAware.performChecks = function (checkHash) {

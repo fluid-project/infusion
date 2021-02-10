@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -212,10 +210,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.uploader.errorPanel.section.bindHandlers = function (that) {
         // Bind delete button
-        that.locate("deleteErrorButton").click(that.clear);
+        that.locate("deleteErrorButton").on("click", that.clear);
 
         // Bind hide/show error details link
-        that.locate("showHideFilesToggle").click(that.toggleDetails);
+        that.locate("showHideFilesToggle").on("click", that.toggleDetails);
     };
 
     fluid.uploader.errorPanel.section.renderHeader = function (that) {

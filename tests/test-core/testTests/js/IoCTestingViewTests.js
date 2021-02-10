@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
 /* eslint strict: ["error", "global"] */
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 "use strict";
 
@@ -22,11 +22,11 @@ fluid.registerNamespace("fluid.tests");
 fluid.defaults("fluid.tests.initTree", {
     gradeNames: ["fluid.test.testEnvironment"],
     components: {
-// natural place for this configuration is here - however, moved into driver to test FLUID-5132
-//        initTest: {
-//            type: "fluid.tests.initTest",
-//            createOnEvent: "{initTester}.events.onTestCaseStart"
-//        },
+        // natural place for this configuration is here - however, moved into driver to test FLUID-5132
+        //    initTest: {
+        //        type: "fluid.tests.initTest",
+        //        createOnEvent: "{initTester}.events.onTestCaseStart"
+        //    },
         initTester: {
             type: "fluid.tests.initTester"
         }
@@ -100,7 +100,7 @@ fluid.defaults("fluid.tests.buttonChild", {
 });
 
 fluid.tests.buttonChild.bindClick = function (that) {
-    that.container.click(function () {
+    that.container.on("click", function () {
         setTimeout(that.events.buttonClicked.fire, 1);
     });
 };
@@ -210,7 +210,7 @@ fluid.tests.startRendering = function (asyncTest, instantiator) {
     var decorators = fluid.renderer.getDecoratorComponents(asyncTest, instantiator);
     var decArray = fluid.values(decorators);
     jqUnit.assertEquals("Constructed one component", 1, decArray.length);
-    asyncTest.locate("button").click();
+    asyncTest.locate("button").trigger("click");
 };
 
 /** Global driver function **/

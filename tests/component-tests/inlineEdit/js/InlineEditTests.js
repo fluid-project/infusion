@@ -12,19 +12,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
  */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
 
-    $(document).ready(function () {
+    $(function () {
 
         jqUnit.module("InlineEdit Tests");
-        var customOptions = {selectors: {
-            text: ".customText",
-            editContainer: ".customEditContainer",
-            edit: ".customEdit"
-        },
+        var customOptions = {
+            selectors: {
+                text: ".customText",
+                editContainer: ".customEditContainer",
+                edit: ".customEdit"
+            },
             styles: {
                 invitation: "customInvitation",
                 focus: "customFocus"
@@ -93,14 +94,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         options: customOptions
                     };
                     fluid.selfRender(root,
-                        [{ID: "inline-edit",
-                            decorators: decorator},
-                            {ID: "inline-edit-control",
-                                valuebinding: "value"}],
-                         {cutpoints: [{id: "inline-edit", selector: "#inline-edit-custom"},
-                                      {id: "inline-edit-control", selector: "#edit-custom"}],
+                        [{
+                            ID: "inline-edit",
+                            decorators: decorator
+                        }, {
+                            ID: "inline-edit-control",
+                            valuebinding: "value"
+                        }],
+                        {
+                            cutpoints: [
+                                {id: "inline-edit", selector: "#inline-edit-custom"},
+                                {id: "inline-edit-control", selector: "#edit-custom"}
+                            ],
                             model: model,
-                            autoBind: true});
+                            autoBind: true
+                        }
+                    );
                     inlineEditor = decorator.that;
                 } else {
                     inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
@@ -219,17 +228,19 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("After initialization, display has custom invitation text.", customInvitation, display.text());
         });
 
-        jqUnit.test("Focussed invitation text (Default)", function () {
+        jqUnit.asyncTest("Focussed invitation text (Default)", async function () {
             jqUnit.expect(3);
 
             var display = $("#empty-display");
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
             var button = inlineEditor.textEditButton;
-            fluid.focus(button);
+            await fluid.focus(button);
             jqUnit.assertEquals("After focus, display has default focussed invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultFocussedViewText, display.text());
-            fluid.blur(button);
+            await fluid.blur(button);
             jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
+
+            jqUnit.start();
         });
 
         jqUnit.test("Invitation text (none)", function () {
@@ -309,19 +320,19 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
             // Sanity check first.
             jqUnit.assertEquals("Before editing, the model should have the default value.",
-                                defaultValue, inlineEditor.model.value);
+                defaultValue, inlineEditor.model.value);
 
             // Now edit and cancel. The default value should be restored.
             inlineEditor.edit();
             editField.val("foo");
             inlineEditor.cancel();
             jqUnit.assertEquals("After cancelling, the model's value should be the default again.",
-                                defaultValue, inlineEditor.model.value);
+                defaultValue, inlineEditor.model.value);
             jqUnit.assertEquals("After cancelling, the view text should return to its default.",
-                                defaultValue, text.text());
+                defaultValue, text.text());
         });
 
-        jqUnit.test("Keyboard Navigation Edit", function () {
+        jqUnit.asyncTest("Keyboard Navigation Edit", async function () {
             jqUnit.expect(14);
 
             var display = $("#display");
@@ -331,7 +342,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertTrue("TextEditButton is tabbable", fluid.tabindex(button) >= 0);
             jqUnit.assertFalse("Initially display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
 
-            fluid.focus(button);
+            await fluid.focus(button);
+
             jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.focus));
             jqUnit.isVisible("Before enter pressed, display field is visible", "#display");
             jqUnit.notVisible("Before enter pressed, edit field is hidden", "#edit-container");
@@ -351,8 +363,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
             jqUnit.isVisible("After enter pressed, button is visible", button);
 
-            fluid.blur(display);
+            await fluid.blur(button);
             jqUnit.assertFalse("After blur, display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
+
+            jqUnit.start();
         });
 
         jqUnit.test("Hover", function () {
@@ -394,7 +408,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var inlineEditor = fluid.inlineEdit("#inline-edit");
 
             assertDisplayModeVisibility(display, editContainer, inlineEditor);
-            display.click();
+            display.trigger("click");
             assertEditModeVisibility(display, editContainer, edit, inlineEditor);
         });
 
@@ -407,7 +421,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var button = inlineEditor.textEditButton;
 
             assertDisplayModeVisibility(display, editContainer, inlineEditor);
-            button.click();
+            button.trigger("click");
             assertEditModeVisibility(display, editContainer, edit, inlineEditor);
         });
 
@@ -419,7 +433,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var inlineEditor = fluid.inlineEdit("#inline-edit");
             var button = inlineEditor.textEditButton;
 
-            button.focus();
+            button.trigger("focus");
             button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
             jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
             jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
@@ -457,12 +471,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var edit = $("#edit");
             fluid.inlineEdit("#inline-edit");
 
-            display.click();
+            display.trigger("click");
             jqUnit.isVisible("Edit field is visible", "#edit-container");
 
             var testString = "Click me to edit...";
             edit.prop("value", testString);
-            edit.blur();
+            edit.trigger("blur");
             jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("Blur saves the edit", testString, display.text());
             jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
@@ -498,7 +512,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var options = {tooltipText: "Updating the default tooltip text..."};
             var editor = fluid.inlineEdit("#inline-override-tooltip", options);
             var inlineEditText = editor.locate("text");
-            inlineEditText.mouseover();
+            inlineEditText.trigger("mouseover");
 
             //tool tip enabled
             jqUnit.assertTrue("after mouse hover check if the tooltip was enabled", editor.tooltipEnabled());
@@ -589,17 +603,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 // Edit the first field.
                 toggleEditOnAndOff(editors[0]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.",
-                                  1, textFieldIds.length);
+                    1, textFieldIds.length);
                 jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.",
-                                    "edit", textFieldIds[0]);
+                    "edit", textFieldIds[0]);
 
                 // Edit the last field.
                 textFieldIds = [];
                 toggleEditOnAndOff(editors[1]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.",
-                                  1, textFieldIds.length);
+                    1, textFieldIds.length);
                 jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.",
-                                    "edit2", textFieldIds[0]);
+                    "edit2", textFieldIds[0]);
             });
 
             var testMultiInlineEdits = function (containerId, numEditors, hasUndo, options) {
@@ -644,10 +658,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 // edit injector, we expect an edit container div and an inner textfield.
                 jqUnit.assertNotUndefined("The self-rendered edit container should not be undefined.", editorContainer);
                 jqUnit.assertEquals("There should be one new element matching 'inline-edit-self-render-edit-container'",
-                                   1, editorContainer.length);
+                    1, editorContainer.length);
 
                 jqUnit.assertEquals("There should be one new text field within the edit container.",
-                                    1, editor.editField.length);
+                    1, editor.editField.length);
             });
 
             var assertInViewMode = function (component) {
@@ -670,7 +684,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 assertInEditMode(editor);
 
                 jqUnit.assertEquals("The contents of the edit field should be the same as the view text.",
-                                    $(textSel).text(), editor.editField.prop("value"));
+                    $(textSel).text(), editor.editField.prop("value"));
                 editor.finish();
                 assertInViewMode(editor);
             });
@@ -697,12 +711,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 assertVisState(undo, redo, true, false); // 7
 
                 var undoControl = insistSelect("There should be an undo control", undoer, "undoControl"); // 8
-                undoControl.click();
+                undoControl.trigger("click");
                 assertVisState(undo, redo, false, true); // 10
                 jqUnit.assertEquals("Model state should now be " + initialValue, initialValue, editor.model.value); // 11
 
                 var redoControl = insistSelect("There should be an redo control", undoer, "redoControl"); // 12
-                redoControl.click();
+                redoControl.trigger("click");
                 assertVisState(undo, redo, true, false); // 14
                 jqUnit.assertEquals("Model state should now be " + newValue, newValue, editor.model.value); // 15
             });
@@ -763,12 +777,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
                 setValue(editor, edit, "Change 2");
                 jqUnit.assertEquals("modelChanged 2", 2, changeCount);
-                undoControl.click();
+                undoControl.trigger("click");
                 jqUnit.assertEquals("modelChanged 3", 3, changeCount);
                 jqUnit.assertEquals("Undo 1", "Change 1", editor.model.value);
                 setValue(editor, edit, "Change 3");
                 jqUnit.assertEquals("modelChanged 4", 4, changeCount);
-                undoControl.click();
+                undoControl.trigger("click");
                 jqUnit.assertEquals("modelChanged 5", 5, changeCount);
                 jqUnit.assertEquals("Undo 1", "Change 1", editor.model.value);
             });
@@ -799,14 +813,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 jqUnit.assertEquals("After editing, the textEditButton text should be", "Edit text " + text, button.text());
             });
 
-            jqUnit.test("Container styling", function () {
+            jqUnit.asyncTest("Container styling", async function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var button = editor.textEditButton;
                 var text = editor.locate("text");
 
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-inlineBlock class on focus", text.parent().hasClass(editor.options.styles.displayView));
-                fluid.focus(button);
+                await fluid.focus(button);
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-container class on focus", text.parent().hasClass(editor.options.styles.focus));
+
+                jqUnit.start();
             });
 
             jqUnit.test("Remove container from tab order", function () {
@@ -853,11 +869,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
                 jqUnit.assertUndefined("textEditButton is invisible ", button);
 
-                display.focus();
+                display.trigger("focus");
                 display.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
                 jqUnit.isVisible("Keyboard navigation no longer effective without the textEditButton:  display text still visible", display);
 
-                display.click();
+                display.trigger("click");
                 jqUnit.isVisible("After mouse click, the edit container is visible", editContainer);
                 jqUnit.notVisible("After mouse click, the display text is hidden", display);
             });

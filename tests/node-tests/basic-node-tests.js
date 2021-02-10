@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 /* eslint-env node */
 "use strict";
 
-
 var fluid = require("../../src/module/fluid.js"),
     path = require("path");
 

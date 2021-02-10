@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -21,6 +19,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /******************
      * Pager Bar View *
      ******************/
+
     // TODO: Convert one day to the "visibility model" system (FLUID-4928)
     fluid.pager.updateStyles = function (pageListThat, newModel, oldModel) {
         var pageLinks = pageListThat.locate("pageLinks");
@@ -121,8 +120,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * An impl of a page strategy that will always display same number of page links (including skip place holders).
-     * @param   {Number} endLinkCount  - The number of elements first and last trunks of elements.
-     * @param   {Number} midLinkCount  - The number of elements from beside the selected number.
+     *
+     * @param   {Number} endLinkCount - The number of elements first and last trunks of elements.
+     * @param   {Number} midLinkCount - The number of elements from beside the selected number.
      * @return {Function} - A paging function.
      * @author  Eric Dalquist
      */
@@ -146,11 +146,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
             for (var page = 0; page < count; page++) {
                 if (page < endLinkCount || // start pages
-                        count - page <= endLinkCount || // end pages
-                        (anchoredLeft && page < anchoredEndWidth) || // pages if no skipped pages between start and mid
-                        (anchoredRight && page >= count - anchoredEndWidth) || // pages if no skipped pages between mid and end
-                        (page >= midStart && page <= midEnd) // pages around the mid
-                        ) {
+                    count - page <= endLinkCount || // end pages
+                    (anchoredLeft && page < anchoredEndWidth) || // pages if no skipped pages between start and mid
+                    (anchoredRight && page >= count - anchoredEndWidth) || // pages if no skipped pages between mid and end
+                    (page >= midStart && page <= midEnd) // pages around the mid
+                ) {
                     pages.push(page);
                     lastSkip = false;
                 } else if (!lastSkip) {
@@ -176,11 +176,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 },
                 {
                     type: "jQuery",
-                    func: "click",
-                    args: function (event) {
+                    func: "on",
+                    args: ["click", function (event) {
                         initiatePageChange.fire({pageIndex: page});
                         event.preventDefault();
-                    }
+                    }]
                 }
             ]
         };
@@ -403,13 +403,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             onCreate: {
                 "this": "{that}.container",
-                method: "change",
-                args: {
-                    expander: {
-                        funcName: "fluid.pager.directPageSize.onChange",
-                        args: ["{pager}.events.initiatePageSizeChange", "{that}.container"]
+                method: "on",
+                args: [
+                    "change",
+                    {
+                        expander: {
+                            funcName: "fluid.pager.directPageSize.onChange",
+                            args: ["{pager}.events.initiatePageSizeChange", "{that}.container"]
+                        }
                     }
-                }
+                ]
             }
         },
         modelListeners: {

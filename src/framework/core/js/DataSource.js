@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -190,7 +188,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
-    /** Operate the core "transforming promise workflow" of a dataSource's `set` method.
+    /**
+     * Operate the core "transforming promise workflow" of a dataSource's `set` method.
      * Any return from this is then pushed forwards through a range of the transforms (typically, e.g. just decoding it as JSON)
      * on its way back to the user via the onWriteResponse event.
      * @param {fluid.dataSource} that - The dataSource itself
@@ -247,9 +246,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
-// TODO: Note that no client currently sends "noencode"
-// TODO: Note that "pathname" gets resolved a 2nd time, with no polymorphism
-// TODO: Perform courtesies such as removing params which are substituted away, and CSV encoding compound params as per typical REST idioms
+    // TODO: Note that no client currently sends "noencode"
+    // TODO: Note that "pathname" gets resolved a 2nd time, with no polymorphism
+    // TODO: Perform courtesies such as removing params which are substituted away, and CSV encoding compound params as per typical REST idioms
     /**
      * Resolves (expands) a url or path with respect to the `directModel` supplied to a dataSource's API (get or set). There are three rounds of expansion - firstly, the string
      * entries as the values in "termMap" will be looked up as paths within `directModel`. The resulting values will then be URI Encoded, unless their value
@@ -343,7 +342,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Given an HTTP status code as returned by node's `http.IncomingMessage` class (or otherwise), determine whether it corresponds to
      * an error status. This performs a simple-minded check to see if it a number outside the range [200, 300).
-     * @param {Number} statusCode The HTTP status code to be tested
+     * @param {Number} statusCode - The HTTP status code to be tested
      * @return {Boolean} `true` if the status code represents an error status
      */
     fluid.dataSource.URL.isErrorStatus = function (statusCode) {

@@ -1,7 +1,7 @@
 /* pager example styles */
 
 .example-pager-container {
-    width:95%;
+    width: 95%;
 }
 
 .example-pager-container input {
@@ -16,9 +16,9 @@
     color: blue;
 }
 
-.example-pager-container a:hover{
+.example-pager-container a:hover {
     outline: 2px #000 solid;
-    padding:0px;
+    padding: 0;
 }
 
 /***********************************************
@@ -30,43 +30,58 @@
 }
 
 .example-pager-container thead {
+    background-color: #e6e7e8;
     color: #343499;
-    background-color: #E6E7E8;
 }
 
 .example-pager-container td {
-    padding: .5em .2em;
+    padding: 0.5em 0.2em;
 }
 
-.example-pager-head-select { width:5%; }
-.example-pager-head-members { width:25%; }
-.example-pager-head-email { width:25%; }
-.example-pager-head-role { width:15%; }
-.example-pager-head-comments { color: #000; }
+.example-pager-head-select {
+    width: 5%;
+}
+
+.example-pager-head-members {
+    width: 25%;
+}
+
+.example-pager-head-email {
+    width: 25%;
+}
+
+.example-pager-head-role {
+    width: 15%;
+}
+
+.example-pager-head-comments {
+    color: #000;
+}
 
 .example-pager-table-data {
-    width: 100%;
     clear: both;
+    width: 100%;
 }
 
 /***********************************************
  * The horizontal pager bar containing Previous, Next, and Page links.
  */
-.example-pager-bar  {
+.example-pager-bar {
+    margin-left: 0;
     min-width: 555px;
-    margin-left: 0em;
 }
 
-.example-pager-bar  li  {
-    display:inline;
-    float:left;
+.example-pager-bar li {
+    display: inline;
+    float: left;
 }
 
 /***********************************************
  * Previous and Next default and hover styles
  */
 
-.example-pager-previous, .example-pager-next {
+.example-pager-previous,
+.example-pager-next {
     margin: 1px;
     padding: 2px 6px 2px 6px; /* padding values to align Next and Previous links to Page numbered links */
 }
@@ -76,30 +91,27 @@
  */
 
 .example-pager-pageLink-default a {
-    /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
-    display:block;
-    float:left;
-
-    width:3em;
-    text-align:center;
-    margin:2px;
     border: 1px solid #afafaf;
-}
 
-.example-pager-pageLink-default a {
+    /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements. */
+    display: block;
+    float: left;
+    margin: 2px;
+    text-align: center;
     text-decoration: none;
+    width: 3em;
 }
 
 .example-pager-links .fl-pager-currentPage {
-    color: #fff;
-    display:block;
-    width:3em;
-    float:left;
     background: #000;
-    padding:0px;
-    margin:2px;
     border: 1px solid #000;
-    text-align:center;
+    color: #fff;
+    display: block;
+    float: left;
+    margin: 2px;
+    padding: 0;
+    text-align: center;
+    width: 3em;
 }
 
 .example-pager-links .fl-pager-currentPage:visited {
@@ -107,8 +119,8 @@
 }
 
 .example-pager-head a {
-    display:block;
-    width:100%;
+    display: block;
+    width: 100%;
 }
 
 /***********************************************
@@ -118,6 +130,6 @@
     margin-top: 10px;/* horizontal align page size selector to the pager bar. */
 }
 
- .example-pager-page-size  label {
+.example-pager-page-size label {
     margin-right: 2px;
- }
+}

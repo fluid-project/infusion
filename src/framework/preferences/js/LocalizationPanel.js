@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -20,9 +18,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Preferences Editor Localization *
      ***********************************/
 
-    /**
-    * A sub-component of fluid.prefs that renders the "localization" panel of the user preferences interface.
-    */
+    /*
+     * A sub-component of fluid.prefs that renders the "localization" panel of the user preferences interface.
+     */
     fluid.defaults("fluid.prefs.panel.localization", {
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {

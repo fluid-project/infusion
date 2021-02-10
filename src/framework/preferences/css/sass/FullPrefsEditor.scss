@@ -2,39 +2,36 @@
 
 // Control section headers
 .fl-prefsEditor {
-    h2 {
-        font-size: 1.29em;
-        font-weight: bold;
-        clear: both;
-        color: #444444;
-        padding: 14px 0px 5px 25px;
-    }
-
     // Save, reset, cancel buttons
     .fl-prefsEditor-buttons {
-        margin-top: 1em;
         float: left;
+        margin-top: 1em;
         width: 100%;
 
         input {
-            text-transform: uppercase;
-            text-decoration: underline;
-            font-weight: bold;
+            background-color: #f0f0f0;
             border: 2px solid #cecece;
             font-size: 1em;
-            padding: 5px;
+            font-weight: bold;
             height: 2.5em;
             margin-right: 3px;
-            background-color: #F0F0F0;
+            padding: 5px;
+            text-decoration: underline;
+            text-transform: uppercase;
         }
     }
 
     // Section header icons
     h2 {
-        display: flex;
         align-items: center;
-        white-space: nowrap;
+        clear: both;
+        color: #444;
+        display: flex;
+        font-size: 1.29em;
+        font-weight: bold;
         justify-content: flex-start;
+        padding: 14px 0 5px 25px;
+        white-space: nowrap;
         white-space: normal;
 
         [class*='fl-icon-'] {
@@ -56,7 +53,7 @@
     // Stepper
     // Custom styling for the textfield stepper when used in the prefs framework
     .fl-textfieldStepper {
-        justify-content: flex-start;;
+        justify-content: flex-start;
     }
 
     // Switch

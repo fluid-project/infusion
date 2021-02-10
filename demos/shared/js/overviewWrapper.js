@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/*global fluid, jQuery*/
-
 (function ($, fluid) {
     "use strict";
 
@@ -22,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     };
 
-    $(document).ready(function () {
+    $(function () {
         fluid.fetchResources(resources, function (resourceSpecs) {
             var bundle = JSON.parse(resourceSpecs.bundle.parsed);
             fluid.overviewPanel(".flc-overviewPanel", {

@@ -7,8 +7,8 @@
 }
 
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel .fl-inputs {
-    padding: 0.2rem;
     margin: 0.2rem;
+    padding: 0.2rem;
 }
 
 .fl-prefsEditor-onoff {
@@ -38,8 +38,8 @@
 
 .mpe-speakIncrease .mpe-panels {
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .mpe-speakIncrease ul.fl-inputs {

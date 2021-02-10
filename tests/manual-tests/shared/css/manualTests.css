@@ -1,8 +1,8 @@
 .instructions-container {
+    background: #fefabc;
     box-shadow: 1px 1px 5px 1px #707070;
-    background:#fefabc;
-    max-width: 50rem;
     margin: 1rem auto;
+    max-width: 50rem;
 }
 
 .instructions-content {
@@ -18,15 +18,15 @@
 }
 
 main {
-    width: 80%;
-    max-width: 80rem;
     margin: 2rem auto;
+    max-width: 80rem;
+    width: 80%;
 }
 
 /* Contrast theme specific styles */
 
 /* matches any class containing fl-theme- on the body, except the default */
 body[class*="fl-theme-"]:not([class*="default"]) .instructions-container {
-    box-shadow: none;
     border: 10px double;
+    box-shadow: none;
 }

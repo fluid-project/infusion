@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -152,17 +150,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-          /**
-           * Manually displays the tooltip
-           */
+            /**
+             * Manually displays the tooltip
+             */
             open: {
                 "this": "{that}.container",
                 method: "tooltip",
                 args: "open"
             },
-          /**
-           * Manually hides the tooltip
-           */
+            /**
+             * Manually hides the tooltip
+             */
             close: {
                 funcName: "fluid.tooltip.closeAll",
                 args: "{that}"

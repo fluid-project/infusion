@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -396,7 +394,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return new fluid.fetchResources.FetchOne(this.resourceSpec, this.resourceFetcher, this.segs.concat(fluid.makeArray(seg)));
     };
 
-// Note: This strange style of applying JSDoc comments is described at https://stackoverflow.com/questions/23095975/jsdoc-object-methods-with-method-or-property
+    // Note: This strange style of applying JSDoc comments is described at https://stackoverflow.com/questions/23095975/jsdoc-object-methods-with-method-or-property
     /** The lightweight `resourceFetcher` component (not an Infusion component or a class) coordinating the fetch process
      * designated by a `resourceSpecs` structure.
      * @name ResourceFetcher
@@ -452,7 +450,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
         /**
          * @name ResourceFetcher#fetchAll
-         * @method
+         * @function
          * @see fluid.fetchResources.fetchAll
          * @return {Promise} The `completionPromise` for the fetcher which will yield the full state of fetched `resourceSpecs`
          * in either success or failure
@@ -467,7 +465,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         /**
          * @name ResourceFetcher#fetchOneResource
-         * @method
+         * @function
          * @see fluid.fetchResources.fetchOneResource
          * @param {String} key - The key within this fetcher's `resourceSpecs` for the resource to be fetched
          * @return {Promise} A promise for the resolution of the resourceSpec's fetched value
@@ -478,7 +476,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         /**
          * @name ResourceFetcher#refetchOneResource
-         * @method
+         * @function
          * @see fluid.fetchResources.refetchOneResource
          * @param {String} key - The key within this fetcher's `resourceSpecs` for the resource to be fetched
          * @return {Promise} A promise for the resolution of the resourceSpec's fetched value

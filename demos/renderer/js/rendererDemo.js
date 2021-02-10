@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global fluid */
-
 var demo = demo || {};
 (function () {
     "use strict";
@@ -117,9 +115,11 @@ var demo = demo || {};
             {ID: "canape-header", value: strings.plate},
             {ID: "price-header", value: strings.price},
             {ID: "choose-header", value: strings.include},
-            {ID: "canapes", optionlist: {value: codes},
-                          optionnames: {value: names},
-                          selection: {valuebinding: "canapes"}
+            {
+                ID: "canapes",
+                optionlist: {value: codes},
+                optionnames: {value: names},
+                selection: {valuebinding: "canapes"}
             }
         ];
         var canapeRows = fluid.transform(codes, function (opt, index) {

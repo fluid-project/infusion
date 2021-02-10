@@ -11,10 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/* global Symbol, Proxy */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -85,7 +81,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             var path = instantiator.idToPath(fluid.peek(thatStack).id);
             var segs = instantiator.parseEL(path);
-                // TODO: we should now have no longer shortness in the stack
+            // TODO: we should now have no longer shortness in the stack
             segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
             return segs;
         }
@@ -1286,7 +1282,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.constructRootComponents(fluid.globalInstantiator); // currently a singleton - in future, alternative instantiators might come back
 
-    /** Expand a set of component options either immediately, or with deferred effect.
+    /*
+     * Expand a set of component options either immediately, or with deferred effect.
      *  The current policy is to expand immediately function arguments within fluid.assembleCreatorArguments which are not the main options of a
      *  component. The component's own options take <code>{defer: true}</code> as part of
      *  <code>outerExpandOptions</code> which produces an "expandOptions" structure holding the "strategy" and "initter" pattern
@@ -1295,8 +1292,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  used by preference for standard immediate expansion.
      */
 
-// TODO: Can we move outerExpandOptions to 2nd place? only user of 3 and 4 is fluid.makeExpandBlock
-// TODO: Actually we want localRecord in 2nd place since outerExpandOptions is now almost disused
+    // TODO: Can we move outerExpandOptions to 2nd place? only user of 3 and 4 is fluid.makeExpandBlock
+    // TODO: Actually we want localRecord in 2nd place since outerExpandOptions is now almost disused
     fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
         if (!args) {
             return args;
@@ -1364,10 +1361,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Begin the process of expanding component options. Generates the core ``mergeBlocks'' array which drives the expansion process. Has
      * various other side-effects, such as hoisting the "container" option, adding framework builtins to the supplied mergePolicy, and computing
      * the priorities of the merge blocks, as a result of generally poor factoring in this area and work in progress.
-     * @param mergePolicy {CompiledMergePolicy} A "compiled" mergePolicy object as output from `fluid.compileMergePolicy`
-     * @param potentia {Potentia} The `create` potentia responsible for this component construction
-     * @param lightMerge {LightMerge} The lightly merged options for the component
-     * @param that {Component} The component in progress
+     * @param {CompiledMergePolicy} mergePolicy - A "compiled" mergePolicy object as output from `fluid.compileMergePolicy`
+     * @param {Potentia} potentia - The `create` potentia responsible for this component construction
+     * @param {LightMerge} lightMerge - The lightly merged options for the component
+     * @param {Component} that - The component in progress
      * @return {MergeBlock[]} An array of `MergeBlock` structures ready to mount in the `shadow.mergeOptions` structure.
      */
     // This is the initial entry point from the non-IoC side reporting the first presence of a new component - called from fluid.mergeComponentOptions
@@ -1402,7 +1399,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         return togo;
     };
-
 
     fluid.computeDynamicComponentKey = function (recordKey, sourceKey) {
         return recordKey + (sourceKey === 0 || sourceKey === "0" ? "" : "-" + sourceKey); // TODO: configurable name strategies
@@ -1446,7 +1442,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "arguments": fluid.makeArray(arguments)
             };
             fluid.pushActivity("initDeferred", "instantiating deferred component %componentName of parent %that due to event %eventName",
-             {componentName: componentName, that: that, eventName: eventName});
+                {componentName: componentName, that: that, eventName: eventName});
             var freshLightMerge = fluid.copy(lightMerge);
             delete freshLightMerge.createOnEvent;
             fluid.registerConcreteSubPotentia(freshLightMerge, key, 0, that, localRecord);
@@ -1535,12 +1531,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Amalgamates any further creations with any existing potentia at a path
-    * @param {PotentiaList} potentiaList - A `PotentiaList` structure as constructed by `fluid.blankPotentiaList` holding the potentiae in
-    *     progress for a particular tree transaction
-    * @param {String} path - Path at which the potentia will be registered
-    * @param {Potentia} topush - A "create" potentia
-    * @return {Potentia|Undefined} `topush` if this was the first potentia registered for this path
-    */
+     * @param {PotentiaList} potentiaList - A `PotentiaList` structure as constructed by `fluid.blankPotentiaList` holding the potentiae in
+     *     progress for a particular tree transaction
+     * @param {String} path - Path at which the potentia will be registered
+     * @param {Potentia} topush - A "create" potentia
+     * @return {Potentia|Undefined} `topush` if this was the first potentia registered for this path
+     */
     fluid.pushCreatePotentia = function (potentiaList, path, topush) {
         var existing = potentiaList.pathToPotentia[path];
         if (existing && !existing.applied) {
@@ -1643,7 +1639,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Potentia} potentia - Creation potentia for the component
      * @param {LightMerge} lightMerge - A set of lightly merged component options as returned from `fluid.lightMergeRecords`
-     * @return {Component|Null} A component shell which has begun the process of construction, or `null` if the component
+     * @return {Component|null} A component shell which has begun the process of construction, or `null` if the component
      * has been configured away by resolving to the type "fluid.emptySubcomponent"
      */
     fluid.initComponentShell = function (potentia, lightMerge) {
@@ -2247,7 +2243,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Operate one phase of a tree transaction, consisting of a list of component destructions and a list of
      * component creations.
      * @param {TreeTransaction} transRec - The tree transaction in progress
-     * @param {fluid.promise.sequencer} sequencer - The sequencer to accumulate workflow actions generated during this phase
      */
     fluid.commitPotentiaePhase = function (transRec) {
         var pendingPotentiae = transRec.pendingPotentiae;
@@ -2287,7 +2282,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String} transactionId - The id of the tree transaction to be committed - this must already have been started
      * with `fluid.beginTreeTransaction`.
      * @param {fluid.sequencer} [resumeSequencer] - Used to signal a resumptive dispatch to self
-     * @return {Shadow|Undefined} The shadow record for the first component to be constructed during the transaction phase, if any.
+     * @return {Shadow|undefined} The shadow record for the first component to be constructed during the transaction phase, if any.
      */
     fluid.commitPotentiae = function (transactionId, resumeSequencer) {
         var instantiator = fluid.globalInstantiator;
@@ -2399,7 +2394,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns the current tree transaction which a constructing component is enlisted in. This may be undefined
      * if the transaction has concluded.
-     * @return {TreeTransaction|Undefined} The tree transaction.
+     * @return {TreeTransaction|undefined} The tree transaction.
      */
     fluid.currentTreeTransaction = function () {
         var instantiator = fluid.globalInstantiator;
@@ -2483,7 +2478,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    path: {String|Array of String} Path where the component is to be constructed or destroyed, represented as a string or array of segments
      *    componentDepth: {Number} The depth of nesting of this record from the originally created component - defaults to 0
      *    records: {Array of Object} A component's construction record, as they would currently appear in a component's "options.components.x" record
-     * @param {String} [transactionId] [optional] A transaction id in which to enlist this registration. If this is omitted, the current transaction
+     * @param {String} [transactionId] - [optional] A transaction id in which to enlist this registration. If this is omitted, the current transaction
      *     will be used, if there is one - otherwise, a fresh transaction will be allocated using `fluid.beginTreeTransaction`.
      * @return {TreeTransaction} - The transaction that the supplied potentia record was enrolled into
      */
@@ -2547,7 +2542,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *         be committed, and the user must do so themselves via `fluid.commitPotentiae`
      *     returnTransaction {Boolean} [optional] If `true`, the return value will be the transaction record rather than any constructing component. This is most
      *         useful to detect the point of failure of an asynchronously constructed component by attaching to `transRec.promise`.
-     * @return {Component|TreeTransaction|Undefined} The constructed component, if its construction has begun, or the transaction record, if `returnTransaction` was requested.
+     * @return {Component|TreeTransaction|undefined} The constructed component, if its construction has begun, or the transaction record, if `returnTransaction` was requested.
      */
     fluid.construct = function (path, componentOptions, constructOptions) {
         constructOptions = constructOptions || {};
@@ -2598,12 +2593,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return transRec;
     };
 
-   /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
-    * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
-    * @param {String|Object} options - Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
-    * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
-    * @return {Component} The constructed component
-    */
+    /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
+     * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
+     * @param {String|Object} options - Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
+     * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+     * @return {Component} The constructed component
+     */
+
     fluid.constructSingle = function (parentPath, options, instantiator) {
         instantiator = instantiator || fluid.globalInstantiator;
         parentPath = parentPath || "";
@@ -2628,11 +2624,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.construct(segs, options);
     };
 
-    /** Destroy an instance created by `fluid.constructSingle`
+    /**
+     * Destroy an instance created by `fluid.constructSingle`
+     *
      * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
      * @param {String} typeName - The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
-    */
+     */
     fluid.destroySingle = function (parentPath, typeName, instantiator) {
         instantiator = instantiator || fluid.globalInstantiator;
         var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
@@ -2641,8 +2639,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.destroy(segs, instantiator);
     };
 
-    /** Registers and constructs a "linkage distribution" which will ensure that wherever a set of "input grades" co-occur, they will
+    /**
+     * Registers and constructs a "linkage distribution" which will ensure that wherever a set of "input grades" co-occur, they will
      * always result in a supplied "output grades" in the component where they co-occur.
+     *
      * @param {String} linkageName - The name of the grade which will broadcast the resulting linkage. If required, this linkage can be destroyed by supplying this name to `fluid.destroySingle`.
      * @param {String[]} inputNames - An array of grade names which will be tested globally for co-occurrence
      * @param {String|String[]} outputNames - A single grade name or array of grade names which will be output into the co-occuring component
@@ -2658,10 +2658,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.constructSingle([], linkageName);
     };
 
-    /** Retrieves a component by global path.
-    * @param {String|String[]} path - The global path of the component to look up, expressed as a string or as an array of segments.
-    * @return {Object} - The component at the specified path, or undefined if none is found.
-    */
+    /**
+     * Retrieves a component by global path.
+     *
+     * @param {String|String[]} path - The global path of the component to look up, expressed as a string or as an array of segments.
+     * @return {Object} - The component at the specified path, or undefined if none is found.
+     */
     fluid.componentForPath = function (path) {
         return fluid.globalInstantiator.pathToComponent[fluid.isArrayable(path) ? path.join(".") : path];
     };
@@ -2993,12 +2995,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         if (openPos !== -1 && closePos !== -1) {
             var trail = string.substring(closePos + 1);
-            if ($.trim(trail) !== "") {
+            if (trail.trim() !== "") {
                 fluid.fail("Badly-formed compact " + type + " record " + string + " - unexpected material following close parenthesis: " + trail);
             }
             var prefix = string.substring(0, openPos);
-            var body = $.trim(string.substring(openPos + 1, closePos));
-            var args = body === "" ? [] : fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
+            var body = string.substring(openPos + 1, closePos).trim();
+            var args = body === "" ? [] : fluid.transform(body.split(","), function (str) {return str.trim();}, fluid.coerceToPrimitive);
             var togo = fluid.upgradePrimitiveFunc(prefix, null);
             togo.args = args;
             return togo;
@@ -3092,10 +3094,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return EL ? {path: EL} : EL;
     };
 
-    /** Parse the string form of a contextualised IoC reference into an object.
+    /**
+     * Parse the string form of a contextualised IoC reference into an object.
+     *
      * @param {String} reference - The reference to be parsed. The character at position `index` is assumed to be `{`
-     * @param {String} [index] - [optional] The index into the string to start parsing at, if omitted, defaults to 0
-     * @param {Character} [delimiter] - [optional] A character which will delimit the end of the context expression. If omitted, the expression continues to the end of the string.
+     * @param {String} [index] - (optional) The index into the string to start parsing at, if omitted, defaults to 0
+     * @param {Character} [delimiter] - (optional) A character which will delimit the end of the context expression. If omitted, the expression continues to the end of the string.
      * @return {ParsedContext} A structure holding the parsed structure, with members
      *    context {String|ParsedContext} The context portion of the reference. This will be a `string` for a flat reference, or a further `ParsedContext` for a recursive reference
      *    path {String} The string portion of the reference
@@ -3231,7 +3235,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.expandSource = function (options, target, i, segs, deliverer, source, policy, recurse) {
         var expanded, isTrunk;
         var thisPolicy = fluid.derefMergePolicy(policy);
-        if (typeof (source) === "string" && !thisPolicy.noexpand) {
+        if (typeof(source) === "string" && !thisPolicy.noexpand) {
             if (!options.defaultEL || source.charAt(0) === "{") { // hard-code this for performance
                 fluid.pushActivity("expandContextValue", "expanding context value %source held at path %path", {source: source, path: fluid.path.apply(null, segs.slice(0, i))});
                 expanded = fluid.copy(fluid.resolveContextValue(source, options));

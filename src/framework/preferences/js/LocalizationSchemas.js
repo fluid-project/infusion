@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function (fluid) {
     "use strict";
 
@@ -52,13 +50,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.localization": {
                 "type": "string",
                 "default": "",
-                "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa"],
+                "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa", "pt_BR"],
                 "enumLabels": [
                     "localization-default",
                     "localization-en",
                     "localization-fr",
                     "localization-es",
-                    "localization-fa"
+                    "localization-fa",
+                    "localization-pt_BR"
                 ]
             }
         }

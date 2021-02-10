@@ -1,4 +1,4 @@
-  /*
+/*
 Copyright The Infusion copyright holders
 See the AUTHORS.md file at the top-level directory of this distribution and at
 https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
@@ -10,8 +10,6 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
-
-/* global fluid */
 
 (function () {
     "use strict";
@@ -98,11 +96,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.composite.increase", {
         gradeNames: ["fluid.prefs.compositePanel"],
-// Removed - we can't support this fallback from nonexistent resource behaviour after FLUID-6580
-/*        messageBase: {
-            increaseHeader: "increase"
-        },
-*/
+        // Removed - we can't support this fallback from nonexistent resource behaviour after FLUID-6580
+        /*        messageBase: {
+                    increaseHeader: "increase"
+                },
+        */
         selectors: {
             header: ".flc-prefsEditor-header",
             label: ".fluid-tests-composite-increase-header"

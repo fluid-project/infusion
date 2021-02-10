@@ -19,11 +19,11 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
-/* global jQuery:true, global */
+/* global global */
 /* exported jQuery */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
 (function (fluid) {
     "use strict";
@@ -163,4 +163,4 @@ var fluid = fluid || fluid_3_0_0;
 
 })(fluid_3_0_0);
 
-var jQuery = fluid.jQueryStandalone;
+var jQuery = fluid.jQueryStandalone; // eslint-disable-line no-redeclare

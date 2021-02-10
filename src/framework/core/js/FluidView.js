@@ -11,10 +11,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-/** This file contains functions which depend on the presence of a markup document
- *  somehow represented and which depend on the contents of Fluid.js **/
+/* This file contains functions which depend on the presence of a markup document
+ * somehow represented and which depend on the contents of Fluid.js
+ */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";
@@ -38,8 +39,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             options: 1
         },
         invokers: {
-            locate: { // We use this peculiar form of definition since the current implementation of makeInvoker can't
-                      // cope with a variable function, and the DOM binder instance is historically mutable
+            locate: {
+                // We use this peculiar form of definition since the current implementation of makeInvoker can't
+                // cope with a variable function, and the DOM binder instance is historically mutable
+                // TODO: We should be able to get rid of this again once we remove the virtual DOM
                 funcName: "fluid.apply",
                 args: {
                     func: "{that}.dom.locate",
@@ -77,7 +80,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // unsupported, NON-API function
     fluid.dumpSelector = function (selectable) {
-        return typeof (selectable) === "string" ? selectable :
+        return typeof(selectable) === "string" ? selectable :
             selectable.selector ? selectable.selector : "";
     };
 
@@ -140,14 +143,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         if (!container || !container.jquery || container.length !== 1) {
-            if (typeof (containerSpec) !== "string") {
+            if (typeof(containerSpec) !== "string") {
                 containerSpec = container.selector;
             }
             var count = container.length !== undefined ? container.length : 0;
             var extraMessage = container.selectorName ? " with selector name " + container.selectorName +
                 " in context " + fluid.dumpEl(containerSpec.context) : "";
-            fluid.fail((count > 1 ? "More than one (" + count + ") container elements were"
-                    : "No container element was") + " found for selector " + containerSpec + extraMessage );
+            fluid.fail((count > 1 ? "More than one (" + count + ") container elements were" :
+                "No container element was") + " found for selector " + containerSpec + extraMessage );
         }
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
@@ -209,7 +212,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 togo = userJQuery(); // TODO: This is not reasonable and must be made into an error case
             }
             else {
-                if (typeof (selector) === "function") {
+                if (typeof(selector) === "function") {
                     togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
                 } else {
                     togo = userJQuery(selector, thisContainer);

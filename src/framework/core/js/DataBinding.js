@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -484,9 +482,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
-     * @param {Object} initModelTransaction The record for the init transaction. This is a hash indexed by component id
+     * @param {Object} initModelTransaction - The record for the init transaction. This is a hash indexed by component id
      * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `completeOnInit`.
-     * @param {String} transId The id of the model transaction corresponding to the init model transaction
+     * @param {String} transId - The id of the model transaction corresponding to the init model transaction
      */
     fluid.operateInitialTransaction = function (initModelTransaction, transId) {
         var transacs = fluid.transform(initModelTransaction, function (recel) {
@@ -1151,7 +1149,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.parseModelRelay = function (that, mrrec, key) {
         fluid.pushActivity("parseModelRelay", "parsing modelRelay definition with key \"%key\" and body \"%body\" attached to component \"%that\"",
-                    {key: key, body: mrrec, that: that});
+            {key: key, body: mrrec, that: that});
         var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source, true) :
             {path: null, modelSegs: null};
         // TODO: We seem to have lost validation that the relay definition must contain "target" - currently bare exception
@@ -1318,7 +1316,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} optionsML - Reference into `{that}.options.modelListeners`
      * @param {Object} optionsMR - Reference into `{that}.options.modelRelay`
      * @param {fluid.changeApplier} applier - Reference into `{that}.applier`
-     * @return {Null} A dummy `null` value which will initialise the `{that}.modelRelay` member
+     * @return {null} A dummy `null` value which will initialise the `{that}.modelRelay` member
      */
     fluid.establishModelRelay = function (that, optionsModel, optionsML, optionsMR, applier) {
         var shadow = fluid.shadowForComponent(that);
@@ -1426,9 +1424,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.notifyInitModelWorkflow = function (shadow, treeTransaction) {
-       // Note that this really has many of the characteristics of a global workflow function, but all the book-keeping
-       // is done on our side, and notification needs to occur with respect to the skeleton's incident namespaces, so
-       // we use the first call in the transaction as a proxy for all
+        // Note that this really has many of the characteristics of a global workflow function, but all the book-keeping
+        // is done on our side, and notification needs to occur with respect to the skeleton's incident namespaces, so
+        // we use the first call in the transaction as a proxy for all
         if (!shadow.modelComplete) {
             var initModelTransaction = treeTransaction.initModelTransaction;
             var transRec = fluid.getModelTransactionRec(fluid.rootComponent, shadow.initTransactionId);
@@ -1632,7 +1630,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {ChangeMap} changeMap - A "ChangeMap" structure isomorphic to the model, holding "ADD" or "DELETE" at the highest
      * path where such a change has been received
      * @param {String[]} segs - Array of path segments into the structure
-     * @return {("ADD"|"DELETE"|Null)} Returns "ADD" or "DELETE" if such a change is found along the supplied path, otherwise `null`.
+     * @return {("ADD"|"DELETE"|null)} Returns "ADD" or "DELETE" if such a change is found along the supplied path, otherwise `null`.
      */
     fluid.model.isChangedPath = function (changeMap, segs) {
         for (var i = 0; i <= segs.length; ++i) {
@@ -1796,20 +1794,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return options.deltas ? options.deltaMap : null;
     };
 
+    /**
+     * A map and summary of the change content between objects.
+     *
+     * @typedef {Object} ModelDiff
+     * @property {Object|String} changeMap - An isomorphic map of the object structures to values "ADD" or "DELETE"
+     * indicating that values have been added/removed at that location. Note that in the case the object structure
+     * differs at the root, `changeMap` will hold the plain String value "ADD" or "DELETE"
+     * @property {Integer} changes - Counts the number of changes between the objects - The two objects are identical if
+     * `changes === 0`.
+     * @property {Integer} unchanged - Counts the number of leaf (primitive) values at which the two objects are
+     * identical. Note that the current implementation will double-count, this summary should be considered indicative
+     * rather than precise.
+     */
+
     // TODO: This algorithm is quite inefficient in that both models will be copied once each
     // supported, PUBLIC API function
-    /** Compare two models for equality using a deep algorithm. It is assumed that both models are JSON-equivalent and do
+    /**
+     * Compare two models for equality using a deep algorithm. It is assumed that both models are JSON-equivalent and do
      * not contain circular links.
-     * @param {Any} modela The first model to be compared
-     * @param {Any} modelb The second model to be compared
-     * @param {Object} options - If supplied, will receive a map and summary of the change content between the objects. Structure is:
-     *     changeMap: {Object/String} An isomorphic map of the object structures to values "ADD" or "DELETE" indicating
-     * that values have been added/removed at that location. Note that in the case the object structure differs at the root, <code>changeMap</code> will hold
-     * the plain String value "ADD" or "DELETE"
-     *     changes: {Integer} Counts the number of changes between the objects - The two objects are identical iff <code>changes === 0</code>.
-     *     unchanged: {Integer} Counts the number of leaf (primitive) values at which the two objects are identical. Note that the current implementation will
-     * double-count, this summary should be considered indicative rather than precise.
-     * @return {Boolean} `true` if the models are identical
+     *
+     * @param {Any} modela - The first model to be compared
+     * @param {Any} modelb - The second model to be compared
+     * @param {ModelDiff} options - (optional) If supplied, will receive a map and summary of the change content between
+     * the objects.
+     *
+     * @return {Boolean} - `true` if the models are identical
      */
     fluid.model.diff = function (modela, modelb, options) {
         options = options || {changes: 0, unchanged: 0, changeMap: {}}; // current algorithm can't avoid the expense of changeMap
@@ -1917,9 +1927,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     }
                     var invalidPath = invalidPaths[k];
                     spec.listener = fluid.event.resolveListener(spec.listener);
-                    var args = [multiplePaths ? newHolder.model : fluid.model.getSimple(newHolder, invalidPath),
-                                multiplePaths ? oldHolder.model : fluid.model.getSimple(oldHolder, invalidPath),
-                                multiplePaths ? [] : invalidPath.slice(1), changeRequest, transaction, applier];
+                    var args = [
+                        multiplePaths ? newHolder.model : fluid.model.getSimple(newHolder, invalidPath),
+                        multiplePaths ? oldHolder.model : fluid.model.getSimple(oldHolder, invalidPath),
+                        multiplePaths ? [] : invalidPath.slice(1), changeRequest, transaction, applier
+                    ];
                     // FLUID-5489: Do not notify of null changes which were reported as a result of invalidating a higher path
                     // TODO: We can improve greatly on efficiency by i) reporting a special code from fluid.matchChanges which signals the difference between invalidating a higher and lower path,
                     // ii) improving fluid.model.diff to create fewer intermediate structures and no copies
@@ -2115,7 +2127,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         /**
          * Initiate a fresh transaction on this applier, perhaps coordinated with other transactions sharing the same id across the component tree
          * Arguments all optional
-         * @param {String} localSource  - "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
+         * @param {String} localSource - "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
          * @param {String|Array|Object} globalSources - Global source identifiers common across this transaction, expressed as a single string, an array of strings, or an object with a "toString" method.
          * @param {String} transactionId - Global transaction id to enlist with.
          * @return {Object} - The component initiating the change.

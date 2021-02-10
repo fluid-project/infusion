@@ -20,14 +20,14 @@
 // UI Enhancer 'enhanced links' styling
 .fl-input-enhanced a {
     font-size: 125% !important;
-    text-decoration: underline !important;
     font-weight: bold !important;
+    text-decoration: underline !important;
 }
 
-.fl-syllabification-separator:before {
+.fl-syllabification-separator::before {
     content: "\2027"; // HYPHENATION POINT
 }
 
-.fl-syllabification-softHyphenPlaceholder:before {
+.fl-syllabification-softHyphenPlaceholder::before {
     content: "\00AD"; // SOFT HYPHEN
 }

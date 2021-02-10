@@ -7,18 +7,16 @@
  License MIT
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
-// Light fluidification of minimal promises library. See original gist at
-// https://gist.github.com/unscriptable/814052 for limitations and commentary
+    // Light fluidification of minimal promises library. See original gist at
+    // https://gist.github.com/unscriptable/814052 for limitations and commentary
 
-// This implementation provides what could be described as "flat promises" with
-// no support for structured programming idioms involving promise composition.
-// It provides what a proponent of mainstream promises would describe as
-// a "glorified callback aggregator"
+    // This implementation provides what could be described as "flat promises" with
+    // no support for structured programming idioms involving promise composition.
+    // It provides what a proponent of mainstream promises would describe as
+    // a "glorified callback aggregator"
 
     fluid.promise = function () {
         var that = {
@@ -312,11 +310,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-   /** Top-level API to operate a Fluid event which manages a sequence of
+    /**
+     * Top-level API to operate a Fluid event which manages a sequence of
      * chained transforms. Rather than being a standard listener accepting the
      * same payload, each listener to the event accepts the payload returned by the
      * previous listener, and returns either a transformed payload or else a promise
      * yielding such a payload.
+     *
      * @param {fluid.eventFirer} event - A Fluid event to which the listeners are to be interpreted as
      * elements cooperating in a chained transform. Each listener will receive arguments <code>(payload, options)</code> where <code>payload</code>
      * is the (successful, resolved) return value of the previous listener, and <code>options</code> is the final argument to this function
@@ -329,7 +329,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.promise.fireTransformEvent = function (event, payload, options) {
         options = options || {};
         var listeners = options.reverse ? fluid.makeArray(event.sortedListeners).reverse() :
-                fluid.makeArray(event.sortedListeners);
+            fluid.makeArray(event.sortedListeners);
         listeners = fluid.promise.filterNamespaces(listeners, options.filterNamespaces);
         var sequencer = fluid.promise.makeTransformer(listeners, payload, options);
         var canceller = sequencer.promise.cancel;

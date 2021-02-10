@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-/* global fluid, XHRMock */
+/* global XHRMock */
 
 (function () {
     "use strict";

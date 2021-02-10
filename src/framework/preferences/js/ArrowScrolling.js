@@ -11,8 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -63,15 +61,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onReady.scrollEvent": {
                 "this": "{that}.dom.scrollContainer",
-                method: "scroll",
-                args: [{
-                    expander: {
-                        // Relaying the scroll event to onScroll but debounced to reduce the rate of fire.  A high rate
-                        // of fire may negatively effect performance for complex handlers.
-                        func: "fluid.debounce",
-                        args: ["{that}.events.onScroll.fire", "{that}.options.onScrollDelay"]
+                method: "on",
+                args: [
+                    "scroll",
+                    {
+                        expander: {
+                            // Relaying the scroll event to onScroll but debounced to reduce the rate of fire.  A high rate
+                            // of fire may negatively effect performance for complex handlers.
+                            func: "fluid.debounce",
+                            args: ["{that}.events.onScroll.fire", "{that}.options.onScrollDelay"]
+                        }
                     }
-                }]
+                ]
             },
             "onReady.windowResize": {
                 "this": "window",
@@ -120,8 +121,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 record: {
                     "afterRender.bindScrollArrows": {
                         "this": "{that}.dom.header",
-                        method: "click",
-                        args: ["{prefsEditor}.eventToScrollIndex"]
+                        method: "on",
+                        args: ["click", "{prefsEditor}.eventToScrollIndex"]
                     }
                 },
                 target: "{that > fluid.prefs.panel}.options.listeners"
