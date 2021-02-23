@@ -535,6 +535,42 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.booleanOut.test("enabled", false);
     fluid.tests.booleanOut.test("enabled", true);
 
+    // Attribute relay tests
+    fluid.defaults("fluid.tests.attributeRelay", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            button: ".fl-expand-button"
+        },
+        model: {
+            expanded: false
+        },
+        modelRelay: {
+            ariaExpanded: {
+                source: "expanded",
+                target: "dom.button.attrs.aria-expanded"
+            },
+            ariaLabel: {
+                source: "expanded",
+                target: "dom.button.attrs.aria-label",
+                func: expanded => expanded ? "collapse" : "expand"
+            }
+        }
+    });
+
+    jqUnit.test("Attribute relay test ", function () {
+        var that = fluid.tests.attributeRelay(".flc-tests-attr-relay");
+        var checkState = function (expected) {
+            var button = that.locate("button")[0];
+            jqUnit.assertEquals("ARIA expanded attribute " + expected, String(expected), button.getAttribute("aria-expanded"));
+            jqUnit.assertEquals("ARIA label attribute " + expected, expected ? "collapse" : "expand", button.getAttribute("aria-label"));
+        };
+        checkState(false);
+        that.applier.change("expanded", true);
+        checkState(true);
+        that.applier.change("expanded", false);
+        checkState(false);
+    });
+
     // Class toggle tests
     fluid.defaults("fluid.tests.toggleClass", {
         gradeNames: "fluid.viewComponent",

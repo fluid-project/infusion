@@ -147,6 +147,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     materialiser: "fluid.materialisers.domOutput",
                     args: ["jQuery", {method: "text"}]
                 },
+                "attrs": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "attr", makeArgs: function (model) {
+                        return [ model.segs[3], model.value];
+                    }}]
+                },
                 "visible": {
                     materialiser: "fluid.materialisers.domOutput",
                     args: ["jQuery", {method: "toggle"}]

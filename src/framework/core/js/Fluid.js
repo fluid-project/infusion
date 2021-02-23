@@ -790,7 +790,7 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
     /** Extracts a particular member from each top-level member of a container, returning a new container of the same type
      * @param {Array|Object} holder - The container to be filtered
      * @param {String|String[]} name - An EL path to be fetched from each top-level member
-     * @return {Object} - The desired member component.
+     * @return {Array|Object} - The desired structure of fetched members
      */
     fluid.getMembers = function (holder, name) {
         return fluid.transform(holder, function (member) {
