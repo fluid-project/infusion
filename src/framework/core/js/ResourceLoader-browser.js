@@ -81,7 +81,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var promise = fluid.promise();
         var defaultOptions = {
             method: "GET",
-            port: 80,
             async: true
         };
 
@@ -93,7 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         var requestOptions = fluid.extend(true, defaultOptions, baseOptions);
         var whileMsg = " while executing HTTP " + requestOptions.method + " on url " + requestOptions.url;
-        fluid.log("DataSource Issuing " + (requestOptions.protocol.toUpperCase()).slice(0, -1) + " request with options ", requestOptions);
+
         promise.accumulateRejectionReason = function (originError) {
             return fluid.upgradeError(originError, whileMsg);
         };
@@ -121,6 +120,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         xhr.addEventListener("error", sendError);
 
         var url = fluid.dataSource.URL.condenseUrl(requestOptions);
+        requestOptions.url = url; // Write this back in for consistency in log message
+        fluid.log("DataSource Issuing " + (requestOptions.protocol.toUpperCase()).slice(0, -1) + " request with options ", requestOptions);
         // username and password in XHR open has sometimes been criticised https://bugs.chromium.org/p/chromium/issues/detail?id=707761
         xhr.open(requestOptions.method || "GET", url.toString(), requestOptions.async);
         fluid.resourceLoader.configureXHR(xhr, requestOptions);

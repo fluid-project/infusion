@@ -718,10 +718,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
-        if (!testCase.name) {
+        var name = fluid.expandImmediate(testCase.name, testCaseState.root);
+        if (!name) {
             fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
         }
-        jqUnit.module(testCase.name);
+        jqUnit.module(name);
         var fixtures = fluid.makeArray(testCase.tests);
         fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";

@@ -431,6 +431,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }]
     });
 
+    // FLUID-6597: Check that we can relay headers encoded in static options
+
     fluid.defaults("fluid.tests.dataSource.URL.headers.tests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
@@ -470,7 +472,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.tests.dataSource.URL.headers.checkHeaders = function (xhr) {
         jqUnit.assertEquals("Expected request header sent", "text/html;charset=utf-8", xhr.requestHeaders["Content-Type"]);
-        xhr.respond(200, { "Content-Type": "application/json" }, "<html></html>");
+        xhr.respond(200, { "Content-Type": "text/html;charset=utf-8" }, "<html></html>");
     };
 
     fluid.defaults("fluid.tests.dataSource.URL.headers.tester", {
@@ -489,7 +491,90 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }]
     });
 
+    // FLUID-6599: Check that we don't default port unnecessarily
+
+    fluid.defaults("fluid.tests.dataSource.URL.port.tests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        url: null, // Filled in by client
+        name: null,
+        components: {
+            sinonServer: {
+                type: "fluid.tests.sinonServer",
+                options: {
+                    invokers: {
+                        respond: {
+                            funcName: "fluid.tests.dataSource.URL.port.checkPort",
+                            args: ["{arguments}.0", "{testEnvironment}.options.url"]
+                        }
+                    },
+                    respondWith: {
+                        initModel: {
+                            method: "GET",
+                            url: "{testEnvironment}.options.url",
+                            response: {
+                                func: "{that}.respond"
+                            }
+                        }
+                    }
+                }
+            },
+            dsRead: {
+                type: "fluid.dataSource.URL",
+                options: {
+                    url: "{testEnvironment}.options.url"
+                }
+            },
+            dataSourceTester: {
+                type: "fluid.tests.dataSource.URL.port.tester"
+            }
+        }
+    });
+
+    fluid.tests.dataSource.URL.port.checkPort = function (xhr, baseURL) {
+        var url = new URL(xhr.url);
+        var base = new URL(baseURL, "http://localhost");
+        jqUnit.assertEquals("Expected port of \"" + base.port + "\" set", base.port, url.port);
+        xhr.respond(200, { "Content-Type": "application/json" }, "{}");
+    };
+
+    fluid.defaults("fluid.tests.dataSource.URL.port.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "{testEnvironment}.options.name",
+            tests: [{
+                expect: 2,
+                name: "Get JSON",
+                sequence: [{
+                    task: "{dsRead}.get",
+                    resolve: "jqUnit.assertDeepEq",
+                    resolveArgs: ["Expected value should be returned", {}, "{arguments}.0"]
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.dataSource.URL.port.httpsBlank.tests", {
+        gradeNames: "fluid.tests.dataSource.URL.port.tests",
+        url: "https://example.com",
+        name: "https URL without port"
+    });
+
+    fluid.defaults("fluid.tests.dataSource.URL.port.relative.tests", {
+        gradeNames: "fluid.tests.dataSource.URL.port.tests",
+        url: "/login",
+        name: "Relative URL"
+    });
+
+    fluid.defaults("fluid.tests.dataSource.URL.port.explicit.tests", {
+        gradeNames: "fluid.tests.dataSource.URL.port.tests",
+        url: "https://example.com:444",
+        name: "https URL with explicit port"
+    });
+
     fluid.test.runTests([
+        "fluid.tests.dataSource.URL.port.httpsBlank.tests",
+        "fluid.tests.dataSource.URL.port.relative.tests",
+        "fluid.tests.dataSource.URL.port.explicit.tests",
         "fluid.tests.dataSource.URL.headers.tests",
         "fluid.tests.dataSource.URL.json.tests",
         "fluid.tests.dataSource.plainText.tests",
