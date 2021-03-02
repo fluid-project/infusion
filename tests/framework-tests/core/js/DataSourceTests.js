@@ -532,7 +532,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.tests.dataSource.URL.port.checkPort = function (xhr, baseURL) {
         var url = new URL(xhr.url);
-        var base = new URL(baseURL, "http://localhost");
+        var base = new URL(baseURL, window.location);
         jqUnit.assertEquals("Expected port of \"" + base.port + "\" set", base.port, url.port);
         xhr.respond(200, { "Content-Type": "application/json" }, "{}");
     };
