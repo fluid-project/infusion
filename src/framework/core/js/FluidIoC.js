@@ -3421,11 +3421,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return shadow.proxy;
     };
 
+    fluid.possiblyProxyComponent = function (value) {
+        return fluid.isComponent(value) && value.lifecycleStatus !== "treeConstructed" ? fluid.proxyComponent(value) : value;
+    };
+
     fluid.proxyComponentArgs = function (args) {
         args.forEach(function (arg, i) {
-            if (fluid.isComponent(arg) && arg.lifecycleStatus !== "treeConstructed") {
-                args[i] = fluid.proxyComponent(arg);
-            }
+            args[i] = fluid.possiblyProxyComponent(arg);
         });
     };
 

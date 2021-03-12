@@ -1454,6 +1454,35 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.each(fluid.tests.fluid6570forms, fluid.tests.fluid6570test);
 
+    /** FLUID-6601: Component proxies via free transforms **/
+
+    fluid.defaults("fluid.tests.fluid6601root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            selectedId: null
+        },
+        modelRelay: {
+            shortForm: {
+                target: "anySelected",
+                func: "fluid.tests.fluid6601access",
+                args: ["{that}", "{that}.model.selectedId"]
+            }
+        },
+        invokers: {
+            nuffing: "fluid.identity()"
+        }
+    });
+
+    fluid.tests.fluid6601access = function (that, selectedId) {
+        var value = that.nuffing(selectedId);
+        return fluid.isValue(value);
+    };
+
+    jqUnit.test("FLUID-6601: Component proxies via transform", function () {
+        var that = fluid.tests.fluid6601root();
+        jqUnit.assertEquals("Correct initial relayed value via proxied material", false, that.model.anySelected);
+    });
+
     /** FLUID-6580: Integration constant lenses **/
 
     fluid.defaults("fluid.tests.fluid6580root", {
