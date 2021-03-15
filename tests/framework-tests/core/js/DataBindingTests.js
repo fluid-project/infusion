@@ -1035,6 +1035,39 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertUndefined("Conditional component should not have been constructed on startup", thatWithout.conditionalComponent);
     });
 
+    // The model relay between the parent component and a conditional component stops the contruction of the entire component
+    fluid.defaults("fluid.tests.fluid6603", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            constructComp: true,
+            relayValue: null
+        },
+        dynamicComponents: {
+            conditionalComponent: {
+                source: "{that}.model.constructComp",
+                type: "fluid.modelComponent",
+                options: {
+                    listeners: {
+                        "onCreate.modifyModelValue1": {
+                            listener: "{that}.applier.change",
+                            args: ["relayValue", true]
+                        }
+                    },
+                    modelRelay: {
+                        relayValue: "{fluid6603}.model.relayValue"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6603: Relay model values between the parent component and the conditional dynamic component", function () {
+        var that = fluid.tests.fluid6603();
+        jqUnit.assertTrue("Conditional component should have been constructed", fluid.isComponent(that.conditionalComponent));
+        jqUnit.assertTrue("Relayed value is set in the conditional component", that.conditionalComponent.model.relayValue);
+        jqUnit.assertTrue("Relayed value is set in the parent component", that.model.relayValue);
+    });
+
     /** FLUID-6390 - Hall of mirrors lensed components **/
 
     fluid.registerNamespace("fluid.tests.fluid6390mirror");
