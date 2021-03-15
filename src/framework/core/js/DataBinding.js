@@ -1228,7 +1228,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         if (fluid.isIoCReference(modelRec)) {
             var parsed = fluid.parseValidModelReference(that, "model reference from model (implicit relay)", modelRec, true);
             if (parsed.nonModel) {
-                value = fluid.isComponent(parsed.that) ? fluid.getForComponent(parsed.that, parsed.segs) : fluid.getImmediate(parsed.that, parsed.segs);
+                value = fluid.isComponent(parsed.that) ?
+                    fluid.possiblyProxyComponent(fluid.getForComponent(parsed.that, parsed.segs)) // Resolve FLUID-6601 for component references supplied to free transforms
+                    : fluid.getImmediate(parsed.that, parsed.segs);
                 if (value instanceof fluid.fetchResources.FetchOne) {
                     that.applier.resourceMap.push({segs: fluid.makeArray(segs), fetchOne: value});
                     // We don't support compositing of resource references since we couldn't apply this if their value changes
