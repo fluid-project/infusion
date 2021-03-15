@@ -1047,14 +1047,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 source: "{that}.model.constructComp",
                 type: "fluid.modelComponent",
                 options: {
-                    listeners: {
-                        "onCreate.modifyModelValue1": {
-                            listener: "{that}.applier.change",
-                            args: ["relayValue", true]
-                        }
+                    model: {
+                        relayValue: true
                     },
                     modelRelay: {
-                        relayValue: "{fluid6603}.model.relayValue"
+                        connectRelayValue: {
+                            source: "relayValue",
+                            target: "{fluid6603}.model.relayValue"
+                        }
                     }
                 }
             }
