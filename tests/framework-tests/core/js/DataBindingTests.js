@@ -1053,7 +1053,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     modelRelay: {
                         connectRelayValue: {
                             source: "relayValue",
-                            target: "{fluid6603}.model.relayValue"
+                            target: "{fluid6603}.model.relayValue",
+                            // forward: "liveOnly"
+                            excludeSource: "init"
                         }
                     }
                 }
