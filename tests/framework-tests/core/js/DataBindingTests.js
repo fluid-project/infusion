@@ -1035,7 +1035,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertUndefined("Conditional component should not have been constructed on startup", thatWithout.conditionalComponent);
     });
 
-    // The model relay between the parent component and a conditional component stops the contruction of the entire component
+    // Define the relay direction between the parent component and a conditional component
     fluid.defaults("fluid.tests.fluid6603", {
         gradeNames: "fluid.modelComponent",
         model: {
@@ -1054,7 +1054,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         connectRelayValue: {
                             source: "relayValue",
                             target: "{fluid6603}.model.relayValue",
-                            forward: {
+                            backward: {
                                 excludeSource: "init"
                             }
                         }
