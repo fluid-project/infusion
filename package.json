@@ -67,7 +67,7 @@
         "grunt-shell": "3.0.1",
         "grunt-terser": "1.0.0",
         "hypher": "0.2.5",
-        "jquery": "3.5.1",
+        "jquery": "3.6.0",
         "jquery-mockjax": "2.6.0",
         "jquery-simulate": "1.0.2",
         "jquery-ui": "1.12.1",
