@@ -7,7 +7,6 @@
         ],
         "dependencies": [
             "jQuery",
-            "normalize",
             "framework",
             "renderer"
         ]
