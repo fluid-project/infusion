@@ -53,6 +53,8 @@ $icon-font: 'PrefsFramework-Icons';
     // Drop downs
     select {
         border: 2px solid #ebebeb;
+        font-family: inherit;
+        font-size: 100%;
 
         &#textFont {
             display: block;

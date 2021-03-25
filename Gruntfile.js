@@ -200,7 +200,6 @@ module.exports = function (grunt) {
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
                 "src/lib/jquery/ui/js",
-                "src/lib/normalize",
                 "src/lib/open-dyslexic",
                 "src/lib/opensans",
                 "src/lib/roboto",
@@ -336,11 +335,6 @@ module.exports = function (grunt) {
                         "node_modules/jquery-ui/ui/widgets/tooltip.js"
                     ],
                     dest: "src/lib/jquery/ui/js/",
-                    expand: true,
-                    flatten: true
-                }, {
-                    src: "node_modules/normalize.css/normalize.css",
-                    dest: "src/lib/normalize/css/",
                     expand: true,
                     flatten: true
                 }, {

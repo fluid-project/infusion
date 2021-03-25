@@ -66,13 +66,6 @@
             "jQuery"
         ]
     },
-    "normalize": {
-        "name": "normalize.css",
-        "description": "Normalize.css makes browsers render all elements more consistently and in line with modern standards. It precisely targets only the styles that need normalizing.",
-        "cssFiles": [
-            "./lib/normalize/css/normalize.css"
-        ]
-    },
     "opensans": {
         "name": "opensans",
         "description": "Open Sans web font",
