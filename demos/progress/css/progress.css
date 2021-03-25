@@ -125,6 +125,8 @@
     background-color: #8bc5eb;
     border: 1px solid black;
     color: black;
+    font-family: inherit;
+    font-size: 100%;
     padding: 3px 15px 3px 15px;
 }
 
