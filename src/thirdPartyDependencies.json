@@ -98,12 +98,5 @@
             "./lib/roboto/fonts/Roboto-Slab-Regular.woff",
             "./lib/roboto/fonts/Roboto-Slab-Thin.woff"
         ]
-    },
-    "url-polyfill": {
-        "name": "url-polyfill",
-        "description": "Polyfill URL and URLSearchParams to match last WHATWG specifications",
-        "files": [
-            "./lib/url-polyfill/js/url-polyfill.js"
-        ]
     }
 }
