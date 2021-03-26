@@ -73,7 +73,8 @@
                         "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
-                                "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                                "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                                "tocMessage": "../../../../src/framework/preferences/messages/tableOfContents-enactor.json",
                             }
                         }
                     }
@@ -93,7 +94,7 @@
                         modelListeners: {
                             "panelIndex": [{
                                 listener: "fluid.prefs.prefsEditor.handleAutoSave",
-                                args: ["{that}"],
+                                args: ["{that}"],w
                                 namespace: "autoSavePanelIndex"
                             }]
                         },
