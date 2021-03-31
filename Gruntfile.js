@@ -204,7 +204,6 @@ module.exports = function (grunt) {
                 "src/lib/open-dyslexic",
                 "src/lib/opensans",
                 "src/lib/roboto",
-                "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
                 "tests/lib/mockjax",
                 "tests/lib/sinon"
@@ -361,11 +360,6 @@ module.exports = function (grunt) {
                 }, {
                     src: "node_modules/sinon/pkg/sinon.js",
                     dest: "tests/lib/sinon/js/",
-                    expand: true,
-                    flatten: true
-                }, {
-                    src: "node_modules/url-polyfill/url-polyfill.js",
-                    dest: "src/lib/url-polyfill/js/",
                     expand: true,
                     flatten: true
                 }]

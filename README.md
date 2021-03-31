@@ -230,7 +230,6 @@ Distribution bundles can be [viewed on unpkg](https://unpkg.com/browse/infusion/
 * open-dyslexic
 * opensans
 * roboto
-* url-polyfill
 
 ## How Do I Run Tests?
 
