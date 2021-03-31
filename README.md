@@ -226,7 +226,6 @@ Distribution bundles can be [viewed on unpkg](https://unpkg.com/browse/infusion/
 * jQueryUI
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
-* normalize
 * open-dyslexic
 * opensans
 * roboto
