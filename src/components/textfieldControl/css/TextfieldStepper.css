@@ -23,6 +23,8 @@
 /* Textfield Styling */
 
 .fl-textfieldStepper .fl-textfieldStepper-textField {
+    font-family: inherit;
+    font-size: 100%;
     margin: 0 0.5rem;
     text-align: center;
     width: 7rem;

@@ -68,5 +68,11 @@ td > span {
 .model-dump {
     border: solid 1px;
     font-family: monospace;
-    font-size: larger;
+    font-size: 18px;
+}
+
+button,
+input {
+    font-family: inherit;
+    font-size: 100%;
 }

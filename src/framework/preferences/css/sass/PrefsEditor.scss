@@ -53,6 +53,8 @@ $icon-font: 'PrefsFramework-Icons';
     // Drop downs
     select {
         border: 2px solid #ebebeb;
+        font-family: inherit;
+        font-size: 100%;
 
         &#textFont {
             display: block;
@@ -201,6 +203,8 @@ $icon-font: 'PrefsFramework-Icons';
         background-color: #fff;
         border: 2px solid #000;
         border-radius: 0.4rem;
+        font-family: inherit;
+        font-size: 100%;
         height: 2.4375em;
         width: 2.4375em;
     }

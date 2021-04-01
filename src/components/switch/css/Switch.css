@@ -14,6 +14,8 @@
     border-radius: calc(var(--fl-switch-knobSize) + var(--fl-switch-knobMargin));
     box-sizing: content-box;
     display: flex;
+    font-family: inherit;
+    font-size: 100%;
     margin: 0 1em;
     padding: 0;
     width: calc(var(--fl-switch-knobSize) * 3);
