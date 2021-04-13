@@ -3,6 +3,7 @@
 /products/
 /node_modules/
 /src/framework/preferences/css/*.css
+/src/framework/preferences/css/*.css.map
 /.bundle/
 /src/lib/hypher/
 /src/lib/jquery/
