@@ -218,9 +218,11 @@ build.execSync = (command, options) => {
 /**
  * Assembles the banner to use at the top of the minified filed. Variable values are supplied as described below:
  *
+ * Parameters:
+ * - include: the string of modules requested to include
+ * - exclude: the string of modules requested to exclude
+ *
  * Environment Variables:
- * - FL_INCLUDE: Modules requested to be included
- * - FL_EXCLUDE: Modules requested to be excluded
  * - npm_package_name (from package.json): package name
  * - npm_package_version (from package.json): package version
  *
@@ -229,11 +231,11 @@ build.execSync = (command, options) => {
  * - branch: git branch the build is generated from
  * - revision: git revision the build is generated from
  * - tag: git tag the build is generated from (if HEAD corresponds to a tag)
+ * @param {String} [include] - (optional) the string of modules requested to include
+ * @param {String} [exclude] - (optional) the string of modules requested to exclude
  * @return {String} - compiled string to use as a banner for the minified file.
  */
-build.banner = () => {
-    let include = process.env.FL_INCLUDE;
-    let exclude = process.env.FL_EXCLUDE;
+build.banner = (include, exclude) => {
     let defaultVer = `v${process.env.npm_package_version}-dev`;
     let version = `${process.env.npm_package_name} - ${build.execSync("git describe --exact - match") || defaultVer}`;
     let date = `build date: ${dayjs().format("YYYY-MM-DDTHH:mm:ssZ[Z]")}`;
@@ -285,7 +287,7 @@ build.minify = async (output, files, options) => {
 
     if (output) {
         mkdirp.sync(path.dirname(output));
-        fs.writeFileSync(output, `${build.banner(options.include, options.exclude)}\n${result.code}`);
+        fs.writeFileSync(output, `${result.code}`);
         fs.writeFileSync(`${output}.map`, result.map);
     } else {
         console.log(result.code); // eslint-disable-line no-console
@@ -305,19 +307,19 @@ if (require.main === module) {
         }, ...args
     };
 
-    // ensure that the include and exclude values are in environment variables for use when generating the banner.
-    if (args.include) {process.env.FL_INCLUDE = args.include;}
-    if (args.exclude) {process.env.FL_EXCLUDE = args.exclude;}
-
     let modulePaths = build.getModulePaths(args.files, args);
     let outputFile = path.posix.basename(args.output || "");
 
     build.minify(args.output, modulePaths.files, {
         compress: false,
         mangle: false,
+        format: {
+            preamble: build.banner(args.include, args.exclude)
+        },
         sourceMap: outputFile ? {
             filename: outputFile,
-            url: `${outputFile}.map`
+            url: `${outputFile}.map`,
+            root: "../"
         } : false
     });
 
