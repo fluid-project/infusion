@@ -17,9 +17,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 "use strict";
 
 const build = {};
+const cpy = require("cpy");
+const dayjs = require("dayjs");
 const fg = require("fast-glob");
 const fs = require("fs");
+const mkdirp = require("mkdirp");
 const path = require("path");
+const {execSync} = require("child_process");
+const {minify} = require("terser");
 
 /**
  * Command line arguments processed into an object.
@@ -187,6 +192,106 @@ build.getModulePaths = (files, options = {}) => {
     return paths;
 };
 
+/**
+ * Runs `child_process.execSync` but with the stderr ignored and catching any errors to return undefined. This is done
+ * to allow the calling function to replace with a default value when the child process fails.
+ * See: https://nodejs.org/dist/latest-v15.x/docs/api/child_process.html#child_process_child_process_execsync_command_options
+ * @param {String} command - a string representing the command to run
+ * @param {Object} [options] - (optional) options for `child_process.execSync`
+ * @return {String|undefined} - returns either the string from the stdout of the executed command, or undefined if an
+ * error occurs.
+ */
+build.execSync = (command, options) => {
+    let result;
+
+    options = {...{stdio: ["pipe", "pipe", "ignore"]}, ...options};
+
+    try {
+        result = execSync(command, options);
+    } catch (err) {
+        result;
+    }
+
+    return result;
+};
+
+/**
+ * Assembles the banner to use at the top of the minified filed. Variable values are supplied as described below:
+ *
+ * Environment Variables:
+ * - FL_INCLUDE: Modules requested to be included
+ * - FL_EXCLUDE: Modules requested to be excluded
+ * - npm_package_name (from package.json): package name
+ * - npm_package_version (from package.json): package version
+ *
+ * System:
+ * - date: current date
+ * - branch: git branch the build is generated from
+ * - revision: git revision the build is generated from
+ * - tag: git tag the build is generated from (if HEAD corresponds to a tag)
+ * @return {String} - compiled string to use as a banner for the minified file.
+ */
+build.banner = () => {
+    let include = process.env.FL_INCLUDE;
+    let exclude = process.env.FL_EXCLUDE;
+    let defaultVer = `v${process.env.npm_package_version}-dev`;
+    let version = `${process.env.npm_package_name} - ${build.execSync("git describe --exact - match") || defaultVer}`;
+    let date = `build date: ${dayjs().format("YYYY-MM-DDTHH:mm:ssZ[Z]")}`;
+    let branch = `branch: ${build.execSync("git rev-parse --abbrev-ref HEAD") || "unknown"}`;
+    let revision = `revision: ${build.execSync("git rev-parse --verify --short HEAD") || "unknown"}`;
+
+    let banner = `* ${version}\n * \n * Build Info:\n *  ${branch} *  ${revision} *  ${date}`;
+
+    if (include) {
+        banner += `\n *  includes: ${include}`;
+    }
+
+    if (exclude) {
+        banner += `\n *  excludes: ${exclude}`;
+    }
+
+    return `/*!\n ${banner}\n*/`;
+};
+
+/**
+ * Iterates over an array of file paths, expanding them to an objected keyed off of the paths with the file contents
+ * as values. This is used by terser to minify the files and concatenate together.
+ * @param {String[]} files - an array of file paths
+ * @return {Object} - An object with keys as paths to the files and values as the file contents as a String.
+ */
+build.readFiles = (files) => {
+    let readFiles = {};
+    files.forEach(path => {
+        readFiles[path] = fs.readFileSync(path, "utf8");
+    });
+    return readFiles;
+};
+
+/**
+ * Minifies and concatenates the supplied files. Will write the concatenated file to the `output` and provide a sibling
+ * source map. If no `output` is provided, it will write the minified contents to stdout. Internally this uses terser to
+ * peform minification. See: https://github.com/terser/terser
+ * @param {String} [output] - (optional) path to write the minified/concatenated file to.
+ * @param {String[]} files - an array of files minify and concatenate
+ * @param {Object} [options] - (optional) options to pass down to terser's minify method.
+ */
+build.minify = async (output, files, options) => {
+    let result;
+    try {
+        result = await minify(build.readFiles(files), options);
+    } catch (err) {
+        throw err;
+    }
+
+    if (output) {
+        mkdirp.sync(path.dirname(output));
+        fs.writeFileSync(output, `${build.banner(options.include, options.exclude)}\n${result.code}`);
+        fs.writeFileSync(`${output}.map`, result.map);
+    } else {
+        console.log(result.code); // eslint-disable-line no-console
+    }
+};
+
 module.exports = build;
 
 if (require.main === module) {
@@ -195,14 +300,31 @@ if (require.main === module) {
         ...{
             include: process.env.FL_INCLUDE,
             exclude: process.env.FL_EXCLUDE,
-            output: process.env.FL_OUTPUT
+            output: process.env.FL_OUTPUT,
+            copy_dirs: process.env.FL_OUTPUT_COPY_DIRS
         }, ...args
     };
-    let modulePaths = build.getModulePaths(args.files, args);
 
-    if (args.output === "dirs") {
-        process.stdout.write(modulePaths.dirs.join(" "));
-    } else {
-        process.stdout.write(modulePaths.files.join(" "));
+    // ensure that the include and exclude values are in environment variables for use when generating the banner.
+    if (args.include) {process.env.FL_INCLUDE = args.include;}
+    if (args.exclude) {process.env.FL_EXCLUDE = args.exclude;}
+
+    let modulePaths = build.getModulePaths(args.files, args);
+    let outputFile = path.posix.basename(args.output || "");
+
+    build.minify(args.output, modulePaths.files, {
+        compress: false,
+        mangle: false,
+        sourceMap: outputFile ? {
+            filename: outputFile,
+            url: `${outputFile}.map`
+        } : false
+    });
+
+    // copy module directories to the output directory
+    if (args.copy_dirs && args.output) {
+        (async () => {
+            await cpy(modulePaths.dirs, path.dirname(args.output), {parents: true});
+        })();
     }
 }
