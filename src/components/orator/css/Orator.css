@@ -23,6 +23,13 @@
 .fl-orator-controller > * {
     background-color: #666;
     min-width: 3.6rem;
+    padding: 1px 6px;
+}
+
+.fl-orator-controller button {
+    font-family: inherit;
+    font-size: 100%;
+    margin: 0;
 }
 
 .fl-orator-controller > *:not(:first-child) {

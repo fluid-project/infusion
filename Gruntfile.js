@@ -200,11 +200,9 @@ module.exports = function (grunt) {
                 "src/lib/jquery/core",
                 "src/lib/jquery/plugins",
                 "src/lib/jquery/ui/js",
-                "src/lib/normalize",
                 "src/lib/open-dyslexic",
                 "src/lib/opensans",
                 "src/lib/roboto",
-                "src/lib/url-polyfill",
                 "tests/lib/jquery-simulate",
                 "tests/lib/sinon"
             ]
@@ -333,11 +331,6 @@ module.exports = function (grunt) {
                     expand: true,
                     flatten: true
                 }, {
-                    src: "node_modules/normalize.css/normalize.css",
-                    dest: "src/lib/normalize/css/",
-                    expand: true,
-                    flatten: true
-                }, {
                     src: "node_modules/opensans-webkit/fonts/OpenSans-*.woff",
                     dest: "src/lib/opensans/fonts/",
                     expand: true,
@@ -355,11 +348,6 @@ module.exports = function (grunt) {
                 }, {
                     src: "node_modules/sinon/pkg/sinon.js",
                     dest: "tests/lib/sinon/js/",
-                    expand: true,
-                    flatten: true
-                }, {
-                    src: "node_modules/url-polyfill/url-polyfill.js",
-                    dest: "src/lib/url-polyfill/js/",
                     expand: true,
                     flatten: true
                 }]

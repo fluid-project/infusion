@@ -12,6 +12,8 @@ td {
 }
 
 input {
+    font-family: inherit;
+    font-size: 100%;
     width: 3em;
 }
 

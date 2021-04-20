@@ -146,7 +146,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.assertStoredSettings = function (storedSettings) {
-        jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, storedSettings);
+        // Only check the "preferences" part of the model to avoid FLUID-6610
+        jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin.preferences, storedSettings.preferences);
     };
 
     fluid.tests.prefs.assertSecondShow = function (separatedPanel) {

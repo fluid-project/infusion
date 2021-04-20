@@ -21,6 +21,10 @@ $icon-font: 'PrefsFramework-Icons';
     src: url('../../../lib/opensans/fonts/OpenSans-SemiBold.woff');
 }
 
+body {
+    margin: 0;
+}
+
 // Top bar and show/hide button
 .fl-prefsEditor-separatedPanel {
     display: flex;

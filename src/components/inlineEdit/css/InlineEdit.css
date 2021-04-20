@@ -2,7 +2,10 @@
 
 .fl-inlineEdit-edit {
     border: 2px solid #0085ff;
-    margin-left: -1px;
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0 0 0 -1px;
 }
 
 .fl-inlineEdit-simple-editableText {
