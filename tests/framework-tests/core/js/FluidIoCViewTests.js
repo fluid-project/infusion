@@ -614,4 +614,53 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.toggleClass.test(false);
     fluid.tests.toggleClass.test(true);
 
+    // Style materialisation test
+    fluid.defaults("fluid.tests.materialStyle", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-simple-field"
+        },
+        model: {
+            backgroundColour: "#ae5"
+        },
+        modelRelay: {
+            source: "{that}.model.backgroundColour",
+            target: {
+                segs: ["dom", "field", "style", "backgroundColor"]
+            }
+        }
+    });
+
+    jqUnit.test("Style materialisation test ", function () {
+        var that = fluid.tests.materialStyle(".flc-tests-simple-integral");
+        var checkState = function (expected) {
+            var colour = that.locate("field").css("backgroundColor");
+            jqUnit.assertEquals("Markup state expected as " + expected, expected, colour);
+        };
+        checkState("rgb(170, 238, 85)");
+    });
+
+    // Bad materialisation test
+    fluid.defaults("fluid.tests.badMaterial", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-simple-field"
+        },
+        model: {
+            value: "thing"
+        },
+        modelRelay: {
+            source: "{that}.model.value",
+            target: {
+                segs: ["dom", "field", "bad"]
+            }
+        }
+    });
+
+    jqUnit.test("Bad materialisation test ", function () {
+        jqUnit.expectFrameworkDiagnostic("Got exception", function () {
+            fluid.tests.badMaterial(".flc-tests-simple-integral");
+        }, "click");
+    });
+
 })();

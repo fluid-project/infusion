@@ -28,6 +28,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return that;
     };
 
+    fluid.checkMaterialisedElement = function (element, selectorName, that) {
+        if (!element || !element.length) {
+            fluid.fail("Could not locate element for selector " + selectorName + " for component " + fluid.dumpComponentAndPath(that));
+        }
+    };
+
     fluid.domMaterialiserManager = fluid.makeDomMaterialiserManager();
 
     // Passive - pushes out to single-arg jQuery method, active in acquiring initial markup value for booleanAttr
@@ -36,10 +42,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var listener = function (value) {
             if (that.dom) {
                 var element = that.dom.locate(selectorName);
+                fluid.checkMaterialisedElement(element, selectorName, that);
 
-                if (!element || !element.length) {
-                    fluid.fail("Could not locate element for selector " + selectorName + " for component " + fluid.dumpComponentAndPath(that));
-                }
                 if (type === "jQuery") {
                     var model = {
                         value: value,
@@ -136,6 +140,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    // Passive
+    fluid.materialisers.style = function (that, segs) {
+        var selectorName = segs[1];
+        that.events.onDomBind.addListener(function () {
+            var element = that.dom.locate(selectorName);
+            fluid.checkMaterialisedElement(element, selectorName, that);
+            var modelValue = fluid.getImmediate(that.model, segs);
+            element[0].style[segs[3]] = modelValue;
+        });
+    };
+
     // Remember, naturally all this stuff will go into defaults when we can afford it
     fluid.registerNamespace("fluid.materialiserRegistry");
 
@@ -175,6 +190,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["jQuery", {method: "toggleClass", makeArgs: function (model) {
                         return [ model.segs[3], !!model.value];
                     }}]
+                },
+                "style": {
+                    materialiser: "fluid.materialisers.style"
                 }
             }
         }

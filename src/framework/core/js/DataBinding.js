@@ -679,14 +679,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.matchMaterialiserSpec = function (record, segs) {
         var trundle = record;
+        var routedPath = null;
         for (var i = 0; i < segs.length; ++i) {
             var seg = segs[i];
-            trundle = trundle[seg] || trundle["*"];
+            var wildcard = trundle["*"];
+            if (wildcard) {
+                routedPath = wildcard;
+            }
+            trundle = trundle[seg] || wildcard;
             if (!trundle) {
-                return null;
+                break;
             } else if (trundle.materialiser) {
                 return trundle;
             }
+        }
+        if (routedPath) {
+            fluid.fail("Materialised DOM path ", segs, " did not match any registered materialiser - available paths are " + Object.keys(routedPath).join(", "));
         }
         return null;
     };
