@@ -41,7 +41,7 @@ const {minify} = require("terser");
 
 /**
  * Processes the argv command line arguments into an object. Options are expected to be key/value pairs in the format of
- * `--key="value"`. If no value is provided the option is set to `undefined`. Arguments provides which are not options
+ * `--key="value"`. If no value is provided the option is set to `undefined`. Arguments provided which are not options
  * (i.e. don't start with `--`) are treated as file paths and compiled into a `files` array.
  *
  * see: https://nodejs.org/docs/latest/api/process.html#process_process_argv
@@ -112,7 +112,7 @@ build.getDir = (filePath, ...paths) => {
 
 /**
  *
- * @param {Array} files - The set of file paths to the package.json files to source the Infusion modules from.
+ * @param {String[]} files - The set of file paths to the package.json files to source the Infusion modules from.
  * @return {Object} - An object keyed off the package names, and containing the package info for each package.
  *                     Additionally a `dir` property is added for each, to identity the path to the packages directory.
  */
@@ -135,7 +135,7 @@ build.gatherPackages = files => {
  * Returns the set of requested modules/packages based on their dependency requirements. If the include options is
  * provided only the requested modules will be returned. If the exclude option is provied, the exclude modules will be
  * removed.
- * @param {Object} packages - All available packages
+ * @param {Object<String, String>} packages - All available packages
  * @param {String[]} [include] - (optional) an array of module names to include
  * @param {String[]} [exclude] - (optional) an array of module names to exclude
  * @throws {Error} - If an `include` or dependency cannot be located in the `packages`
