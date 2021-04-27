@@ -351,10 +351,11 @@ if (require.main === module) {
 
             if (args.zip) {
                 let defaultVer = `${process.env.npm_package_version}-dev`;
+                mkdirp.sync("./products");
                 await zip({
                     cwd: args.output,
                     source: "./",
-                    destination: `${process.env.npm_package_name}-${outputSuffix}-${build.execSync("git describe --exact-match HEAD") || defaultVer}.zip`
+                    destination: path.join("../products", `${process.env.npm_package_name}-${outputSuffix}-${build.execSync("git describe --exact-match HEAD") || defaultVer}.zip`)
                 });
             }
 

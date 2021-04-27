@@ -15,5 +15,6 @@
 package-lock.json
 report.tap
 coverage
+products
 reports
 src/lib/fonts

@@ -18,6 +18,7 @@ coverage/
 demos/
 examples/
 instrumented/
+products/
 reports/
 tests/*.*
 tests/*-tests

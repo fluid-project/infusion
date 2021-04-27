@@ -37,7 +37,7 @@
         "build:util:modules": "node ./buildModules.js \"./src/**/package.json\"",
         "build:util:copyPkgDirs": "cpy --parents \"./@(demos|examples|tests)/**/*\" ./build",
         "clean": "run-p clean:*",
-        "clean:build": "rimraf build",
+        "clean:build": "rimraf build products",
         "clean:deps": "run-p clean:deps:*",
         "clean:deps:code": "rimraf \"src/lib/@(hypher|jquery)\"",
         "clean:deps:fonts": "rimraf \"src/lib/@(open-dyslexic|opensans|roboto)\"",
