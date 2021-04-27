@@ -25,54 +25,7 @@ const mkdirp = require("mkdirp");
 const path = require("path");
 const {execSync} = require("child_process");
 const {minify} = require("terser");
-
-/**
- * Command line arguments processed into an object.
- *
- * @typedef {Object} ArgV
- * @property {String} execPath - The process.execPath.
- *                               See: https://nodejs.org/docs/latest/api/process.html#process_process_execpath
- * @property {String} execFile - Path to the file being executed.
- *                                   enclosing DOM element
- * @property {Array} files - An array of file paths.
- * @property {String} [include] - (optional) A comma separated string of modules to be included.
- * @property {String} [exclude] - (optional) A comma separated string of modules to be excluded.
- */
-
-/**
- * Processes the argv command line arguments into an object. Options are expected to be key/value pairs in the format of
- * `--key="value"`. If no value is provided the option is set to `undefined`. Arguments provided which are not options
- * (i.e. don't start with `--`) are treated as file paths and compiled into a `files` array.
- *
- * see: https://nodejs.org/docs/latest/api/process.html#process_process_argv
- *
- * @return {ArgV} - the CLI arguments as an object
- */
-build.getCLI = () => {
-    let args = {
-        execPath: process.argv[0],
-        execFile: process.argv[1],
-        files: []
-    };
-
-    process.argv.forEach((val, index) => {
-        if (index > 1) {
-            // capture options
-            if (val.startsWith("--")) {
-                let opt = val.slice(2).split("=");
-                args[opt[0]] = opt[1];
-            // assemble list of file names
-            } else {
-                args.files.push(val);
-            }
-        }
-    });
-
-    // expand glob patterns
-    args.files = fg.sync(args.files);
-
-    return args;
-};
+const minimist = require("minimist");
 
 /**
  * Filters a provided array, `toFilter`, by removing the common values found in the set of other provided arrays.
@@ -112,13 +65,13 @@ build.getDir = (filePath, ...paths) => {
 
 /**
  *
- * @param {String[]} files - The set of file paths to the package.json files to source the Infusion modules from.
+ * @param {String|String[]} files - The set of file paths to the package.json files to source the Infusion modules from.
  * @return {Object} - An object keyed off the package names, and containing the package info for each package.
  *                     Additionally a `dir` property is added for each, to identity the path to the packages directory.
  */
 build.gatherPackages = files => {
     let modules = {};
-    files.forEach(filePath => {
+    fg.sync(files).forEach(filePath => {
         var modulePackage = build.readJSON(filePath);
         if (modulePackage.packages) {
             modulePackage.packages.forEach(pack => {
@@ -164,7 +117,7 @@ build.sortModules = (packages, include, exclude = []) => {
 
 /**
  * Assembles the sorted file and directory paths for the requested modules.
- * @param {String[]} files - the set of files to source the module/package information from
+ * @param {String|String[]} files - the set of files to source the module/package information from
  * @param {Object} [options] - (optional) options to determine which modules are included
  * @param {String[]} [options.include] - An array of module names to include
  * @param {String[]} [options.exclude] - An array of module names to exclude
@@ -294,20 +247,76 @@ build.minify = async (output, files, options) => {
     }
 };
 
+build.assembleHelpParams = (params) => {
+    let padding = Object.keys(params).reduce((acc, cv) => Math.max(acc, cv.length), 0);
+    let help = "";
+    for (let param in params) {
+        let start = `${param}:`;
+        help += `  ${start.padEnd(padding, " ")} ${params[param]}\n`;
+    };
+    return help;
+};
+
+build.help = () => {
+    let description = "Concatenates and minifies the requested Infusion modules. Must include a reference to the Infusion module packages either with the -p, --packages, or as a list of glob patterns/filepaths.";
+    let usage = "node .buildModules.js [options] [packages]";
+
+    let opts = build.assembleHelpParams(build.cli.opts);
+    let env = build.assembleHelpParams(build.cli.env);
+
+    let help = `${description}\n\nUsage: ${usage}\n\nOptions:\n${opts}\n\nEnvironment Variables:\n${env}`;
+
+    console.log(help); // eslint-disable-line no-console
+};
+
+build.cli = {
+    opts: {
+        "[--copy_dirs]": "(optional) If specified, will copy the module directories to the output directory. Requires that the output option is set.",
+        "[-e], [--exclude=...]": "(optional) A comma separated list of Infusion modules to exclude from the build. Takes precedence over include.",
+        "[-h], [--help]": "(optional) Output the command line (CLI) options available",
+        "[-i], [--include=...]": "(optional) A comma separated list of Infusion modules to include in the build.",
+        "[-o], [--output=...]": "(optional) File path to write the concatenated and minified build to. Will output to stdout if not provided.",
+        "[-p], [--packages=...]": "File paths to module package files. Glob patterns are supported. Providing packages is required, but can either be specified with this CLI option, or as a list of files."
+    },
+    env: {
+        "FL_EXCLUDE": "(optional) A comma separated list of Infusion modules to exclude from the build. Takes precedence over include.. Is superceded by the --exclude CLI option",
+        "FL_INCLUDE": "(optional) A comma separated list of Infusion modules to include in the build. Is superceded by the --include CLI option",
+        "FL_OUTPUT": "(optional) File path to write the concatenated and minified build to. Will output to stdout if not provided. Is superceded by the --output CLI option",
+        "FL_OUTPUT_COPY_DIRS": "(optional) If specified, will copy the module directories to the output directory. Requires that the output option is set. Is superceded by the --copy_dirs CLI option",
+        "FL_PACKAGES": "File paths to module package files. Glob patterns are supported. Is superceded by the --packages CLI option"
+    }
+};
+
 module.exports = build;
 
 if (require.main === module) {
-    let args = build.getCLI();
-    args = {
-        ...{
+    let args = minimist(process.argv.slice(2), {
+        string: ["include", "exclude", "output", "packages"],
+        boolean: ["copy_dirs", "help"],
+        alias: {
+            h: "help",
+            i: "include",
+            e: "exclude",
+            o: "output",
+            p: "packages"
+        },
+        default: {
             include: process.env.FL_INCLUDE,
             exclude: process.env.FL_EXCLUDE,
             output: process.env.FL_OUTPUT,
-            copy_dirs: process.env.FL_OUTPUT_COPY_DIRS
-        }, ...args
-    };
+            packages: process.env.FL_PACKAGES,
+            copy_dirs: process.env.FL_OUTPUT_COPY_DIRS ? true : false
+        }
+    });
 
-    let modulePaths = build.getModulePaths(args.files, args);
+    let packages = args.packages || args._;
+
+    if (args.help || !packages.length) {
+        build.help();
+        return;
+    }
+
+    let modulePaths = build.getModulePaths(args.packages || args._, args);
     let outputFile = path.posix.basename(args.output || "");
 
     build.minify(args.output, modulePaths.files, {
