@@ -134,46 +134,54 @@ npm run build:pkg:custom
 
 #### Custom Build Options
 
-Any of the following options can be passed to a custom build by setting environment variables. Examples are shown below.
+Any of the following options can be passed to a custom build by specifying the option after `--`. Examples are shown
+below.
 
-##### FL_INCLUDE
-
-__value__: "module(s)" (String)
-_only available to custom builds_
-
-The `FL_INCLUDE` environment variable takes in a comma-separated string of the [Modules](#modules) to be included in a
-custom package. If omitted, all modules will be included (demos and tests will not be included).
-
-```bash
-FL_INCLUDE="fluid-inline-edit, fluid-ui-options" npm run build:pkg:custom
-```
-
-##### FL_EXCLUDE
+##### -i, --include
 
 __value__: "module(s)" (String)
 _only available to custom builds_
 
-The `FL_EXCLUDE` environment variable takes in a comma-separated string of the [Modules](#modules) to be excluded from a
-custom package. `FL_EXCLUDE` takes priority over `FL_INCLUDE`.
+The include option takes in a comma-separated string of the [Modules](#modules) to be included in a custom package. If
+omitted, all modules will be included (demos and tests will not be included).
 
 ```bash
-FL_EXCLUDE=jquery npm run build:pkg:custom
+npm run build:pkg:custom -- --include="fluid-inline-edit, fluid-ui-options"
 
-FL_INCLUDE=fluid-framework FL_EXCLUDE=jquery npm run build:pkg:custom
+# shorthand
+npm run build:pkg:custom -- -i "fluid-inline-edit, fluid-ui-options"
 ```
 
-##### FL_NAME
+##### -e, --exclude
+
+__value__: "module(s)" (String)
+_only available to custom builds_
+
+The exclude option takes in a comma-separated string of the [Modules](#modules) to be excluded from a custom package.
+Excludes take priority over includes.
+
+```bash
+npm run build:pkg:custom -- --exclude=jquery
+
+# shorthand
+npm run build:pkg:custom -- -e jquery
+```
+
+##### -n, --name
 
 __value__: "custom suffix" (String)
 _only available to custom packages_
 
 By default, custom packages are given a name with the form _infusion-custom-{version}.zip_ and the concatenated
-JavaScript file is called _infusion-custom.js_. By supplying the `FL_NAME` environment variable, you can replace
-"custom" with any valid string.
+JavaScript file is called _infusion-custom.js_. By supplying the name option, you can replace "custom" with any valid
+string.
 
 ```bash
 # this produces infusion-myPackage.js
-FL_NAME=myPackage npm run build:pkg:custom"
+npm run build:pkg:custom -- --name=myPackage
+
+# shorthand
+npm run build:pkg:custom -- -n myPackage
 ```
 
 ### Modules

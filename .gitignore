@@ -1,6 +1,5 @@
 /build/
 /dist/
-/products/
 /node_modules/
 /src/framework/preferences/css/*.css
 /src/framework/preferences/css/*.css.map

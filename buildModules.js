@@ -26,6 +26,7 @@ const path = require("path");
 const {execSync} = require("child_process");
 const {minify} = require("terser");
 const minimist = require("minimist");
+const zip = require("bestzip");
 
 /**
  * Filters a provided array, `toFilter`, by removing the common values found in the set of other provided arrays.
@@ -190,7 +191,7 @@ build.execSync = (command, options) => {
  */
 build.banner = (include, exclude) => {
     let defaultVer = `v${process.env.npm_package_version}-dev`;
-    let version = `${process.env.npm_package_name} - ${build.execSync("git describe --exact - match") || defaultVer}`;
+    let version = `${process.env.npm_package_name} - ${build.execSync("git describe --exact-match HEAD") || defaultVer}`;
     let date = `build date: ${dayjs().format("YYYY-MM-DDTHH:mm:ssZ[Z]")}`;
     let branch = `branch: ${build.execSync("git rev-parse --abbrev-ref HEAD") || "unknown"}`;
     let revision = `revision: ${build.execSync("git rev-parse --verify --short HEAD") || "unknown"}`;
@@ -275,14 +276,18 @@ build.cli = {
         "[-e], [--exclude=...]": "(optional) A comma separated list of Infusion modules to exclude from the build. Takes precedence over include.",
         "[-h], [--help]": "(optional) Output the command line (CLI) options available",
         "[-i], [--include=...]": "(optional) A comma separated list of Infusion modules to include in the build.",
+        "[-n], [--name=...]": "(optional) A name for custom builds. The name will be interpolated into the minified file and zip archive if present. e.g. infusion-myName.js and infusion-myName-3.0.0.zip. By default it is set to 'custom'. Requires that the output option is set.",
         "[-o], [--output=...]": "(optional) File path to write the concatenated and minified build to. Will output to stdout if not provided.",
-        "[-p], [--packages=...]": "File paths to module package files. Glob patterns are supported. Providing packages is required, but can either be specified with this CLI option, or as a list of files."
+        "[-p], [--packages=...]": "File paths to module package files. Glob patterns are supported. Providing packages is required, but can either be specified with this CLI option, or as a list of files.",
+        "[-z], [--zip]": "(optional) If provided, a zip archive will be included alongside the output. Requires that the output option is set."
     },
     env: {
         "FL_EXCLUDE": "(optional) A comma separated list of Infusion modules to exclude from the build. Takes precedence over include.. Is superceded by the --exclude CLI option",
         "FL_INCLUDE": "(optional) A comma separated list of Infusion modules to include in the build. Is superceded by the --include CLI option",
         "FL_OUTPUT": "(optional) File path to write the concatenated and minified build to. Will output to stdout if not provided. Is superceded by the --output CLI option",
         "FL_OUTPUT_COPY_DIRS": "(optional) If specified, will copy the module directories to the output directory. Requires that the output option is set. Is superceded by the --copy_dirs CLI option",
+        "FL_OUTPUT_NAME": "(optional) If specified, will be used for the name of custom build output files. Requires that the output option is set. Is superceded by the --name CLI option",
+        "FL_OUTPUT_ZIP": "(optional) If specified, a zip archive will be included alongside the output. Requires that the output option is set. Is superceded by the --zip CLI option",
         "FL_PACKAGES": "File paths to module package files. Glob patterns are supported. Is superceded by the --packages CLI option"
     }
 };
@@ -291,21 +296,25 @@ module.exports = build;
 
 if (require.main === module) {
     let args = minimist(process.argv.slice(2), {
-        string: ["include", "exclude", "output", "packages"],
-        boolean: ["copy_dirs", "help"],
+        string: ["include", "exclude", "name", "output", "packages"],
+        boolean: ["copy_dirs", "help", "zip"],
         alias: {
             h: "help",
             i: "include",
             e: "exclude",
+            n: "name",
             o: "output",
-            p: "packages"
+            p: "packages",
+            z: "zip"
         },
         default: {
-            include: process.env.FL_INCLUDE,
+            copy_dirs: process.env.FL_OUTPUT_COPY_DIRS ? true : false,
             exclude: process.env.FL_EXCLUDE,
+            include: process.env.FL_INCLUDE,
+            name: process.env.FL_OUTPUT_NAME,
             output: process.env.FL_OUTPUT,
             packages: process.env.FL_PACKAGES,
-            copy_dirs: process.env.FL_OUTPUT_COPY_DIRS ? true : false
+            zip: process.env.FL_OUTPUT_ZIP
         }
     });
 
@@ -317,15 +326,16 @@ if (require.main === module) {
     }
 
     let modulePaths = build.getModulePaths(args.packages || args._, args);
-    let outputFile = path.posix.basename(args.output || "");
+    let outputSuffix = args.include || args.exclude ? args.name || "custom" : "all";
+    let outputFile = `infusion-${outputSuffix}.js`;
 
-    build.minify(args.output, modulePaths.files, {
+    build.minify(args.output && path.join(args.output, outputFile), modulePaths.files, {
         compress: false,
         mangle: false,
         format: {
             preamble: build.banner(args.include, args.exclude)
         },
-        sourceMap: outputFile ? {
+        sourceMap: args.output ? {
             filename: outputFile,
             url: `${outputFile}.map`,
             root: "../"
@@ -333,9 +343,21 @@ if (require.main === module) {
     });
 
     // copy module directories to the output directory
-    if (args.copy_dirs && args.output) {
+    if (args.output) {
         (async () => {
-            await cpy(modulePaths.dirs, path.dirname(args.output), {parents: true});
+            if (args.copy_dirs) {
+                await cpy(modulePaths.dirs, args.output, {parents: true});
+            }
+
+            if (args.zip) {
+                let defaultVer = `${process.env.npm_package_version}-dev`;
+                await zip({
+                    cwd: args.output,
+                    source: "./",
+                    destination: `${process.env.npm_package_name}-${outputSuffix}-${build.execSync("git describe --exact-match HEAD") || defaultVer}.zip`
+                });
+            }
+
         })();
     }
 }
