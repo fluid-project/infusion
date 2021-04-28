@@ -158,10 +158,14 @@ build.getModulePaths = (files, options = {}) => {
 build.execSync = (command, options) => {
     let result;
 
-    options = {...{stdio: ["pipe", "pipe", "ignore"]}, ...options};
+    options = {
+        stdio: ["pipe", "pipe", "ignore"],
+        encoding: "utf8",
+        ...options
+    };
 
     try {
-        result = execSync(command, options).toString().trim();
+        result = execSync(command, options).trim();
     } catch (err) {
         result;
     }
