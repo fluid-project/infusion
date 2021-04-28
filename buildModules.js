@@ -161,7 +161,7 @@ build.execSync = (command, options) => {
     options = {...{stdio: ["pipe", "pipe", "ignore"]}, ...options};
 
     try {
-        result = execSync(command, options);
+        result = execSync(command, options).toString().trim();
     } catch (err) {
         result;
     }
