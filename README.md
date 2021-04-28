@@ -142,8 +142,9 @@ below.
 __value__: "module(s)" (String)
 _only available to custom builds_
 
-The include option takes in a comma-separated string of the [Modules](#modules) to be included in a custom package. If
-omitted, all modules will be included (demos and tests will not be included).
+The `--include` option takes a comma-separated string of the [Modules](#modules) to be included in a custom package.
+Only these modules and their dependencies will be included. By default, all modules are included; however, demos,
+examples and tests are never included with custom builds.
 
 ```bash
 npm run build:pkg:custom -- --include="fluid-inline-edit, fluid-ui-options"
@@ -157,8 +158,8 @@ npm run build:pkg:custom -- -i "fluid-inline-edit, fluid-ui-options"
 __value__: "module(s)" (String)
 _only available to custom builds_
 
-The exclude option takes in a comma-separated string of the [Modules](#modules) to be excluded from a custom package.
-Excludes take priority over includes.
+The `--exclude` option takes a comma-separated string of the [Modules](#modules) to be excluded from a custom package.
+By default, no modules are excluded. Excludes take priority over includes.
 
 ```bash
 npm run build:pkg:custom -- --exclude=jquery
@@ -172,9 +173,8 @@ npm run build:pkg:custom -- -e jquery
 __value__: "custom suffix" (String)
 _only available to custom packages_
 
-By default, custom packages are given a name with the form _infusion-custom-{version}.zip_ and the concatenated
-JavaScript file is called _infusion-custom.js_. By supplying the name option, you can replace "custom" with any valid
-string.
+By default, custom packages are given a name in the form _infusion-custom-{version}.zip_ and the concatenated JavaScript
+file is called _infusion-custom.js_. By supplying the `--name` option, you can replace "custom" with any valid string.
 
 ```bash
 # this produces infusion-myPackage.js
