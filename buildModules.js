@@ -280,7 +280,7 @@ build.cli = {
         "[-e], [--exclude=...]": "(optional) A comma separated list of Infusion modules to exclude from the build. Takes precedence over include.",
         "[-h], [--help]": "(optional) Output the command line (CLI) options available",
         "[-i], [--include=...]": "(optional) A comma separated list of Infusion modules to include in the build.",
-        "[-n], [--name=...]": "(optional) A name for custom builds. The name will be interpolated into the minified file and zip archive if present. e.g. infusion-myName.js and infusion-myName-3.0.0.zip. By default it is set to 'custom'. Requires that the output option is set.",
+        "[-n], [--name=...]": "(optional) A name for custom builds. The name will be interpolated into the minified file and zip archive if present. e.g. infusion-myName.js and infusion-myName-3.0.0.zip. By default it is set to 'custom'. Requires that the output option is set and that at least one of the include or exclude options are used.",
         "[-o], [--output=...]": "(optional) File path to write the concatenated and minified build to. Will output to stdout if not provided.",
         "[-p], [--packages=...]": "File paths to module package files. Glob patterns are supported. Providing packages is required, but can either be specified with this CLI option, or as a list of files.",
         "[-z], [--zip]": "(optional) If provided, a zip archive will be included alongside the output. Requires that the output option is set."

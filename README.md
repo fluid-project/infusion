@@ -171,10 +171,12 @@ npm run build:pkg:custom -- -e jquery
 ##### -n, --name
 
 __value__: "custom suffix" (String)
-_only available to custom packages_
+_only available to custom packages which have specified an include and/or exclude option_
 
 By default, custom packages are given a name in the form _infusion-custom-{version}.zip_ and the concatenated JavaScript
 file is called _infusion-custom.js_. By supplying the `--name` option, you can replace "custom" with any valid string.
+If neither the `--include` nor `--exclude` options are specified, `--name` will be ignored and "custom" will be replaced
+with "all".
 
 ```bash
 # this produces infusion-myPackage.js
