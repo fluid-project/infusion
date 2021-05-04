@@ -178,6 +178,8 @@ file is called _infusion-custom.js_. By supplying the `--name` option, you can r
 If neither the `--include` nor `--exclude` options are specified, `--name` will be ignored and "custom" will be replaced
 with "all".
 
+_**NOTE**_: If built from a tag, the version will correspond to the tag name. (e.g. _infusion-custom-myTag.zip_)
+
 ```bash
 # this produces infusion-myPackage.js
 npm run build:pkg:custom -- --name=myPackage

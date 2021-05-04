@@ -188,19 +188,19 @@ build.execSync = (command, options) => {
  * - date: current date
  * - branch: git branch the build is generated from
  * - revision: git revision the build is generated from
- * - tag: git tag the build is generated from (if HEAD corresponds to a tag)
+ * - tag: if HEAD corresponds to a tag, the git tag name is used for the version information
  * @param {String} [include] - (optional) the string of modules requested to include
  * @param {String} [exclude] - (optional) the string of modules requested to exclude
  * @return {String} - compiled string to use as a banner for the minified file.
  */
 build.banner = (include, exclude) => {
     let defaultVer = `v${process.env.npm_package_version}-dev`;
-    let version = `${process.env.npm_package_name} - ${build.execSync("git describe --exact-match HEAD") || defaultVer}`;
+    let version = `${process.env.npm_package_name} - ${build.execSync("git describe --exact-match --tags HEAD") || defaultVer}`;
     let date = `build date: ${dayjs().format("YYYY-MM-DDTHH:mm:ssZ[Z]")}`;
     let branch = `branch: ${build.execSync("git rev-parse --abbrev-ref HEAD") || "unknown"}`;
     let revision = `revision: ${build.execSync("git rev-parse --verify --short HEAD") || "unknown"}`;
 
-    let banner = `* ${version}\n * \n * Build Info:\n *  ${branch} *  ${revision} *  ${date}`;
+    let banner = `* ${version}\n *\n * Build Info:\n *  ${branch}\n *  ${revision}\n *  ${date}`;
 
     if (include) {
         banner += `\n *  includes: ${include}`;
@@ -359,7 +359,7 @@ if (require.main === module) {
                 await zip({
                     cwd: args.output,
                     source: "./",
-                    destination: path.join("../products", `${process.env.npm_package_name}-${outputSuffix}-${build.execSync("git describe --exact-match HEAD") || defaultVer}.zip`)
+                    destination: path.join("../products", `${process.env.npm_package_name}-${outputSuffix}-${build.execSync("git describe --exact-match --tags HEAD") || defaultVer}.zip`)
                 });
             }
 
