@@ -7,7 +7,7 @@
         "reports",
         "coverage",
         "examples",
-        "Gruntfile.js"
+        "buildModules.js"
     ],
     "reporter": "none",
     "report-dir": "reports",

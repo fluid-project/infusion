@@ -15,7 +15,7 @@ fluid.defaults("fluid.tests.testem", {
             "./**/*.!(js)",
             "./lib/**/*",
             "./**/lib/**/*",
-            "./Gruntfile.js"
+            "./buildModules.js"
         ]
     },
     sourceDirs: {

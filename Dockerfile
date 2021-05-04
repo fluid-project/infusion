@@ -5,8 +5,7 @@ COPY --chown=node . /src
 WORKDIR /src
 
 RUN npm install               && \
-    $(npm bin)/grunt --source && \
-    $(npm bin)/grunt copy:all
+    npm run build:pkg
 
 
 FROM nginx:1.18.0-alpine

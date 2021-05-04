@@ -9,17 +9,11 @@ fluid.defaults("fluid.tests.bundle.testem", {
     gradeNames: ["fluid.testem.coverage"],
     testPages:  [
         "tests/bundle-tests/infusion-all.html",
-        "tests/bundle-tests/infusion-all-min.html",
         "tests/bundle-tests/infusion-all-no-jquery.html",
-        "tests/bundle-tests/infusion-all-no-jquery-min.html",
         "tests/bundle-tests/infusion-framework.html",
-        "tests/bundle-tests/infusion-framework-min.html",
         "tests/bundle-tests/infusion-framework-no-jquery.html",
-        "tests/bundle-tests/infusion-framework-no-jquery-min.html",
         "tests/bundle-tests/infusion-uio.html",
-        "tests/bundle-tests/infusion-uio-min.html",
-        "tests/bundle-tests/infusion-uio-no-jquery.html",
-        "tests/bundle-tests/infusion-uio-no-jquery-min.html"
+        "tests/bundle-tests/infusion-uio-no-jquery.html"
     ],
     sourceDirs: {
         src: "%infusion/src"

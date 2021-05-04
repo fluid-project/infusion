@@ -52,7 +52,7 @@ freely, subject to the following restrictions:
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
 
-(function ($, fluid) {
+(function (fluid) {
     "use strict";
 
     fluid.XMLP = function(strXML) {
@@ -474,4 +474,4 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return strD.substring(iB, iE).split(strF).join(strR);
     };
 
-})(jQuery, fluid_3_0_0);
+})(fluid_3_0_0);

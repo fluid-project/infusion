@@ -3,14 +3,15 @@
 .editorconfig
 .eslintignore
 .eslintrc.json
+.fluidlintallrc.json
 .github
 .gitignore
 .npmignore
 .nycrc
 .project
 .settings
+.stylelintrc.json
 Dockerfile
-Gruntfile.js
 report.tap
 build/
 coverage/

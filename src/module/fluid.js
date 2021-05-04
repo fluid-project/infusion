@@ -218,8 +218,7 @@ if (upInfusion && upInfusion.module) {
 if (global.fluid) {
     var oldPath = global.fluid.module.modules.infusion.baseDir;
     fluid.fail("Error loading infusion - infusion has already been loaded from the path \n\t" + path.resolve(oldPath) +
-        "\n - please delete the duplicate copy which is found at \n\t" + path.resolve(__dirname) +
-        "\n This can be done automatically by running the task \"grunt dedupe-infusion\"");
+        "\n - please delete the duplicate copy which is found at \n\t" + path.resolve(__dirname));
 }
 
 // Pre-inspect any other module (there should be at most one) which is loading at top level so that it is self-resolvable
