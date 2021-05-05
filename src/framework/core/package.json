@@ -1,8 +1,14 @@
 {
-    "framework": {
-        "name": "Infusion Framework Core",
-        "description": "A suite of core Infusion framework features, including support for events, views, data binding, and keyboard accessibility. Required by all Fluid components.",
-        "files": [
+    "name": "fluid-framework",
+    "description": "A suite of core Infusion framework features, including support for events, views, data binding, and keyboard accessibility. Required by all Fluid components.",
+    "version": "3.0.0",
+    "license": "(BSD-3-Clause OR ECL-2.0)",
+    "infusion": {
+        "cssFiles": [
+            "./css/fluid.css",
+            "./css/fluidDebugging.css"
+        ],
+        "jsCommonFiles": [
             "./js/Fluid.js",
             "./js/FluidPromises.js",
             "./js/DataSource.js",
@@ -24,10 +30,10 @@
             "./js/NewViewSupport.js",
             "./js/MutationObserver.js",
             "./js/TextNodeParser.js"
-        ],
-        "dependencies": [
-            "jQuery",
-            "jQueryUI"
         ]
+    },
+    "dependencies": {
+        "jquery": "3.6.0",
+        "jquery-ui": "1.12.1"
     }
 }

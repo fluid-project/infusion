@@ -47,8 +47,5 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
 
-    - name: Run build script
-      run: npm run test:bundles:prepare
-
     - name: Run browser bundle tests
-      run: npm run test:bundles:run
+      run: npm run test:bundles

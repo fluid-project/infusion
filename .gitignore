@@ -1,8 +1,8 @@
 /build/
 /dist/
-/products/
 /node_modules/
 /src/framework/preferences/css/*.css
+/src/framework/preferences/css/*.css.map
 /.bundle/
 /src/lib/hypher/
 /src/lib/jquery/
@@ -15,5 +15,6 @@
 package-lock.json
 report.tap
 coverage
+products
 reports
 src/lib/fonts

@@ -22,9 +22,9 @@ Infusion includes:
 * [Download a Release](https://github.com/fluid-project/infusion/releases)
 * [Install from NPM](https://www.npmjs.com/package/infusion)
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
-* [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
+* [Use from a Content Distribution Network(CDN)](https://unpkg.com/browse/infusion)
   * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN:
-    `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
+    `<script src='https://unpkg.com/browse/infusion@2.0.0/dist/infusion-all.js'></script>`
 
 See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or
 custom packages of Infusion.
@@ -60,9 +60,8 @@ variety of third-party applications, which are listed on the
 
 ## How Do I Create an Infusion Package?
 
-For simplicity and performance reasons, you may wish to create a concatenated, minified file. However, such a file is
-often difficult to read. To address this, source maps for the minified file are automatically generated to make
-debugging easier.
+For simplicity and performance reasons, Infusion distributions are minified. However, such a file is often difficult to
+read. To address this, source maps for the minified files are automatically generated to make debugging easier.
 
 ### Source Maps
 
@@ -75,8 +74,9 @@ they are associated with.
 
 #### Source Map Example
 
-* From the command line, run `npm run build:all` to create a build of Infusion
-  * All Infusion packages come with a source map for the concatenated JavaScript file
+* From the command line, run `npm run build` to generate Infustion distributions
+  * All Infusion distributions come with a source map for the concatenated JavaScript file
+  * CSS files compiled from SASS also include source maps.
 * In the Infusion package, modify one of the demos to replace the individual javascript includes with a reference to
   "infusion-all.js"
 * The "infusion-all.js" includes a reference to the "infusion-all.js.map" file, which is assumed to be hosted as its
@@ -99,136 +99,133 @@ All other development dependencies will be installed by running the following fr
 npm install
 ```
 
-### Package Types
+### Build Types
+
+#### Distribution Builds
+
+Will build a set of predefined distribution bundles of Infusion, some of which include third-party dependencies and some
+of which do not, for distribution on [NPM](https://www.npmjs.com/package/infusion). Each distribution file will be
+placed in the `dist` directory and will be accompanied by a [source map](#source-maps).
+
+```bash
+npm run build
+```
+
+Distribution bundles can be [viewed on unpkg](https://unpkg.com/browse/infusion/dist/).
 
 #### Infusion All Build
 
 Will include all of Infusion, including third-party dependencies. The source files packaged along with the single
-concatenated JavaScript file will include all of the demos and unit tests. This is a good choice if you are trying to
-learn Infusion.
+concatenated JavaScript file will include all of the demos, examples and unit tests. This is a good choice if you are
+trying to learn Infusion.
 
 ```bash
-npm run build:all
-```
-
-By default all packages are minified. Running the build script with the `:source` suffix will allow you to maintain
-readable spacing and comments.
-
-```bash
-npm run build:all:source
+npm run build:pkg
 ```
 
 #### Custom Build
 
 Will only include the modules you request, and all of their dependencies, minus any that are explicitly excluded. Unlike
-the "all" build, none of the demos or tests are included with a custom package.
+the [Infusion All](#infusion-all-build) build, none of the demos, examples or tests are included with a custom package.
 
 ```bash
-npm run build:custom
-```
-
-By default all packages are minified. Running the build script with the `:source` suffix will allow you to maintain
-readable spacing and comments.
-
-```bash
-npm run build:custom:source
+npm run build:pkg:custom
 ```
 
 #### Custom Build Options
 
-Any of the following options can be passed to a custom build by adding two hyphens and then the appropriate option.
-Examples are shown below.
+Any of the following options can be passed to a custom build by specifying the option after `--`. Examples are shown
+below.
 
-##### --include
-
-__value__: "module(s)" (String)
-_only available to custom builds_
-
-The `--include` option takes in a comma-separated string of the [Modules](#modules) to be included in a custom package.
-If omitted, all modules will be included (demos and tests will not be included).
-
-```bash
-npm run build:custom -- --include="inlineEdit, uiOptions"
-```
-
-##### --exclude
+##### -i, --include
 
 __value__: "module(s)" (String)
 _only available to custom builds_
 
-The exclude option takes in a comma-separated string of the [Modules](#modules) to be excluded from a custom package.
-The `--exclude` option takes priority over `--include`.
+The `--include` option takes a comma-separated string of the [Modules](#modules) to be included in a custom package.
+Only these modules and their dependencies will be included. By default, all modules are included; however, demos,
+examples and tests are never included with custom builds.
 
 ```bash
-npm run build:custom -- --exclude="jQuery"
+npm run build:pkg:custom -- --include="fluid-inline-edit, fluid-ui-options"
 
-npm run build:custom -- --include="framework" --exclude="jQuery"
+# shorthand
+npm run build:pkg:custom -- -i "fluid-inline-edit, fluid-ui-options"
 ```
 
-##### --name
+##### -e, --exclude
+
+__value__: "module(s)" (String)
+_only available to custom builds_
+
+The `--exclude` option takes a comma-separated string of the [Modules](#modules) to be excluded from a custom package.
+By default, no modules are excluded. Excludes take priority over includes.
+
+```bash
+npm run build:pkg:custom -- --exclude=jquery
+
+# shorthand
+npm run build:pkg:custom -- -e jquery
+```
+
+##### -n, --name
 
 __value__: "custom suffix" (String)
-_only available to custom packages_
+_only available to custom packages which have specified an include and/or exclude option_
 
-By default, custom packages are given a name with the form _infusion-custom-<version>.zip_ and the concatenated
-JavaScript file is called _infusion-custom.js_. By supplying the `--name` option, you can replace "custom" with any
-other valid string you like.
+By default, custom packages are given a name in the form _infusion-custom-{version}.zip_ and the concatenated JavaScript
+file is called _infusion-custom.js_. By supplying the `--name` option, you can replace "custom" with any valid string.
+If neither the `--include` nor `--exclude` options are specified, `--name` will be ignored and "custom" will be replaced
+with "all".
+
+_**NOTE**_: If built from a tag, the version will correspond to the tag name. (e.g. _infusion-custom-myTag.zip_)
 
 ```bash
 # this produces infusion-myPackage.js
-npm run build:custom -- --name="myPackage"
+npm run build:pkg:custom -- --name=myPackage
+
+# shorthand
+npm run build:pkg:custom -- -n myPackage
 ```
-
-#### Distribution Builds
-
-Will build a set of predefined distribution bundles of Infusion, some of which include third-party dependencies and some
-of which do not, for distribution on [NPM](https://www.npmjs.com/package/infusion). Unlike the "all" build, none of the
-demos or tests are included with a custom package. Each distribution file will be created in both minified and
-unminified versions, and will include [source maps](#source-maps).
-
-```bash
-npm run build:dists
-```
-
-Distribution bundles can be [viewed on unpkg](https://unpkg.com/browse/infusion/dist/).
 
 ### Modules
 
 #### Framework Modules
 
-* enhancement
-* framework
-* preferences
-* renderer
+* fluid-enhancement
+* fluid-framework
+* fluid-preferences
+* fluid-renderer
 
 #### Component Modules
 
-* inlineEdit
-* overviewPanel
-* pager
-* progress
-* reorderer
-* slidingPanel
-* switch
-* tableOfContents
-* textfieldControls
-* textToSpeech
-* tooltip
-* uiOptions
-* undo
-* uploader
+* fluid-inline-edit
+* fluid-orator
+* fluid-overview-panel
+* fluid-pager
+* fluid-progress
+* fluid-reorderer
+* fluid-sliding-panel
+* fluid-switch
+* fluid-table-of-contents
+* fluid-textfield-controls
+* fluid-text-to-speech
+* fluid-tooltip
+* fluid-ui-options
+* fluid-undo
+* fluid-uploader
 
 #### External Libraries
 
-* fastXmlPull
+* fast-xml-pull
 * hypher
-* jQuery
-* jQueryUI
-* jQueryScrollToPlugin
-* jQueryTouchPunchPlugin
+* jquery
+* jquery-ui
+* jquery-scrollto
+* jquery-ui-touch-punch
 * open-dyslexic
-* opensans
-* roboto
+* opensans-webkit
+* roboto-fontface
 
 ## How Do I Run Tests?
 
@@ -274,22 +271,17 @@ To run tests of Infusion's distribution bundles:
 npm run test:bundles
 ```
 
-This command runs two subcommands:
-
-1. `test:bundles:prepare`, which creates a [distribution build](#distribution-builds).
-2. `test:bundles:run`, which runs bundle tests against each distribution bundle.
-
 #### Coverage Reporting
 
 When you run the tests using `npm test`, the full test suite will run and a coverage report will be saved to the
 `reports` directory.
 
 The `npm test` command has [two additional associated scripts](https://docs.npmjs.com/cli/v6/using-npm/scripts#pre--post-scripts).
-The `pretest` script runs before the command defined for the `test` script.  The `posttest` script runs after.  In our case
-we use a `pretest` script to clean up previous coverage data before we run the tests, and a `posttest` script to compile
-the actual report (this can also be accomplished by running `npm run test:report` after running tests). You do not need
-to run the `pretest` script manually before running either the node or browser tests, or to run the `posttest` script
-afterwards.
+The `pretest` script runs before the command defined for the `test` script.  The `posttest` script runs after.  In our
+case we use a `pretest` script to clean up previous coverage data before we run the tests, and a `posttest` script to
+compile the actual report (this can also be accomplished by running `npm run test:report` after running tests). You do
+not need to run the `pretest` script manually before running either the node or browser tests, or to run the `posttest`
+script afterwards.
 
 ### Run Tests In a Docker Container
 
@@ -327,6 +319,12 @@ Lint JavaScript, JSON, Markdown and other files using [fluid-lint-all](https://g
 npm run lint
 ```
 
+Remove all of the copied or built directories and files:
+
+```bash
+npm run clean
+```
+
 ## Developing with the Preferences Framework
 
 The Preferences Framework uses [Sass](http://sass-lang.com/) for CSS pre-processing. Only Sass files are included in the
@@ -335,14 +333,22 @@ GitHub repository.
 For developing the Preferences Framework, run the following from the project root to compile Sass files to CSS:
 
 ```bash
+# unminified
 npm run build:sass
+
+# minified
+npm run build:sass:min
 ```
 
 A `watch` task is also supplied to ease Sass development. This task launches a process that watches all Sass files in
 the `src` directory and recompiles them when they are changed. This task can be started using the following command:
 
 ```bash
+# unminified
 npm run watch:sass
+
+# minified
+npm run watch:sass:min
 ```
 
 For more information on styling the Preferences Framework, please review the documentation on

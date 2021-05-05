@@ -6,7 +6,7 @@ on:
     paths:
         - '.nycrc'
         - 'package.json'
-        - 'Gruntfile.js'
+        - 'buildModules.js'
         - 'src/**/*.html'
         - 'src/**/*.js'
         - 'src/**/*.json'
@@ -18,7 +18,7 @@ on:
     paths:
         - '.nycrc'
         - 'package.json'
-        - 'Gruntfile.js'
+        - 'buildModules.js'
         - 'src/**/*.html'
         - 'src/**/*.js'
         - 'src/**/*.json'

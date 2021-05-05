@@ -1,17 +1,14 @@
 {
-    "preferences": {
-        "name": "Preferences Framework",
-        "description": "Framework for implementing user preference editing and persistence",
+    "name": "fluid-preferences",
+    "description": "Framework for implementing user preference editing and persistence.",
+    "version": "3.0.0",
+    "license": "(BSD-3-Clause OR ECL-2.0)",
+    "infusion": {
         "cssFiles": [
-            "Enactors.css",
-            "PrefsEditor.css",
-            "SeparatedPanelPrefsEditor.css",
-            "SeparatedPanelPrefsEditorFrame.css",
-            "FullNoPreviewPrefsEditor.css",
-            "FullPreviewPrefsEditor.css",
-            "FullPrefsEditor.css"
+            "./css/Enactors.css",
+            "./css/PrefsEditor.css"
         ],
-        "files": [
+        "jsCommonFiles": [
             "./js/URLUtilities.js",
             "./js/Store.js",
             "./js/UIEnhancer.js",
@@ -46,21 +43,21 @@
             "./js/LocalizationPrefsEditor.js",
             "./js/WordSpaceSchemas.js",
             "./js/Builder.js"
-        ],
-        "dependencies": [
-            "jQuery",
-            "jQueryUI",
-            "hypher",
-            "opensans",
-            "framework",
-            "enhancement",
-            "renderer",
-            "slidingPanel",
-            "textfieldControls",
-            "switch",
-            "tableOfContents",
-            "textToSpeech",
-            "orator"
         ]
+    },
+    "dependencies": {
+        "jquery": "3.6.0",
+        "jquery-ui": "1.12.1",
+        "hypher": "0.2.5",
+        "opensans-webkit": "1.1.0",
+        "open-dyslexic": "1.0.3",
+        "fluid-framework": "3.0.0",
+        "fluid-enhancement": "3.0.0",
+        "fluid-renderer": "3.0.0",
+        "fluid-sliding-panel": "3.0.0",
+        "fluid-textfield-controls": "3.0.0",
+        "fluid-switch": "3.0.0",
+        "fluid-table-of-contents": "3.0.0",
+        "fluid-orator": "3.0.0"
     }
 }
