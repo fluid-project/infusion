@@ -172,7 +172,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         if (that.container.length === 0) {
             fluid.fail("resetDomBinder got no elements in DOM for container searching for selector " + that.container.selector);
         }
-        that.dom = fluid.createDomBinder(that.container, that.options.selectors);
+        that.dom.resetContainer(that.container);
         that.events.onDomBind.fire(that);
     };
 

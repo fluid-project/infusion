@@ -770,7 +770,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         // TODO: this is all hugely inefficient since we query every scheme for every path, whereas
         // we should know perfectly well what kind of scheme there will be for a path, especially once we have resolved
         // FLUID-5761, FLUID-5244
-        shadow.getConfig = {strategies: [fluid.model.funcResolverStrategy, fluid.concreteStrategy,
+        // Note that first two entries were swapped for FLUID-6580, since "dom.locate" was triggering resolution into the DOM binder -
+        // what an ancient historical blunder masked by DOM binder's faulty "not found" policy
+        shadow.getConfig = {strategies: [fluid.concreteStrategy, fluid.model.funcResolverStrategy,
             optionsStrategy, shadow.invokerStrategy.strategy, shadow.memberStrategy.strategy, eventStrategy]};
 
         fluid.computeDynamicGrades(that, shadow, strategy, shadow.mergeOptions.mergeBlocks);
@@ -1535,7 +1537,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      *     progress for a particular tree transaction
      * @param {String} path - Path at which the potentia will be registered
      * @param {Potentia} topush - A "create" potentia
-     * @return {Potentia|Undefined} `topush` if this was the first potentia registered for this path
+     * @return {Potentia|undefined} `topush` if this was the first potentia registered for this path
      */
     fluid.pushCreatePotentia = function (potentiaList, path, topush) {
         var existing = potentiaList.pathToPotentia[path];

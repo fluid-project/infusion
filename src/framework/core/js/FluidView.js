@@ -38,18 +38,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
             container: 0,
             options: 1
         },
-        invokers: {
-            locate: {
-                // We use this peculiar form of definition since the current implementation of makeInvoker can't
-                // cope with a variable function, and the DOM binder instance is historically mutable
-                // TODO: We should be able to get rid of this again once we remove the virtual DOM
-                funcName: "fluid.apply",
-                args: {
-                    func: "{that}.dom.locate",
-                    args: "{arguments}"
-                }
-            }
-        },
         events: {
             onDomBind: null
         },
@@ -62,7 +50,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
         selectors: {
         },
         members: {
-            dom: "@expand:fluid.createDomBinder({that}.container, {that}.options.selectors)"
+            dom: "@expand:fluid.createDomBinder({that}.container, {that}.options.selectors)",
+            locate: "{that}.dom.locate"
         },
         // mergePolicy allows these members to be cleanly overridden, avoiding FLUID-5668
         mergePolicy: {
@@ -177,6 +166,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
      */
     fluid.createDomBinder = function (container, selectors) {
         var that = {
+            container: container,
             id: fluid.allocateGuid(),
             cache: {}
         };
@@ -197,19 +187,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
             if (selector === undefined) {
                 if (name === "container") {
                     selector = "";
-                } else { // TODO: This should become an error case
-                    return undefined;
+                } else {
+                    fluid.fail("DOM binder request for selector " + name + " which is not registered");
                 }
             }
-            thisContainer = localContainer ? $(localContainer) : container;
+            thisContainer = localContainer ? $(localContainer) : that.container;
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
             if (selector === "") {
                 togo = thisContainer;
-            }
-            else if (!selector) {
-                togo = userJQuery(); // TODO: This is not reasonable and must be made into an error case
             }
             else {
                 if (typeof(selector) === "function") {
@@ -228,16 +215,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
             return togo;
         };
         that.fastLocate = function (name, localContainer) {
-            var thisContainer = localContainer ? localContainer : container;
+            var thisContainer = localContainer ? localContainer : that.container;
             var key = cacheKey(name, thisContainer);
             var togo = that.cache[key];
             return togo ? togo : that.locate(name, localContainer);
+        };
+        that.resetContainer = function (container) {
+            that.container = container;
+            that.clear();
         };
         that.clear = function () {
             that.cache = {};
         };
         that.refresh = function (names, localContainer) {
-            var thisContainer = localContainer ? localContainer : container;
+            var thisContainer = localContainer ? localContainer : that.container;
             if (typeof names === "string") {
                 names = [names];
             }

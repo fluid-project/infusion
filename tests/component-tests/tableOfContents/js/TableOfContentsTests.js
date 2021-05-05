@@ -278,7 +278,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
         // #FLUID-4352: check if <ul> exists when there is no tocLinks
         if (tocLinks.length === 0) {
-            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $("ul", levels.locate("flc-toc-tocContainer")).length);
+            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $("ul", levels.container).length);
         }
         fluid.each(tocLinks, function (elm, idx) {
             var hInfo = testHeadings.headingInfo[idx];
