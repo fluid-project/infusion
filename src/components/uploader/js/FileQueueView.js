@@ -317,6 +317,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             // "members.queueFiles": "nomerge"
         },
         members: {
+            dom: "@expand:fluid.createLocalContainerDomBinder({that}.container, {that}.options.selectors)", // Uses historical contract via "localContainer" argument
             fileProgressors: {}
             // queueFiles: applied in uploader options - TODO: no model idiom
         },

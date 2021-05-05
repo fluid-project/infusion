@@ -165,6 +165,61 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
      * @return {Object} - The new DOM binder.
      */
     fluid.createDomBinder = function (container, selectors) {
+        var userJQuery = container.constructor;
+        var that = {
+            container: container,
+            id: fluid.allocateGuid(),
+            doQuery: function (selector) {
+                return userJQuery(selector, that.container);
+            },
+            cache: {}
+        };
+
+        that.locate = function (name) {
+            var selector = name === "container" ? "" : selectors[name];
+            if (selector === undefined) {
+                fluid.fail("DOM binder request for selector " + name + " which is not registered");
+            }
+            var togo;
+            if (selector === "") {
+                togo = that.container;
+            } else {
+                togo = that.doQuery(selector);
+            }
+            // These hacks are still required since fluid.prefs.subPanel.resetDomBinder egregiously reads them off the panel container
+            togo.selector = selector;
+            togo.context = that.container;
+
+            togo.selectorName = name;
+            that.cache[name] = togo;
+            return togo;
+        };
+        that.fastLocate = function (name) {
+            return that.cache[name] || that.locate(name);
+        };
+        that.resetContainer = function (container) {
+            that.container = container;
+            that.clear();
+        };
+        that.clear = function () {
+            that.cache = {};
+        };
+        that.resolvePathSegment = that.locate;
+
+        return that;
+    };
+
+    /**
+     * Creates a new "local container"-capable DOM Binder instance, used to locate elements in the DOM by name. This
+     * is a historical contract for the DOM binder which was used by two components, the FileQueueView and the Reorderer.
+     * A simpler contract has been extracted in order to be compatible with future notions of the DOM binder used by
+     * the "new" FLUID-6580 renderer.
+     *
+     * @param {Object} container - the root element in which to locate named elements
+     * @param {Object} selectors - a collection of named jQuery selectors
+     * @return {Object} - The new DOM binder.
+     */
+    fluid.createLocalContainerDomBinder = function (container, selectors) {
         var that = {
             container: container,
             id: fluid.allocateGuid(),
@@ -191,7 +246,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
                     fluid.fail("DOM binder request for selector " + name + " which is not registered");
                 }
             }
-            thisContainer = localContainer ? $(localContainer) : that.container;
+            thisContainer = localContainer || that.container;
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }

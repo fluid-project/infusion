@@ -145,14 +145,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }, "container");
         });
 
-        jqUnit.test("DOM binder", function () {
+        jqUnit.test("Local container DOM binder", function () {
             var container = $(".pager-top");
             var selectors = {
                 "page-link": ".page-link",
                 "inexistent": ".inexistent",
                 "inner-link": "a"
             };
-            var binder = fluid.createDomBinder(container, selectors);
+            var binder = fluid.createLocalContainerDomBinder(container, selectors);
             var pageLinks = binder.locate("page-link");
             jqUnit.assertEquals("Find 3 links", 3, pageLinks.length);
             function testSublocate(method) {
