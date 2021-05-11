@@ -300,12 +300,12 @@ module.exports = build;
 
 if (require.main === module) {
     let args = minimist(process.argv.slice(2), {
-        string: ["include", "exclude", "name", "output", "packages"],
+        string: ["exclude", "include", "name", "output", "packages"],
         boolean: ["copy_dirs", "help", "zip"],
         alias: {
+            e: "exclude",
             h: "help",
             i: "include",
-            e: "exclude",
             n: "name",
             o: "output",
             p: "packages",
@@ -342,7 +342,7 @@ if (require.main === module) {
         sourceMap: args.output ? {
             filename: outputFile,
             url: `${outputFile}.map`,
-            root: "../"
+            root: args.copy_dirs ? "" : path.relative(args.output, "./")
         } : false
     });
 
