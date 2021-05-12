@@ -1244,7 +1244,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             inputValue = input.value;
             label = labels.eq(index);
             jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
-            jqUnit.assertEquals("The aria-label is " + that.options.messageBase.contrast[index], that.options.messageBase.contrast[index], label.attr("aria-label"));
             jqUnit.assertEquals("The input has the correct name attribute", that.id, $(input).attr("name"));
         });
 
