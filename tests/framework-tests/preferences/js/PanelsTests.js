@@ -1266,7 +1266,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 33,
+                expect: 24,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     listener: "fluid.tests.contrastPanel.testDefault",
