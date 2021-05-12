@@ -1317,7 +1317,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel with controlValues replaced",
             tests: [{
-                expect: 15,
+                expect: 12,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     listener: "fluid.tests.contrastPanel.testDefault",
