@@ -202,7 +202,7 @@ $icon-font: 'PrefsFramework-Icons';
 
     .fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-inner-spin-button,
     .fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-outer-spin-button {
-        appearance: none;
+        -webkit-appearance: none;
         margin: 0;
     }
 
