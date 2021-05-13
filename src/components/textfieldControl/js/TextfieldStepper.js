@@ -80,13 +80,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                             // down arrow === 40
                             args: ["{that}.container", "keydown", 40, "{textfieldStepper}.decrease"]
                         }
-                    },
-                    modelListeners: {
-                        "value": {
-                            "this": "{that}.container",
-                            method: "attr",
-                            args: ["value", "{change}.value"]
-                        }
                     }
                 }
             },
