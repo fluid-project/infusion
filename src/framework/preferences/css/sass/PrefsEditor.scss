@@ -193,10 +193,17 @@ $icon-font: 'PrefsFramework-Icons';
     /* height and width specified in ems instead of rems
        to respond to emphasize links preferences */
     .fl-textfieldStepper .fl-textfieldStepper-textField {
+        -moz-appearance: textfield;
         height: 2em;
         margin: 0 0.5em;
         text-align: center;
         width: 4em;
+    }
+
+    .fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-inner-spin-button,
+    .fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-outer-spin-button {
+        appearance: none;
+        margin: 0;
     }
 
     .fl-textfieldStepper .fl-textfieldStepper-button {

@@ -51,12 +51,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                                     "range.min": {
                                         "this": "{textfield}.container",
                                         method: "attr",
-                                        args: ["aria-valuemin", "{change}.value"]
+                                        args: ["min", "{change}.value"]
                                     },
                                     "range.max": {
                                         "this": "{textfield}.container",
                                         method: "attr",
-                                        args: ["aria-valuemax", "{change}.value"]
+                                        args: ["max", "{change}.value"]
+                                    },
+                                    "step": {
+                                        "this": "{textfield}.container",
+                                        method: "attr",
+                                        args: ["step", "{change}.value"]
                                     }
                                 }
                             }
@@ -74,18 +79,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                             listener: "fluid.textfieldStepper.bindKeyEvent",
                             // down arrow === 40
                             args: ["{that}.container", "keydown", 40, "{textfieldStepper}.decrease"]
-                        },
-                        "onCreate.addRole": {
-                            "this": "{that}.container",
-                            method: "attr",
-                            args: ["role", "spinbutton"]
                         }
                     },
                     modelListeners: {
                         "value": {
                             "this": "{that}.container",
                             method: "attr",
-                            args: ["aria-valuenow", "{change}.value"]
+                            args: ["value", "{change}.value"]
                         }
                     }
                 }
