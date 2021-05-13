@@ -23,11 +23,18 @@
 /* Textfield Styling */
 
 .fl-textfieldStepper .fl-textfieldStepper-textField {
+    -moz-appearance: textfield;
     font-family: inherit;
     font-size: 100%;
     margin: 0 0.5rem;
     text-align: center;
     width: 7rem;
+}
+
+.fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-inner-spin-button,
+.fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Textfield Button Styling */

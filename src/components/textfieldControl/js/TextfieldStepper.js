@@ -51,43 +51,24 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                                     "range.min": {
                                         "this": "{textfield}.container",
                                         method: "attr",
-                                        args: ["aria-valuemin", "{change}.value"]
+                                        args: ["min", "{change}.value"]
                                     },
                                     "range.max": {
                                         "this": "{textfield}.container",
                                         method: "attr",
-                                        args: ["aria-valuemax", "{change}.value"]
+                                        args: ["max", "{change}.value"]
+                                    },
+                                    "step": {
+                                        "this": "{textfield}.container",
+                                        method: "attr",
+                                        args: ["step", "{change}.value"]
                                     }
                                 }
                             }
                         }
                     },
                     attrs: "{textfieldStepper}.options.attrs",
-                    strings: "{textfieldStepper}.options.strings",
-                    listeners: {
-                        "onCreate.bindUpArrow": {
-                            listener: "fluid.textfieldStepper.bindKeyEvent",
-                            // up arrow === 38
-                            args: ["{that}.container", "keydown", 38, "{textfieldStepper}.increase"]
-                        },
-                        "onCreate.bindDownArrow": {
-                            listener: "fluid.textfieldStepper.bindKeyEvent",
-                            // down arrow === 40
-                            args: ["{that}.container", "keydown", 40, "{textfieldStepper}.decrease"]
-                        },
-                        "onCreate.addRole": {
-                            "this": "{that}.container",
-                            method: "attr",
-                            args: ["role", "spinbutton"]
-                        }
-                    },
-                    modelListeners: {
-                        "value": {
-                            "this": "{that}.container",
-                            method: "attr",
-                            args: ["aria-valuenow", "{change}.value"]
-                        }
-                    }
+                    strings: "{textfieldStepper}.options.strings"
                 }
             },
             increaseButton: {
@@ -201,15 +182,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         coefficient = coefficient || 1;
         var newValue = that.model.value + (coefficient * that.model.step);
         that.applier.change("value", newValue);
-    };
-
-    fluid.textfieldStepper.bindKeyEvent = function (elm, keyEvent, keyCode, fn) {
-        $(elm).on(keyEvent, function (event) {
-            if (event.which === keyCode) {
-                fn();
-                event.preventDefault();
-            }
-        });
     };
 
     fluid.defaults("fluid.textfieldStepper.button", {
