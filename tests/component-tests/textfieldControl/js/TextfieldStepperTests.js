@@ -148,8 +148,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         changeEvent: "{stepper}.applier.modelChanged"
                     }, {
                         // decrease to minimum
-                        jQueryTrigger: "click",
-                        element: "{stepper}.dom.decreaseButton"
+                        jQueryTrigger: fluid.tests.textfieldControl.createKeyEvent("keydown", 40),
+                        element: "{stepper}.dom.textfield"
                     }, {
                         listener: "fluid.tests.textfieldStepper.verifyState",
                         args: ["{stepper}", 0, true, false],
@@ -157,8 +157,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         changeEvent: "{stepper}.applier.modelChanged"
                     }, {
                         // increase
-                        jQueryTrigger: "click",
-                        element: "{stepper}.dom.increaseButton"
+                        jQueryTrigger: fluid.tests.textfieldControl.createKeyEvent("keydown", 38),
+                        element: "{stepper}.dom.textfield"
                     }, {
                         listener: "fluid.tests.textfieldStepper.verifyState",
                         args: ["{stepper}", 1, true, true],
