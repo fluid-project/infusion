@@ -89,7 +89,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         fluid.tests.textfieldStepper.verifyState = function (that, expectedValue, incBtnState, decBtnState) {
             jqUnit.assertEquals("The model value should be " + expectedValue, expectedValue, that.model.value);
-            jqUnit.assertEquals("The value should be " + expectedValue, expectedValue.toString(), that.textfield.container.attr("value"));
             jqUnit.assertEquals("The increase button is " + (incBtnState ? "enabled" : "disabled"), incBtnState, !that.locate("increaseButton").is(":disabled"));
             jqUnit.assertEquals("The decrease button is " + (decBtnState ? "enabled" : "disabled"), decBtnState, !that.locate("decreaseButton").is(":disabled"));
         };
