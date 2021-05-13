@@ -113,7 +113,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
     /**
      * Fetches a single container element and returns it as a jQuery.
      *
-     * @param {String|jQuery|element} containerSpec - an id string, a single-element jQuery, or a DOM element specifying a unique container
+     * @param {String|jQuery|Element} containerSpec - an selector, a single-element jQuery, or a DOM element specifying a unique container
      * @param {Boolean} fallible - <code>true</code> if an empty container is to be reported as a valid condition
      * @param {jQuery} [userJQuery] - the jQuery object to use for the wrapping, optional - use the current jQuery if absent
      * @return {jQuery} - A single-element jQuery container.
@@ -132,10 +132,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
         }
 
         if (!container || !container.jquery || container.length !== 1) {
+            // TODO: This boneheaded overwriting of our arguments prevents plain view components appearing as children of renderer components -
+            // unless of course it has already overwritten the DOM binder's cache value - doesn't seem possible. A renderer component could
+            // of course broadcast an addon grade to all its viewComponent children overriding their container resolver
             if (typeof(containerSpec) !== "string") {
                 containerSpec = container.selector;
             }
             var count = container.length !== undefined ? container.length : 0;
+            // TODO: "in context" confusingly reports "undefined" in the usual case that containerSpec is just a selector
             var extraMessage = container.selectorName ? " with selector name " + container.selectorName +
                 " in context " + fluid.dumpEl(containerSpec.context) : "";
             fluid.fail((count > 1 ? "More than one (" + count + ") container elements were" :
@@ -175,27 +179,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
             cache: {}
         };
 
-        that.locate = function (name) {
-            var selector = name === "container" ? "" : selectors[name];
+        that.locate = function (selectorName) {
+            var selector = selectorName === "container" ? "" : selectors[selectorName];
             if (selector === undefined) {
-                fluid.fail("DOM binder request for selector " + name + " which is not registered");
+                fluid.fail("DOM binder request for selector " + selectorName + " which is not registered");
             }
             var togo;
             if (selector === "") {
                 togo = that.container;
             } else {
-                togo = that.doQuery(selector);
+                togo = that.doQuery(selector, selectorName);
             }
             // These hacks are still required since fluid.prefs.subPanel.resetDomBinder egregiously reads them off the panel container
             togo.selector = selector;
             togo.context = that.container;
 
-            togo.selectorName = name;
-            that.cache[name] = togo;
+            togo.selectorName = selectorName;
+            that.cache[selectorName] = togo;
             return togo;
         };
-        that.fastLocate = function (name) {
-            return that.cache[name] || that.locate(name);
+        that.fastLocate = function (selectorName) {
+            return that.cache[selectorName] || that.locate(selectorName);
         };
         that.resetContainer = function (container) {
             that.container = container;
