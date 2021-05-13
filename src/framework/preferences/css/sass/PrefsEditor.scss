@@ -194,6 +194,8 @@ $icon-font: 'PrefsFramework-Icons';
        to respond to emphasize links preferences */
     .fl-textfieldStepper .fl-textfieldStepper-textField {
         -moz-appearance: textfield;
+        font-family: inherit;
+        font-size: 100%;
         height: 2em;
         margin: 0 0.5em;
         text-align: center;
