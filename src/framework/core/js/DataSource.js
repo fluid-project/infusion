@@ -15,8 +15,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     "use strict";
 
     /** NOTE: Much of this work originated from
-     * https://github.com/fluid-project/kettle/blob/main/lib/dataSource-core.js and
-     * https://github.com/fluid-project/kettle/blob/main/lib/dataSource-url.js
+     * https://github.com/fluid-project/kettle/blob/d3b4d9a48c2d040bb6f882810ca515ec3555ae64/lib/dataSource-core.js and
+     * https://github.com/fluid-project/kettle/blob/d3b4d9a48c2d040bb6f882810ca515ec3555ae64/lib/dataSource-url.js
      ***/
 
     /** Some common content encodings - suitable to appear as the "encoding" subcomponent of a dataSource **/
