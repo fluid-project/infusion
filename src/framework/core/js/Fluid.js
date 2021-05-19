@@ -407,6 +407,15 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
         return typeof(ref) === "string" && ref.charAt(0) === "{";
     };
 
+    /** Determine whether the supplied value is a reference or an expander. The test is passed if either fluid.isIoCReference passes
+     * or the value has an "expander" member
+     * @param {Any} ref - The value to be tested
+     * @return {Boolean} `true` if the supplied value is a reference or expander
+     */
+    fluid.isReferenceOrExpander = function (ref) {
+        return ref && (fluid.isIoCReference(ref) || ref.expander);
+    };
+
     fluid.isDOMNode = function (obj) {
         // This could be more sound, but messy:
         // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
@@ -1878,6 +1887,10 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 
     fluid.defaultsStore = {};
 
+    fluid.flattenGradeName = function (gradeName) {
+        return typeof(gradeName) === "string" ? gradeName : JSON.stringify(gradeName);
+    };
+
     // unsupported, NON-API function
     // Recursively builds up "gradeStructure" in first argument. 2nd arg receives gradeNames to be resolved, with stronger grades at right (defaults order)
     // builds up gradeStructure.gradeChain pushed from strongest to weakest (reverse defaults order)
@@ -1885,12 +1898,14 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
         gradeNames = fluid.makeArray(gradeNames);
         for (var i = gradeNames.length - 1; i >= 0; --i) { // from stronger to weaker
             var gradeName = gradeNames[i];
-            if (gradeName && !gs.gradeHash[gradeName]) {
-                var isDynamic = fluid.isIoCReference(gradeName);
+            // cf. logic in fluid.accumulateDynamicGrades
+            var flatGradeName = fluid.flattenGradeName(gradeName);
+            if (gradeName && !gs.gradeHash[flatGradeName]) {
+                var isDynamic = fluid.isReferenceOrExpander(gradeName);
                 var options = (isDynamic ? null : fluid.rawDefaults(gradeName)) || {};
                 var thisTick = gradeTickStore[gradeName] || (gradeTick - 1); // a nonexistent grade is recorded as just previous to current
                 gs.lastTick = Math.max(gs.lastTick, thisTick);
-                gs.gradeHash[gradeName] = true;
+                gs.gradeHash[flatGradeName] = true;
                 gs.gradeChain.push(gradeName);
                 var oGradeNames = fluid.makeArray(options.gradeNames);
                 for (var j = oGradeNames.length - 1; j >= 0; --j) { // from stronger to weaker grades

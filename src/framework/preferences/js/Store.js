@@ -78,6 +78,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      */
     fluid.defaults("fluid.prefs.cookieStore", {
         gradeNames: ["fluid.dataSource"],
+        writableGrade: "fluid.prefs.cookieStore.writable",
         cookie: {
             name: "fluid-ui-settings"
         },
@@ -124,8 +125,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         }
     });
-
-    fluid.makeGradeLinkage("fluid.prefs.cookieStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.cookieStore"], "fluid.prefs.cookieStore.writable");
 
     /**
      * Retrieve and return the value of the cookie
@@ -212,6 +211,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      */
     fluid.defaults("fluid.prefs.tempStore", {
         gradeNames: ["fluid.dataSource", "fluid.modelComponent"],
+        writableGrade: "fluid.prefs.tempStore.writable",
         components: {
             encoding: {
                 type: "fluid.dataSource.encoding.model"
@@ -248,15 +248,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return that.model;
     };
 
-    fluid.makeGradeLinkage("fluid.prefs.tempStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.tempStore"], "fluid.prefs.tempStore.writable");
-
     fluid.defaults("fluid.prefs.globalSettingsStore", {
         gradeNames: ["fluid.component"],
         components: {
             settingsStore: {
                 type: "fluid.prefs.store",
                 options: {
-                    gradeNames: ["fluid.resolveRootSingle", "fluid.dataSource.writable"],
+                    gradeNames: ["fluid.resolveRootSingle"],
+                    writable: true,
                     singleRootType: "fluid.prefs.store"
                 }
             }

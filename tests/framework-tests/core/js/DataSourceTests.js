@@ -33,6 +33,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.dataSource.plainText", {
         gradeNames: ["fluid.dataSource"],
+        writableGrade: "fluid.tests.dataSource.plainText.writable",
         components: {
             encoding: {
                 type: "fluid.dataSource.encoding.none"
@@ -47,6 +48,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.dataSource.plainText.transformed", {
         gradeNames: ["fluid.tests.dataSource.plainText"],
+        writableGrade: "fluid.tests.dataSource.plainText.writableTransformed",
         listeners: {
             "onRead.transform": {
                 func: "fluid.tests.dataSource.plainText.toUpperCase",
@@ -56,6 +58,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.dataSource.plainText.writable", {
+        gradeNames: ["fluid.dataSource.writable"],
         listeners: {
             "onWrite.impl": {
                 func: "fluid.tests.dataSource.write"
@@ -72,9 +75,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         }
     });
-
-    fluid.makeGradeLinkage("fluid.tests.dataSource.linkage.plainText", ["fluid.dataSource.writable", "fluid.tests.dataSource.plainText"], "fluid.tests.dataSource.plainText.writable");
-    fluid.makeGradeLinkage("fluid.tests.dataSource.linkage.plainText.transformed", ["fluid.dataSource.writable", "fluid.tests.dataSource.plainText.transformed"], "fluid.tests.dataSource.plainText.writableTransformed");
 
     fluid.tests.dataSource.getInitialPayload = function (payload, options) {
         var promise = fluid.promise();
@@ -127,13 +127,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             dsReadWrite: {
                 type: "fluid.tests.dataSource.plainText",
                 options: {
-                    gradeNames: ["fluid.dataSource.writable"]
+                    writable: true
                 }
             },
             dsReadWriteTransformed: {
                 type: "fluid.tests.dataSource.plainText.transformed",
                 options: {
-                    gradeNames: ["fluid.dataSource.writable"]
+                    writable: true
                 }
             },
             dataSourceTester: {

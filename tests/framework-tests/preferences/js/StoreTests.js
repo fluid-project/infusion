@@ -114,7 +114,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     // Cookie Store Tests
 
     fluid.defaults("fluid.tests.prefs.cookieStore", {
-        gradeNames: ["fluid.prefs.cookieStore", "fluid.dataSource.writable"],
+        gradeNames: ["fluid.prefs.cookieStore"],
+        writable: true,
         cookie: {
             name: fluid.tests.prefs.store.cookieName
         }
@@ -216,7 +217,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     // Temp Store Tests
 
     fluid.defaults("fluid.tests.prefs.tempStore", {
-        gradeNames: ["fluid.prefs.tempStore", "fluid.dataSource.writable"],
+        gradeNames: ["fluid.prefs.tempStore"],
+        writable: true,
         model: {
             orig: "orig"
         }
