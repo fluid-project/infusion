@@ -642,9 +642,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         listeners: {
             "onRead.impl": {
                 func: "fluid.identity"
-            },
-            "onWrite.impl": {
-                func: "fluid.identity"
             }
         }
     });

@@ -574,7 +574,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fluid.accumulateDynamicGrades(rec, fluid.flatten(gradeNamesList));
         }
     };
-
     // Apply a batch of freshly acquired plain dynamic grades to the target component and recompute its options
     fluid.applyDynamicGrades = function (rec) {
         rec.oldGradeNames = fluid.makeArray(rec.gradeNames);
@@ -584,7 +583,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         rec.gradeNames.push.apply(rec.gradeNames, newDefaults.gradeNames);
 
         fluid.each(rec.gradeNames, function (gradeName) {
-            if (!fluid.isIoCReference(gradeName)) {
+            if (!fluid.isReferenceOrExpander(gradeName)) {
                 rec.seenGrades[gradeName] = true;
             }
         });
@@ -594,6 +593,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
         // at this site when we have a full fix for FLUID-5028
         shadow.mergeOptions.destroyValue(["mergePolicy"]);
+        // TODO: Why do we do this given as we decided we are not responsive to it?
         shadow.mergeOptions.destroyValue(["components"]);
         shadow.mergeOptions.destroyValue(["invokers"]);
 
@@ -607,15 +607,33 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     // Filter some newly discovered grades into their plain and dynamic queues
     fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
         fluid.each(newGradeNames, function (gradeName) {
-            if (!rec.seenGrades[gradeName]) {
-                if (fluid.isIoCReference(gradeName)) {
+            var flatGradeName = fluid.flattenGradeName(gradeName);
+            if (!rec.seenGrades[flatGradeName]) {
+                if (fluid.isReferenceOrExpander(gradeName)) {
                     rec.rawDynamic.push(gradeName);
-                    rec.seenGrades[gradeName] = true;
+                    rec.seenGrades[flatGradeName] = true;
                 } else if (!fluid.contains(rec.oldGradeNames, gradeName)) {
                     rec.plainDynamic.push(gradeName);
                 }
             }
         });
+    };
+
+    fluid.accumulateContextAwareGrades = function (that, rec) {
+        var newContextAware = [];
+        if (fluid.contains(rec.gradeNames, "fluid.contextAware")) {
+            var contextAwarenessOptions = fluid.getForComponent(that, ["options", "contextAwareness"]);
+            newContextAware = fluid.contextAware.check(that, contextAwarenessOptions);
+            var lostGrade = fluid.find_if(rec.contextAware, function (gradeName) {
+                return !fluid.contains(newContextAware, gradeName);
+            });
+            if (lostGrade) { // The user really deserves a prize if they achieve this diagnostic
+                fluid.fail("Failure operating contextAwareness definition ", contextAwarenessOptions, " for component " + fluid.dumpComponentAndPath(that)
+                    + ": grade name " + lostGrade + " returned by an earlier round of checks was lost through a context change caused by a raw dynamic grade");
+            }
+            rec.contextAware = newContextAware;
+        }
+        return newContextAware;
     };
 
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
@@ -631,7 +649,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             defaultsBlock: defaultsBlock,
             gradeNames: gradeNames, // remember that this array is globally shared
             seenGrades: {},
-            plainDynamic: [],
+            plainDynamic: [], // unshared, accumulates any directly seen grades and their derivatives seen on one cycle
+            contextAware: [],
             rawDynamic: []
         };
         fluid.each(shadow.mergeOptions.mergeBlocks, function (block) { // acquire parents of earlier blocks before applying later ones
@@ -639,6 +658,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fluid.applyDynamicGrades(rec);
         });
         fluid.collectDistributedGrades(rec);
+        var checkContextAware = true; // Make a fresh check for contextAware grades after every contribution from raw dynamics
         while (true) {
             while (rec.plainDynamic.length > 0) {
                 gradeNames.push.apply(gradeNames, rec.plainDynamic);
@@ -646,25 +666,30 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 fluid.applyDynamicGrades(rec);
                 fluid.collectDistributedGrades(rec);
             }
-            if (rec.rawDynamic.length > 0) {
-                var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localDynamic);
+            if (checkContextAware) {
+                var newContextAware = fluid.accumulateContextAwareGrades(that, rec);
+                rec.plainDynamic = rec.plainDynamic.concat(newContextAware);
+                checkContextAware = false;
+            } else if (rec.rawDynamic.length > 0) {
+                var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localRecord);
                 if (typeof(expanded) === "function") {
                     expanded = expanded();
                 }
                 if (expanded) {
                     rec.plainDynamic = rec.plainDynamic.concat(expanded);
                 }
+                checkContextAware = true;
             } else {
                 break;
             }
         }
+        fluid.remove_if(gradeNames, fluid.isReferenceOrExpander);
 
         if (shadow.collectedClearer) {
             shadow.collectedClearer();
             delete shadow.collectedClearer;
         }
     };
-
     fluid.computeDynamicComponentKey = function (recordKey, sourceKey) {
         return recordKey + (sourceKey === 0 ? "" : "-" + sourceKey); // TODO: configurable name strategies
     };
@@ -729,7 +754,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.computeComponentAccessor = function (that, localRecord) {
         var instantiator = fluid.globalInstantiator;
         var shadow = fluid.shadowForComponent(that);
-        shadow.localDynamic = localRecord; // for signalling to dynamic grades from dynamic components
+        shadow.localRecord = localRecord; // for signalling to dynamic grades from dynamic components
         var options = that.options;
         var strategy = shadow.mergeOptions.strategy;
         var optionsStrategy = fluid.mountStrategy(["options"], options, strategy);
@@ -1329,8 +1354,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
         fluid.sortByPriority(distributions);
 
-        var localDynamic = options.localDynamic;
-        var localRecord = $.extend({}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
+        var localRecord = $.extend({}, fluid.censorKeys(options.componentRecord, ["type"]), options.localRecord);
 
         var argMap = upDefaults.argumentMap;
         var findKeys = Object.keys(argMap).concat(["type"]);
@@ -1359,7 +1383,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             if (name === "options") {
                 arg = {
                     marker: fluid.EXPAND,
-                    localRecord: localDynamic,
+                    localRecord: localRecord,
                     mergeRecords: mergeRecords,
                     instantiator: fluid.getInstantiator(parentThat),
                     parentThat: parentThat,
@@ -1398,7 +1422,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var instance;
         var instantiator = fluid.globalInstantiator;
         var shadow = instantiator.idToShadow[that.id];
-        var localDynamic = localRecord || shadow.subcomponentLocal && shadow.subcomponentLocal[name];
+        localRecord = localRecord || shadow.subcomponentLocal && shadow.subcomponentLocal[name];
         fluid.pushActivity("initDependent", "instantiating dependent component at path \"%path\" with record %record as child of %parent",
             {path: shadow.path + "." + name, record: component, parent: that});
 
@@ -1412,12 +1436,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         }
         else if (component.type) {
-            var type = fluid.expandImmediate(component.type, that, localDynamic);
+            var type = fluid.expandImmediate(component.type, that, localRecord);
             if (!type) {
                 fluid.fail("Error in subcomponent record: ", component.type, " could not be resolved to a type for component ", name,
                     " of parent ", that);
             }
-            var invokeSpec = fluid.assembleCreatorArguments(that, type, {componentRecord: component, memberName: name, localDynamic: localDynamic});
+            var invokeSpec = fluid.assembleCreatorArguments(that, type, {componentRecord: component, memberName: name, localRecord: localRecord});
             instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
         }
         else {

@@ -14,7 +14,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
-    /** NOTE: Much of this work originated from https://github.com/fluid-project/kettle/blob/main/lib/dataSource-core.js **/
+    /** NOTE: Much of this work originated from
+     * https://github.com/fluid-project/kettle/blob/main/lib/dataSource-core.js and
+     * https://github.com/fluid-project/kettle/blob/main/lib/dataSource-url.js
+     ***/
 
     /** Some common content encodings - suitable to appear as the "encoding" subcomponent of a dataSource **/
 
@@ -44,9 +47,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             try {
                 togo.resolve(JSON.parse(string));
             } catch (err) {
-                togo.reject({
-                    message: err
-                });
+                togo.reject(err);
             }
         }
         return togo;
@@ -76,11 +77,21 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      *          placed in the directModel.
      */
     fluid.defaults("fluid.dataSource", {
-        gradeNames: ["fluid.component"],
+        gradeNames: ["fluid.component", "fluid.contextAware"],
+        contextAwareness: {
+            writable: {
+                checks: {
+                    writableValue: {
+                        contextValue: "{fluid.dataSource}.options.writable",
+                        gradeNames: "{fluid.dataSource}.options.writableGrade"
+                    }
+                }
+            }
+        },
+        writable: false,
         events: {
             // The "onRead" event is operated in a custom workflow by fluid.fireTransformEvent to
-            // process dataSource payloads during the get process. Each listener
-            // receives the data returned by the last.
+            // process dataSource payloads during the get process. Each listener receives the data returned by the last.
             onRead: null,
             onError: null
         },
@@ -104,24 +115,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         invokers: {
             get: {
                 funcName: "fluid.dataSource.get",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"] // directModel, options/callback
+                args: ["{that}", "{arguments}.0", "{arguments}.1"] // directModel, directOptions
             }
         }
     });
 
 
     /**
-     * Base grade for adding write configuration to a dataSource.
-     *
-     * Grade linkage should be used to apply the concrete writable grade to the datasource configuration.
-     * For example fluid.makeGradeLinkage("kettle.dataSource.CouchDB.linkage", ["fluid.dataSource.writable", "kettle.dataSource.CouchDB"], "kettle.dataSource.CouchDB.writable");
+     * Base grade for adding write configuration to a dataSource. Because of issues like FLUID-5800, this is a pure
+     * mixin grade. The related writable grade to a concrete DataSource grade is listed in its "writableGrade" options,
+     * which response to the "writable: true" option via ContextAwareness.
      */
     fluid.defaults("fluid.dataSource.writable", {
         gradeNames: ["fluid.component"],
         events: {
             // events "onWrite" and "onWriteResponse" are operated in a custom workflow by fluid.fireTransformEvent to
-            // process dataSource payloads during the set process. Each listener
-            // receives the data returned by the last.
+            // process dataSource payloads during the set process. Each listener receives the data returned by the last.
             onWrite: null,
             onWriteResponse: null
         },
@@ -141,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         invokers: {
             set: {
                 funcName: "fluid.dataSource.set",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // directModel, model, options/callback
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // directModel, model, directOptions
             }
         }
     });
@@ -151,13 +160,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     // ii) if the user has supplied an onError handler in method `options`, this is registered - otherwise
     // we register the firer of the dataSource's own onError method.
 
-    fluid.dataSource.registerStandardPromiseHandlers = function (that, promise, options) {
-        promise.then(typeof(options) === "function" ? options : null,
-            options.onError ? options.onError : that.events.onError.fire);
+    fluid.dataSource.registerStandardPromiseHandlers = function (that, promise, requestOptions) {
+        promise.then(requestOptions.callback, requestOptions.onError ? requestOptions.onError : that.events.onError.fire);
     };
 
-    fluid.dataSource.defaultiseOptions = function (componentOptions, options, directModel, isSet) {
-        options = options || {};
+    fluid.dataSource.defaultiseOptions = function (componentOptions, directOptions, directModel, isSet) {
+        var options = typeof(directOptions) === "function" ? {
+            callback: directOptions
+        } : fluid.copy(directOptions) || {};
         options.directModel = directModel;
         options.operation = isSet ? "set" : "get";
         options.notFoundIsEmpty = options.notFoundIsEmpty || componentOptions.notFoundIsEmpty;
@@ -167,14 +177,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     /** Operate the core "transforming promise workflow" of a dataSource's `get` method. The initial listener provides the initial payload;
      *  which then proceeds through the transform chain to arrive at the final payload.
      * @param {fluid.dataSource} that - The dataSource itself
-     * @param {Object} directModel - The direct model expressing the "coordinates" of the model to be fetched
-     * @param {Object} options - (optional) A structure of options configuring the action of this get request - many of these will be specific to the particular concrete DataSource
+     * @param {Object} [directModel] - The direct model expressing the "coordinates" of the model to be fetched
+     * @param {Object|Function} [directOptions] - A success callback, or a structure of options configuring the action of this get request,  - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload
      */
-    fluid.dataSource.get = function (that, directModel, options) {
-        options = fluid.dataSource.defaultiseOptions(that.options, options, directModel);
-        var promise = fluid.promise.fireTransformEvent(that.events.onRead, undefined, options);
-        fluid.dataSource.registerStandardPromiseHandlers(that, promise, options);
+    fluid.dataSource.get = function (that, directModel, directOptions) {
+        var requestOptions = fluid.dataSource.defaultiseOptions(that.options, directOptions, directModel);
+        var promise = fluid.promise.fireTransformEvent(that.events.onRead, undefined, requestOptions);
+        fluid.dataSource.registerStandardPromiseHandlers(that, promise, requestOptions);
         return promise;
     };
 
@@ -182,25 +192,24 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * Operate the core "transforming promise workflow" of a dataSource's `set` method.
      * Any return from this is then pushed forwards through a range of the transforms (typically, e.g. just decoding it as JSON)
      * on its way back to the user via the onWriteResponse event.
-     *
      * @param {fluid.dataSource} that - The dataSource itself
-     * @param {Object} directModel - The direct model expressing the "coordinates" of the model to be written
-     * @param {Object} model - The payload to be written to the dataSource
-     * @param {Object} options - (optional) A structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
+     * @param {Object} [directModel] - The direct model expressing the "coordinates" of the model to be written
+     * @param {Any} model - The payload to be written to the dataSource
+     * @param {Object|Function} [directOptions] - A success callback, or a structure of options configuring the action of this set request - many of these will be specific to the particular concrete DataSource
      * @return {Promise} A promise for the final resolved payload (not all DataSources will provide any for a `set` method)
      */
-    fluid.dataSource.set = function (that, directModel, model, options) {
-        options = fluid.dataSource.defaultiseOptions(that.options, options, directModel, true); // shared and writeable between all participants
-        var transformPromise = fluid.promise.fireTransformEvent(that.events.onWrite, model, options);
+    fluid.dataSource.set = function (that, directModel, model, directOptions) {
+        var requestOptions = fluid.dataSource.defaultiseOptions(that.options, directOptions, directModel, true); // shared and writeable between all participants
+        var transformPromise = fluid.promise.fireTransformEvent(that.events.onWrite, model, requestOptions);
         var togo = fluid.promise();
         transformPromise.then(function (setResponse) {
-            var options2 = fluid.dataSource.defaultiseOptions(that.options, fluid.copy(options), directModel);
+            var options2 = fluid.dataSource.defaultiseOptions(that.options, fluid.copy(requestOptions), directModel);
             var retransformed = fluid.promise.fireTransformEvent(that.events.onWriteResponse, setResponse, options2);
             fluid.promise.follow(retransformed, togo);
         }, function (error) {
             togo.reject(error);
         });
-        fluid.dataSource.registerStandardPromiseHandlers(that, togo, options);
+        fluid.dataSource.registerStandardPromiseHandlers(that, togo, requestOptions);
         return togo;
     };
 
