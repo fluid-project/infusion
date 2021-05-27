@@ -350,6 +350,240 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
         return element.id;
     };
 
+    fluid.registerNamespace("fluid.materialisers");
+
+    fluid.makeDomMaterialiserManager = function () {
+        // In future we will want to track listeners and other elements in order to invalidate them, but currently
+        // there are no use cases
+        var that = {
+            idToModelListeners: {}
+        };
+        return that;
+    };
+
+    fluid.checkMaterialisedElement = function (element, selectorName, that) {
+        if (!element || !element.length) {
+            fluid.fail("Could not locate element for selector " + selectorName + " for component " + fluid.dumpComponentAndPath(that));
+        }
+    };
+
+    fluid.domMaterialiserManager = fluid.makeDomMaterialiserManager();
+
+    // Passive - pushes out to single-arg jQuery method, active in acquiring initial markup value for booleanAttr
+    fluid.materialisers.domOutput = function (that, segs, type, options) {
+        var selectorName = segs[1];
+        var listener = function (value) {
+            if (that.dom) {
+                var element = that.dom.locate(selectorName);
+                fluid.checkMaterialisedElement(element, selectorName, that);
+
+                if (type === "jQuery") {
+                    var model = {
+                        value: value,
+                        segs: segs
+                    };
+                    var args = options.makeArgs ? options.makeArgs(model) : [model.value];
+                    element[options.method].apply(element, args);
+                } else if (type === "booleanAttr") {
+                    if (value === undefined) {
+                        var markupValue = !!element.attr(options.attr);
+                        that.applier.change(segs, options.negate ? !markupValue : markupValue);
+                    } else {
+                        var attrValue = options.negate ? !value : value;
+                        if (attrValue) {
+                            element.attr(options.attr, options.attr);
+                        } else {
+                            element.removeAttr(options.attr);
+                        }
+                    }
+                }
+            }
+        };
+        //        fluid.pushArray(fluid.domMaterialiserManager.idToModelListeners, that.id, listener);
+        that.applier.modelChanged.addListener({segs: segs}, listener);
+        that.events.onDomBind.addListener(function () {
+            var modelValue = fluid.getImmediate(that.model, segs);
+            listener(modelValue);
+        });
+        // For "read" materialisers, if the DOM has shorter lifetime than the component, the binder will still function
+    };
+
+    fluid.incrementModel = function (that, segs) {
+        var oldValue = fluid.getImmediate(that.model, segs) || 0;
+        that.applier.change(segs, oldValue + 1);
+    };
+
+    // Active - count of received clicks
+    fluid.materialisers.domClick = function (that, segs) {
+        // Note that we no longer supply an initial value to avoid confusing non-integral modelListeners
+        // that.applier.change(segs, 0);
+        var listener = function () {
+            fluid.incrementModel(that, segs);
+            // TODO: Add a change source, and stick "event" on the stack somehow
+        };
+        // TODO: ensure that we don't miss the initial DOM bind event - unlikely, since models are resolved first
+        // We assume that an outdated DOM will cease to generate events and be GCed
+        that.events.onDomBind.addListener(function () {
+            that.dom.locate(segs[1]).click(listener);
+        });
+    };
+
+    // Active - hover state
+    fluid.materialisers.hover = function (that, segs) {
+        var makeListener = function (state) {
+            return function () {
+                // TODO: Add a change source, and stick "event" on the stack somehow
+                that.applier.change(segs, state);
+            };
+        };
+        // TODO: For this and click, integralise over the entire document and add just one single listener - also, preferably eliminate jQuery
+        // Perhaps a giant WeakMap of all DOM binder cache contents?
+        that.events.onDomBind.addListener(function () {
+            that.dom.locate(segs[1]).hover(makeListener(true), makeListener(false));
+        });
+    };
+
+    // Bidirectional - pushes and receives values
+    fluid.materialisers.domValue = function (that, segs) {
+        that.events.onDomBind.addListener(function () {
+            var element = that.dom.locate(segs[1]);
+
+            var domListener = function () {
+                var val = fluid.value(element);
+                that.applier.change(segs, val, "ADD", "DOM");
+            };
+
+            var modelListener = function (value) {
+                if (value !== undefined) {
+                    fluid.value(element, value);
+                }
+            };
+
+            that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, modelListener);
+
+            var options = fluid.getImmediate(that, ["options", "bindingOptions", fluid.model.composeSegments.apply(null, segs)]);
+            var changeEvent = options && options.changeEvent || "change";
+
+            element.on(changeEvent, domListener);
+            // Pull the initial value from the model
+            modelListener(fluid.getImmediate(that.model, segs));
+            // TODO: How do we know not to pull the value from the DOM on startup? Are we expected to introspect into
+            // the relay rule connecting it? Surely not. In practice this should use the same rule as "outlying init
+            // values" in the main ChangeApplier which we have done, but so far there is no mechanism to override it.
+        });
+    };
+
+    // Passive
+    fluid.materialisers.style = function (that, segs) {
+        var selectorName = segs[1];
+        that.events.onDomBind.addListener(function () {
+            var element = that.dom.locate(selectorName);
+            fluid.checkMaterialisedElement(element, selectorName, that);
+            var modelValue = fluid.getImmediate(that.model, segs);
+            element[0].style[segs[3]] = modelValue;
+        });
+    };
+
+    // Remember, naturally all this stuff will go into defaults when we can afford it
+    fluid.registerNamespace("fluid.materialiserRegistry");
+
+
+    fluid.materialiserRegistry["fluid.viewComponent"] = {
+        "dom": {
+            "*": {
+                "text": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "text"}]
+                },
+                "attrs": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "attr", makeArgs: function (model) {
+                        return [ model.segs[3], model.value];
+                    }}]
+                },
+                "visible": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "toggle"}]
+                },
+                "enabled": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["booleanAttr", {attr: "disabled", negate: true}]
+                },
+                "click": {
+                    materialiser: "fluid.materialisers.domClick"
+                },
+                "hover": {
+                    materialiser: "fluid.materialisers.hover"
+                },
+                "value": {
+                    materialiser: "fluid.materialisers.domValue"
+                },
+                "class": {
+                    materialiser: "fluid.materialisers.domOutput",
+                    args: ["jQuery", {method: "toggleClass", makeArgs: function (model) {
+                        return [ model.segs[3], !!model.value];
+                    }}]
+                },
+                "style": {
+                    materialiser: "fluid.materialisers.style"
+                }
+            }
+        }
+    };
+
+    /** A generalisation of jQuery.val to correctly handle the case of acquiring and setting the value of clustered
+     * radio button/checkbox sets, potentially, given a node corresponding to just one element.
+     * @param {jQuery} nodeIn - The node whose value is to be read or written
+     * @param {Any} newValue - If `undefined`, the value will be read, otherwise, the supplied value will be applied to the node
+     * @return {Any} The queried value, if `newValue` was undefined
+     */
+    fluid.value = function (nodeIn, newValue) {
+        var node = fluid.unwrap(nodeIn);
+        var isMultiple = false;
+        if (node.nodeType === undefined && node.length > 1) {
+            node = node[0];
+            isMultiple = true;
+        }
+        if ("input" !== node.nodeName.toLowerCase() || !/radio|checkbox/.test(node.type)) {
+            // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
+            return newValue === undefined ? $(node).val() : $(node).val(newValue);
+        }
+        var name = node.name;
+        var elements;
+        if (isMultiple || name === "") {
+            elements = nodeIn;
+        } else {
+            elements = node.ownerDocument.getElementsByName(name);
+            var scope = fluid.findForm(node);
+            elements = $.grep(elements, function (element) {
+                if (element.name !== name) {
+                    return false;
+                }
+                return !scope || fluid.dom.isContainer(scope, element);
+            });
+            // TODO: "Code to the test" for old renderer - remove all HTML 1.0 behaviour when old renderer is abolished
+            isMultiple = elements.length > 1;
+        }
+        if (newValue !== undefined) {
+            if (typeof(newValue) === "boolean") {
+                newValue = (newValue ? "true" : "false");
+            }
+            // jQuery gets this partially right, but when dealing with radio button array will
+            // set all of their values to "newValue" rather than setting the checked property
+            // of the corresponding control.
+            $.each(elements, function () {
+                this.checked = (newValue instanceof Array ?
+                    newValue.indexOf(this.value) !== -1 : newValue === this.value);
+            });
+        } else { // it is a checkbox - jQuery fails on this - see https://stackoverflow.com/questions/5621324/jquery-val-and-checkboxes
+            var checked = $.map(elements, function (element) {
+                return element.checked ? element.value : null;
+            });
+            return node.type === "radio" ? checked[0] :
+                isMultiple ? checked : !!checked[0]; // else it's a checkbox
+        }
+    };
+
     // The current implementation of fluid.ariaLabeller consists 100% of side-effects on the document and so
     // this grade is supplied only so that instantiation on the server is not an error
     fluid.defaults("fluid.ariaLabeller", {
