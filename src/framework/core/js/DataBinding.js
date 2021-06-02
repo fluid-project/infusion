@@ -728,6 +728,21 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     };
 
+    // Hard to imagine this becoming more of a bottleneck than the rest of the ChangeApplier but it is pretty
+    // inefficient.  There are many more materialisers than we expect to ever be used at one component -
+    // we should reorganise the registry so that it exposes a single giant listener to ""
+    fluid.materialiseAgainstValue = function (that, newValue, segs) {
+        if (fluid.isPlainObject(newValue)) {
+            fluid.each(newValue, function (inner, seg) {
+                segs.push(seg);
+                fluid.materialiseAgainstValue(that, inner, segs);
+                segs.pop();
+            });
+        } else {
+            fluid.materialiseModelPath(that, segs);
+        }
+    };
+
     /** Register a listener global to this changeApplier that reacts to all changes by attempting to materialise their
      * paths. This is a kind of "halfway house" strategy since it will trigger on every change, but it at least filters
      * by the component grade and the model root in the materialiser registry to avoid excess triggering. The listener
@@ -744,14 +759,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         transactional: false,
                         path: root
                     }, function (newValue) {
-                        // TODO: hard-wired assumption that the registry is 2 levels deep. There are many more materialisers
-                        // than we expect to ever be used at one component - we should reorganise the registry so that it exposes a single giant
-                        // listener to ""
-                        fluid.each(newValue, function (rec, selectorName) {
-                            fluid.each(rec, function (innerRec, materialName) {
-                                fluid.materialiseModelPath(that, [root, selectorName, materialName]);
-                            });
-                        });
+                        var segs = [root];
+                        fluid.materialiseAgainstValue(that, newValue, segs);
                     });
                 });
             }

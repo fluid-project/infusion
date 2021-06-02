@@ -687,7 +687,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         selectors: {
             first: ".flc-first-thing",
             second: ".flc-second-thing",
-            third: ".flc-third-thing"
+            third: ".flc-third-thing",
+            fourth: ".flc-fourth-thing"
         },
         model: {
             secondValue: "Purim",
@@ -698,6 +699,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 },
                 second: {
                     text: "{that}.model.secondValue"
+                },
+                fourth: {
+                    attrs: {
+                        role: "Eid"
+                    }
                 }
             }
         },
@@ -712,6 +718,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("Text initialised from bulk", "Night Fusht", that.locate("first").text());
         jqUnit.assertEquals("Text initialised from implicit relay", "Purim", that.locate("second").text());
         jqUnit.assertEquals("Text initialised from explicit relay", "Diwali", that.locate("third").text());
+        jqUnit.assertEquals("Attrs initialised from bulk", "Eid", that.locate("fourth").attr("role"));
         that.applier.change("secondValue", "Holi");
         jqUnit.assertEquals("Text updated from implicit relay", "Holi", that.locate("second").text());
     });
