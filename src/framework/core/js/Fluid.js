@@ -1630,6 +1630,9 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
      *     {Boolean} preventable - If <code>true</code> the return value of each handler will
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
      * will be the return value of fire()
+     *     {Boolean} promise - If `true`, the event firer will receive a "thenable" signature allowing
+     * it to function as a promise. In this case the event should be fired with only one argument, and
+     * not more than once.
      * @return {Object} - The newly-created event firer.
      */
     fluid.makeEventFirer = function (options) {
@@ -1759,6 +1762,9 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
             /* Fires this event to all listeners which are active. They will be notified in order of priority. The signature of this method is free. */
             fire: function () {
                 var listeners = that.sortedListeners;
+                if (options.promise) {
+                    that.promisePayload = arguments[0];
+                }
                 if (!listeners || that.destroyed) { return; }
                 for (var i = 0; i < listeners.length; ++i) {
                     var lisrec = listeners[i];
@@ -1777,6 +1783,15 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
                 }
             }
         });
+        if (options.promise) {
+            that.then = function (func) {
+                if ("promisePayload" in that) {
+                    func(that.promisePayload);
+                } else {
+                    that.addListener(func);
+                }
+            };
+        }
         return that;
     };
 
@@ -1863,6 +1878,7 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
             event = fluid.makeEventFirer({
                 name: fluid.event.nameEvent(that, eventKey),
                 preventable: eventSpec === "preventable",
+                promise: eventSpec === "promise",
                 ownerId: that.id
             });
         }
@@ -2949,9 +2965,9 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
             }
         },
         events: { // Three standard lifecycle points common to all components
-            onCreate:     null,
-            onDestroy:    null,
-            afterDestroy: null
+            onCreate:     "promise",
+            onDestroy:    "promise",
+            afterDestroy: "promise"
         }
     });
 

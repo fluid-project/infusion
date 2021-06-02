@@ -437,6 +437,23 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertFalse("Final hover style unset", that.container.hasClass(that.options.styles.hoverStyle));
     });
 
+    // focusin test
+    fluid.defaults("fluid.tests.focusin", {
+        gradeNames: "fluid.viewComponent",
+        model: {
+            focused: "{that}.model.dom.container.focusin"
+        }
+    });
+
+    jqUnit.test("Materialise focus", async function () {
+        var that = fluid.tests.focusin(".flc-tests-focus");
+        jqUnit.assertFalse("No initial focus", that.model.focused);
+        await fluid.focus(that.container);
+        jqUnit.assertTrue("Received focus", that.model.focused);
+        await fluid.blur(that.container);
+        jqUnit.assertFalse("Lost focus", that.model.focused);
+    });
+
     // Bidirectional integral binding relaying bound value to input field
     fluid.defaults("fluid.tests.bidiIntegral", {
         gradeNames: "fluid.viewComponent",

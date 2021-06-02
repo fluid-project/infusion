@@ -6299,6 +6299,67 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             [true, true], that.sub.firings);
     });
 
+    /** FLUID-4883 "Latched event" tests **/
+
+    jqUnit.test("FLUID-4883: Synchronous latched events as promises", function () {
+        jqUnit.expect(3);
+        var that = fluid.component();
+        that.events.onCreate.then(function (check) {
+            jqUnit.assertEquals("Synchronous construction yields component", that, check);
+        });
+        var checkDestroy = function (check) {
+            jqUnit.assertEquals("Synchronous destruction yields component", that, check);
+        };
+        that.events.onDestroy.then(checkDestroy);
+        that.events.afterDestroy.then(checkDestroy);
+        that.destroy();
+    });
+
+    fluid.defaults("fluid.tests.FLUID4883late", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        model: {
+            value: "{that}.resources.modelSource.parsed"
+        },
+        resources: {
+            modelSource: {
+                promiseFunc: "fluid.tests.fluid6564fetch"
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-4883: Asynchronous latched events as promises with early registration", function () {
+        jqUnit.expect(4);
+        var that = fluid.tests.FLUID4883late();
+        that.events.onCreate.then(function (check) {
+            jqUnit.assertEquals("Asynchronous construction yields component", that, check);
+            jqUnit.assertEquals("Asynchronous model value resolved", 42, check.model.value);
+
+            var checkDestroy = function (check) {
+                jqUnit.assertEquals("Destruction yields component", that, check);
+            };
+            that.events.onDestroy.then(checkDestroy);
+            that.events.afterDestroy.then(checkDestroy);
+            that.destroy();
+            jqUnit.start();
+        });
+    });
+
+    jqUnit.asyncTest("FLUID-4883: Asynchronous latched events as promises with late registration", function () {
+        jqUnit.expect(2);
+        var registerLate = function (that) {
+            that.events.onCreate.then(function (check) {
+                jqUnit.assertEquals("Asynchronous construction yields component", that, check);
+                jqUnit.assertEquals("Asynchronous model value resolved", 42, check.model.value);
+                jqUnit.start();
+            });
+        };
+        fluid.tests.FLUID4883late({
+            listeners: {
+                onCreate: registerLate
+            }
+        });
+    });
+
     /** FLUID-6371 Memory leaks with dynamic components **/
 
     fluid.defaults("fluid.tests.FLUID6371root", {

@@ -437,10 +437,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
                 that.applier.change(segs, state);
             };
         };
-        // TODO: For this and click, integralise over the entire document and add just one single listener - also, preferably eliminate jQuery
+        // TODO: For this, click and focusin, integralise over the entire document and add just one single listener - also, preferably eliminate jQuery
         // Perhaps a giant WeakMap of all DOM binder cache contents?
         that.events.onDomBind.addListener(function () {
             that.dom.locate(segs[1]).hover(makeListener(true), makeListener(false));
+        });
+    };
+
+    // Active - focusin state
+    fluid.materialisers.focusin = function (that, segs) {
+        var makeListener = function (state) {
+            return function () {
+                // TODO: Add a change source, and stick "event" on the stack somehow
+                that.applier.change(segs, state);
+            };
+        };
+        that.events.onDomBind.addListener(function () {
+            that.dom.locate(segs[1]).focusin(makeListener(true)).focusout(makeListener(false));
         });
     };
 
@@ -515,6 +528,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
                 },
                 "hover": {
                     materialiser: "fluid.materialisers.hover"
+                },
+                "focusin": {
+                    materialiser: "fluid.materialisers.focusin"
                 },
                 "value": {
                     materialiser: "fluid.materialisers.domValue"

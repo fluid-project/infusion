@@ -1112,7 +1112,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             parseEL: fluid.model.parseEL,
             events: {
                 onComponentAttach: fluid.makeEventFirer({name: "instantiator's onComponentAttach event"}),
-                onComponentClear: fluid.makeEventFirer({name: "instantiator's onComponentClear event"})
+                onComponentClear: fluid.makeEventFirer({name: "instantiator's onComponentClear event"}),
+                onBeginTreeTransaction: fluid.makeEventFirer({name: "instantiator's onBeginTransaction event"}),
+                onEndTreeTransaction: fluid.makeEventFirer({name: "instantiator's onEndTransaction event"})
             }
         });
         // Convenience method for external methods to accept path or segs
@@ -2447,6 +2449,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         transRec.promise = transRec.rootSequencer.promise;
 
         var onConclude = function () {
+            instantiator.events.onEndTreeTransaction.fire(transRec);
             if (transRec.rootSequencer.promise.disposition) {
                 instantiator.currentTreeTransactionId = null;
                 delete instantiator.treeTransactions[transactionId];
@@ -2469,6 +2472,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         } catch (e) {
             transRec.promise.reject(e);
         }
+        instantiator.events.onBeginTreeTransaction.fire(transRec);
 
         return transRec;
     };
