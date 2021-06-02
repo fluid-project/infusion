@@ -663,4 +663,40 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, "click");
     });
 
+    // Bulk initialisation test
+
+    fluid.defaults("fluid.tests.bulkInit", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            first: ".flc-first-thing",
+            second: ".flc-second-thing",
+            third: ".flc-third-thing"
+        },
+        model: {
+            secondValue: "Purim",
+            thirdValue: "Diwali",
+            dom: {
+                first: {
+                    text: "Night Fusht"
+                },
+                second: {
+                    text: "{that}.model.secondValue"
+                }
+            }
+        },
+        modelRelay: {
+            source: "thirdValue",
+            target: "dom.third.text"
+        }
+    });
+
+    jqUnit.test("Bulk materialisation test ", function () {
+        var that = fluid.tests.bulkInit(".flc-tests-bulk-init");
+        jqUnit.assertEquals("Text initialised from bulk", "Night Fusht", that.locate("first").text());
+        jqUnit.assertEquals("Text initialised from implicit relay", "Purim", that.locate("second").text());
+        jqUnit.assertEquals("Text initialised from explicit relay", "Diwali", that.locate("third").text());
+        that.applier.change("secondValue", "Holi");
+        jqUnit.assertEquals("Text updated from implicit relay", "Holi", that.locate("second").text());
+    });
+
 })();

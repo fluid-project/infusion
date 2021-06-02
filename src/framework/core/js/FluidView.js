@@ -371,6 +371,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
 
     // Passive - pushes out to single-arg jQuery method, active in acquiring initial markup value for booleanAttr
     fluid.materialisers.domOutput = function (that, segs, type, options) {
+        fluid.freezeRecursive(segs);
         var selectorName = segs[1];
         var listener = function (value) {
             if (that.dom) {

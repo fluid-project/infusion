@@ -361,6 +361,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             initModelTransaction[that.id] = enlist;
             var transRec = fluid.getModelTransactionRec(fluid.rootComponent, transId);
             transRec[that.applier.applierId] = {transaction: enlist.transaction};
+            fluid.registerMaterialisationListener(that, that.applier);
         }
         return enlist;
     };
@@ -719,11 +720,42 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     if (record && record.materialiser) {
                         fluid.model.setSimple(shadow, materialisedPath, {});
                         var args = fluid.makeArray(record.args);
-                        fluid.invokeGlobalFunction(record.materialiser, [that, segs].concat(args));
+                        // Copy segs since the materialiser will close over it and fluid.parseImplicitRelay will pop it
+                        fluid.invokeGlobalFunction(record.materialiser, [that, fluid.makeArray(segs)].concat(args));
                     }
                 }
             });
         }
+    };
+
+    /** Register a listener global to this changeApplier that reacts to all changes by attempting to materialise their
+     * paths. This is a kind of "halfway house" strategy since it will trigger on every change, but it at least filters
+     * by the component grade and the model root in the materialiser registry to avoid excess triggering. The listener
+     * is non-transactional so that we can ensure to get the listener in before it triggers for real in notifyExternal -
+     * an awkward kind of listener-registering listener. This is invoked very early in fluid.enlistModel.
+     * @param {Component} that - The component for which the materialisation listener is to be registered
+     * @param {ChangeApplier} applier - The applier for the component
+     */
+    fluid.registerMaterialisationListener = function (that, applier) {
+        fluid.each(fluid.materialiserRegistry, function (gradeRecord, grade) {
+            if (fluid.componentHasGrade(that, grade)) {
+                fluid.each(gradeRecord, function (rest, root) {
+                    applier.modelChanged.addListener({
+                        transactional: false,
+                        path: root
+                    }, function (newValue) {
+                        // TODO: hard-wired assumption that the registry is 2 levels deep. There are many more materialisers
+                        // than we expect to ever be used at one component - we should reorganise the registry so that it exposes a single giant
+                        // listener to ""
+                        fluid.each(newValue, function (rec, selectorName) {
+                            fluid.each(rec, function (innerRec, materialName) {
+                                fluid.materialiseModelPath(that, [root, selectorName, materialName]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
     };
 
     // Gets global record for a particular transaction id, allocating if necessary - looks up applier id to transaction,

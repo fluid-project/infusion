@@ -339,4 +339,5 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("The live region should be updated", target.attr("aria-label"), region.text());
         });
     };
+
 })(jQuery);

@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>FluidIoC.js View Tests</title>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>FluidIoC.js View Tests</title>
 
-        <!--  This is the jqUnit test css file -->
-        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+    <!--  This is the jqUnit test css file -->
+    <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
-        <!--  These are the required javascript modules  -->
-        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script src="../../../../src/framework/core/js/Fluid.js"></script>
-        <script src="../../../../src/framework/core/js/FluidPromises.js"></script>
-        <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
-        <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
-        <script src="../../../../src/framework/core/js/FluidView.js"></script>
-        <script src="../../../../src/framework/core/js/FluidView-browser.js"></script>
-        <script src="../../../../src/framework/core/js/DataBinding.js"></script>
-        <script src="../../../../src/framework/core/js/ModelTransformation.js"></script>
-        <script src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
-        <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
-        <script src="../../../../src/framework/core/js/DataSource.js"></script>
-        <script src="../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
-        <script src="../../../../src/framework/core/js/NewViewSupport.js"></script>
+    <!--  These are the required javascript modules  -->
+    <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+    <script src="../../../../src/framework/core/js/Fluid.js"></script>
+    <script src="../../../../src/framework/core/js/FluidPromises.js"></script>
+    <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
+    <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
+    <script src="../../../../src/framework/core/js/FluidView.js"></script>
+    <script src="../../../../src/framework/core/js/FluidView-browser.js"></script>
+    <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+    <script src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+    <script src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+    <script src="../../../../src/framework/core/js/DataSource.js"></script>
+    <script src="../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
+    <script src="../../../../src/framework/core/js/NewViewSupport.js"></script>
 
-        <!--  These are the jqUnit test js files -->
-        <script src="../../../lib/qunit/js/qunit.js"></script>
-        <script src="../../../../src/framework/core/js/FluidDebugging.js"></script>
-        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <!--  These are the jqUnit test js files -->
+    <script src="../../../lib/qunit/js/qunit.js"></script>
+    <script src="../../../../src/framework/core/js/FluidDebugging.js"></script>
+    <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
 
-        <!-- Required to send coverage data at the end of the test run on this page -->
-        <script src="/testem.js"></script>
-        <script src="/coverage/client/coverageSender.js"></script>
+    <!-- Required to send coverage data at the end of the test run on this page -->
+    <script src="/testem.js"></script>
+    <script src="/coverage/client/coverageSender.js"></script>
 
-        <!--  These are tests that have been written using this page as data -->
-        <script src="../js/FluidIoCViewTests.js"></script>
+    <!--  These are tests that have been written using this page as data -->
+    <script src="../js/FluidIoCViewTests.js"></script>
 
-    </head>
-    <body>
+</head>
+<body>
     <h1 id="qunit-header">Fluid IoC JS View Test Suite</h1>
     <h2 id="qunit-banner"></h2>
     <div id="qunit-testrunner-toolbar"></div>
@@ -46,64 +46,72 @@
     <!-- Test HTML -->
     <div id="qunit-fixture" class="container">
 
-      <ul id="pager-top" class="pager-top">
-          <li id="top1" class="page-link"><a href="#" id="page-link-1">1</a></li>
-          <li id="top2" class="page-link"><a href="#" id="page-link-2">2</a></li>
-          <li id="top3" class="page-link"><a href="#" id="page-link-3">3</a></li>
-          <li id="previous-top" class="previous">&lt; previous</li>
-          <li id="next-top" class="next">next &gt;</li>
-      </ul>
+        <ul id="pager-top" class="pager-top">
+            <li id="top1" class="page-link"><a href="#" id="page-link-1">1</a></li>
+            <li id="top2" class="page-link"><a href="#" id="page-link-2">2</a></li>
+            <li id="top3" class="page-link"><a href="#" id="page-link-3">3</a></li>
+            <li id="previous-top" class="previous">&lt; previous</li>
+            <li id="next-top" class="next">next &gt;</li>
+        </ul>
 
-      <div class="flc-tests-parentView-container">
-          <div class="flc-tests-parentView-defaultedChildContainer">Cat!</div>
-          <div class="flc-tests-parentView-demandedChildContainer">Dog</div>
-      </div>
+        <div class="flc-tests-parentView-container">
+            <div class="flc-tests-parentView-defaultedChildContainer">Cat!</div>
+            <div class="flc-tests-parentView-demandedChildContainer">Dog</div>
+        </div>
 
-      <div class="flc-tests-dynamic-container">
-          <div class="flc-tests-dynamic-component"></div>
-          <div class="flc-tests-dynamic-component"></div>
-          <div class="flc-tests-dynamic-component"></div>
-      </div>
+        <div class="flc-tests-dynamic-container">
+            <div class="flc-tests-dynamic-component"></div>
+            <div class="flc-tests-dynamic-component"></div>
+            <div class="flc-tests-dynamic-component"></div>
+        </div>
 
-      <div class="FLUID5908-container">
-      </div>
+        <div class="FLUID5908-container">
+        </div>
 
-      <div class="FLUID6584-container">
-      </div>
+        <div class="FLUID6584-container">
+        </div>
 
-      <div class="flc-tests-self-rendering">
-      </div>
-      
-      <div class="flc-tests-simple-integral">
-          <span class="flc-tests-simple-field"></span>
-      </div>
+        <div class="flc-tests-self-rendering">
+        </div>
 
-      <div class="flc-tests-toggle-integral">
-          <button class="flc-tests-toggle-button">Button</span>
-      </div>
+        <!-- Integral rendering tests -->
 
-      <div class="flc-tests-nonintegral-button">
-          <button class="flc-tests-button-1">Button 1</span>
-          <button class="flc-tests-button-2">Button 2</span>
-      </div>
+        <div class="flc-tests-simple-integral">
+            <span class="flc-tests-simple-field"></span>
+        </div>
 
-      <div class="flc-tests-bidi-integral-text">
-          <input class="flc-tests-bidi-field" value="Initial value" />
-      </div>
+        <div class="flc-tests-toggle-integral">
+            <button class="flc-tests-toggle-button">Button</button>
+        </div>
 
-      <div class="flc-tests-bidi-integral-checkbox">
-          <input class="flc-tests-bidi-field" checked="checked" type="checkbox" value="true" />
-      </div>
+        <div class="flc-tests-nonintegral-button">
+            <button class="flc-tests-button-1">Button 1</button>
+            <button class="flc-tests-button-2">Button 2</button>
+        </div>
 
-      <div class="flc-tests-boolean-state">
-          <input class="flc-tests-target-field" type="checkbox" />
-      </div>
-      
-      <div class="flc-tests-attr-relay">
-          <button type="button" class="fl-expand-button" aria-expanded="true" aria-label="collapse">
-      </div>
+        <div class="flc-tests-bidi-integral-text">
+            <input class="flc-tests-bidi-field" value="Initial value" />
+        </div>
+
+        <div class="flc-tests-bidi-integral-checkbox">
+            <input class="flc-tests-bidi-field" checked="checked" type="checkbox" value="true" />
+        </div>
+
+        <div class="flc-tests-boolean-state">
+            <input class="flc-tests-target-field" type="checkbox" />
+        </div>
+
+        <div class="flc-tests-attr-relay">
+            <button type="button" class="fl-expand-button" aria-expanded="true" aria-label="collapse"></button>
+        </div>
+
+        <div class="flc-tests-bulk-init">
+            <div class="flc-first-thing"></div>
+            <div class="flc-second-thing"></div>
+            <div class="flc-third-thing"></div>
+        </div>
 
     </div>
 
-    </body>
+</body>
 </html>
