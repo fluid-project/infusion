@@ -89,7 +89,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         fluid.tests.textfieldStepper.verifyState = function (that, expectedValue, incBtnState, decBtnState) {
             jqUnit.assertEquals("The model value should be " + expectedValue, expectedValue, that.model.value);
-            jqUnit.assertEquals("The aria-valuenow should be " + expectedValue, expectedValue.toString(), that.textfield.container.attr("aria-valuenow"));
+            jqUnit.assertEquals("The value should be " + expectedValue, expectedValue.toString(), that.textfield.container.val());
             jqUnit.assertEquals("The increase button is " + (incBtnState ? "enabled" : "disabled"), incBtnState, !that.locate("increaseButton").is(":disabled"));
             jqUnit.assertEquals("The decrease button is " + (decBtnState ? "enabled" : "disabled"), decBtnState, !that.locate("decreaseButton").is(":disabled"));
         };
@@ -148,8 +148,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         changeEvent: "{stepper}.applier.modelChanged"
                     }, {
                         // decrease to minimum
-                        jQueryTrigger: fluid.tests.textfieldControl.createKeyEvent("keydown", 40),
-                        element: "{stepper}.dom.textfield"
+                        jQueryTrigger: "click",
+                        element: "{stepper}.dom.decreaseButton"
                     }, {
                         listener: "fluid.tests.textfieldStepper.verifyState",
                         args: ["{stepper}", 0, true, false],
@@ -157,8 +157,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         changeEvent: "{stepper}.applier.modelChanged"
                     }, {
                         // increase
-                        jQueryTrigger: fluid.tests.textfieldControl.createKeyEvent("keydown", 38),
-                        element: "{stepper}.dom.textfield"
+                        jQueryTrigger: "click",
+                        element: "{stepper}.dom.increaseButton"
                     }, {
                         listener: "fluid.tests.textfieldStepper.verifyState",
                         args: ["{stepper}", 1, true, true],

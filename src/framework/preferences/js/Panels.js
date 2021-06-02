@@ -793,9 +793,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 theme: themeValue
             }));
 
-            // Aria-label set to prevent Firefox from reading out the display 'a'
-            label.attr("aria-label", themeValue);
-
             var labelTheme = theme[index];
             if (labelTheme === defaultThemeName) {
                 label.addClass(defaultLabelStyle);
