@@ -457,6 +457,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
         });
     };
 
+    // Bidirectional - reads existing id or allocates simple if not present, and also allows it to be rewritten from the model
+    fluid.materialisers.id = function (that, segs) {
+        that.events.onDomBind.addListener(function () {
+            var element = that.dom.locate(segs[1])[0];
+            var id = fluid.allocateSimpleId(element);
+            that.applier.change(segs, id, "ADD", "DOM");
+            var modelListener = function (value) {
+                if (value !== undefined) {
+                    element.id = value;
+                }
+            };
+
+            that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, modelListener);
+        });
+    };
+
+
     // Bidirectional - pushes and receives values
     fluid.materialisers.domValue = function (that, segs) {
         that.events.onDomBind.addListener(function () {
@@ -543,6 +560,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
                 },
                 "style": {
                     materialiser: "fluid.materialisers.style"
+                },
+                "id": {
+                    materialiser: "fluid.materialisers.id"
                 }
             }
         }

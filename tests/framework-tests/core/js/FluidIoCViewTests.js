@@ -657,6 +657,31 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         checkState("rgb(170, 238, 85)");
     });
 
+    // id materialisation and allocation test
+    fluid.defaults("fluid.tests.materialId", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-simple-field"
+        },
+        model: {
+            fieldId: "{that}.model.dom.field.id"
+        }
+    });
+
+    jqUnit.test("ID materialisation test ", function () {
+        var oneTest = function (selector) {
+            var that = fluid.tests.materialId(selector);
+            var domId = that.locate("field")[0].id;
+            jqUnit.assertValue("Id allocated to field ", domId);
+            jqUnit.assertEquals("Dom id and model id agree", domId, that.model.fieldId);
+            return that;
+        };
+        oneTest(".flc-tests-simple-integral");
+        var that = oneTest(".flc-tests-with-id");
+        jqUnit.assertEquals("Original id was undisturbed", "original-id", that.model.fieldId);
+
+    });
+
     // Bad materialisation test
     fluid.defaults("fluid.tests.badMaterial", {
         gradeNames: "fluid.viewComponent",
