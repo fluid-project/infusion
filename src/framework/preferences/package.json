@@ -9,7 +9,6 @@
             "./css/PrefsEditor.css"
         ],
         "jsCommonFiles": [
-            "./js/URLUtilities.js",
             "./js/Store.js",
             "./js/UIEnhancer.js",
             "./js/PrefsEditor.js",
