@@ -87,4 +87,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             ((node.nodeType === 3) && fluid.dom.isWhitespaceNode(node)); // a text node, all ws
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

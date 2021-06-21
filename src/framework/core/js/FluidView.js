@@ -15,7 +15,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * somehow represented and which depend on the contents of Fluid.js
  */
 
-var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";
@@ -627,4 +627,4 @@ var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
         gradeNames: "fluid.viewComponent"
     });
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

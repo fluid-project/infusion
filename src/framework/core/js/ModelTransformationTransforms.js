@@ -1156,4 +1156,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.dateToString.invert"
     });
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

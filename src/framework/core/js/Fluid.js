@@ -26,8 +26,8 @@ http://underscorejs.org
 Underscore may be freely distributed under the MIT license.
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
-var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
+var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";
@@ -3216,4 +3216,4 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
         return template;
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);
