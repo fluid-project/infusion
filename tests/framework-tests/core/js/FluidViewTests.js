@@ -44,6 +44,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
 
+        jqUnit.asyncTest("fluid.changeElementValue()", function () {
+            jqUnit.expect(2);
+
+            var node = $("#flc-changeElementValue");
+            var value = "Value";
+
+            node.change(function (evt) {
+                jqUnit.assertTrue("The change event is fired", true);
+                jqUnit.assertTrue("The value has been set correctly", value, evt.target.value);
+                jqUnit.start();
+            });
+
+            fluid.changeElementValue(node, value);
+        });
 
         fluid.registerNamespace("fluid.tests.fluid5821");
 
@@ -72,13 +86,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         };
 
         jqUnit.test("FLUID-5821: DOM binder missing/empty selector tests", function () {
+            jqUnit.expect(13);
             var that = fluid.tests.fluid5821("body");
             function expectContainer(message, container) {
                 jqUnit.assertEquals(message + " - located container with empty string ", fluid.unwrap(that.container), fluid.unwrap(container));
                 fluid.tests.assertJQuery(message + " - located container should be a jQuery", container);
             }
-            var missingElement = that.locate("missing");
-            jqUnit.assertUndefined("Locate a non-existent selector key", missingElement);
             var badElement = that.locate("bad");
             fluid.tests.fluid5821.isEmptyJquery("Locate a selector which matches nothing", badElement, true);
             var container = that.locate("emptyString");
@@ -88,6 +101,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             expectContainer("locate with raw container", container2);
             var container3 = that.dom.fastLocate("emptyString", that.container);
             expectContainer("fastLocate after cached raw container", container3);
+            jqUnit.expectFrameworkDiagnostic("Locate selector which is not registered", function () {
+                that.locate("missing");
+            }, ["binder", "missing"]);
         });
 
         jqUnit.test("fluid.container: bind to an selector", function () {
@@ -129,14 +145,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }, "container");
         });
 
-        jqUnit.test("DOM binder", function () {
+        jqUnit.test("Local container DOM binder", function () {
             var container = $(".pager-top");
             var selectors = {
                 "page-link": ".page-link",
                 "inexistent": ".inexistent",
                 "inner-link": "a"
             };
-            var binder = fluid.createDomBinder(container, selectors);
+            var binder = fluid.createLocalContainerDomBinder(container, selectors);
             var pageLinks = binder.locate("page-link");
             jqUnit.assertEquals("Find 3 links", 3, pageLinks.length);
             function testSublocate(method) {
@@ -177,9 +193,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
 
         jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent", function () {
-            jqUnit.expectFrameworkDiagnostic("Nonexist container for relay component", function () {
+            jqUnit.expectFrameworkDiagnostic("Nonexistent container", function () {
                 fluid.tests.fluid5277("#nonexistent-container");
-            }, "did not match any markup");
+            }, ["No container element was found", "#nonexistent-container"]);
         });
 
         fluid.defaults("fluid.tests.testGradedView", {
@@ -195,6 +211,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertValue("Constructed component", that);
             jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
             jqUnit.assertDeepEq("View component acquired model", model, that.model);
+        });
+
+        // Test for regression in ability to use the DOM binder in expanders in the FLUID-6148 framework. This
+        // previously used to happen "by accident" via the custom init function for view components.
+        fluid.defaults("fluid.tests.testLocatorExpander", {
+            gradeNames: "fluid.tests.testGradedView",
+            // Use of options rather than members is more likely to jump the queue ahead of the binder itself
+            aLink: "@expand:{that}.locate(page-link)"
+        });
+
+        jqUnit.test("Use of DOM binder within expander", function () {
+            var that = fluid.tests.testLocatorExpander("#pager-top");
+            jqUnit.assertValue("Resolved some kind of value via locator expander", that.options.aLink);
+            jqUnit.assertEquals("Found the 3 page links during startup", 3, that.options.aLink.length);
         });
 
         fluid.defaults("fluid.tests.blurTester", {
@@ -309,4 +339,5 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("The live region should be updated", target.attr("aria-label"), region.text());
         });
     };
+
 })(jQuery);

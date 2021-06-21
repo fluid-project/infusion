@@ -14,32 +14,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
-    // Gradename to invoke "fluid.uiOptions.prefsEditor"
-    fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.starter"]
+    fluid.defaults("fluid.uiOptions", {
+        gradeNames: ["fluid.prefs.builder", "fluid.viewComponent"],
+        preferences: [
+            "fluid.prefs.textSize",
+            "fluid.prefs.lineSpace",
+            "fluid.prefs.textFont",
+            "fluid.prefs.contrast",
+            "fluid.prefs.tableOfContents",
+            "fluid.prefs.enhanceInputs"
+        ]
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.prefs.constructed.prefsEditor"],
-        lazyLoad: false,
-        distributeOptions: {
-            "uio.separatedPanel.lazyLoad": {
-                record: "{that}.options.lazyLoad",
-                target: "{that separatedPanel}.options.lazyLoad"
-            },
-            "uio.uiEnhancer.tocTemplate": {
-                source: "{that}.options.tocTemplate",
-                target: "{that uiEnhancer > tableOfContents}.options.tocTemplate"
-            },
-            "uio.uiEnhancer.tocMessage": {
-                source: "{that}.options.tocMessage",
-                target: "{that uiEnhancer > tableOfContents}.options.tocMessage"
-            },
-            "uio.uiEnhancer.ignoreForToC": {
-                source: "{that}.options.ignoreForToC",
-                target: "{that uiEnhancer > tableOfContents}.options.ignoreForToC"
-            }
-        }
-    });
-
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

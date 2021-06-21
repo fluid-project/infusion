@@ -309,7 +309,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.lineSpaceTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
-            lineSpace: {
+            lineSpaceNormal: {
                 type: "fluid.tests.prefs.enactor.lineSpace",
                 container: ".flc-lineSpace",
                 // Forcing getLineHeight to return "normal" and getLineHeightMultiplier to return 28.8px
@@ -367,7 +367,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 // default line-height is.
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpace}", "normal", 1.2]
+                    args: ["{lineSpaceNormal}", "normal", 1.2]
                 }]
             }]
         }, {
@@ -459,7 +459,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
     };
 
-    fluid.tests.makeTocVisibilityChecker = function (expectedTocLevels, tocContainer, isShown) {
+    fluid.tests.tocVisibilityChecker = function (expectedTocLevels, tocContainer, isShown) {
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
         jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
     };
@@ -484,7 +484,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     func: "{toc}.applier.change",
                     args: ["toc", true]
                 }, {
-                    listener: "fluid.tests.makeTocVisibilityChecker",
+                    listener: "fluid.tests.tocVisibilityChecker",
                     args: ["{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
                     event: "{toc}.events.afterTocRender"
                 }, {
@@ -494,7 +494,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     func: "{toc}.applier.change",
                     args: ["toc", false]
                 }, {
-                    func: "fluid.tests.makeTocVisibilityChecker",
+                    func: "fluid.tests.tocVisibilityChecker",
                     args: ["{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false]
                 }]
             }]

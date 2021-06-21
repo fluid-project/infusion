@@ -20,7 +20,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         distributeOptions: {
             target: "{/ fluid.tableOfContents.levels}.options.resources.template",
             record: {
-                forceCache: true,
                 url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
             }
         }
@@ -279,7 +278,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
         // #FLUID-4352: check if <ul> exists when there is no tocLinks
         if (tocLinks.length === 0) {
-            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $("ul", levels.locate("flc-toc-tocContainer")).length);
+            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $("ul", levels.container).length);
         }
         fluid.each(tocLinks, function (elm, idx) {
             var hInfo = testHeadings.headingInfo[idx];
@@ -308,7 +307,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    forceCache: true,
                     url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             }
@@ -553,8 +551,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             };
             fluid.tableOfContents("#flc-toc-refreshHeadings", {
                 listeners: {
-                    // FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
-                    "onCreate.initialState": {
+                    "onReady.initialState": {
                         listener: function (levels, that) {
                             that.events.onRefresh.addListener(function () {
                                 jqUnit.assert("The onRefresh event should have fired");
@@ -566,8 +563,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                             that.container.append("<h2>test</h2>");
                             that.refreshView();
                         },
-                        args: ["{that}.levels", "{that}"],
-                        priority: "last"
+                        args: ["{that}.levels", "{that}"]
                     }
                 }
             });

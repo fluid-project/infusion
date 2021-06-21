@@ -234,19 +234,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         listeners: {
             "onWrite.impl": {
-                listener: "fluid.prefs.tempStore.write",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+                listener: "fluid.replaceModelValue",
+                args: ["{that}.applier", "", "{arguments}.0"]
             }
         }
     });
-
-    fluid.prefs.tempStore.write = function (that, settings) {
-        var transaction = that.applier.initiate();
-        transaction.fireChangeRequest({path: "", type: "DELETE"});
-        transaction.change("", settings);
-        transaction.commit();
-        return that.model;
-    };
 
     fluid.defaults("fluid.prefs.globalSettingsStore", {
         gradeNames: ["fluid.component"],
@@ -262,4 +254,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

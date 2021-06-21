@@ -3841,7 +3841,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.transforms.checkTransformedOptions = function (that) {
         var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), fluid.tests.transforms.modernOptions);
         expected = fluid.censorKeys(expected, ["gradeNames"]);
-        jqUnit.assertLeftHand("Options sucessfully transformed", expected, that.options);
+        jqUnit.assertLeftHand("Options sucessfully transformed", expected, jqUnit.flattenMergedSubcomponentOptions(that.options));
     };
 
     jqUnit.test("fluid.model.transform applied automatically to component options, without IoC", function () {
@@ -5377,6 +5377,35 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             transform: [
                 {
                     type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b"
+                }
+            ]
+        },
+        weaklyInvertible: true
+    }, {
+        message: "setMembershipToArray() with array input",
+        model: {
+            a: [false, true, true, false]
+        },
+        transform: {
+            "b": {
+                "transform": {
+                    type: "fluid.transforms.setMembershipToArray",
+                    arrayValue: true,
+                    inputPath: "a"
+                }
+            }
+        },
+        expected: {
+            b: [1, 2]
+        },
+        expectedInputPaths: ["a"],
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    arrayValue: true,
                     outputPath: "a",
                     inputPath: "b"
                 }

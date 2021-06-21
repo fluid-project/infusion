@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global CKEDITOR, tinyMCE */
 
-fluid_3_0_0 = fluid_3_0_0 || {};
+fluid_4_0_0 = fluid_4_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -407,4 +407,4 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

@@ -100,4 +100,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         type: "fluid.uploader.compatibility.distributor.1_3"
     });
 
-})(fluid_3_0_0);
+})(fluid_4_0_0);

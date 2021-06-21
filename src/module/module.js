@@ -51,11 +51,10 @@ fluid.module.register = function (name, baseDir, moduleRequire) {
  * @return {String[]} - An array of nested directory names, starting with the parent drive or filesystem root and ending
  * with `baseDir`
  */
-
 fluid.module.pathsToRoot = function (baseDir) {
     var segs = baseDir.split(path.sep);
     var paths = fluid.accumulate(segs.slice(1), function (seg, total) {
-        var top = total[total.length - 1];
+        var top = fluid.peek(total);
         total.push(top + seg + path.sep);
         return total;
     }, [segs[0] + path.sep]);

@@ -253,7 +253,8 @@ var example = example || {};
         preferenceMap: {
             "example.magnifierPosition": {
                 "model.magPos": "value",
-                "controlValues.magPos": "enum"
+                "controlValues.magPos": "enum",
+                "stringArrayIndex.magPos": "enumLabels"
             }
         },
         selectors: {
@@ -261,9 +262,6 @@ var example = example || {};
             magPosRow: ".mpe-radioRow",
             magPosLabel: ".mpe-radioLabel",
             magPosInput: ".mpe-radioInput"
-        },
-        stringArrayIndex: {
-            magPos: ["magPos-centre", "magPos-left", "magPos-right", "magPos-top", "magPos-bottom"]
         },
         repeatingSelectors: ["magPosRow"],
         protoTree: {

@@ -27,15 +27,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.overviewPanel", {
-        gradeNames: ["fluid.rendererComponent"],
+        gradeNames: ["fluid.rendererComponent", "fluid.resourceLoader"],
+        renderOnInit: true,
         resources: {
             template: {
-                href: "../html/overviewPanelTemplate.html"
+                url: "../html/overviewPanelTemplate.html"
             }
         },
         listeners: {
             "onCreate.setVisibility": "{that}.setVisibility",
-            "onCreate.showTemplate": "fluid.overviewPanel.showTemplate",
             "afterRender.registerToggleListener": {
                 "funcName": "fluid.overviewPanel.makeBooleanListener",
                 "args": ["{that}", "toggleControl", "click", "showPanel", "toggle"]
@@ -178,12 +178,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         that.container.toggleClass(that.options.styles.hidden, !showPanel);
     };
 
-    fluid.overviewPanel.showTemplate = function (that) {
-        fluid.fetchResources(that.options.resources, function () {
-            that.refreshView();
-        });
-    };
-
     fluid.overviewPanel.setLinkHrefs = function (that, linkMap) {
         fluid.each(linkMap, function (linkHref, selector) {
             that.locate(selector).attr("href", linkHref);
@@ -201,4 +195,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

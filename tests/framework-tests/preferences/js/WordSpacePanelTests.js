@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-wordSpace.html"
+                url: "../../../../src/framework/preferences/html/PrefsEditorTemplate-wordSpace.html"
             }
         }
     });

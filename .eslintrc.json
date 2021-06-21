@@ -1,7 +1,7 @@
 {
     "extends": "eslint-config-fluid",
     "globals": {
-        "fluid_3_0_0": true
+        "fluid_4_0_0": true
     },
     "parserOptions": {
         "ecmaVersion": 2018

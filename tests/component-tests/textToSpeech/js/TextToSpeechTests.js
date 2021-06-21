@@ -125,8 +125,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     args: ["{tts}"],
                     event: "{tts}.events.onStop"
                 }, {
-                    listener: "fluid.tests.textToSpeech.testUtteranceDetached",
-                    args: ["The utterance should not be attached", "{tts}"],
+                    listener: "jqUnit.assertUndefined",
+                    args: ["The utterance should not be attached", "{tts}.utterance"],
                     priority: "last:testing",
                     event: "{tts}.utterance.events.afterDestroy"
                 }]
@@ -193,8 +193,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     priority: "last:testing",
                     event: "{tts}.events.onStop"
                 }, {
-                    listener: "fluid.tests.textToSpeech.testUtteranceDetached",
-                    args: ["The utterance should not be attached", "{tts}"],
+                    // This was formerly the site of FLUID-6418
+                    listener: "jqUnit.assertUndefined",
+                    args: ["The utterance should not be attached", "{tts}.utterance"],
                     priority: "last:testing",
                     event: "{tts}.utterance.events.afterDestroy"
                 }]
@@ -235,8 +236,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     priority: "last:testing",
                     event: "{tts}.events.onStop"
                 }, {
-                    listener: "fluid.tests.textToSpeech.testUtteranceDetached",
-                    args: ["The utterance should not be attached", "{tts}"],
+                    // This was formerly the site of FLUID-6418
+                    listener: "jqUnit.assertUndefined",
+                    args: ["The utterance should not be attached", "{tts}.utterance"],
                     priority: "last:testing",
                     event: "{tts}.utterance.events.afterDestroy"
                 }]
@@ -283,8 +285,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     args: ["{tts}", "onError"],
                     event: "{tts}.events.onError"
                 }, {
-                    listener: "fluid.tests.textToSpeech.testUtteranceDetached",
-                    args: ["The utterance should not be attached", "{tts}"],
+                    listener: "jqUnit.assertUndefined",
+                    args: ["The utterance should not be attached", "{tts}.utterance"],
                     priority: "last:testing",
                     event: "{tts}.utterance.events.afterDestroy"
                 }]
@@ -319,13 +321,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertFalse("Shouldn't be paused", tts.model.paused);
         jqUnit.assertDeepEq("The queue should be empty", [], tts.queue);
         tts.cancel();
-    };
-
-    // Due to https://issues.fluidproject.org/browse/FLUID-6418
-    // Need to wrap jqUnit.assertUndefined because the framework will throw an error when trying to resolve
-    // {tts}.utterance after it has already been detached.
-    fluid.tests.textToSpeech.testUtteranceDetached = function (msg, tts) {
-        jqUnit.assertUndefined(msg, tts.utterance);
     };
 
     fluid.tests.textToSpeech.testPause = function (tts) {
@@ -434,7 +429,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 type: "fluid.tests.textToSpeech.utterance"
             },
             utteranceError: {
-                type: "fluid.tests.textToSpeech.utterance"
+                type: "fluid.tests.textToSpeech.utterance",
+                options: {
+                    utterance: {
+                        rate: 0.1
+                    }
+                }
             },
             utteranceTester: {
                 type: "fluid.tests.textToSpeech.utteranceTester"

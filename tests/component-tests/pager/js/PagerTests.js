@@ -60,14 +60,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var pagerTop = pager.pagerBar;
         jqUnit.assertEquals("Pager top is set", "pager-top", pagerTop.container[0].id);
 
-        jqUnit.assertEquals("Page Links are set", 3, pagerTop.pageList.pageLinks.length);
+        jqUnit.assertEquals("Page Links are set", 3, pagerTop.pageList.locate("pageLinks").length);
         jqUnit.assertEquals("Previous is set", "previous-top", pagerTop.previousNext.previous[0].id);
         jqUnit.assertEquals("Next is set", "next-top", pagerTop.previousNext.next[0].id);
 
         var pagerBottom = pager["pagerBar-1"];
         jqUnit.assertEquals("Pager bottom is set", "pager-bottom", pagerBottom.container[0].id);
 
-        jqUnit.assertEquals("Page Links are set", 3, pagerBottom.pageList.pageLinks.length);
+        jqUnit.assertEquals("Page Links are set", 3, pagerBottom.pageList.locate("pageLinks").length);
         jqUnit.assertEquals("Previous is set", "previous-bottom", pagerBottom.previousNext.previous[0].id);
         jqUnit.assertEquals("Next is set", "next-bottom", pagerBottom.previousNext.next[0].id);
 

@@ -75,12 +75,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 ]
             },
             "onReady.windowResize": {
-                "this": window,
+                "this": "window",
                 method: "addEventListener",
                 args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
             },
             "onDestroy.removeWindowResize": {
-                "this": window,
+                "this": "window",
                 method: "removeEventListener",
                 args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
             },
@@ -168,4 +168,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return fluid.get(panelArray, ["0", "index"]) || 0;
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

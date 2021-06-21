@@ -48,43 +48,47 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 increasing: {
                     "container": ".fluid-tests-composite-increasing",
                     "template": "%templatePrefix/increaseTemplate.html",
+                    "message": "%messagePrefix/increase.json",
                     "type": "fluid.tests.composite.increase",
                     "panels": {
-                        "always": ["incSize"],
-                        "fluid.tests.composite.pref.increaseSize": ["magnify", "lineSpace"]
+                        "always": ["fluid.tests.composite.pref.increaseSize"],
+                        "fluid.tests.composite.pref.increaseSize": [
+                            "fluid.tests.composite.pref.magnification",
+                            "fluid.tests.composite.pref.lineSpace"
+                        ]
                     }
                 }
             },
-            speak: {
-                type: "fluid.tests.composite.pref.speakText",
+            "fluid.tests.composite.pref.speakText": {
                 panel: {
                     type: "fluid.tests.cmpPanel.speak",
                     container: ".fluid-tests-composite-speaking-onOff",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             },
-            incSize: {
-                type: "fluid.tests.composite.pref.increaseSize",
+            "fluid.tests.composite.pref.increaseSize": {
                 panel: {
                     type: "fluid.tests.cmpPanel.incSize",
                     container: ".fluid-tests-composite-increasing-onOff",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             },
-            magnify: {
-                type: "fluid.tests.composite.pref.magnification",
+            "fluid.tests.composite.pref.magnification": {
                 panel: {
                     type: "fluid.tests.cmpPanel.magFactor",
                     container: ".fluid-tests-composite-increasing-magFactor",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             },
-            lineSpace: {
-                type: "fluid.tests.composite.pref.lineSpace",
+            "fluid.tests.composite.pref.lineSpace": {
                 panel: {
                     type: "fluid.tests.cmpPanel.lineSpace",
                     container: ".fluid-tests-composite-increasing-lineSpace",
-                    template: "%templatePrefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html",
+                    message: "%messagePrefix/empty.json"
                 }
             }
         }
@@ -92,9 +96,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.composite.increase", {
         gradeNames: ["fluid.prefs.compositePanel"],
-        messageBase: {
-            increaseHeader: "increase"
-        },
+        // Removed - we can't support this fallback from nonexistent resource behaviour after FLUID-6580
+        /*        messageBase: {
+                    increaseHeader: "increase"
+                },
+        */
         selectors: {
             header: ".flc-prefsEditor-header",
             label: ".fluid-tests-composite-increase-header"
@@ -173,38 +179,28 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.prefs.composite.separatedPanel.lazyLoad", {
-        gradeNames: ["fluid.tests.prefs.composite.separatedPanel"],
-        lazyLoad: true
-    });
-
-    // Creates the "fluid.tests.composite.separatedPanel.prefsEditor" grade
-    fluid.prefs.builder({
-        gradeNames: ["fluid.tests.composite.auxSchema"],
-        primarySchema: fluid.tests.composite.primarySchema,
+    fluid.defaults("fluid.tests.composite.separatedPanel.prefsEditor", {
+        gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
+        schema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
             "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"],
-            "namespace": "fluid.tests.composite.separatedPanel"
+            "generatePanelContainers": false
         }
     });
 
-    // Creates the "fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor" grade
-    fluid.prefs.builder({
-        gradeNames: ["fluid.tests.composite.auxSchema"],
-        primarySchema: fluid.tests.composite.primarySchema,
-        auxiliarySchema: {
-            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel.lazyLoad"],
-            "namespace": "fluid.tests.composite.separatedPanel.lazyLoad"
+    fluid.defaults("fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor", {
+        gradeNames: ["fluid.tests.composite.separatedPanel.prefsEditor"],
+        prefsEditorLoader: {
+            lazyLoad: true
         }
     });
 
-    // Creates the "fluid.tests.composite.fullNoPreview.prefsEditor" grade
-    fluid.prefs.builder({
-        gradeNames: ["fluid.tests.composite.auxSchema"],
-        primarySchema: fluid.tests.composite.primarySchema,
+    fluid.defaults("fluid.tests.composite.fullNoPreview.prefsEditor", {
+        gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
+        schema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
             "loaderGrades": ["fluid.prefs.fullNoPreview"],
-            "namespace": "fluid.tests.composite.fullNoPreview"
+            "generatePanelContainers": false
         }
     });
 

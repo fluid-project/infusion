@@ -170,9 +170,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 jqUnit.assertEquals("We should have received seven upload events.", 6, transcript.length);
                 checkEventSequenceForFile(transcript.slice(0, transcript.length - 1), file1);
                 jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
-                    "afterUploadComplete", transcript[transcript.length - 1].name);
+                    "afterUploadComplete", fluid.peek(transcript).name);
                 jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
-                    transcript.files, transcript[transcript.length - 1].args[0]);
+                    transcript.files, fluid.peek(transcript).args[0]);
 
                 jqUnit.start();
             });
@@ -193,9 +193,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 checkEventSequenceForFile(transcript.slice(11, transcript.length - 1), file3);
 
                 jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
-                    "afterUploadComplete", transcript[transcript.length - 1].name);
+                    "afterUploadComplete", fluid.peek(transcript).name);
                 jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
-                    transcript.files, transcript[transcript.length - 1].args[0]);
+                    transcript.files, fluid.peek(transcript).args[0]);
                 jqUnit.start();
             });
         });

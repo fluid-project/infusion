@@ -19,13 +19,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     importScripts(
         "../../../../src/framework/core/js/jquery.standalone.js",
         "../../../../src/framework/core/js/Fluid.js",
+        "../../../../src/framework/core/js/FluidPromises.js",
         "../../../../src/framework/core/js/FluidDebugging.js",
         "../../../../src/framework/core/js/FluidIoC.js",
-        "../../../../src/framework/core/js/DataBinding.js",
-        "../../../../src/framework/core/js/FluidPromises.js",
-        "../../../../src/framework/core/js/FluidRequests.js",
-        "../../../../src/framework/core/js/ModelTransformation.js",
-        "../../../../src/framework/core/js/ModelTransformationTransforms.js"
+        "../../../../src/framework/core/js/DataBinding.js"
     );
 
     fluid.defaults("fluid.test.workerTestComponent", {

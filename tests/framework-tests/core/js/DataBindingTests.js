@@ -398,25 +398,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
+    jqUnit.test("Transactional ChangeApplier - external transactions: " + name, function () {
+        var model = {a: 1, b: 2};
+        var holder = {model: model};
+        var applier = fluid.makeHolderChangeApplier(holder);
+        var initModel = fluid.copy(model);
 
-    fluid.tests.testExternalTrans = function (applierMaker, name) {
-        jqUnit.test("Transactional ChangeApplier - external transactions: " + name, function () {
-            var model = {a: 1, b: 2};
-            var holder = {model: model};
-            var applier = applierMaker(holder);
-            var initModel = fluid.copy(model);
-
-            var transApp = applier.initiate();
-            transApp.change("c", 3);
-            jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
-            transApp.change("d", 4);
-            jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
-            transApp.commit();
-            jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, holder.model);
-        });
-    };
-
-    fluid.tests.testExternalTrans(fluid.makeHolderChangeApplier, "new applier");
+        var transApp = applier.initiate();
+        transApp.change("c", 3);
+        jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
+        transApp.change("d", 4);
+        jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
+        transApp.commit();
+        jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, holder.model);
+    });
 
     fluid.defaults("fluid.tests.FLUID4633root", {
         gradeNames: "fluid.modelComponent",
@@ -426,8 +421,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-
     jqUnit.test("FLUID-4633 test - source tracking", function () {
+        fluid.test.assertTransactionsConcluded();
         var that = fluid.tests.FLUID4633root();
         var applier = that.applier;
         // This complex malarky is achieved automatically in the declarative system. The ancient source tracking system used
@@ -447,7 +442,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         applier.change("property1", 3, "ADD", "alternateSource");
         jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
 
-
+        fluid.test.assertTransactionsConcluded();
     });
 
     jqUnit.test("FLUID-4625 test: Over-broad changes", function () {
@@ -470,7 +465,44 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
 
-    /** FLUID-3674: New model semantic tests **/
+    fluid.defaults("fluid.tests.FLUID4625root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            headings: [{
+                value1: 1
+            }]
+        }
+    });
+
+    jqUnit.test("FLUID-4625 II: Over-broad changes in a transaction with wildcard listener", function () {
+        // This is a barer test case for the same kind of model update performed by FLUID-6390 III lensed component test below
+        var values = [];
+        var recordFire = function (newValue) {
+            values.push(newValue);
+        };
+        var that = fluid.tests.FLUID4625root({
+            modelListeners: {
+                "headings.*": recordFire
+            }
+        });
+        values = [];
+        fluid.replaceModelValue(that.applier, [], {
+            headings: [{
+                value1: 1
+            }, {
+                value2: 2
+            }, {
+                value3: 3
+            }]
+        });
+        jqUnit.assertDeepEq("Expected 2 notifications of wildcard listener", [{
+            value2: 2
+        }, {
+            value3: 3
+        }], values);
+    });
+
+    /** FLUID-4258: Declarative listener test **/
 
     fluid.tests.recordChange = function (fireRecord, path, value, oldValue) {
         fireRecord.push({path: path, value: value, oldValue: oldValue});
@@ -566,21 +598,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         that.fireRecord.length = 0;
         that.changeThing2(5);
         jqUnit.assertDeepEq("Source guarded change not reported", [], that.fireRecord);
+        fluid.test.assertTransactionsConcluded();
     });
 
-    fluid.defaults("fluid.tests.changer", {
-        gradeNames: ["fluid.component"],
-        invokers: {
-            change: {
-                changePath: "{arguments}.0",
-                value: "{arguments.1"
-            }
-        }
-    });
-    fluid.setLogging(true);
+    /** FLUID-3674: New model semantic tests **/
 
     fluid.defaults("fluid.tests.fluid3674head", {
-        gradeNames: ["fluid.modelComponent", "fluid.tests.changer", "fluid.tests.changeRecorder"],
+        gradeNames: ["fluid.modelComponent", "fluid.tests.changeRecorder"],
         model: { // test forward reference as well as transactional initialisation
             innerModel: "{child}.model.nested1"
         },
@@ -589,7 +613,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.tests.changer",
+                type: "fluid.modelComponent",
                 options: {
                     gradeNames: ["fluid.modelComponent"],
                     model: {
@@ -603,7 +627,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-3674 basic model relay test", function () {
-        fluid.begun = true;
         var that = fluid.tests.fluid3674head();
         var expected = {
             innerModel: {
@@ -634,6 +657,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             innerModel: "interior thing"
         };
         jqUnit.assertDeepEq("Propagated change outwards", expected5, that.model);
+        fluid.test.assertTransactionsConcluded();
     });
 
 
@@ -668,7 +692,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-3674 event coordination test", function () {
+    jqUnit.test("FLUID-3674 createOnEvent coordination test", function () {
+        fluid.test.assertTransactionsConcluded();
         var that = fluid.tests.fluid3674eventHead();
         that.events.createEvent.fire();
         var child = that.child;
@@ -679,11 +704,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("Propagated change inwards through relay", "exterior thing", child.model);
         child.applier.change("", "interior thing");
         jqUnit.assertDeepEq("Propagated change outwards through relay", {outerModel: "interior thing"}, that.model);
+        fluid.test.assertTransactionsConcluded();
         child.destroy();
         that.applier.change("outerModel", "exterior thing 2");
+        fluid.test.assertTransactionsConcluded();
         jqUnit.assertEquals("No change propagated inwards to destroyed component", "interior thing", child.model);
         child.applier.change("", "interior thing 2");
+        fluid.test.assertTransactionsConcluded();
         jqUnit.assertDeepEq("No change propagated outwards from destroyed component", {outerModel: "exterior thing 2"}, that.model);
+        fluid.test.assertTransactionsConcluded();
     });
 
     /** FLUID-6234: Infer init transaction application order from relay specifications **/
@@ -736,7 +765,794 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             return fluid.get(that, path);
         });
         jqUnit.assertDeepEq("Model skeleton has settled to expected values", expected, values);
+        fluid.test.assertTransactionsConcluded();
     });
+
+    /** FLUID-4982: Simple case of initial model value sourced from asynchronous fetch **/
+
+    fluid.defaults("fluid.tests.fluid4982simple", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            initModel: {
+                url: "../data/initModel.json",
+                dataType: "json"
+            }
+        },
+        model: "{that}.resources.initModel.parsed"
+    });
+
+    jqUnit.asyncTest("FLUID-4982 simple asynchronously fetched model", function () {
+        jqUnit.expect(2);
+        var checkIt = function (component) {
+            jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
+            jqUnit.assertEquals("Expected model value resolved ASYNCHROUWNOUSLY", 42, component.model.initValue);
+            jqUnit.start();
+        };
+        fluid.tests.fluid4982simple({
+            listeners: {
+                "onCreate.checkIt": checkIt
+            }
+        });
+    });
+
+    /** FLUID-4982: Localised model with initial asynchronous fetch followed by mid-life relocalisation **/
+
+    fluid.defaults("fluid.tests.fluid4982loc", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                url: "../data/messages1.json",
+                locale: "en",
+                dataType: "json"
+            }
+        },
+        model: {
+            resourceLoader: {
+                locale: "en"
+            },
+            messages: "{that}.resources.messages.parsed",
+            courses: "{that}.resources.messages.parsed.courses" // Check FLUID-6434
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-4982 localised fetch model with mid-life relocalisation", function () {
+        jqUnit.expect(7);
+        var checkIt2 = function (component) {
+            var expected = "These courses will require a lot of marking";
+            jqUnit.assertEquals("Relocalised model fetched", expected, component.model.messages.courses);
+            jqUnit.assertEquals("Relocalised model fetched at subpath", expected, component.model.courses);
+            // Check a route for FLUID-6442
+            jqUnit.assertEquals("Relocalised model findable in resources", expected, component.resources.messages.parsed.courses);
+            jqUnit.start();
+        };
+        var checkIt = function (component) {
+            var expected = "These courses will require a lot of grading";
+            jqUnit.assertTrue("Component successfully constructed ", fluid.isComponent(component));
+            jqUnit.assertEquals("Localised model fetched", expected, component.model.messages.courses);
+            jqUnit.assertEquals("Localised model fetched at subpath", expected, component.model.courses);
+            // Check a route for FLUID-6442
+            jqUnit.assertEquals("Localised model findable in resources", expected, component.resources.messages.parsed.courses);
+            component.applier.modelChanged.addListener("messages", function () {
+                checkIt2(component);
+            });
+            // Dynamically update locale via model, which should notify the listener above
+            component.applier.change("resourceLoader.locale", "en_ZA");
+        };
+        fluid.tests.fluid4982loc({
+            listeners: {
+                "onCreate.checkIt": checkIt,
+                "onResourceError.failTest": function (err) {
+                    jqUnit.fail("Failure fetching resource: " + err);
+                }
+            }
+        });
+    });
+
+    /** FLUID-6442: Modelised relocalisation should be accessible via resources **/
+
+    fluid.defaults("fluid.tests.fluid6442", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                url: "../data/messages1.json",
+                locale: "en",
+                dataType: "json"
+            }
+        },
+        model: {
+            resourceLoader: {
+                locale: "en"
+            }
+        }
+    });
+
+    fluid.tests.fluid6442.checkIt = function (component) {
+        var expected = "These courses will require a lot of marking";
+        var err;
+        jqUnit.assertValue("Resources should be findable", component.resources.messages);
+        try {
+            var found = component.resources.messages.parsed.courses;
+            jqUnit.assertEquals("Relocalised model findable in resources", expected, found);
+        } catch (e) {
+            err = e;
+        }
+        jqUnit.start();
+        if (err) {
+            throw err;
+        }
+    };
+
+    jqUnit.asyncTest("FLUID-6442: Modelised relocalisation should be accessible via resources", function () {
+        jqUnit.expect(2);
+        var component = fluid.tests.fluid6442({
+            listeners: {
+                "onResourcesLoaded.checkIt": {
+                    func: "fluid.tests.fluid6442.checkIt",
+                    args: "{that}"
+                },
+                "onResourceError.failTest": function (err) {
+                    jqUnit.fail("Failure fetching resource: " + err);
+                }
+            }
+        });
+        // Change the locale before the queued I/O can resolve. In addition this tests promise cancellation propagation.
+        component.applier.change("resourceLoader.locale", "en_ZA");
+    });
+
+    /** FLUID-6503: Two side-by-side modelised resources **/
+
+    fluid.defaults("fluid.tests.fluid6503", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        resources: {
+            messages: {
+                url: "../data/messages4.json",
+                dataType: "json"
+            },
+            template: {
+                url: "../data/testTemplate1.html"
+            }
+        },
+        model: {
+            messages: "{that}.resources.messages.parsed",
+            template: "{that}.resources.template.resourceText"
+        }
+    });
+
+    fluid.tests.fluid6503.checkIt = function (component) {
+        jqUnit.assertDeepEq("Messages should be loaded and parsed", {
+            "same": "Are you Mr. Sherlock Holmes?"
+        }, component.model.messages);
+        jqUnit.assertEquals("Template should be loaded and parsed", "<div>Test Template 1</div>\n",
+            component.model.template);
+        jqUnit.start();
+    };
+
+    jqUnit.asyncTest("FLUID-6503: Two side-by-side modelised resources", function () {
+        fluid.tests.fluid6503({
+            listeners: {
+                "onCreate.checkIt": {
+                    func: "fluid.tests.fluid6503.checkIt",
+                    args: "{that}"
+                }
+            }
+        });
+        jqUnit.expect(2);
+    });
+
+
+    /** FLUID-6390 - Lensed components as a hash **/
+
+    fluid.defaults("fluid.tests.fluid6390child", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390hashRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: {
+                element1: {
+                    value: 42
+                },
+                element2: {
+                    value: 43
+                }
+            }
+        },
+        dynamicComponents: {
+            arenaComponents: {
+                sources: "{that}.model.arena",
+                type: "fluid.tests.fluid6390child",
+                options: {
+                    model: {
+                        arenaValue: "{source}.value"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390assertModelValues = function (message, that, expected) {
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        var values = fluid.getMembers(children, ["model", "arenaValue"]);
+        jqUnit.assertDeepEq(message, expected, values);
+    };
+
+    jqUnit.test("FLUID-6390: Lensed components as a hash", function () {
+        var that = fluid.tests.fluid6390hashRoot();
+        var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390child");
+        jqUnit.assertEquals("Two model-driven subcomponents created", 2, children.length);
+        fluid.tests.fluid6390assertModelValues("Initial model values are correct", that, [42, 43]);
+        that.applier.change("arena.element3.value", 44);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with new component", that, [42, 43, 44]);
+        that.applier.change("arena.element1.value", 1);
+        fluid.tests.fluid6390assertModelValues("Model values are correct with forward relay", that, [1, 43, 44]);
+        that.applier.change("arena.element1", null, "DELETE");
+        fluid.tests.fluid6390assertModelValues("Model deletion relayed to component deletion", that, [43, 44]);
+        var component3 = that["arenaComponents-element3"];
+        jqUnit.assertTrue("Fetched component via fluid.componentForModelPath", fluid.isComponent(component3));
+        component3.applier.change("arenaValue", 3);
+        jqUnit.assertEquals("Model value propagated through backward relay", 3, that.model.arena.element3.value);
+        var component2 = that["arenaComponents-element2"];
+        component2.destroy();
+        var expectedFinalArena = {
+            element3: {
+                value: 3
+            }
+        };
+        jqUnit.assertDeepEq("Relay of component destruction back to deletion of source model", expectedFinalArena, that.model.arena);
+    });
+
+    fluid.defaults("fluid.tests.fluid6390booleanRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            shouldComponentExist: 1
+        },
+        dynamicComponents: {
+            conditionalComponent: {
+                source: "{that}.model.shouldComponentExist",
+                type: "fluid.component"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6390: Lensed components from a boolean", function () {
+        var that = fluid.tests.fluid6390booleanRoot();
+        jqUnit.assertTrue("Conditional component should have been constructed", fluid.isComponent(that.conditionalComponent));
+        that.conditionalComponent.destroy();
+        jqUnit.assertEquals("Destruction of component should have unset model value", false, that.model.shouldComponentExist);
+        jqUnit.assertUndefined("Conditional component should not have been reconstructed", that.conditionalComponent);
+        that.applier.change("shouldComponentExist", true);
+        jqUnit.assertTrue("Conditional component should have been reconstructed", fluid.isComponent(that.conditionalComponent));
+        jqUnit.assertEquals("Model flag should not have been unset", true, that.model.shouldComponentExist);
+        that.applier.change("shouldComponentExist", false);
+        jqUnit.assertUndefined("Conditional component should have been destroyed", that.conditionalComponent);
+        jqUnit.assertEquals("Model flag should not have been reset", false, that.model.shouldComponentExist);
+        var thatWithout = fluid.tests.fluid6390booleanRoot({
+            model: {
+                shouldComponentExist: null
+            }
+        });
+        jqUnit.assertUndefined("Conditional component should not have been constructed on startup", thatWithout.conditionalComponent);
+    });
+
+    // Define the relay direction between the parent component and a conditional component
+    fluid.defaults("fluid.tests.fluid6603", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            constructComp: true,
+            relayValue: null
+        },
+        dynamicComponents: {
+            conditionalComponent: {
+                source: "{that}.model.constructComp",
+                type: "fluid.modelComponent",
+                options: {
+                    model: {
+                        relayValue: true
+                    },
+                    modelRelay: {
+                        connectRelayValue: {
+                            source: "relayValue",
+                            target: "{fluid6603}.model.relayValue",
+                            backward: {
+                                excludeSource: "init"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6603: Relay model values between the parent component and the conditional dynamic component", function () {
+        var that = fluid.tests.fluid6603();
+        jqUnit.assertTrue("Conditional component should have been constructed", fluid.isComponent(that.conditionalComponent));
+        jqUnit.assertTrue("Relayed value is set in the conditional component", that.conditionalComponent.model.relayValue);
+        jqUnit.assertTrue("Relayed value is set in the parent component", that.model.relayValue);
+    });
+
+    /** FLUID-6390 - Hall of mirrors lensed components **/
+
+    fluid.registerNamespace("fluid.tests.fluid6390mirror");
+
+    fluid.tests.fluid6390mirror.model2 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2"
+            }]
+        }]
+    };
+
+    fluid.tests.fluid6390mirror.model6 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2",
+                headings: [{
+                    level: 3,
+                    text: "h3",
+                    url: "#h3",
+                    headings: [{
+                        level: 4,
+                        text: "h4",
+                        url: "#h4",
+                        headings: [{
+                            level: 5,
+                            text: "h5",
+                            url: "#h5",
+                            headings: [{
+                                level: 6,
+                                text: "h6",
+                                url: "#h6"
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    };
+
+    fluid.defaults("fluid.tests.fluid6390levels", {
+        gradeNames: "fluid.tests.fluid6390heading"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390heading", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format ]
+        },
+        dynamicComponents: {
+            headings: {
+                sources: "{that}.model.headings",
+                type: "fluid.tests.fluid6390heading",
+                options: {
+                    model: "{source}"
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390defaultModels = function (rootModel, depth) {
+        var togo = [], model = rootModel;
+        for (var i = 0; i < depth; ++i) {
+            togo.push(model);
+            model = fluid.getImmediate(model, ["headings", "0"]);
+        }
+        return togo;
+    };
+
+    fluid.tests.fluid6390mirrorAssert = function (levelsComponent, model, levelsCount) {
+        var headings = [levelsComponent].concat(fluid.queryIoCSelector(levelsComponent, "fluid6390heading"));
+        jqUnit.assertEquals("Correct number of headings constructed", levelsCount, headings.length);
+        var expectedModels = fluid.tests.fluid6390defaultModels(model, levelsCount);
+        var models = fluid.getMembers(headings, "model");
+        jqUnit.assertDeepEq("Nested models should be correct", expectedModels, models);
+    };
+
+    fluid.tests.fluid6390mirrorTest = function (model, levelsCount) {
+        var that = fluid.tests.fluid6390levels({
+            model: model
+        });
+        fluid.tests.fluid6390mirrorAssert(that, model, levelsCount);
+    };
+
+    jqUnit.test("FLUID-6390: Hall of mirrors lensed components", function () {
+        fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model2, 3);
+        fluid.tests.fluid6390mirrorTest(fluid.tests.fluid6390mirror.model6, 7);
+    });
+
+    /** FLUID-6390 - Hall of mirrors via resource and relay **/
+
+    fluid.tests.resolveLater = function (value) {
+        var togo = fluid.promise();
+        fluid.invokeLater(function () {
+            togo.resolve(value);
+        });
+        return togo;
+    };
+
+    fluid.defaults("fluid.tests.fluid6390resource", {
+        gradeNames: "fluid.resourceLoader",
+        resources: {
+            headingsSource: {
+                promiseFunc: "{that}.fetchHeadingsModel"
+            }
+        },
+        invokers: {
+            fetchHeadingsModel: "fluid.tests.resolveLater({that}.headingsModel)"
+        },
+        members: { // Stick it in a member so it is updatable for the next test
+            headingsModel: "{that}.options.headingsModel"
+        },
+        model: "{that}.resources.headingsSource.parsed",
+        components: {
+            levels: {
+                type: "fluid.tests.fluid6390levels",
+                options: {
+                    model: "{fluid6390resource}.model"
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid6390mirrorTestII = function (model, levelsCount) {
+        return function () {
+            var promise = fluid.promise();
+            var assert = function (levels) {
+                fluid.tests.fluid6390mirrorAssert(levels, model, levelsCount);
+                promise.resolve();
+            };
+            fluid.tests.fluid6390resource({
+                headingsModel: model,
+                listeners: {
+                    "onCreate.test": {
+                        func: assert,
+                        args: "{that}.levels"
+                    }
+                }
+            });
+            return promise;
+        };
+    };
+
+    jqUnit.asyncTest("FLUID-6390 II: Hall of mirrors lensed components via resource and relay", function () {
+        // Note that these components being created back-to-back via an onCreate listener is an intrinsic part of this test
+        var tasks = [
+            fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model2, 3),
+            fluid.tests.fluid6390mirrorTestII(fluid.tests.fluid6390mirror.model6, 7)
+        ];
+        fluid.beginLog = true;
+        var sequence = fluid.promise.sequence(tasks);
+        sequence.then(function () {
+            jqUnit.start();
+        });
+    });
+
+    fluid.tests.fluid6390mirror.model3 = {
+        headings: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h2",
+                url: "#h2"
+            }]
+        }, {
+            level: 1,
+            text: "h1",
+            url: "#h3"
+        }, {
+            level: 1,
+            text: "h1",
+            url: "#h4"
+        }
+        ]
+    };
+
+    /** FLUID-6390 - Hall of mirrors via updating resource and relay **/
+
+    fluid.tests.fluid6390pushTransaction = function (that, holder) {
+        var shadow = fluid.shadowForComponent(that);
+        var transactionId = shadow.createdTransactionId;
+        holder.createdAtTransaction.push(transactionId);
+    };
+
+    fluid.defaults("fluid.tests.fluid6390Tracker", {
+        members: {
+            createdAtTransaction: []
+        },
+        distributeOptions: {
+            record: "fluid.tests.fluid6390Tracked",
+            target: "{that fluid.tests.fluid6390heading}.options.gradeNames"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6390Tracked", {
+        listeners: {
+            "onCreate.track": "fluid.tests.fluid6390pushTransaction({that}, {fluid6390Tracker})"
+        }
+    });
+
+    jqUnit.test("FLUID-6390 III: Hall of mirrors lensed components with update, via resource and relay", function () {
+        var that = fluid.tests.fluid6390resource({
+            gradeNames: "fluid.tests.fluid6390Tracker",
+            invokers: { // This time test the synchronous route
+                fetchHeadingsModel: "fluid.identity({that}.headingsModel)"
+            },
+            headingsModel: fluid.tests.fluid6390mirror.model2
+        });
+        var headings = fluid.queryIoCSelector(that, "fluid.tests.fluid6390heading");
+        jqUnit.assertEquals("There should initially be 3 headings", 3, headings.length);
+        that.createdAtTransaction = [];
+        that.headingsModel = fluid.tests.fluid6390mirror.model3;
+        that.resourceFetcher.refetchOneResource("headingsSource");
+        var newIds = that.createdAtTransaction;
+        jqUnit.assertEquals("Three components should have been created", 2, newIds.length);
+        jqUnit.assertValue("Transaction value should have been recorded for first component", newIds[0]);
+        newIds.forEach(function (id) {
+            jqUnit.assertEquals("All lensed components should have been created in the same transaction", newIds[0], id);
+        });
+
+        var afterHeadings = fluid.queryIoCSelector(that, "fluid.tests.fluid6390heading");
+        jqUnit.assertEquals("There should now be 5 headings", 5, afterHeadings.length);
+    });
+
+    /** FLUID-6390 - Lensed components via a couple of relays and init value **/
+    // Structure of this example taken from fluid-covid-map-viz. In practice this is a further test of old-fashioned FLUID-5303 relay saturation which
+    // needs to be abolished - bug in practice was nothing to do with asynchrony nor lensed components
+    fluid.defaults("fluid.tests.fluid6390relayChild", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.fluid6390relayRoot", {
+        gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+        model: {
+            resourceSource: [],
+            filteredSource: [],
+            lensSource: [],
+            preFilter: undefined, // Leaving this undefined is essential to increase the startup relay count of the preFilter to 2
+            maxRange: 5
+        },
+        resources: {
+            resourceSource: {
+                promiseFunc: "fluid.tests.resolveLater",
+                promiseArgs: [[1, 2, 3, 4, 5]]
+            }
+        },
+        modelRelay: {
+            initialise: {
+                target: "resourceSource",
+                source: "{that}.resources.resourceSource.parsed"
+            },
+            preFilter: {
+                target: "filteredSource",
+                func: function (array, howMany) {
+                    return array.slice(0, howMany);
+                },
+                args: ["{that}.model.resourceSource", "{that}.model.preFilter"]
+            },
+            constrain: {
+                target: "preFilter",
+                singleTransform: {
+                    type: "fluid.transforms.limitRange",
+                    input: "4",
+                    min: 0,
+                    max: "{that}.model.maxRange"
+                }
+            },
+            toLensSource: {
+                source: "filteredSource",
+                target: "lensSource",
+                func: function (array) {
+                    return array.slice(0, 3);
+                }
+            }
+        },
+        components: {
+            relayHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: {
+                        lensSource: "{fluid6390relayRoot}.model.lensSource"
+                    },
+                    dynamicComponents: {
+                        lensed: {
+                            type: "fluid.tests.fluid6390relayChild",
+                            sources: "{that}.model.lensSource"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-6390 IV: Lensed components via a couple of relays and init value", function () {
+        var resume = function (that) {
+            var children = fluid.queryIoCSelector(that, "fluid.tests.fluid6390relayChild");
+            jqUnit.assertEquals("Three lensed components constructed during startup", 3, children.length);
+            jqUnit.start();
+        };
+        fluid.tests.fluid6390relayRoot({
+            listeners: {
+                onCreate: resume
+            }
+        });
+    });
+
+    /** FLUID-6390 - Updating lensed components from an array **/
+
+    fluid.defaults("fluid.tests.fluid6390arrayRoot", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            arena: [1, 2, 3]
+        },
+        dynamicComponents: {
+            arenaComponents: {
+                sources: "{that}.model.arena",
+                type: "fluid.tests.fluid6390child",
+                options: {
+                    model: {
+                        arenaValue: "{source}"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6390 V: Updating lensed components as an array", function () {
+        var that = fluid.tests.fluid6390arrayRoot();
+        fluid.tests.fluid6390assertModelValues("Initial model values are correct", that, [1, 2, 3]);
+        that.applier.change("arena", [4, 5, 6]);
+        fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, [4, 5, 6]);
+        fluid.replaceModelValue(that.applier, "arena", [7, 8]);
+        fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, [7, 8]);
+        fluid.replaceModelValue(that.applier, "arena", []);
+        fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, []);
+    });
+
+    /** FLUID-6570: Short-form free transforms **/
+
+    fluid.defaults("fluid.tests.fluid6570root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            selectedId: null
+        },
+        modelRelay: {
+            shortForm: {
+                source: "selectedId",
+                target: "anySelected",
+                func: "fluid.isValue"
+            }
+        }
+    });
+
+    fluid.tests.fluid6570func = function (value) {
+        return value !== null;
+    };
+
+    fluid.tests.fluid6570forms = {
+        "function name": {
+            source: "selectedId",
+            func: "fluid.isValue"
+        },
+        "literal function": {
+            source: "selectedId",
+            func: fluid.tests.fluid6570func
+        },
+        "free transform with function name": {
+            source: "selectedId",
+            singleTransform: {
+                type: "fluid.transforms.free",
+                func: "fluid.isValue"
+            }
+        },
+        "free transform with literal function": {
+            source: "selectedId",
+            singleTransform: {
+                type: "fluid.transforms.free",
+                func: "fluid.isValue"
+            }
+        },
+        "free transform with args": {
+            singleTransform: {
+                type: "fluid.transforms.free",
+                func: "fluid.isValue",
+                args: "{that}.model.selectedId"
+            }
+        }
+    };
+
+    fluid.tests.fluid6570test = function (value, name) {
+        jqUnit.test("FLUID-6570: Short-form free transforms - " + name, function (rec) {
+            var testRelay = function (that) {
+                jqUnit.assertEquals("Correct initial relayed value", false, that.model.anySelected);
+                that.applier.change("selectedId", 0);
+                jqUnit.assertEquals("Correct updated relayed value", true, that.model.anySelected);
+            };
+            var that = fluid.tests.fluid6570root({
+                modelRelay: {
+                    shortForm: rec
+                }
+            });
+            testRelay(that);
+        });
+    };
+
+    fluid.each(fluid.tests.fluid6570forms, fluid.tests.fluid6570test);
+
+    /** FLUID-6601: Component proxies via free transforms **/
+
+    fluid.defaults("fluid.tests.fluid6601root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            selectedId: null
+        },
+        modelRelay: {
+            shortForm: {
+                target: "anySelected",
+                func: "fluid.tests.fluid6601access",
+                args: ["{that}", "{that}.model.selectedId"]
+            }
+        },
+        invokers: {
+            nuffing: "fluid.identity()"
+        }
+    });
+
+    fluid.tests.fluid6601access = function (that, selectedId) {
+        var value = that.nuffing(selectedId);
+        return fluid.isValue(value);
+    };
+
+    jqUnit.test("FLUID-6601: Component proxies via transform", function () {
+        var that = fluid.tests.fluid6601root();
+        jqUnit.assertEquals("Correct initial relayed value via proxied material", false, that.model.anySelected);
+    });
+
+    /** FLUID-6580: Integration constant lenses **/
+
+    fluid.defaults("fluid.tests.fluid6580root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            clicked: 0,
+            enabled: false
+        },
+        modelRelay: {
+            clickRelay: {
+                source: "clicked",
+                target: "enabled",
+                singleTransform: "fluid.transforms.toggle"
+            }
+        }
+    });
+
+    fluid.tests.fluid6850test = function (initEnabled) {
+        jqUnit.test("FLUID-6580 I: fluid.transforms.toggle relay", function () {
+            var that = fluid.tests.fluid6580root({
+                model: {
+                    enabled: initEnabled
+                }
+            });
+            jqUnit.assertDeepEq("Initial model as expected", {clicked: 0, enabled: initEnabled}, that.model);
+            that.applier.change("clicked", 1);
+            jqUnit.assertDeepEq("Middle model as expected", {clicked: 1, enabled: !initEnabled}, that.model);
+            that.applier.change("clicked", 2);
+            jqUnit.assertDeepEq("Final model as expected", {clicked: 2, enabled: initEnabled}, that.model);
+        });
+    };
+
+    fluid.tests.fluid6850test(true);
+    fluid.tests.fluid6850test(false);
 
     /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 
@@ -802,26 +1618,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.assertTransactionsConcluded = function (that) {
-        // White box testing: use knowledge of the ChangeApplier's implementation to determine that all transactions have been cleaned up
-        var instantiator = fluid.getInstantiator(that);
-        var anyKeys;
-        var key;
-        for (key in instantiator.modelTransactions) {
-            if (key !== "init") {
-                anyKeys = key;
-            }
-        }
-        for (key in instantiator.modelTransactions.init) {
-            anyKeys = key;
-        }
-
-        jqUnit.assertNoValue("All model transactions concluded", anyKeys);
-    };
-
     jqUnit.test("FLUID-5024: Model relay with model transformation", function () {
+        fluid.test.assertTransactionsConcluded();
         var that = fluid.tests.fluid5024head();
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         function expectChanges(message, child1Record, child2Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
@@ -848,7 +1648,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             [{path: [], value: {fahrenheit: 68}, oldValue: {fahrenheit: 451}}]);
         jqUnit.assertEquals("Forward transformed value arrived", 68, that.child2.model.fahrenheit);
 
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
     });
 
     /** FLUID-5361 listener order notification test **/
@@ -1073,6 +1873,66 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         that.applier.change("windowHolders.mainWindow.x", 30);
         jqUnit.assertEquals("Invalidated by change in position field", 3, that.refreshes);
         jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
+    });
+
+
+    /** FLUID-5695: No bare exception when failing to resolve segment reference **/
+
+    fluid.defaults("fluid.tests.fluid5695badroot", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            layoutListener: {
+                source: {
+                    segs: ["windowHolders", "{that}.options.ourWindow"]
+                },
+                target: "ourWindow"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5695: Framework exception with bad relay segment", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework exception with bad relay segment", function () {
+            fluid.tests.fluid5695badroot();
+        }, "ourWindow");
+    });
+
+    /** FLUID-6586 - {sourcePath} within relay segments **/
+
+    fluid.defaults("fluid.tests.fluid6586root", {
+        gradeNames: "fluid.modelComponent",
+        sources: {
+            key1: true,
+            key2: true
+        },
+        model: {
+            structure: {
+                key1: "a",
+                key2: "b"
+            }
+        },
+        dynamicComponents: {
+            dynamic: {
+                sources: "{that}.options.sources",
+                type: "fluid.modelComponent",
+                options: {
+                    modelRelay: {
+                        source: {
+                            context: "fluid6586root",
+                            segs: ["structure", "{sourcePath}"]
+                        },
+                        target: "value"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6586: {sourcePath} within relay segments", function () {
+        var that = fluid.tests.fluid6586root();
+        var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
+        jqUnit.assertEquals("Two children should have been constructed", 2, children.length);
+        var values = fluid.getMembers(children, ["model", "value"]);
+        jqUnit.assertDeepEq("Values should have been relayed via segments", ["a", "b"], values);
     });
 
     /** FLUID-6127: Wildcards in modelListeners, and support for deletion **/
@@ -1323,8 +2183,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid5869.root", {
         gradeNames: "fluid.modelComponent",
         model: {
-            sharedValue: 35,
-            reactiveValue: 10
+            sharedValue: 35
         },
         modelListeners: {
             "": "fluid.tests.fluid5869.recreate({that})"
@@ -1363,7 +2222,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5869.recreate = function (that) {
-        that.events.createRelay.fire(); // The aim here is to create a self-reaction during the init transaction of the recreated component
+        // Original comment: The aim here is to create a self-reaction during the init transaction of the recreated component
+        // Note that notification of model listeners now comes strictly *after* the end of the init transaction
+        that.events.createRelay.fire();
     };
 
     jqUnit.test("FLUID-5869: Error when recreating model relay component during transaction", function () {
@@ -1529,16 +2390,94 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     jqUnit.test("FLUID-6195: Exploding model relay rule does not corrupt framework state", function () {
-        jqUnit.expect(1);
+        jqUnit.expect(3);
+        var prePaths = fluid.test.getConstructedPaths();
         try {
             fluid.tests.fluid6195root();
         } catch (e) {
             jqUnit.assert("Received bare exception through model relay", "This relay rule has exploded", e.message);
+            var postPaths = fluid.test.getConstructedPaths();
+            jqUnit.assertDeepEq("No disturbance of constructed paths from failed construction", prePaths, postPaths);
+            fluid.test.assertTransactionsConcluded();
         }
     });
 
-    /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
-     * double relay and longer "transform" form of relay specification */
+    /** FLUID-6124: Diagnostic on faulty modelRelay rule **/
+
+    fluid.defaults("fluid.tests.fluid6124badTransform", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            oneRule: {
+                target: "field",
+                singleTransform: {
+                    type: "free",
+                    funcName: "fluid.tests.nonexistent",
+                    args: ["{that}.model.input"]
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6124: Diagnostic on faulty modelRelay rule during operation", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on corrupt relay rule", function () {
+            var that = fluid.tests.fluid6124badTransform();
+            that.applier.change("input", 32);
+        }, ["nonexistent", "oneRule"]);
+    });
+
+    fluid.defaults("fluid.tests.fluid6124badSource", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            oneRule: {
+                target: "field",
+                source: "{that.thing",
+                singleTransform: {
+                    type: "fluid.identity"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6124: Diagnostic on faulty modelRelay rule during parse", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on corrupt relay rule", function () {
+            fluid.tests.fluid6124badSource();
+        }, ["alformed", "thing", "oneRule"]);
+    });
+
+    /** FLUID-6424: Notifying modelListeners of relay material on init **/
+
+    fluid.defaults("fluid.tests.fluid6424root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 65
+        },
+        modelRelay: {
+            target: {
+                target: "target",
+                singleTransform: {
+                    type: "fluid.transforms.free",
+                    args: ["{that}.model.source"],
+                    func: "fluid.identity"
+                }
+            }
+        },
+        modelListeners: {
+            target: "fluid.tests.fluid6424test({change}.value)"
+        }
+    });
+
+    fluid.tests.fluid6424test = function (target) {
+        jqUnit.assertEquals("Received relayed value on init", 65, target);
+    };
+
+    jqUnit.test("FLUID-6424: Notify of relay material on init", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid6424root();
+        jqUnit.assertEquals("Correct initial value resolved", 65, that.model.target);
+    });
+
+    /** FLUID-5024: Demonstrate resolving a set of model references which is cyclic in components (although not in values),
+     * as well as double relay and longer "transform" form of relay specification */
 
     fluid.defaults("fluid.tests.fluid5024cycleHead", {
         gradeNames: ["fluid.component"],
@@ -1666,6 +2605,39 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         triggerChangeRequest("path2");
     });
 
+    /** FLUID-6424: Notifying modelListeners of relay material on init **/
+
+    fluid.defaults("fluid.tests.fluid6424root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 65
+        },
+        modelRelay: {
+            target: {
+                target: "target",
+                singleTransform: {
+                    type: "fluid.transforms.free",
+                    args: ["{that}.model.source"],
+                    func: "fluid.identity"
+                }
+            }
+        },
+        modelListeners: {
+            target: "fluid.tests.fluid6424test({change}.value)"
+        }
+    });
+
+    fluid.tests.fluid6424test = function (target) {
+        jqUnit.assertEquals("Received relayed value on init", 65, target);
+    };
+
+    jqUnit.test("FLUID-6424: Notify of relay material on init", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid6424root();
+        jqUnit.assertEquals("Correct initial value resolved", 65, that.model.target);
+    });
+
+
     /** FLUID-5045: model transformation documents contextualised by IoC expressions for model relay **/
 
     // This tests replicates the setup for the Pager's model which historically was implemented using (and drove the
@@ -1711,15 +2683,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5045root();
         var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0 second time", expected, that.model);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
 
         that.applier.change("pageIndex", 8);
         var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
@@ -1748,7 +2720,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         that.applier.change("pageSize", 20);
         that.applier.change("pageSize", 10);
         that.applier.change("pageIndex", 16);
-        fluid.tests.assertTransactionsConcluded(that);
+        fluid.test.assertTransactionsConcluded();
         var expected = {
             pageIndex: 16,
             pageCount: 17,
@@ -1758,7 +2730,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Model allows last page", expected, that.model);
     });
 
-    // FLUID-5270: The model is not transformed when the "modelRelay" option is defined in the target component
+    /** FLUID-5270: The model is not transformed when the "modelRelay" option is defined in the target component **/
+
     fluid.defaults("fluid.tests.fluid5270OnSource", {
         gradeNames: ["fluid.modelComponent"],
         model: {
@@ -1812,7 +2785,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the target component", expectedValue, thatOnTarget.sub.model.fahrenheit);
     });
 
-    // FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly
+    /** FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly **/
+
     fluid.defaults("fluid.tests.fluid5293", {
         gradeNames: ["fluid.modelComponent"],
         model: {
@@ -1924,7 +2898,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
     });
 
-    // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value to be missing
+    /* FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option
+     * causes the source array value to be missing */
 
     fluid.defaults("fluid.tests.fluid5368root", {
         gradeNames: ["fluid.modelComponent"],
@@ -1966,7 +2941,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
     });
 
-    // FLUID-5371: Model relay directives "forward" and "backward"
+    /** FLUID-5371: Model relay directives "forward" and "backward" */
 
     fluid.defaults("fluid.tests.fluid5371root", {
         gradeNames: ["fluid.modelComponent"],
@@ -2111,7 +3086,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         eq: false,
         options: {
-            changes: 3,
+            changes: 4,
             changeMap: {
                 a: {
                     a: "DELETE",
@@ -2129,7 +3104,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         eq: false,
         options: { // Currently we report invalidation of arrays en bloc
-            changes: 1,
+            changes: 2,
             changeMap: {
                 a: "ADD"
             }
@@ -2644,7 +3619,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertFalse("Property should have been deleted on startup", "initialValue" in that2.model);
     });
 
-    // FLUID-5592: Error received using model relay to destroyed component
+    /** FLUID-5592: Error received using model relay to destroyed component **/
 
     fluid.tests.fluid5592destruct = function (that, value) {
         if (value === 2) { // do not destroy on init relay, but only on manual change
@@ -2698,6 +3673,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertNoValue("The change request has destroyed the child component", that.child);
     });
 
+    /** FLUID-5632: Model value of NaN causes infinite recursion **/
+
     fluid.defaults("fluid.tests.fluid5632root1", {
         gradeNames: ["fluid.modelComponent"],
         model: {
@@ -2740,7 +3717,111 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, "settling");
     });
 
-    // FLUID-5885: Correct context for indirect model relay
+    /** FLUID-6558: Error when notifying relay rule during onDestroy **/
+
+    fluid.defaults("fluid.tests.fluid6558editor", {
+        gradeNames: ["fluid.modelComponent"],
+        model: {
+            uploadCounters: {
+                uploads: 0,
+                errors: 0
+            }
+        },
+        distributeOptions: {
+            "uploadStateToCounters": {
+                target: "{that uploader}.options.modelListeners",
+                record: {
+                    "uploadState": {
+                        funcName: "fluid.tests.fluid6558updateUploadCounters",
+                        args: ["{change}.oldValue", "{change}.value", "{fluid6558editor}"],
+                        namespace: "uploadStateToCounters"
+                    }
+                }
+            }
+        },
+        components: {
+            uploader: {
+                type: "fluid.tests.fluid6558uploader"
+            }
+        }
+    });
+
+    fluid.tests.fluid6558updateUploadCounters = function (previousState, newState, storyEdit) {
+        var counters = fluid.copy(storyEdit.model.uploadCounters);
+        if (newState === "uploading") {
+            counters.uploads++;
+        }
+        if (previousState === "uploading") {
+            counters.uploads--;
+        }
+        if (newState === "errorReceived") {
+            counters.errors++;
+        }
+        if (previousState === "errorReceived") {
+            counters.errors--;
+        }
+
+        storyEdit.applier.change(["uploadCounters"], counters);
+    };
+
+    fluid.defaults("fluid.tests.fluid6558uploader", {
+        gradeNames: ["fluid.modelComponent"],
+        model: {
+            uploadState: "ready"
+        },
+        modelRelay: {
+            "uploadState": {
+                target: "{fluid6558editor}.model",
+                singleTransform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "uploadState",
+                    match: {
+                        "ready": {
+                            outputValue: {
+                                previewVisible: true,
+                                progressAreaVisible: false,
+                                responseAreaVisible: false,
+                                uploadButtonDisabled: false
+                            }
+                        },
+                        "uploading": {
+                            outputValue: {
+                                previewVisible: false,
+                                progressAreaVisible: true,
+                                responseAreaVisible: false,
+                                uploadButtonDisabled: true
+                            }
+                        },
+                        "errorReceived": {
+                            outputValue: {
+                                previewVisible: true,
+                                progressAreaVisible: false,
+                                responseAreaVisible: true,
+                                uploadButtonDisabled: false
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        listeners: {
+            "onDestroy.resetUploadState": {
+                changePath: "uploadState",
+                value: "ready"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6558: Error when notifying relay rule during onDestroy", function () {
+        var that = fluid.tests.fluid6558editor();
+        that.uploader.applier.change("uploadState", "uploading");
+        jqUnit.assertEquals("One uploader is uploading", 1, that.model.uploadCounters.uploads);
+        that.uploader.destroy();
+        jqUnit.assertEquals("Zero uploaders are uploading", 0, that.model.uploadCounters.uploads);
+    });
+
+
+    /** FLUID-5885: Correct context for indirect model relay */
 
     fluid.defaults("fluid.tests.fluid5885root", {
         gradeNames: "fluid.modelComponent",
@@ -2767,7 +3848,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         that.innerModel.applier.change("pressed", true);
     });
 
-    // FLUID-6158
+    /* FLUID-6158: fluid.modelPairToChanges */
 
     fluid.tests.modelPairToChanges = [
         {

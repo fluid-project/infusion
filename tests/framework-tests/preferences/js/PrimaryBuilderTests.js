@@ -68,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             primaryBuilder: {
                 type: "fluid.prefs.primaryBuilder",
                 options: {
-                    typeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace"]
+                    requestedPrefs: ["fluid.prefs.textSize", "fluid.prefs.lineSpace"]
                 }
             },
             primaryBuilderSchema: {
@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             primaryBuilderWithSuppliedPrimarySchema: {
                 type: "fluid.prefs.primaryBuilder",
                 options: {
-                    typeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace", "fluid.tests.somePreference"],
+                    requestedPrefs: ["fluid.prefs.textSize", "fluid.prefs.lineSpace", "fluid.tests.somePreference"],
                     primarySchema: {
                         "fluid.tests.somePreference": {
                             "type": "number",

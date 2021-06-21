@@ -16,38 +16,42 @@
         <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
         <link rel="stylesheet" type="text/css" href="css/pager.css" />
 
-        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/widget.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/position.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/unique-id.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/tooltip.js"></script>
+        <script src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script src="../../src/lib/jquery/ui/js/widget.js"></script>
+        <script src="../../src/lib/jquery/ui/js/position.js"></script>
+        <script src="../../src/lib/jquery/ui/js/keycode.js"></script>
+        <script src="../../src/lib/jquery/ui/js/unique-id.js"></script>
+        <script src="../../src/lib/jquery/ui/js/tooltip.js"></script>
 
-        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script src="../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../src/framework/core/js/FluidPromises.js"></script>
+        <script src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../src/framework/core/js/ModelTransformation.js"></script>
+        <script src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script src="../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../src/framework/core/js/DataSource.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script src="../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../src/framework/core/js/FluidView-browser.js"></script>
+        <script src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../src/framework/renderer/js/RendererUtilities.js"></script>
 
-        <script type="text/javascript" src="../../src/components/tooltip/js/Tooltip.js"></script>
-        <script type="text/javascript" src="../../src/components/pager/js/Pager.js"></script>
-        <script type="text/javascript" src="../../src/components/pager/js/Table.js"></script>
-        <script type="text/javascript" src="../../src/components/pager/js/PagedTable.js"></script>
+        <script src="../../src/components/tooltip/js/Tooltip.js"></script>
+        <script src="../../src/components/pager/js/Pager.js"></script>
+        <script src="../../src/components/pager/js/Table.js"></script>
+        <script src="../../src/components/pager/js/PagedTable.js"></script>
 
-        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
-        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+        <script src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script src="../shared/js/overviewWrapper.js"></script>
 
-        <script type="text/javascript" src="js/pagerDemo.js"></script>
+        <script src="js/pagerDemo.js"></script>
 
     </head>
 
@@ -122,7 +126,7 @@
         </div>
     </section>
 
-    <script type="text/javascript">
+    <script>
         demo.pager(".demo-pager-container");
     </script>
 

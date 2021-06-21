@@ -804,4 +804,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.uploader.singleFile.toggleVisibility($(that.options.selectors.basicUpload), that.container);
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

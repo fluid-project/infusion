@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-speak.html"
+                url: "../../../../src/framework/preferences/html/PrefsEditorTemplate-speak.html"
             }
         }
     });
@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 expect: 7,
                 name: "Test the rendering of the speak panel",
                 sequence: [{
-                    event: "{testEnvironment speak}.events.onResourcesFetched",
+                    event: "{testEnvironment speak}.events.onCreate",
                     listener: "fluid.identity"
                 },  {
                     func: "{speak}.refreshView"

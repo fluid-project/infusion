@@ -195,6 +195,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         layoutHandler: "fluid.listLayoutHandler",
 
         members: {
+            dom: "@expand:fluid.createLocalContainerDomBinder({that}.container, {that}.options.selectors)", // Uses historical contract via "localContainer" argument
             dropManager: "@expand:fluid.dropManager()", // TODO: this is an old-style "that" which can no longer be supported as a component
             activeItem: null,
             kbDropWarning: "{that}.dom.dropWarning",
@@ -959,4 +960,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         };
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);
