@@ -220,6 +220,38 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.uiOptions.multilingual = function (locale, direction) {
+        jqUnit.test("Test Multilingual UIO with locale " + locale + " direction " + direction, function () {
+            jqUnit.expect(2);
+            var togo = fluid.promise();
+            var check = function (that) {
+                var prefsEditor = that.prefsEditorLoader.prefsEditor;
+                jqUnit.assertEquals("Multilingual UIO loaded with correct container locale", locale, prefsEditor.container.attr("lang"));
+                jqUnit.assertEquals("Multilingual UIO loaded with correct container direction", direction, prefsEditor.container.attr("dir"));
+                that.destroy();
+                togo.resolve();
+            };
+            fluid.uiOptions.multilingual(".flc-prefsEditor-separatedPanel", {
+                gradeNames: "fluid.tests.uiOptions.testPrefsEditorBase",
+                locale: locale,
+                direction: direction,
+                listeners: {
+                    "onReady.check": {
+                        func: check,
+                        args: "{that}"
+                    }
+                }
+            });
+            return togo;
+        });
+    };
+
+    fluid.tests.uiOptions.multilingual("pt_BR", "", true);
+    fluid.tests.uiOptions.multilingual("pt_BR", "rtl", true);
+
+    // Verify that component instantiates with locale for which bundle is missing
+    fluid.tests.uiOptions.multilingual("cn", "", true);
+
     $(function () {
         fluid.test.runTests([
             "fluid.tests.uiOptions.prefsEditorCustomTocTest",

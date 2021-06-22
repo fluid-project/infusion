@@ -54,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         },
         events: {
-            onPrefsEditorReady: null,
+            onPrefsEditorReady: "promise",
             onPreviewReady: null,
             onReady: {
                 events: {

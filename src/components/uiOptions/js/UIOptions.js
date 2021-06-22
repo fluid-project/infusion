@@ -26,4 +26,38 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         ]
     });
 
+    /** A configuration of UIOptions which is suitable for statically localised contexts. It accepts two top-level
+     * options,
+     * {String} locale - The initial locale in which UIOptions should render
+     * {String} direction - A suitable value for the `dir` attribute of the UIOptions container - this may take
+     * values `ltr`, `rtl` or `auto`
+     */
+    fluid.defaults("fluid.uiOptions.multilingual", {
+        gradeNames: ["fluid.uiOptions"],
+        distributeOptions: {
+            source: "{that}.options.locale",
+            target: "{that messageLoader}.options.resourceOptions.locale"
+        },
+        listeners: {
+            "onPrefsEditorReady.addLanguageAttributesToBody": {
+                func: "fluid.uiOptions.multilingual.addLanguageAttributesToBody",
+                args: ["{that}.prefsEditorLoader.prefsEditor.container", "{that}.options.locale", "{that}.options.direction"],
+                priority: "first"
+            }
+        }
+    });
+
+    /**
+     * Adds the locale and direction to the BODY in the IFRAME to enable CSS
+     * based on the locale and direction
+     *
+     * @param {jQuery} prefsEditorContainer - the DOM container for UIO
+     * @param {String} locale - the locale to apply
+     * @param {String} direction - the text orientation to apply
+     */
+    fluid.uiOptions.multilingual.addLanguageAttributesToBody = function (prefsEditorContainer, locale, direction) {
+        prefsEditorContainer.attr("lang", locale);
+        prefsEditorContainer.attr("dir", direction || "");
+    };
+
 })(jQuery, fluid_4_0_0);

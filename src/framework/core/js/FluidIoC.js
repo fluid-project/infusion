@@ -727,7 +727,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 rec.plainDynamic = rec.plainDynamic.concat(newContextAware);
                 checkContextAware = false;
             } else if (rec.rawDynamic.length > 0) {
-                var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localRecord);
+                var toexpand = rec.rawDynamic.shift();
+                var expanded = fluid.expandImmediate(toexpand, that, shadow.localRecord);
                 if (typeof(expanded) === "function") {
                     expanded = expanded();
                 }
