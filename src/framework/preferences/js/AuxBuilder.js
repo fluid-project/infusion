@@ -21,10 +21,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.auxSchema", {
-        gradeNames: ["fluid.component"],
-        auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.separatedPanel"]
-        }
+        gradeNames: ["fluid.component"]
     });
 
     /**
@@ -433,9 +430,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.prefs.auxBuilder", {
-        gradeNames: ["fluid.prefs.auxSchema"],
+        gradeNames: ["fluid.component"],
         mergePolicy: {
             elementCommonOptions: "noexpand"
+        },
+        auxiliarySchema: {
+            "loaderGrades": ["fluid.prefs.separatedPanel"]
         },
         topCommonOptions: {
             panels: {
