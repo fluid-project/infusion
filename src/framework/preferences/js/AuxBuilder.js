@@ -529,9 +529,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var auxGrades = auxGradeNames.map(function (gradeName) {
             return fluid.defaults(gradeName).auxiliarySchema;
         });
-        var mergeArgs = [true, {}].concat(auxGrades).concat(schemaToExpand);
 
-        var auxSchema = fluid.extend.apply(null, mergeArgs);
+        var auxSchema = fluid.extend(true, {}, ...auxGrades, schemaToExpand);
 
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
