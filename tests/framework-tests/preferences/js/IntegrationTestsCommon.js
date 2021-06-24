@@ -136,6 +136,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset and cancel)",
                     (resetShouldSave ? initialModel : fluid.tests.prefs.bwSkin), prefsEditor.model);
 
+                prefsEditorLoader.destroy();
                 jqUnit.start();
             }
 

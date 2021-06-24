@@ -40,6 +40,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         listeners: {
             "onDestroy.clearStore": "fluid.tests.prefs.clearStore"
         },
+        markupFixture: ".flc-prefsEditor-separatedPanel",
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",
@@ -226,6 +227,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.separatedPanelMungingIntegration", {
         gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-prefsEditor-separatedPanel",
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",
@@ -307,6 +309,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.separatedPanelConditionalPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-prefsEditor-separatedPanel",
         components: {
             prefsEditor: {
                 type: "fluid.tests.composite.separatedPanel.prefsEditor",
@@ -380,6 +383,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.separatedPanelLazyLoadIntegration", {
         gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-prefsEditor-separatedPanel",
         components: {
             prefsEditor: {
                 type: "fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor",
