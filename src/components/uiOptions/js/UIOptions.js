@@ -27,9 +27,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     /** A configuration of UIOptions which is suitable for statically localised contexts. It accepts two additional
-     * top-leve options,
-     * {String} locale - The initial locale in which UIOptions should render
-     * {String} direction - A suitable value for the `dir` attribute of the UIOptions container - this may take
+     * top-level options, both of which are optional
+     * {String} [locale] - The initial locale in which UIOptions should render
+     * {String} [direction] - A suitable value for the `dir` attribute of the UIOptions container - this may take
      * values `ltr`, `rtl` or `auto`
      */
     fluid.defaults("fluid.uiOptions.multilingual", {
