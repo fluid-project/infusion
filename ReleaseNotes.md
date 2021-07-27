@@ -22,9 +22,9 @@
     * Date/Time and Strings
     * JSON Objects and Strings
   * Updated model transformations:
-    * Number to String transformation supports specifyhing decimal precission.
+    * Number to String transformation supports specifyhing decimal precision.
     * Round tranformation can round to an integer or decimal value
-  * `fluid.stringTemplate` updated to support nested objects for interpolate values
+  * `fluid.stringTemplate` updated to support nested objects for interpolating values
   * Added `fluid.dataSource` grade
   * Added `fluid.remoteModelComponent` for keeping remote and local models in sync.
 * Preference framework
