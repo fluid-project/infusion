@@ -6,35 +6,73 @@
 
 ## What's New in 3.0.0?
 
-Currently the contents of this file represent a placeholder for future Infusion 3.0.0 release notes.
-
 ### New Features
 
+* Build
+  * Minified distributions:
+    * infusion-all.js
+    * infusion-all-no-jquery.js
+    * infusion-framework.js
+    * infusion-framework-no-jquery.js
+    * infusion-uio.js
+    * infusion-uio-no-jquery.js
+* Framework
+  * Added model transformations for converting between:
+    * Boolean values and Strings
+    * Date/Time and Strings
+    * JSON Objects and Strings
+  * Updated model transformations:
+    * Number to String transformation supports specifyhing decimal precission.
+    * Round tranformation can round to an integer or decimal value
+  * `fluid.stringTemplate` updated to support nested objects for interpolate values
+  * Added `fluid.dataSource` grade
+  * Added `fluid.remoteModelComponent` for keeping remote and local models in sync.
 * Preference framework
-  * Updated look of on/off toggles
+  * Switched from Stylus to SASS for CSS pre-processing
+  * Responsive design for small screens/mobile devices.
+  * Updated look of on/off toggles and checkboxes
+  * Added additional contrast themes based on Windows contrast themes.
   * Added the [OpenDyslexic 3](https://opendyslexic.org/) font as an option to the Text Style panel
+  * Added localized message bundles for Farsi, French, Portugese, and Spanish.
+  * New preferences:
+    * Letter spacing
+    * Syllabification preference
+    * Text-to-speech preference using the Orator component
+    * Word spacing preference
+* Orator
+  * A self voicing widget with play/pause, text highlighting, selection reading.
+* Test Infrastructure
+  * `jqUnit.test` supports async tests with promises
 
-### Removal of Deprecated Features
+### Deprecated
 
-* Preference framework
-  * Collapsed inputsLarger and emphasizeLinks preferences into enhanceInputs
+More information about deprecations can be found in the [Deprecated in 3.0 docs](https://docs.fluidproject.org/infusion/development/deprecatedin3_0).
+
+* Fast XML Pull
+  * Will be removed in a future release.
+* Pager
+  * `fluid.pagedTable` and `fluid.table` grades and related functionality will be removed in an upcoming release.
+* Renderer
+  * The Renderer will be completely overhauled in an upcoming release. Expect API breakage, and that all of the existing
+    Renderer implementation is deprecated. This includes potential API breakages for the Preferences Framework and
+    Infusion components that use the Renderer.
 
 ## How Do I Get Infusion?
 
 * [Download a Release](https://github.com/fluid-project/infusion/releases)
 * [Install from NPM](https://www.npmjs.com/package/infusion)
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
-* [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
+* [Use from a Content Distribution Network(CDN)](https://unpkg.com/browse/infusion)
   * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN:
-    `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
+    `<script src='https://unpkg.com/browse/infusion@2.0.0/dist/infusion-all.js'></script>`
 
 See [How Do I Create an Infusion Package?](README.md#how-do-i-create-an-infusion-package), for details on creating
 complete or custom packages of Infusion.
 
 ## Demos
 
-Infusion ships with demos of all of the components in action. You can find them in the _**demos**_ folder in the release
-bundle or on our [build site](https://build.fluidproject.org/).
+The full Infusion package includes the demos of all of the components in action. You can find them in the _**demos**_
+folder in the release bundle or on our [build site](https://build.fluidproject.org/).
 
 When running the demos on your local machine, a web server is recommended. Several of the demos make use of AJAX calls;
 which typically are not allowed by the browser when run from the local file system.
@@ -60,7 +98,7 @@ categorized by license:
 ### BSD-3
 
 * [Hypher v0.2.5](https://github.com/bramstein/Hypher)
-* [Sinon v6.1.3](https://sinonjs.org)
+* [Sinon v10.0.0](https://sinonjs.org)
 
 ### CC-BY-4.0
 
@@ -77,11 +115,11 @@ categorized by license:
 ### MIT License
 
 * [HTML5 Boilerplate v4.3](https://html5boilerplate.com/)
-* [jQuery v3.3.1](https://jquery.com/)
-* [jQuery Mockjax v2.5.0](https://github.com/jakerella/jquery-mockjax)
+* [jQuery v3.6.0](https://jquery.com/)
+* [jQuery Mockjax v2.6.0](https://github.com/jakerella/jquery-mockjax)
 * [jQuery QUnit v1.12.0](https://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
-* [jQuery scrollTo v2.1.2](https://github.com/flesler/jquery.scrollTo)
+* [jQuery scrollTo v2.1.3](https://github.com/flesler/jquery.scrollTo)
 * [jQuery Touch Punch v0.2.3](http://touchpunch.furf.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
   slider, tabs, and tooltip) v1.12.1](https://jqueryui.com/)
@@ -94,6 +132,7 @@ categorized by license:
 * [Lato font v2.015](http://www.latofonts.com)
 * [Love Ya Like A Sister font](https://fonts.google.com/specimen/Love+Ya+Like+A+Sister)
 * [OpenDyslexic 3](https://opendyslexic.org/)
+  * via [NPM Package](https://github.com/ssbc/open-dyslexic) distributed under Bitstream license.
 
 ### zlib/libpng License
 
@@ -109,15 +148,15 @@ https://docs.fluidproject.org/infusion/development/) site.
 
 Infusion 3.0.0 is tested with the latest versions of the following desktop browsers:
 
-* [Chrome](https://google.com/chrome/)
-* [Edge](https://microsoft.com/edge/)
-* [Firefox](https://mozilla.org/firefox/)
-* [Safari](https://apple.com/safari/)
+* [Chrome](https://google.com/chrome/) (v91)
+* [Edge](https://microsoft.com/edge/) (v91)
+* [Firefox](https://mozilla.org/firefox/) (v89)
+* [Safari](https://apple.com/safari/) (v14.1.1)
 
 Additional testing is performed with the following mobile browsers:
 
-* [Android Chrome](https://play.google.com/store/apps/details?id=com.android.chrome)
-* [iOS Safari](https://apple.com/safari/)
+* [Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) (Android 11)
+* [Safari](https://apple.com/safari/) (iPadOS 14.6)
 
 The Fluid Project also maintains a [shareable configuration](https://github.com/fluid-project/browserslist-config-fluid)
 for [Browserslist](https://github.com/browserslist/browserslist). In the future, this configuration will be used within
@@ -126,7 +165,184 @@ Fluid Infusion.
 For more information see the [Fluid Infusion browser support](https://wiki.fluidproject.org/display/fluid/Browser+Support)
 wiki page.
 
+### Testing Configurations
+
+<table>
+    <summary>Tested Configurations</summary>
+    <thead>
+        <tr>
+            <th rowspan="2">Testing Task</th>
+            <th colspan="4">Desktop Browser</th>
+            <th colspan="2">Mobile Browser</th>
+        </tr>
+        <tr>
+            <th>Chrome</th>
+            <th>Firefox</th>
+            <th>MS Edge</th>
+            <th>Safari</th>
+            <th>Chrome for Android</th>
+            <th>Safari iOS/iPadOS</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Run All Unit Tests</th>
+            <td>Chrome 91 (macOS 11.4)</td>
+            <td>Firefox 89 (macOS 11.4)</td>
+            <td>MS Edge 91 (Win 10)</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>Chrome 91 (Android 11)</td>
+            <td>Safari 14 (iPadOS 14.6)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Manual Tests</th>
+            <td>Chrome 91 (Win 10)</td>
+            <td>Firefox 89 (Win 10)</td>
+            <td>MS Edge 91 (Win 10)</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>Chrome 91 (Android 11)</td>
+            <td>Safari 14 (iPadOS 14.6)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Demos</th>
+            <td>Chrome 91 (Win 10)</td>
+            <td>Firefox 89 (Win 10)</td>
+            <td>MS Edge 91 (Win 10)</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>Chrome 91 (Android 11)</td>
+            <td>Safari 14 (iPadOS 14.6)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Examples</th>
+            <td>Chrome 91 (Win 10)</td>
+            <td>Firefox 89 (Win 10)</td>
+            <td>MS Edge 91 (Win 10)</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>Chrome 91 (Android 11)</td>
+            <td>Safari 14 (iPadOS 14.6)</td>
+        </tr>
+        <tr>
+            <th>Inline Edit QA Test Plan - Simple Text</th>
+            <td>Chrome 91 (Win 10) - JAWS 2021</td>
+            <td>Firefox 89 (Win 10) - NVDA 2020.4</td>
+            <td>MS Edge 91 (Win 10) - Narrator</td>
+            <td>Safari 14.1.1 (macOS 11.4) - VoiceOver</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Keyboard Accessibility QA Test Plan</th>
+            <td>Chrome 91 (Win 10) - JAWS 2021</td>
+            <td>Firefox 89 (Win 10) - NVDA 2020.4</td>
+            <td>MS Edge 91 (Win 10) - Narrator</td>
+            <td>Safari 14.1.1 (macOS 11.4) - VoiceOver</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Pager QA Test Plan</th>
+            <td>Chrome 91 (Win 10) - JAWS 2021</td>
+            <td>Firefox 89 (Win 10) - NVDA 2020.4</td>
+            <td>MS Edge 91 (Win 10) - Narrator</td>
+            <td>Safari 14.1.1 (macOS 11.4) - VoiceOver</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Progress QA Test Plan</th>
+            <td>Chrome 91 (Win 10) - JAWS 2021</td>
+            <td>Firefox 89 (Win 10) - NVDA 2020.4</td>
+            <td>MS Edge 91 (Win 10) - Narrator</td>
+            <td>Safari 14.1.1 (macOS 11.4) - VoiceOver</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Image Reorderer</th>
+            <td>Chrome 91 (macOS 11.4)</td>
+            <td>Firefox 89 (macOS 11.4)</td>
+            <td>MS Edge 91 (Win 10) - Narrator</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Layout Reorderer</th>
+            <td>Chrome 91 (macOS 11.4)</td>
+            <td>Firefox 89 (macOS 11.4)</td>
+            <td>MS Edge 91 (macOS 11.4)</td>
+            <td>Safari 14.1.1 (macOS 11.4) - VoiceOver</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - List Reorderer</th>
+            <td>Chrome 91 (macOS 11.4)</td>
+            <td>Firefox 89 (Win 10) - NVDA 2020.4</td>
+            <td>MS Edge 91 (macOS 11.4)</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Grid Reorderer</th>
+            <td>Chrome 91 (Win 10) - JAWS 2021</td>
+            <td>Firefox 89 (macOS 11.4)</td>
+            <td>MS Edge 91 (macOS 11.4)</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Preferences Framework QA Test Plan</th>
+            <td>Chrome 91 (Win 10) - JAWS 2021</td>
+            <td>Firefox 89 (Win 10) - NVDA 2020.4</td>
+            <td>MS Edge 91 (Win 10) - Narrator</td>
+            <td>Safari 14.1.1 (macOS 11.4) - VoiceOver</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>UI Options QA Test Plan - Separated Panel</th>
+            <td>Chrome 91 (macOS 11.4)</td>
+            <td>Firefox 89 (macOS 11.4)</td>
+            <td>MS Edge 91 (Win 10)</td>
+            <td>Safari 14.1.1 (macOS 11.4) - VoiceOver</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Uploader QA Test Plan</th>
+            <td>Chrome 91 (macOS 11.4)</td>
+            <td>Firefox 89 (macOS 11.4)</td>
+            <td>MS Edge 91 (macOS 11.4)</td>
+            <td>Safari 14.1.1 (macOS 11.4)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+    </tbody>
+</table>
+
 ## Known Issues
 
 The Fluid Project uses a [JIRA](https://issues.fluidproject.org) website to track bugs. Some of the known issues in this
 release are described here:
+
+### Framework
+
+* [FLUID-5761: Silent failure when subcomponent is given same name as invoker](https://issues.fluidproject.org/browse/FLUID-5761)
+
+### Preferences Framework
+
+* [FLUID-4491: Line spacing doesn't affect elements that have a line-height style set](https://issues.fluidproject.org/browse/FLUID-4491)
+* [FLUID-5223: If there's exactly one text field in the prefs editor, pressing enter on most inputs causes form to submit](https://issues.fluidproject.org/browse/FLUID-5223)
+* [FLUID-5734: Default contrast option takes the styling of the currently selected contrast theme](https://issues.fluidproject.org/browse/FLUID-5734)
+* [FLUID-6216: The default text style options aren't available across all platforms](https://issues.fluidproject.org/browse/FLUID-6216)
+* [FLUID-6611: Line-spacing may not increment correctly when the base line-height is set to "normal"](https://issues.fluidproject.org/browse/FLUID-6611)
+* [FLUID-6635: Orator's domReader does not properly selfVoice and highlight content in Chrome](https://issues.fluidproject.org/browse/FLUID-6635)
+* [FLUID-6648: Switch slider temporarily disappears when clicked or activated with space](https://issues.fluidproject.org/browse/FLUID-6648)
+
+### Reorderer
+
+* [FLUID-4437: Focus styling persists after moving focus from Reorderer](https://issues.fluidproject.org/browse/FLUID-4437)
+* [FLUID-6013: The Grid Reorderer and Image Reorderer are missing ARIA role=row containers](https://issues.fluidproject.org/browse/FLUID-6013)
