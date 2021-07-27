@@ -19,8 +19,15 @@
 * Framework
   * Added model transformations for converting between:
     * Boolean values and Strings
+      * `fluid.transforms.booleanToString`
+      * `fluid.transforms.stringToBoolean`
     * Date/Time and Strings
+      * `fluid.transforms.dateToString`
+      * `fluid.transforms.dateTimeToString`
+      * `fluid.transforms.stringToDate`
     * JSON Objects and Strings
+      * `fluid.transforms.objectToJSONString`
+      * `fluid.transforms.JSONstringToObject`
   * Updated model transformations:
     * Number to String transformation supports specifyhing decimal precision.
     * Round tranformation can round to an integer or decimal value
@@ -41,6 +48,8 @@
     * Word spacing preference
 * Orator
   * A self voicing widget with play/pause, text highlighting, selection reading.
+    * _**NOTE:** Currently there is a bug with Google supplied voice synthesizers that prevents text highlighting and
+      long text being synthesized in Chrome. See [FLUID-6635](https://issues.fluidproject.org/browse/FLUID-6635)_
 * Test Infrastructure
   * `jqUnit.test` supports async tests with promises
 
