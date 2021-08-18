@@ -513,14 +513,24 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * initialModel, messageLoader, templateLoader, terms, aliases_prefsEditor, and aliases_enhancer. These grades are
      * consumed and integrated by a `fluid.prefs.builder` component.
      *
+     * @param  {String[]} [requestedPrefs] - The preferences requested by the builder
      * @param  {AuxiliarySchema} schemaToExpand - The auxiliary schema to process
      * @param  {Object} topCommonOptions - component options to apply to the various grade components.
      * @param  {Object} elementCommonOptions - component options mixed into the various
      * @param  {PrimarySchema} mappedDefaults - A Primary Schema for the requested preferences.
      * @return {AuxSchema} - The processed auxiliary schema
      */
-    fluid.prefs.expandSchema = function (schemaToExpand, topCommonOptions, elementCommonOptions, mappedDefaults) {
-        var auxSchema = fluid.copy(schemaToExpand);
+    fluid.prefs.expandSchema = function (requestedPrefs, schemaToExpand, topCommonOptions, elementCommonOptions, mappedDefaults) {
+        var schemaIndex = fluid.indexDefaults("auxSchemaIndex", {
+            gradeNames: "fluid.prefs.auxSchema",
+            indexFunc: "fluid.prefs.auxBuilder.defaultSchemaIndexer"
+        });
+        var auxGradeNames = fluid.prefs.auxBuilder.auxGradesForPrefs(schemaIndex, requestedPrefs);
+        var auxGrades = auxGradeNames.map(function (gradeName) {
+            return fluid.defaults(gradeName).auxiliarySchema;
+        });
+
+        var auxSchema = fluid.extend(true, {}, ...auxGrades, schemaToExpand);
 
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
@@ -576,25 +586,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.prefs.auxBuilder", {
-        gradeNames: ["fluid.prefs.auxSchema", "{that}.buildAuxiliary"],
+        gradeNames: ["fluid.component"],
         mergePolicy: {
             elementCommonOptions: "noexpand"
         },
         // A list of all requested preferences, to be supplied by an integrator or concrete grade.
         // Typically provided through the `fluid.prefs.builder` grade.
         // requestedPrefs: [],
-        invokers: {
-            // An invoker used to generate a set of grades that comprise a
-            // final version of the auxiliary schema to be used by the PrefsEditor
-            // builder.
-            buildAuxiliary: {
-                funcName: "fluid.prefs.auxBuilder.buildAuxiliary",
-                args: [
-                    "{that}.options.auxiliarySchemaIndex",
-                    "{that}.options.requestedPrefs"
-                ]
-            }
-        },
         topCommonOptions: {
             panels: {
                 gradeNames: ["fluid.prefs.prefsEditor"]
@@ -646,15 +644,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 "%internalModelName": "{uiEnhancer}.model.%externalModelName"
             }
         },
-        auxiliarySchemaIndex: {
-            expander: {
-                func: "fluid.indexDefaults",
-                args: ["auxSchemaIndex", {
-                    gradeNames: "fluid.prefs.auxSchema",
-                    indexFunc: "fluid.prefs.auxBuilder.defaultSchemaIndexer"
-                }]
-            }
-        },
         auxiliarySchema: {
             "loaderGrades": ["fluid.prefs.separatedPanel"],
             "generatePanelContainers": true,
@@ -669,6 +658,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             expander: {
                 func: "fluid.prefs.expandSchema",
                 args: [
+                    "{that}.options.requestedPrefs",
                     "{that}.options.auxiliarySchema",
                     "{that}.options.topCommonOptions",
                     "{that}.options.elementCommonOptions",
@@ -692,10 +682,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     /**
      * An invoker method that builds a list of grades that comprise a final version of the primary schema.
      * @param {Object} schemaIndex - A global index of all schema grades registered with the framework.
-     * @param {String[]} preferences   - A list of the requested preferences.
-     * @return {String[]} - A list of schema grades.
+     * @param {String[]} preferences - A list of the requested preferences.
+     * @return {String[]} - A list of aux schema grades.
      */
-    fluid.prefs.auxBuilder.buildAuxiliary = function (schemaIndex, preferences) {
+    fluid.prefs.auxBuilder.auxGradesForPrefs = function (schemaIndex, preferences) {
         var auxSchema = [];
         // Lookup all available schema grades from the index that match the requested preference names.
         fluid.each(preferences, function merge(pref) {

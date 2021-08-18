@@ -242,67 +242,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.expandSchemaDirectOption
-     *******************************************************************************/
-
-    fluid.tests.testExpandSchemaDirectOption = function (auxSchema, rules, expectedOutput) {
-        fluid.each(rules, function (targetPath, sourcePath) {
-            fluid.prefs.expandSchemaDirectOption(auxSchema, sourcePath, targetPath);
-        });
-        jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, auxSchema);
-    };
-
-    fluid.defaults("fluid.tests.expandSchemaDirectOptionTest", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        components: {
-            schemaExpanderTester: {
-                type: "fluid.tests.expandSchemaDirectOptionTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.expandSchemaDirectOptionTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            auxSchema: {
-                objectValue: {
-                    key1: "value1"
-                },
-                arrayValue: ["string1", "string2"],
-                stringValue: "a test string"
-            },
-            rules: {
-                objectValue: "oPath1.oPath2",
-                arrayValue: "aPath1.aPath2",
-                stringValue: "sPath1.sPath2"
-            },
-            expectedOutput: {
-                oPath1: {
-                    oPath2: {
-                        key1: "value1"
-                    }
-                },
-                aPath1: {
-                    aPath2: ["string1", "string2"]
-                },
-                sPath1: {
-                    sPath2: "a test string"
-                }
-            }
-        },
-        modules: [{
-            name: "Test direct option expander",
-            tests: [{
-                expect: 1,
-                name: "Option expander based on schema and rules",
-                type: "test",
-                func: "fluid.tests.testExpandSchemaDirectOption",
-                args: ["{that}.options.testOptions.auxSchema", "{that}.options.testOptions.rules", "{that}.options.testOptions.expectedOutput"]
-            }]
-        }]
-    });
-
-    /*******************************************************************************
      * Unit tests for fluid.prefs.auxbuilder
      *******************************************************************************/
 
