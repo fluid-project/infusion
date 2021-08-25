@@ -306,4 +306,4 @@ var jqUnit = jqUnit || {};
         }
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

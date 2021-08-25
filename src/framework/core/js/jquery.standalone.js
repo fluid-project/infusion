@@ -22,8 +22,8 @@
 /* global global */
 /* exported jQuery */
 
-var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
-var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
+var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
 (function (fluid) {
     "use strict";
@@ -149,6 +149,6 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
         }
     };
 
-})(fluid_3_0_0);
+})(fluid_4_0_0);
 
 var jQuery = fluid.jQueryStandalone; // eslint-disable-line no-redeclare

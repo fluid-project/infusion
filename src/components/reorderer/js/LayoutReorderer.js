@@ -33,4 +33,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var options = $.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);
     };
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

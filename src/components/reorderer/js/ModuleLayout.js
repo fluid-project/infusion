@@ -302,4 +302,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

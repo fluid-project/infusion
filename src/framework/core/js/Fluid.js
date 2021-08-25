@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v3.0.0
+ * Fluid Infusion v4.0.0
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -26,13 +26,13 @@ http://underscorejs.org
 Underscore may be freely distributed under the MIT license.
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
-var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
+var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 3.0.0";
+    fluid.version = "Infusion 4.0.0";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
@@ -3085,4 +3085,4 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
         return template;
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

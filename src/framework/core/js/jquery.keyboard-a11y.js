@@ -11,8 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {}; // eslint-disable-line no-redeclare
-var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
+var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
+var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
 (function ($, fluid) {
     "use strict";
@@ -62,7 +62,7 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_3_0_0", fluid_3_0_0);
+    fluid.thatistBridge("fluid_4_0_0", fluid_4_0_0);
 
     /*************************************************************************
      * Tabindex normalization - compensate for browser differences in naming
@@ -620,4 +620,4 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
     };
 
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);
