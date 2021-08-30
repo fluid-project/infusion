@@ -436,7 +436,7 @@ For more details see: [Upgrading to Infusion 1.2]
 
 ## [1.2.0-beta.1] - 2010-04-07
 
-A pre-release of [0.6.0].
+A pre-release of [1.2.0].
 
 ### More Info
 
