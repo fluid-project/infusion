@@ -68,12 +68,8 @@ categorized by license:
 ### MIT License
 
 * [HTML5 Boilerplate v4.3](https://html5boilerplate.com/)
-<<<<<<< HEAD
-* [jQuery v3.3.1](https://jquery.com/)
-=======
 * [jQuery v3.6.0](https://jquery.com/)
 * [jQuery Mockjax v2.6.0](https://github.com/jakerella/jquery-mockjax)
->>>>>>> main
 * [jQuery QUnit v1.12.0](https://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
 * [jQuery scrollTo v2.1.3](https://github.com/flesler/jquery.scrollTo)
