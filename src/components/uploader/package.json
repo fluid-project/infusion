@@ -1,7 +1,7 @@
 {
     "name": "fluid-uploader",
     "description": "Upload single files, batches of files, and large files while visually indicating duration.",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "license": "(BSD-3-Clause OR ECL-2.0)",
     "infusion": {
         "cssFiles": [
@@ -21,8 +21,8 @@
         "jquery": "3.6.0",
         "jquery-ui": "1.12.1",
         "jquery.scrollto": "2.1.2",
-        "fluid-framework": "3.0.0",
-        "fluid-progress": "3.0.0",
-        "fluid-enhancement": "3.0.0"
+        "fluid-framework": "4.0.0",
+        "fluid-progress": "4.0.0",
+        "fluid-enhancement": "4.0.0"
     }
 }

@@ -280,7 +280,7 @@ build.cli = {
         "[-e], [--exclude=...]": "(optional) A comma separated list of Infusion modules to exclude from the build. Takes precedence over include.",
         "[-h], [--help]": "(optional) Output the command line (CLI) options available",
         "[-i], [--include=...]": "(optional) A comma separated list of Infusion modules to include in the build.",
-        "[-n], [--name=...]": "(optional) A name for custom builds. The name will be interpolated into the minified file and zip archive if present. e.g. infusion-myName.js and infusion-myName-3.0.0.zip. By default it is set to 'custom'. Requires that the output option is set and that at least one of the include or exclude options are used.",
+        "[-n], [--name=...]": "(optional) A name for custom builds. The name will be interpolated into the minified file and zip archive if present. e.g. infusion-myName.js and infusion-myName-4.0.0.zip. By default it is set to 'custom'. Requires that the output option is set and that at least one of the include or exclude options are used.",
         "[-o], [--output=...]": "(optional) File path to write the concatenated and minified build to. Will output to stdout if not provided.",
         "[-p], [--packages=...]": "File paths to module package files. Glob patterns are supported. Providing packages is required, but can either be specified with this CLI option, or as a list of files.",
         "[-z], [--zip]": "(optional) If provided, a zip archive will be included alongside the output. Requires that the output option is set."
@@ -300,12 +300,12 @@ module.exports = build;
 
 if (require.main === module) {
     let args = minimist(process.argv.slice(2), {
-        string: ["include", "exclude", "name", "output", "packages"],
+        string: ["exclude", "include", "name", "output", "packages"],
         boolean: ["copy_dirs", "help", "zip"],
         alias: {
+            e: "exclude",
             h: "help",
             i: "include",
-            e: "exclude",
             n: "name",
             o: "output",
             p: "packages",
@@ -342,7 +342,7 @@ if (require.main === module) {
         sourceMap: args.output ? {
             filename: outputFile,
             url: `${outputFile}.map`,
-            root: "../"
+            root: args.copy_dirs ? "" : path.relative(args.output, "./")
         } : false
     });
 

@@ -1,7 +1,7 @@
 {
     "name": "fluid-overview-panel",
     "description": "A collapsible panel for displaying supporting information on a web page.",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "license": "(BSD-3-Clause OR ECL-2.0)",
     "infusion": {
         "cssFiles": [
@@ -15,7 +15,7 @@
         "jquery": "3.6.0",
         "opensans-webkit": "1.1.0",
         "roboto-fontface": "0.10.0",
-        "fluid-framework": "3.0.0",
-        "fluid-renderer": "3.0.0"
+        "fluid-framework": "4.0.0",
+        "fluid-renderer": "4.0.0"
     }
 }

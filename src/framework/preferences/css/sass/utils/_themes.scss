@@ -96,8 +96,8 @@
 
     &::selection,
     ::selection {
-        background-color: var(--fl-selectedBgColor) !important;
-        color: var(--fl-selectedFgColor) !important;
+        background-color: var(--fl-selectedBgColor, highlight) !important;
+        color: var(--fl-selectedFgColor, highlighttext) !important;
     }
 
     iframe {
@@ -308,8 +308,8 @@
 
         &::selection,
         ::selection {
-            background-color: var(--fl-selectedFgColor) !important;
-            color: var(--fl-selectedBgColor) !important;
+            background-color: var(--fl-selectedFgColor, highlight) !important;
+            color: var(--fl-selectedBgColor, highlighttext) !important;
         }
 
         iframe {

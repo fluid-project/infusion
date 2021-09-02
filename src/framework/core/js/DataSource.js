@@ -213,7 +213,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return togo;
     };
 
-
     /**** PORTABLE URL DATASOURCE SUPPORT ****/
 
     fluid.defaults("fluid.dataSource.URL", {
@@ -406,6 +405,5 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         rejectPayload.statusCode = statusCode;
         return fluid.upgradeError(rejectPayload, whileMsg);
     };
-
 
 })(jQuery, fluid_4_0_0);

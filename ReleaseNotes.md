@@ -1,40 +1,31 @@
-# Release Notes for Fluid Infusion 3.0.0
+# Release Notes for Fluid Infusion 4.0.0
 
 [Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
-## What's New in 3.0.0?
-
-Currently the contents of this file represent a placeholder for future Infusion 3.0.0 release notes.
+## What's New in 4.0.0?
 
 ### New Features
 
-* Preference framework
-  * Updated look of on/off toggles
-  * Added the [OpenDyslexic 3](https://opendyslexic.org/) font as an option to the Text Style panel
-
-### Removal of Deprecated Features
-
-* Preference framework
-  * Collapsed inputsLarger and emphasizeLinks preferences into enhanceInputs
+### Deprecated
 
 ## How Do I Get Infusion?
 
 * [Download a Release](https://github.com/fluid-project/infusion/releases)
 * [Install from NPM](https://www.npmjs.com/package/infusion)
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
-* [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
+* [Use from a Content Distribution Network(CDN)](https://unpkg.com/browse/infusion)
   * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN:
-    `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
+    `<script src='https://unpkg.com/browse/infusion@2.0.0/dist/infusion-all.js'></script>`
 
 See [How Do I Create an Infusion Package?](README.md#how-do-i-create-an-infusion-package), for details on creating
 complete or custom packages of Infusion.
 
 ## Demos
 
-Infusion ships with demos of all of the components in action. You can find them in the _**demos**_ folder in the release
-bundle or on our [build site](https://build.fluidproject.org/).
+The full Infusion package includes the demos of all of the components in action. You can find them in the _**demos**_
+folder in the release bundle or on our [build site](https://build.fluidproject.org/).
 
 When running the demos on your local machine, a web server is recommended. Several of the demos make use of AJAX calls;
 which typically are not allowed by the browser when run from the local file system.
@@ -60,7 +51,7 @@ categorized by license:
 ### BSD-3
 
 * [Hypher v0.2.5](https://github.com/bramstein/Hypher)
-* [Sinon v6.1.3](https://sinonjs.org)
+* [Sinon v10.0.0](https://sinonjs.org)
 
 ### CC-BY-4.0
 
@@ -77,10 +68,15 @@ categorized by license:
 ### MIT License
 
 * [HTML5 Boilerplate v4.3](https://html5boilerplate.com/)
+<<<<<<< HEAD
 * [jQuery v3.3.1](https://jquery.com/)
+=======
+* [jQuery v3.6.0](https://jquery.com/)
+* [jQuery Mockjax v2.6.0](https://github.com/jakerella/jquery-mockjax)
+>>>>>>> main
 * [jQuery QUnit v1.12.0](https://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
-* [jQuery scrollTo v2.1.2](https://github.com/flesler/jquery.scrollTo)
+* [jQuery scrollTo v2.1.3](https://github.com/flesler/jquery.scrollTo)
 * [jQuery Touch Punch v0.2.3](http://touchpunch.furf.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
   slider, tabs, and tooltip) v1.12.1](https://jqueryui.com/)
@@ -93,6 +89,7 @@ categorized by license:
 * [Lato font v2.015](http://www.latofonts.com)
 * [Love Ya Like A Sister font](https://fonts.google.com/specimen/Love+Ya+Like+A+Sister)
 * [OpenDyslexic 3](https://opendyslexic.org/)
+  * via [NPM Package](https://github.com/ssbc/open-dyslexic) distributed under Bitstream license.
 
 ### zlib/libpng License
 
@@ -106,7 +103,7 @@ https://docs.fluidproject.org/infusion/development/) site.
 
 ## Supported Browsers
 
-Infusion 3.0.0 is tested with the latest versions of the following desktop browsers:
+Infusion 4.0.0 is tested with the latest versions of the following desktop browsers:
 
 * [Chrome](https://google.com/chrome/)
 * [Edge](https://microsoft.com/edge/)
@@ -115,8 +112,8 @@ Infusion 3.0.0 is tested with the latest versions of the following desktop brows
 
 Additional testing is performed with the following mobile browsers:
 
-* [Android Chrome](https://play.google.com/store/apps/details?id=com.android.chrome)
-* [iOS Safari](https://apple.com/safari/)
+* [Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) (Android 11)
+* [Safari](https://apple.com/safari/) (iPadOS 14.6)
 
 The Fluid Project also maintains a [shareable configuration](https://github.com/fluid-project/browserslist-config-fluid)
 for [Browserslist](https://github.com/browserslist/browserslist). In the future, this configuration will be used within
@@ -124,6 +121,8 @@ Fluid Infusion.
 
 For more information see the [Fluid Infusion browser support](https://wiki.fluidproject.org/display/fluid/Browser+Support)
 wiki page.
+
+### Testing Configurations
 
 ## Known Issues
 
