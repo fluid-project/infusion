@@ -53,4 +53,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         ppt: "application/vnd.ms-powerpoint",
         pptx: "application/vnd.ms-powerpoint"
     };
-})(fluid_3_0_0);
+})(fluid_4_0_0);

@@ -1,7 +1,7 @@
 {
     "name": "fluid-sliding-panel",
     "description": "A widget that slides a panel in and out of view.",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "license": "(BSD-3-Clause OR ECL-2.0)",
     "infusion": {
         "jsCommonFiles": [
@@ -11,6 +11,6 @@
     "dependencies": {
         "jquery": "3.6.0",
         "jquery-ui": "1.12.1",
-        "fluid-framework": "3.0.0"
+        "fluid-framework": "4.0.0"
     }
 }

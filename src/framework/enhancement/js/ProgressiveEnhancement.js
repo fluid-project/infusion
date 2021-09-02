@@ -28,4 +28,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         $("head").append("<style type='text/css'>.fl-progEnhance-basic, .fl-ProgEnhance-basic { display: none; } .fl-progEnhance-enhanced, .fl-ProgEnhance-enhanced { display: block; }</style>");
     }
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);

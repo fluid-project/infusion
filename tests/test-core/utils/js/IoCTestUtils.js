@@ -856,4 +856,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.test.iocTestState.append(envs);
     };
 
-})(jQuery, fluid_3_0_0);
+})(jQuery, fluid_4_0_0);
