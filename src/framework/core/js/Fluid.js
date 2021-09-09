@@ -1964,27 +1964,6 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     fluid.failureEvent.addListener(fluid.builtinFail, "fail");
     fluid.failureEvent.addListener(fluid.logFailure, "log", "before:fail");
 
-    /**
-     * This function is deprecated and will be removed in the FLUID-6148 release.
-     * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
-     *
-     * @param {Number|Function} condition - Supply either a function, which will be called with two arguments, args (the complete arguments to
-     * fluid.fail) and activity, an array of strings describing the current framework invocation state.
-     * Or, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
-     * be popped off the stack
-     */
-    // Put this back until we can push a kettle upgrade through the stack
-    fluid.pushSoftFailure = function (condition) {
-        fluid.log(fluid.logLevel.WARN, "fluid.pushSoftFailure is deprecated and will be removed in the FLUID-6148 release");
-        if (typeof(condition) === "function") {
-            fluid.failureEvent.addListener(condition, "fail");
-        } else if (condition === -1) {
-            fluid.failureEvent.removeListener("fail");
-        } else if (typeof(condition) === "boolean") {
-            fluid.fail("pushSoftFailure with boolean value is no longer supported");
-        }
-    };
-
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
 
     // A function to tag the types of all Fluid components

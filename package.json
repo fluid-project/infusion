@@ -66,6 +66,7 @@
         "deps:tests": "run-p deps:tests:*",
         "deps:tests:simulate": "cpy node_modules/jquery-simulate/jquery.simulate.js tests/lib/jquery-simulate/js/",
         "deps:tests:sinon": "cpy node_modules/sinon/pkg/sinon.js tests/lib/sinon/js/",
+        "deps:tests:xhr-mock": "cpy node_modules/xhr-mock/dist/xhr-mock.js tests/lib/xhr-mock/js/",
         "lint": "fluid-lint-all",
         "prepare": "run-s deps build:sass:min",
         "prepublishOnly": "npm run test:bundles",

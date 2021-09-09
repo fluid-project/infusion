@@ -180,7 +180,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.debug.renderDefaults = function (defaultsTemplate, typeName, options) {
-        // console.log(fluid.prettyPrintJSON(options));
         return fluid.stringTemplate(defaultsTemplate, {
             typeName: typeName,
             options: JSON.stringify(options, null, 4)

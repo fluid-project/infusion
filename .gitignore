@@ -10,8 +10,8 @@
 /src/lib/opensans/
 /src/lib/roboto/
 /tests/lib/jquery-simulate/
-/tests/lib/mockjax/
 /tests/lib/sinon/
+/tests/lib/xhr-mock/
 package-lock.json
 report.tap
 coverage
