@@ -246,11 +246,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.uiOptions.multilingual("pt_BR", "", true);
-    fluid.tests.uiOptions.multilingual("fa", "rtl", true);
+    fluid.tests.uiOptions.multilingual("pt_BR", "");
+    fluid.tests.uiOptions.multilingual("fa", "rtl");
 
     // Verify that component instantiates with locale for which bundle is missing
-    fluid.tests.uiOptions.multilingual("cn", "", true);
+    fluid.tests.uiOptions.multilingual("cn", "");
 
     $(function () {
         fluid.test.runTests([

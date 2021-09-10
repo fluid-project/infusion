@@ -2106,7 +2106,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     /**
      * Upgrades an element of an IoC record which designates a function to prepare for a {func, args} representation.
      *
-     * @param {Any} rec - If the record is of a primitive type,
+     * @param {Any} rec - The record to be upgraded. If an object will be returned unchanged. Otherwise it may be a function
+     * object or an IoC reference to one.
      * @param {String} key - The key in the returned record to hold the function, this will default to `funcName` if `rec` is a `string` *not*
      * holding an IoC reference, or `func` otherwise
      * @return {Object} The original `rec` if it was not of primitive type, else a record holding { key : rec } if it was of primitive type.
