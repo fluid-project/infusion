@@ -755,7 +755,7 @@ config = {
 // Export global variables, unless an 'exports' object exists,
 // in that case we assume we're in CommonJS (dealt with on the bottom of the script)
 if ( typeof exports === "undefined" ) {
-  // AMB next line commented out for FLUID-6368, do not pollute global namespace  
+  // AMB next line commented out for FLUID-6368, do not pollute global namespace
   //	extend( window, QUnit.constructor.prototype );
 
 	// Expose QUnit object
@@ -863,6 +863,8 @@ extend( QUnit, {
 	reset: function() {
 		var fixture = id( "qunit-fixture" );
 		if ( fixture ) {
+			// Clearing out fixture.innerHTML first to prevent issues with Safari (See: FLUID-6684)
+			fixture.innerHTML = "";
 			fixture.innerHTML = config.fixture;
 		}
 	},
