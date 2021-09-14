@@ -20,20 +20,96 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
-    /**
-     * A variant of fluid.viewComponent that bypasses the wacky "initView" and variant signature
-     * workflow, sourcing instead its "container" from an option of that name, so that this argument
-     * can participate in standard ginger resolution. This enables useful results such as a component
-     * which can render its own container into the DOM on startup, whilst the container remains immutable.
-     */
+    // This grade only exists to signal for FLUID-6584 that a view component by some means uses the "new workflow" of
+    // firing onDomBind before onCreate - the exact mechanism is left up to the component but will likely be a workflow function
     fluid.defaults("fluid.newViewComponent", {
-        gradeNames: ["fluid.modelComponent"],
-        members: {
-            // 3rd argument is throwaway to force evaluation of container
-            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors, {that}.container)",
-            container: "@expand:fluid.container({that}.options.container)"
+        gradeNames: "fluid.viewComponent",
+        listeners: {
+            // Override this definition from fluid.viewComponent
+            "onCreate.onDomBind": null
         }
     });
+
+    /**
+     * A viewComponent which renders its own markup including its container, into a
+     * specified parent container.
+     */
+    fluid.defaults("fluid.containerRenderingView", {
+        gradeNames: ["fluid.newViewComponent"],
+        members: {
+            container: "@expand:{that}.renderContainer()"
+        },
+        // The DOM element which this component should inject its markup into on startup
+        parentContainer: "{that}.options.container",
+        injectionType: "append",
+        invokers: {
+            renderMarkup: "fluid.identity({that}.options.markup.container)",
+            renderContainer: "fluid.containerRenderingView.renderContainer({that}, {that}.renderMarkup, {that}.addToParent)",
+            addToParent: {
+                funcName: "fluid.containerRenderingView.addToParent",
+                args: ["{that}.options.parentContainer", "{arguments}.0", "{that}.options.injectionType"]
+            }
+        },
+        workflows: {
+            global: {
+                // This workflow function is necessary since otherwise the natural evaluation order of lensed components
+                // during local workflow will evaluate them in reverse order
+                evaluateContainers: {
+                    funcName: "fluid.renderer.evaluateContainers",
+                    priority: "last",
+                    waitIO: true
+                }
+            }
+        },
+        listeners: {
+            "onDestroy.clearInjectedMarkup": {
+                "this": "{that}.container",
+                method: "remove",
+                args: []
+            }
+        }
+    });
+
+    fluid.registerNamespace("fluid.renderer");
+
+    /** A component depending on template markup resources during startup. Shared between fluid.templateRenderingView
+     * and the new renderer
+     */
+    fluid.defaults("fluid.templateResourceFetcher", {
+        gradeNames: "fluid.resourceLoader",
+        // Configure a map here of all templates which should be pre-fetched during fetchTemplates so that they are
+        // ready for renderMarkup
+        rendererTemplateResources: {
+            template: true
+        },
+        // Set to true to defeat template fetching during startup
+        skipTemplateFetch: false,
+        workflows: {
+            global: {
+                fetchTemplates: {
+                    funcName: "fluid.renderer.fetchTemplates",
+                    priority: "first"
+                }
+            }
+        }
+    });
+
+    fluid.renderer.fetchTemplates = function (shadows) {
+        shadows.forEach(function (shadow) {
+            var that = shadow.that;
+            if (fluid.componentHasGrade(that, "fluid.templateResourceFetcher")) {
+                var skipTemplateFetch = fluid.getForComponent(that, ["options", "skipTemplateFetch"]);
+                if (!skipTemplateFetch) {
+                    var rendererTemplateResources = fluid.getForComponent(that, ["options", "rendererTemplateResources"]);
+                    fluid.each(rendererTemplateResources, function (value, key) {
+                        if (value) {
+                            fluid.getForComponent(that, ["resources", key]);
+                        }
+                    });
+                }
+            }
+        });
+    };
 
     /**
      * Used to add an element to a parent container. Internally it can use either of jQuery's prepend or append methods.
@@ -45,30 +121,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      *                          `parentContainer`. The method can be "append" (default), "prepend", or "html" (will
      *                          replace the contents).
      */
-    fluid.newViewComponent.addToParent = function (parentContainer, elm, method) {
+    fluid.containerRenderingView.addToParent = function (parentContainer, elm, method) {
+        if (!parentContainer) {
+            fluid.fail("fluid.containerRenderingView needs to have \"parentContainer\" or \"container\" option supplied");
+        }
         method = method || "append";
         $(parentContainer)[method](elm);
     };
 
-    /**
-     * Similar to fluid.newViewComponent; however, it will render its own markup including its container, into a
-     * specified parent container.
-     */
-    fluid.defaults("fluid.containerRenderingView", {
-        gradeNames: ["fluid.newViewComponent"],
-        container: "@expand:{that}.renderContainer()",
-        // The DOM element which this component should inject its markup into on startup
-        parentContainer: "fluid.notImplemented", // must be overridden
-        injectionType: "append",
-        invokers: {
-            renderMarkup: "fluid.identity({that}.options.markup.container)",
-            renderContainer: "fluid.containerRenderingView.renderContainer({that}, {that}.renderMarkup, {that}.addToParent)",
-            addToParent: {
-                funcName: "fluid.newViewComponent.addToParent",
-                args: ["{that}.options.parentContainer", "{arguments}.0", "{that}.options.injectionType"]
-            }
-        }
-    });
+    fluid.renderer.evaluateContainers = function (shadows) {
+        shadows.forEach(function (shadow) {
+            fluid.getForComponent(shadow.that, "container");
+        });
+        shadows.forEach(function (shadow) {
+            shadow.that.events.onDomBind.fire(shadow.that);
+        });
+    };
 
     /**
      * Renders the components markup and inserts it into the parent container based on the addToParent method
@@ -88,43 +156,23 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     /**
-     * Similar to fluid.newViewComponent; however, it will fetch a template and render it into the container.
+     * A fluid.containerRenderingView which fetches a template and renders it into the container.
      *
-     * The template path must be supplied either via a top level `template` option or directly to the
+     * The template path must be supplied either via a top level `templateUrl` option or directly to the
      * `resources.template` option. The path may optionally include "terms" to use as tokens which will be resolved
-     * from values specified in the `terms` option.
+     * from values specified in the `resourceOptions.terms` option --- see fluid.resourceLoader for further details.
      *
-     * The template is fetched on creation and rendered into the container after it has been fetched. After rendering
-     * the `afterRender` event is fired.
+     * The template is fetched on creation and rendered into the container after it has been fetched.
      */
     fluid.defaults("fluid.templateRenderingView", {
-        gradeNames: ["fluid.newViewComponent", "fluid.resourceLoader"],
-        resources: {
-            template: "fluid.notImplemented"
-        },
-        injectionType: "append",
-        events: {
-            afterRender: null
-        },
-        listeners: {
-            "onResourcesLoaded.render": "{that}.render",
-            "onResourcesLoaded.afterRender": {
-                listener: "{that}.events.afterRender",
-                args: ["{that}"],
-                priority: "after:render"
-            }
-        },
+        gradeNames: ["fluid.containerRenderingView", "fluid.templateResourceFetcher"],
         invokers: {
-            render: {
-                funcName: "fluid.newViewComponent.addToParent",
-                args: ["{that}.container", "{that}.resources.template.resourceText", "{that}.options.injectionType"]
-            }
+            renderMarkup: "fluid.identity({that}.resources.template.parsed)"
         },
         distributeOptions: {
-            "mapTemplateSource": {
-                source: "{that}.options.template",
-                removeSource: true,
-                target: "{that}.options.resources.template"
+            "mapTemplateUrl": {
+                source: "{that}.options.templateUrl",
+                target: "{that}.options.resources.template.url"
             }
         }
     });

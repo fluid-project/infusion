@@ -23,14 +23,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.testNewViewSupport = function () {
 
         fluid.defaults("fluid.tests.newViewComponent", {
-            gradeNames: ["fluid.newViewComponent"],
+            gradeNames: ["fluid.viewComponent"],
             container: ".flc-newViewSupport-container",
             selectors: {
                 elm: ".flc-newViewSupport-elm"
             }
         });
 
-        jqUnit.test("Init fluid.newViewComponent", function () {
+        jqUnit.test("Init fluid.viewComponent", function () {
             jqUnit.expect(3);
             var that = fluid.tests.newViewComponent();
 
@@ -39,7 +39,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertDomEquals("The dom binder should be able to locate the correct elements.", $(".flc-newViewSupport-elm"), that.locate("elm"));
         });
 
-        fluid.tests.newViewComponent.addToParentCases = [{
+        fluid.registerNamespace("fluid.tests.containerRenderingView");
+
+        fluid.tests.containerRenderingView.addToParentCases = [{
             elm: $("<li>first</li>"),
             method: "prepend"
         }, {
@@ -49,11 +51,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             elm: $("<li>last</li>")
         }];
 
-        jqUnit.test("fluid.newViewComponent.addToParent", function () {
+        jqUnit.test("fluid.containerRenderingView.addToParent", function () {
             var parent = $(".flc-newViewSupport-addToParent");
 
-            fluid.each(fluid.tests.newViewComponent.addToParentCases, function (testCase) {
-                fluid.newViewComponent.addToParent(parent, testCase.elm, testCase.method);
+            fluid.each(fluid.tests.containerRenderingView.addToParentCases, function (testCase) {
+                fluid.containerRenderingView.addToParent(parent, testCase.elm, testCase.method);
             });
 
             var children = parent.children();
@@ -62,15 +64,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertEquals("The element added without a method should be last", "last", children.eq(3).text());
         });
 
-        jqUnit.test("fluid.newViewComponent.addToParent replace content", function () {
+        jqUnit.test("fluid.containerRenderingView.addToParent replace content", function () {
             var parent = $(".flc-newViewSupport-addToParent-replace");
 
-            fluid.newViewComponent.addToParent(parent, "<li>new</li>", "html");
+            fluid.containerRenderingView.addToParent(parent, "<li>new</li>", "html");
 
             var children = parent.children();
             jqUnit.assertEquals("There should only be one child element", 1, children.length);
             jqUnit.assertEquals("The new element should be the child", "new", children.eq(0).text());
         });
+
+        /** Basic containerRenderingView test with built-in markup **/
 
         fluid.defaults("fluid.tests.containerRenderingView", {
             gradeNames: ["fluid.containerRenderingView"],
@@ -89,31 +93,77 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             jqUnit.assertDomEquals("The container should have the correct element", containerElm, that.container);
         });
 
+        /** Basic templateRenderingView test with markup fetched from a resource **/
+
         fluid.defaults("fluid.tests.templateRenderingView", {
             gradeNames: ["fluid.templateRenderingView"],
-            container: ".flc-newViewSupport-templateContainer",
-            template: "../data/testTemplate1.html"
+            templateUrl: "../data/testTemplate1.html"
         });
 
-        fluid.tests.templateRenderingView.verifyInit = function (container) {
-            var children = container.children();
+        fluid.tests.templateRenderingView.verifyInit = function (that, parentContainer) {
+            var parentNode = $(parentContainer);
+            var children = parentNode.children();
             jqUnit.assertEquals("There should be two child elements in the container", 2, children.length);
             jqUnit.assertTrue("The first child should be the pre-existing element", children.eq(0).hasClass("flc-newViewSupport-templateContainer-existing"));
             jqUnit.assertTrue("The second child should be the injected template", "Test Template 1", children.eq(1).text());
+            that.destroy();
+            var newChildren = parentNode.children();
+            jqUnit.assertEquals("There should be one child element in the container", 1, newChildren.length);
+            jqUnit.assertTrue("The first child should be the pre-existing element", newChildren.eq(0).hasClass("flc-newViewSupport-templateContainer-existing"));
             jqUnit.start();
         };
 
         jqUnit.asyncTest("Init fluid.templateRenderingView", function () {
-            jqUnit.expect(3);
-            fluid.tests.templateRenderingView({
+            jqUnit.expect(5);
+            fluid.tests.templateRenderingView(".flc-newViewSupport-templateContainer", {
                 listeners: {
-                    "afterRender.test": {
+                    "onCreate.test": {
                         listener: "fluid.tests.templateRenderingView.verifyInit",
-                        args: "{that}.container",
+                        args: ["{that}", "{that}.options.parentContainer"],
                         priority: "last:testing"
                     }
                 }
             });
         });
+
+        /** "CollectionSpace-style" rendering test with nested containers with their own template resources **/
+
+        fluid.defaults("fluid.tests.nestedTemplateRenderingView", {
+            gradeNames: "fluid.templateRenderingView",
+            container: ".flc-newViewSupport-nestedTemplateContainer",
+            templateUrl: "../data/testTemplateContainer.html",
+            injectionType: "replaceWith",
+            selectors: {
+                nested: ".flc-nested"
+            },
+            components: {
+                nested: {
+                    type: "fluid.templateRenderingView",
+                    container: "{that}.dom.nested",
+                    options: {
+                        templateUrl: "../data/testTemplateNested.html",
+                        injectionType: "replaceWith"
+                    }
+                }
+            }
+        });
+
+        fluid.tests.templateRenderingView.verifyNested = function (jqNested) {
+            jqUnit.assertEquals("Nested content replaced from template", "Content from the nested template", jqNested.text());
+            jqUnit.start();
+        };
+
+        jqUnit.asyncTest("Nested fluid.templateRenderingView", function () {
+            jqUnit.expect(1);
+            fluid.tests.nestedTemplateRenderingView(".flc-newViewSupport-nestedTemplateContainer", {
+                listeners: {
+                    "onCreate.test": {
+                        listener: "fluid.tests.templateRenderingView.verifyNested",
+                        args: "{that}.dom.nested"
+                    }
+                }
+            });
+        });
+
     };
 })(jQuery);

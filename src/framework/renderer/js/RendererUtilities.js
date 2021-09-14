@@ -14,30 +14,30 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
-    if (!fluid.renderer) {
+    if (!fluid.oldRenderer) {
         fluid.fail("fluidRenderer.js is a necessary dependency of RendererUtilities");
     }
 
     // TODO: API status of these 3 functions is uncertain. So far, they have never
     // appeared in documentation.
-    fluid.renderer.visitDecorators = function (that, visitor) {
+    fluid.oldRenderer.visitDecorators = function (that, visitor) {
         fluid.visitComponentChildren(that, function (component, name) {
-            if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
+            if (name.indexOf(fluid.oldRenderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
         }, {flat: true}, []);
     };
 
-    fluid.renderer.clearDecorators = function (that) {
+    fluid.oldRenderer.clearDecorators = function (that) {
         var instantiator = fluid.getInstantiator(that);
-        fluid.renderer.visitDecorators(that, function (component, name) {
+        fluid.oldRenderer.visitDecorators(that, function (component, name) {
             instantiator.clearComponent(that, name);
         });
     };
 
-    fluid.renderer.getDecoratorComponents = function (that) {
+    fluid.oldRenderer.getDecoratorComponents = function (that) {
         var togo = {};
-        fluid.renderer.visitDecorators(that, function (component, name) {
+        fluid.oldRenderer.visitDecorators(that, function (component, name) {
             togo[name] = component;
         });
         return togo;
@@ -45,10 +45,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     // Utilities for coordinating options in renderer components - this code is all pretty
     // dreadful and needs to be organised as a suitable set of defaults and policies
-    fluid.renderer.modeliseOptions = function (options, defaults, baseOptions) {
+    fluid.oldRenderer.modeliseOptions = function (options, defaults, baseOptions) {
         return $.extend({}, defaults, fluid.filterKeys(baseOptions, ["model", "applier"]), options);
     };
-    fluid.renderer.reverseMerge = function (target, source, names) {
+    fluid.oldRenderer.reverseMerge = function (target, source, names) {
         names = fluid.makeArray(names);
         fluid.each(names, function (name) {
             if (target[name] === undefined && source[name] !== undefined) {
@@ -62,11 +62,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     // TODO: fix this up with IoC and improved handling of templateSource as well as better
     // options layout (model appears in both rOpts and eOpts)
     // "options" here is the original "rendererFnOptions"
-    fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
+    fluid.oldRenderer.createOldRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
         var nativeModel = options.rendererOptions.model === undefined;
-        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, parentThat);
+        var rendererOptions = fluid.oldRenderer.modeliseOptions(options.rendererOptions, null, parentThat);
         rendererOptions.fossils = fossils || {};
         rendererOptions.parentComponent = parentThat;
         if (container.jquery) {
@@ -74,14 +74,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 document: container[0].ownerDocument,
                 jQuery: container.constructor
             };
-            fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
+            fluid.oldRenderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
         }
 
         var that = {};
 
         var templates = null;
         that.render = function (tree) {
-            var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
+            var cutpointFn = options.cutpointGenerator || "fluid.oldRenderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
             if (nativeModel) {
                 // check necessary since the component insanely supports the possibility the model is not the component's model!
@@ -104,22 +104,35 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return that;
     };
 
-    fluid.defaults("fluid.rendererComponent", {
+    fluid.defaults("fluid.oldRendererComponent", {
         gradeNames: ["fluid.viewComponent"],
-        initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             "rendererOptions.idMap": "nomerge",
+            "rendererOptions.cutpoints": fluid.arrayConcatPolicy,
             protoTree: "noexpand, replace",
             parentBundle: "nomerge",
             "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
         },
+        workflows: {
+            local: {
+                fetchOldRendererTemplate: {
+                    funcName: "fluid.fetchOldRendererTemplate",
+                    priority: "after:concludeComponentObservation"
+                },
+                initOldRendererComponent: {
+                    waitIO: true,
+                    funcName: "fluid.initOldRendererWorkflow",
+                    priority: "after:fetchOldRendererTemplate"
+                }
+            }
+        },
         invokers: {
             refreshView: {
-                funcName: "fluid.rendererComponent.refreshView",
+                funcName: "fluid.oldRendererComponent.refreshView",
                 args: "{that}"
             },
             produceTree: {
-                funcName: "fluid.rendererComponent.produceTree",
+                funcName: "fluid.oldRendererComponent.produceTree",
                 args: "{that}"
             }
         },
@@ -127,21 +140,35 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             autoBind: true
         },
         events: {
-            onResourcesFetched: null,
             prepareModelForRender: null,
             onRenderTree: null,
             afterRender: null
         },
         listeners: {
-            onCreate: {
-                funcName: "fluid.rendererComponent.renderOnInit",
+            "onCreate.renderOnInit": {
+                funcName: "fluid.oldRendererComponent.renderOnInit",
                 args: ["{that}.options.renderOnInit", "{that}"],
                 priority: "last"
+            }
+        },
+        components: {
+            messageResolver: {
+                type: "fluid.messageResolver",
+                options: {
+                    messageBase: "{oldRendererComponent}.options.strings",
+                    resolveFunc: "{oldRendererComponent}.options.messageResolverFunction",
+                    parents: "@expand:fluid.makeArray({oldRendererComponent}.options.parentBundle)"
+                }
             }
         }
     });
 
-    fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {
+    // Final definition for backwards compatibility - will remove with old renderer
+    fluid.defaults("fluid.rendererComponent", {
+        gradeNames: "fluid.oldRendererComponent"
+    });
+
+    fluid.oldRendererComponent.renderOnInit = function (renderOnInit, that) {
         if (renderOnInit || that.renderOnInit) {
             that.refreshView();
         }
@@ -154,7 +181,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return expander;
     };
 
-    fluid.rendererComponent.refreshView = function (that) {
+    fluid.oldRendererComponent.refreshView = function (that) {
         if (!that.renderer) {
             // Terrible stopgap fix for FLUID-5279 - all of this implementation will be swept away
             // model relay may cause this to be called during init, and we have no proper definition for "that.renderer" since it is
@@ -162,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             that.renderOnInit = true;
             return;
         } else {
-            fluid.renderer.clearDecorators(that);
+            fluid.oldRenderer.clearDecorators(that);
             that.events.prepareModelForRender.fire(that.model, that.applier, that);
             var tree = that.produceTree(that);
             var rendererFnOptions = that.renderer.rendererFnOptions;
@@ -177,33 +204,30 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     };
 
-    fluid.rendererComponent.produceTree = function (that) {
+    fluid.oldRendererComponent.produceTree = function (that) {
         var produceTreeOption = that.options.produceTree;
         return produceTreeOption ?
             (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
-            that.options.protoTree;
+            fluid.copy(that.options.protoTree);
     };
 
-    fluid.initRendererComponent = function (componentName, container, options) {
-        var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
-        fluid.getForComponent(that, "model"); // Force resolution of these due to our terrible workflow
-        fluid.getForComponent(that, "applier");
-        fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
+    fluid.fetchOldRendererTemplate = function (shadow) {
+        // Cater for more modern components that mix in resourceLoader, as well as uses in the prefs framework which
+        // fetch resources and inject them using a TemplateLoader higher in the tree in which case this is a no-op
+        fluid.getForComponent(shadow.that, "resources.template");
+    };
 
-        fluid.fetchResources(that.options.resources, that.events.onResourcesFetched.fire); // TODO: deal with asynchrony
+    fluid.initOldRendererWorkflow = function (shadow) {
+        fluid.initOldRendererComponent(shadow.that);
+    };
 
-        var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
+    fluid.initOldRendererComponent = function (that) {
+        var rendererOptions = fluid.oldRenderer.modeliseOptions(fluid.copy(that.options.rendererOptions), null, that);
 
-        var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
-            messageResolver = fluid.messageResolver({
-                messageBase: that.options.strings,
-                resolveFunc: that.options.messageResolverFunction,
-                parents: fluid.makeArray(that.options.parentBundle)
-            });
-            rendererOptions.messageSource = {type: "resolver", resolver: messageResolver};
+            rendererOptions.messageSource = {type: "resolver", resolver: that.messageResolver};
         }
-        fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
+        fluid.oldRenderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
         that.rendererOptions = rendererOptions;
 
         var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, {
@@ -215,16 +239,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         });
 
-        if (that.options.resources && that.options.resources.template) {
+        if (that.resources && that.resources.template) {
             rendererFnOptions.templateSource = function () { // TODO: don't obliterate, multitemplates, etc.
-                return that.options.resources.template.resourceText;
+                return that.resources.template.resourceText;
             };
         }
 
-        fluid.renderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
-        if (rendererFnOptions.rendererTargetSelector) {
-            container = function () {return that.dom.locate(rendererFnOptions.rendererTargetSelector); };
-        }
+        fluid.oldRenderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
+
         var renderer = {
             fossils: {},
             rendererFnOptions: rendererFnOptions,
@@ -232,16 +254,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 return fluid.boundPathForNode(node, renderer.fossils);
             }
         };
-
-        var rendererSub = fluid.renderer.createRendererSubcomponent(container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
+        var rendererSub = fluid.oldRenderer.createOldRendererSubcomponent(that.container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
         that.renderer = $.extend(renderer, rendererSub);
-
-        if (messageResolver) {
-            that.messageResolver = messageResolver;
-        }
-        renderer.refreshView = fluid.getForComponent(that, "refreshView"); // Stopgap implementation for FLUID-4334
-
-        return that;
     };
 
     var removeSelectors = function (selectors, selectorsToIgnore) {
@@ -262,7 +276,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return selectorKey;
     };
 
-    fluid.renderer.selectorsToCutpoints = function (selectors, options) {
+    fluid.oldRenderer.selectorsToCutpoints = function (selectors, options) {
         var togo = [];
         options = options || {};
         selectors = fluid.copy(selectors); // Make a copy before potentially destructively changing someone's selectors.
@@ -283,25 +297,25 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     /** END of "Renderer Components" infrastructure **/
 
-    fluid.renderer.NO_COMPONENT = {};
+    fluid.oldRenderer.NO_COMPONENT = {};
 
     /* A special "shallow copy" operation suitable for nondestructively
      * merging trees of components. jQuery.extend in shallow mode will
      * neglect null valued properties.
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.renderer.mergeComponents = function (target, source) {
+    fluid.oldRenderer.mergeComponents = function (target, source) {
         for (var key in source) {
             target[key] = source[key];
         }
         return target;
     };
 
-    fluid.registerNamespace("fluid.renderer.selection");
+    fluid.registerNamespace("fluid.oldRenderer.selection");
 
     /** Definition of expanders - firstly, "heavy" expanders **/
 
-    fluid.renderer.selection.inputs = function (options, container, key, config) {
+    fluid.oldRenderer.selection.inputs = function (options, container, key, config) {
         fluid.expect("Selection to inputs expander", options, ["selectID", "inputID", "labelID", "rowID"]);
         var selection = config.expander(options.tree);
         // Remove the tree from option expansion as this is handled above, and
@@ -322,7 +336,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.renderer.repeat = function (options, container, key, config) {
+    fluid.oldRenderer.repeat = function (options, container, key, config) {
         fluid.expect("Repetition expander", options, ["controlledBy", "tree"]);
         var env = config.threadLocal();
         var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, env);
@@ -350,7 +364,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     expanded.push({children: expandrow});
                 }
             }
-            else if (expandrow !== fluid.renderer.NO_COMPONENT) {
+            else if (expandrow !== fluid.oldRenderer.NO_COMPONENT) {
                 expanded.push(expandrow);
             }
         });
@@ -362,7 +376,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return expanded;
     };
 
-    fluid.renderer.condition = function (options, container, key, config) {
+    fluid.oldRenderer.condition = function (options, container, key, config) {
         fluid.expect("Selection to condition expander", options, ["condition"]);
         var condition;
         if (options.condition.funcName) {
@@ -380,6 +394,49 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return config.expander(tree);
     };
 
+    /* BEGIN unofficial IoC material */
+    // The following three functions are unsupported ane only used in the renderer expander.
+    // The material they produce is no longer recognised for component resolution.
+
+    fluid.withEnvironment = function (envAdd, func, root) {
+        var key;
+        root = root || fluid.globalThreadLocal();
+        try {
+            for (key in envAdd) {
+                root[key] = envAdd[key];
+            }
+            $.extend(root, envAdd);
+            return func();
+        } finally {
+            for (key in envAdd) {
+                delete root[key]; // TODO: users may want a recursive "scoping" model
+            }
+        }
+    };
+
+    fluid.fetchContextReference = function (parsed, directModel, env, elResolver, externalFetcher) {
+        // The "elResolver" is a hack to make certain common idioms in protoTrees work correctly, where a contextualised EL
+        // path actually resolves onto a further EL reference rather than directly onto a value target
+        if (elResolver) {
+            parsed = elResolver(parsed, env);
+        }
+        var base = parsed.context ? env[parsed.context] : directModel;
+        if (!base) {
+            var resolveExternal = externalFetcher && externalFetcher(parsed);
+            return resolveExternal || base;
+        }
+        return parsed.noDereference ? parsed.path : fluid.get(base, parsed.path);
+    };
+
+    fluid.makeEnvironmentFetcher = function (directModel, elResolver, envGetter, externalFetcher) {
+        envGetter = envGetter || fluid.globalThreadLocal;
+        return function (parsed) {
+            var env = envGetter();
+            return fluid.fetchContextReference(parsed, directModel, env, elResolver, externalFetcher);
+        };
+    };
+
+    /* END of unofficial IoC material */
 
     /* An EL extraction utility suitable for context expressions which occur in
      * expanding component trees. It dispatches context expressions to fluid.transformContextPath
@@ -423,7 +480,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     // A forgiving variation of "makeStackFetcher" that returns nothing on failing to resolve an IoC reference,
     // in keeping with current protoComponent semantics. Note to self: abolish protoComponents
-    fluid.renderer.makeExternalFetcher = function (contextThat) {
+    fluid.oldRenderer.makeExternalFetcher = function (contextThat) {
         return function (parsed) {
             var foundComponent = fluid.resolveContext(parsed.context, contextThat);
             return foundComponent ? fluid.getForComponent(foundComponent, parsed.path) : undefined;
@@ -451,13 +508,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * recognised bracketing any other EL expression.
      */
 
-    fluid.renderer.makeProtoExpander = function (expandOptions, parentThat) {
+    fluid.oldRenderer.makeProtoExpander = function (expandOptions, parentThat) {
         // shallow copy of options - cheaply avoid destroying model, and all others are primitive
         var options = $.extend({
             ELstyle: "${}"
         }, expandOptions); // shallow copy of options
         if (parentThat) {
-            options.externalFetcher = fluid.renderer.makeExternalFetcher(parentThat);
+            options.externalFetcher = fluid.oldRenderer.makeExternalFetcher(parentThat);
         }
         var threadLocal; // rebound on every expansion at entry point
 
@@ -661,5 +718,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             return expandEntry(entry);
         };
     };
+
+    // Final definition for backwards compatibility - remove with old renderer
+    jQuery.extend(fluid.renderer, fluid.oldRenderer);
 
 })(jQuery, fluid_4_0_0);

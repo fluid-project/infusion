@@ -397,8 +397,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         if (!value || !fluid.isArrayable(value)) {
             fluid.fail("arrayToSetMembership didn't find array at inputPath nor passed as value.");
         }
-        var output = {};
+
         transformSpec = transformSpec || {};
+        var output = transformSpec.arrayValue ? [] : {};
         var presentValue = (transformSpec.presentValue === undefined) ? true : transformSpec.presentValue,
             missingValue = (transformSpec.missingValue === undefined) ? false : transformSpec.missingValue,
             options = transformSpec.options;
@@ -456,7 +457,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     /**
      * Transform the input object into an array based upon the options provided to the specification. Accepts
-     * an object as its first argument and an optional second argument (an object) which contains the
+     * an object or array as its first argument and an optional second argument (an object) which contains the
      * specifications for the resulting output.
      *
      * An error will be thrown if the input to be transformed is not an object.
@@ -496,8 +497,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * @return {Array} - The transformed array
      */
     fluid.transforms.setMembershipToArray = function (input, transformSpec) {
-        // <input> should be an object.
-        if (!fluid.isPlainObject(input, true)) {
+        // <input> should be an object or array
+        if (!fluid.isPlainObject(input)) {
             fluid.fail("setMembershipToArray didn't find object at inputPath nor passed as value.");
         }
         var outputArr = [];
@@ -812,7 +813,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.transforms.free = function (transformSpec) {
         var args = fluid.makeArray(transformSpec.args);
-        return fluid.invokeGlobalFunction(transformSpec.func, args);
+        if (!transformSpec.func) {
+            fluid.fail("Error in transform specification ", transformSpec, " required member \"func\" was not set");
+        }
+        return fluid.event.invokeListener(transformSpec.func, args);
     };
 
     fluid.defaults("fluid.transforms.quantize", {
@@ -860,6 +864,69 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.transforms.inRange = function (value, transformSpec) {
         return (transformSpec.min === undefined || transformSpec.min <= value) &&
             (transformSpec.max === undefined ||  transformSpec.max >= value) ? true : false;
+    };
+
+    /** Toggle transformer which maps an increasing integer count into the space true/false - suitable for mapping
+     * e.g. a stream of click counts onto a toggle state.
+     */
+
+    fluid.defaults("fluid.transforms.toggle", {
+        gradeNames: ["fluid.standardTransformFunction"],
+        invertConfiguration: "fluid.transforms.toggle.invert",
+        relayOptions: {
+            forward: {
+                excludeSource: "init"
+            },
+            backward: {
+                includeSource: "init"
+            }
+        }
+    });
+
+    /** @param {Number} source - Numeric value to be converted
+     * @param {Object} transformSpec - The transformation specification document
+     * @param {Transformer} transformer - Reference to the transformer machinery
+     * @return {Boolean} Updated target value
+     */
+    fluid.transforms.toggle = function (source, transformSpec, transformer) {
+        // Note that this use of oldSource/oldTarget is dependent in the particular driver in the singleTransform modelRelay system that
+        // assumes there is a single transform covering the entire document. If we ever want to support these transforms in free-form
+        // model relay documents (very unlikely) we will have to reform this - more likely we will dismantle free-form model relays
+        var oldSource = transformer.oldSource, oldTarget = transformer.oldTarget;
+        var phase = (oldSource || 0) - fluid.transforms.inverseToggle.base(oldTarget);
+        return fluid.transforms.toggle.base(source + phase);
+    };
+
+
+    // The base transform
+    fluid.transforms.toggle.base = function (source) {
+        return (source || 0) % 2 === 1;
+    };
+
+    fluid.transforms.toggle.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.inverseToggle";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.inverseToggle", {
+        // This transform is only expected to arise as the inverse of fluid.transforms.toggle and so it does not
+        // produce an inverse.
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    /** @param {Boolean} source - Boolean toggle value to be converted
+     * @param {Object} transformSpec - The transformation specification document
+     * @param {Transformer} transformer - Reference to the transformer machinery
+     * @return {Number} Updated target count
+     */
+    fluid.transforms.inverseToggle = function (source, transformSpec, transformer) {
+    // TODO: It looks like this leg should never update the original source (our target) since one must assume the state change arose from elsewhere
+    // Check whether we can always get away with returning undefined
+        return transformer.originalTarget || undefined;
+    };
+
+    fluid.transforms.inverseToggle.base = function (source) {
+        return source ? 1 : 0;
     };
 
     /**

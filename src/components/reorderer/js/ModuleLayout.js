@@ -204,6 +204,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             columns: "{reorderer}.options.selectors.columns"
         },
         distributeOptions: {
+        // TODO: We will have to forbid this kind of clever junk in time. It should properly be done with an
+        // "upward distribution of grade" which we will have to forbid. Therefore the proper scheme for doing
+        // this is with some kind of "reactive distribution" which broadcasts to {/ fluid.reorderer > fluid.moduleLayoutHandler}
+        // Well... can we really do this? It actually seems prohibitive compared to actually permitting upward grade distribution.
+        // This implies we should eagerly evaluate all options distributions everywhere.
             target: "{reorderer}.options",
             record: {
                 selectors: {

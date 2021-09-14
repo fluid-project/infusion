@@ -64,6 +64,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.pagedTable.directModelFilter = function (model, pagerModel, perm) {
         var togo = [];
+        // TODO: Logic redundant with that in summary subcomponent
         var limit = fluid.pager.computePageLimit(pagerModel);
         for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++i) {
             var index = perm ? perm[i] : i;
@@ -113,15 +114,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             options: {
             }
         },
-        invokers: {
-            acquireDefaultRange: {
-                funcName: "fluid.identity",
-                args: "{that}.dataModel.length"
-            }
-        },
         modelFilter: fluid.pagedTable.directModelFilter,
         model: {
-            pageSize: 10
+            pageSize: 10,
+            totalRange: "{that}.dataModel.length"
         }
     });
 

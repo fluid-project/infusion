@@ -15,25 +15,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     "use strict";
 
     /*******************************************************************************
-    * Starter auxiliary schema grade
+    * Auxiliary schema grade
     *
     * Contains the settings for captions
     *******************************************************************************/
 
-    // Fine-tune the starter aux schema and add captions panel
     fluid.defaults("fluid.prefs.auxSchema.captions", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            "namespace": "fluid.prefs.constructed",
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html",
-                "messagePrefix": "../../framework/preferences/messages"
-            },
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
-
-            captions: {
-                type: "fluid.prefs.captions",
+            "fluid.prefs.captions": {
                 enactor: {
                     type: "fluid.prefs.enactor.captions",
                     container: "body"

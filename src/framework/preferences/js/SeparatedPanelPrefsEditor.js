@@ -103,7 +103,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         msgResolver: {
                             type: "fluid.messageResolver",
                             options: {
-                                messageBase: "{messageLoader}.resources.prefsEditor.resourceText"
+                                messageBase: "{messageLoader}.resources.prefsEditor.parsed"
                             }
                         }
                     }
@@ -239,7 +239,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.prefs.separatedPanel.renderIframe.startLoadingIframe = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader,
-        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, that.options.terms);
+        var markupProps = fluid.copy(that.options.markupProps);
+        markupProps.src = fluid.stringTemplate(markupProps.src, that.options.terms);
         that.iframeSrc = that.options.markupProps.src;
 
         // Create iframe and append to container
@@ -254,7 +255,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
-        that.iframe.attr(that.options.markupProps);
+        that.iframe.attr(markupProps);
 
         that.iframe.addClass(styles.container);
         that.iframe.hide();
@@ -388,14 +389,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     },
                     preloadResources: "prefsEditor",
                     listeners: {
-                        "onCreate.loadResources": {
+                        "onCreate.loadResources": { // Override of framework's definition
                             listener: "fluid.prefs.separatedPanel.lazyLoad.preloadResources",
-                            args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "{that}.options.preloadResources"]
+                            args: ["{that}", "{that}.options.preloadResources"]
                         },
                         "{separatedPanel}.events.onLazyLoad": {
-                            listener: "fluid.resourceLoader.loadResources",
-                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}],
-                            namespace: "loadResources"
+                            listener: "{that}.resourceFetcher.fetchAll"
                         }
                     }
                 }
@@ -431,26 +430,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * allowing for pre-loading of a subset of resources. This is required for the lazyLoading workflow
      * for the "fluid.prefs.separatedPanel.lazyLoad".
      *
-     * @param {Object} that - the component
-     * @param {Object} resources - all of the resourceSpecs to load, including preload and others.
-     *                             see: fluid.fetchResources
-     * @param {Array|String} toPreload - a String or an String[]s corresponding to the names
+     * @param {fluid.resourceLoader} that - the resourceLoader, augmented with the preload workflow
+     * @param {String|String[]} toPreload - a String or an String[]s corresponding to the names
      *                                   of the resources, supplied in the resource argument, that
      *                                   should be loaded. Only these resources will be loaded.
      */
-    fluid.prefs.separatedPanel.lazyLoad.preloadResources = function (that, resources, toPreload) {
+    fluid.prefs.separatedPanel.lazyLoad.preloadResources = function (that, toPreload) {
         toPreload = fluid.makeArray(toPreload);
-        var preloadResources = {};
-
-        fluid.each(toPreload, function (resourceName) {
-            preloadResources[resourceName] = resources[resourceName];
+        var resourceFetcher = that.resourceFetcher;
+        var preloadPromises = toPreload.map(function (onePreload) {
+            return fluid.fetchResources.fetchOneResource(resourceFetcher.resourceSpecs[onePreload], resourceFetcher);
         });
-
-        // This portion of code was copied from fluid.resourceLoader.loadResources
-        // and will likely need to track any changes made there.
-        fluid.fetchResources(preloadResources, function () {
-            that.resources = preloadResources;
-            that.events.onResourcesPreloaded.fire(preloadResources);
+        var preloadAllPromise = fluid.promise.sequence(preloadPromises);
+        preloadAllPromise.then(function () {
+            that.events.onResourcesPreloaded.fire(that.resources);
         });
     };
 

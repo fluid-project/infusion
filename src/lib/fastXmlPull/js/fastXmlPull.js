@@ -134,7 +134,7 @@ var fluid_4_0_0 = fluid_4_0_0 || {};
                     //return fluid.XMLP._setErr(XMLP.ERR_DOC_STRUCTURE);
                     return fluid.XMLP._NONE;
                 }
-                var strTop = stack[stack.length - 1];
+                var strTop = fluid.peek(stack);
                 that.m_stack.length--;
                 if (strTop === null || strTop !== that.getName()) {
                     return fluid.XMLP._setErr(that, fluid.XMLP.ERR_ELM_NESTING);
@@ -273,7 +273,7 @@ var fluid_4_0_0 = fluid_4_0_0 || {};
         // for the earlier one without advancing the pointer, and set a flag to ensure
         // doing this just once.
         if ("li" === strN && iType !== fluid.XMLP._ELM_E && that.m_stack.length > 0 &&
-            that.m_stack[that.m_stack.length - 1] === "li" && !that.m_emitSynthetic) {
+                fluid.peek(that.m_stack) === "li" && !that.m_emitSynthetic) {
             that.m_name = "li";
             that.m_emitSynthetic = true;
             return fluid.XMLP._ELM_E;

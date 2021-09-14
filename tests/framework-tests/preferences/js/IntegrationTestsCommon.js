@@ -257,9 +257,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.prefs.mungingIntegrationTest = function (componentName, container, options) {
-
+    fluid.tests.prefs.mungingIntegrationTest = function (componentName, container, options, expected) {
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
+            jqUnit.expect(expected);
             fluid.tests.prefs.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
             fluid.invokeGlobalFunction(componentName, [container, options]);

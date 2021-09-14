@@ -41,7 +41,7 @@
         "clean:deps": "run-p clean:deps:*",
         "clean:deps:code": "rimraf \"src/lib/@(hypher|jquery)\"",
         "clean:deps:fonts": "rimraf \"src/lib/@(open-dyslexic|opensans|roboto)\"",
-        "clean:deps:tests": "rimraf \"tests/lib/@(mockjax|simulate|sinon)\"",
+        "clean:deps:tests": "rimraf \"tests/lib/@(simulate|sinon)\"",
         "clean:dist": "rimraf dist",
         "clean:sass": "rimraf \"src/framework/preferences/css/*.@(css|map)\"",
         "clean:test": "rimraf reports coverage",
@@ -64,9 +64,9 @@
         "deps:fonts:roboto": "cpy node_modules/roboto-fontface/fonts/roboto-slab/Roboto-Slab-*.woff src/lib/roboto/fonts/",
         "predeps:tests": "npm run clean:deps:tests",
         "deps:tests": "run-p deps:tests:*",
-        "deps:tests:mockjax": "cpy node_modules/jquery-mockjax/dist/jquery.mockjax.js tests/lib/mockjax/js/",
         "deps:tests:simulate": "cpy node_modules/jquery-simulate/jquery.simulate.js tests/lib/jquery-simulate/js/",
         "deps:tests:sinon": "cpy node_modules/sinon/pkg/sinon.js tests/lib/sinon/js/",
+        "deps:tests:xhr-mock": "cpy node_modules/xhr-mock/dist/xhr-mock.js tests/lib/xhr-mock/js/",
         "lint": "fluid-lint-all",
         "prepare": "run-s deps build:sass:min",
         "prepublishOnly": "npm run test:bundles",
@@ -105,7 +105,6 @@
         "fluid-testem": "2.1.14",
         "hypher": "0.2.5",
         "jquery": "3.6.0",
-        "jquery-mockjax": "2.6.0",
         "jquery-simulate": "1.0.2",
         "jquery-ui": "1.12.1",
         "jquery-ui-touch-punch": "0.2.3",
@@ -122,6 +121,7 @@
         "serve": "11.3.2",
         "sinon": "10.0.0",
         "terser": "5.7.0",
-        "testem": "3.4.1"
+        "testem": "3.4.1",
+        "xhr-mock": "2.4.1"
     }
 }

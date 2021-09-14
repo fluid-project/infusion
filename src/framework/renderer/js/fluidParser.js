@@ -193,7 +193,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             if (cutpoints) {
                 for (var i = 0; i < cutpoints.length; ++i) {
                     var cutstat = cutstatus[i];
-                    if (cutstat.length > 0 && cutstat[cutstat.length - 1] === nestingdepth) {
+                    if (cutstat.length > 0 && fluid.peek(cutstat) === nestingdepth) {
                         cutstat.length--;
                     }
                 }
@@ -205,7 +205,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var endlump = newLump();
             --nestingdepth;
             endlump.text = "</" + parser.getName() + ">";
-            var oldtop = tagstack[tagstack.length - 1];
+            var oldtop = fluid.peek(tagstack);
             oldtop.close_tag = t.lumps[lumpindex - 1];
             tagstack.length--;
             justended = true;
@@ -222,7 +222,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 t.firstdocumentindex = lumpindex;
             }
             var headlump = newLump();
-            var stacktop = tagstack[tagstack.length - 1];
+            var stacktop = fluid.peek(tagstack);
             headlump.uplump = stacktop;
             var tagname = parser.getName();
             headlump.tagname = tagname;
@@ -442,7 +442,7 @@ parseloop: // eslint-disable-line indent
     };
 
     /* Returns a "template structure", with globalmap in the root, and a list
-     * of entries {href, template, cutpoints} for each parsed template.
+     * of entries {url, template, cutpoints} for each parsed template.
      */
     fluid.parseTemplates = function (resourceSpec, templateList, opts) {
         var togo = [];
@@ -450,15 +450,15 @@ parseloop: // eslint-disable-line indent
         togo.globalmap = {};
         for (var i = 0; i < templateList.length; ++i) {
             var resource = resourceSpec[templateList[i]];
-            var lastslash = resource.href.lastIndexOf("/");
-            var baseURL = lastslash === -1 ? "" : resource.href.substring(0, lastslash + 1);
+            var lastslash = resource.url.lastIndexOf("/");
+            var baseURL = lastslash === -1 ? "" : resource.url.substring(0, lastslash + 1);
 
             var template = fluid.parseTemplate(resource.resourceText, baseURL,
                 opts.scanStart && i === 0, resource.cutpoints, opts);
             if (i === 0) {
                 fluid.aggregateMMap(togo.globalmap, template.globalmap);
             }
-            template.href = resource.href;
+            template.url = resource.url;
             template.baseURL = baseURL;
             template.resourceKey = resource.resourceKey;
 

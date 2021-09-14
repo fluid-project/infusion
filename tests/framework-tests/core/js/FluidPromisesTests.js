@@ -37,10 +37,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 holder.record.push({reject: val + arg});
             });
         };
+        holder.addCancelListener = function (arg) {
+            holder.promise.then(null, null, function (val) {
+                holder.record.push({cancel: val + arg});
+            });
+        };
         holder.addListeners = function (arg) {
             var argVal = arg === undefined ? "" : arg;
             holder.addResolveListener(argVal);
             holder.addRejectListener(argVal);
+            holder.addCancelListener(argVal);
         };
         return holder;
     };
@@ -62,6 +68,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Rejected promise just fires reject", [{
             reject: "rejected"
         }], holder2.record);
+        var holder3 = fluid.tests.makeStandardTrackingPromise();
+        holder3.promise.cancel("cancelled");
+        jqUnit.assertDeepEq("Cancelled promise just fires cancel", [{
+            cancel: "cancelled"
+        }], holder3.record);
     });
 
     jqUnit.test("Backward resolution tests", function () {
@@ -77,15 +88,47 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Rejected promise fires reject on registration", [{
             reject: "rejected"
         }], holder2.record);
+        var holder3 = fluid.tests.makeTrackingPromise();
+        holder3.promise.cancel("cancelled");
+        holder3.addListeners();
+        jqUnit.assertDeepEq("Cancelled promise fires cancel on registration", [{
+            cancel: "cancelled"
+        }], holder3.record);
     });
+
+    fluid.tests.executePromiseResolutions = function (resolve1, resolve2) {
+        var holder = fluid.promise();
+        holder.then(null, fluid.identity); // Dummy rejection handler to avoid false diagnostic
+        holder[resolve1]();
+        holder[resolve2]();
+        return holder;
+    };
 
     fluid.tests.testConflictedPromise = function (resolve1, resolve2) {
         jqUnit.expectFrameworkDiagnostic("Double resolution of promises - " + resolve1 + ", " + resolve2,
             function () {
-                var holder = fluid.promise();
-                holder[resolve1]();
-                holder[resolve2]();
+                fluid.tests.executePromiseResolutions(resolve1, resolve2);
             }, "already");
+    };
+
+    fluid.tests.testNoopPromise = function (resolve1, resolve2) {
+        jqUnit.expect(0);
+        var promise = fluid.tests.executePromiseResolutions(resolve1, resolve2);
+        var fail = function () {
+            jqUnit.fail("Received resolution from cancelled promise");
+        };
+        promise.then(fail, fail);
+    };
+
+    fluid.tests.testActivePromise = function (resolve1, resolve2) {
+        jqUnit.expect(1);
+        var promise = fluid.tests.executePromiseResolutions(resolve1, resolve2);
+        var count = 0;
+        var countIt = function () {
+            ++count;
+        };
+        promise.then(countIt, countIt);
+        jqUnit.assertEquals("One callback should have been invoked", 1, count);
     };
 
     jqUnit.test("Conflicted resolution tests", function () {
@@ -93,6 +136,27 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.tests.testConflictedPromise("resolve", "reject");
         fluid.tests.testConflictedPromise("resolve", "resolve");
         fluid.tests.testConflictedPromise("reject", "reject");
+    });
+
+    jqUnit.test("Cancellation resolution tests", function () {
+        jqUnit.expect(0);
+        fluid.tests.testNoopPromise("cancel", "resolve");
+        fluid.tests.testNoopPromise("cancel", "reject");
+        fluid.tests.testActivePromise("resolve", "cancel");
+        fluid.tests.testActivePromise("reject", "cancel");
+    });
+
+    jqUnit.test("Cancellation through fluid.promise.follow", function () {
+        var source = fluid.promise();
+        var target = fluid.promise();
+        fluid.promise.follow(source, target);
+        var unwantedSideEffect = false;
+        source.then(function () {
+            unwantedSideEffect = true;
+        });
+        target.cancel();
+        source.resolve(42);
+        jqUnit.assertFalse("Cancellation of followed target cancels source", unwantedSideEffect);
     });
 
     fluid.tests.makeMultipleListenerPromise = function () {
@@ -127,6 +191,47 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var nonPromises = [null, undefined, 0, false, "thing", {then: 5}, []];
         fluid.each(nonPromises, function (promise) {
             jqUnit.assertFalse("Detect nonpromises", fluid.isPromise(promise));
+        });
+    });
+
+    jqUnit.asyncTest("Unhandled rejection: FLUID-6453", function () {
+        var listener = function (err) {
+            jqUnit.assertValue("Expected payload to global rejection handler", "expected", err);
+            fluid.unhandledRejectionEvent.removeListener("test");
+            jqUnit.start();
+        };
+        var promise = fluid.promise();
+        promise.reject("expected");
+        fluid.unhandledRejectionEvent.addListener(listener);
+    });
+
+    fluid.tests.testFluid6453 = function (promiseMaker) {
+        var listener = function () {
+            jqUnit.fail("No calls expected to global rejection handler");
+        };
+        var guard = function () {
+            jqUnit.assert("No calls expected to global rejection handler");
+            fluid.unhandledRejectionEvent.removeListener("test");
+            jqUnit.start();
+        };
+        fluid.unhandledRejectionEvent.addListener(listener);
+        promiseMaker();
+        window.setTimeout(guard, 17);
+    };
+
+    jqUnit.asyncTest("Unhandled rejection: FLUID-6453 reject first", function () {
+        fluid.tests.testFluid6453(function () {
+            var promise = fluid.promise();
+            promise.reject("expected");
+            promise.then(null, fluid.identity);
+        });
+    });
+
+    jqUnit.asyncTest("Unhandled rejection: FLUID-6453 reject after", function () {
+        fluid.tests.testFluid6453(function () {
+            var promise = fluid.promise();
+            promise.then(null, fluid.identity);
+            promise.reject("expected");
         });
     });
 
@@ -358,6 +463,44 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
         return promise;
     };
+
+    fluid.tests.fluid6445wait = function () {
+        var togo = fluid.promise();
+        fluid.invokeLater(togo.resolve);
+        return togo;
+    };
+
+    // In practice this function will never execute at all, but we place its side-effect here as a final stopgap check
+    fluid.tests.fluid6445sideEffect = function () {
+        var togo = fluid.promise();
+        togo.then(function () {
+            jqUnit.fail("Undesirable side-effect was not prevented through component destruction while chain in progress");
+        });
+        fluid.invokeLater(togo.resolve);
+    };
+
+    fluid.defaults("fluid.tests.fluid6445", {
+        gradeNames: "fluid.component",
+        events: {
+            cancellableTransform: null
+        },
+        listeners: {
+            "cancellableTransform.first": {
+                funcName: "fluid.tests.fluid6445wait"
+            },
+            "cancellableTransform.sideEffect": {
+                funcName: "fluid.tests.fluid6445sideEffect",
+                args: "{fluid.tests.fluid6445}"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6445: Sequence cancellation of fluid.promise.fireTransformEvent through component destruction", function () {
+        var that = fluid.tests.fluid6445();
+        var promise = fluid.promise.fireTransformEvent(that.events.cancellableTransform);
+        that.destroy();
+        jqUnit.assertEquals("In-progress transform was cancelled through component destruction", "cancel", promise.disposition);
+    });
 
     jqUnit.asyncTest("fluid.promise.sequence", function () {
         var sources = [3, fluid.promise(), fluid.tests.optionValueViaPromise, function () { return 12;}];

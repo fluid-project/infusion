@@ -282,7 +282,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.debug.renderInspecting = function (that, paneBody, markup, inspecting) {
-        if (!paneBody || !that.highlighter) { // stupid ginger world failure
+        if (!paneBody || !that.highlighter || !that.tooltips) { // stupid ginger world failure
             return;
         }
         var defaultsIdToContent = {}; // driver for tooltips showing defaults source
@@ -544,10 +544,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         listeners: {
             onCreate: {
                 funcName: "fluid.debug.viewMapper.registerView",
+                priority: "first",
                 args: ["{fluid.debug.viewMapper}", "{that}", "add"]
             },
             onDestroy: {
                 funcName: "fluid.debug.viewMapper.registerView",
+                priority: "last",
                 args: ["{fluid.debug.viewMapper}", "{that}", "remove"]
             }
         }

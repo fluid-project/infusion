@@ -14,30 +14,38 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
-    // Gradename to invoke "fluid.uiOptions.prefsEditor"
-    fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.starter"]
+    fluid.defaults("fluid.uiOptions", {
+        gradeNames: ["fluid.prefs.builder", "fluid.viewComponent"],
+        preferences: [
+            "fluid.prefs.textSize",
+            "fluid.prefs.lineSpace",
+            "fluid.prefs.textFont",
+            "fluid.prefs.contrast",
+            "fluid.prefs.tableOfContents",
+            "fluid.prefs.enhanceInputs"
+        ]
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.prefs.constructed.prefsEditor"],
-        lazyLoad: false,
-        distributeOptions: {
-            "uio.separatedPanel.lazyLoad": {
-                record: "{that}.options.lazyLoad",
-                target: "{that separatedPanel}.options.lazyLoad"
-            },
-            "uio.uiEnhancer.tocTemplate": {
-                source: "{that}.options.tocTemplate",
-                target: "{that uiEnhancer > tableOfContents}.options.tocTemplate"
-            },
-            "uio.uiEnhancer.tocMessage": {
-                source: "{that}.options.tocMessage",
-                target: "{that uiEnhancer > tableOfContents}.options.tocMessage"
-            },
-            "uio.uiEnhancer.ignoreForToC": {
-                source: "{that}.options.ignoreForToC",
-                target: "{that uiEnhancer > tableOfContents}.options.ignoreForToC"
+    /** A configuration of UIOptions which is suitable for statically localised contexts. It accepts two additional
+     * top-level options, both of which are optional
+     * {String} [locale] - The initial locale in which UIOptions should render
+     * {String} [direction] - A suitable value for the `dir` attribute of the UIOptions container - this may take
+     * values `ltr`, `rtl` or `auto`
+     */
+    fluid.defaults("fluid.uiOptions.multilingual", {
+        gradeNames: ["fluid.uiOptions"],
+        prefsEditorLoader: {
+            defaultLocale: "{that}.options.locale"
+        },
+        listeners: {
+            "onPrefsEditorReady.addLanguageAttributesToBody": {
+                "this": "{that}.prefsEditorLoader.prefsEditor.container",
+                method: "attr",
+                args: {
+                    lang: "{that}.options.locale",
+                    dir: "{that}.options.direction"
+                },
+                priority: "first"
             }
         }
     });

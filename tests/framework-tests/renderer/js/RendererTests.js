@@ -1234,7 +1234,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
             var resourceSpec = {
                 base: {
                     resourceText: fluid.extractTemplate(node[0], options.armouring),
-                    href: ".",
+                    url: ".",
                     resourceKey: "."
                 }
             };
@@ -1498,17 +1498,17 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
         });
 
 
-        var resourceSpec = {
+        var sourceResourceSpec = {
             properties: {
-                href: "../data/testProperties.properties"
+                url: "../data/testProperties.properties"
             },
             json: {
-                href: "../data/testProperties.json"
+                url: "../data/testProperties.json"
             }
         };
         var calls = 0;
 
-        fluid.fetchResources(resourceSpec, function () {
+        fluid.fetchResources(sourceResourceSpec, function (resourceSpec) {
             jqUnit.test("Properties file parsing", function () {
                 ++calls; // Test FLUID-3361
                 jqUnit.assertEquals("Just one call to fetchResources callback", 1, calls);
@@ -1522,49 +1522,12 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
         });
 
-        var destructiveCalls = 0;
-
-        var destructiveCountingFunction = function () {
-            ++destructiveCalls;
-            fluid.fail("A terrible callback which tries to destroy the world");
-        };
-
-        var resourceSpec2 = {
-            properties: {
-                href: "../data/testProperties.properties",
-                options: {
-                    success: destructiveCountingFunction,
-                    async: false
-                }
-            },
-            json: {
-                href: "../data/testProperties.json",
-                options: {
-                    success: destructiveCountingFunction,
-                    async: false
-                }
-            }
-        };
-
-        jqUnit.asyncTest("fetchResources callback tests", function () {
-            function callback() {
-                jqUnit.assert("Call to overall callback");
-                fluid.failureEvent.removeListener("jqUnit"); // restore the original jqUnit test failing listener
-                jqUnit.start();
-            }
-            jqUnit.expect(2);
-            fluid.failureEvent.addListener(fluid.identity, "jqUnit"); // temporarily displace jqUnit's test failing listener
-            fluid.fetchResources(resourceSpec2, callback);
-
-            jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
-        });
-
         var resourceSpec3 = {
             data: {
-                href: "../data/testPerformance.json"
+                url: "../data/testPerformance.json"
             },
             html: {
-                href: "../data/testPerformance.html"
+                url: "../data/testPerformance.html"
             }
         };
 
@@ -1665,7 +1628,7 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
                 var resourceSpec = {
                     base: {
                         resourceText: template,
-                        href: ".",
+                        url: ".",
                         resourceKey: ".",
                         cutpoints: options.cutpoints
                     }

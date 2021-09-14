@@ -15,27 +15,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     "use strict";
 
     /*******************************************************************************
-    * Starter auxiliary schema grade
+    * Auxiliary schema grade
     *
     * Contains the settings for syllabification
     *******************************************************************************/
 
-    // Fine-tune the starter aux schema and add syllabification panel
     fluid.defaults("fluid.prefs.auxSchema.syllabification", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
-            "namespace": "fluid.prefs.constructed",
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html",
-                "messagePrefix": "../../framework/preferences/messages"
-            },
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
-            syllabification: {
-                type: "fluid.prefs.syllabification",
+            "fluid.prefs.syllabification": {
                 enactor: {
-                    type: "fluid.prefs.enactor.syllabification",
-                    container: "body"
+                    type: "fluid.prefs.enactor.syllabification"
                 },
                 panel: {
                     type: "fluid.prefs.panel.syllabification",

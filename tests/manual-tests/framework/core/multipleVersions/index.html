@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Multiple Versions of Infusion</title>
 
         <!-- styling for manual tests -->
@@ -8,7 +9,7 @@
 
         <script src="js/infusion-1.5.js"></script>
         <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
-        <script language="JavaScript" type="text/javascript">
+        <script language="JavaScript">
             jQuery.noConflict();
         </script>
 
@@ -28,9 +29,14 @@
         <script src="../../../../../src/framework/core/js/FluidDocument.js"></script>
         <script src="../../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script src="../../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidPromises.js"></script>
         <script src="../../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script src="../../../../../src/framework/core/js/FluidIoC.js"></script>
         <script src="../../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidView-browser.js"></script>
+        <script src="../../../../../src/framework/core/js/DataSource.js"></script>
+        <script src="../../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
         <script src="../../../../../src/framework/core/js/DataBinding.js"></script>
         <script src="../../../../../src/framework/core/js/MessageResolver.js"></script>
         <script src="../../../../../src/framework/renderer/js/fluidRenderer.js"></script>
@@ -76,7 +82,7 @@
             </ul>
         </main>
 
-        <script type="text/javascript">
+        <script>
             // initialize the list using a prior version of Infusion
             fluid.reorderList("#list-priorVersion");
             $("#priorVersionNumber").text(fluid.version);

@@ -47,6 +47,7 @@ var context = vm.createContext({
     clearInterval: clearInterval,
     __dirname: __dirname,
     path: path,
+    process: process, // Enable straightforward ContextAwareness check
     require: require
 });
 
@@ -55,8 +56,8 @@ context.window = context;
 /** Load a standard, non-require-aware Fluid framework file into the Fluid context, given a filename
  * relative to this directory (src/module) **/
 
-var loadInContext = function (path) {
-    var fullpath = buildPath(path);
+var loadInContext = function (path, absolute) {
+    var fullpath = absolute ? path : buildPath(path);
     var data = fs.readFileSync(fullpath);
     vm.runInContext(data, context, fullpath);
 };
@@ -255,7 +256,7 @@ fluid.handlerPriorities = {
 fluid.logUncaughtException = function (err) {
     var message = "FATAL ERROR: Uncaught exception: " + err.message;
     fluid.log(fluid.logLevel.FATAL, message);
-    console.log(err.stack); // eslint-disable-line no-console
+    console.log(err.stack || "(No error stack)"); // eslint-disable-line no-console
 };
 
 fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",

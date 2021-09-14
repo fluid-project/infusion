@@ -462,7 +462,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                         "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
                     },
                     strings: {
-                        tocHeader: "{messageLoader}.resources.tocMessage.resourceText.tocHeader"
+                        tocHeader: "{messageLoader}.resources.tocMessage.parsed.tocHeader"
                     }
                 }
             }

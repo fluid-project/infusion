@@ -59,8 +59,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * @param {Object} that - The component itself.
      */
     fluid.inlineEdit.bindEditFinish = function (that) {
-        if (that.options.submitOnEnter === undefined) {
-            that.options.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
+        that.submitOnEnter = that.options.submitOnEnter;
+        if (that.submitOnEnter === undefined) {
+            that.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
         }
         function keyCode(evt) {
             // Fix for handling arrow key presses. See FLUID-760.
@@ -88,7 +89,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
             return false;
         };
-        if (that.options.submitOnEnter) {
+        if (that.submitOnEnter) {
             that.editContainer.on("keypress", finishHandler);
         }
         that.editContainer.on("keydown", escHandler);
@@ -293,7 +294,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     /**
      * Default renderer for the edit mode view.
      *
-     * @param {Object} that - The component itself.
+     * @param {fluid.inlineEdit} that - The fluid.inlineEdit component itself.
      * @return {Object} An object containing:
      *  - container The edit container containing the edit field
      *  - field The styled edit field
@@ -580,8 +581,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     /** Render the display mode view.
      *
-     * @param {Object} that - The component itself.
-     * @param {Object} edit - Function to invoke the edit mode
+     * @param {fluid.inlineEdit} that - The component itself.
+     * @param {Function} edit - Function to invoke the edit mode
      * @param {Object} model - Model data to display.
      * @return {jQuery} The display container containing the display text and textEditbutton for display mode view.
      */
@@ -708,8 +709,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 decorator = {type: decorator};
             }
             if (decorator.type === "fluid.undoDecorator") {
-                fluid.set(that.options, ["components", "undo"], { type: "fluid.undo", options: decorator.options});
-                that.decorators = [ fluid.initDependent(that, "undo")];
+                that.decorators = [fluid.constructChild(that, "undo", { type: "fluid.undo", options: decorator.options})];
             }
         }
     };
@@ -722,6 +722,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      */
 
     fluid.defaults("fluid.inlineEdit", {
+        // WARNING: fluid.inlineEdit, via fluid.undoable, inherits from fluid.modelComponent but it does not use the ChangeApplier to
+        // update its model. This will lead to corruption if it participates in any model relays and will not be supported in future
+        // Infusion releases.
         gradeNames: ["fluid.undoable", "fluid.viewComponent"],
         mergePolicy: {
             "strings.defaultViewText": "defaultViewText"
@@ -935,10 +938,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 type: "fluid.inlineEdit",
                 container: editable
             };
-            var name = "inlineEdit-" + i;
-            fluid.set(that.options, ["components", name], componentDef);
-            return fluid.initDependent(that, name);
-
+            return fluid.constructChild(that, "inlineEdit-" + i, componentDef);
         });
     };
 
@@ -950,7 +950,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             // "source" distributions are silly and dangerous in any case, but they have become fairly widely used, together with the expectation that the
             // material from "defaults" can be broadcast too. But clearly material that is from base grade defaults is unwelcome to be distributed.
             // This seems to imply that we've got no option but to start supporting "provenance" in options and defaults - highly expensive.
-            exclusions: ["members.inlineEdits", "members.modelRelay", "members.applier", "members.model", "selectors.editables", "events"],
+            exclusions: ["workflows", "invokers.locate", "members.inlineEdits", "members.modelRelay", "container", "members.container", "members.dom", "members.applier", "members.model", "selectors.editables", "events"],
             removeSource: true,
             target: "{that > fluid.inlineEdit}.options"
         },

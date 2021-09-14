@@ -7,6 +7,34 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ## [Unreleased]
 
+* Framework
+  * [FLUID-6146](https://issues.fluidproject.org/browse/FLUID-6146) Mutual reference between createOnEvent components
+  * [FLUID-6148](https://issues.fluidproject.org/browse/FLUID-6148) "Potentia II" holds aligned, transactional units of intent
+  * [FLUID-6147](https://issues.fluidproject.org/browse/FLUID-6147) Transactional units for component creation
+  * [FLUID-4925](https://issues.fluidproject.org/browse/FLUID-4925) "wave of explosions"
+  * [FLUID-6683](https://issues.fluidproject.org/browse/FLUID-6683) Integral bindings for rendering
+  * [FLUID-6580](https://issues.fluidproject.org/browse/FLUID-6580) "Integration constant lenses"
+  * [FLUID-5519](https://issues.fluidproject.org/browse/FLUID-5519) Problematic timing of model init transaction
+  * [FLUID-5614](https://issues.fluidproject.org/browse/FLUID-5614) "double deep trees"
+  * [FLUID-5790](https://issues.fluidproject.org/browse/FLUID-5790) cancellable promises
+  * [FLUID-6390](https://issues.fluidproject.org/browse/FLUID-6390) "lensed components"
+  * [FLUID-5912](https://issues.fluidproject.org/browse/FLUID-5912) {arguments} in members and models
+  * [FLUID-6418](https://issues.fluidproject.org/browse/FLUID-6418) Failure when referring to dynamic component location
+  during afterDestroy
+  * [FLUID-6413](https://issues.fluidproject.org/browse/FLUID-6413) Model-driven resource localisation
+  * [FLUID-6414](https://issues.fluidproject.org/browse/FLUID-6414) Allow dynamic grades to be contributed via expander
+  * [FLUID-6145](https://issues.fluidproject.org/browse/FLUID-6145) Make all component options immutable
+  * [FLUID-6438](https://issues.fluidproject.org/browse/FLUID-6438) Improved closure of ContextAwareness grades
+  * [FLUID-5702](https://issues.fluidproject.org/browse/FLUID-5702) Correct DOM binder behaviour of returning container
+  on missing selector
+  * [FLUID-4483](https://issues.fluidproject.org/browse/FLUID-4883) Latched events acting as promises
+  * A basic quality implementation of [FLUID-4982](https://issues.fluidproject.org/browse/FLUID-4982) "asynchronous
+  ginger world", sufficient to allow progress on new renderer for FLUID-4260, FLUID-6580
+  * Browser-side implementation of fluid.dataSource.URL
+  * Removal of deprecated utility fluid.pushSoftFailure in favour of manipulation of listeners to fluid.failureEvent
+* Preference framework
+  * [FLUID-6420](https://issues.fluidproject.org/browse/FLUID-6420) Split start schema aux schema into separate schema grades
+
 ## [3.0.0] - 2021-08-25
 
 ### Added

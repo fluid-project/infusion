@@ -46,11 +46,12 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         window : typeof self !== "undefined" ? self : {};
 
     // A standard utility to schedule the invocation of a function after the current
-    // stack returns. On browsers this defaults to setTimeout(func, 1) but in
+    // stack returns. On browsers this defaults to setTimeout(func, 0) but in
     // other environments can be customised - e.g. to process.nextTick in node.js
     // In future, this could be optimised in the browser to not dispatch into the event queue
+    // See https://github.com/YuzuJS/setImmediate for a more verbose but very robust replacement
     fluid.invokeLater = function (func) {
-        return setTimeout(func, 1);
+        return setTimeout(func, 0);
     };
 
     // The following flag defeats all logging/tracing activities in the most performance-critical parts of the framework.
@@ -65,6 +66,14 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
     var activityParser = /(%\w+)/g;
 
+    fluid.renderActivityArgument = function (arg) {
+        if (fluid.isComponent(arg)) {
+            return fluid.dumpComponentAndPath(arg);
+        } else {
+            return arg;
+        }
+    };
+
     // Renders a single activity element in a form suitable to be sent to a modern browser's console
     // unsupported, non-API function
     fluid.renderOneActivity = function (activity, nowhile) {
@@ -76,7 +85,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             if (match) {
                 var key = match[1].substring(1);
                 togo.push(message.substring(index, match.index));
-                togo.push(activity.args[key]);
+                togo.push(fluid.renderActivityArgument(activity.args[key]));
                 index = activityParser.lastIndex;
             }
             else {
@@ -200,8 +209,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     };
 
     /**
-     * Signals an error to the framework. The default behaviour is to log a structured error message and throw an exception. This strategy may be configured using the legacy
-     * API <code>fluid.pushSoftFailure</code> or else by adding and removing suitably namespaced listeners to the special event <code>fluid.failureEvent</code>
+     * Signals an error to the framework. The default behaviour is to log a structured error message and throw an exception. This strategy may be configured
+     * by adding and removing suitably namespaced listeners to the special event <code>fluid.failureEvent</code>
      *
      * @param {...String} messages - The error messages to log.
      *
@@ -219,11 +228,36 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         }
     };
 
+    fluid.notrycatch = false;
+
+    // A wrapper for the try/catch/finally language feature, to aid debugging in the QUnit UI by means of exception breakpoints for
+    // uncaught exceptions, since so many libraries, e.g. jQuery throw junk caught exceptions on startup
+    fluid.tryCatch = function (tryfun, catchfun, finallyfun) {
+        finallyfun = finallyfun || fluid.identity;
+        if (fluid.notrycatch) {
+            var togo = tryfun();
+            finallyfun();
+            return togo;
+        } else {
+            try {
+                return tryfun();
+            } catch (e) {
+                if (catchfun) {
+                    catchfun(e);
+                } else {
+                    throw (e);
+                }
+            } finally {
+                finallyfun();
+            }
+        }
+    };
+
     // TODO: rescued from kettleCouchDB.js - clean up in time
     fluid.expect = function (name, target, members) {
         fluid.transform(fluid.makeArray(members), function (key) {
-            if (typeof(target[key]) === "undefined") {
-                fluid.fail(name + " missing required parameter " + key);
+            if (target[key] === undefined) {
+                fluid.fail(name + " missing required member " + key);
             }
         });
     };
@@ -300,6 +334,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             } else if (typeof(console.log) === "function") {
                 console.log.apply(console, args);
             }
+            /* eslint-enable no-console */
         }
         /* eslint-enable no-console */
     };
@@ -358,9 +393,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
                && totest.constructor.prototype.jquery);
     };
 
-    /**
-     * Determines whether the supplied object is an array. The strategy used is an optimised
-     * approach taken from an earlier version of jQuery - detecting whether the toString() version
+    /** Determines whether the supplied object can be treated as an array (primarily, by iterating over numeric keys bounded from 0 to length).
+     * The strategy used is an optimised approach taken from an earlier version of jQuery - detecting whether the toString() version
      * of the object agrees with the textual form [object Array], or else whether the object is a
      * jQuery object (the most common source of "fake arrays").
      *
@@ -403,6 +437,11 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             fluid.isArrayable(totest) ? "array" : "object";
     };
 
+    /** Determine whether the supplied value is an IoC reference. The test is passed if the value is a string whose
+     * first character is "{" and has closing "}" character somewhere in the string
+     * @param {Any} ref - The value to be tested
+     * @return {Boolean} `true` if the supplied value is an IoC reference
+     */
     fluid.isIoCReference = function (ref) {
         return typeof(ref) === "string" && ref.charAt(0) === "{";
     };
@@ -520,15 +559,14 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     /**
      * Pushes an element or elements onto an array, initialising the array as a member of a holding object if it is
      * not already allocated.
-     *
      * @param {Array|Object} holder - The holding object whose member is to receive the pushed element(s).
      * @param {String} member - The member of the <code>holder</code> onto which the element(s) are to be pushed
-     * @param {Array|Object} topush - If an array, these elements will be added to the end of the array using
-     * `Array.push.apply`. If an object, it will be pushed to the end of the array using Array.push.
+     * @param {Array|Any} topush - If an array, these elements will be added to the end of the array using Array.push.apply.
+     * If a non-array, it will be pushed to the end of the array using Array.push.
      */
     fluid.pushArray = function (holder, member, topush) {
         var array = holder[member] ? holder[member] : (holder[member] = []);
-        if (fluid.isArrayable(topush)) {
+        if (Array.isArray(topush)) {
             array.push.apply(array, topush);
         } else {
             array.push(topush);
@@ -540,7 +578,9 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         for (var j = 0; j < transformations.length; ++j) {
             transit = transformations[j](transit, key);
         }
-        togo[key] = transit;
+        if (transit !== fluid.NO_VALUE) {
+            togo[key] = transit;
+        }
     }
 
     /**
@@ -554,7 +594,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      * all of type Function, accepting the signature (object, index), where object is the
      * structure member to be transformed, and index is its key or index. Each function will be
      * applied in turn to each structure member, which will be replaced by the return value
-     * from the function.
+     * from the function. A function may return fluid.NO_VALUE to indicate that the key should not
+     * be assigned any value.
      * @return {Array|Object} - The finally transformed list, where each member has been replaced by the
      * original member acted on by the function or functions.
      */
@@ -576,8 +617,30 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     };
 
     /**
+     * Variety of Array.forEach which iterates over an array range
+     * @param {Arrayable} array - The array to be iterated over
+     * @param {Integer} start - The array index to start iterating at
+     * @param {Integer} end - The limit of the array index for the iteration
+     * @param {Function} func - A function accepting (value, key) for each iterated
+     * object.
+     */
+    fluid.forEachInRange = function (array, start, end, func) {
+        for (var i = start; i < end; ++i) {
+            func(array[i], i);
+        }
+    };
+
+    /**
+     * Return the last element of an array. If the array is of length 0, returns `undefined`.
+     * @param {Arrayable} array - The array to be peeked into
+     * @return {Any} start - The last element of the array
+     */
+    fluid.peek = function (array) {
+        return array.length === 0 ? undefined : array[array.length - 1];
+    };
+
+    /**
      * Better jQuery.each which works on hashes as well as having the arguments the right way round.
-     *
      * @param {Arrayable|Object} source - The container to be iterated over
      * @param {Function} func - A function accepting (value, key) for each iterated
      * object.
@@ -727,7 +790,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     /** Extracts a particular member from each top-level member of a container, returning a new container of the same type
      * @param {Array|Object} holder - The container to be filtered
      * @param {String|String[]} name - An EL path to be fetched from each top-level member
-     * @return {Object} - The desired member component.
+     * @return {Array|Object} - The desired structure of fetched members
      */
     fluid.getMembers = function (holder, name) {
         return fluid.transform(holder, function (member) {
@@ -802,9 +865,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
     /** Converts an array into an object whose keys are the elements of the array, each with the value "true"
      * @param {String[]} array - The array to be converted to a hash
-     * @return hash {Object} An object with value <code>true</code> for each key taken from a member of <code>array</code>
+     * @return {Object} hash An object with value <code>true</code> for each key taken from a member of <code>array</code>
      */
-
     fluid.arrayToHash = function (array) {
         var togo = {};
         fluid.each(array, function (el) {
@@ -813,13 +875,12 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         return togo;
     };
 
-    /** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript is not specified
-     * to be stable). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
+    /** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript was not specified
+     * to be stable until ES2019). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
      * on small array sizes.
      * @param {Array} array - The array to be sorted. This input array will be modified in place.
      * @param {Function} func - A comparator returning >0, 0, or <0 on pairs of elements representing their sort order (same contract as Array.sort comparator)
      */
-
     fluid.stableSort = function (array, func) {
         for (var i = 0; i < array.length; i++) {
             var j, k = array[i];
@@ -830,19 +891,26 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         }
     };
 
-    /* Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
+    /** Converts a hash into an array by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
      * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect as transform fluid.transforms.deindexIntoArrayByKey).
      * The supplied hash will not be modified, unless the supplied function explicitly does so by modifying its 2nd argument.
+     * @param {Object} hash - The object to be converted to an array
+     * @param {String} [keyName] - (optional) The key name within output array elements that the hash key should be assigned into
+     * @param {Function} [func] - (optional) A "replacer" function that accepts signature (new array element, old hash element, key) whose return value will replace (new array element) if it is truthy
+     * @return {Array} The hash converted into an array
      */
     fluid.hashToArray = function (hash, keyName, func) {
         var togo = [];
         fluid.each(hash, function (el, key) {
-            var newEl = {};
-            newEl[keyName] = key;
+            var newEl = el;
+            if (keyName !== undefined) {
+                newEl = {};
+                newEl[keyName] = key;
+            }
             if (func) {
                 newEl = func(newEl, el, key) || newEl;
-            } else {
+            } else if (newEl !== el) {
                 $.extend(true, newEl, el);
             }
             togo.push(newEl);
@@ -901,6 +969,15 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      */
     fluid.parseInteger = function (string) {
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
+    };
+
+    /**
+     * "Ponyfill" for Number.isInteger - can be removed once we drop support for IE11
+     * @param {Any} value - A value to be tested for being an integer
+     * @return {Boolean} `true` if the value is a Number and a finite integer
+     */
+    fluid.isInteger = function (value) {
+        return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
     };
 
     /**
@@ -1002,17 +1079,14 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     fluid.makeMarker = function (value, extra) {
         var togo = Object.create(fluid.marker.prototype);
         togo.value = value;
-        $.extend(togo, extra);
+        fluid.extend(togo, extra);
         return Object.freeze(togo);
     };
 
-    /* A special "marker object" representing that a distinguished
-     * (probably context-dependent) value should be substituted.
-     */
-    fluid.VALUE = fluid.makeMarker("VALUE");
-
     /* A special "marker object" representing that no value is present (where
-     * signalling using the value "undefined" is not possible - e.g. the return value from a "strategy") */
+     * signalling using the value "undefined" is not possible - e.g. the return value from a "strategy"). This
+     * is intended for "ephemeral use", i.e. returned directly from strategies and transforms and should not be
+     * stored in data structures */
     fluid.NO_VALUE = fluid.makeMarker("NO_VALUE");
 
     /* A marker indicating that a value requires to be expanded after component construction begins */
@@ -1117,6 +1191,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     fluid.model.resolvePathSegment = function (root, segment, create, origEnv) {
         // TODO: This branch incurs a huge cost that we incur across the whole framework, just to support the DOM binder
         // usage. We need to either do something "schematic" or move to proxies
+        // TODO: Most costs are incurred from fluid.compileMergePolicy, some from fluid.model.setChangedPath
         if (!origEnv && root.resolvePathSegment) {
             var togo = root.resolvePathSegment(segment);
             if (togo !== undefined) { // To resolve FLUID-6132
@@ -1151,11 +1226,11 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         }
         var uncess = newValue === fluid.NO_VALUE ? 0 : 1;
         root = traverser(root, segs, initPos, config, uncess);
-        if (newValue === fluid.NO_VALUE || newValue === fluid.VALUE) { // get or custom
+        if (newValue === fluid.NO_VALUE) { // get or custom
             return returnSegs ? {root: root, segs: segs} : root;
         }
         else { // set
-            root[segs[segs.length - 1]] = newValue;
+            root[fluid.peek(segs)] = newValue;
         }
     };
 
@@ -1225,7 +1300,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     /** Evaluates an EL expression by fetching a dot-separated list of members
      * recursively from a provided root.
      * @param {Object} root - The root data structure in which the EL expression is to be evaluated
-     * @param {String|Array} EL - The EL expression to be evaluated, or an array of path segments
+     * @param {String|String[]} EL - The EL expression to be evaluated, or an array of path segments
      * @param {Object} [config] - An optional configuration or environment structure which can customise the fetch operation
      * @return {Any} The fetched data value.
      */
@@ -1236,6 +1311,12 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             fluid.model.getWithStrategy(root, EL, config, initSegs)
             : fluid.model.accessImpl(root, EL, fluid.NO_VALUE, env, null, false, fluid.model.traverseSimple);
     };
+
+    /** Returns any value held at a particular global path. This may be an object or a function, depending on what has been stored there.
+     * @param {String|String[]} path - The global path from which the value is to be fetched
+     * @param {Object} [env] - [optional] An environmental overlay object which will be consulted before any lookups in the global namespace.
+     * @return {Any} The value that was stored at the path, or undefined if there is none.
+     */
 
     fluid.getGlobalValue = function (path, env) {
         if (path) {
@@ -1255,6 +1336,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         return obj[fnName].apply(obj, fluid.makeArray(args));
     };
 
+    // Stub for function in FluidIoC.js
+    fluid.proxyComponentArgs = fluid.identity;
     /**
      * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
      * @param {Object} functionPath - An EL expression
@@ -1267,7 +1350,9 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         if (!func) {
             fluid.fail("Error invoking global function: " + functionPath + " could not be located");
         } else {
-            return func.apply(null, fluid.isArrayable(args) ? args : fluid.makeArray(args));
+            var argsArray = fluid.isArrayable(args) ? args : fluid.makeArray(args);
+            fluid.proxyComponentArgs(argsArray);
+            return func.apply(null, argsArray);
         }
     };
 
@@ -1280,14 +1365,20 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
     fluid.setGlobalValue = fluid.registerGlobalFunction;
 
-    /* Ensures that an entry in the global namespace exists. If it does not, a new entry is created as {} and returned. If an existing
-     * value is found, it is returned instead */
-    fluid.registerNamespace = function (naimspace, env) {
+
+    /** Ensures that the supplied path has an object allocated in the global Infusion namespace, and retrieves the current value.
+     * If no value is stored, a fresh {} will be assigned at the path, and to all currently empty paths leading to the global namespace root.
+     * In a browser environment, the global Infusion namespace is rooted in the global `window`.
+     * @param {String|String[]} path - The global path at which the namespace is to be allocated.
+     * @param {Object} [env] - [optional] An environmental overlay object which will be consulted before any lookups in the global namespace.
+     * @return {Any} Any current value held at the supplied path - or a freshly allocated {} to be held at that path if it was previously empty
+     */
+    fluid.registerNamespace = function (path, env) {
         env = env || fluid.environment;
-        var existing = fluid.getGlobalValue(naimspace, env);
+        var existing = fluid.getGlobalValue(path, env);
         if (!existing) {
             existing = {};
-            fluid.setGlobalValue(naimspace, existing, env);
+            fluid.setGlobalValue(path, existing, env);
         }
         return existing;
     };
@@ -1309,8 +1400,10 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
     var fluid_guid = 1;
 
-    /* Allocate a string value that will be unique within this Infusion instance (frame or process), and
-     * globally unique with high probability (50% chance of collision after a million trials) */
+    /** Allocate a string value that will be unique within this Infusion instance (frame or process), and
+     * globally unique with high probability (50% chance of collision after a million trials)
+     * @return {String} A fresh unique id
+     */
 
     fluid.allocateGuid = function () {
         return fluid_prefix + (fluid_guid++);
@@ -1334,8 +1427,9 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         // a built-in definition to allow test infrastructure "last" listeners to sort after all impl listeners, and authoring/debugging listeners to sort after those
         // these are "priority intensities", and will be flipped for "first" listeners
         none: 0,
-        testing: 10,
-        authoring: 20
+        transaction: 10,
+        testing: 20,
+        authoring: 30
     };
 
     // unsupported, NON-API function
@@ -1516,15 +1610,17 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
     /* Generate a name for a component for debugging purposes */
     fluid.nameComponent = function (that) {
-        return that ? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]";
+        return that ? fluid.dumpComponentAndPath(that) : "[unknown component]";
     };
 
     fluid.event.nameEvent = function (that, eventName) {
         return eventName + " of " + fluid.nameComponent(that);
     };
 
-    /**
-     * Construct an "event firer" object which can be used to register and deregister
+    // A function to tag the type of a Fluid event firer (primarily to mark it uncopyable)
+    fluid.event.firer = function () {};
+
+    /** Construct an "event firer" object which can be used to register and deregister
      * listeners, to which "events" can be fired. These events consist of an arbitrary
      * function signature. General documentation on the Fluid events system is at
      * http://docs.fluidproject.org/infusion/development/InfusionEventSystem.html .
@@ -1534,6 +1630,9 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      *     {Boolean} preventable - If <code>true</code> the return value of each handler will
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
      * will be the return value of fire()
+     *     {Boolean} promise - If `true`, the event firer will receive a "thenable" signature allowing
+     * it to function as a promise. In this case the event should be fired with only one argument, and
+     * not more than once.
      * @return {Object} - The newly-created event firer.
      */
     fluid.makeEventFirer = function (options) {
@@ -1551,6 +1650,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             // The "live" list of listeners which will be notified in order on any firing. Recomputed on any use of
             // addListener/removeListener
             that.sortedListeners = [];
+            // Very low-level destruction notification scheme primarily intended for FLUID-6445. Will be an array of nullary functions
+            that.onDestroy = null;
             // arguments after 3rd are not part of public API
             // listener as Object is used only by ChangeApplier to tunnel path, segs, etc as part of its "spec"
             /** Adds a listener to this event.
@@ -1599,13 +1700,17 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             };
             that.addListener.apply(null, arguments);
         };
-        that = {
+        that = Object.create(fluid.event.firer.prototype);
+        fluid.extend(that, {
             eventId: fluid.allocateGuid(),
             name: name,
             ownerId: options.ownerId,
             typeName: "fluid.event.firer",
             destroy: function () {
                 that.destroyed = true;
+                fluid.each(that.onDestroy, function (func) {
+                    func();
+                });
             },
             addListener: function () {
                 lazyInit.apply(null, arguments);
@@ -1657,6 +1762,9 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             /* Fires this event to all listeners which are active. They will be notified in order of priority. The signature of this method is free. */
             fire: function () {
                 var listeners = that.sortedListeners;
+                if (options.promise) {
+                    that.promisePayload = arguments[0];
+                }
                 if (!listeners || that.destroyed) { return; }
                 for (var i = 0; i < listeners.length; ++i) {
                     var lisrec = listeners[i];
@@ -1674,14 +1782,33 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
                     }
                 }
             }
-        };
+        });
+        if (options.promise) {
+            that.then = function (func) {
+                if ("promisePayload" in that) {
+                    func(that.promisePayload);
+                } else {
+                    that.addListener(func);
+                }
+            };
+        }
         return that;
+    };
+
+    // unsupported, NON-API function
+    // Supports the framework-internal "onDestroy" list attached to an event which needs to be extremely lightweight
+    fluid.event.addPrimitiveListener = function (holder, name, func) {
+        var existing = holder[name];
+        if (!existing) {
+            existing = holder[name] = [];
+        }
+        existing.push(func);
     };
 
     // unsupported, NON-API function
     // Fires to an event which may not be instantiated (in which case no-op) - primary modern usage is to resolve FLUID-5904
     fluid.fireEvent = function (component, eventName, args) {
-        var firer = component.events[eventName];
+        var firer = component.events && component.events[eventName];
         if (firer) {
             firer.fire.apply(null, fluid.makeArray(args));
         }
@@ -1751,17 +1878,11 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             event = fluid.makeEventFirer({
                 name: fluid.event.nameEvent(that, eventKey),
                 preventable: eventSpec === "preventable",
+                promise: eventSpec === "promise",
                 ownerId: that.id
             });
         }
         return event;
-    };
-
-    // unsupported, NON-API function - this is patched from FluidIoC.js
-    fluid.instantiateFirers = function (that, options) {
-        fluid.each(options.events, function (eventSpec, eventKey) {
-            that.events[eventKey] = fluid.eventFromRecord(eventSpec, eventKey, that);
-        });
     };
 
     // unsupported, NON-API function
@@ -1778,7 +1899,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     fluid.makeMergeListenersPolicy = function (merger, modelRelay) {
         return function (target, source) {
             target = target || {};
-            if (modelRelay && (fluid.isArrayable(source) || typeof(source.target) === "string")) { // This form allowed for modelRelay
+            if (modelRelay && (fluid.isArrayable(source) || "target" in source && (typeof(source.target) === "string" || source.target.segs))) { // This form allowed for modelRelay
                 target[""] = merger(target[""], source, "");
             } else {
                 fluid.each(source, function (listeners, key) {
@@ -1799,13 +1920,6 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             });
         });
         return errors;
-    };
-
-    /* Removes duplicated and empty elements from an already sorted array. */
-    fluid.unique = function (array) {
-        return fluid.remove_if(array, function (element, i) {
-            return !element || i > 0 && element === array[i - 1];
-        });
     };
 
     fluid.arrayConcatPolicy = function (target, source) {
@@ -1833,28 +1947,22 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
     /*** FLUID ERROR SYSTEM ***/
 
+    /** Upgrades a promise rejection payload (or Error) by suffixing an additional "while" reason into its "message" field
+     * @param {Object|Error} originError - A rejection payload. This should (at least) have the member `isError: true` set, as well as a String `message` holding a rejection reason.
+     * @param {String} whileMsg - A message describing the activity which led to this error
+     * @return {Object} The rejected payload formed by shallow cloning the supplied argument (if it is not an `Error`) and suffixing its `message` member
+     */
+    fluid.upgradeError = function (originError, whileMsg) {
+        var error = originError instanceof Error ? originError :
+            fluid.isPrimitive(originError) ? { message: originError} : fluid.extend({}, originError);
+        error.message = error.message + whileMsg;
+        return error;
+    };
+
     fluid.failureEvent = fluid.makeEventFirer({name: "failure event"});
 
     fluid.failureEvent.addListener(fluid.builtinFail, "fail");
     fluid.failureEvent.addListener(fluid.logFailure, "log", "before:fail");
-
-    /**
-     * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
-     *
-     * @param {Number|Function} condition - Supply either a function, which will be called with two arguments, args (the complete arguments to
-     * fluid.fail) and activity, an array of strings describing the current framework invocation state.
-     * Or, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
-     * be popped off the stack
-     */
-    fluid.pushSoftFailure = function (condition) {
-        if (typeof(condition) === "function") {
-            fluid.failureEvent.addListener(condition, "fail");
-        } else if (condition === -1) {
-            fluid.failureEvent.removeListener("fail");
-        } else if (typeof(condition) === "boolean") {
-            fluid.fail("pushSoftFailure with boolean value is no longer supported");
-        }
-    };
 
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
 
@@ -1875,10 +1983,10 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     // No longer a publically supported function - we don't abolish this because it is too annoying to prevent
     // circularity during the bootup of the IoC system if we try to construct full components before it is complete
     // unsupported, non-API function
-    fluid.typeTag = function (name) {
+    fluid.typeTag = function (type, id) {
         var that = Object.create(fluid.componentConstructor.prototype);
-        that.typeName = name;
-        that.id = fluid.allocateGuid();
+        that.typeName = type;
+        that.id = id || fluid.allocateGuid();
         return that;
     };
 
@@ -1972,7 +2080,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         var mergedDefaults = fluid.mergedDefaultsCache[key];
         if (mergedDefaults) {
             var lastTick = 0; // check if cache should be invalidated through real latest tick being later than the one stored
-            var searchGrades = mergedDefaults.defaults.gradeNames || [];
+            var searchGrades = mergedDefaults.defaults.gradeNames;
             for (var i = 0; i < searchGrades.length; ++i) {
                 lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);
             }
@@ -1993,11 +2101,13 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         return mergedDefaults.defaults;
     };
 
+    fluid.NO_ARGUMENTS = fluid.makeMarker("NO_ARGUMENTS");
     // unsupported, NON-API function
     /**
      * Upgrades an element of an IoC record which designates a function to prepare for a {func, args} representation.
      *
-     * @param {Any} rec - If the record is of a primitive type,
+     * @param {Any} rec - The record to be upgraded. If an object will be returned unchanged. Otherwise it may be a function
+     * object or an IoC reference to one.
      * @param {String} key - The key in the returned record to hold the function, this will default to `funcName` if `rec` is a `string` *not*
      * holding an IoC reference, or `func` otherwise
      * @return {Object} The original `rec` if it was not of primitive type, else a record holding { key : rec } if it was of primitive type.
@@ -2006,7 +2116,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         if (rec && fluid.isPrimitive(rec)) {
             var togo = {};
             togo[key || (typeof(rec) === "string" && rec.charAt(0) !== "{" ? "funcName" : "func")] = rec;
-            togo.args = fluid.NO_VALUE;
+            togo.args = fluid.NO_ARGUMENTS;
             return togo;
         } else {
             return rec;
@@ -2034,6 +2144,51 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         });
     };
 
+    // Key structure: [["local"|"global"], workflowName] to {workflowType, priority, workflowOptions, gradeName, index}===workflowEntry
+    fluid.workflowCache = {};
+    // Sorted array of workflowEntry
+    fluid.workflowCacheSorted = [];
+
+    fluid.resortWorkflows = function (workflowType, baseIndex) {
+        var thisCache = fluid.workflowCache[workflowType];
+        var parsed = fluid.parsePriorityRecords(thisCache, workflowType + " workflows");
+        parsed.forEach(function (oneParsed, index) {
+            thisCache[oneParsed.namespace].index = index + baseIndex;
+        });
+        return parsed;
+    };
+
+    fluid.indexOneWorkflows = function (gradeName, workflowType, workflows, baseIndex) {
+        fluid.each(workflows, function (oneWorkflow, workflowKey) {
+            fluid.model.setSimple(fluid.workflowCache, [workflowType, workflowKey], {
+                workflowType: workflowType,
+                workflowName: workflowKey,
+                priority: oneWorkflow.priority,
+                gradeName: gradeName,
+                workflowOptions: oneWorkflow
+            });
+        });
+        return fluid.resortWorkflows(workflowType, baseIndex);
+    };
+
+    fluid.clearGradeWorkflows = function (gradeName, workflowType) {
+        var cacheForType = fluid.workflowCache[workflowType];
+        fluid.each(cacheForType, function (oneWorkflow, workflowKey) {
+            if (oneWorkflow.gradeName === gradeName) {
+                delete cacheForType[workflowKey];
+            }
+        });
+    };
+
+    fluid.indexGradeWorkflows = function (gradeName, options) {
+        fluid.clearGradeWorkflows(gradeName, "global");
+        fluid.clearGradeWorkflows(gradeName, "local");
+        var sortedGlobal = fluid.indexOneWorkflows(gradeName, "global", fluid.getImmediate(options, ["workflows", "global"]), 0);
+        var globalWorkflowCount = sortedGlobal.length;
+        var sortedLocal = fluid.indexOneWorkflows(gradeName, "local", fluid.getImmediate(options, ["workflows", "local"]), globalWorkflowCount);
+        fluid.workflowCacheSorted = sortedGlobal.concat(sortedLocal);
+    };
+
     // unsupported, NON-API function
     fluid.rawDefaults = function (componentName) {
         var entry = fluid.defaultsStore[componentName];
@@ -2046,7 +2201,11 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             {componentName: componentName, options: options});
         var optionsCopy = fluid.expandCompact ? fluid.expandCompact(options) : fluid.copy(options);
         fluid.annotateListeners(componentName, optionsCopy);
+        // TODO: consider moving workflows outside fluid.defaults system entirely since we special-case them so much
+        fluid.indexGradeWorkflows(componentName, optionsCopy);
+        delete optionsCopy.workflows;
         var callerInfo = fluid.getCallerInfo && fluid.getCallerInfo(6);
+        fluid.freezeRecursive(optionsCopy);
         fluid.defaultsStore[componentName] = {
             options: optionsCopy,
             callerInfo: callerInfo
@@ -2114,30 +2273,33 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         }
     };
 
+    fluid.validateCreatorGrade = function (message, componentName) {
+        var defaults = fluid.getMergedDefaults(componentName);
+        if (!defaults || !defaults.gradeNames || defaults.gradeNames.length === 0) {
+            fluid.fail(message + " type " + componentName + " which does not have any gradeNames defined");
+        } else if (!defaults.argumentMap) {
+            var blankGrades = [];
+            for (var i = 0; i < defaults.gradeNames.length; ++i) {
+                var gradeName = defaults.gradeNames[i];
+                var rawDefaults = fluid.rawDefaults(gradeName);
+                if (!rawDefaults) {
+                    blankGrades.push(gradeName);
+                }
+            }
+            if (blankGrades.length === 0) {
+                fluid.fail(message + " type " + componentName + " which is not derived from fluid.component");
+            } else {
+                fluid.fail("The grade hierarchy of component with type " + componentName + " is incomplete - it inherits from the following grade(s): " +
+                 blankGrades.join(", ") + " for which the grade definitions are corrupt or missing. Please check the files which might include these " +
+                 "grades and ensure they are readable and have been loaded by this instance of Infusion");
+            }
+        }
+    };
+
     fluid.makeComponentCreator = function (componentName) {
         var creator = function () {
-            var defaults = fluid.getMergedDefaults(componentName);
-            if (!defaults.gradeNames || defaults.gradeNames.length === 0) {
-                fluid.fail("Cannot make component creator for type " + componentName + " which does not have any gradeNames defined");
-            } else if (!defaults.initFunction) {
-                var blankGrades = [];
-                for (var i = 0; i < defaults.gradeNames.length; ++i) {
-                    var gradeName = defaults.gradeNames[i];
-                    var rawDefaults = fluid.rawDefaults(gradeName);
-                    if (!rawDefaults) {
-                        blankGrades.push(gradeName);
-                    }
-                }
-                if (blankGrades.length === 0) {
-                    fluid.fail("Cannot make component creator for type " + componentName + " which does not have an initFunction defined");
-                } else {
-                    fluid.fail("The grade hierarchy of component with type " + componentName + " is incomplete - it inherits from the following grade(s): " +
-                     blankGrades.join(", ") + " for which the grade definitions are corrupt or missing. Please check the files which might include these " +
-                     "grades and ensure they are readable and have been loaded by this instance of Infusion");
-                }
-            } else {
-                return fluid.initComponent(componentName, arguments);
-            }
+            fluid.validateCreatorGrade("Cannot make component creator for", componentName);
+            return fluid.initFreeComponent(componentName, arguments);
         };
         var existing = fluid.getGlobalValue(componentName);
         if (existing) {
@@ -2147,11 +2309,38 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     };
 
     fluid.emptyPolicy = fluid.freezeRecursive({});
+    /** Dereference an element of a `CompiledMergePolicy` armoured with the `*` key, ensuring to return an object
+     * which can be tested for mergePolicy properties such as `replace` without failure. This function always returns
+     * an object even if `policy` or `policy.*` is empty.
+     * @param {Object} policy - A trunk member of a `CompiledMergePolicy`
+     * @return {Object} A leaf object which can be property-tested for a builtin mergePolicy.
+     */
     // unsupported, NON-API function
     fluid.derefMergePolicy = function (policy) {
         return (policy ? policy["*"] : fluid.emptyPolicy) || fluid.emptyPolicy;
     };
 
+    /** @typedef {Object} CompiledMergePolicyReturn
+     * @property {Object} defaultValues - An map of options paths to IoC references holding the path elsewhere within
+     *    the options structure from where the default value for them is to be taken
+     * @property {CompiledMergePolicy} builtins - A structure isomorphic to the options structure, with node-specific
+     *    metadata held in a leaf child named "*". This metadata holds a map of builtin mergePolicies to "*" as well
+     *    as possibly a function member named `func`.
+     * @property {Boolean} [hasDefaults] - `true` if the `defaultValues` object has any members
+     */
+
+    /** Accepts a mergePolicy as encoded in a component's options and outputs a "compiled" variant which is more suited
+     * to random structure-directed access. This is isomorphic to the options structure itself, with node-specific metadata
+     * housed in a leaf child named "*". Function policies will be attached to a leaf member named `func`, and
+     * "default value merge policies" (references to other option paths) will be converted into IoC self-references
+     * beginning with `{that}.options`.
+     * @param {Object} mergePolicy - The `mergePolicy` options area of a component
+     * @return {CompiledMergePolicyReturn} - Holds members:
+     * A CompiledMergePolicy object housing the "compiled" rendering of the merge policy, in the member `builtins` and
+     * any dereferenced default value policies in the member `defaultValues`
+     */
+    // Main entry point is in fluid.mergeComponentOptions
+    // Note that there is currently no support for other than flat mergePolicies
     // unsupported, NON-API function
     fluid.compileMergePolicy = function (mergePolicy) {
         var builtins = {}, defaultValues = {};
@@ -2196,7 +2385,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     };
 
     // unsupported, NON-API function
-    fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, i, segs) {
+    fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, newPolicyHolder, i, segs) {
         var togo = thisTarget;
 
         var primitiveTarget = fluid.isPrimitive(thisTarget);
@@ -2211,7 +2400,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             } else {
                 sources[j] = undefined;
                 if (newPolicy.func) {
-                    togo = newPolicy.func.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
+                    togo = newPolicy.func.call(null, thisTarget, thisSource, newPolicyHolder, segs, i);
                 } else {
                     togo = thisSource;
                 }
@@ -2262,7 +2451,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
                     // The problem is that a custom mergePolicy may have replaced the system generated trunk with a differently structured object which we must not
                     // corrupt. This work should properly be done with a set of dedicated provenance/progress records in a separate structure
                     if (!(name in target) || (options.evaluateFully && childPolicy === undefined && !fluid.isPrimitive(target[name]))) { // only request each new target key once -- all sources will be queried per strategy
-                        segs[i] = name;
+                        segs[i] = name; // TODO: Why doesn't this corrupt the requestor's segs?
                         options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                     }
                 });
@@ -2298,17 +2487,10 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             }
 
             var oldTarget;
-            if (name in target) { // bail out if our work has already been done
+            if (name in target || options.fullyEvaluated) { // bail out if our work has already been done
                 oldTarget = target[name];
                 if (!options.evaluateFully) { // see notes on this hack in "initter" - early attempt to deal with FLUID-4930
                     return oldTarget;
-                }
-            }
-            else {
-                if (target !== fluid.inEvaluationMarker) { // TODO: blatant "coding to the test" - this enables the simplest "re-trunking" in
-                    // FluidIoCTests to function. In practice, we need to throw away this implementation entirely in favour of the
-                    // "iterative deepening" model coming with FLUID-4925
-                    target[name] = fluid.inEvaluationMarker;
                 }
             }
             if (sources === undefined) { // recover our state in case this is an external entry point
@@ -2343,10 +2525,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
                         }
                         else {
                             // write this in early, since early expansions may generate a trunk object which is written in to by later ones
-                            thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
-                            if (target !== fluid.inEvaluationMarker) {
-                                target[name] = thisTarget;
-                            }
+                            thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, newPolicyHolder, i, segs, options);
+                            target[name] = thisTarget;
                         }
                     }
                 }
@@ -2358,9 +2538,6 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
                 if (fluid.isPlainObject(thisTarget)) {
                     fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
                 }
-            }
-            if (oldTarget === undefined && newSources.length === 0) {
-                delete target[name]; // remove the evaluation marker - nothing to evaluate
             }
             return thisTarget;
         };
@@ -2402,30 +2579,21 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      * Object, it should contain a mapping of EL paths onto these String values, representing a
      * fine-grained policy. If it is an Object, the values may also themselves be EL paths
      * representing that a default value is to be taken from that path.
-     * @param {...Object} sources - an arbitrary list of options structure which are to
+     * @param {...Object} sources - An arbitrary list of options structures which are to
      * be merged together. These will not be modified.
+     * @return {Object} The merged options
      */
-
-    fluid.merge = function (policy , ...sources) {
+    fluid.merge = function (policy, ...sources) {
         var compiled = fluid.compileMergePolicy(policy).builtins;
         var options = fluid.makeMergeOptions(compiled, sources, {});
         options.initter();
         return options.target;
     };
 
-    // unsupported, NON-API function
-    fluid.simpleGingerBlock = function (source, recordType) {
-        var block = {
-            target: source,
-            simple: true,
-            strategy: fluid.concreteTrundler,
-            initter: fluid.identity,
-            recordType: recordType,
-            priority: fluid.mergeRecordTypes[recordType]
-        };
-        return block;
-    };
-
+    /* Construct the core of the `mergeOptions` structure responsible for evaluating merged options.
+     * This will eventually be housed in the shadow as `shadow.mergeOptions`.
+     * The main entry point is `fluid.mergeComponentOptions` which will add other elements such as `mergeBlocks`
+     */
     // unsupported, NON-API function
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
         // note - we close over the supplied policy as a shared object reference - it will be updated during discovery
@@ -2442,6 +2610,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             // in the strategy API to express when full evaluation is required - and the "flooding API" is not standardised. See FLUID-4930
             options.evaluateFully = true;
             fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);
+            options.fullyEvaluated = true;
         };
         fluid.makeMergeStrategy(options);
         return options;
@@ -2485,17 +2654,13 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         });
     };
 
-    // unsupported, NON-API function
-    fluid.deliverOptionsStrategy = fluid.identity;
-    fluid.computeComponentAccessor = fluid.identity;
-    fluid.computeDynamicComponents = fluid.identity;
-
     // The types of merge record the system supports, with the weakest records first
     fluid.mergeRecordTypes = {
         defaults:           1000,
         defaultValueMerge:  900,
-        subcomponentRecord: 800,
-        user:               700,
+        lensedComponents:    800,
+        subcomponentRecord: 700,
+        user:               600,
         distribution:       100 // and above
     };
 
@@ -2518,7 +2683,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
                     return;
                 }
             }
-            var last = segs[segs.length - 1];
+            var last = fluid.peek(segs);
             delete model[last];
         }
     };
@@ -2540,31 +2705,20 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
      *
-     * @param {Object} that - the instance to attach the options to
-     * @param {String} componentName - the unique "name" of the component, which will be used
-     * to fetch the default options from store. By recommendation, this should be the global
-     * name of the component's creator function.
-     * @param {Object} userOptions - the user-specified configuration options for this component
-     * @param {Object} [localOptions] - (optional) for backwards compatibility.
-     * @return {Object} - the merged options
+     * @param {Component} that - The instance to attach the options to
+     * @param {Potentia} potentia - The potentia record supplied for this construction
+     * @param {MergeRecords} lightMerge - A structure as produced from `fluid.lightMergeRecords` performing light pre-merging of
+     * options records
+     * @return {MergeOptions} The mergeOptions structure ready to be mounted in the component's shadow
      */
     // unsupported, NON-API function
-    fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
-        var rawDefaults = fluid.rawDefaults(componentName);
-        var defaults = fluid.getMergedDefaults(componentName, rawDefaults && rawDefaults.gradeNames ? null : localOptions.gradeNames);
+    fluid.mergeComponentOptions = function (that, potentia, lightMerge) {
+        fluid.validateCreatorGrade("Cannot construct component of", lightMerge.type);
         var sharedMergePolicy = {};
 
-        var mergeBlocks = [];
+        // FROM HERE we notify the instantiator, fabricate destroy, etc.
+        var mergeBlocks = fluid.expandComponentOptions(sharedMergePolicy, potentia, lightMerge, that);
 
-        if (fluid.expandComponentOptions) {
-            mergeBlocks = mergeBlocks.concat(fluid.expandComponentOptions(sharedMergePolicy, defaults, userOptions, that));
-        }
-        else {
-            mergeBlocks = mergeBlocks.concat([
-                fluid.simpleGingerBlock(defaults, "defaults"),
-                fluid.simpleGingerBlock(userOptions, "user")
-            ]);
-        }
         var options = {}; // ultimate target
         var sourceStrategies = [], sources = [];
         var baseMergeOptions = {
@@ -2576,7 +2730,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         var updateBlocks = function () {
             fluid.each(mergeBlocks, function (block) {
                 if (fluid.isPrimitive(block.priority)) {
-                    block.priority = fluid.parsePriority(block.priority, 0, false, "options distribution");
+                    block.priority = fluid.parsePriority(block.priority, 0, false, block.recordType);
                 }
             });
             fluid.sortByPriority(mergeBlocks);
@@ -2616,24 +2770,19 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         mergeOptions.computeMergePolicy = computeMergePolicy;
 
         if (compiledPolicy.hasDefaults) {
-            if (fluid.generateExpandBlock) {
-                mergeBlocks.push(fluid.generateExpandBlock({
-                    options: compiledPolicy.defaultValues,
-                    recordType: "defaultValueMerge",
-                    priority: fluid.mergeRecordTypes.defaultValueMerge
-                }, that, {}));
-                updateBlocks();
-            }
-            else {
-                fluid.fail("Cannot operate mergePolicy ", mergePolicy, " for component ", that, " without including FluidIoC.js");
-            }
+            mergeBlocks.push(fluid.generateExpandBlock({
+                options: compiledPolicy.defaultValues,
+                recordType: "defaultValueMerge",
+                priority: fluid.mergeRecordTypes.defaultValueMerge
+            }, that, {}));
+            updateBlocks();
         }
         that.options = options;
         fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
 
         fluid.deliverOptionsStrategy(that, options, mergeOptions); // do this early to broadcast and receive "distributeOptions"
 
-        fluid.computeComponentAccessor(that, userOptions && userOptions.localRecord);
+        fluid.computeComponentAccessor(that, potentia.localRecord);
 
         var transformOptions = fluid.driveStrategy(options, "transformOptions", mergeOptions.strategy);
         if (transformOptions) {
@@ -2705,12 +2854,15 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     fluid.mergingArray = function () {};
     fluid.mergingArray.prototype = [];
 
-    // Defer all evaluation of all nested members to resolve FLUID-5668
-    fluid.membersMergePolicy = function (target, source) {
+    // Defer all evaluation of all nested members to hack FLUID-5668
+    fluid.deferringMergePolicy = function (target, source, mergePolicyHolder) {
         target = target || {};
         fluid.each(source, function (oneSource, key) {
             if (!target[key]) {
                 target[key] = new fluid.mergingArray();
+            }
+            if (fluid.derefMergePolicy(mergePolicyHolder[key]).replace && oneSource !== undefined) {
+                target[key].length = 0;
             }
             if (oneSource instanceof fluid.mergingArray) {
                 target[key].push.apply(target[key], oneSource);
@@ -2749,36 +2901,54 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
         return target;
     };
 
-    fluid.rootMergePolicy = {
+    fluid.rootMergePolicy = fluid.freezeRecursive({
         gradeNames: fluid.arrayConcatPolicy,
         distributeOptions: fluid.distributeOptionsPolicy,
         members: {
             noexpand: true,
-            func: fluid.membersMergePolicy
+            func: fluid.deferringMergePolicy
         },
         invokers: {
             noexpand: true,
             func: fluid.invokersMergePolicy
         },
+        components: {
+            noexpand: true,
+            // We use this dim mergePolicy since i) there is enough room in the records for provenance information, and
+            // ii) noone can try to consume this, e.g. to find type/createOnEvent before it hits a potentia anyway
+            func: fluid.deferringMergePolicy
+        },
+        dynamicComponents: {
+            noexpand: true,
+            func: fluid.deferringMergePolicy
+        },
         transformOptions: "replace",
         listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
-    };
+    });
 
     fluid.defaults("fluid.component", {
-        initFunction: "fluid.initLittleComponent",
         mergePolicy: fluid.rootMergePolicy,
         argumentMap: {
             options: 0
         },
+        workflows: {
+            local: {
+                concludeComponentObservation: {
+                    funcName: "fluid.concludeComponentObservation",
+                    priority: "first"
+                },
+                concludeComponentInit: {
+                    funcName: "fluid.concludeComponentInit",
+                    waitIO: true,
+                    priority: "last"
+                }
+            }
+        },
         events: { // Three standard lifecycle points common to all components
-            onCreate:     null,
-            onDestroy:    null,
-            afterDestroy: null
+            onCreate:     "promise",
+            onDestroy:    "promise",
+            afterDestroy: "promise"
         }
-    });
-
-    fluid.defaults("fluid.emptySubcomponent", {
-        gradeNames: ["fluid.component"]
     });
 
     /* Compute a "nickname" given a fully qualified typename, by returning the last path
@@ -2786,128 +2956,71 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      */
     fluid.computeNickName = function (typeName) {
         var segs = fluid.model.parseEL(typeName);
-        return segs[segs.length - 1];
+        return fluid.peek(segs);
     };
 
-    /** A specially recognised grade tag which directs the IoC framework to instantiate this component first amongst
-     * its set of siblings, since it is likely to bear a context-forming type name. This will be removed from the framework
-     * once we have implemented FLUID-4925 "wave of explosions" */
-    fluid.defaults("fluid.typeFount", {
-        gradeNames: ["fluid.component"]
-    });
-
-    /**
-     * Creates a new "little component": a that-ist object with options merged into it by the framework.
-     * This method is a convenience for creating small objects that have options but don't require full
-     * View-like features such as the DOM Binder or events
-     *
-     * @param {Object} name - The name of the little component to create
-     * @param {Object} userOptions - User-supplied options to merge with the defaults
-     * @param {Object} [localOptions] - (optional) for backwards compatibility
-     * @param {Object} [receiver] - (optional) for backwards compatibility
-     * @return {Object} - an instantiated Component
-     */
-    // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
-    // just to allow backward compatibility whilst grade specifications are not mandatory - similarly for 4th arg "receiver"
-    // NOTE historical name to avoid confusion with fluid.initComponent below - this will all be refactored with FLUID-4925
-    fluid.initLittleComponent = function (name, userOptions, localOptions, receiver) {
-        var that = fluid.typeTag(name);
-        that.lifecycleStatus = "constructing";
-        localOptions = localOptions || {gradeNames: "fluid.component"};
-
-        that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
-        var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);
-        mergeOptions.exceptions = {members: {model: true, modelRelay: true}}; // don't evaluate these in "early flooding" - they must be fetched explicitly
-        var options = that.options;
-        that.events = {};
-        // deliver to a non-IoC side early receiver of the component (currently only initView)
-        (receiver || fluid.identity)(that, options, mergeOptions.strategy);
-        fluid.computeDynamicComponents(that, mergeOptions);
-
-        // TODO: ****THIS**** is the point we must deliver and suspend!! Construct the "component skeleton" first, and then continue
-        // for as long as we can continue to find components.
-        for (var i = 0; i < mergeOptions.mergeBlocks.length; ++i) {
-            mergeOptions.mergeBlocks[i].initter();
-        }
-        mergeOptions.initter();
-        delete options.mergePolicy;
-
-        fluid.instantiateFirers(that, options);
-        fluid.mergeListeners(that, that.events, options.listeners);
-
-        return that;
+    /** Returns <code>true</code> if the supplied reference holds a component which has been destroyed or for which destruction has started
+     * @param {Component} that - A reference to a component
+     * @param {Boolean} [strict] - If `true`, the test will only check whether the component has been fully destroyed
+     * @return {Boolean} `true` if the reference is to a component which has been destroyed
+     **/
+    fluid.isDestroyed = function (that, strict) {
+        return that.lifecycleStatus === "destroyed" || (!strict && that.lifecycleStatus === "destroying");
     };
 
-    fluid.diagnoseFailedView = fluid.identity;
-
-    // unsupported, NON-API function
-    fluid.makeRootDestroy = function (that) {
-        return function () {
-            fluid.doDestroy(that);
-            fluid.fireEvent(that, "afterDestroy", [that, "", null]);
-        };
+    // Computes a name for a component appearing at the global root which is globally unique, from its nickName and id
+    fluid.computeGlobalMemberName = function (type, id) {
+        var nickName = fluid.computeNickName(type);
+        return nickName + "-" + id;
     };
 
-    /* Returns <code>true</code> if the supplied reference holds a component which has been destroyed */
-    fluid.isDestroyed = function (that) {
-        return that.lifecycleStatus === "destroyed";
-    };
-
-    // unsupported, NON-API function
-    fluid.doDestroy = function (that, name, parent) {
-        fluid.fireEvent(that, "onDestroy", [that, name || "", parent]);
-        that.lifecycleStatus = "destroyed";
-        for (var key in that.events) {
-            if (key !== "afterDestroy" && typeof(that.events[key].destroy) === "function") {
-                that.events[key].destroy();
+    // Adapt a promise rejection indicating a transaction failure back to an exception for clients in orthochronous code
+    fluid.adaptTransactionFailure = function (transRec) {
+        var returned = false;
+        // This registration MUST go last otherwise we mask the catch->reject handler in bindDeferredComponent
+        transRec.promise.then(null, function (e) {
+            if (!returned) {
+                throw e;
+            } else {
+                if (transRec.promise.onReject.length === 0) {
+                    fluid.fireUnhandledRejection(transRec.promise, e);
+                }
             }
-        }
-        if (that.applier) { // TODO: Break this out into the grade's destroyer
-            that.applier.destroy();
-        }
+        });
+        returned = true;
     };
 
     // unsupported, NON-API function
-    fluid.initComponent = function (componentName, initArgs) {
-        var options = fluid.defaults(componentName);
-        if (!options.gradeNames) {
-            fluid.fail("Cannot initialise component " + componentName + " which has no gradeName registered");
-        }
-        var args = [componentName].concat(fluid.makeArray(initArgs));
-        var that;
-        fluid.pushActivity("initComponent", "constructing component of type %componentName with arguments %initArgs",
-            {componentName: componentName, initArgs: initArgs});
-        that = fluid.invokeGlobalFunction(options.initFunction, args);
-        fluid.diagnoseFailedView(componentName, that, options, args);
-        if (fluid.initDependents) {
-            fluid.initDependents(that);
-        }
-        var errors = fluid.validateListenersImplemented(that);
-        if (errors.length > 0) {
-            fluid.fail(fluid.transform(errors, function (error) {
-                return ["Error constructing component ", that, " - the listener for event " + error.name + " with namespace " + error.namespace + (
-                    (error.componentSource ? " which was defined in grade " + error.componentSource : "") + " needs to be overridden with a concrete implementation")];
-            })).join("\n");
-        }
-        if (that.lifecycleStatus === "constructing") {
-            that.lifecycleStatus = "constructed";
-        }
-        that.events.onCreate.fire(that);
-        fluid.popActivity();
-        return that;
-    };
+    // After some error checking, this *is* the component creator function
+    fluid.initFreeComponent = function (type, initArgs) {
+        var id = fluid.allocateGuid();
+        // TODO: Perhaps one day we will support a directive which allows the user to select a current component
+        // root for free components other than the global root
+        var path = [fluid.computeGlobalMemberName(type, id)];
+        var userRecord = {
+            recordType: "user",
+            type: type
+        };
+        var upDefaults = fluid.defaults(type);
+        // TODO: We only support these two signatures now, probably abolish argumentMap if it weren't for "graded functions"
+        // Or else write a proper mergePolicy for argumentMaps
+        var argMap = fluid.defaults(upDefaults.argumentMap.container !== undefined ?
+            "fluid.viewComponent" : "fluid.component").argumentMap;
+        fluid.each(argMap, function (index, name) {
+            var arg = initArgs[index];
+            userRecord[name] = name === "options" ? fluid.expandCompact(arg, true) : arg;
+        });
+        var potentia = {
+            type: "create",
+            path: path,
+            componentId: id,
+            records: [userRecord]
+        };
+        var transRec = fluid.registerPotentia(potentia);
+        var shadow = fluid.commitPotentiae(transRec.transactionId);
+        fluid.adaptTransactionFailure(transRec);
 
-    // unsupported, NON-API function
-    fluid.initSubcomponentImpl = function (that, entry, args) {
-        var togo;
-        if (typeof(entry) !== "function") {
-            var entryType = typeof(entry) === "string" ? entry : entry.type;
-            togo = entryType === "fluid.emptySubcomponent" ?
-                null : fluid.invokeGlobalFunction(entryType, args);
-        } else {
-            togo = entry.apply(null, args);
-        }
-        return togo;
+        return shadow && shadow.that;
     };
 
     // ******* SELECTOR ENGINE *********
@@ -3035,7 +3148,6 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      *
      * @param {Object} originalObject - An object.
      * @return {Object} A representation of the original object that only contains top-level sub-elements whose keys are EL Paths.
-     *
      */
     // unsupported, non-API function
     fluid.flattenObjectPaths = function (originalObject) {
@@ -3063,10 +3175,9 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
      * "%deep.path.to.value".  Returns a new string with the tokens replaced by the specified values.  Keys and values
      * can be of any data type that can be coerced into a string.
      *
-     * @param {String} template - A string (can be HTML) that contains tokens embedded into it.
-     * @param {Object} values - A collection of token keys and values.
-     * @return {String} A string whose tokens have been replaced with values.
-     *
+     * @param {String} template - A string that contains placeholders for tokens of the form `%token` embedded into it.
+     * @param {Object.<String.String>} values - A map of token names to the values which should be interpolated.
+     * @return {String} The text of `template` whose tokens have been interpolated with values.
      */
     fluid.stringTemplate = function (template, values) {
         var flattenedValues = fluid.flattenObjectPaths(values);

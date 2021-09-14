@@ -12,46 +12,50 @@
         <link rel="stylesheet" type="text/css" href="css/uploader.css" />
 
         <!-- Fluid and jQuery Dependencies -->
-        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/version.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/keycode.js"></script>
+        <script src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../src/lib/jquery/ui/js/version.js"></script>
+        <script src="../../src/lib/jquery/ui/js/keycode.js"></script>
 
-        <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"></script>
+        <script src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script src="../../src/lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"></script>
 
-        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDebugging.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
-        <script type="text/javascript" src="../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script src="../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../src/framework/core/js/FluidPromises.js"></script>
+        <script src="../../src/framework/core/js/FluidDebugging.js"></script>
+        <script src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../src/framework/core/js/DataSource.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../src/framework/core/js/FluidView-browser.js"></script>
+        <script src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script src="../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
 
         <!-- required for the Overview Panel -->
-        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
-        <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../src/framework/renderer/js/RendererUtilities.js"></script>
 
         <!-- Uploader dependencies -->
-        <script type="text/javascript" src="../../src/components/uploader/js/Uploader.js"></script>
-        <script type="text/javascript" src="../../src/components/uploader/js/FileQueue.js"></script>
-        <script type="text/javascript" src="../../src/components/progress/js/Progress.js"></script>
-        <script type="text/javascript" src="../../src/components/uploader/js/FileQueueView.js"></script>
-        <script type="text/javascript" src="../../src/components/uploader/js/ErrorPanel.js"></script>
-        <script type="text/javascript" src="../../src/components/uploader/js/HTML5UploaderSupport.js"></script>
-        <script type="text/javascript" src="../../src/components/uploader/js/DemoUploadManager.js"></script>
-        <script type="text/javascript" src="../../src/components/uploader/js/MimeTypeExtensions.js"></script>
+        <script src="../../src/components/uploader/js/Uploader.js"></script>
+        <script src="../../src/components/uploader/js/FileQueue.js"></script>
+        <script src="../../src/components/progress/js/Progress.js"></script>
+        <script src="../../src/components/uploader/js/FileQueueView.js"></script>
+        <script src="../../src/components/uploader/js/ErrorPanel.js"></script>
+        <script src="../../src/components/uploader/js/HTML5UploaderSupport.js"></script>
+        <script src="../../src/components/uploader/js/DemoUploadManager.js"></script>
+        <script src="../../src/components/uploader/js/MimeTypeExtensions.js"></script>
 
-        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
-        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+        <script src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script src="../shared/js/overviewWrapper.js"></script>
 
         <!-- The Uploader demo -->
-        <script type="text/javascript" src="js/uploaderDemo.js"></script>
+        <script src="js/uploaderDemo.js"></script>
     </head>
     <body>
         <section class="flc-overviewPanel fl-overviewPanel-container"></section>
@@ -67,7 +71,7 @@
             <div id="uploader-contents">
             </div>
 
-            <script type="text/javascript">
+            <script>
                 demo.uploader("#uploader-contents");
             </script>
         </section>

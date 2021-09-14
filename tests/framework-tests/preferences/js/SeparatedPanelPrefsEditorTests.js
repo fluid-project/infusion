@@ -433,8 +433,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertNotUndefined("The prefsEditor should have been instantiated", prefsEditorLoader.prefsEditor);
         jqUnit.assertNotUndefined("The templateLoader should have been instantiated", prefsEditorLoader.templateLoader);
 
-        var expectedResources = fluid.keys(prefsEditorLoader.messageLoader.options.resources);
-        var actualResources = fluid.keys(prefsEditorLoader.messageLoader.resources);
+        var expectedResources = fluid.keys(prefsEditorLoader.messageLoader.options.resources).sort();
+        var actualResources = fluid.keys(prefsEditorLoader.messageLoader.resources).sort();
         jqUnit.assertDeepEq("All of the resources should have loaded", expectedResources, actualResources);
     };
 

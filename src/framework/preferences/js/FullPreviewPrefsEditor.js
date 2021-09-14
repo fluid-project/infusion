@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 source: "{that}.options.previewEnhancer",
                 target: "{that enhancer}.options"
             },
-            "fullPreviw.preview": {
+            "fullPreview.preview": {
                 source: "{that}.options.preview",
                 target: "{that preview}.options"
             },

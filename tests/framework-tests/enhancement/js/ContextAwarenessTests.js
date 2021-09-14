@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
         var names = contextAware.options.gradeNames;
         return fluid.remove_if(fluid.makeArray(names), function (name) {
-            return (/fluid\.contextAware|fluid\.tests\.contextAware\.base|{that}.check|fluid\.component/).test(name);
+            return (/fluid\.contextAware|fluid\.tests\.contextAware\.base|fluid\.component/).test(name);
         });
     };
 
@@ -147,7 +147,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             },
             urgency: {
                 defaultGradeNames: "above.food",
-                priority: "before:food" // Note that stronger grades appear to the LEFT in defaults - even though we consider merging to morally occur from left to right
+                priority: "before:food" // Note that stronger grades (those which override others) appear to the RIGHT in defaults
             },
             strongest: {
                 defaultGradeNames: "strongest.priority",
@@ -218,6 +218,85 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "check.set.one": false,
             "check.set.two": false
         });
+    });
+
+    /** FLUID-6438 contextAwareness dynamic grade application order **/
+
+    fluid.defaults("fluid.tests.fluid6438context", {
+        gradeNames: "fluid.component",
+        buildingOptions: {
+            contextOption: 42
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6438outer", {
+        gradeNames: ["fluid.tests.fluid6438base", "fluid.contextAware"],
+        contextAwareness: {
+            food: {
+                defaultGradeNames: "fluid.tests.fluid6438context"
+            }
+        }
+    });
+
+    fluid.tests.fluid6438consume = function (buildingOptions) {
+        jqUnit.assertEquals("ContextAwareness contributed grade should already have arrived", 42, buildingOptions.contextOption);
+        return null;
+    };
+
+    fluid.defaults("fluid.tests.fluid6438base", {
+        gradeNames: ["fluid.component", "@expand:fluid.tests.fluid6438consume({that}.options.buildingOptions)"]
+    });
+
+    jqUnit.test("FLUID-6438: Ordering of fluid.contextAware grade application", function () {
+        jqUnit.expect(1);
+        fluid.tests.fluid6438outer();
+    });
+
+    /** FLUID-6440 contextAwareness and grade closure algorithm **/
+
+    fluid.defaults("fluid.tests.fluid6440foodContext", {
+        gradeNames: "fluid.component",
+        foodValue: "carrots",
+        secondaryFoodValue: "cheese"
+    });
+
+    fluid.defaults("fluid.tests.fluid6440intermediateOutput", {
+        gradeNames: "fluid.component",
+        secondaryFoodValue: "corn"
+    });
+
+    fluid.defaults("fluid.tests.fluid6440contextOut", {
+        secondaryFoodValue: "courses"
+    });
+
+    fluid.tests.fluid6440intermediate = function (foodValue) {
+        jqUnit.assertEquals("Nullary contextAwareness value applied already", "carrots", foodValue);
+        return "fluid.tests.fluid6440intermediateOutput";
+    };
+
+    fluid.defaults("fluid.tests.fluid6440base", {
+        gradeNames: ["fluid.component", "fluid.contextAware", "@expand:fluid.tests.fluid6440intermediate({that}.options.foodValue)"],
+        contextAwareness: {
+            food: {
+                defaultGradeNames: "fluid.tests.fluid6440foodContext"
+            },
+            ambition: {
+                checks: {
+                    firstCheck: {
+                        contextValue: "{fluid6440intermediateOutput}.options.foodValue",
+                        gradeNames: "fluid.tests.fluid6440contextOut"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6440: Grade closure for ContextAwareness", function () {
+        jqUnit.expect(3);
+        var that = fluid.tests.fluid6440base();
+        jqUnit.assertTrue("Final grade output through repeated ContextAwareness application",
+            fluid.componentHasGrade(that, "fluid.tests.fluid6440contextOut"));
+        jqUnit.assertEquals("ContextAwareness grade has overridden computed option value", "courses", that.options.secondaryFoodValue);
     });
 
 })();

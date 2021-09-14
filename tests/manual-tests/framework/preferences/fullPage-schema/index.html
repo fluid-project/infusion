@@ -26,7 +26,6 @@
         <script src="../../../../../src/framework/core/js/DataSource.js"></script>
         <script src="../../../../../src/framework/core/js/FluidDocument.js"></script>
         <script src="../../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
-        <script src="../../../../../src/framework/core/js/FluidRequests.js"></script>
         <script src="../../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script src="../../../../../src/framework/core/js/FluidIoC.js"></script>
         <script src="../../../../../src/framework/core/js/DataBinding.js"></script>
@@ -35,7 +34,9 @@
         <script src="../../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script src="../../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script src="../../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidView-browser.js"></script>
         <script src="../../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
         <script src="../../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script src="../../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script src="../../../../../src/framework/core/js/MessageResolver.js"></script>
@@ -56,24 +57,10 @@
         <script src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script src="../../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script src="../../../../../src/framework/preferences/js/Builder.js"></script>
-
-        <script src="js/prefsEditorFullPageSchema.js"></script>
+        <script src="../../../../../src/components/uiOptions/js/UIOptions.js"></script>
     </head>
 
     <body>
-        <!-- The page-wide UI Enhancer needs to be initialized right away -->
-        <script type="text/javascript">
-            $(function () {
-                demo.initFullWithPreview("#myPrefsEditor", {
-                    prefsEditor: {
-                        preview: {
-                            templateUrl: "../shared/html/prefsEditorPreview.html"
-                        }
-                    }
-                });
-            });
-        </script>
-
         <aside class="instructions-container">
             <div class="instructions-content">
                 <h2>Description</h2>
@@ -102,5 +89,30 @@
             <div id="myPrefsEditor"></div>
         </main>
 
+        <script type="text/javascript">
+            fluid.uiOptions("#myPrefsEditor", {
+                auxiliarySchema: {
+                    loaderGrades: ["fluid.prefs.fullPreview"],
+                    generatePanelContainers: false,
+                    terms: {
+                        "templatePrefix": "../../../../../src/framework/preferences/html/",
+                        "messagePrefix": "../../../../../src/framework/preferences/messages/"
+                    },
+                    message: "%messagePrefix/prefsEditor.json",
+                    template: "%templatePrefix/FullPreviewPrefsEditor.html",
+                    "fluid.prefs.tableOfContents": {
+                        enactor: {
+                            tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+                            tocMessage: "%messagePrefix/tableOfContents-enactor.json"
+                        }
+                    }
+                },
+                prefsEditor: {
+                    preview: {
+                        templateUrl: "../shared/html/prefsEditorPreview.html"
+                    }
+                }
+            });
+        </script>
     </body>
 </html>

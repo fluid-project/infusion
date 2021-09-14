@@ -75,12 +75,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 ]
             },
             "onReady.windowResize": {
-                "this": window,
+                "this": "window",
                 method: "addEventListener",
                 args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
             },
             "onDestroy.removeWindowResize": {
-                "this": window,
+                "this": "window",
                 method: "removeEventListener",
                 args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
             },

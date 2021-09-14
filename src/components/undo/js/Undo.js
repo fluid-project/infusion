@@ -96,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * @param {Object} options - (optional) a collection of options settings
      */
     fluid.defaults("fluid.undo", {
-        gradeNames: ["fluid.component"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             state: fluid.undo.STATE_INITIAL,
             initialModel: {},
@@ -106,12 +106,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 expander: {
                     func: "{that}.options.renderer",
                     args: ["{that}", "{that}.component.container"]
-                }
-            },
-            dom: {
-                expander: {
-                    funcName: "fluid.initDomBinder",
-                    args: ["{that}", "{that}.options.selectors"]
                 }
             }
         },
@@ -163,6 +157,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     // An uninstantiable grade expressing the contract of the "fluid.undoable" grade
+    // WARNING: Note that the only component which complies with this "corrupt contract" of being a fluid.modelComponent but
+    // having an unrelated means of updating the model is fluid.inlineEdit - it should not be used.
     fluid.defaults("fluid.undoable", {
         gradeNames: ["fluid.modelComponent"],
         invokers: {
@@ -171,11 +167,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         events: {
             modelChanged: null
         }
-    });
-
-    // Backward compatibility for users of Infusion 1.4.x API
-    fluid.defaults("fluid.undoDecorator", {
-        gradeNames: ["fluid.undo"]
     });
 
 })(jQuery, fluid_4_0_0);

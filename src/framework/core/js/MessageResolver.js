@@ -39,8 +39,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * the resolve function is `fluid.stringTemplate`, and the template returned uses its syntax.
      *
      * @param {Object} that - The component itself.
-     * @param {Array} messagecodes - One or more message codes to look up templates for.
-     * @return {Object} - An object that contains`template` and `resolveFunc` members (see above).
+     * @param {String[]} messagecodes - One or more message codes to look up templates for.
+     * @return {Object} - An object that contains `template` and `resolveFunc` members (see above).
      */
     fluid.messageResolver.lookup = function (that, messagecodes) {
         var resolved = fluid.messageResolver.resolveOne(that.messageBase, messagecodes);
@@ -72,12 +72,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "[Message string for key " + messagecodes[0] + " not found]";
     };
 
-
     // unsupported, NON-API function
     fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
+        // Use this strategy to fake up the possibility of indirecting into a dynamically reloaded resource (e.g.
+        // via relocalisation) without having to push it through a component model
+        if (messageBase instanceof fluid.fetchResources.FetchOne) {
+            messageBase = fluid.fetchResources.resolveFetchOne(messageBase);
+        };
         for (var i = 0; i < messagecodes.length; ++i) {
             var code = messagecodes[i];
             var message = messageBase[code];
+            // Bless people who have resolved individual messages asynchronously as well. In practice this will
+            // eventually have to give way to an approach for general asynchrony in options, or the much more
+            // efficient "immutable application" model for models, or both
+            if (message instanceof fluid.fetchResources.FetchOne) {
+                message = fluid.fetchResources.resolveFetchOne(message);
+            }
             if (message !== undefined) {
                 return message;
             }

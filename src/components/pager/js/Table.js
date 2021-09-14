@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
         if (!key) {
             var segs = fluid.model.parseEL(EL);
-            key = segs[segs.length - 1];
+            key = fluid.peek(segs);
         }
         return {
             ID: (keyPrefix || "") + key,
@@ -85,9 +85,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
 
-    fluid.table.bigHeaderForKey = function (key, options) {
+    fluid.table.bigHeaderForKey = function (key, options, idMap) {
         // TODO: ensure this is shared properly
-        var id = options.rendererOptions.idMap["header:" + key];
+        var id = idMap["header:" + key];
         var smallHeader = fluid.jById(id);
         if (smallHeader.length === 0) {
             return null;
@@ -117,10 +117,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return columnDef ? columnDef.sortable : false;
     };
 
-    fluid.table.setModelSortHeaderClass = function (columnDefs, newModel, options) {
+    fluid.table.setModelSortHeaderClass = function (columnDefs, newModel, options, idMap) {
         var styles = options.styles;
         var sort = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ? newModel.sortDir : 0;
-        fluid.table.setSortHeaderClass(styles, fluid.table.bigHeaderForKey(newModel.sortKey, options), sort);
+        fluid.table.setSortHeaderClass(styles, fluid.table.bigHeaderForKey(newModel.sortKey, options, idMap), sort);
     };
 
 
@@ -134,7 +134,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 if (columnDef.key !== model.sortKey) {
                     newModel.sortKey = columnDef.key;
                     newModel.sortDir = 1;
-                    var oldBig = fluid.table.bigHeaderForKey(oldKey, options);
+                    var oldBig = fluid.table.bigHeaderForKey(oldKey, options, tableThat.bodyRenderer.rendererOptions.idMap);
                     if (oldBig) {
                         fluid.table.setSortHeaderClass(styles, oldBig, 0);
                     }
@@ -208,13 +208,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.table.expandPaths = function (target, tree, opts) {
         for (var i in tree) {
             var val = tree[i];
-            if (fluid.isMarker(val, fluid.VALUE)) { // TODO, in theory, we could prevent copying of columnDefs
-                if (i === "valuebinding") {
-                    target[i] = opts.EL;
-                } else {
-                    target[i] = {"valuebinding" : opts.EL};
-                }
-            } else if (i === "valuebinding") {
+            if (i === "valuebinding") {
                 target[i] = fluid.table.expandPath(tree[i], opts);
             } else if (typeof(val) === "object") {
                 target[i] = val.length !== undefined ? [] : {};
@@ -315,7 +309,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }],
             afterRender: { // TODO, should this not be actually renderable?
                 funcName: "fluid.table.setModelSortHeaderClass",
-                args: ["{that}.options.columnDefs", "{fluid.table}.model", "{that}.options"]
+                args: ["{that}.options.columnDefs", "{fluid.table}.model", "{that}.options", "{that}.rendererOptions.idMap"]
             }
         },
         modelListeners: {

@@ -22,11 +22,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     // TODO: Convert one day to the "visibility model" system (FLUID-4928)
     fluid.pager.updateStyles = function (pageListThat, newModel, oldModel) {
+        var pageLinks = pageListThat.locate("pageLinks");
         if (oldModel && oldModel.pageIndex !== undefined) {
-            var oldLink = pageListThat.pageLinks.eq(oldModel.pageIndex);
+            var oldLink = pageLinks.eq(oldModel.pageIndex);
             oldLink.removeClass(pageListThat.options.styles.currentPage);
         }
-        var pageLink = pageListThat.pageLinks.eq(newModel.pageIndex);
+        var pageLink = pageLinks.eq(newModel.pageIndex);
         pageLink.addClass(pageListThat.options.styles.currentPage);
     };
 
@@ -59,20 +60,34 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.pager.directPageList", {
-        gradeNames: ["fluid.pager.pageList"],
+        gradeNames: ["fluid.pager.pageList", "fluid.contextAware"],
+        contextAwareness: {
+            isInPager: {
+                checks: {
+                    isInPager: {
+                        contextValue: "{fluid.pager}",
+                        gradeNames: "fluid.pager.directPageListInPager"
+                    }
+                }
+            }
+        },
         listeners: {
             onCreate: {
                 funcName: "fluid.pager.bindLinkClicks",
-                args: ["{that}.pageLinks", "{pager}.events.initiatePageChange"]
+                args: ["{that}.dom.pageLinks", "{pager}.events.initiatePageChange"]
             }
         },
         modelListeners: {
             "{pager}.model": "fluid.pager.updateStyles({that}, {change}.value, {change}.oldValue)"
-        },
-        members: {
-            pageLinks: "{that}.dom.pageLinks",
-            defaultModel: {
-                totalRange: "{that}.pageLinks.length"
+        }
+    });
+
+    // Interactional grade reporting number of page links up to pager
+    fluid.defaults("fluid.pager.directPageListInPager", {
+        listeners: {
+            "onDomBind.countPageLinks": {
+                changePath: "{fluid.pager}.model.totalRange",
+                value: "{that}.dom.pageLinks.length"
             }
         }
     });
@@ -200,24 +215,26 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var pages = that.options.pageStrategy(newModel.pageCount, 0, newModel.pageIndex);
         var pageTree = fluid.transform(pages, pageToComponent(newModel.pageIndex));
         if (pageTree.length > 1) {
-            pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + that.options.strings.last;
+            fluid.peek(pageTree).value = fluid.peek(pageTree).value + that.options.strings.last;
         }
         that.events.onRenderPageLinks.fire(pageTree, newModel);
         that.pageTree = pageTree;
         that.refreshView();
     };
 
-    fluid.pager.renderedPageList.renderLinkBody = function (linkBody, rendererOptions) {
-        if (linkBody) {
-            rendererOptions.cutpoints.push({
-                id: "payload-component",
-                selector: linkBody
-            });
-        }
+    fluid.pager.renderedPageList.linkBodyCutpoint = function (linkBody) {
+        return linkBody ? [{
+            id: "payload-component",
+            selector: linkBody
+        }] : [];
     };
 
     fluid.defaults("fluid.pager.renderedPageList", {
         gradeNames: ["fluid.pager.pageList", "fluid.rendererComponent"],
+        distributeOptions: {
+            record: "@expand:fluid.pager.renderedPageList.linkBodyCutpoint({that}.options.linkBody)",
+            target: "{that}.options.rendererOptions.cutpoints"
+        },
         rendererOptions: {
             idMap: {},
             cutpoints: [
@@ -239,14 +256,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         events: {
             onRenderPageLinks: "{pager}.events.onRenderPageLinks"
         },
-        listeners: {
-            onCreate: {
-                funcName: "fluid.pager.renderedPageList.renderLinkBody",
-                args: ["{that}.options.linkBody", "{that}.options.rendererOptions"]
-            }
-        },
+        // Relay the model since we will miss its initialisation due to now being createOnEvent onCreate via onDomBind
+        model: "{pager}.model",
         modelListeners: {
-            "{pager}.model": "fluid.pager.renderedPageList.onModelChange({that}, {change}.value)"
+            "": "fluid.pager.renderedPageList.onModelChange({that}, {change}.value)"
         },
         invokers: {
             produceTree: {
@@ -376,6 +389,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.pager.summary.onModelChange = function (node, message, newModel) {
         var text = fluid.stringTemplate(message, {
+            // TODO: Absurd, these fields should be modelised rather than computed
             first: newModel.pageIndex * newModel.pageSize + 1,
             last: fluid.pager.computePageLimit(newModel),
             total: newModel.totalRange,
@@ -443,11 +457,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         model: {
             pageIndex: 0,
             pageSize: 1,
-            totalRange: {
-                expander: {
-                    func: "{that}.acquireDefaultRange"
-                }
-            }
+            totalRange: undefined // Must be supplied by integrator
         },
         selectors: {
             pagerBar: ".flc-pager-top, .flc-pager-bottom",
@@ -473,26 +483,26 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
             }
         },
-        modelRelay: [{
-            target: "pageCount",
-            singleTransform: {
-                type: "fluid.transforms.free",
+        modelRelay: {
+            pageCount: {
+                target: "pageCount",
+                func: "fluid.pager.computePageCount",
                 args: {
                     "totalRange": "{that}.model.totalRange",
                     "pageSize": "{that}.model.pageSize"
-                },
-                func: "fluid.pager.computePageCount"
+                }
+            },
+            limitRange: {
+                target: "pageIndex",
+                singleTransform: {
+                    type: "fluid.transforms.limitRange",
+                    input: "{that}.model.pageIndex",
+                    min: 0,
+                    max: "{that}.model.pageCount",
+                    excludeMax: 1
+                }
             }
-        }, {
-            target: "pageIndex",
-            singleTransform: {
-                type: "fluid.transforms.limitRange",
-                input: "{that}.model.pageIndex",
-                min: 0,
-                max: "{that}.model.pageCount",
-                excludeMax: 1
-            }
-        }],
+        },
         modelListeners: {
             "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue, {that})"
         },
@@ -504,14 +514,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "initiatePageSizeChange.updateModel": {
                 changePath: "pageSize",
                 value: "{arguments}.0"
-            }
-        },
-        invokers: {
-            acquireDefaultRange: {
-                // TODO: problem here - pagerBar, etc. are dynamic components and so cannot be constructed gingerly
-                // This is why current (pre-FLUID-4925) framework must construct components before invokers
-                funcName: "fluid.identity",
-                args: "{that}.pagerBar.pageList.defaultModel.totalRange"
             }
         },
         dynamicComponents: {

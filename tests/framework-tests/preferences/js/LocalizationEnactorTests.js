@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fr: "fr-CA"
         },
         pathnames: {
-            default: "/about/",
+            "default": "/about/",
             english: "/about/en-US/",
             french: "/about/fr-CA/"
         },
@@ -42,11 +42,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     fluid.tests.prefs.enactor.localizationEnactor.getPathname = function (that) {
-        return that.options.recordedPathname || that.options.pathnames["default"];
+        return that.recordedPathname || that.options.pathnames["default"];
     };
 
     fluid.tests.prefs.enactor.localizationEnactor.setPathname = function (that, pathname) {
-        that.options.recordedPathname = pathname;
+        that.recordedPathname = pathname;
     };
 
     fluid.defaults("fluid.tests.localizationTests", {
@@ -170,12 +170,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertDeepEq(prefix + ": The model property is set correctly: " + expectedModel.lang, expectedModel, that.model);
 
         if (pathname) {
-            jqUnit.assertEquals(prefix + ": The correct URL pathname is set", pathname, that.options.recordedPathname);
+            jqUnit.assertEquals(prefix + ": The correct URL pathname is set", pathname, that.recordedPathname);
         }
     };
 
     /*********************************************************************************
-     *Tests for referencing a global fluid.prefs.enactor.localization via model relay
+     * Tests for referencing a global fluid.prefs.enactor.localization via model relay
      ********************************************************************************/
 
     fluid.defaults("fluid.tests.localizationExistingTests", {

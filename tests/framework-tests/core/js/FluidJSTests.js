@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         "document": document,
         "window": window,
         "jDocument": $("document"),
-        "component": fluid.component()
+        "component": fluid.typeTag("fluid.component")
     };
 
     jqUnit.test("fluid.isPlainObject tests", function () {
@@ -84,6 +84,25 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
         fluid.each(fluid.tests.arrayableFalse, function (totest, key) {
             jqUnit.assertEquals("Expected not isJQuery: " + key, false, fluid.isJQuery(totest));
+        });
+    });
+
+    jqUnit.test("isInteger tests", function () {
+        var fixtures = [
+            {value: null, isInt: false},
+            {value: NaN,  isInt: false},
+            {value: Infinity, isInt: false},
+            {value: "1",  isInt: false},
+            {value: {},   isInt: false},
+            {value: true, isInt: false},
+            {value: [],   isInt: false},
+            {value: 3.5,  isInt: false},
+            {value: 4,    isInt: true},
+            {value: -4,   isInt: true},
+            {value: 0,    isInt: true}
+        ];
+        fixtures.forEach(function (fixture, index) {
+            jqUnit.assertEquals("IsInteger fixture " + index, fluid.isInteger(fixture.value), fixture.isInt);
         });
     });
 
@@ -152,6 +171,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fluid.pushArray(holder, "m1", fixture.topush);
             jqUnit.assertDeepEq("fluid.pushArray - " + fixture.message, fixture.expected, holder);
         });
+    });
+
+    jqUnit.test("fluid.pushArray with jQuery", function () {
+        var holder = {};
+        fluid.pushArray(holder, "m1", $([document, document]));
+        jqUnit.assertEquals("Only one element pushed", 1, holder.m1.length);
     });
 
     function isOdd(i) {
@@ -274,6 +299,21 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.each(fluid.tests.flattenFixtures, function (fixture) {
             jqUnit.assertDeepEq(fixture.message, fixture.expected, fluid.flatten(fixture.arg));
         });
+    });
+
+    jqUnit.test("Simple fluid.hashToArray configuration", function () {
+        var hash = {
+            a: 1,
+            b: 2
+        };
+        var expected = [1, 2];
+        jqUnit.assertDeepEq("Simple driver with key loss", expected, fluid.hashToArray(hash));
+        var hash2 = {
+            a: {thing: 1},
+            b: {thing: 2}
+        };
+        var expected2 = [{thing: 1, key: "a"}, {thing: 2, key: "b"}];
+        jqUnit.assertDeepEq("Simple driver with key hoisting", expected2, fluid.hashToArray(hash2, "key"));
     });
 
     fluid.tests.roundToDecimalTests = [
@@ -728,11 +768,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             fluid.builtinFail(args); // throw exception to keep expectFrameworkDiagnostic happy
         }
         jqUnit.expect(1);
-        fluid.pushSoftFailure(failHandle);
+        fluid.failureEvent.addListener(failHandle, "fail");
         jqUnit.expectFrameworkDiagnostic("Configurable failure handler", function () {
             fluid.fail.apply(null, testArgs);
         }, "thingit");
-        fluid.pushSoftFailure(-1);
+        fluid.failureEvent.removeListener("fail");
     });
 
     jqUnit.test("FLUID-5807 tests - identify fluid.FluidError", function () {
@@ -1017,158 +1057,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     });
 
-    fluid.defaults("fluid.tests.eventMerge", {
-        gradeNames: ["fluid.component"],
-        events: {
-            event: "preventable"
-        }
-    });
-
-    jqUnit.test("Merge over named listener", function () {
-        var that = fluid.tests.eventMerge({
-            events: {
-                event: null
-            },
-            listeners: {
-                event: "fluid.identity"
-            }
-        });
-        var result = that.events.event.fire(false);
-        jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
-    });
-
-    fluid.tests.makeNotingListener = function (key) {
-        return function (that) {
-            var existing = that.values[key];
-            that.values[key] = existing === undefined ? 1 : existing + 1;
-        };
-    };
-
-    fluid.defaults("fluid.tests.listenerTest", {
-        gradeNames: ["fluid.component"],
-        events: {
-            event: null
-        },
-        listeners: {
-            event: fluid.tests.makeNotingListener("noNamespace"),
-            "event.namespace": fluid.tests.makeNotingListener("namespace"),
-            onCreate: fluid.tests.makeNotingListener("onCreate"),
-            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace"),
-            "onCreate.makeValues": {
-                listener: "fluid.tests.listenerTest.makeValues",
-                priority: "first"
-            }
-        }
-    });
-
-    fluid.tests.listenerTest.makeValues = function (that) {
-        that.values = {};
-    };
-
-    jqUnit.test("Correctly merge optioned listeners", function () {
-        var options = {listeners: {
-            event: fluid.tests.makeNotingListener("noNamespace2"),
-            "event.namespace": fluid.tests.makeNotingListener("namespace2"),
-            onCreate: fluid.tests.makeNotingListener("onCreate2"),
-            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace2")
-        }};
-        var that = fluid.tests.listenerTest(options);
-        var expected1 = {
-            onCreate: 1,
-            onCreate2: 1,
-            "onCreate.namespace2": 1
-        };
-        jqUnit.assertDeepEq("Creation listeners merged and fired", expected1, that.values);
-        that.events.event.fire(that);
-        var expected2 = {
-            noNamespace: 1,
-            noNamespace2: 1,
-            namespace2: 1
-        };
-        jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values);
-    });
-
-    /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
-
-    jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
-        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on incomplete grade hierarchy", function () {
-            // TODO: in future, there will be no error thrown on definition, but only on use - since it should be possible
-            // to declare grade hierarchies through forward reference
-            fluid.defaults("fluid.tests.missingGradeComponent", {
-                gradeNames: ["fluid.tests.nonexistentGrade"]
-            });
-            fluid.tests.missingGradeComponent();
-        }, ["incomplete", "nonexistentGrade"]);
-    });
-
-
-    fluid.defaults("fluid.tests.forwardRefComponent", {
-        gradeNames: "fluid.tests.forwardBaseComponent"
-    });
-
-    fluid.defaults("fluid.tests.forwardBaseComponent", {
-        gradeNames: "fluid.component"
-    });
-
-    jqUnit.test("Forward reference through grade hierarchy", function () {
-        jqUnit.expect(1);
-        var that = fluid.tests.forwardRefComponent();
-        jqUnit.assertValue("Should have received component with forward grade reference", that);
-    });
-
-    fluid.defaults("fluid.tests.schema.textSizer", {
-        gradeNames: ["fluid.tests.schema", "fluid.component"],
-        schema: {
-            "fluid.prefs.textSizer": { // common grade name
-                "type": "number",
-                "default": 1,
-                "min": 1,
-                "max": 2,
-                "multipleOf": 0.1
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
-        gradeNames: ["fluid.component"],
-        preferenceMap: {
-            thing: "fluid.prefs.nonThing"
-        }
-    });
-
-    fluid.defaults("fluid.tests.panels.linksControls", {
-        gradeNames: ["fluid.tests.settingsPanel", "fluid.component"],
-        preferenceMap: {
-            links: "fluid.prefs.emphasizeLinks",
-            inputsLarger: "fluid.prefs.inputsLarger"
-        }
-    });
-
-    fluid.tests.schema.indexer = function (defaults) {
-        return fluid.keys(defaults.schema);
-    };
-
-    fluid.tests.panels.indexer = function (defaults) {
-        return fluid.values(defaults.preferenceMap);
-    };
-
-    jqUnit.test("FLUID-5067 grade indexing", function () {
-        var indexedSchema = fluid.indexDefaults("schemaIndexer", {
-            gradeNames: "fluid.tests.schema",
-            indexFunc: "fluid.tests.schema.indexer"
-        });
-        jqUnit.assertDeepEq("Indexed grade", ["fluid.tests.schema.textSizer"], indexedSchema["fluid.prefs.textSizer"]);
-        var indexedPanels = fluid.indexDefaults("panelIndexer", {
-            gradeNames: "fluid.tests.settingsPanel",
-            indexFunc: "fluid.tests.panels.indexer"
-        });
-        var expected = {
-            "fluid.prefs.emphasizeLinks": ["fluid.tests.panels.linksControls"],
-            "fluid.prefs.inputsLarger": ["fluid.tests.panels.linksControls"]
-        };
-        jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
-    });
-
     fluid.tests.invokeGlobalFunction = {
         withArgs: function (arg1) {
             jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
@@ -1238,6 +1126,121 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("The text should have been set", expectedText, jqElm.text());
         jqUnit.assertEquals("The value returned from the bind should be the same as the native call", jqElm.text(), fluid.bind(jqElm, "text"));
         jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
+    });
+
+    fluid.tests.withNoTryCatch = function (notrycatch, func) {
+        var oldnotrycatch = fluid.notrycatch;
+        fluid.notrycatch = notrycatch;
+        try {
+            func();
+        } finally {
+            fluid.notrycatch = oldnotrycatch;
+        }
+    };
+
+    fluid.tests.tryCatchNormal = function () {
+        // normal control flow
+        var record = [];
+        fluid.tryCatch(function () {
+            record.push(1);
+        }, null, function () {
+            record.push(2);
+        });
+        jqUnit.assertDeepEq("Should have executed try followed by finally", [1, 2], record);
+    };
+
+    jqUnit.test("fluid.tryCatch - normal case", function () {
+        fluid.tests.withNoTryCatch(false, function () {
+            fluid.tests.tryCatchNormal();
+            var record = [];
+            fluid.tryCatch(function () {
+                record.push(1);
+                throw 2;
+            }, function (e) {
+                record.push(e);
+            }, function () {
+                record.push(3);
+            });
+            jqUnit.assertDeepEq("Should have executed try, propagated exception to catch, followed by finally",
+                [1, 2, 3], record);
+        });
+    });
+
+    jqUnit.test("fluid.tryCatch - defeated case", function () {
+        fluid.tests.withNoTryCatch(true, function () {
+            jqUnit.expect(2);
+            fluid.tests.tryCatchNormal();
+            var record = [];
+            try {
+                fluid.tryCatch(function () {
+                    record.push(1);
+                    throw 2;
+                }, function (e) {
+                    record.push(e);
+                }, function () {
+                    record.push(3);
+                });
+            } catch (e) {
+                record.push(e);
+                jqUnit.assertDeepEq("Should have executed try, skipped catch and finally, propagating exception out",
+                    [1, 2], record);
+            }
+        });
+    });
+
+    /** FLUID-5067: grade indexing tests **/
+
+    fluid.defaults("fluid.tests.schema.textSizer", {
+        gradeNames: ["fluid.tests.schema", "fluid.component"],
+        schema: {
+            "fluid.prefs.textSizer": { // common grade name
+                "type": "number",
+                "default": 1,
+                "min": 1,
+                "max": 2,
+                "multipleOf": 0.1
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
+        gradeNames: ["fluid.component"],
+        preferenceMap: {
+            thing: "fluid.prefs.nonThing"
+        }
+    });
+
+    fluid.defaults("fluid.tests.panels.linksControls", {
+        gradeNames: ["fluid.tests.settingsPanel", "fluid.component"],
+        preferenceMap: {
+            links: "fluid.prefs.emphasizeLinks",
+            inputsLarger: "fluid.prefs.inputsLarger"
+        }
+    });
+
+    fluid.tests.schema.indexer = function (defaults) {
+        return fluid.keys(defaults.schema);
+    };
+
+    fluid.tests.panels.indexer = function (defaults) {
+        return fluid.values(defaults.preferenceMap);
+    };
+
+    jqUnit.test("FLUID-5067 grade indexing", function () {
+        var indexedSchema = fluid.indexDefaults("schemaIndexer", {
+            gradeNames: "fluid.tests.schema",
+            indexFunc: "fluid.tests.schema.indexer"
+        });
+        jqUnit.assertDeepEq("Indexed grade", ["fluid.tests.schema.textSizer"], indexedSchema["fluid.prefs.textSizer"]);
+        var indexedPanels = fluid.indexDefaults("panelIndexer", {
+            gradeNames: "fluid.tests.settingsPanel",
+            indexFunc: "fluid.tests.panels.indexer"
+        });
+        var expected = {
+            "fluid.prefs.emphasizeLinks": ["fluid.tests.panels.linksControls"],
+            "fluid.prefs.inputsLarger": ["fluid.tests.panels.linksControls"]
+        };
+        jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
     });
 
 })(jQuery);

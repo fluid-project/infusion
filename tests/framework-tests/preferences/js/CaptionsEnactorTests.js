@@ -139,8 +139,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 createOnEvent: "onYTPlayerReady"
             },
             youTubePlayerTester: {
-                type: "fluid.tests.youTubePlayerTester",
-                createOnEvent: "onYTPlayerReady"
+                type: "fluid.tests.youTubePlayerTester"
             }
         }
     });
@@ -293,7 +292,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             },
             captionsTester: {
                 type: "fluid.tests.captionsTester",
-                createOnEvent: "onYTPlayerReady",
                 options: {
                     events: {
                         onTestCaseStart: "{captionsTests}.events.onTestCaseStart"
@@ -316,7 +314,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 sequence: [{
                     funcName: "jqUnit.assertEquals",
                     args: ["The onVideoElementLocated should have fired for each found element", 2, "{captions}.record.onVideoElementLocated.length"]
-                }, {
+                }, { // TODO: This fixture is faulty in that there is no expectation that the components are created synchronously
                     funcName: "fluid.tests.captionsTester.verifyDynamicComponentsCreated",
                     args: ["{captions}", "{that}.options.testOpts.componentNames"]
                 }, {

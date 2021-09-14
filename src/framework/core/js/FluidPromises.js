@@ -20,32 +20,27 @@
 
     fluid.promise = function () {
         var that = {
+            // TODO: We probably can and should replace these with actual events, especially once we optimise out
+            // "byId" and perhaps also experiment with whether Object.defineProperty creates less garbage than that-ism
             onResolve: [],
-            onReject: []
-            // disposition
-            // value
+            onReject: [],
+            onCancel: []
+            // disposition: "resolve"/"reject"/"cancel"
+            // directHandle: "resolve"/"reject"/"cancel" - signalling to unhandled rejection handler
+            // value: Any
         };
-        that.then = function (onResolve, onReject) {
-            if (onResolve) {
-                if (that.disposition === "resolve") {
-                    onResolve(that.value);
-                } else {
-                    that.onResolve.push(onResolve);
-                }
-            }
-            if (onReject) {
-                if (that.disposition === "reject") {
-                    onReject(that.value);
-                } else {
-                    that.onReject.push(onReject);
-                }
-            }
+        that.then = function (onResolve, onReject, onCancel) {
+            fluid.promise.pushHandler(that, onResolve, "onResolve", "resolve");
+            fluid.promise.pushHandler(that, onReject, "onReject", "reject");
+            fluid.promise.pushHandler(that, onCancel, "onCancel", "cancel");
             return that;
         };
         that.resolve = function (value) {
             if (that.disposition) {
-                fluid.fail("Error: resolving promise ", that,
-                    " which has already received \"" + that.disposition + "\"");
+                if (that.disposition !== "cancel") {
+                    fluid.fail("Error: resolving promise ", that,
+                        " which has already received \"" + that.disposition + "\"");
+                }
             } else {
                 that.complete("resolve", that.onResolve, value);
             }
@@ -53,12 +48,22 @@
         };
         that.reject = function (reason) {
             if (that.disposition) {
-                fluid.fail("Error: rejecting promise ", that,
-                    "which has already received \"" + that.disposition + "\"");
+                if (that.disposition !== "cancel") {
+                    fluid.fail("Error: rejecting promise ", that,
+                        "which has already received \"" + that.disposition + "\"");
+                }
             } else {
+                if (that.onReject.length === 0) {
+                    fluid.armUnhandledRejection(that, reason);
+                }
                 that.complete("reject", that.onReject, reason);
             }
             return that;
+        };
+        that.cancel = function (reason) {
+            if (!that.disposition) {
+                that.complete("cancel", that.onCancel, reason);
+            }
         };
         // PRIVATE, NON-API METHOD
         that.complete = function (which, queue, arg) {
@@ -67,9 +72,49 @@
             for (var i = 0; i < queue.length; ++i) {
                 queue[i](arg);
             }
+            delete that.onResolve;
+            delete that.onReject;
+            delete that.onCancel;
         };
         return that;
     };
+
+    fluid.promise.pushHandler = function (promise, handler, eventName, disposition) {
+        if (handler) {
+            if (promise.disposition) {
+                if (promise.disposition === disposition) {
+                    handler(promise.value);
+                    promise.directHandle = disposition;
+                }
+            } else {
+                promise[eventName].push(handler);
+            }
+        }
+    };
+
+    fluid.armUnhandledRejection = function (promise, reason) {
+        fluid.invokeLater(function () {
+            if (promise.directHandle !== "reject") {
+                fluid.fireUnhandledRejection(promise, reason);
+            }
+        });
+    };
+
+    fluid.fireUnhandledRejection = function (promise, reason) {
+        fluid.unhandledRejectionEvent.fire(reason, promise);
+    };
+
+    // A global event which will fire, and by default, foreward to fluid.fail in the event a promise rejection is not
+    // handled by the next tick. See FLUID-6453 for discussion on semantics and desirability
+    fluid.unhandledRejectionEvent = fluid.makeEventFirer({
+        name: "Global unhandled rejection handler"
+    });
+
+    fluid.logUnhandledRejection = function (reason) {
+        fluid.log(fluid.logLevel.WARN, "Unhandled promise rejection: ", reason);
+    };
+
+    fluid.unhandledRejectionEvent.addListener(fluid.logUnhandledRejection, "log");
 
     /* Any object with a member <code>then</code> of type <code>function</code> passes this test.
      * This includes essentially every known variety, including jQuery promises.
@@ -80,7 +125,8 @@
 
     /** Coerces any value to a promise
      * @param {Any} promiseOrValue - The value to be coerced
-     * @return {Promise} - If the supplied value is already a promise, it is returned unchanged. Otherwise a fresh promise is created with the value as resolution and returned
+     * @return {Promise} - If the supplied value is already a promise, it is returned unchanged.
+     * Otherwise a fresh promise is created with the value as resolution and returned
      */
     fluid.toPromise = function (promiseOrValue) {
         if (fluid.isPromise(promiseOrValue)) {
@@ -92,12 +138,16 @@
         }
     };
 
-    /* Chains the resolution methods of one promise (target) so that they follow those of another (source).
+    /** Chains the resolution methods of one promise (target) so that they follow those of another (source).
      * That is, whenever source resolves, target will resolve, or when source rejects, target will reject, with the
-     * same payloads in each case.
+     * same payloads in each case. In addition, if the target promise is cancelled, this will be propagated to the
+     * source promise.
+     * @param {Promise} source - The promise that the target promise will subscribe to
+     * @param {Promise} target - The promise to which notifications will be forwarded from the source
      */
     fluid.promise.follow = function (source, target) {
         source.then(target.resolve, target.reject);
+        target.then(null, null, source.cancel);
     };
 
     /** Returns a promise whose resolved value is mapped from the source promise or value by the supplied function.
@@ -121,23 +171,45 @@
         return togo;
     };
 
-    /* General skeleton for all sequential promise algorithms, e.g. transform, reduce, sequence, etc.
+    /** Construct a `sequencer` which is a general skeleton structure for all sequential promise algorithms,
+     * e.g. transform, reduce, sequence, etc.
      * These accept a variable "strategy" pair to customise the interchange of values and final return
+     * @param {Array} sources - Array of values, promises, or tasks
+     * @param {Object} options - Algorithm-static options structure to be supplied to any task function discovered within
+     * `sources`
+     * @param {fluid.promise.strategy} strategy - A pair of function members `invokeNext` and `resolveResult` which determine the particular
+     * sequential promise algorithm to be operated.
+     * @return {fluid.promise.sequencer} A `sequencer` structure which will operate the algorithm and holds its state.
      */
-
     fluid.promise.makeSequencer = function (sources, options, strategy) {
         if (!fluid.isArrayable(sources)) {
             fluid.fail("fluid.promise sequence algorithms must be supplied an array as source");
         }
-        return {
+        var sequencer = {
             sources: sources,
             resolvedSources: [], // the values of "sources" only with functions invoked (an array of promises or values)
             index: 0,
             strategy: strategy,
             options: options, // available to be supplied to each listener
             returns: [],
+            sequenceStarted: false,
+            sequenceCancelled: false,
             promise: fluid.promise() // the final return value
         };
+        sequencer.promise.then(null, null, function () {
+            fluid.promise.cancelSequencer(sequencer);
+        });
+        sequencer.promise.sequencer = sequencer; // An aid to debuggability
+        return sequencer;
+    };
+
+    fluid.promise.cancelSequencer = function (sequencer) {
+        sequencer.sequenceCancelled = true;
+        sequencer.resolvedSources.forEach(function (source) {
+            if (fluid.isPromise(source)) {
+                source.cancel();
+            }
+        });
     };
 
     fluid.promise.progressSequence = function (that, retValue) {
@@ -157,7 +229,10 @@
     };
 
     fluid.promise.resumeSequence = function (that) {
-        if (that.index === that.sources.length) {
+        that.sequenceStarted = true;
+        if (that.sequenceCancelled) {
+            return;
+        } else if (that.index === that.sources.length) {
             that.promise.resolve(that.strategy.resolveResult(that));
         } else {
             var value = that.strategy.invokeNext(that);
@@ -223,7 +298,6 @@
         });
         var sequencer = fluid.promise.makeSequencer(listeners, options, fluid.promise.makeTransformerStrategy());
         sequencer.returns.push(null); // first dummy return from initial entry
-        fluid.promise.resumeSequence(sequencer);
         return sequencer;
     };
 
@@ -257,8 +331,17 @@
         var listeners = options.reverse ? fluid.makeArray(event.sortedListeners).reverse() :
             fluid.makeArray(event.sortedListeners);
         listeners = fluid.promise.filterNamespaces(listeners, options.filterNamespaces);
-        var transformer = fluid.promise.makeTransformer(listeners, payload, options);
-        return transformer.promise;
+        var sequencer = fluid.promise.makeTransformer(listeners, payload, options);
+        var canceller = sequencer.promise.cancel;
+        var remover = function () {
+            fluid.remove_if(event.onDestroy, function (func) {
+                return func === canceller;
+            });
+        };
+        fluid.event.addPrimitiveListener(event, "onDestroy", canceller);
+        sequencer.promise.then(remover, remover, remover);
+        fluid.promise.resumeSequence(sequencer);
+        return sequencer.promise;
     };
 
 

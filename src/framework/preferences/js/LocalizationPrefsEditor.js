@@ -14,14 +14,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function (fluid) {
     "use strict";
 
-    /*******************************************************************************
-    * Starter auxiliary schema grade
-    *
-    * Contains the settings for the localization preference
-    *******************************************************************************/
-
-    // Fine-tune the starter aux schema and add localization preference
-    fluid.defaults("fluid.prefs.constructed.localizationPrefsEditorConfig", {
+    fluid.defaults("fluid.prefs.localizationPrefsEditorConfig", {
         gradeNames: ["fluid.contextAware"],
         contextAwareness: {
             localeChange: {
@@ -29,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     urlPath: {
                         contextValue: "{localizationPrefsEditorConfig}.options.localizationScheme",
                         equals: "urlPath",
-                        gradeNames: "fluid.prefs.constructed.localizationPrefsEditorConfig.urlPathLocale"
+                        gradeNames: "fluid.prefs.localizationPrefsEditorConfig.urlPathLocale"
                     }
                 }
             }
@@ -50,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.prefs.constructed.localizationPrefsEditorConfig.urlPathLocale", {
+    fluid.defaults("fluid.prefs.localizationPrefsEditorConfig.urlPathLocale", {
         distributeOptions: {
             "prefsEditor.localization.enactor.langMap": {
                 source: "{that}.options.langMap",

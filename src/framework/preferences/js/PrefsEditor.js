@@ -27,7 +27,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         defaultLocale: "en",
         components: {
             prefsEditor: {
-                priority: "last",
                 type: "fluid.prefs.prefsEditor",
                 createOnEvent: "onCreatePrefsEditorReady",
                 options: {
@@ -57,10 +56,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 type: "fluid.resourceLoader",
                 createOnEvent: "afterInitialSettingsFetched",
                 options: {
-                    defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
-                    locale: "{prefsEditorLoader}.settings.preferences.locale",
                     resourceOptions: {
-                        dataType: "json"
+                        dataType: "json",
+                        defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
+                        locale: "{prefsEditorLoader}.settings.preferences.locale"
                     },
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
@@ -94,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             },
             "prefsEditorLoader.templateLoader.terms": {
                 source: "{that}.options.terms",
-                target: "{that > templateLoader}.options.terms"
+                target: "{that > templateLoader}.options.resourceOptions.terms"
             },
             "prefsEditorLoader.messageLoader": {
                 source: "{that}.options.messageLoader",
@@ -103,7 +102,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             },
             "prefsEditorLoader.messageLoader.terms": {
                 source: "{that}.options.terms",
-                target: "{that > messageLoader}.options.terms"
+                target: "{that > messageLoader}.options.resourceOptions.terms"
             },
             "prefsEditorLoader.prefsEditor": {
                 source: "{that}.options.prefsEditor",
@@ -240,6 +239,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
         gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "fluid.remoteModelComponent", "fluid.viewComponent"],
+        markup: {
+            // only used when dynamically generating the panel containers.
+            panel: "<li class=\"%className flc-prefsEditor-panel fl-prefsEditor-panel\"></li>"
+        },
         invokers: {
             // Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
             fetchImpl: {
@@ -311,8 +314,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 namespace: "modelChange"
             }]
         },
-        resources: {
-            template: "{templateLoader}.resources.prefsEditor"
+        members: {
+            resources: {
+                template: "{templateLoader}.resources.prefsEditor"
+            }
         },
         autoSave: false
     });
@@ -399,31 +404,31 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return promise;
     };
 
+    fluid.prefs.prefsEditor.resetModel = function (that, newModel) {
+        var transaction = that.applier.initiate();
+        transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
+        transaction.change("", newModel);
+        transaction.commit();
+        that.events.onPrefsEditorRefresh.fire();
+    };
+
     /*
      * Resets the selections to the integrator's defaults and fires afterReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
-        var transaction = that.applier.initiate();
         that.events.beforeReset.fire(that);
-        transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
-        transaction.change("", fluid.copy(that.initialModel));
-        transaction.commit();
-        that.events.onPrefsEditorRefresh.fire();
+        fluid.prefs.prefsEditor.resetModel(that, fluid.copy(that.initialModel));
         that.events.afterReset.fire(that);
     };
 
     /*
-     * Resets the selections to the last saved selections and fires onCancel
+     * Fires onCancel and resets the selections to the last saved selections
      */
     fluid.prefs.prefsEditor.cancel = function (that) {
         that.events.onCancel.fire();
         var fetchPromise = that.fetch();
         fetchPromise.then(function () {
-            var transaction = that.applier.initiate();
-            transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
-            transaction.change("", that.model.remote);
-            transaction.commit();
-            that.events.onPrefsEditorRefresh.fire();
+            fluid.prefs.prefsEditor.resetModel(that, that.model.remote);
         });
     };
 
@@ -442,7 +447,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             that.locate("cancel").on("click", that.cancel);
         };
 
-        that.container.append(that.options.resources.template.resourceText);
+        var template = that.resources.template.resourceText;
+        if (that.options.generatePanelContainers) {
+            var sorted = fluid.parsePriorityRecords(that.options.preferences, "preferences"); // sort the preferences
+            var sortedPrefs = fluid.getMembers(sorted, "namespace"); // retrieve just the preferences names
+
+            // generate panel container markup
+            var panels = sortedPrefs.map(function (pref) {
+                var className = that.options.selectors[that.options.prefToMemberMap[pref]].slice(1);
+                return fluid.stringTemplate(that.options.markup.panel, {className: className});
+            }).join("");
+
+            // interpolate panels into template.
+            template = fluid.stringTemplate(template, {panels: panels});
+        }
+
+        that.container.append(template);
         bindHandlers(that);
 
         var fetchPromise = that.fetch();
@@ -506,7 +526,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             },
             "onReady.updateModel": "{that}.updateModel"
         },
-        templateUrl: "%prefix/PrefsEditorPreview.html"
+        templateUrl: "%templatePrefix/PrefsEditorPreview.html"
     });
 
     fluid.prefs.preview.updateModel = function (that, preferences) {
@@ -521,7 +541,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.prefs.preview.startLoadingContainer = function (that) {
-        var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
+        // TODO: Don't reach into the impl in this way and make the head component a resourceLoader
+        var templateUrl = that.templateLoader.transformResourceURL(that.options.templateUrl);
         that.container.on("load", function () {
             that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();

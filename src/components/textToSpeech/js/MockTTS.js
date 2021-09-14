@@ -34,6 +34,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             // Will contain a key/value pairing where key is the name of the event and the
             // value is the number of times the event was fired.
             eventRecord: {},
+            // A record of invocations of pause/resume as enqueued via the model fields pauseRequested/resumeRequested
+            requestRecord: {
+                pause: false,
+                resume: false
+            },
             lastUtterance: null
         },
         listeners: {
@@ -66,6 +71,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 funcName: "fluid.identity"
             }
         },
+        modelListeners: {
+            pauseRequested: {
+                funcName: "fluid.mock.textToSpeech.recordRequest",
+                args: ["{change}.value", "pause", "{that}.requestRecord"]
+            },
+            resumeRequested: {
+                funcName: "fluid.mock.textToSpeech.recordRequest",
+                args: ["{change}.value", "resume", "{that}.requestRecord"]
+            }
+        },
         invokers: {
             invokeSpeechSynthesisFunc: {
                 funcName: "fluid.mock.textToSpeech.invokeStub",
@@ -96,6 +111,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.mock.textToSpeech.speakOverride = function (that) {
         var utterance = that.queue[that.queue.length - 1];
         that.invokeSpeechSynthesisFunc("speak", utterance);
+    };
+
+    fluid.mock.textToSpeech.clearRequestRecord = function (requestRecord) {
+        requestRecord.pause = false;
+        requestRecord.resume = false;
+    };
+
+    fluid.mock.textToSpeech.recordRequest = function (value, field, requestRecord) {
+        if (value === true) {
+            requestRecord[field] = true;
+        }
     };
 
     fluid.mock.textToSpeech.invokeStub = function (that, method, args) {

@@ -52,7 +52,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         distributeOptions: {
             "uiEnhancer.messageLoader.defaultLocale": {
                 source: "{that}.options.defaultLocale",
-                target: "{that messageLoader}.options.defaultLocale"
+                target: "{that messageLoader}.options.resourceOptions.defaultLocale"
             },
             // TODO: This needs to be improved as it is static and should be dynamic. Unfortunately the resource loader
             //       accepts the locale as an option instead of a model value.

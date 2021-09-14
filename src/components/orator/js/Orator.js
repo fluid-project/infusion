@@ -119,11 +119,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.orator.handlePlayToggle = function (that, state) {
-        if (state) {
-            that.play();
-        } else {
-            that.pause();
-        }
+        that.events[state ? "play" : "pause"].fire();
     };
 
     /**********************************************
@@ -255,8 +251,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             highlight: "<mark class=\"flc-orator-highlight fl-orator-highlight\"></mark>"
         },
         events: {
+            play: null,
+            pause: null,
+            readFromDOM: null,
             onQueueSpeech: null,
-            onReadFromDOM: null,
             utteranceOnEnd: null,
             utteranceOnBoundary: null,
             utteranceOnError: null,
@@ -291,7 +289,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modelRelay: [{
             target: "parseIndex",
             backward: "never",
-            excludeSource: ["utteranceOnPause"],
+            forward: {
+                excludeSource: ["utteranceOnPause", "init"]
+            },
             namespace: "getClosestIndex",
             singleTransform: {
                 type: "fluid.transforms.free",
@@ -314,10 +314,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         },
         invokers: {
             parsedToString: "fluid.orator.domReader.parsedToString",
-            readFromDOM: {
-                funcName: "fluid.orator.domReader.readFromDOM",
-                args: ["{that}", "{that}.container"]
-            },
             removeHighlight: {
                 funcName: "fluid.orator.domReader.unWrap",
                 args: ["{that}.dom.highlight"]
@@ -334,14 +330,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 funcName: "fluid.orator.domReader.highlight",
                 args: ["{that}"]
             },
-            play: {
-                funcName: "fluid.orator.domReader.play",
-                args: ["{that}", "{fluid.textToSpeech}.resume"]
-            },
-            pause: {
-                funcName: "fluid.orator.domReader.pause",
-                args: ["{that}", "{fluid.textToSpeech}.pause"]
-            },
             queueSpeech: {
                 funcName: "fluid.orator.domReader.queueSpeech",
                 args: ["{that}", "{arguments}.0", "{arguments}.1"]
@@ -356,6 +344,18 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         },
         listeners: {
+            "play.impl": {
+                funcName: "fluid.orator.domReader.play",
+                args: ["{that}", "{fluid.textToSpeech}.resume"]
+            },
+            "pause.impl": {
+                funcName: "fluid.orator.domReader.pause",
+                args: ["{that}", "{fluid.textToSpeech}.pause"]
+            },
+            "readFromDOM.impl": {
+                funcName: "fluid.orator.domReader.readFromDOM",
+                args: ["{that}", "{that}.container"]
+            },
             "onQueueSpeech.removeExtraWhiteSpace": "fluid.orator.domReader.removeExtraWhiteSpace",
             "onQueueSpeech.queueSpeech": {
                 func: "{fluid.textToSpeech}.queueSpeech",
@@ -465,7 +465,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             if (that.model.tts.paused) {
                 resumeFn();
             } else if (!that.model.tts.speaking) {
-                that.readFromDOM();
+                that.events.readFromDOM.fire();
             }
         }
     };
@@ -587,7 +587,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      */
     fluid.orator.domReader.addToParseQueue = function (that, textNodeData) {
         var activeQueue = fluid.orator.domReader.retrieveActiveQueue(that, textNodeData.lang);
-        var lastParsed = activeQueue[activeQueue.length - 1] || {};
+        var lastParsed = fluid.peek(activeQueue) || {};
 
         var words = textNodeData.node.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
 
@@ -693,6 +693,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
     fluid.orator.domReader.getClosestIndex = function (that, boundary, parseQueueIndex) {
+        // TODO: Model relay rules will not reread volatile material - we must use "that" here
         var parseQueue = that.parseQueue[parseQueueIndex];
 
         if (!fluid.get(parseQueue, "length") || !fluid.isValue(boundary)) {

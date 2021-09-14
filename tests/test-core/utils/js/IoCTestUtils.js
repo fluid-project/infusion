@@ -16,6 +16,37 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
+    fluid.registerNamespace("fluid.test");
+
+    /** Shared utility for tests making assertions about the complete set of paths which currently hold
+     * components. Useful for tests which are checking whether this space has been corrupted by what
+     * should have been a cancelled operation.
+     * @return {Object} A map of `String` to `true`, suitable for checking with jqUnit.assertDeepEq to provide
+     * a readable summary of any changed paths.
+     */
+    fluid.test.getConstructedPaths = function () {
+        return fluid.transform(fluid.globalInstantiator.pathToComponent, function () {
+            return true;
+        });
+    };
+
+    fluid.test.assertTransactionsConcluded = function () {
+        // White box testing: use knowledge of the ChangeApplier's implementation to determine that all transactions have been cleaned up
+        var instantiator = fluid.globalInstantiator;
+        var anyKeys;
+        var key;
+        for (key in instantiator.modelTransactions) {
+            if (key !== "init") {
+                anyKeys = key;
+            }
+        }
+        for (key in instantiator.modelTransactions.init) {
+            anyKeys = key;
+        }
+
+        jqUnit.assertNoValue("All model transactions concluded", anyKeys);
+    };
+
     fluid.defaults("fluid.test.testEnvironment", {
         gradeNames: ["fluid.component"],
         components: {
@@ -146,7 +177,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.test.makeExpander = function (that) {
         return function (toExpand, localRecord, contextThat) {
-            return fluid.expandOptions(toExpand, contextThat || that, {}, localRecord);
+            return fluid.expandImmediate(toExpand, contextThat || that, localRecord);
         };
     };
 
@@ -156,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             if (typeof(rec) === "string") {
                 rec = fluid.upgradePrimitiveFunc(rec, null);
             }
-            if (rec.args === fluid.NO_VALUE) {
+            if (rec.args === fluid.NO_ARGUMENTS) {
                 rec.args = args;
             }
             var expanded = expander(rec, localRecord, contextThat);
@@ -458,7 +489,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var listener = fluid.test.decodeListener(testCaseState, fixture);
         var listenerId = fluid.allocateGuid();
         var that = fluid.test.makeBinder(listener, function (wrapped) {
-            var spec = fixture.path === undefined ? fixture.spec : {path: fixture.path};
+            var spec = fixture.path === undefined ? fluid.copy(fixture.spec) : {path: fixture.path};
             if (spec === undefined || spec.path === undefined) {
                 fluid.fail("Error in changeEvent fixture ", fixture,
                     ": could not find path specification named \"path\" or \"spec\"");
@@ -687,10 +718,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
-        if (!testCase.name) {
+        var name = fluid.expandImmediate(testCase.name, testCaseState.root);
+        if (!name) {
             fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
         }
-        jqUnit.module(testCase.name);
+        jqUnit.module(name);
         var fixtures = fluid.makeArray(testCase.tests);
         fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";
@@ -730,7 +762,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.test.processTestCaseHolder = function (testCaseState) {
-        var modules = fluid.makeArray(testCaseState.testCaseHolder.options.modules);
+        var modules = fluid.makeArray(testCaseState.modules);
         if (modules.length === 0) {
             fluid.fail("Error in test case environment ", testCaseState, ": no modules found in options.modules");
         }
@@ -788,7 +820,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             testCaseState.expand = fluid.test.makeExpander(testCaseHolder);
             testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
             if (testCaseHolder.options.moduleSource) {
-                testCaseHolder.options.modules = fluid.test.expandModuleSource(testCaseHolder.options.moduleSource, testCaseState, testCaseHolder);
+                testCaseState.modules = fluid.test.expandModuleSource(testCaseHolder.options.moduleSource, testCaseState, testCaseHolder);
+            } else {
+                testCaseState.modules = testCaseHolder.options.modules;
             }
             fluid.test.processTestCaseHolder(testCaseState);
         });
@@ -820,8 +854,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 }
                 // Constructs a component of type fluid.test.testEnvironment whose onCreate will then execute fluid.test.testEnvironment.runTests
                 // and whose afterDestroy (scheduled internally) will invoke our nextLater
-                fluid.invokeGlobalFunction(env.type, [options]);
                 that.index++;
+                fluid.invokeGlobalFunction(env.type, [options]);
             } else {
                 that.stopped = true;
                 QUnit.config.testsArriving = false;

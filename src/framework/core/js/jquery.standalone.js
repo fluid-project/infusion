@@ -38,8 +38,18 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     // Map over the $ in case of overwrite
     var _$ = globalScope.$;
 
-    var jQuery = fluid.jQueryStandalone = {
+    var jQuery = fluid.jQueryStandalone = function (/* arguments */) {
+        return jQuery.constructor.apply(null, arguments);
+    };
 
+    // Define all the members in a fresh object, so that they can later be copied onto the function just defined
+    var jQueryMembers = {
+        globalScope: globalScope,
+
+        // A placeholder for the jQuery constructor function, which will be patched elsewhere
+        constructor: function () {
+            return [];
+        },
         // The current version of jQuery being used
         jquery: "1.6.1-fluidStandalone",
 
@@ -148,6 +158,8 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
             return target;
         }
     };
+
+    jQueryMembers.extend(jQuery, jQueryMembers);
 
 })(fluid_4_0_0);
 

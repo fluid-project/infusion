@@ -70,6 +70,8 @@ var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
         $.browser = browser;
     }
 
+    // TODO: "Scoped data system" will be replaced by persistent lookup of DOM element ids to components
+
     // Private constants.
     var NAMESPACE_KEY = "fluid-scoped-data";
 
@@ -181,18 +183,5 @@ var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
             return applyOp(elem, name);
         };
     });
-
-    /* Sets the value to the DOM element and triggers the change event on the element.
-     * Note: when using jQuery val() function to change the node value, the change event would
-     * not be fired automatically, it requires to be initiated by the user.
-     *
-     * @param {A jQueryable DOM element} node - A selector, a DOM node, or a jQuery instance
-     * @param {String|Number|Array} value - A string of text, a number, or an array of strings
-     * corresponding to the value of each matched element to set in the node
-     */
-    fluid.changeElementValue = function (node, value) {
-        node = $(node);
-        node.val(value).trigger("change");
-    };
 
 })(jQuery, fluid_4_0_0);

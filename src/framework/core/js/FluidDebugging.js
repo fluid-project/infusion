@@ -291,4 +291,55 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return togo;
     };
 
+    /** BEGIN IOC DEBUGGING METHODS **/
+    fluid["debugger"] = function () {
+        debugger; // eslint-disable-line no-debugger
+    };
+
+    fluid.defaults("fluid.debuggingProbe", {
+        gradeNames: ["fluid.component"]
+    });
+
+    // probe looks like:
+    // target: {preview other}.listeners.eventName
+    // priority: first/last
+    // func: console.log/fluid.log/fluid.debugger
+    fluid.probeToDistribution = function (probe) {
+        var instantiator = fluid.globalInstantiator;
+        var parsed = fluid.parseContextReference(probe.target);
+        var segs = fluid.model.parseToSegments(parsed.path, instantiator.parseEL, true);
+        if (segs[0] !== "options") {
+            segs.unshift("options"); // compensate for this insanity until we have the great options flattening
+        }
+        var parsedPriority = fluid.parsePriority(probe.priority);
+        if (parsedPriority.constraint && !parsedPriority.constraint.target) {
+            parsedPriority.constraint.target = "authoring";
+        }
+        return {
+            target: "{/ " + parsed.context + "}." + instantiator.composeSegments.apply(null, segs),
+            record: {
+                func: probe.func,
+                funcName: probe.funcName,
+                args: probe.args,
+                priority: fluid.renderPriority(parsedPriority)
+            }
+        };
+    };
+
+    fluid.registerProbes = function (probes) {
+        var probeDistribution = fluid.transform(probes, fluid.probeToDistribution);
+        var memberName = "fluid_debuggingProbe_" + fluid.allocateGuid();
+        fluid.construct([memberName], {
+            type: "fluid.debuggingProbe",
+            distributeOptions: probeDistribution
+        });
+        return memberName;
+    };
+
+    fluid.deregisterProbes = function (probeName) {
+        fluid.destroy([probeName]);
+    };
+
+    /** END IOC DEBUGGING METHODS **/
+
 })(jQuery, fluid_4_0_0);

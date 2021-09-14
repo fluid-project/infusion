@@ -11,6 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+/* global process */
+
 (function ($, fluid) {
     "use strict";
 
@@ -110,7 +112,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * If no check matches, the grades held in `defaultGradeNames` will be applied.
      */
     fluid.defaults("fluid.contextAware", {
-        gradeNames: ["{that}.check"],
         mergePolicy: {
             contextAwareness: "noexpand"
         },
@@ -124,12 +125,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             //     defaultGradeNames: // String or String[] holding default gradeNames which will be output if no check matches [optional]
             //     priority: // Number or String encoding priority relative to other records (same format as with event listeners) [optional]
             // }
-        },
-        invokers: {
-            check: {
-                funcName: "fluid.contextAware.check",
-                args: ["{that}", "{that}.options.contextAwareness"]
-            }
         }
     });
 
@@ -137,7 +132,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         // cf. core of distributeOptions!
         var targetRef = fluid.parseContextReference(reference);
         var targetComponent = fluid.resolveContext(targetRef.context, that);
-        var path = targetRef.path || ["options", "value"];
+        var path = targetRef.path || (fluid.isComponent(targetComponent) && fluid.componentHasGrade(targetComponent, "fluid.contextAware.marker") ? ["options", "value"] : []);
         var value = fluid.getForComponent(targetComponent, path);
         return value;
     };
@@ -160,6 +155,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     // unsupported, NON-API function
+    // Note that this function is now invoked directly from fluid.computeDynamicGrades
+    /** The top-level engine for the contextAwareness algorithm. Accepts the context-aware component and its top-level `contextAwarenessOptions` block
+     * and returns the array of grade names to be contributed into its `gradeNames`
+     * @param {fluid.contextAware} that - The `contextAware` component
+     * @param {Object} contextAwarenessOptions - The component's top-level `contextAwareness` options
+     * @return {String[]} An array, possibly empty, of grade names to be contributed into the component
+     */
     fluid.contextAware.check = function (that, contextAwarenessOptions) {
         var gradeNames = [];
         var contextAwareList = fluid.parsePriorityRecords(contextAwarenessOptions, "contextAwareness adaptationRecord");
@@ -202,9 +204,18 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return typeof(window) !== "undefined" && !!window.document;
     };
 
+    // Context awareness for the node.js environment - taken from https://stackoverflow.com/a/35813135
+
+    fluid.contextAware.isNode = function () {
+        return typeof(process) !== "undefined" && process.versions && process.versions.node;
+    };
+
     fluid.contextAware.makeChecks({
         "fluid.browser": {
             funcName: "fluid.contextAware.isBrowser"
+        },
+        "fluid.node": {
+            funcName: "fluid.contextAware.isNode"
         }
     });
 

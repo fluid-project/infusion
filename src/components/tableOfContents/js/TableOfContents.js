@@ -58,6 +58,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         components: {
             levels: {
                 type: "fluid.tableOfContents.levels",
+                // This is a createOnEvent markup since the parent acquires its model state from the DOM on startup
+                // and it is currently too irritating to express this via expanders until we implement proxies for FLUID-6372
                 createOnEvent: "onCreate",
                 container: "{tableOfContents}.dom.tocContainer",
                 options: {
@@ -120,7 +122,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
         },
         listeners: {
-            "onCreate.refreshView": "{that}.refreshView"
+            "onCreate.refreshView": {
+                func: "{that}.refreshView",
+                // New for FLUID-6148: Make sure we do not try to refresh view until after "levels" subcomponent is constructed
+                priority: "after:fluid-componentConstruction"
+            }
         }
     });
 
@@ -142,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 if (heading.level > level) {
                     var subHeadings = buildModelLevel(headings, level + 1);
                     if (modelLevel.length > 0) {
-                        modelLevel[modelLevel.length - 1].headings = subHeadings;
+                        fluid.peek(modelLevel).headings = subHeadings;
                     } else {
                         modelLevel = modelLevelFn(modelLevel, subHeadings);
                     }
@@ -316,16 +322,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return tree;
     };
 
-    fluid.tableOfContents.levels.fetchResources = function (that) {
-        fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.resourceText);
-            that.refreshView();
-        });
-    };
-
-
     fluid.defaults("fluid.tableOfContents.levels", {
-        gradeNames: ["fluid.rendererComponent"],
+        gradeNames: ["fluid.rendererComponent", "fluid.resourceLoader"],
         produceTree: "fluid.tableOfContents.levels.produceTree",
         strings: {
             tocHeader: "Table of Contents"
@@ -355,15 +353,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
         },
-        listeners: {
-            "onCreate.fetchResources": "fluid.tableOfContents.levels.fetchResources"
-        },
         resources: {
             template: {
-                forceCache: true,
                 url: "../html/TableOfContents.html"
             }
         },
+        renderOnInit: true,
         rendererFnOptions: {
             noexpand: true
         },

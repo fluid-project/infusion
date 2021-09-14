@@ -269,14 +269,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     renderer.invokeFluidDecorator = function (func, args, ID, num, options) {
         var that;
         if (options.parentComponent) {
-            var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
-            fluid.set(parent, ["options", "components", name], {
-                type: func,
-                container: args[0],
-                options: args[1]
-            });
-            that = fluid.initDependent(options.parentComponent, name);
+            that = fluid.constructChild(options.parentComponent, name,
+                $.extend({
+                    type: func,
+                    container: args[0]
+                }, args[1]));
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
@@ -284,7 +282,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return that;
     };
 
-    fluid.renderer = function (templates, tree, options, fossilsIn) {
+    fluid.oldRenderer = function (templates, tree, options, fossilsIn) {
 
         options = options || {};
         tree = tree || {};
@@ -774,7 +772,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 else if (type === "addClass" || type === "removeClass") {
                     // Using an unattached DOM node because jQuery will use the
                     // node's setAttribute method to add the class.
-                    var fakeNode = $("<div>", {class: attrcopy["class"]})[0];
+                    var fakeNode = $("<div>", {"class": attrcopy["class"]})[0];
                     renderOptions.jQuery(fakeNode)[type](decorator.classes);
                     attrcopy["class"] = fakeNode.className;
                 }
@@ -1410,7 +1408,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     };
 
-    jQuery.extend(true, fluid.renderer, renderer);
+    // Final definition for backwards compatibility - remove with old renderer
+    $.extend(fluid.oldRenderer, fluid.renderer, renderer);
+    fluid.renderer = fluid.oldRenderer;
 
     /*
      * This function is unsupported: It is not really intended for use by implementors.
@@ -1472,7 +1472,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      */
     fluid.reRender = function (templates, node, tree, options) {
         options = options || {};
-        var renderer = fluid.renderer(templates, tree, options, options.fossils);
+        var renderer = fluid.oldRenderer(templates, tree, options, options.fossils);
         options = renderer.options;
         // Empty the node first, to head off any potential id collisions when rendering
         node = fluid.unwrap(node);
@@ -1551,10 +1551,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             template = fluid.extractTemplate(fluid.unwrap(source.node), source.armouring);
         }
         target = fluid.unwrap(target);
+
         var resourceSpec = {
             base: {
                 resourceText: template,
-                href: ".", resourceKey: ".", cutpoints: options.cutpoints
+                url: ".", resourceKey: ".", cutpoints: options.cutpoints
             }
         };
         var templates = fluid.parseTemplates(resourceSpec, ["base"], options);

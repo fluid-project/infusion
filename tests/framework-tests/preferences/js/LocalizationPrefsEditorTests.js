@@ -14,25 +14,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
 
-    fluid.registerNamespace("fluid.tests");
-
-
-    // Using the builder to create an instance of a prefs editor from the `fluid.prefs.auxSchema.localization` schema.
-    // The assembled grade is `fluid.tests.prefs.localization.prefsEditor`.
-    fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.localization"],
-        auxiliarySchema: {
-            "namespace": "fluid.tests.prefs.localization",
-            "terms": {
-                "templatePrefix": "../../../../src/framework/preferences/html",
-                "messagePrefix": "../../../../src/framework/preferences/messages"
-            },
-            "template": "LocalizationPrefsEditor-template.html"
-        }
-    });
-
     fluid.defaults("fluid.tests.localizationPrefsEditor", {
-        gradeNames: ["fluid.tests.prefs.localization.prefsEditor", "fluid.prefs.constructed.localizationPrefsEditorConfig"],
+        gradeNames: ["fluid.prefs.localizationPrefsEditorConfig", "fluid.prefs.builder", "fluid.viewComponent"],
         localizationScheme: "urlPath",
         localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
         locales: ["", "en", "en-ca", "fr", "es", "fa"],
@@ -44,7 +27,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             "fr": "fr"
         },
         langSegIndex: 2,
-        defaultLocale: "fr"
+        preferences: ["fluid.prefs.localization"],
+        auxiliarySchema: {
+            defaultLocale: "fr",
+            terms: {
+                templatePrefix: "../../../../src/framework/preferences/html",
+                messagePrefix: "../../../../src/framework/preferences/messages"
+            }
+        }
     });
 
     fluid.defaults("fluid.tests.localizationPrefsEditorTests", {
@@ -78,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             defaultLocale: "fr"
         },
         modules: [{
-            name: "fluid.prefs.constructed.localizationPrefsEditorConfig",
+            name: "fluid.prefs.localizationPrefsEditorConfig",
             tests: [{
                 expect: 7,
                 name: "Options Distributions",

@@ -16,7 +16,7 @@ var example = example || {};
     "use strict";
 
     fluid.defaults("example.prefs.localization", {
-        gradeNames: ["fluid.prefs.constructed.localizationPrefsEditorConfig"],
+        gradeNames: ["fluid.prefs.localizationPrefsEditorConfig"],
         localizationScheme: "urlPath",
         localeNames: ["localization-default", "localization-en", "localization-fr", "localization-es", "localization-fa"],
         locales: ["", "en", "fr", "es", "fa"],
@@ -64,5 +64,28 @@ var example = example || {};
 
         return index;
     };
+
+    fluid.defaults("example.prefs.localization.prefsEditor", {
+        gradeNames: ["fluid.prefs.builder", "example.prefs.localization", "fluid.viewComponent"],
+        preferences: [
+            "fluid.prefs.localization"
+        ],
+        auxiliarySchema: {
+            terms: {
+                "templatePrefix": "../../../../../src/framework/preferences/html",
+                "messagePrefix": "../../../../../src/framework/preferences/messages"
+            }
+        }
+    });
+
+    fluid.defaults("example.prefs.localization.localized.prefsEditor", {
+        gradeNames: ["example.prefs.localization.prefsEditor"],
+        auxiliarySchema: {
+            terms: {
+                "templatePrefix": "../../../../../../src/framework/preferences/html",
+                "messagePrefix": "../../../../../../src/framework/preferences/messages"
+            }
+        }
+    });
 
 })(jQuery, fluid);
