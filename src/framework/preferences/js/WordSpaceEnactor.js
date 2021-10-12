@@ -31,7 +31,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 "model.value": "value"
             }
         },
-        cssProp: "word-spacing"
+        styles: {
+            enabled: "fl-wordSpace-enabled"
+        },
+        cssProp: "word-spacing",
+        cssCustomProp: "--fl-wordSpace"
     });
 
 })(jQuery, fluid_4_0_0);

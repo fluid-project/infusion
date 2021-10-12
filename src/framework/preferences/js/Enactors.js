@@ -237,7 +237,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 }
             }
         },
+        styles: {
+            enabled: ""
+        },
         cssProp: "",
+        cssCustomProp: "",
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.spacingSetter.set",
@@ -285,15 +289,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.prefs.enactor.spacingSetter.set = function (that, cssProp, units) {
-        var targetSize = that.originalSpacing;
-
-        if (units) {
-            targetSize = targetSize + units;
-        }
-
         // setting the style value to "" will remove it.
-        var spacingSetter = targetSize ?  fluid.roundToDecimal(targetSize, 2) + "em" : "";
-        that.container.css(cssProp, spacingSetter);
+        var targetSize = units ? `${fluid.roundToDecimal(that.originalSpacing + units, 2)}em` : "";
+
+        that.container.toggleClass(that.options.styles.enabled, !!units);
+        that.container.css(that.options.cssCustomProp, targetSize);
     };
 
     /*******************************************************************************
@@ -310,6 +310,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 "model.value": "value"
             }
         },
+        styles: {
+            enabled: "fl-textSize-enabled"
+        },
+        cssCustomProp: "--fl-textSize",
         members: {
             root: {
                 expander: {
@@ -322,7 +326,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.textSize.set",
-                args: ["{arguments}.0", "{that}", "{that}.getTextSizeInPx"]
+                args: ["{that}", "{arguments}.0", "{that}.getTextSizeInPx"]
             },
             getTextSizeInPx: {
                 args: ["{that}.root", "{that}.options.fontSizeMap"]
@@ -330,17 +334,21 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.prefs.enactor.textSize.set = function (times, that, getTextSizeInPxFunc) {
-        times = times || 1;
+    fluid.prefs.enactor.textSize.set = function (that, multiplier, getTextSizeInPxFunc) {
+        multiplier = multiplier || 1;
         // Calculating the initial size here rather than using a members expand because the "font-size"
         // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
             that.initialSize = getTextSizeInPxFunc();
         }
 
-        if (that.initialSize) {
-            var targetSize = times * that.initialSize;
-            that.root.css("font-size", targetSize + "px");
+        if (that.initialSize && multiplier !== 1) {
+            var targetSize = fluid.roundToDecimal(multiplier * that.initialSize);
+            that.root.addClass(that.options.styles.enabled);
+            that.root.css(that.options.cssCustomProp, `${targetSize}px`);
+        } else {
+            that.root.removeClass(that.options.styles.enabled);
+            that.root.css(that.options.cssCustomProp, "");
         }
     };
 
@@ -358,6 +366,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 "model.value": "value"
             }
         },
+        styles: {
+            enabled: "fl-lineSpace-enabled"
+        },
+        cssCustomProp: "--fl-lineSpace",
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.lineSpace.set",
@@ -416,9 +428,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
         // which occurs when firefox detects "line-height" value on a hidden container.
         // @ See getLineHeightMultiplier() & http://issues.fluidproject.org/browse/FLUID-4500
-        if (that.lineHeightMultiplier) {
-            var targetLineSpace = that.initialSize === "normal" && times === 1 ? that.initialSize : times * that.lineHeightMultiplier;
-            that.container.css("line-height", targetLineSpace);
+        if (that.lineHeightMultiplier && times !== 1) {
+            var targetLineSpace = fluid.roundToDecimal(times * that.lineHeightMultiplier, 2);
+            that.container.addClass(that.options.styles.enabled);
+            that.container.css(that.options.cssCustomProp, targetLineSpace);
+        } else {
+            that.container.removeClass(that.options.styles.enabled);
+            that.container.css(that.options.cssCustomProp, "");
         }
     };
 
