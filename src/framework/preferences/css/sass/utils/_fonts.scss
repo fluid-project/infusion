@@ -61,7 +61,7 @@ $fontFaces: (
 }
 
 @mixin build-fonts-Enactors($fonts) {
-    @each $selector in $fonts {
+    @each $selector, $fontFamily in $fonts {
         #{$selector},
         #{$selector} * {
             &:not([class*='icon']) {
