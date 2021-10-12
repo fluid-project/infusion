@@ -1,0 +1,7 @@
+.fl-syllabification-separator::before {
+    content: "\2027"; // HYPHENATION POINT
+}
+
+.fl-syllabification-softHyphenPlaceholder::before {
+    content: "\00AD"; // SOFT HYPHEN
+}

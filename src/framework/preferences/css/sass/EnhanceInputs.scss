@@ -1,0 +1,21 @@
+/*
+ * General prefs editor styling used to apply preferences
+ * !important is used for all styles to ensure that Preferences Framework's enactors are able to override the page's default styles.
+ */
+@use "EnhanceInputs_base";
+
+// UI Enhancer "Enlarge text" input/button options
+.fl-input-enhanced button,
+.fl-input-enhanced input,
+.fl-input-enhanced select,
+.fl-input-enhanced textarea,
+.fl-input-enhanced .fl-input-enhance {
+    font-size: var(--fl-enhance-font-size) !important;
+}
+
+// UI Enhancer 'enhanced links' styling
+.fl-input-enhanced a {
+    font-size: var(--fl-enhance-font-size) !important;
+    font-weight: var(--fl-enhance-font-weight) !important;
+    text-decoration: var(--fl-enhance-text-decoration) !important;
+}

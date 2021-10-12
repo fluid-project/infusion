@@ -1,0 +1,59 @@
+// Contains colour variables for contrast themes
+
+.fl-theme-bw {
+    --fl-fgColor: #000;
+    --fl-bgColor: #fff;
+}
+
+.fl-theme-wb {
+    --fl-fgColor: #fff;
+    --fl-bgColor: #000;
+}
+
+.fl-theme-yb {
+    --fl-fgColor: #ff0;
+    --fl-bgColor: #000;
+}
+
+.fl-theme-by {
+    --fl-fgColor: #000;
+    --fl-bgColor: #ff0;
+}
+
+.fl-theme-lgdg {
+    --fl-fgColor: #bdbdbb;
+    --fl-bgColor: #555;
+}
+
+.fl-theme-gd {
+    --fl-fgColor: #888;
+    --fl-bgColor: #222;
+    --fl-linkColor: #8080ff;
+    --fl-disabledColor: #c00;
+    --fl-selectedFgColor: #fff;
+    --fl-selectedBgColor: #008000;
+    --fl-buttonFgColor: #fff;
+    --fl-buttonBgColor: #000;
+}
+
+.fl-theme-gw {
+    --fl-fgColor: #6c6c6c;
+    --fl-bgColor: #fff;
+    --fl-linkColor: #66c;
+    --fl-disabledColor: #933;
+    --fl-selectedFgColor: #fff;
+    --fl-selectedBgColor: #404080;
+    --fl-buttonFgColor: #000;
+    --fl-buttonBgColor: #fff;
+}
+
+.fl-theme-bbr {
+    --fl-fgColor: #000;
+    --fl-bgColor: #b96;
+    --fl-linkColor: #009;
+    --fl-disabledColor: #600000;
+    --fl-selectedFgColor: #fff;
+    --fl-selectedBgColor: #000070;
+    --fl-buttonFgColor: #000;
+    --fl-buttonBgColor: #ffd18a;
+}

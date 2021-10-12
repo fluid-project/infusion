@@ -1,12 +1,11 @@
 // Contains a utility function for changing font family
-// !important is used for all styles to ensure that Preferences Framework's enactors are able to override the pages default styles.
 
 $fonts: (
     ".fl-font-arial": "Arial",
     ".fl-font-verdana": "Verdana",
     ".fl-font-times": "Georgia, Times, Times New Roman, serif",
     ".fl-font-comic-sans": "Comic Sans MS, sans-serif",
-    ".fl-font-open-dyslexic": "OpenDyslexic, sans-serif",
+    ".fl-font-open-dyslexic": "OpenDyslexic, sans-serif"
 );
 
 // Defines any @font-face definitions needed by the enactors
@@ -18,28 +17,28 @@ $fontFaces: (
             normal: (
                 filename:"OpenDyslexic-Regular.woff",
                 fontWeight: normal,
-                fontStyle: normal,
+                fontStyle: normal
             ),
             bold: (
                 filename:"OpenDyslexic-Bold.woff",
                 fontWeight: 600,
-                fontStyle: normal,
+                fontStyle: normal
             ),
             italic: (
                 filename:"OpenDyslexic-Italic.woff",
                 fontWeight: normal,
-                fontStyle: italic,
+                fontStyle: italic
             ),
             boldItalic: (
                 filename:"OpenDyslexic-BoldItalic.woff",
                 fontWeight: 600,
-                fontStyle: italic,
+                fontStyle: italic
             )
         )
     )
 );
 
-@mixin build-fonts-Enactors($textFont, $textFontFaces) {
+@mixin build-font-face-def($fontFaces) {
     // Build any necessary @font-face definitions
     @each $key, $properties in $fontFaces {
         @each $key, $definition in map-get($properties, "definitions") {
@@ -51,12 +50,22 @@ $fontFaces: (
             }
         }
     }
+}
 
-    @each $fontFamilyClass, $fontFamily in $textFont {
-        #{$fontFamilyClass},
-        #{$fontFamilyClass} * {
+@mixin build-fonts-properties($fonts) {
+    @each $selector, $fontFamily in $fonts {
+        #{$selector} {
+            --fl-font-family: #{$fontFamily};
+        }
+    }
+}
+
+@mixin build-fonts-Enactors($fonts) {
+    @each $selector in $fonts {
+        #{$selector},
+        #{$selector} * {
             &:not([class*='icon']) {
-                font-family: #{$fontFamily} !important;
+                font-family: var(--fl-font-family) !important;
             }
         }
     }
