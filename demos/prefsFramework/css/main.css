@@ -177,7 +177,6 @@ em {
     margin-top: 0;
     position: relative;
     top: 0;
-    vertical-align: middle;
     width: 100%;
 }
 
@@ -292,7 +291,7 @@ em {
 }
 
 #newsReleasesList h3 {
-    color: ##0079ac;
+    color: #0079ac;
     font-size: 1.4em;
 }
 
