@@ -78,22 +78,7 @@
                 },
                 prefsEditor: {
                     gradeNames: ["fluid.prefs.arrowScrolling"],
-                    model: {
-                        preferences: "{prefsEditorLoader}.model.preferences",
-                        panelIndex: "{prefsEditorLoader}.model.panelIndex",
-                        panelMaxIndex: "{prefsEditorLoader}.model.panelMaxIndex",
-                        local: {
-                            panelIndex: "{that}.model.panelIndex"
-                        }
-                    },
-                    autoSave: true,
-                    modelListeners: {
-                        "panelIndex": [{
-                            listener: "fluid.prefs.prefsEditor.handleAutoSave",
-                            args: ["{that}"],
-                            namespace: "autoSavePanelIndex"
-                        }]
-                    }
+                    autoSave: true
                 }
             });
         </script>
