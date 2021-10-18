@@ -1,5 +1,20 @@
 // UI Option styles for full page layouts both with and without preview
 
+// Text Size
+html.fl-textSize-enabled {
+    font-size: var(--fl-textSize);
+}
+
+// Letter-spacing
+html.fl-letterSpace-enabled {
+    letter-spacing: var(--fl-letterSpace);
+}
+
+// Word-spacing
+html.fl-wordSpace-enabled {
+    word-spacing: var(--fl-wordSpace);
+}
+
 // Control section headers
 .fl-prefsEditor {
     // Save, reset, cancel buttons
@@ -9,8 +24,9 @@
         width: 100%;
 
         input {
-            background-color: #f0f0f0;
-            border: 2px solid #cecece;
+            background-color: var(--fl-bgColor, #f0f0f0);
+            border: 2px solid var(--fl-fgColor, #cecece);
+            color: var(--fl-fgColor);
             font-size: 1em;
             font-weight: bold;
             height: 2.5em;
@@ -25,7 +41,7 @@
     h2 {
         align-items: center;
         clear: both;
-        color: #444;
+        color: var(--fl-fgColor, #444);
         display: flex;
         font-size: 1.29em;
         font-weight: bold;

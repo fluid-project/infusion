@@ -49,4 +49,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.assertEquals("The " + cssProp + " css style should be set to " + expectedSpace + "px", expectedSpace, actualSpace);
     };
 
+    fluid.tests.enactor.verifySpacingSettings = function (that, prefix, expected, elm) {
+        elm = elm ? $(elm) : that.container;
+        if (expected) {
+            jqUnit.assertTrue(`${prefix}: The ${that.options.styles.enabled} class should be applied`, elm.hasClass(that.options.styles.enabled));
+            jqUnit.assertEquals(`${prefix}: The ${that.options.cssCustomProp.size} custom property should be set`, expected.size, elm.css(that.options.cssCustomProp.size));
+            jqUnit.assertEquals(`${prefix}: The ${that.options.cssCustomProp.factor} custom property should be set`, expected.factor, elm.css(that.options.cssCustomProp.factor));
+        } else {
+            jqUnit.assertFalse(`${prefix}: The ${that.options.styles.enabled} class should not be applied`, elm.hasClass(that.options.styles.enabled));
+            jqUnit.assertUndefined(`${prefix}: The ${that.options.cssCustomProp.size} custom property should not be set`, elm.css(that.options.cssCustomProp.size));
+            jqUnit.assertUndefined(`${prefix}: The ${that.options.cssCustomProp.factor} custom property should not be set`, elm.css(that.options.cssCustomProp.factor));
+        }
+    };
+
+    fluid.tests.enactor.verifySpacingComputedCSS = function (that, prefix, prop, expected) {
+        jqUnit.assertEquals(`The new ${prop} should be set correctly.`, expected.computed, that.container.css(prop));
+        fluid.tests.enactor.verifySpacingSettings(that, prefix, expected);
+    };
+
 })();

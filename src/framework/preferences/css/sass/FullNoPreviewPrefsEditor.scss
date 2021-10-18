@@ -8,7 +8,7 @@ body {
 .fl-prefsEditor-fullNoPreview {
     // Category separator
     .fl-prefsEditor-category {
-        border-top: 2px solid #ddd;
+        border-top: 2px solid var(--fl-fgColor, #ddd);
         break-inside: avoid;
         clear: both;
         -webkit-column-break-inside: avoid;

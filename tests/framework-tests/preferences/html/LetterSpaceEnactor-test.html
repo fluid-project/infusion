@@ -25,8 +25,6 @@
         <script src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
         <script src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
-        <script src="../../../../src/components/textToSpeech/js/TextToSpeech.js"></script>
-        <script src="../../../../src/components/textToSpeech/js/MockTTS.js"></script>
         <script src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
         <script src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script src="../../../../src/framework/preferences/js/Enactors.js"></script>
@@ -53,11 +51,14 @@
         <div id="qunit-testrunner-toolbar"></div>
         <h2 id="qunit-userAgent"></h2>
         <ol id="qunit-tests"></ol>
-        <p class="flc-letterSpace" style="display: none; font-size: 16px">
+        <p class="flc-letterSpace" style="display: none; font-size: 16px; letter-spacing: var(--fl-letterSpace)">
             Sample Text
         </p>
         <div style="display: none; font-size: 16px; letter-spacing: 0.5em">
-            <p class="flc-letterSpace-existing" style="letter-spacing: 0.2em">
+            <p class="flc-letterSpace-existing" style="letter-spacing: var(--fl-letterSpace, 0.2em)">
+                Sample Text
+            </p>
+            <p class="flc-letterSpace-factor" style="letter-spacing: calc(calc(var(--fl-letterSpace-factor, 0) * 1em) + 0.2em)">
                 Sample Text
             </p>
         </div>

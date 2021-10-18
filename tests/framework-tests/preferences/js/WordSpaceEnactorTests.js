@@ -47,34 +47,39 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.wordSpace",
             tests: [{
-                expect: 7,
+                expect: 15,
                 name: "Set word space",
                 sequence: [{
                     listener: "jqUnit.assert",
                     event: "{wordSpaceTests wordSpace}.events.onCreate",
                     args: ["The word space enactor was created"]
                 }, {
-                    func: "fluid.tests.enactor.spacingSetter.assertSpacing",
-                    args: ["{wordSpace}", 16, "word-spacing", {value: 1, unit: 0}]
+                    func: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{wordSpace}", "Initial"]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", 2]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
-                    args: ["{wordSpace}", 16, "word-spacing", {value: 2, unit: 1}]
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{wordSpace}", "Space Increased", "word-spacing", {size: "1em", factor: "1", computed: "16px"}]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", -0.5]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
-                    args: ["{wordSpace}", 16, "word-spacing", {value: -0.5, unit: -1.5}]
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{wordSpace}", "Space Decreased", "word-spacing", {size: "-1.5em", factor: "-1.5", computed: "-24px"}]
                 }, {
-                    funcName: "fluid.tests.wordSpaceTester.reset",
-                    args: ["{wordSpace}.container"]
+                    func: "{wordSpace}.applier.change",
+                    args: ["value", 1]
+                }, {
+                    changeEvent: "{wordSpace}.applier.modelChanged",
+                    spec: {path: "value", priority: "last:testing"},
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{wordSpace}", "Reset"]
                 }]
             }]
         }]
@@ -99,47 +104,106 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.wordSpace",
             tests: [{
-                expect: 7,
+                expect: 15,
                 name: "Set word space when existing word space present",
                 sequence: [{
                     listener: "jqUnit.assert",
                     event: "{wordSpaceExistingTests wordSpace}.events.onCreate",
-                    args: ["The word space enactor was created"]
+                    args: ["The letter space enactor was created"]
                 }, {
-                    func: "fluid.tests.enactor.spacingSetter.assertSpacing",
-                    args: ["{wordSpace}", 16, "word-spacing", {value: 1, unit: 0}, 3.2]
+                    func: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{wordSpace}", "Initial"]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", 2]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
-                    args: ["{wordSpace}", 16, "word-spacing", {value: 2, unit: 1}, 19.2]
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{wordSpace}", "Space Increased", "word-spacing", {size: "1.2em", factor: "1", computed: "19.2px"}]
                 }, {
                     func: "{wordSpace}.applier.change",
                     args: ["value", -0.5]
                 }, {
                     changeEvent: "{wordSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.enactor.spacingSetter.assertSpacing",
-                    args: ["{wordSpace}", 16, "word-spacing", {value: -0.5, unit: -1.5}, -20.8]
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{wordSpace}", "Space Decreased", "word-spacing", {size: "-1.3em", factor: "-1.5", computed: "-20.8px"}]
                 }, {
-                    funcName: "fluid.tests.wordSpaceTester.reset",
-                    args: ["{wordSpace}.container"]
+                    func: "{wordSpace}.applier.change",
+                    args: ["value", 1]
+                }, {
+                    changeEvent: "{wordSpace}.applier.modelChanged",
+                    spec: {path: "value", priority: "last:testing"},
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{wordSpace}", "Reset"]
                 }]
             }]
         }]
     });
 
-    fluid.tests.wordSpaceTester.reset = function (elm) {
-        $(elm).css("word-spacing", "");
-    };
+    fluid.defaults("fluid.tests.wordSpaceFactorTests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            wordSpace: {
+                type: "fluid.tests.prefs.enactor.wordSpaceEnactor",
+                container: ".flc-wordSpace-existing",
+                createOnEvent: "{wordSpaceTester}.events.onTestCaseStart"
+            },
+            wordSpaceTester: {
+                type: "fluid.tests.wordSpaceFactorTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.wordSpaceFactorTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.prefs.enactor.wordSpace",
+            tests: [{
+                expect: 15,
+                name: "Set word space based on the factor of the change",
+                sequence: [{
+                    listener: "jqUnit.assert",
+                    event: "{wordSpaceFactorTests wordSpace}.events.onCreate",
+                    args: ["The letter space enactor was created"]
+                }, {
+                    func: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{wordSpace}", "Initial"]
+                }, {
+                    func: "{wordSpace}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    changeEvent: "{wordSpace}.applier.modelChanged",
+                    spec: {path: "value", priority: "last:testing"},
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{wordSpace}", "Space Increased", "word-spacing", {size: "1.2em", factor: "1", computed: "19.2px"}]
+                }, {
+                    func: "{wordSpace}.applier.change",
+                    args: ["value", -0.5]
+                }, {
+                    changeEvent: "{wordSpace}.applier.modelChanged",
+                    spec: {path: "value", priority: "last:testing"},
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{wordSpace}", "Space Decreased", "word-spacing", {size: "-1.3em", factor: "-1.5", computed: "-20.8px"}]
+                }, {
+                    func: "{wordSpace}.applier.change",
+                    args: ["value", 1]
+                }, {
+                    changeEvent: "{wordSpace}.applier.modelChanged",
+                    spec: {path: "value", priority: "last:testing"},
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{wordSpace}", "Reset"]
+                }]
+            }]
+        }]
+    });
 
     $(function () {
         fluid.test.runTests([
             "fluid.tests.wordSpaceTests",
-            "fluid.tests.wordSpaceExistingTests"
+            "fluid.tests.wordSpaceExistingTests",
+            "fluid.tests.wordSpaceFactorTests"
         ]);
     });
 
