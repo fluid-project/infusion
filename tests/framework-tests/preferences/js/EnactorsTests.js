@@ -386,8 +386,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.verifyInitValues = function (that, initialSize, multiplier) {
-        jqUnit.assertEquals("The initial size is retrieved correctly", initialSize, that.initialSize);
+    fluid.tests.verifyInitValues = function (that, multiplier) {
         jqUnit.assertEquals("The line height multiplier is calculated correctly", multiplier, that.lineHeightMultiplier);
 
         fluid.tests.enactor.verifySpacingSettings(that, "Initial");
@@ -418,23 +417,23 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modules: [{
             name: "Line Space - normal line-height",
             tests: [{
-                expect: 5,
+                expect: 4,
                 name: "Set Line-height",
                 // Not running the model changed tests due to the variances across browsers in what the
                 // default line-height is.
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpaceNormal}", "normal", 1.2]
+                    args: ["{lineSpaceNormal}", 1.2]
                 }]
             }]
         }, {
             name: "Line Space - line-height in length",
             tests: [{
-                expect: 12,
+                expect: 11,
                 name: "Set Line-height",
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpaceLength}", "12px", 0.5]
+                    args: ["{lineSpaceLength}", 0.5]
                 }, {
                     func: "{lineSpaceLength}.applier.change",
                     args: ["value", "{that}.options.testOpts.lineSpace"]
@@ -456,11 +455,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, {
             name: "Line Space - line-height in unitless number",
             tests: [{
-                expect: 12,
+                expect: 11,
                 name: "Set Line-height",
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpaceNumber}", "36px", 1.5]
+                    args: ["{lineSpaceNumber}", 1.5]
                 }, {
                     func: "{lineSpaceNumber}.applier.change",
                     args: ["value", "{that}.options.testOpts.lineSpace"]
@@ -482,11 +481,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, {
             name: "Line Space - line-height in percentage",
             tests: [{
-                expect: 12,
+                expect: 11,
                 name: "Set Line-height",
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpacePercentage}", "12px", 0.5]
+                    args: ["{lineSpacePercentage}", 0.5]
                 }, {
                     func: "{lineSpacePercentage}.applier.change",
                     args: ["value", "{that}.options.testOpts.lineSpace"]

@@ -248,7 +248,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.spacingSetter.set",
-                args: ["{that}", "{that}.options.cssProp", "{arguments}.0"]
+                args: ["{that}", "{arguments}.0"]
             },
             getSpacing: {
                 funcName: "fluid.prefs.enactor.spacingSetter.getSpacing",
@@ -291,7 +291,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return fluid.roundToDecimal(current / textSize, 2);
     };
 
-    fluid.prefs.enactor.spacingSetter.set = function (that, cssProp, units) {
+    /**
+     * Sets the spacing related classes and CSS custom properties on the component's container.
+     * If the application will set the space to its initial value, the "enabled" class and CSS custom properties are
+     * removed.
+     *
+     * @param {fluid.prefs.enactor.spacingSetter} that - An instance of a `fluid.prefs.enactor.spacingSetter` component
+     * @param {Number} [units] - (optional) The amount to increase the intial line height by.
+     */
+    fluid.prefs.enactor.spacingSetter.set = function (that, units) {
         // setting the style value to "" will remove it.
         units = units || "";
         var targetSize = units ? `${fluid.roundToDecimal(that.originalSpacing + units, 2)}em` : "";
@@ -342,12 +350,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.prefs.enactor.textSize.set = function (that, factor, getTextSizeInPxFunc) {
+    /**
+     * Sets the text size related classes and CSS custom properties of the element specified at `that.root`.
+     * If the application will set the text size to its initial value, the "enabled" class and CSS custom properties
+     * are removed.
+     *
+     * @param {fluid.prefs.enactor.textSize} that - An instance of a `fluid.prefs.enactor.textSize` component
+     * @param {Number} [factor] - (optional) The amount (multiplier) to increase the intial text size by.
+     */
+    fluid.prefs.enactor.textSize.set = function (that, factor) {
         factor = factor || 1;
         // Calculating the initial size here rather than using a members expand because the "font-size"
         // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
-            that.initialSize = getTextSizeInPxFunc();
+            that.initialSize = that.getTextSizeInPx();
         }
 
         if (that.initialSize && factor !== 1) {
@@ -430,17 +446,21 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return fluid.roundToDecimal(parseFloat(lineHeight) / fontSize, 2);
     };
 
+    /**
+     * Sets the line space related classes and CSS custom properties on the component's container.
+     * If the application will set the line height to its initial value, the "enabled" class and CSS custom properties
+     * are removed.
+     *
+     * @param {fluid.prefs.enactor.lineSpace} that - An instance of a `fluid.prefs.enactor.lineSpace` component
+     * @param {Number} factor - The amount (multiplier) to increase the intial line height by.
+     */
     fluid.prefs.enactor.lineSpace.set = function (that, factor) {
-        // Calculating the initial size here rather than using a members expand because the "line-height"
+        // Calculating the lineHeightMultiplier here rather than using a members expand because the "line-height"
         // cannot be detected on hidden containers such as separated panel iframe.
-        if (!that.initialSize) {
-            that.initialSize = that.getLineHeight();
+        if (!that.lineHeightMultiplier) {
             that.lineHeightMultiplier = that.getLineHeightMultiplier();
         }
 
-        // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
-        // which occurs when firefox detects "line-height" value on a hidden container.
-        // @ See getLineHeightMultiplier() & http://issues.fluidproject.org/browse/FLUID-4500
         if (that.lineHeightMultiplier && factor !== 1) {
             var targetLineSpace = fluid.roundToDecimal(factor * that.lineHeightMultiplier, 2);
             that.container.addClass(that.options.styles.enabled);
