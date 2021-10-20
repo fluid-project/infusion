@@ -330,6 +330,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             factor: "--fl-textSize-factor",
             size: "--fl-textSize"
         },
+        scale: 1,
         members: {
             root: {
                 expander: {
@@ -359,7 +360,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * @param {Number} [factor] - (optional) The amount (multiplier) to increase the intial text size by.
      */
     fluid.prefs.enactor.textSize.set = function (that, factor) {
-        factor = factor || 1;
+        factor = fluid.roundToDecimal(factor, that.options.scale) || 1;
         // Calculating the initial size here rather than using a members expand because the "font-size"
         // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
@@ -399,6 +400,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             factor: "--fl-lineSpace-factor",
             size: "--fl-lineSpace"
         },
+        scale: 1,
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.lineSpace.set",
@@ -452,9 +454,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * are removed.
      *
      * @param {fluid.prefs.enactor.lineSpace} that - An instance of a `fluid.prefs.enactor.lineSpace` component
-     * @param {Number} factor - The amount (multiplier) to increase the intial line height by.
+     * @param {Number} [factor] - (Optional) The amount (multiplier) to increase the intial line height by.
      */
     fluid.prefs.enactor.lineSpace.set = function (that, factor) {
+        factor = fluid.roundToDecimal(factor, that.options.scale) || 1;
         // Calculating the lineHeightMultiplier here rather than using a members expand because the "line-height"
         // cannot be detected on hidden containers such as separated panel iframe.
         if (!that.lineHeightMultiplier) {
