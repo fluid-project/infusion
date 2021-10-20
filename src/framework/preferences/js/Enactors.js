@@ -428,21 +428,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     // into a numeric value in em.
     // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
     fluid.prefs.enactor.lineSpace.getLineHeightMultiplier = function (lineHeight, fontSize) {
-        // Handle the given "lineHeight" argument is "undefined", which occurs when firefox detects
-        // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
-        if (!lineHeight) {
-            return 0;
-        }
-
         // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
         // according to https://developer.mozilla.org/en/CSS/line-height
         if (lineHeight === "normal") {
             return 1.2;
-        }
-
-        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (lineHeight.match(/[0-9]$/)) {
-            return Number(lineHeight);
         }
 
         return fluid.roundToDecimal(parseFloat(lineHeight) / fontSize, 2);
