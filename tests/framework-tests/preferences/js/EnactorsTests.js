@@ -307,11 +307,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.testGetLineHeightMultiplier = function () {
-        var undefinedLineHeight;
-        testGetLineHeightMultiplier(undefinedLineHeight, 0);
         testGetLineHeightMultiplier("normal", 1.2);
         testGetLineHeightMultiplier("6px", 1);
-        testGetLineHeightMultiplier("1.5", 1.5);
     };
 
     fluid.defaults("fluid.tests.getLineHeightTester", {
@@ -327,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, {
             name: "Test getLineHeightMultiplier",
             tests: [{
-                expect: 4,
+                expect: 2,
                 name: "Get line height multiplier",
                 type: "test",
                 func: "fluid.tests.testGetLineHeightMultiplier"
