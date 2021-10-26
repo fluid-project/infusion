@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Bug Report and Feature Requests
+    url: https://issues.fluidproject.org/projects/FLUID/
+    about: Please file issues and feature requests in the JIRA issue tracker.
+  - name: Community Support
+    url: https://wiki.fluidproject.org/display/fluid/Get+Involved
+    about: Please see the Get Involved page for information about participating and communicating in the community.
+  - name: Security Issues
+    url: https://github.com/fluid-project/.github/blob/main/SECURITY.md
+    about: Please see our guidelines for reporting a security issue.
