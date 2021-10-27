@@ -78,51 +78,18 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return togo;
     };
 
-    // Exception stripping code taken from https://github.com/emwendelin/javascript-stacktrace/blob/master/stacktrace.js
-    // BSD licence, see header
-
-    fluid.detectStackStyle = function (e) {
-        var style = "other";
-        var stackStyle = {
-            offset: 0
-        };
-        if (e.arguments) {
-            style = "chrome";
-        } else if (typeof window !== "undefined" && window.opera && e.stacktrace) {
-            style = "opera10";
-        } else if (e.stack) {
-            style = "firefox";
-            // Detect FireFox 4-style stacks which are 1 level less deep
-            stackStyle.offset = e.stack.indexOf("Trace exception") === -1 ? 1 : 0;
-        } else if (typeof window !== "undefined" && window.opera && !("stacktrace" in e)) { //Opera 9-
-            style = "opera";
-        }
-        stackStyle.style = style;
-        return stackStyle;
-    };
-
     fluid.obtainException = function () {
-        try {
-            throw new Error("Trace exception");
-        }
-        catch (e) {
-            return e;
-        }
+        return new Error("Trace exception");
     };
-
-    var stackStyle = fluid.detectStackStyle(fluid.obtainException());
 
     fluid.registerNamespace("fluid.exceptionDecoders");
 
     fluid.decodeStack = function () {
-        if (stackStyle.style !== "firefox") {
-            return null;
-        }
         var e = fluid.obtainException();
-        return fluid.exceptionDecoders[stackStyle.style](e);
+        return fluid.exceptionDecoders.standard(e);
     };
 
-    fluid.exceptionDecoders.firefox = function (e) {
+    fluid.exceptionDecoders.standard = function (e) {
         var delimiter = "at ";
         var lines = e.stack.replace(/(?:\n@:0)?\s+$/m, "").replace(/^\(/gm, "{anonymous}(").split("\n");
         return fluid.transform(lines, function (line) {
@@ -134,9 +101,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     // Main entry point for callers.
     fluid.getCallerInfo = function (atDepth) {
-        atDepth = (atDepth || 3) - stackStyle.offset;
+        atDepth = (atDepth || 3);
         var stack = fluid.decodeStack();
-        var element = stack && stack[atDepth] && stack[atDepth][0];
+        var element = stack && stack[atDepth] && stack[atDepth][0]; // TODO: Last guard is necessary on Safari, see FLUID-6482
         if (element) {
             var lastslash = element.lastIndexOf("/");
             if (lastslash === -1) {
