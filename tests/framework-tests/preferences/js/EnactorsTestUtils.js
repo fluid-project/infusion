@@ -63,7 +63,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.enactor.verifySpacingComputedCSS = function (that, prefix, prop, expected) {
-        jqUnit.assertEquals(`The new ${prop} should be set correctly.`, expected.computed, that.container.css(prop));
+        var roundedActual = `${fluid.roundToDecimal(parseFloat(that.container.css(prop)), 1)}px`;
+        jqUnit.assertEquals(`The new ${prop} should be set correctly.`, expected.computed, roundedActual);
         fluid.tests.enactor.verifySpacingSettings(that, prefix, expected);
     };
 
