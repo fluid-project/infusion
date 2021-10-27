@@ -136,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.getCallerInfo = function (atDepth) {
         atDepth = (atDepth || 3) - stackStyle.offset;
         var stack = fluid.decodeStack();
-        var element = stack && stack[atDepth][0];
+        var element = stack && stack[atDepth] && stack[atDepth][0];
         if (element) {
             var lastslash = element.lastIndexOf("/");
             if (lastslash === -1) {
