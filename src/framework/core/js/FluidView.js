@@ -39,7 +39,7 @@ var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
             options: 1
         },
         events: {
-            onDomBind: null
+            onDomBind: "promise"
         },
         // Note that we apply the same timing as the pref's framework's panels for old-style components, to avoid
         // confusing its timing before it is rewritten, which has a whole bunch of createOnEvent: "onDomBind" subcomponents.
