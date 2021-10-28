@@ -61,11 +61,16 @@ $fontFaces: (
 }
 
 @mixin build-fonts-Enactors($fonts) {
+    // Used by the @extend rule to reduce duplication of output CSS styles
+    %fl-font-application {
+        font-family: var(--fl-font-family) !important;
+    }
+
     @each $selector, $fontFamily in $fonts {
         #{$selector},
         #{$selector} * {
             &:not([class*='icon']) {
-                font-family: var(--fl-font-family) !important;
+                @extend %fl-font-application;
             }
         }
     }
