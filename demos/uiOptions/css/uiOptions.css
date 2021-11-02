@@ -63,6 +63,14 @@ main {
     margin-bottom: 0.5em;
 }
 
+.toc {
+    background-color: #e1e1e1;
+    border: solid 1px currentColor;
+    display: none;
+    margin-block-start: 1rem;
+    padding-inline: 1rem;
+}
+
 .header,
 .instructions {
     font-size: 1.3em;

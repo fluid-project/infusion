@@ -459,7 +459,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 createOnEvent: "onCreateTOCReady",
                 options: {
                     listeners: {
-                        "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
+                        "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender",
+                        "onCreate.show": {
+                            listener: "{that}.show",
+                            priority: "after:refreshView"
+                        }
                     },
                     strings: {
                         tocHeader: "{messageLoader}.resources.tocMessage.parsed.tocHeader"
