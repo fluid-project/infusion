@@ -460,9 +460,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 options: {
                     listeners: {
                         "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender",
-                        "onCreate.show": {
+                        "onReady.show": {
                             listener: "{that}.show",
-                            priority: "after:refreshView"
+                            // sets a duration of 0, which allows time for ToC content to render before showing.
+                            args: [0]
                         }
                     },
                     strings: {
