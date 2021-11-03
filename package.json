@@ -102,7 +102,7 @@
         "eslint-plugin-jsdoc": "32.3.3",
         "fast-glob": "3.2.5",
         "fluid-lint-all": "1.1.1",
-        "fluid-testem": "2.1.14",
+        "fluid-testem": "2.1.15",
         "hypher": "0.2.5",
         "jquery": "3.6.0",
         "jquery-simulate": "1.0.2",
