@@ -52,7 +52,7 @@
     a,
     a * {
         background-color: var(--fl-bgColor) !important;
-        color: var(--fl-linkColor, var(--fl-fgColor)) !important;
+        color: var(--fl-linkColor) !important;
         font-weight: bold !important;
     }
 
@@ -66,8 +66,8 @@
     input[type="submit"] *,
     .fl-input-button,
     .fl-input-button * {
-        background-color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
-        color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
+        background-color: var(--fl-buttonBgColor) !important;
+        color: var(--fl-buttonFgColor) !important;
     }
 
     ::placeholder {
@@ -263,7 +263,7 @@
 
         a,
         a * {
-            background-color: var(--fl-linkColor, var(--fl-fgColor)) !important;
+            background-color: var(--fl-linkColor) !important;
             color: var(--fl-bgColor) !important;
             font-weight: bold !important;
         }
@@ -280,8 +280,8 @@
         &.fl-input-button,
         .fl-input-button *,
         &.fl-input-button * {
-            background-color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
-            color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
+            background-color: var(--fl-buttonFgColor) !important;
+            color: var(--fl-buttonBgColor) !important;
         }
 
         // Tables
@@ -403,7 +403,7 @@
 
     a.fl-inverted-color,
     a.fl-inverted-color * {
-        background-color: var(--fl-linkColor, var(--fl-fgColor)) !important;
+        background-color: var(--fl-linkColor) !important;
         color: var(--fl-bgColor) !important;
         font-weight: bold !important;
     }
@@ -416,7 +416,7 @@
     input[type="reset"].fl-inverted-color *,
     input[type="submit"].fl-inverted-color,
     input[type="submit"].fl-inverted-color * {
-        background-color: var(--fl-buttonFgColor, var(--fl-fgColor)) !important;
-        color: var(--fl-buttonBgColor, var(--fl-bgColor)) !important;
+        background-color: var(--fl-buttonFgColor) !important;
+        color: var(--fl-buttonBgColor) !important;
     }
 }

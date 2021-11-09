@@ -45,10 +45,10 @@
 /* Textfield Button Styling */
 
 .fl-textfieldStepper .fl-textfieldStepper-button {
-    background-color: var(--fl-bgColor);
-    border: 2px solid var(--fl-fgColor, #000);
+    background-color: var(--fl-buttonBgColor);
+    border: 2px solid var(--fl-buttonFgColor, #000);
     border-radius: 0.4em;
-    color: var(--fl-fgColor);
+    color: var(--fl-buttonFgColor);
     font-size: 100%;
     height: 2.4375em;
     width: 2.4375em;

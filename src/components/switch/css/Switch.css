@@ -10,11 +10,11 @@
 
 .fl-switchUI-control {
     align-items: center;
-    background-color: var(--fl-bgColor, #fff);
-    border: 0.15em solid var(--fl-fgColor, currentColor);
+    background-color: var(--fl-buttonBgColor, #fff);
+    border: 0.15em solid var(--fl-buttonFgColor, currentColor);
     border-radius: calc(var(--fl-switch-knobSize) + var(--fl-switch-knobMargin));
     box-sizing: content-box;
-    color: var(--fl-fgColor, currentColor);
+    color: var(--fl-buttonFgColor, currentColor);
     display: flex;
     font-family: inherit;
     font-size: var(--fl-enhance-font-size, 100%);
@@ -25,8 +25,8 @@
 
 .fl-switchUI-control:focus {
     box-shadow:
-        0 0 0 0.2em var(--fl-bgColor, #fff),
-        0 0 0 0.35em var(--fl-fgColor, #000);
+        0 0 0 0.2em var(--fl-buttonBgColor, #fff),
+        0 0 0 0.35em var(--fl-buttonFgColor, #000);
     outline: none;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .fl-switchUI-controlKnob {
-    background-color: var(--fl-fgColor, currentColor) !important;
+    background-color: var(--fl-buttonFgColor, currentColor) !important;
     border-radius: var(--fl-switch-knobSize);
     display: inline-block;
     height: var(--fl-switch-knobSize);
