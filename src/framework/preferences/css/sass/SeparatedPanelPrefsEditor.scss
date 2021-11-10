@@ -56,9 +56,9 @@ body {
 
     .fl-prefsEditor-showHide,
     .fl-prefsEditor-reset {
-        background-color: var(--fl-bgColor, #fff);
+        background-color: var(--fl-buttonBgColor, #fff);
         border: none;
-        color: var(--fl-fgColor, #2f2b2a);
+        color: var(--fl-buttonFgColor, #2f2b2a);
         font-family: var(--fl-font-family, OpenSans, "Myriad Pro", Helvetica, Arial, sans-serif);
         font-size: calc(var(--fl-enhance-font-size-factor, 1) * var(--fl-textSize, 1rem) * 1.3);
         letter-spacing: var(--fl-letterSpace);
@@ -118,7 +118,7 @@ body {
             }
 
             .fl-prefsEditor-buttons {
-                background-color: var(--fl-bgColor, #fff);
+                background-color: var(--fl-buttonBgColor, #fff);
                 border: 1px solid var(--fl-fgColor, #ccc);
                 border-bottom-left-radius: 8px;
                 border-bottom-right-radius: 8px;
