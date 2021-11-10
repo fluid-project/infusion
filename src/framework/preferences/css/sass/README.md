@@ -24,8 +24,8 @@ used to quickly access all of the available styling enactors styles.
 The styling related enactors use [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
 as hooks for applying the styling. Some enactors such as `Text Size`, set their CSS custom properties via JavaScript,
 others supply them via classes in their related `*_base` stylesheet. For example the `Enhance Inputs` preference uses
-the `EnhanceInputs_base` stylesheet. An integrator can hook into the enactors CSS custom properties to implement their
-own styles, allowing the site to automatically adapt along with the prefernce changes.
+the `EnhanceInputs_base` stylesheet. An integrator can hook into the enactor's CSS custom properties to implement their
+own styles, allowing the site to automatically adapt along with the preference changes.
 
 ### Drop-in Style Application
 
