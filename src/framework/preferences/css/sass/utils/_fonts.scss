@@ -10,29 +10,29 @@ $fonts: (
 
 // Defines any @font-face definitions needed by the enactors
 $fontFaces: (
-    openDyslexic: (
-        fontDirectory: "../../../lib/open-dyslexic/fonts/",
-        fontFamily: "OpenDyslexic",
+    open-dyslexic: (
+        font-directory: "../../../lib/open-dyslexic/fonts/",
+        font-family: "OpenDyslexic",
         definitions: (
             normal: (
                 filename:"OpenDyslexic-Regular.woff",
-                fontWeight: normal,
-                fontStyle: normal
+                font-weight: normal,
+                font-style: normal
             ),
             bold: (
                 filename:"OpenDyslexic-Bold.woff",
-                fontWeight: 600,
-                fontStyle: normal
+                font-weight: 600,
+                font-style: normal
             ),
             italic: (
                 filename:"OpenDyslexic-Italic.woff",
-                fontWeight: normal,
-                fontStyle: italic
+                font-weight: normal,
+                font-style: italic
             ),
-            boldItalic: (
+            bold-italic: (
                 filename:"OpenDyslexic-BoldItalic.woff",
-                fontWeight: 600,
-                fontStyle: italic
+                font-weight: 600,
+                font-style: italic
             )
         )
     )
@@ -43,10 +43,10 @@ $fontFaces: (
     @each $key, $properties in $fontFaces {
         @each $key, $definition in map-get($properties, "definitions") {
             @font-face {
-                font-family: map-get($properties, "fontFamily");
-                font-style: map-get($definition, "fontStyle");
-                font-weight: map-get($definition, "fontWeight");
-                src: url(#{map-get($properties, "fontDirectory")}#{map-get($definition, "filename")});
+                font-family: map-get($properties, "font-family");
+                font-style: map-get($definition, "font-style");
+                font-weight: map-get($definition, "font-weight");
+                src: url(#{map-get($properties, "font-directory")}#{map-get($definition, "filename")});
             }
         }
     }

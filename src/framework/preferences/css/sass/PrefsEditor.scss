@@ -1,3 +1,5 @@
+@use 'sass:meta';
+
 /* General Preferences Editor styles, used for all layouts */
 @font-face {
     font-family: 'PrefsFramework-Icons';
@@ -170,11 +172,11 @@ $icon-font: 'PrefsFramework-Icons';
     }
 
     // Textfield Stepper
-    @import "../../../../components/textfieldControl/css/TextfieldStepper";
+    @include meta.load-css("../../../../components/textfieldControl/css/TextfieldStepper");
 
     // ON/OFF Switch
     .fl-prefsEditor-onoff {
-        @import "../../../../components/switch/css/Switch";
+        @include meta.load-css("../../../../components/switch/css/Switch");
     }
 
     // Font Icons
