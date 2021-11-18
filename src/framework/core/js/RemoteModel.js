@@ -126,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     /*
-     * Similar to fluid.promise.makeSequenceStrategy from FluidPromises.js; however, rather than passing along the
+     * Similar to fluid.promise.makeTransformerStrategy from FluidPromises.js; however, rather than passing along the
      * result from one listener in the sequence to the next, the original payload is always passed to each listener.
      * In this way, the synthetic events are handled like typical events, but a promise can be resolved/rejected at the
      * end of the sequence.

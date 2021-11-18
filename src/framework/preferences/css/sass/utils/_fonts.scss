@@ -1,62 +1,76 @@
 // Contains a utility function for changing font family
-// !important is used for all styles to ensure that Preferences Framework's enactors are able to override the pages default styles.
 
 $fonts: (
     ".fl-font-arial": "Arial",
     ".fl-font-verdana": "Verdana",
     ".fl-font-times": "Georgia, Times, Times New Roman, serif",
     ".fl-font-comic-sans": "Comic Sans MS, sans-serif",
-    ".fl-font-open-dyslexic": "OpenDyslexic, sans-serif",
+    ".fl-font-open-dyslexic": "OpenDyslexic, sans-serif"
 );
 
 // Defines any @font-face definitions needed by the enactors
 $fontFaces: (
-    openDyslexic: (
-        fontDirectory: "../../../lib/open-dyslexic/fonts/",
-        fontFamily: "OpenDyslexic",
+    open-dyslexic: (
+        font-directory: "../../../lib/open-dyslexic/fonts/",
+        font-family: "OpenDyslexic",
         definitions: (
             normal: (
                 filename:"OpenDyslexic-Regular.woff",
-                fontWeight: normal,
-                fontStyle: normal,
+                font-weight: normal,
+                font-style: normal
             ),
             bold: (
                 filename:"OpenDyslexic-Bold.woff",
-                fontWeight: 600,
-                fontStyle: normal,
+                font-weight: 600,
+                font-style: normal
             ),
             italic: (
                 filename:"OpenDyslexic-Italic.woff",
-                fontWeight: normal,
-                fontStyle: italic,
+                font-weight: normal,
+                font-style: italic
             ),
-            boldItalic: (
+            bold-italic: (
                 filename:"OpenDyslexic-BoldItalic.woff",
-                fontWeight: 600,
-                fontStyle: italic,
+                font-weight: 600,
+                font-style: italic
             )
         )
     )
 );
 
-@mixin build-fonts-Enactors($textFont, $textFontFaces) {
+@mixin build-font-face-def($fontFaces) {
     // Build any necessary @font-face definitions
     @each $key, $properties in $fontFaces {
         @each $key, $definition in map-get($properties, "definitions") {
             @font-face {
-                font-family: map-get($properties, "fontFamily");
-                font-style: map-get($definition, "fontStyle");
-                font-weight: map-get($definition, "fontWeight");
-                src: url(#{map-get($properties, "fontDirectory")}#{map-get($definition, "filename")});
+                font-family: map-get($properties, "font-family");
+                font-style: map-get($definition, "font-style");
+                font-weight: map-get($definition, "font-weight");
+                src: url(#{map-get($properties, "font-directory")}#{map-get($definition, "filename")});
             }
         }
     }
+}
 
-    @each $fontFamilyClass, $fontFamily in $textFont {
-        #{$fontFamilyClass},
-        #{$fontFamilyClass} * {
+@mixin build-fonts-properties($fonts) {
+    @each $selector, $fontFamily in $fonts {
+        #{$selector} {
+            --fl-font-family: #{$fontFamily};
+        }
+    }
+}
+
+@mixin build-fonts-Enactors($fonts) {
+    // Used by the @extend rule to reduce duplication of output CSS styles
+    %fl-font-application {
+        font-family: var(--fl-font-family) !important;
+    }
+
+    @each $selector, $fontFamily in $fonts {
+        #{$selector},
+        #{$selector} * {
             &:not([class*='icon']) {
-                font-family: #{$fontFamily} !important;
+                @extend %fl-font-application;
             }
         }
     }

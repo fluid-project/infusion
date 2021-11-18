@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="font-size: 16px">
+<html lang="en" style="font-size: var(--fl-textSize, 16px)">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Enactors Tests</title>
@@ -77,14 +77,16 @@
 
         <div class="flc-textSize">
             <div id="flc-textSize-remTest" style="font-size: 2rem"></div>
+            <div id="flc-textSize-customPropTest" style="font-size: var(--fl-textSize)"></div>
+            <div id="flc-textSize-factorTest" style="font-size: calc(var(--fl-textSize-factor, 1) * 2rem)"></div>
         </div>
 
         <div class="flc-lineSpace-parent" style="font-size: 24px">
             <div class="flc-lineSpace-getTests" style="line-height: 12px; font-size: 6px;"></div>
-            <div class="flc-lineSpace" style="line-height: normal;"></div>
-            <div class="flc-lineSpace-length" style="line-height: 12px;"></div>
-            <div class="flc-lineSpace-number" style="line-height: 1.5;"></div>
-            <div class="flc-lineSpace-percentage" style="line-height: 50%;"></div>
+            <div class="flc-lineSpace" style="line-height: var(--fl-lineSpace, normal);"></div>
+            <div class="flc-lineSpace-length" style="line-height: var(--fl-lineSpace, 12px);"></div>
+            <div class="flc-lineSpace-number" style="line-height: var(--fl-lineSpace, 1.5);"></div>
+            <div class="flc-lineSpace-percentage" style="line-height: var(--fl-lineSpace, 50%);"></div>
         </div>
 
         <div class="flc-tableOfContents">

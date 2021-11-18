@@ -1,3 +1,5 @@
+@use 'sass:meta';
+
 /* General Preferences Editor styles, used for all layouts */
 @font-face {
     font-family: 'PrefsFramework-Icons';
@@ -7,7 +9,9 @@
 $icon-font: 'PrefsFramework-Icons';
 
 .fl-prefsEditor {
-    font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
+    background-color: var(--fl-bgColor);
+    color: var(--fl-fgColor);
+    font-family: var(--fl-font-family, "Myriad Pro", Helvetica, Arial, sans-serif);
 
     // Controls
     .fl-prefsEditor-panels {
@@ -31,7 +35,7 @@ $icon-font: 'PrefsFramework-Icons';
 
         // Check boxes
         &[type="checkbox"] {
-            border: 1px solid black;
+            border: 1px solid var(--fl-fgColor, black);
             margin-right: 10px;
         }
     }
@@ -52,9 +56,11 @@ $icon-font: 'PrefsFramework-Icons';
 
     // Drop downs
     select {
-        border: 2px solid #ebebeb;
+        background-color: var(--fl-bgColor);
+        border: 2px solid var(--fl-fgColor, #ebebeb);
+        color: var(--fl-fgColor, #000);
         font-family: inherit;
-        font-size: 100%;
+        font-size: var(--fl-enhance-font-size, 100%);
 
         &#textFont {
             display: block;
@@ -63,35 +69,31 @@ $icon-font: 'PrefsFramework-Icons';
 
             option {
                 &.fl-font-times {
-                    font-family: "Times New Roman", serif;
+                    font-family: var(--fl-font-family, "Times New Roman", serif);
                 }
 
-                &.fl-font-comic {
-                    font-family: "Comic Sans MS", cursive, sans-serif;
+                &.fl-font-comic-sans {
+                    font-family: var(--fl-font-family, "Comic Sans MS", cursive, sans-serif);
                 }
 
                 &.fl-font-arial {
-                    font-family: Arial, sans-serif;
+                    font-family: var(--fl-font-family, Arial, sans-serif);
                 }
 
                 &.fl-font-verdana {
-                    font-family: Verdana, sans-serif;
+                    font-family: var(--fl-font-family, Verdana, sans-serif);
                 }
 
                 &.fl-font-open-dyslexic {
-                    font-family: OpenDyslexic, sans-serif;
+                    font-family: var(--fl-font-family, OpenDyslexic, sans-serif);
                 }
             }
         }
 
-        &#theme {
-            font-weight: bold;
-            text-transform: uppercase;
-
-            option.fl-prefsEditor-default-theme {
-                background-color: #efefef !important;
-                color: #000 !important;
-            }
+        &:focus {
+            outline-color: var(--fl-fgColor);
+            outline-style: solid;
+            outline-width: 0.2em;
         }
     }
 
@@ -169,62 +171,12 @@ $icon-font: 'PrefsFramework-Icons';
         }
     }
 
-    // Stepper
-    // Custom styling for the textfield stepper when used in the prefs framework
-
-    .fl-textfieldStepper {
-        align-items: center;
-        display: flex;
-        justify-content: center;
-    }
-
-    .fl-textfieldStepper-focusContainer {
-        padding: 0.2em;
-    }
-
-    .fl-textfieldStepper *:focus {
-        outline: none;
-    }
-
-    .fl-textfieldStepper-focus {
-        outline: solid 0.2em #000;
-    }
-
-    /* height and width specified in ems instead of rems
-       to respond to emphasize links preferences */
-    .fl-textfieldStepper .fl-textfieldStepper-textField {
-        -moz-appearance: textfield;
-        font-family: inherit;
-        font-size: 100%;
-        height: 2em;
-        margin: 0 0.5em;
-        text-align: center;
-        width: 4em;
-    }
-
-    .fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-inner-spin-button,
-    .fl-textfieldStepper .fl-textfieldStepper-textField::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    .fl-textfieldStepper .fl-textfieldStepper-button {
-        background-color: #fff;
-        border: 2px solid #000;
-        border-radius: 0.4rem;
-        font-family: inherit;
-        font-size: 100%;
-        height: 2.4375em;
-        width: 2.4375em;
-    }
-
-    .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
-        opacity: 0.3;
-    }
+    // Textfield Stepper
+    @include meta.load-css("../../../../components/textfieldControl/css/TextfieldStepper");
 
     // ON/OFF Switch
     .fl-prefsEditor-onoff {
-        @import "../../../../components/switch/css/Switch";
+        @include meta.load-css("../../../../components/switch/css/Switch");
     }
 
     // Font Icons
@@ -259,7 +211,6 @@ $icon-font: 'PrefsFramework-Icons';
         font-variant: normal;
         font-weight: normal;
         margin-right: 0.3em;
-        speak: none;
         text-transform: none;
     }
 
@@ -323,9 +274,9 @@ $icon-font: 'PrefsFramework-Icons';
         label.fl-theme-prefsEditor-default,
         label.fl-theme-prefsEditor-default span,
         label.fl-prefsEditor-themePicker-defaultThemeLabel .fl-crossout {
-            background-color: #fff !important;
-            border-color: #433f3d !important;
-            color: #433f3d !important;
+            background-color: var(--fl-bgColor-defaultTheme, #fff) !important;
+            border-color: var(--fl-fgColor-defaultTheme, #433f3d) !important;
+            color: var(--fl-color-defaultTheme, #433f3d) !important;
         }
     }
 
@@ -395,14 +346,19 @@ $icon-font: 'PrefsFramework-Icons';
     }
 }
 // Theming
-[class*="fl-theme"]:not(.fl-theme-prefsEditor-default) {
-    .fl-prefsEditor .fl-choice label {
-        &,
-        span,
-        .fl-crossout {
-            background-color: var(--fl-bgColor) !important;
-            border-color: var(--fl-fgColor) !important;
-            color: var(--fl-fgColor) !important;
+[class*="fl-theme"] {
+    .fl-prefsEditor {
+        .fl-choice label:not(.fl-prefsEditor-themePicker-defaultThemeLabel) {
+            &,
+            span {
+                background-color: var(--fl-bgColor) !important;
+                border-color: var(--fl-fgColor) !important;
+                color: var(--fl-fgColor) !important;
+            }
         }
     }
+}
+
+[class*="fl-theme"]:not(.fl-theme-prefsEditor-default) .fl-prefsEditor .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
+    visibility: hidden;
 }

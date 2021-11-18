@@ -128,9 +128,14 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.testSettings = function (uiEnhancer, testSettings, initialFontSize) {
-        var expectedTextSize = initialFontSize * testSettings.textSize;
+        var root = $("html");
+        var expectedTextSize = `${(initialFontSize * testSettings.textSize).toFixed(0)}px`;
 
-        jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", uiEnhancer.container.css("fontSize"));
+        jqUnit.assertTrue("The fl-textSize-enabled class should be applied", root.hasClass("fl-textSize-enabled"));
+        jqUnit.assertEquals("The --fl-textSize custom property should be set", expectedTextSize, root.css("--fl-textSize"));
+        jqUnit.assertEquals("The --fl-textSize-factor custom property should be set", testSettings.textSize, root.css("--fl-textSize-factor"));
+
+        jqUnit.assertEquals("Large text size is set", expectedTextSize, uiEnhancer.container.css("fontSize"));
         jqUnit.assertTrue("Verdana font is set", uiEnhancer.container.hasClass("fl-font-verdana"));
         jqUnit.assertTrue("High contrast is set", uiEnhancer.container.hasClass("fl-theme-bw"));
     };
@@ -149,7 +154,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modules: [{
             name: "Test apply settings",
             tests: [{
-                expect: 5,
+                expect: 8,
                 name: "Apply settings",
                 sequence: [{
                     func: "fluid.tests.getInitialFontSize",

@@ -1,0 +1,6 @@
+.fl-input-enhanced {
+    --fl-enhance-font-size-factor: 1.25;
+    --fl-enhance-font-size: calc(100% * var(--fl-enhance-font-size-factor, 1));
+    --fl-enhance-font-weight: bold;
+    --fl-enhance-text-decoration: underline;
+}

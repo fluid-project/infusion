@@ -197,31 +197,72 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testTextSize = function (that) {
-        var expectedInitialSize = 16;
-        var muliplier = 2;
-        var remTestElm = $("#flc-textSize-remTest");
-        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactor.utils.fontSizeMap);
-
-        jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
-        that.applier.change("value", muliplier);
-        jqUnit.assertEquals("The size should be doubled", (expectedInitialSize * muliplier) + "px", that.root.css("fontSize"));
-        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactor.utils.fontSizeMap));
-
-        // reset font size of root
-        $("html").css("font-size", that.initialSize + "px");
+    fluid.tests.verifyTextSizeApplication = function (expected) {
+        fluid.each(expected, function (expectedSize, selector) {
+            jqUnit.assertEquals(`The font size of the ${selector} element should be updated`, expectedSize, fluid.prefs.enactor.getTextSizeInPx($(selector), fluid.tests.enactor.utils.fontSizeMap));
+        });
     };
 
     fluid.defaults("fluid.tests.textSizeTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            expected: {
+                initialSize: 16,
+                increased: {
+                    size: "32px",
+                    factor: "2"
+                },
+                updatedElms: {
+                    "#flc-textSize-remTest": 64,
+                    "#flc-textSize-customPropTest": 32,
+                    "#flc-textSize-factorTest": 128
+                }
+            },
+            multiplier: 2
+        },
         modules: [{
-            name: "Test text size enactor",
+            name: "Text size enactor",
             tests: [{
+                expect: 4,
+                name: "Initial state",
+                sequence: [{
+                    func: "jqUnit.assertEquals",
+                    args: [
+                        "Verify that the size is pulled from the container correctly",
+                        "{that}.options.testOpts.expected.initialSize",
+                        "{textSize}.initialSize"
+                    ]
+                }, {
+                    func: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{textSize}", "Intial", null, "{textSize}.root"]
+                }]
+            }, {
+                expect: 6,
+                name: "Model change",
+                sequence: [{
+                    func: "{textSize}.applier.change",
+                    args: ["value", "{that}.options.testOpts.multiplier"]
+                }, {
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{textSize}", "Model Changed", "{that}.options.testOpts.expected.increased", "{textSize}.root"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{textSize}.applier.modelChanged"
+                }, {
+                    func: "fluid.tests.verifyTextSizeApplication",
+                    args: ["{that}.options.testOpts.expected.updatedElms"]
+                }]
+            }, {
                 expect: 3,
-                name: "Apply text size in times",
-                type: "test",
-                func: "fluid.tests.testTextSize",
-                args: ["{textSize}"]
+                name: "Reset to default",
+                sequence: [{
+                    func: "{textSize}.applier.change",
+                    args: ["value", 1]
+                }, {
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{textSize}", "Reset", null, "{textSize}.root"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{textSize}.applier.modelChanged"
+                }]
             }]
         }]
     });
@@ -266,11 +307,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.tests.testGetLineHeightMultiplier = function () {
-        var undefinedLineHeight;
-        testGetLineHeightMultiplier(undefinedLineHeight, 0);
         testGetLineHeightMultiplier("normal", 1.2);
         testGetLineHeightMultiplier("6px", 1);
-        testGetLineHeightMultiplier("1.5", 1.5);
     };
 
     fluid.defaults("fluid.tests.getLineHeightTester", {
@@ -286,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, {
             name: "Test getLineHeightMultiplier",
             tests: [{
-                expect: 4,
+                expect: 2,
                 name: "Get line height multiplier",
                 type: "test",
                 func: "fluid.tests.testGetLineHeightMultiplier"
@@ -345,45 +383,68 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.verifyInitValues = function (that, initialSize, multiplier) {
-
-        jqUnit.assertEquals("The initial size is retrieved correctly", initialSize, that.initialSize);
+    fluid.tests.verifyInitValues = function (that, multiplier) {
         jqUnit.assertEquals("The line height multiplier is calculated correctly", multiplier, that.lineHeightMultiplier);
-    };
 
-    fluid.tests.verifyLineSpaceSet = function (that, value, lineHeight) {
-        jqUnit.assertEquals("The new model value should be set correctly.", value, that.model.value);
-        jqUnit.assertEquals("The new line height should be set correctly.", lineHeight, that.container.css("line-height"));
+        fluid.tests.enactor.verifySpacingSettings(that, "Initial");
     };
 
     fluid.defaults("fluid.tests.lineSpaceTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            expected: {
+                length: {
+                    computed: "24px",
+                    size: "1",
+                    factor: "2"
+                },
+                unitless: {
+                    computed: "72px",
+                    size: "3",
+                    factor: "2"
+                },
+                percentage: {
+                    computed: "24px",
+                    size: "1",
+                    factor: "2"
+                }
+            },
+            lineSpace: 2
+        },
         modules: [{
             name: "Line Space - normal line-height",
             tests: [{
-                expect: 2,
+                expect: 4,
                 name: "Set Line-height",
                 // Not running the model changed tests due to the variances across browsers in what the
                 // default line-height is.
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpaceNormal}", "normal", 1.2]
+                    args: ["{lineSpaceNormal}", 1.2]
                 }]
             }]
         }, {
             name: "Line Space - line-height in length",
             tests: [{
-                expect: 4,
+                expect: 11,
                 name: "Set Line-height",
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpaceLength}", "12px", 0.5]
+                    args: ["{lineSpaceLength}", 0.5]
                 }, {
                     func: "{lineSpaceLength}.applier.change",
-                    args: ["value", 2]
+                    args: ["value", "{that}.options.testOpts.lineSpace"]
                 }, {
-                    listener: "fluid.tests.verifyLineSpaceSet",
-                    args: ["{lineSpaceLength}", 2, "24px"],
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{lineSpaceLength}", "Model Changed", "line-height", "{that}.options.testOpts.expected.length"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpaceLength}.applier.modelChanged"
+                }, {
+                    func: "{lineSpaceLength}.applier.change",
+                    args: ["value", 1]
+                }, {
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{lineSpaceLength}", "Reset"],
                     spec: {path: "value", priority: "last:testing"},
                     changeEvent: "{lineSpaceLength}.applier.modelChanged"
                 }]
@@ -391,17 +452,25 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, {
             name: "Line Space - line-height in unitless number",
             tests: [{
-                expect: 4,
+                expect: 11,
                 name: "Set Line-height",
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpaceNumber}", "36px", 1.5]
+                    args: ["{lineSpaceNumber}", 1.5]
                 }, {
                     func: "{lineSpaceNumber}.applier.change",
-                    args: ["value", 2]
+                    args: ["value", "{that}.options.testOpts.lineSpace"]
                 }, {
-                    listener: "fluid.tests.verifyLineSpaceSet",
-                    args: ["{lineSpaceNumber}", 2, "72px"],
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{lineSpaceNumber}", "Mode Changed", "line-height", "{that}.options.testOpts.expected.unitless"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpaceNumber}.applier.modelChanged"
+                }, {
+                    func: "{lineSpaceNumber}.applier.change",
+                    args: ["value", 1]
+                }, {
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{lineSpaceNumber}", "Reset"],
                     spec: {path: "value", priority: "last:testing"},
                     changeEvent: "{lineSpaceNumber}.applier.modelChanged"
                 }]
@@ -409,17 +478,25 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }, {
             name: "Line Space - line-height in percentage",
             tests: [{
-                expect: 4,
+                expect: 11,
                 name: "Set Line-height",
                 sequence: [{
                     func: "fluid.tests.verifyInitValues",
-                    args: ["{lineSpacePercentage}", "12px", 0.5]
+                    args: ["{lineSpacePercentage}", 0.5]
                 }, {
                     func: "{lineSpacePercentage}.applier.change",
-                    args: ["value", 2]
+                    args: ["value", "{that}.options.testOpts.lineSpace"]
                 }, {
-                    listener: "fluid.tests.verifyLineSpaceSet",
-                    args: ["{lineSpacePercentage}", 2, "24px"],
+                    listener: "fluid.tests.enactor.verifySpacingComputedCSS",
+                    args: ["{lineSpacePercentage}", "Model Changed", "line-height", "{that}.options.testOpts.expected.percentage"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpacePercentage}.applier.modelChanged"
+                }, {
+                    func: "{lineSpacePercentage}.applier.change",
+                    args: ["value", 1]
+                }, {
+                    listener: "fluid.tests.enactor.verifySpacingSettings",
+                    args: ["{lineSpacePercentage}", "Reset"],
                     spec: {path: "value", priority: "last:testing"},
                     changeEvent: "{lineSpacePercentage}.applier.modelChanged"
                 }]

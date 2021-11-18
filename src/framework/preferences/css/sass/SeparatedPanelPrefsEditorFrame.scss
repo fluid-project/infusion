@@ -22,6 +22,20 @@
 html {
     overflow: hidden;
 
+    &.fl-textSize-enabled {
+        font-size: var(--fl-textSize);
+    }
+
+    // Letter-spacing
+    .fl-letterSpace-enabled {
+        letter-spacing: var(--fl-letterSpace);
+    }
+
+    // Word-spacing
+    .fl-wordSpace-enabled {
+        word-spacing: var(--fl-wordSpace);
+    }
+
     // overriding .fl-hiddem-accessible to preserve
     // propper iframe scrolling in iOS
     .fl-hidden-accessible {
@@ -31,15 +45,16 @@ html {
 
 /* Preferences Editor Separated Panel styles */
 .fl-prefsEditor-separatedPanel {
-    background-color: #bcb5ad;
+    background-color: var(--fl-bgColor, #bcb5ad);
     background-image: none;
-    color: #5d5652;
+    color: var(--fl-fgColor, #5d5652);
     height: 100%;
+    margin: 0;
     overflow-x: auto;
     overflow-y: hidden;
 
     .fl-prefsEditor {
-        font-family: 'OpenSans', "Myriad Pro", Helvetica, Arial, sans-serif;
+        font-family: var(--fl-font-family, "OpenSans", "Myriad Pro", Helvetica, Arial, sans-serif);
         line-height: 1.2 !important; // FLUID-4959: fix the line height so it doesn't scale with the Preferences Editor line space scaling.
         min-width: 100%;
         overflow-x: scroll;
@@ -55,8 +70,8 @@ html {
         white-space: nowrap;
 
         .fl-prefsEditor-panel {
-            background-color: #fff;
-            border: 1px solid #615e59;
+            background-color: var(--fl-bgColor, #fff);
+            border: 1px solid var(--fl-fgColor, #615e59);
             display: table-cell;
             // minus 2px because of borders
             min-width: calc(100vw - 2px);
@@ -93,7 +108,6 @@ html {
                     font-variant: normal;
                     font-weight: normal;
                     pointer-events: auto;
-                    speak: none;
                     text-transform: none;
                 }
 
@@ -182,7 +196,7 @@ html {
                 padding-top: 1rem;
 
                 h2 {
-                    border-bottom: solid #ccc 1px;
+                    border-bottom: solid var(--fl-fgColor, #ccc) 1px;
                     box-shadow: 0 6px 7px -6px rgba(0, 0, 0, 0.3);
                     font-size: 1.2rem;
                     height: 3rem;

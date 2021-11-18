@@ -13,7 +13,7 @@
 
     // Control section headers
     h2 {
-        border-top: 2px solid #ddd;
+        border-top: 2px solid var(--fl-fgColor, #ddd);
         margin-bottom: 20px;
     }
 
@@ -51,13 +51,13 @@
 
     // Preview Area
     .fl-prefsEditor-preview iframe {
-        border: 2px solid #d7d7d7;
+        border: 2px solid var(--fl-fgColor, #d7d7d7);
         height: 480px;
         width: 100%;
     }
 
     .fl-prefsEditor-preview h2 {
-        color: #4d4d4d;
+        color: var(--fl-fgColor, #4d4d4d);
         font-size: 1.8em;
         font-weight: lighter;
         padding: 18px 0 0 0;
