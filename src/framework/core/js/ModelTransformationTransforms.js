@@ -889,7 +889,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      * @return {Boolean} Updated target value
      */
     fluid.transforms.toggle = function (source, transformSpec, transformer) {
-        // Note that this use of oldSource/oldTarget is dependent in the particular driver in the singleTransform modelRelay system that
+        // Note that this use of oldSource/oldTarget is dependent on the particular driver in the singleTransform modelRelay system that
         // assumes there is a single transform covering the entire document. If we ever want to support these transforms in free-form
         // model relay documents (very unlikely) we will have to reform this - more likely we will dismantle free-form model relays
         var oldSource = transformer.oldSource, oldTarget = transformer.oldTarget;
@@ -928,6 +928,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.transforms.inverseToggle.base = function (source) {
         return source ? 1 : 0;
     };
+
+    /** Parses a space-separated list of classes of the form accepted by jQuery/HTML into a boolean hash of the form
+     * accepted by the "class" materialiser in FluidView.js
+     * @param {String} classes - Space-separated list of classes
+     * @return {Object} Hash of classes to `true`
+     */
+    fluid.transforms.parseClasses = function (classes) {
+        // Algorithm taken from jQuery "stripAndCollapse"
+        var classList = classes.match(fluid.transforms.parseClasses.rnothtmlwhite) || [];
+        return fluid.arrayToHash(classList);
+    };
+
+    // Regex taken from jQuery 3.6.0
+    fluid.transforms.parseClasses.rnothtmlwhite = /[^\x20\t\r\n\f]+/g;
 
     /**
      *

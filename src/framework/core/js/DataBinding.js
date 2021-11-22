@@ -1133,8 +1133,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.funcToSingleTransform = function (that, mrrec) {
         if (mrrec.func) {
-            if (mrrec.args !== undefined ^ mrrec.source === undefined) {
-                fluid.fail("Error in model relay definition: short-form relay must specify either args or a source and not both");
+            if ((mrrec.args !== undefined) + (mrrec.source !== undefined) + (mrrec.value !== undefined) !== 1) {
+                fluid.fail("Error in model relay definition: short-form relay must specify just one out of (args, source, value)");
             }
             return {
                 type: "fluid.transforms.free",
@@ -1199,8 +1199,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.parseModelRelay = function (that, mrrec, key) {
         fluid.pushActivity("parseModelRelay", "parsing modelRelay definition with key \"%key\" and body \"%body\" attached to component \"%that\"",
             {key: key, body: mrrec, that: that});
+        if (typeof(mrrec.target) !== "string" && !(fluid.isPlainObject(mrrec.target, true) && mrrec.target.segs)) {
+            fluid.fail("Error parsing model relay definition: model reference must be specified for \"target\"");
+        }
         var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source, true) :
-            {path: null, modelSegs: null};
+            mrrec.value !== undefined ? {nonModel: true} : {path: null, modelSegs: null};
         // TODO: We seem to have lost validation that the relay definition must contain "target" - currently bare exception
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
         var namespace = mrrec.namespace || key;
@@ -1223,16 +1226,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond, namespace, mrrec.priority);
 
-        if (parsedSource.nonModel) {
+        if (parsedSource.nonModel) { // Reuse this part of implicit workflow to subscribe to models - then replicate the initModel logic in the fluid.establishModelRelay driver
+            var initValue = fluid.parseImplicitRelay(that, fluid.firstDefined(mrrec.source, mrrec.value), parsedTarget.modelSegs),
+                transformed;
             if (transform[""].transform.type !== "fluid.transforms.identity") {
-                fluid.fail("Cannot apply relay from non-model source " + mrrec.source + " with a transformation"); // TODO: In theory we could run it through transformPackage before slinging it to implicit
-            } else { // Reuse this part of implicit workflow to subscribe to models - then replicate the initModel logic in the fluid.establishModelRelay driver
-                var initValue = fluid.parseImplicitRelay(parsedTarget.that, mrrec.source, parsedTarget.modelSegs);
-                var enlist = fluid.enlistModelComponent(parsedTarget.that);
-                var initModel = {};
-                fluid.model.setSimple(initModel, parsedTarget.modelSegs, initValue);
-                enlist.initModels.push(initModel);
+                var localTransform = fluid.copy(transform);
+                localTransform[""].transform.args = [initValue]; // our synthesized transform will set inputPath, another may source from args
+                transformed = fluid.model.transformWithRules(initValue, localTransform);
+            } else {
+                transformed = initValue;
             }
+            var enlist = fluid.enlistModelComponent(parsedTarget.that);
+            var initModel = {};
+            fluid.model.setSimple(initModel, parsedTarget.modelSegs, transformed);
+            enlist.initModels.push(initModel);
         } else {
             if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
                 // Case i): Bind changes emitted from the relay ends to each other, synchronously
