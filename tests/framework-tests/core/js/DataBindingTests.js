@@ -768,6 +768,28 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         fluid.test.assertTransactionsConcluded();
     });
 
+    /** FLUID-6697: Contexualising relay to nested target **/
+    fluid.defaults("fluid.tests.fluid6697head", {
+        gradeNames: "fluid.modelComponent",
+        value: 42,
+        modelRelay: {
+            child: {
+                target: "{child}.model.nested.value",
+                source: "{that}.options.value"
+            }
+        },
+        components: {
+            child: {
+                type: "fluid.modelComponent"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6697 contextualising relay to nested target", function () {
+        var that = fluid.tests.fluid6697head();
+        jqUnit.assertEquals("Relay applied to child", 42, that.child.model.nested.value);
+    });
+
     /** FLUID-4982: Simple case of initial model value sourced from asynchronous fetch **/
 
     fluid.defaults("fluid.tests.fluid4982simple", {
@@ -1489,6 +1511,36 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     };
 
     fluid.each(fluid.tests.fluid6570forms, fluid.tests.fluid6570test);
+
+    /** FLUID-6698: Short-form relay from literal values **/
+
+    fluid.defaults("fluid.tests.fluid6698root", {
+        gradeNames: "fluid.modelComponent",
+        value: 48,
+        modelRelay: {
+            plainNumber: {
+                value: 42,
+                target: "nested.plainNumber"
+            },
+            plainNull: {
+                value: null,
+                target: "nested.plainNull"
+            },
+            plainOption: {
+                source: "{that}.options.value",
+                target: "nested.plainOption"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6698: Short-form relay from literal values", function () {
+        var that = fluid.tests.fluid6698root();
+        jqUnit.assertDeepEq("Literal values relayed in", {
+            plainNumber: 42,
+            plainNull: null,
+            plainOption: 48
+        }, that.model.nested);
+    });
 
     /** FLUID-6601: Component proxies via free transforms **/
 
@@ -2296,6 +2348,24 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         jqUnit.expectFrameworkDiagnostic("Framework diagnostic for relay with both source and transform model dependency", function () {
             fluid.tests.fluid5847.root();
         }, "source");
+    });
+
+    /** FLUID-5847: Relay transforms which have both "source" and a transform model dependency **/
+
+    fluid.defaults("fluid.tests.fluid5847ii.root", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            key: {
+                source: "{that}.options.nothing"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5847ii: Relay transforms with no target", function () {
+        // TODO: in theory, we could detect this at fluid.defaults() time, with a lot more work
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic for relay with no target", function () {
+            fluid.tests.fluid5847ii.root();
+        }, "target");
     });
 
     /** FLUID-6192: Model relay with source of "" **/
@@ -4074,7 +4144,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     });
 
     // FLUID-5659: Saturating relay counts through back-to-back transactions
-
+/*
     fluid.defaults("fluid.tests.fluid5659relay", {
         gradeNames: "fluid.modelComponent",
         model: {
@@ -4174,5 +4244,5 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.test.runTests([
         "fluid.tests.fluid5659root"
     ]);
-
+*/
 })(jQuery);

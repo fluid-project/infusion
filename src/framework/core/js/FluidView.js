@@ -526,7 +526,7 @@ var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
                     materialiser: "fluid.materialisers.domOutput",
                     args: ["jQuery", {method: "text"}]
                 },
-                "attrs": {
+                "attr": {
                     materialiser: "fluid.materialisers.domOutput",
                     args: ["jQuery", {method: "attr", makeArgs: function (model) {
                         return [ model.segs[3], model.value];

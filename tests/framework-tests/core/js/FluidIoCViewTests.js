@@ -564,11 +564,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         modelRelay: {
             ariaExpanded: {
                 source: "expanded",
-                target: "dom.button.attrs.aria-expanded"
+                target: "dom.button.attr.aria-expanded"
             },
             ariaLabel: {
                 source: "expanded",
-                target: "dom.button.attrs.aria-label",
+                target: "dom.button.attr.aria-label",
                 func: expanded => expanded ? "collapse" : "expand"
             }
         }
@@ -668,7 +668,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("ID materialisation test ", function () {
+    jqUnit.test("ID materialisation test", function () {
         var oneTest = function (selector) {
             var that = fluid.tests.materialId(selector);
             var domId = that.locate("field")[0].id;
@@ -699,7 +699,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("Bad materialisation test ", function () {
+    jqUnit.test("Bad materialisation test", function () {
         jqUnit.expectFrameworkDiagnostic("Got exception", function () {
             fluid.tests.badMaterial(".flc-tests-simple-integral");
         }, "click");
@@ -726,7 +726,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     text: "{that}.model.secondValue"
                 },
                 fourth: {
-                    attrs: {
+                    attr: {
                         role: "Eid"
                     }
                 }
@@ -738,14 +738,68 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("Bulk materialisation test ", function () {
+    jqUnit.test("Bulk materialisation test", function () {
         var that = fluid.tests.bulkInit(".flc-tests-bulk-init");
         jqUnit.assertEquals("Text initialised from bulk", "Night Fusht", that.locate("first").text());
         jqUnit.assertEquals("Text initialised from implicit relay", "Purim", that.locate("second").text());
         jqUnit.assertEquals("Text initialised from explicit relay", "Diwali", that.locate("third").text());
-        jqUnit.assertEquals("Attrs initialised from bulk", "Eid", that.locate("fourth").attr("role"));
+        jqUnit.assertEquals("Attr initialised from bulk", "Eid", that.locate("fourth").attr("role"));
         that.applier.change("secondValue", "Holi");
         jqUnit.assertEquals("Text updated from implicit relay", "Holi", that.locate("second").text());
+    });
+
+    // Attr non-dropping
+
+    fluid.defaults("fluid.tests.noAttr", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            noAttr: ".flc-no-attr",
+            attr: ".flc-attr"
+        },
+        modelRelay: {
+            noAttr: {
+                target: "dom.noAttr.attr.aria-label",
+                source: "{that}.options.undefined"
+            },
+            attr: {
+                target: "dom.attr.attr.aria-label",
+                value: "Aria Label"
+            }
+        }
+    });
+
+    jqUnit.test("Attr dropping test", function () {
+        var that = fluid.tests.noAttr(".flc-tests-no-attr");
+        var element = that.locate("noAttr");
+        jqUnit.assertEquals("Found one element", 1, element.length);
+        jqUnit.assertUndefined("No attribute value relayed", element.attr("aria-label"));
+        jqUnit.assertEquals("No attribute value relayed", "Aria Label", that.locate("attr").attr("aria-label"));
+    });
+
+    // Multi-class
+
+    fluid.defaults("fluid.tests.multiClass", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            multiClass: ".flc-multi-class"
+        },
+        styles: {
+            container: "fl-textfieldSlider fl-focus"
+        },
+        modelRelay: {
+            multiClass: {
+                target: "dom.multiClass.class",
+                source: "{that}.options.styles.container",
+                func: "fluid.transforms.parseClasses"
+            }
+        }
+    });
+
+    jqUnit.test("Multiple class application test", function () {
+        var that = fluid.tests.multiClass(".flc-tests-multi-class");
+        var element = that.locate("multiClass");
+        jqUnit.assertTrue("Has first class", element.hasClass("fl-textfieldSlider"));
+        jqUnit.assertTrue("Has second class", element.hasClass("fl-focus"));
     });
 
 })();
