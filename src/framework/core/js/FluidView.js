@@ -469,7 +469,7 @@ var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
                 }
             };
 
-            that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, modelListener);
+            that.applier.modelChanged.addListener({segs: segs}, modelListener);
         });
     };
 
@@ -490,7 +490,7 @@ var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
                 }
             };
 
-            that.applier.modelChanged.addListener({segs: segs, excludeSource: "DOM"}, modelListener);
+            that.applier.modelChanged.addListener({segs: segs}, modelListener);
 
             var options = fluid.getImmediate(that, ["options", "bindingOptions", fluid.model.composeSegments.apply(null, segs)]);
             var changeEvent = options && options.changeEvent || "change";
