@@ -87,25 +87,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     });
 
-    jqUnit.test("isInteger tests", function () {
-        var fixtures = [
-            {value: null, isInt: false},
-            {value: NaN,  isInt: false},
-            {value: Infinity, isInt: false},
-            {value: "1",  isInt: false},
-            {value: {},   isInt: false},
-            {value: true, isInt: false},
-            {value: [],   isInt: false},
-            {value: 3.5,  isInt: false},
-            {value: 4,    isInt: true},
-            {value: -4,   isInt: true},
-            {value: 0,    isInt: true}
-        ];
-        fixtures.forEach(function (fixture, index) {
-            jqUnit.assertEquals("IsInteger fixture " + index, fluid.isInteger(fixture.value), fixture.isInt);
-        });
-    });
-
     fluid.tests.firstDefinedTests = [
         {a: undefined, b: 3, expected: 3},
         {a: 0, b: 5, expected: 0},

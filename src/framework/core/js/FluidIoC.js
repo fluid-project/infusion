@@ -1318,7 +1318,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             var recordType = record.recordType;
             if (recordType !== "distribution") {
                 record.priority = fluid.mergeRecordTypes[recordType] + (record.priorityDelta || 0);
-                if (!fluid.isInteger(record.priority)) {
+                if (!Number.isInteger(record.priority)) {
                     fluid.fail("Merge record with unrecognised type " + recordType + ": ", record);
                 }
             }

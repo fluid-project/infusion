@@ -972,15 +972,6 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
     };
 
     /**
-     * "Ponyfill" for Number.isInteger - can be removed once we drop support for IE11
-     * @param {Any} value - A value to be tested for being an integer
-     * @return {Boolean} `true` if the value is a Number and a finite integer
-     */
-    fluid.isInteger = function (value) {
-        return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
-    };
-
-    /**
      * Derived from Sindre Sorhus's round-to node module ( https://github.com/sindresorhus/round-to ).
      * License: MIT
      *

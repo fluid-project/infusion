@@ -129,30 +129,32 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
      */
     fluid.fetchResources.explodeForLocales = function (resourceFetcher) {
         fluid.each(resourceFetcher.resourceSpecs, function (resourceSpec) {
-            // If options.defaultLocale is set, it will replace any
-            // defaultLocale set on an individual resourceSpec
-            if (resourceFetcher.options.defaultLocale && resourceSpec.defaultLocale === undefined) {
-                resourceSpec.defaultLocale = resourceFetcher.options.defaultLocale;
-            }
-            if (resourceSpec.locale === undefined) {
-                resourceSpec.locale = resourceFetcher.options.locale || resourceSpec.defaultLocale;
-            }
-            resourceSpec.dataType = resourceSpec.dataType || resourceFetcher.options.dataType;
+            if (!resourceSpec.launched) {
+                // If options.defaultLocale is set, it will replace any
+                // defaultLocale set on an individual resourceSpec
+                if (resourceFetcher.options.defaultLocale && resourceSpec.defaultLocale === undefined) {
+                    resourceSpec.defaultLocale = resourceFetcher.options.defaultLocale;
+                }
+                if (resourceSpec.locale === undefined) {
+                    resourceSpec.locale = resourceFetcher.options.locale || resourceSpec.defaultLocale;
+                }
+                resourceSpec.dataType = resourceSpec.dataType || resourceFetcher.options.dataType;
 
-            resourceSpec.loader = fluid.resourceLoader.resolveResourceLoader(resourceSpec);
-            if (!resourceSpec.loader.loader.noPath) {
-                var pathKey = resourceSpec.loader.pathKey;
-                var path = resourceSpec[pathKey];
-                var resolvedPath = resourceSpec[pathKey] = resourceFetcher.transformResourceURL(path);
-                if (resourceSpec.locale) {
-                    resourceSpec.localeExploded = fluid.explodeLocalisedName(resolvedPath, resourceSpec.locale, resourceSpec.defaultLocale);
-                    resourceSpec.localeExplodedSpecs = fluid.transform(resourceSpec.localeExploded, function (oneExploded) {
-                        var togo = {
-                            loader: resourceSpec.loader
-                        };
-                        togo[pathKey] = oneExploded;
-                        return togo;
-                    }, fluid.fetchResources.prepareRequestOptions);
+                resourceSpec.loader = fluid.resourceLoader.resolveResourceLoader(resourceSpec);
+                if (!resourceSpec.loader.loader.noPath) {
+                    var pathKey = resourceSpec.loader.pathKey;
+                    var path = resourceSpec[pathKey];
+                    var resolvedPath = resourceSpec[pathKey] = resourceFetcher.transformResourceURL(path);
+                    if (resourceSpec.locale) {
+                        resourceSpec.localeExploded = fluid.explodeLocalisedName(resolvedPath, resourceSpec.locale, resourceSpec.defaultLocale);
+                        resourceSpec.localeExplodedSpecs = fluid.transform(resourceSpec.localeExploded, function (oneExploded) {
+                            var togo = {
+                                loader: resourceSpec.loader
+                            };
+                            togo[pathKey] = oneExploded;
+                            return togo;
+                        }, fluid.fetchResources.prepareRequestOptions);
+                    }
                 }
             }
         });

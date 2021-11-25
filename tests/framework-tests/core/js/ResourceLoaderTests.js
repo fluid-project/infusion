@@ -533,7 +533,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         });
     });
 
-    /** FLUID-4982: Refetching individual resources */
+    /** FLUID-4982: Refetching individual resources - synchronous */
 
     fluid.defaults("fluid.tests.fluid4982refetch", {
         gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
@@ -545,24 +545,59 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         invokers: {
             fetchModel: "fluid.identity({that}.remoteModel)"
         },
-        model: "{that}.resources.modelSource.parsed",
+        model: {
+            localSource: "{that}.resources.localSource.parsed"
+        },
         resources: {
-            modelSource: {
+            localSource: {
                 promiseFunc: "{that}.fetchModel"
             }
         }
     });
 
-    jqUnit.test("FLUID-4982: Refetching individual resource", function () {
-        var that = fluid.tests.fluid4982refetch();
-        jqUnit.assertDeepEq("Initial model correct", {value: 42}, that.model);
+    fluid.tests.fluid4982test = function (that) {
+        jqUnit.assertDeepEq("Initial model correct", {value: 42}, that.model.localSource);
         var newModel = {
             newValue: 43
         };
         that.remoteModel = newModel;
-        that.resourceFetcher.refetchOneResource("modelSource");
+        that.resourceFetcher.refetchOneResource("localSource");
 
-        jqUnit.assertDeepEq("Updated model correct", {newValue: 43}, that.model);
+        jqUnit.assertDeepEq("Updated model correct", {newValue: 43}, that.model.localSource);
+    };
+
+    jqUnit.test("FLUID-4982: Refetching individual resource", function () {
+        var that = fluid.tests.fluid4982refetch();
+        fluid.tests.fluid4982test(that);
+    });
+
+    /** FLUID-6699: Refetching resources with others available - asynchronous **/
+
+    fluid.defaults("fluid.tests.fluid6699refetch", {
+        gradeNames: "fluid.tests.fluid4982refetch",
+        model: {
+            remoteSource: "{that}.resources.remoteSource.parsed"
+        },
+        resources: {
+            remoteSource: {
+                dataType: "json",
+                locale: "en",
+                immutableModelResource: true,
+                url: "../data/messages3.json"
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-6699: Refetching resource with others", function () {
+        var that = fluid.tests.fluid6699refetch();
+        that.events.onCreate.then(function () {
+            var expectedRemote = {
+                "courses": "upper, middle, lower"
+            };
+            jqUnit.assertDeepEq("Remote model source fetched", expectedRemote, that.model.remoteSource);
+            fluid.tests.fluid4982test(that);
+            jqUnit.start();
+        });
     });
 
     /** FLUID-4982: Accessing resources via MessageResolver on startup **/

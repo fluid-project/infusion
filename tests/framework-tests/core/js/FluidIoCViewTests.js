@@ -498,6 +498,76 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", false, [false, true, false]);
     fluid.tests.bidiIntegral.test(".flc-tests-bidi-integral-checkbox", false, [true, false, true]);
 
+
+    /** FLUID-6700 test - backwash protection for DOM changes **/
+
+    fluid.defaults("fluid.tests.fluid6700test", {
+        gradeNames: "fluid.tests.bidiIntegral",
+        modelRelay: {
+            source: "field",
+            target: "numeric",
+            singleTransform: "fluid.transforms.stringToNumber"
+        },
+        modelListeners: {
+            validate: {
+                path: "field",
+                listener: "fluid.tests.fluid6700validate",
+                args: ["{change}.value", "{that}"],
+                excludeSource: "init",
+                priority: "last" // Must be supplied priority to ensure that it acts after all other updates have concluded
+            }
+        }
+    });
+
+    fluid.tests.fluid6700validate = function (newValue, that) {
+        if (!Number.isInteger(newValue)) {
+            var numeric = that.model.numeric;
+            // In theory we would have a dedicated primitive for forcing a part of the model to propagate its value back out
+            // through a rejected change, but would anyone understand it?
+            that.applier.change("field", "" + numeric);
+        }
+    };
+
+    jqUnit.test("FLUID-6700 test: Backwash protection from DOM materialisation with listener validation", function () {
+        var that = fluid.tests.fluid6700test(".flc-tests-bidi-integral-text");
+        var field = that.locate("field");
+        fluid.changeElementValue(field, "42");
+        jqUnit.assertEquals("Value relayed to numeric field", 42, that.model.numeric);
+        fluid.changeElementValue(field, "error");
+        jqUnit.assertEquals("Textual value censored from markup", "42", field.val());
+        jqUnit.assertEquals("Textual value censored from model peer", "42", that.model.field);
+    });
+
+    fluid.defaults("fluid.tests.fluid6700testii", {
+        gradeNames: "fluid.tests.bidiIntegral",
+        modelRelay: {
+            convert: {
+                source: "field",
+                target: "numeric",
+                singleTransform: "fluid.transforms.stringToNumber"
+            },
+            limit: {
+                target: "numeric",
+                singleTransform: {
+                    type: "fluid.transforms.limitRange",
+                    input: "{that}.model.numeric",
+                    min: 40,
+                    max: 50
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6700 test ii: Backwash protection from DOM materialisation with relay validation", function () {
+        var that = fluid.tests.fluid6700testii(".flc-tests-bidi-integral-text");
+        var field = that.locate("field");
+        fluid.changeElementValue(field, "42");
+        jqUnit.assertEquals("Value relayed to numeric field", 42, that.model.numeric);
+        fluid.changeElementValue(field, "54");
+        jqUnit.assertEquals("Textual value censored from markup", "50", field.val());
+        jqUnit.assertEquals("Textual value censored from model peer", "50", that.model.field);
+    });
+
     // Binary relay out tests - visible and enabled
     fluid.defaults("fluid.tests.booleanOut", {
         gradeNames: "fluid.viewComponent",
