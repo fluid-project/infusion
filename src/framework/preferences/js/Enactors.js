@@ -502,7 +502,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 createOnEvent: "onCreateTOCReady",
                 options: {
                     listeners: {
-                        "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
+                        "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender",
+                        // An integrator may wish to style the ToC container but not have it displayed when not
+                        // in use. In that case the container will likely be styled with `display: none` to hide it.
+                        // The following ensures, that the container is made visible when the ToC is enactor is enabled
+                        // and tableOfContents component has initialized.
+                        // see: https://issues.fluidproject.org/browse/FLUID-6696
+                        "onReady.show": {
+                            listener: "{that}.show",
+                            // sets a duration of 0, which allows time for ToC content to render before showing.
+                            args: [0]
+                        }
                     },
                     strings: {
                         tocHeader: "{messageLoader}.resources.tocMessage.parsed.tocHeader"
