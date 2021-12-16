@@ -126,6 +126,23 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             });
         });
 
+        /** Synchronously resolved template is corrupted **/
+
+        fluid.defaults("fluid.tests.FLUID6706test", {
+            gradeNames: ["fluid.templateResourceFetcher"],
+            resources: {
+                template: {
+                    promiseFunc: "fluid.identity",
+                    promiseArgs: "<div></div>"
+                }
+            }
+        });
+
+        jqUnit.test("Synchronously resolved template is corrupted", function () {
+            var that = fluid.tests.FLUID6706test();
+            jqUnit.assertEquals("Resolved template synchronously", "<div></div>", that.resources.template.resourceText);
+        });
+
         /** "CollectionSpace-style" rendering test with nested containers with their own template resources **/
 
         fluid.defaults("fluid.tests.nestedTemplateRenderingView", {

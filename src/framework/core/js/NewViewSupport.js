@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             global: {
                 fetchTemplates: {
                     funcName: "fluid.renderer.fetchTemplates",
-                    priority: "first"
+                    priority: "after:resolveResourceModel" // Resolve FLUID-6705 by allowing localised resources
                 }
             }
         }

@@ -733,6 +733,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.resourceLoader.loaders.resourceText.noPath = true;
 
+    // Implementation note: Whilst there will not be a type error if the user writes a non-promise return, there will
+    // be a race failure as the "resource" initialiser in fluid.resourceFromRecord loses to the transformEvent listener,
+    // overwriting its result with the FetchOne value as, e.g. fluid.getForComponent resolves synchronously. As a result
+    // we have to say we can't support synchronous "early" resources.
     /** A generalised 'promise' `OneResourceLoader` that allows some arbitrary asynchronous process to be
      * interpolated into the loader. The function `promiseFunc` is invoked with
      * arguments `promiseArg` yielding a promise representing successful or unsuccessful loading of the resource value
@@ -882,7 +886,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     args: ["{that}", "{that}.options.resources", "{that}.options.resourceOptions", "{that}.transformResourceURL"]
                 }
             }/*,
-            // These arrive dynamically by means of the framework's workflow function
+            // If these are demanded early, they will be resolved as instances of FetchOne by means of the framework's fluid.resourceFromRecord record mounter,
+            // but are then overwritten by the resolved resourceSpec value by the noteComponentResource listener to the resource's transformEvent
             resources: {}
             */
         },
