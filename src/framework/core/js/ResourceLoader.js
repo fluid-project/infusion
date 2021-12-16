@@ -733,12 +733,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
     fluid.resourceLoader.loaders.resourceText.noPath = true;
 
-    /** A generalised 'promise' `OneResourceLoader` that allows some arbitrary asynchronous process to be
+    /** A generalised 'promise' `OneResourceLoader` that allows some arbitrary asynchronous or synchronous process to be
      * interpolated into the loader. The function `promiseFunc` is invoked with
-     * arguments `promiseArg` yielding a promise representing successful or unsuccessful loading of the resource value
+     * arguments `promiseArg` yielding a promise representing successful or unsuccessful loading of the resource value.
      * @param {ResourceSpec} resourceSpec - A `ResourceSpec` for which the `promiseFunc` field has already been filled in to hold
      * a function returning a promise
-     * @return {Promise} The result of invoking `promiseFunc` with `promiseArgs`
+     * @return {Promise|Any} The result of invoking `promiseFunc` with `promiseArgs` - this function may also synchronously resolve
+     * with a direct, non-promise value.
      */
     fluid.resourceLoader.loaders.promiseFunc = function (resourceSpec) {
         var promiseFunc = fluid.event.resolveListener(resourceSpec.promiseFunc);
@@ -882,7 +883,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                     args: ["{that}", "{that}.options.resources", "{that}.options.resourceOptions", "{that}.transformResourceURL"]
                 }
             }/*,
-            // These arrive dynamically by means of the framework's workflow function
+            // If these are demanded early, they will be resolved as instances of FetchOne by means of the framework's fluid.resourceFromRecord record mounter,
+            // but are then overwritten by the resolved resourceSpec value by the noteComponentResource listener to the resource's transformEvent
             resources: {}
             */
         },

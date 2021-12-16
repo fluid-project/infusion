@@ -738,18 +738,40 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.materialIdTest = function (creator, selector) {
+        var that = fluid.invokeGlobalFunction(creator, [selector]);
+        var domId = that.locate("field")[0].id;
+        jqUnit.assertValue("Id allocated to field ", domId);
+        jqUnit.assertEquals("Dom id and model id agree", domId, that.model.fieldId);
+        return that;
+    };
+
     jqUnit.test("ID materialisation test", function () {
-        var oneTest = function (selector) {
-            var that = fluid.tests.materialId(selector);
-            var domId = that.locate("field")[0].id;
-            jqUnit.assertValue("Id allocated to field ", domId);
-            jqUnit.assertEquals("Dom id and model id agree", domId, that.model.fieldId);
-            return that;
-        };
-        oneTest(".flc-tests-simple-integral");
-        var that = oneTest(".flc-tests-with-id");
+        fluid.tests.materialIdTest("fluid.tests.materialId", ".flc-tests-simple-integral");
+        var that = fluid.tests.materialIdTest("fluid.tests.materialId", ".flc-tests-with-id");
         jqUnit.assertEquals("Original id was undisturbed", "original-id", that.model.fieldId);
 
+    });
+
+    fluid.defaults("fluid.tests.FLUID6703materialId", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            field: ".flc-tests-simple-field"
+        },
+        model: {
+            fieldId: "model-id"
+        },
+        modelRelay: {
+            relayId: {
+                source: "fieldId",
+                target: "dom.field.id"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6703 ID materialisation test", function () {
+        var that = fluid.tests.materialIdTest("fluid.tests.FLUID6703materialId", ".flc-tests-with-id");
+        jqUnit.assertEquals("Original id was overwritten", "model-id", that.model.fieldId);
     });
 
     // Bad materialisation test

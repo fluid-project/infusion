@@ -461,8 +461,13 @@ var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
     fluid.materialisers.id = function (that, segs) {
         that.events.onDomBind.addListener(function () {
             var element = that.dom.locate(segs[1])[0];
-            var id = fluid.allocateSimpleId(element);
-            that.applier.change(segs, id, "ADD", "DOM");
+            var modelValue = fluid.getImmediate(that.model, segs);
+            if (modelValue === undefined) {
+                var id = fluid.allocateSimpleId(element);
+                that.applier.change(segs, id, "ADD", "DOM");
+            } else {
+                element.id = modelValue;
+            }
             var modelListener = function (value) {
                 if (value !== undefined) {
                     element.id = value;

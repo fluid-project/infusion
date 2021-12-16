@@ -154,12 +154,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         var resourceFetcher = fluid.getForComponent(that, "resourceFetcher");
         var resourceSpec = resourceFetcher.resourceSpecs[name];
         var oneFetcher = new fluid.fetchResources.FetchOne(resourceSpec, resourceFetcher);
-        var promise = oneFetcher.resourceSpec.promise;
-        if (!promise.disposition) {
-            var transRec = fluid.currentTreeTransaction();
-            transRec.pendingIO.push(promise);
-        } // No error handling here since the error handler added in workflows will abort the whole transaction
-        return oneFetcher;
+        var existing = that.resources[name];
+        if (existing && existing !== fluid.inEvaluationMarker) { // Resolve FLUID-6706 by returning an existing synchronously resolved resources
+            return existing;
+        } else {
+            var promise = oneFetcher.resourceSpec.promise;
+            if (!promise.disposition) {
+                var transRec = fluid.currentTreeTransaction();
+                transRec.pendingIO.push(promise);
+            } // No error handling here since the error handler added in workflows will abort the whole transaction
+            return oneFetcher;
+        }
     };
 
     /** Produce a "strategy" object which mechanises the work of converting a block of options material into a
@@ -2121,6 +2126,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
     };
 
+    // TODO: This function seems to be disused in favour of findWorkflowShadows called from enqueueWorkflowBlock
     fluid.evaluateWorkflows = function (shadows, workflowType) {
         var togo = [];
         fluid.workflowCacheSorted[workflowType].forEach(function (workflowRecord) {
