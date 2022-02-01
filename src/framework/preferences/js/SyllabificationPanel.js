@@ -11,19 +11,16 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /**********************************************************************************
-    * Captions Panel
-    **********************************************************************************/
-    fluid.defaults("fluid.prefs.panel.syllabification", {
-        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-        preferenceMap: {
-            "fluid.prefs.syllabification": {
-                "model.value": "value"
-            }
+/**********************************************************************************
+* Captions Panel
+**********************************************************************************/
+fluid.defaults("fluid.prefs.panel.syllabification", {
+    gradeNames: ["fluid.prefs.panel.switchAdjuster"],
+    preferenceMap: {
+        "fluid.prefs.syllabification": {
+            "model.value": "value"
         }
-    });
-
-})(jQuery, fluid_4_0_0);
+    }
+});

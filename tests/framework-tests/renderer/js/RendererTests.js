@@ -12,8 +12,9 @@ https://github.com/fluid-project/infusion/raw/main/AUTHORS.md.
 
 /* global jqUnit */
 
+"use strict";
+
 (function ($) {
-    "use strict";
 
     fluid.registerNamespace("fluid.tests");
 

@@ -11,47 +11,44 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function (fluid) {
-    "use strict";
+"use strict";
 
-    /*******************************************************************************
-    * Auxiliary schema grade
-    *
-    * Contains the settings for syllabification
-    *******************************************************************************/
+/*******************************************************************************
+* Auxiliary schema grade
+*
+* Contains the settings for syllabification
+*******************************************************************************/
 
-    fluid.defaults("fluid.prefs.auxSchema.syllabification", {
-        gradeNames: ["fluid.prefs.auxSchema"],
-        auxiliarySchema: {
-            "fluid.prefs.syllabification": {
-                enactor: {
-                    type: "fluid.prefs.enactor.syllabification"
-                },
-                panel: {
-                    type: "fluid.prefs.panel.syllabification",
-                    container: ".flc-prefsEditor-syllabification",
-                    template: "%templatePrefix/PrefsEditorTemplate-syllabification.html",
-                    message: "%messagePrefix/syllabification.json"
-                }
+fluid.defaults("fluid.prefs.auxSchema.syllabification", {
+    gradeNames: ["fluid.prefs.auxSchema"],
+    auxiliarySchema: {
+        "fluid.prefs.syllabification": {
+            enactor: {
+                type: "fluid.prefs.enactor.syllabification"
+            },
+            panel: {
+                type: "fluid.prefs.panel.syllabification",
+                container: ".flc-prefsEditor-syllabification",
+                template: "%templatePrefix/PrefsEditorTemplate-syllabification.html",
+                message: "%messagePrefix/syllabification.json"
             }
         }
-    });
+    }
+});
 
 
-    /*******************************************************************************
-    * Primary Schema
-    *******************************************************************************/
+/*******************************************************************************
+* Primary Schema
+*******************************************************************************/
 
-    // add extra prefs to the starter primary schemas
+// add extra prefs to the starter primary schemas
 
-    fluid.defaults("fluid.prefs.schemas.syllabification", {
-        gradeNames: ["fluid.prefs.schemas"],
-        schema: {
-            "fluid.prefs.syllabification": {
-                "type": "boolean",
-                "default": false
-            }
+fluid.defaults("fluid.prefs.schemas.syllabification", {
+    gradeNames: ["fluid.prefs.schemas"],
+    schema: {
+        "fluid.prefs.syllabification": {
+            "type": "boolean",
+            "default": false
         }
-    });
-
-})(fluid_4_0_0);
+    }
+});

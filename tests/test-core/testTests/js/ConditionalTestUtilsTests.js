@@ -12,137 +12,134 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit */
 
-(function () {
-    "use strict";
+"use strict";
 
-    fluid.registerNamespace("fluid.tests.conditionalTestUtilsTests");
+fluid.registerNamespace("fluid.tests.conditionalTestUtilsTests");
 
-    /** Tests for the conditional test utilities **/
+/** Tests for the conditional test utilities **/
 
-    // test fluid.test.conditionalTestUtils.chooseTestByPromiseResult
-    fluid.tests.conditionalTestUtilsTests.configurableTestPromise = function (shouldResolve) {
-        var promise = fluid.promise();
-        if (shouldResolve) {
-            promise.resolve();
-        } else {
-            promise.reject();
-        }
-        return promise;
-    };
+// test fluid.test.conditionalTestUtils.chooseTestByPromiseResult
+fluid.tests.conditionalTestUtilsTests.configurableTestPromise = function (shouldResolve) {
+    var promise = fluid.promise();
+    if (shouldResolve) {
+        promise.resolve();
+    } else {
+        promise.reject();
+    }
+    return promise;
+};
 
-    fluid.tests.conditionalTestUtilsTests.testOnPromiseResolve = function (message) {
-        jqUnit.expect(1);
-        jqUnit.assertEquals("Message indicates this is the test run for a resolved promise", "Promise resolved", message);
-    };
+fluid.tests.conditionalTestUtilsTests.testOnPromiseResolve = function (message) {
+    jqUnit.expect(1);
+    jqUnit.assertEquals("Message indicates this is the test run for a resolved promise", "Promise resolved", message);
+};
 
-    fluid.tests.conditionalTestUtilsTests.testOnPromiseReject = function (message) {
-        jqUnit.expect(1);
-        jqUnit.assertEquals("Message indicates this is the test run for a rejected promise", "Promise rejected", message);
-    };
+fluid.tests.conditionalTestUtilsTests.testOnPromiseReject = function (message) {
+    jqUnit.expect(1);
+    jqUnit.assertEquals("Message indicates this is the test run for a rejected promise", "Promise rejected", message);
+};
 
-    fluid.tests.conditionalTestUtilsTests.testChooseTestByPromiseResult = function (message, shouldResolve) {
-        fluid.test.conditionalTestUtils.chooseTestByPromiseResult(message,
-            function () {
-                return fluid.tests.conditionalTestUtilsTests.configurableTestPromise(shouldResolve);
-            },
-            fluid.tests.conditionalTestUtilsTests.testOnPromiseResolve,
-            fluid.tests.conditionalTestUtilsTests.testOnPromiseReject,
-            "Promise resolved",
-            "Promise rejected");
-    };
-
-    // This should result in testOnPromiseResolve being run
-    fluid.tests.conditionalTestUtilsTests.testChooseTestByPromiseResult("Choose test by promise result - promise resolved case.", true);
-
-    // This should result in testOnPromiseReject being run
-    fluid.tests.conditionalTestUtilsTests.testChooseTestByPromiseResult("Choose test by promise result - promise rejected case.", false);
-
-    // test context-aware test runner
-
-    fluid.defaults("fluid.tests.conditionalTestUtilsTests.contextAwareTestRunner", {
-        gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
-        contextAwareness: {
-            runAdditionalTests: {
-                checks: {
-                    runAdditionalTestsTrue: {
-                        contextValue: "{fluid.runAdditionalTests}",
-                        equals: true,
-                        gradeNames: ["fluid.tests.conditionalTestUtilsTests.runAdditionalTestsTrue"]
-                    },
-                    runAdditionalTestsFalse: {
-                        contextValue: "{fluid.runAdditionalTests}",
-                        equals: false,
-                        gradeNames: ["fluid.tests.conditionalTestUtilsTests.runAdditionalTestsFalse"]
-                    }
-                },
-                defaultGradeNames: "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsDefault"
-            }
+fluid.tests.conditionalTestUtilsTests.testChooseTestByPromiseResult = function (message, shouldResolve) {
+    fluid.test.conditionalTestUtils.chooseTestByPromiseResult(message,
+        function () {
+            return fluid.tests.conditionalTestUtilsTests.configurableTestPromise(shouldResolve);
         },
-        tests: {
-            base: "fluid.tests.conditionalTestUtilsTests.contextBasicTest"
-        }
-    });
+        fluid.tests.conditionalTestUtilsTests.testOnPromiseResolve,
+        fluid.tests.conditionalTestUtilsTests.testOnPromiseReject,
+        "Promise resolved",
+        "Promise rejected");
+};
 
-    fluid.tests.conditionalTestUtilsTests.contextBasicTest = function () {
-        jqUnit.assert("This assertion should always be run because it's not context-dependent");
-    };
+// This should result in testOnPromiseResolve being run
+fluid.tests.conditionalTestUtilsTests.testChooseTestByPromiseResult("Choose test by promise result - promise resolved case.", true);
 
-    fluid.defaults("fluid.tests.conditionalTestUtilsTests.runAdditionalTestsTrue", {
-        tests: {
-            true: "fluid.tests.conditionalTestUtilsTests.contextTrueTest"
-        }
-    });
+// This should result in testOnPromiseReject being run
+fluid.tests.conditionalTestUtilsTests.testChooseTestByPromiseResult("Choose test by promise result - promise rejected case.", false);
 
-    fluid.tests.conditionalTestUtilsTests.contextTrueTest = function () {
-        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is boolean TRUE.");
-    };
+// test context-aware test runner
 
-    fluid.defaults("fluid.tests.conditionalTestUtilsTests.runAdditionalTestsFalse", {
-        tests: {
-            false: "fluid.tests.conditionalTestUtilsTests.contextFalseTest"
-        }
-    });
-
-    fluid.tests.conditionalTestUtilsTests.contextFalseTest = function () {
-        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is boolean FALSE.");
-    };
-
-    fluid.defaults("fluid.tests.conditionalTestUtilsTests.runAdditionalTestsDefault", {
-        tests: {
-            default: "fluid.tests.conditionalTestUtilsTests.contextDefaultTest"
-        }
-    });
-
-    fluid.tests.conditionalTestUtilsTests.contextDefaultTest = function () {
-        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context is something other than false or true.");
-    };
-
-    fluid.tests.conditionalTestUtilsTests.testRunnerContainsExpectedGradeName = function (runner, expectedGradeName) {
-        jqUnit.assertTrue("testRunner grade contains the expected gradeName of " + expectedGradeName, fluid.contains(runner.options.gradeNames, expectedGradeName));
-    };
-
-    fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner = function (message, checkValue, expectedGradeName) {
-        jqUnit.test(message, function () {
-            jqUnit.expect(3);
-
-            // Register a context
-            fluid.contextAware.makeChecks({
-                "fluid.runAdditionalTests": {
-                    value: checkValue
+fluid.defaults("fluid.tests.conditionalTestUtilsTests.contextAwareTestRunner", {
+    gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
+    contextAwareness: {
+        runAdditionalTests: {
+            checks: {
+                runAdditionalTestsTrue: {
+                    contextValue: "{fluid.runAdditionalTests}",
+                    equals: true,
+                    gradeNames: ["fluid.tests.conditionalTestUtilsTests.runAdditionalTestsTrue"]
+                },
+                runAdditionalTestsFalse: {
+                    contextValue: "{fluid.runAdditionalTests}",
+                    equals: false,
+                    gradeNames: ["fluid.tests.conditionalTestUtilsTests.runAdditionalTestsFalse"]
                 }
-            });
+            },
+            defaultGradeNames: "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsDefault"
+        }
+    },
+    tests: {
+        base: "fluid.tests.conditionalTestUtilsTests.contextBasicTest"
+    }
+});
 
-            // Create test component
-            var testRunner = fluid.tests.conditionalTestUtilsTests.contextAwareTestRunner();
+fluid.tests.conditionalTestUtilsTests.contextBasicTest = function () {
+    jqUnit.assert("This assertion should always be run because it's not context-dependent");
+};
 
-            fluid.tests.conditionalTestUtilsTests.testRunnerContainsExpectedGradeName(testRunner, expectedGradeName);
+fluid.defaults("fluid.tests.conditionalTestUtilsTests.runAdditionalTestsTrue", {
+    tests: {
+        true: "fluid.tests.conditionalTestUtilsTests.contextTrueTest"
+    }
+});
+
+fluid.tests.conditionalTestUtilsTests.contextTrueTest = function () {
+    jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is boolean TRUE.");
+};
+
+fluid.defaults("fluid.tests.conditionalTestUtilsTests.runAdditionalTestsFalse", {
+    tests: {
+        false: "fluid.tests.conditionalTestUtilsTests.contextFalseTest"
+    }
+});
+
+fluid.tests.conditionalTestUtilsTests.contextFalseTest = function () {
+    jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is boolean FALSE.");
+};
+
+fluid.defaults("fluid.tests.conditionalTestUtilsTests.runAdditionalTestsDefault", {
+    tests: {
+        default: "fluid.tests.conditionalTestUtilsTests.contextDefaultTest"
+    }
+});
+
+fluid.tests.conditionalTestUtilsTests.contextDefaultTest = function () {
+    jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context is something other than false or true.");
+};
+
+fluid.tests.conditionalTestUtilsTests.testRunnerContainsExpectedGradeName = function (runner, expectedGradeName) {
+    jqUnit.assertTrue("testRunner grade contains the expected gradeName of " + expectedGradeName, fluid.contains(runner.options.gradeNames, expectedGradeName));
+};
+
+fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner = function (message, checkValue, expectedGradeName) {
+    jqUnit.test(message, function () {
+        jqUnit.expect(3);
+
+        // Register a context
+        fluid.contextAware.makeChecks({
+            "fluid.runAdditionalTests": {
+                value: checkValue
+            }
         });
-    };
 
-    fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner("Test context-aware test runner - context value is TRUE (expecting context-aware TRUE grade)", true, "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsTrue");
+        // Create test component
+        var testRunner = fluid.tests.conditionalTestUtilsTests.contextAwareTestRunner();
 
-    fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner("Test context-aware test runner - context value is FALSE (expecting context-aware FALSE grade)", false, "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsFalse");
+        fluid.tests.conditionalTestUtilsTests.testRunnerContainsExpectedGradeName(testRunner, expectedGradeName);
+    });
+};
 
-    fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner("Test context-aware test runner - context value is 'hello world' (expecting context-aware default grade when value is not TRUE or FALSE)", "Hello", "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsDefault");
+fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner("Test context-aware test runner - context value is TRUE (expecting context-aware TRUE grade)", true, "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsTrue");
 
-})();
+fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner("Test context-aware test runner - context value is FALSE (expecting context-aware FALSE grade)", false, "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsFalse");
+
+fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner("Test context-aware test runner - context value is 'hello world' (expecting context-aware default grade when value is not TRUE or FALSE)", "Hello", "fluid.tests.conditionalTestUtilsTests.runAdditionalTestsDefault");

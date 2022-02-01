@@ -11,162 +11,159 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    fluid.registerNamespace("fluid.undo");
+fluid.registerNamespace("fluid.undo");
 
-    // The three states of the undo component
-    fluid.undo.STATE_INITIAL = "state_initial";
-    fluid.undo.STATE_CHANGED = "state_changed";
-    fluid.undo.STATE_REVERTED = "state_reverted";
+// The three states of the undo component
+fluid.undo.STATE_INITIAL = "state_initial";
+fluid.undo.STATE_CHANGED = "state_changed";
+fluid.undo.STATE_REVERTED = "state_reverted";
 
-    fluid.undo.defaultRenderer = function (that, targetContainer) {
-        var str = that.options.strings;
-        var markup = "<span class='flc-undo'>" +
-            "<a href='#' class='flc-undo-undoControl'>" + str.undo + "</a>" +
-            "<a href='#' class='flc-undo-redoControl'>" + str.redo + "</a>" +
-            "</span>";
-        var markupNode = $(markup).attr({
-            "role": "region",
-            "aria-live": "polite",
-            "aria-relevant": "all"
-        });
-        targetContainer.append(markupNode);
-        return markupNode;
-    };
+fluid.undo.defaultRenderer = function (that, targetContainer) {
+    var str = that.options.strings;
+    var markup = "<span class='flc-undo'>" +
+        "<a href='#' class='flc-undo-undoControl'>" + str.undo + "</a>" +
+        "<a href='#' class='flc-undo-redoControl'>" + str.redo + "</a>" +
+        "</span>";
+    var markupNode = $(markup).attr({
+        "role": "region",
+        "aria-live": "polite",
+        "aria-relevant": "all"
+    });
+    targetContainer.append(markupNode);
+    return markupNode;
+};
 
-    fluid.undo.refreshView = function (that) {
-        if (that.state === fluid.undo.STATE_INITIAL) {
-            that.locate("undoContainer").hide();
-            that.locate("redoContainer").hide();
-        } else if (that.state === fluid.undo.STATE_CHANGED) {
-            that.locate("undoContainer").show();
-            that.locate("redoContainer").hide();
-        } else if (that.state === fluid.undo.STATE_REVERTED) {
-            that.locate("undoContainer").hide();
-            that.locate("redoContainer").show();
-        }
-    };
+fluid.undo.refreshView = function (that) {
+    if (that.state === fluid.undo.STATE_INITIAL) {
+        that.locate("undoContainer").hide();
+        that.locate("redoContainer").hide();
+    } else if (that.state === fluid.undo.STATE_CHANGED) {
+        that.locate("undoContainer").show();
+        that.locate("redoContainer").hide();
+    } else if (that.state === fluid.undo.STATE_REVERTED) {
+        that.locate("undoContainer").hide();
+        that.locate("redoContainer").show();
+    }
+};
 
-    fluid.undo.undoControlClick = function (that) {
-        if (that.state !== fluid.undo.STATE_REVERTED) {
-            fluid.model.copyModel(that.extremalModel, that.component.model);
-            that.component.updateModel(that.initialModel, that);
-            that.state = fluid.undo.STATE_REVERTED;
-            fluid.undo.refreshView(that);
-            that.locate("redoControl").trigger("focus");
-        }
-        return false;
-    };
-
-    fluid.undo.redoControlClick = function (that) {
-        if (that.state !== fluid.undo.STATE_CHANGED) {
-            that.component.updateModel(that.extremalModel, that);
-            that.state = fluid.undo.STATE_CHANGED;
-            fluid.undo.refreshView(that);
-            that.locate("undoControl").trigger("focus");
-        }
-        return false;
-    };
-
-    fluid.undo.modelChanged = function (that, newModel, oldModel, source) {
-        if (source !== that) {
-            that.state = fluid.undo.STATE_CHANGED;
-            fluid.model.copyModel(that.initialModel, oldModel);
-            fluid.undo.refreshView(that);
-        }
-    };
-
-    fluid.undo.copyInitialModel = function (that) {
-        fluid.model.copyModel(that.initialModel, that.component.model);
+fluid.undo.undoControlClick = function (that) {
+    if (that.state !== fluid.undo.STATE_REVERTED) {
         fluid.model.copyModel(that.extremalModel, that.component.model);
-    };
+        that.component.updateModel(that.initialModel, that);
+        that.state = fluid.undo.STATE_REVERTED;
+        fluid.undo.refreshView(that);
+        that.locate("redoControl").trigger("focus");
+    }
+    return false;
+};
 
-    fluid.undo.setTabindex = function (that) {
-        fluid.tabindex(that.locate("undoControl"), 0);
-        fluid.tabindex(that.locate("redoControl"), 0);
-    };
+fluid.undo.redoControlClick = function (that) {
+    if (that.state !== fluid.undo.STATE_CHANGED) {
+        that.component.updateModel(that.extremalModel, that);
+        that.state = fluid.undo.STATE_CHANGED;
+        fluid.undo.refreshView(that);
+        that.locate("undoControl").trigger("focus");
+    }
+    return false;
+};
 
-    /**
-     * Decorates a target component with the function of "undoability". This component is intended to be attached as a
-     * subcomponent to the target component, which will bear a grade of "fluid.undoable"
-     *
-     * @param {Object} component - a "model-bearing" standard Fluid component to receive the "undo" functionality
-     * @param {Object} options - (optional) a collection of options settings
-     */
-    fluid.defaults("fluid.undo", {
-        gradeNames: ["fluid.viewComponent"],
-        members: {
-            state: fluid.undo.STATE_INITIAL,
-            initialModel: {},
-            extremalModel: {},
-            component: "{fluid.undoable}",
-            container: {
-                expander: {
-                    func: "{that}.options.renderer",
-                    args: ["{that}", "{that}.component.container"]
-                }
+fluid.undo.modelChanged = function (that, newModel, oldModel, source) {
+    if (source !== that) {
+        that.state = fluid.undo.STATE_CHANGED;
+        fluid.model.copyModel(that.initialModel, oldModel);
+        fluid.undo.refreshView(that);
+    }
+};
+
+fluid.undo.copyInitialModel = function (that) {
+    fluid.model.copyModel(that.initialModel, that.component.model);
+    fluid.model.copyModel(that.extremalModel, that.component.model);
+};
+
+fluid.undo.setTabindex = function (that) {
+    fluid.tabindex(that.locate("undoControl"), 0);
+    fluid.tabindex(that.locate("redoControl"), 0);
+};
+
+/**
+ * Decorates a target component with the function of "undoability". This component is intended to be attached as a
+ * subcomponent to the target component, which will bear a grade of "fluid.undoable"
+ *
+ * @param {Object} component - a "model-bearing" standard Fluid component to receive the "undo" functionality
+ * @param {Object} options - (optional) a collection of options settings
+ */
+fluid.defaults("fluid.undo", {
+    gradeNames: ["fluid.viewComponent"],
+    members: {
+        state: fluid.undo.STATE_INITIAL,
+        initialModel: {},
+        extremalModel: {},
+        component: "{fluid.undoable}",
+        container: {
+            expander: {
+                func: "{that}.options.renderer",
+                args: ["{that}", "{that}.component.container"]
             }
-        },
-        invokers: {
-            undoControlClick: {
-                funcName: "fluid.undo.undoControlClick",
-                args: "{that}"
-            },
-            redoControlClick: {
-                funcName: "fluid.undo.redoControlClick",
-                args: "{that}"
-            }
-        },
-        listeners: {
-            "onCreate.copyInitialModel": {
-                funcName: "fluid.undo.copyInitialModel",
-                priority: "before:refreshView"
-            },
-            "onCreate.setTabindex": "fluid.undo.setTabindex",
-            "onCreate.refreshView": "fluid.undo.refreshView",
-            "onCreate.bindUndoClick": {
-                "this": "{that}.dom.undoControl",
-                method: "on",
-                args: ["click", "{that}.undoControlClick"]
-            },
-            "onCreate.bindRedoClick": {
-                "this": "{that}.dom.redoControl",
-                method: "on",
-                args: ["click", "{that}.redoControlClick"]
-            },
-            "{fluid.undoable}.events.modelChanged": {
-                funcName: "fluid.undo.modelChanged",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-            }
-        },
-        selectors: {
-            undoContainer: ".flc-undo-undoControl",
-            undoControl: ".flc-undo-undoControl",
-            redoContainer: ".flc-undo-redoControl",
-            redoControl: ".flc-undo-redoControl"
-        },
-
-        strings: {
-            undo: "undo edit",
-            redo: "redo edit"
-        },
-
-        renderer: fluid.undo.defaultRenderer
-    });
-
-    // An uninstantiable grade expressing the contract of the "fluid.undoable" grade
-    // WARNING: Note that the only component which complies with this "corrupt contract" of being a fluid.modelComponent but
-    // having an unrelated means of updating the model is fluid.inlineEdit - it should not be used.
-    fluid.defaults("fluid.undoable", {
-        gradeNames: ["fluid.modelComponent"],
-        invokers: {
-            updateModel: {} // will be implemented by concrete grades
-        },
-        events: {
-            modelChanged: null
         }
-    });
+    },
+    invokers: {
+        undoControlClick: {
+            funcName: "fluid.undo.undoControlClick",
+            args: "{that}"
+        },
+        redoControlClick: {
+            funcName: "fluid.undo.redoControlClick",
+            args: "{that}"
+        }
+    },
+    listeners: {
+        "onCreate.copyInitialModel": {
+            funcName: "fluid.undo.copyInitialModel",
+            priority: "before:refreshView"
+        },
+        "onCreate.setTabindex": "fluid.undo.setTabindex",
+        "onCreate.refreshView": "fluid.undo.refreshView",
+        "onCreate.bindUndoClick": {
+            "this": "{that}.dom.undoControl",
+            method: "on",
+            args: ["click", "{that}.undoControlClick"]
+        },
+        "onCreate.bindRedoClick": {
+            "this": "{that}.dom.redoControl",
+            method: "on",
+            args: ["click", "{that}.redoControlClick"]
+        },
+        "{fluid.undoable}.events.modelChanged": {
+            funcName: "fluid.undo.modelChanged",
+            args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+        }
+    },
+    selectors: {
+        undoContainer: ".flc-undo-undoControl",
+        undoControl: ".flc-undo-undoControl",
+        redoContainer: ".flc-undo-redoControl",
+        redoControl: ".flc-undo-redoControl"
+    },
 
-})(jQuery, fluid_4_0_0);
+    strings: {
+        undo: "undo edit",
+        redo: "redo edit"
+    },
+
+    renderer: fluid.undo.defaultRenderer
+});
+
+// An uninstantiable grade expressing the contract of the "fluid.undoable" grade
+// WARNING: Note that the only component which complies with this "corrupt contract" of being a fluid.modelComponent but
+// having an unrelated means of updating the model is fluid.inlineEdit - it should not be used.
+fluid.defaults("fluid.undoable", {
+    gradeNames: ["fluid.modelComponent"],
+    invokers: {
+        updateModel: {} // will be implemented by concrete grades
+    },
+    events: {
+        modelChanged: null
+    }
+});

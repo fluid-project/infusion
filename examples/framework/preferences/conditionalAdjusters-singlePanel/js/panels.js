@@ -11,24 +11,21 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 var example = example || {};
-(function ($, fluid) {
-    "use strict";
 
-    /**
-     * Composite Panels
-     */
-    fluid.defaults("example.panels.speakIncrease", {
-        gradeNames: ["fluid.prefs.compositePanel"],
-        selectors: {
-            header: ".flc-prefsEditor-header",
-            label: ".mpe-speakIncrease-header"
-        },
-        selectorsToIgnore: ["header"],
-        protoTree: {
-            label: {messagekey: "speakIncreaseHeader"}
-        }
-    });
-
-
-})(jQuery, fluid);
+/**
+ * Composite Panels
+ */
+fluid.defaults("example.panels.speakIncrease", {
+    gradeNames: ["fluid.prefs.compositePanel"],
+    selectors: {
+        header: ".flc-prefsEditor-header",
+        label: ".mpe-speakIncrease-header"
+    },
+    selectorsToIgnore: ["header"],
+    protoTree: {
+        label: {messagekey: "speakIncreaseHeader"}
+    }
+});

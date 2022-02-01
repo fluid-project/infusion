@@ -11,49 +11,47 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 var assortedContent = assortedContent || {};
-(function ($, fluid) {
-    "use strict";
 
-    /* Our demo script */
-    assortedContent.slidingPrefsEditor = function () {
-        // First, start up Settings Store and Page Enhancer
-        fluid.prefs.globalSettingsStore();
-        fluid.pageEnhancer({
-            uiEnhancer: {
-                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                classnameMap: {
-                    theme: {
-                        "default": "assortedContent-theme-basic"
-                    }
-                },
-                tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
-                tocMessage: "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
-            }
-        });
-
-        // Next, start up Preferences Editor
-        fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
-            terms: {
-                templatePrefix: "../../../../../src/framework/preferences/html/",
-                messagePrefix: "../../../../../src/framework/preferences/messages/"
-            },
-            iframeRenderer: {
-                markupProps: {
-                    src: "html/SeparatedPanelPrefsEditorFrame.html"
+/* Our demo script */
+assortedContent.slidingPrefsEditor = function () {
+    // First, start up Settings Store and Page Enhancer
+    fluid.prefs.globalSettingsStore();
+    fluid.pageEnhancer({
+        uiEnhancer: {
+            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+            classnameMap: {
+                theme: {
+                    "default": "assortedContent-theme-basic"
                 }
             },
-            messageLoader: {
-                gradeNames: ["fluid.prefs.starterMessageLoader"]
-            },
-            templateLoader: {
-                gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
-            },
-            prefsEditor: {
-                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
-            }
-        });
-    };
+            tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+            tocMessage: "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
+        }
+    });
 
-})(jQuery, fluid);
+    // Next, start up Preferences Editor
+    fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
+        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
+        terms: {
+            templatePrefix: "../../../../../src/framework/preferences/html/",
+            messagePrefix: "../../../../../src/framework/preferences/messages/"
+        },
+        iframeRenderer: {
+            markupProps: {
+                src: "html/SeparatedPanelPrefsEditorFrame.html"
+            }
+        },
+        messageLoader: {
+            gradeNames: ["fluid.prefs.starterMessageLoader"]
+        },
+        templateLoader: {
+            gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
+        },
+        prefsEditor: {
+            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
+        }
+    });
+};

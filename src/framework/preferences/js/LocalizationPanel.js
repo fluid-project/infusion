@@ -11,45 +11,42 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /***********************************
-     * Preferences Editor Localization *
-     ***********************************/
+/***********************************
+ * Preferences Editor Localization *
+ ***********************************/
 
-    /*
-     * A sub-component of fluid.prefs that renders the "localization" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.prefs.panel.localization", {
-        gradeNames: ["fluid.prefs.panel"],
-        preferenceMap: {
-            "fluid.prefs.localization": {
-                "model.value": "value",
-                "controlValues.localization": "enum",
-                "stringArrayIndex.localization": "enumLabels"
-            }
-        },
-        mergePolicy: {
-            "controlValues.localization": "replace",
-            "stringArrayIndex.localization": "replace"
-        },
-        selectors: {
-            header: ".flc-prefsEditor-localization-header",
-            localization: ".flc-prefsEditor-localization",
-            label: ".flc-prefsEditor-localization-label",
-            localizationDescr: ".flc-prefsEditor-localization-descr"
-        },
-        selectorsToIgnore: ["header"],
-        protoTree: {
-            label: {messagekey: "label"},
-            localizationDescr: {messagekey: "description"},
-            localization: {
-                optionnames: "${{that}.msgLookup.localization}",
-                optionlist: "${{that}.options.controlValues.localization}",
-                selection: "${value}"
-            }
+/*
+ * A sub-component of fluid.prefs that renders the "localization" panel of the user preferences interface.
+ */
+fluid.defaults("fluid.prefs.panel.localization", {
+    gradeNames: ["fluid.prefs.panel"],
+    preferenceMap: {
+        "fluid.prefs.localization": {
+            "model.value": "value",
+            "controlValues.localization": "enum",
+            "stringArrayIndex.localization": "enumLabels"
         }
-    });
-
-})(jQuery, fluid_4_0_0);
+    },
+    mergePolicy: {
+        "controlValues.localization": "replace",
+        "stringArrayIndex.localization": "replace"
+    },
+    selectors: {
+        header: ".flc-prefsEditor-localization-header",
+        localization: ".flc-prefsEditor-localization",
+        label: ".flc-prefsEditor-localization-label",
+        localizationDescr: ".flc-prefsEditor-localization-descr"
+    },
+    selectorsToIgnore: ["header"],
+    protoTree: {
+        label: {messagekey: "label"},
+        localizationDescr: {messagekey: "description"},
+        localization: {
+            optionnames: "${{that}.msgLookup.localization}",
+            optionlist: "${{that}.options.controlValues.localization}",
+            selection: "${value}"
+        }
+    }
+});

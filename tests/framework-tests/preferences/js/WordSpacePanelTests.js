@@ -11,75 +11,72 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($) {
-    "use strict";
+"use strict";
 
-    fluid.registerNamespace("fluid.tests");
+fluid.registerNamespace("fluid.tests");
 
-    fluid.defaults("fluid.tests.prefs.panel.wordSpace", {
-        gradeNames: ["fluid.prefs.panel.wordSpace", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
-        messageBase: {
-            "label": "Word Spacing",
-            "description": "Adjust the spacing between words",
-            "increaseLabel": "increase word spacing",
-            "decreaseLabel": "decrease word spacing"
-        },
-        model: {
-            value: 0
-        },
-        resources: {
-            template: {
-                url: "../../../../src/framework/preferences/html/PrefsEditorTemplate-wordSpace.html"
-            }
+fluid.defaults("fluid.tests.prefs.panel.wordSpace", {
+    gradeNames: ["fluid.prefs.panel.wordSpace", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
+    messageBase: {
+        "label": "Word Spacing",
+        "description": "Adjust the spacing between words",
+        "increaseLabel": "increase word spacing",
+        "decreaseLabel": "decrease word spacing"
+    },
+    model: {
+        value: 0
+    },
+    resources: {
+        template: {
+            url: "../../../../src/framework/preferences/html/PrefsEditorTemplate-wordSpace.html"
         }
-    });
+    }
+});
 
-    fluid.defaults("fluid.tests.wordSpacePanelTests", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        components: {
-            wordSpace: {
-                type: "fluid.tests.prefs.panel.wordSpace",
-                container: ".flc-wordSpace",
-                createOnEvent: "{wordSpaceTester}.events.onTestCaseStart"
-            },
-            wordSpaceTester: {
-                type: "fluid.tests.wordSpaceTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.wordSpaceTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            newValue: 2.5
+fluid.defaults("fluid.tests.wordSpacePanelTests", {
+    gradeNames: ["fluid.test.testEnvironment"],
+    components: {
+        wordSpace: {
+            type: "fluid.tests.prefs.panel.wordSpace",
+            container: ".flc-wordSpace",
+            createOnEvent: "{wordSpaceTester}.events.onTestCaseStart"
         },
-        modules: [{
-            name: "Test the wordSpace settings panel",
-            tests: [{
-                expect: 2,
-                name: "Test the rendering of the wordSpace panel",
-                sequence: [{
-                    event: "{fluid.tests.wordSpacePanelTests wordSpace}.events.afterRender",
-                    priority: "last:testing",
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["value", "{wordSpace}.model", 0]
-                }, {
-                    func: "fluid.tests.panels.changeInput",
-                    args: ["{wordSpace}.dom.textfieldStepperContainer", "{that}.options.testOptions.newValue"]
-                }, {
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["value", "{wordSpace}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "value", priority: "last:testing"},
-                    changeEvent: "{wordSpace}.applier.modelChanged"
-                }]
+        wordSpaceTester: {
+            type: "fluid.tests.wordSpaceTester"
+        }
+    }
+});
+
+fluid.defaults("fluid.tests.wordSpaceTester", {
+    gradeNames: ["fluid.test.testCaseHolder"],
+    testOptions: {
+        newValue: 2.5
+    },
+    modules: [{
+        name: "Test the wordSpace settings panel",
+        tests: [{
+            expect: 2,
+            name: "Test the rendering of the wordSpace panel",
+            sequence: [{
+                event: "{fluid.tests.wordSpacePanelTests wordSpace}.events.afterRender",
+                priority: "last:testing",
+                listener: "fluid.tests.panels.utils.checkModel",
+                args: ["value", "{wordSpace}.model", 0]
+            }, {
+                func: "fluid.tests.panels.changeInput",
+                args: ["{wordSpace}.dom.textfieldStepperContainer", "{that}.options.testOptions.newValue"]
+            }, {
+                listener: "fluid.tests.panels.utils.checkModel",
+                args: ["value", "{wordSpace}.model", "{that}.options.testOptions.newValue"],
+                spec: {path: "value", priority: "last:testing"},
+                changeEvent: "{wordSpace}.applier.modelChanged"
             }]
         }]
-    });
+    }]
+});
 
-    $(function () {
-        fluid.test.runTests([
-            "fluid.tests.wordSpacePanelTests"
-        ]);
-    });
-
-})(jQuery);
+$(function () {
+    fluid.test.runTests([
+        "fluid.tests.wordSpacePanelTests"
+    ]);
+});

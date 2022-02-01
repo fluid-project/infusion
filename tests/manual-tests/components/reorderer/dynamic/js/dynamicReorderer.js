@@ -11,31 +11,27 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 var demo = demo || {};
 
-(function ($, fluid) {
-    "use strict";
+demo.initDynamicReorderer = function () {
+    // Instantiate the reorderer
+    var ordered = fluid.reorderList("#orderableContainer", {
+        selectors: {
+            movables: ".myorderable"
+        }
+    });
 
-    demo.initDynamicReorderer = function () {
-        // Instantiate the reorderer
-        var ordered = fluid.reorderList("#orderableContainer", {
-            selectors: {
-                movables: ".myorderable"
-            }
-        });
+    // Create new reorderable elements
+    jQuery("#newElm").on("click", function () {
+        var orderables = jQuery(".myorderable");
+        var nextOrderableNum = orderables.length + 1;
+        var nextOrderable = orderables.eq(0).clone();
+        nextOrderable.text("This is " + nextOrderableNum);
+        nextOrderable.attr("id", nextOrderableNum);
 
-        // Create new reorderable elements
-        jQuery("#newElm").on("click", function () {
-            var orderables = jQuery(".myorderable");
-            var nextOrderableNum = orderables.length + 1;
-            var nextOrderable = orderables.eq(0).clone();
-            nextOrderable.text("This is " + nextOrderableNum);
-            nextOrderable.attr("id", nextOrderableNum);
-
-            orderables.last().after(nextOrderable);
-            ordered.refresh();
-        });
-    };
-
-
-})(jQuery, fluid);
+        orderables.last().after(nextOrderable);
+        ordered.refresh();
+    });
+};

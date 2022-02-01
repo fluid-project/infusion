@@ -11,28 +11,26 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 var example = example || {};
 
-(function ($, fluid) {
-    "use strict";
+example.initPager = function () {
+    var selectorPrefix = "#students-page";
 
-    example.initPager = function () {
-        var selectorPrefix = "#students-page";
-
-        var options = {
-            pageList: {
-                type: "fluid.pager.directPageList"
-            },
-            listeners: {
-                onModelChange: function (newModel, oldModel) {
-                    if (oldModel) {
-                        $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");
-                    }
-                    $(selectorPrefix + (newModel.pageIndex + 1)).removeClass("hidden");
+    var options = {
+        pageList: {
+            type: "fluid.pager.directPageList"
+        },
+        listeners: {
+            onModelChange: function (newModel, oldModel) {
+                if (oldModel) {
+                    $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");
                 }
+                $(selectorPrefix + (newModel.pageIndex + 1)).removeClass("hidden");
             }
-        };
-
-        fluid.pager("#gradebook", options);
+        }
     };
-})(jQuery, fluid);
+
+    fluid.pager("#gradebook", options);
+};

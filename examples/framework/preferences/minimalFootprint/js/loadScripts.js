@@ -11,59 +11,53 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
-var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
+"use strict";
 
-(function (fluid) {
-    "use strict";
+// setting up the `fluid.load` namespace
+fluid.load = fluid.load || {};
 
-    // setting up the `fluid.load` namespace
-    fluid.load = fluid.load || {};
+/**
+ * based on Jake Archibald's example from:
+ * http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue
+ * Licensed as Apache 2.0
+ *
+ * Will load an array of scripts into an HTML document syncronously, by
+ * appending script tags into the `<head>`
+ *
+ * @param {Array} scripts - the array of script URLs to load
+ */
+fluid.load.loadScripts = function (scripts) {
+    scripts.forEach(function (src) {
+        var script = document.createElement("script");
+        script.src = src;
+        script.async = false;
+        document.head.appendChild(script);
+    });
+};
 
-    /**
-     * based on Jake Archibald's example from:
-     * http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue
-     * Licensed as Apache 2.0
-     *
-     * Will load an array of scripts into an HTML document syncronously, by
-     * appending script tags into the `<head>`
-     *
-     * @param {Array} scripts - the array of script URLs to load
-     */
-    fluid.load.loadScripts = function (scripts) {
-        scripts.forEach(function (src) {
-            var script = document.createElement("script");
-            script.src = src;
-            script.async = false;
-            document.head.appendChild(script);
-        });
-    };
-
-    /**
-     * Determines if a browser cookie with the given name is available. It does
-     * not check the contents of the cookie.
-     *
-     * @param {String} cookieName - name of browser cookie to look for
-     * @return {Boolean} - returns `true` if the browser cookie is found, false
-     *                      otherwise.
-     */
-    fluid.load.hasCookie = function (cookieName) {
-        var cookie = document.cookie;
-        return cookie && cookie.indexOf(cookieName) >= 0;
-    };
+/**
+ * Determines if a browser cookie with the given name is available. It does
+ * not check the contents of the cookie.
+ *
+ * @param {String} cookieName - name of browser cookie to look for
+ * @return {Boolean} - returns `true` if the browser cookie is found, false
+ *                      otherwise.
+ */
+fluid.load.hasCookie = function (cookieName) {
+    var cookie = document.cookie;
+    return cookie && cookie.indexOf(cookieName) >= 0;
+};
 
 
-    /**
-     * Will load the set of scripts into the Document if the specified browser
-     * cookie is available.
-     *
-     * @param {String} cookieName - name of browser cookie to look for
-     * @param {Array} scripts - the array of script URLs to load
-     */
-    fluid.load.lazyLoadScripts = function (cookieName, scripts) {
-        if (fluid.load.hasCookie(cookieName)) {
-            fluid.load.loadScripts(scripts);
-        }
-    };
-
-})(fluid_4_0_0);
+/**
+ * Will load the set of scripts into the Document if the specified browser
+ * cookie is available.
+ *
+ * @param {String} cookieName - name of browser cookie to look for
+ * @param {Array} scripts - the array of script URLs to load
+ */
+fluid.load.lazyLoadScripts = function (cookieName, scripts) {
+    if (fluid.load.hasCookie(cookieName)) {
+        fluid.load.loadScripts(scripts);
+    }
+};

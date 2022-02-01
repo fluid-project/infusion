@@ -13,8 +13,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit */
 
+"use strict";
+
 (function ($) {
-    "use strict";
 
     $(function () {
         jqUnit.module("Image Reorderer Tests");

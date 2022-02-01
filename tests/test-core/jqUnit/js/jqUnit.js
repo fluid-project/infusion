@@ -13,10 +13,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global QUnit */
 
+"use strict";
+
 var jqUnit = jqUnit || {};
 
-(function ($, fluid) {
-    "use strict";
+(function ($) {
 
     var QUnitPassthroughs = ["module", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
@@ -364,4 +365,4 @@ var jqUnit = jqUnit || {};
         }
     };
 
-})(jQuery, fluid_4_0_0);
+})(jQuery);

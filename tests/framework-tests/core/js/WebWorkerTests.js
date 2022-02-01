@@ -13,19 +13,17 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit */
 
-(function () {
-    "use strict";
+"use strict";
 
-    fluid.registerNamespace("fluid.tests");
+fluid.registerNamespace("fluid.tests");
 
-    jqUnit.asyncTest("Instantiate Infusion in Web Worker", function () {
-        var expectedMessage = "raow!";
-        var worker = new Worker("../js/WebWorkerTests-Worker.js");
+jqUnit.asyncTest("Instantiate Infusion in Web Worker", function () {
+    var expectedMessage = "raow!";
+    var worker = new Worker("../js/WebWorkerTests-Worker.js");
 
-        worker.addEventListener("message", function (e) {
-            jqUnit.assertEquals("A message should have been received from the Infusion component running in the Worker.",
-                expectedMessage, e.data);
-            jqUnit.start();
-        }, true);
-    });
-})();
+    worker.addEventListener("message", function (e) {
+        jqUnit.assertEquals("A message should have been received from the Infusion component running in the Worker.",
+            expectedMessage, e.data);
+        jqUnit.start();
+    }, true);
+});
