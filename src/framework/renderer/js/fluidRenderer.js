@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-(function ($) {
+(function () {
 
     function debugPosition(component) {
         return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
@@ -1578,4 +1578,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
     };
 
-})(jQuery);
+})();
