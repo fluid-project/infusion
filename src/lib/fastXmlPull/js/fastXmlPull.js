@@ -52,6 +52,8 @@ freely, subject to the following restrictions:
 
 "use strict";
 
+var fluid = fluid || {}; // eslint-disable-line no-redeclare
+
 fluid.XMLP = function(strXML) {
     return fluid.XMLP.XMLPImpl(strXML);
 };
