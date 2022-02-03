@@ -14,6 +14,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 "use strict";
 
 // setting up the `fluid.load` namespace
+var fluid = fluid || {}; // eslint-disable-line no-redeclare
 fluid.load = fluid.load || {};
 
 /**
