@@ -11,34 +11,31 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /*******************************************************************************
-     * wordSpace
-     *
-     * Sets the word space on the container to the number of units to increase
-     * the word space by. If a negative number is provided, the space between
-     * characters will decrease. Setting the value to 1 or unit to 0 will use the
-     * default word space.
-     *******************************************************************************/
+/*******************************************************************************
+ * wordSpace
+ *
+ * Sets the word space on the container to the number of units to increase
+ * the word space by. If a negative number is provided, the space between
+ * characters will decrease. Setting the value to 1 or unit to 0 will use the
+ * default word space.
+ *******************************************************************************/
 
-    // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.prefs.enactor.wordSpace", {
-        gradeNames: ["fluid.prefs.enactor.spacingSetter"],
-        preferenceMap: {
-            "fluid.prefs.wordSpace": {
-                "model.value": "value"
-            }
-        },
-        styles: {
-            enabled: "fl-wordSpace-enabled"
-        },
-        cssProp: "word-spacing",
-        cssCustomProp: {
-            factor: "--fl-wordSpace-factor",
-            size: "--fl-wordSpace"
+// Note that the implementors need to provide the container for this view component
+fluid.defaults("fluid.prefs.enactor.wordSpace", {
+    gradeNames: ["fluid.prefs.enactor.spacingSetter"],
+    preferenceMap: {
+        "fluid.prefs.wordSpace": {
+            "model.value": "value"
         }
-    });
-
-})(jQuery, fluid_4_0_0);
+    },
+    styles: {
+        enabled: "fl-wordSpace-enabled"
+    },
+    cssProp: "word-spacing",
+    cssCustomProp: {
+        factor: "--fl-wordSpace-factor",
+        size: "--fl-wordSpace"
+    }
+});

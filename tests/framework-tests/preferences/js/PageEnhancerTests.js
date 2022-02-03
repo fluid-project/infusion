@@ -13,72 +13,70 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit */
 
-(function ($) {
-    "use strict";
+"use strict";
 
-    fluid.defaults("fluid.tests.pageEnhancerTest", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        events: {
-            createPageEnhancer: null
+fluid.defaults("fluid.tests.pageEnhancerTest", {
+    gradeNames: ["fluid.test.testEnvironment"],
+    events: {
+        createPageEnhancer: null
+    },
+    components: {
+        settingsStore: {
+            type: "fluid.prefs.store",
+            options: {
+                gradeNames: ["fluid.prefs.tempStore"]
+            }
         },
-        components: {
-            settingsStore: {
-                type: "fluid.prefs.store",
-                options: {
-                    gradeNames: ["fluid.prefs.tempStore"]
-                }
-            },
-            pageEnhancer: {
-                type: "fluid.pageEnhancer",
-                createOnEvent: "createPageEnhancer",
-                options: {
-                    uiEnhancer: {
-                        options: {
-                            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
-                        }
+        pageEnhancer: {
+            type: "fluid.pageEnhancer",
+            createOnEvent: "createPageEnhancer",
+            options: {
+                uiEnhancer: {
+                    options: {
+                        gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                        tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                     }
                 }
-            },
-            pageEnhancerTester: {
-                type: "fluid.tests.pageEnhancerTester"
             }
+        },
+        pageEnhancerTester: {
+            type: "fluid.tests.pageEnhancerTester"
         }
-    });
+    }
+});
 
-    fluid.defaults("fluid.tests.pageEnhancerTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        modules: [{
-            name: "Page Enhancer Tests",
-            tests: [{
-                expect: 6,
-                name: "UIEnhancer options passing",
-                sequence: [{
-                    func: "fluid.tests.testInitialState"
-                }, {
-                    func: "{pageEnhancerTest}.events.createPageEnhancer.fire"
-                }, {
-                    func: "fluid.tests.testAfterPageEnhancer"
-                }]
+fluid.defaults("fluid.tests.pageEnhancerTester", {
+    gradeNames: ["fluid.test.testCaseHolder"],
+    modules: [{
+        name: "Page Enhancer Tests",
+        tests: [{
+            expect: 6,
+            name: "UIEnhancer options passing",
+            sequence: [{
+                func: "fluid.tests.testInitialState"
+            }, {
+                func: "{pageEnhancerTest}.events.createPageEnhancer.fire"
+            }, {
+                func: "fluid.tests.testAfterPageEnhancer"
             }]
         }]
-    });
+    }]
+});
 
-    fluid.tests.testInitialState = function () {
-        jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
-        jqUnit.assertEquals("Initially font-times class exists", 1, $(".fl-font-times").length);
-        jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
-    };
+fluid.tests.testInitialState = function () {
+    jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
+    jqUnit.assertEquals("Initially font-times class exists", 1, $(".fl-font-times").length);
+    jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
+};
 
-    fluid.tests.testAfterPageEnhancer = function () {
-        jqUnit.assertEquals("The theme class has not been removed", 1, $(".fl-theme-wb").length);
-        jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
-        jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
-    };
+fluid.tests.testAfterPageEnhancer = function () {
+    jqUnit.assertEquals("The theme class has not been removed", 1, $(".fl-theme-wb").length);
+    jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
+    jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
+};
 
-    $(function () {
-        fluid.test.runTests([
-            "fluid.tests.pageEnhancerTest"
-        ]);
-    });
-})(jQuery);
+$(function () {
+    fluid.test.runTests([
+        "fluid.tests.pageEnhancerTest"
+    ]);
+});

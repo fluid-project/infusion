@@ -22,11 +22,11 @@
 /* global global */
 /* exported jQuery */
 
-var fluid_4_0_0 = fluid_4_0_0 || {}; // eslint-disable-line no-redeclare
-var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
+"use strict";
 
-(function (fluid) {
-    "use strict";
+var fluid = fluid || {}; // eslint-disable-line no-redeclare
+
+(function () {
 
     // Save a reference to some core methods
     var toString = Object.prototype.toString;
@@ -161,6 +161,7 @@ var fluid = fluid || fluid_4_0_0; // eslint-disable-line no-redeclare
 
     jQueryMembers.extend(jQuery, jQueryMembers);
 
-})(fluid_4_0_0);
+})();
 
 var jQuery = fluid.jQueryStandalone; // eslint-disable-line no-redeclare
+var $ = jQuery; // eslint-disable-line no-redeclare, no-unused-vars

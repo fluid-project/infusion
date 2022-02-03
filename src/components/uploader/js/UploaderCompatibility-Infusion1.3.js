@@ -16,103 +16,100 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * Instead, users should add this file manually if backwards compatibility is needed. *
  **************************************************************************************/
 
-(function (fluid) {
-    "use strict";
+"use strict";
 
-    fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
+fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
 
-    fluid.contextAware.makeChecks({"fluid.uploader.requiredApi": {
-        value: "fluid_1_3"
-    }});
+fluid.contextAware.makeChecks({"fluid.uploader.requiredApi": {
+    value: "fluid_1_3"
+}});
 
-    // fluid.contextAware.makeContext({"fluid.uploader.requiredApi": {
-    //     contextName: "fluid.uploader.requiredApi.fluid_1_3" // check: true is assumed
-    // });
-    // fluid.contextAware.forgetContext("fluid.uploader.requiredApi");
+// fluid.contextAware.makeContext({"fluid.uploader.requiredApi": {
+//     contextName: "fluid.uploader.requiredApi.fluid_1_3" // check: true is assumed
+// });
+// fluid.contextAware.forgetContext("fluid.uploader.requiredApi");
 
-    fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
-        var mimeTypeMap = fluid.uploader.mimeTypeRegistry;
-        if (fluid.isArrayable(val) || typeof(val) !== "string") {
-            return val;
-        }
+fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
+    var mimeTypeMap = fluid.uploader.mimeTypeRegistry;
+    if (fluid.isArrayable(val) || typeof(val) !== "string") {
+        return val;
+    }
 
-        var exts = val.split(";");
-        if (exts.length === 0) {
-            return undefined;
-        }
+    var exts = val.split(";");
+    if (exts.length === 0) {
+        return undefined;
+    }
 
-        var mimeTypes = [];
-        fluid.each(exts, function (ext) {
-            ext = ext.substring(2);
-            var mimeType = mimeTypeMap[ext];
-            if (mimeType) {
-                mimeTypes.push(mimeType);
-            }
-        });
-
-        return mimeTypes;
-    };
-
-    fluid.compat.fluid_1_3.uploader.optionsRules = {
-        // TODO: Remove these when model transformation can handle additive transformations.
-        gradeNames: "gradeNames",
-        components: "components",
-        invokers: "invokers",
-        queueSettings: "queueSettings",
-        demo: "demo",
-        selectors: "selectors",
-        focusWithEvent: "focusWithEvent",
-        styles: "styles",
-        events: "events",
-        listeners: "listeners",
-        strings: "strings",
-        mergePolicy: "mergePolicy",
-
-        "queueSettings.fileTypes": {
-            transform: {
-                type: "fluid.compat.fluid_1_3.uploader.fileTypeTransformer",
-                inputPath: "queueSettings.fileTypes"
-            }
-        }
-    };
-
-    // This grade, applied to a fluid.uploader, will adapt its accepted API from the Infusion 1.2 form to the Infusion 1.4-2.0 form
-    fluid.defaults("fluid.uploader.compatibility.1_2-1_3", {
-        transformOptions: {
-            transformer: "fluid.model.transform.sequence",
-            config: [fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules]
+    var mimeTypes = [];
+    fluid.each(exts, function (ext) {
+        ext = ext.substring(2);
+        var mimeType = mimeTypeMap[ext];
+        if (mimeType) {
+            mimeTypes.push(mimeType);
         }
     });
 
-    fluid.defaults("fluid.uploader.compatibility.1_3", {
-        transformOptions: {
-            transformer: "fluid.model.transformWithRules",
-            config: fluid.compat.fluid_1_3.uploader.optionsRules
+    return mimeTypes;
+};
+
+fluid.compat.fluid_1_3.uploader.optionsRules = {
+    // TODO: Remove these when model transformation can handle additive transformations.
+    gradeNames: "gradeNames",
+    components: "components",
+    invokers: "invokers",
+    queueSettings: "queueSettings",
+    demo: "demo",
+    selectors: "selectors",
+    focusWithEvent: "focusWithEvent",
+    styles: "styles",
+    events: "events",
+    listeners: "listeners",
+    strings: "strings",
+    mergePolicy: "mergePolicy",
+
+    "queueSettings.fileTypes": {
+        transform: {
+            type: "fluid.compat.fluid_1_3.uploader.fileTypeTransformer",
+            inputPath: "queueSettings.fileTypes"
         }
-    });
+    }
+};
+
+// This grade, applied to a fluid.uploader, will adapt its accepted API from the Infusion 1.2 form to the Infusion 1.4-2.0 form
+fluid.defaults("fluid.uploader.compatibility.1_2-1_3", {
+    transformOptions: {
+        transformer: "fluid.model.transform.sequence",
+        config: [fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules]
+    }
+});
+
+fluid.defaults("fluid.uploader.compatibility.1_3", {
+    transformOptions: {
+        transformer: "fluid.model.transformWithRules",
+        config: fluid.compat.fluid_1_3.uploader.optionsRules
+    }
+});
 
 
-    fluid.defaults("fluid.uploader.compatibility.distributor.1_4", {
-        distributeOptions: {
-            record: {
-                "1_2": {
-                    contextValue: "{fluid.uploader.requiredApi}.options.value",
-                    equals: "fluid_1_2",
-                    gradeNames: "fluid.uploader.compatibility.1_2-1_3"
-                },
-                "1_3": {
-                    contextValue: "{fluid.uploader.requiredApi}.options.value",
-                    equals: "fluid_1_3",
-                    gradeNames: "fluid.uploader.compatibility.1_3"
-                }
+fluid.defaults("fluid.uploader.compatibility.distributor.1_4", {
+    distributeOptions: {
+        record: {
+            "1_2": {
+                contextValue: "{fluid.uploader.requiredApi}.options.value",
+                equals: "fluid_1_2",
+                gradeNames: "fluid.uploader.compatibility.1_2-1_3"
             },
-            target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
-        }
-    });
+            "1_3": {
+                contextValue: "{fluid.uploader.requiredApi}.options.value",
+                equals: "fluid_1_3",
+                gradeNames: "fluid.uploader.compatibility.1_3"
+            }
+        },
+        target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
+    }
+});
 
-    fluid.constructSingle([], {
-        singleRootType: "fluid.uploader.compatibility.distributor",
-        type: "fluid.uploader.compatibility.distributor.1_4"
-    });
-
-})(fluid_4_0_0);
+fluid.constructSingle([], {
+    singleRootType: "fluid.uploader.compatibility.distributor",
+    type: "fluid.uploader.compatibility.distributor.1_4"
+});

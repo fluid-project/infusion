@@ -11,56 +11,53 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function (fluid) {
-    "use strict";
+"use strict";
 
-    /*******************************************************************************
-    * Auxiliary schema grade
-    *
-    * Contains the settings for the localization preference
-    *******************************************************************************/
+/*******************************************************************************
+* Auxiliary schema grade
+*
+* Contains the settings for the localization preference
+*******************************************************************************/
 
-    fluid.defaults("fluid.prefs.auxSchema.localization", {
-        gradeNames: ["fluid.prefs.auxSchema"],
-        auxiliarySchema: {
-            "fluid.prefs.localization": {
-                "alias": "locale",
-                "enactor": {
-                    "type": "fluid.prefs.enactor.localization"
-                },
-                "panel": {
-                    "type": "fluid.prefs.panel.localization",
-                    "container": ".flc-prefsEditor-localization",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-localization.html",
-                    "message": "%messagePrefix/localization.json"
-                }
+fluid.defaults("fluid.prefs.auxSchema.localization", {
+    gradeNames: ["fluid.prefs.auxSchema"],
+    auxiliarySchema: {
+        "fluid.prefs.localization": {
+            "alias": "locale",
+            "enactor": {
+                "type": "fluid.prefs.enactor.localization"
+            },
+            "panel": {
+                "type": "fluid.prefs.panel.localization",
+                "container": ".flc-prefsEditor-localization",  // the css selector in the template where the panel is rendered
+                "template": "%templatePrefix/PrefsEditorTemplate-localization.html",
+                "message": "%messagePrefix/localization.json"
             }
         }
-    });
+    }
+});
 
-    /*******************************************************************************
-    * Primary Schema
-    *******************************************************************************/
+/*******************************************************************************
+* Primary Schema
+*******************************************************************************/
 
-    // add extra prefs to the starter primary schemas
+// add extra prefs to the starter primary schemas
 
-    fluid.defaults("fluid.prefs.schemas.localization", {
-        gradeNames: ["fluid.prefs.schemas"],
-        schema: {
-            "fluid.prefs.localization": {
-                "type": "string",
-                "default": "",
-                "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa", "pt_BR"],
-                "enumLabels": [
-                    "localization-default",
-                    "localization-en",
-                    "localization-fr",
-                    "localization-es",
-                    "localization-fa",
-                    "localization-pt_BR"
-                ]
-            }
+fluid.defaults("fluid.prefs.schemas.localization", {
+    gradeNames: ["fluid.prefs.schemas"],
+    schema: {
+        "fluid.prefs.localization": {
+            "type": "string",
+            "default": "",
+            "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa", "pt_BR"],
+            "enumLabels": [
+                "localization-default",
+                "localization-en",
+                "localization-fr",
+                "localization-es",
+                "localization-fa",
+                "localization-pt_BR"
+            ]
         }
-    });
-
-})(fluid_4_0_0);
+    }
+});

@@ -11,34 +11,31 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /*******************************************************************************
-     * letterSpace
-     *
-     * Sets the letter space on the container to the number of units to increase
-     * the letter space by. If a negative number is provided, the space between
-     * characters will decrease. Setting the value to 1 or unit to 0 will use the
-     * default letter space.
-     *******************************************************************************/
+/*******************************************************************************
+ * letterSpace
+ *
+ * Sets the letter space on the container to the number of units to increase
+ * the letter space by. If a negative number is provided, the space between
+ * characters will decrease. Setting the value to 1 or unit to 0 will use the
+ * default letter space.
+ *******************************************************************************/
 
-    // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.prefs.enactor.letterSpace", {
-        gradeNames: ["fluid.prefs.enactor.spacingSetter"],
-        preferenceMap: {
-            "fluid.prefs.letterSpace": {
-                "model.value": "value"
-            }
-        },
-        styles: {
-            enabled: "fl-letterSpace-enabled"
-        },
-        cssProp: "letter-spacing",
-        cssCustomProp: {
-            factor: "--fl-letterSpace-factor",
-            size: "--fl-letterSpace"
+// Note that the implementors need to provide the container for this view component
+fluid.defaults("fluid.prefs.enactor.letterSpace", {
+    gradeNames: ["fluid.prefs.enactor.spacingSetter"],
+    preferenceMap: {
+        "fluid.prefs.letterSpace": {
+            "model.value": "value"
         }
-    });
-
-})(jQuery, fluid_4_0_0);
+    },
+    styles: {
+        enabled: "fl-letterSpace-enabled"
+    },
+    cssProp: "letter-spacing",
+    cssCustomProp: {
+        factor: "--fl-letterSpace-factor",
+        size: "--fl-letterSpace"
+    }
+});

@@ -11,128 +11,126 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 var example = example || {};
-(function ($, fluid) {
-    "use strict";
 
-    /**
-     * These enactors are shared by many of the Preferences Framework examples.
-     * Each example only uses some of these enactors, as specified in the example's auxiliary schema.
-     *
-     * These enactors do nothing but display a console message when the model changes.
-     * In the real world, enactors would do more, depending on what they're for.
-     */
+/**
+ * These enactors are shared by many of the Preferences Framework examples.
+ * Each example only uses some of these enactors, as specified in the example's auxiliary schema.
+ *
+ * These enactors do nothing but display a console message when the model changes.
+ * In the real world, enactors would do more, depending on what they're for.
+ */
 
-    fluid.defaults("example.enactors.speak", {
-        gradeNames: ["fluid.prefs.enactor"],
-        preferenceMap: {
-            "example.speakText": {
-                "model.speak": "value"
-            }
-        },
-        modelListeners: {
-            "speak": {
-                funcName: "example.logModelValue",
-                args: ["speak", "{change}.value"],
-                namespace: "log"
-            }
+fluid.defaults("example.enactors.speak", {
+    gradeNames: ["fluid.prefs.enactor"],
+    preferenceMap: {
+        "example.speakText": {
+            "model.speak": "value"
         }
-    });
-
-    fluid.defaults("example.enactors.incSize", {
-        gradeNames: ["fluid.prefs.enactor"],
-        preferenceMap: {
-            "example.increaseSize": {
-                "model.incSize": "value"
-            }
-        },
-        modelListeners: {
-            "incSize": {
-                funcName: "example.logModelValue",
-                args: ["incSize", "{change}.value"],
-                namespace: "log"
-            }
+    },
+    modelListeners: {
+        "speak": {
+            funcName: "example.logModelValue",
+            args: ["speak", "{change}.value"],
+            namespace: "log"
         }
-    });
+    }
+});
 
-    fluid.defaults("example.enactors.vol", {
-        gradeNames: ["fluid.prefs.enactor"],
-        preferenceMap: {
-            "example.volume": {
-                "model.volume": "value"
-            }
-        },
-        modelListeners: {
-            "volume": {
-                funcName: "example.logModelValue",
-                args: ["vol", "{change}.value"],
-                namespace: "log"
-            }
+fluid.defaults("example.enactors.incSize", {
+    gradeNames: ["fluid.prefs.enactor"],
+    preferenceMap: {
+        "example.increaseSize": {
+            "model.incSize": "value"
         }
-    });
-
-    fluid.defaults("example.enactors.wpm", {
-        gradeNames: ["fluid.prefs.enactor"],
-        preferenceMap: {
-            "example.wordsPerMinute": {
-                "model.wordsPerMin": "value"
-            }
-        },
-        modelListeners: {
-            "wordsPerMin": {
-                funcName: "example.logModelValue",
-                args: ["wpm", "{change}.value"],
-                namespace: "log"
-            }
+    },
+    modelListeners: {
+        "incSize": {
+            funcName: "example.logModelValue",
+            args: ["incSize", "{change}.value"],
+            namespace: "log"
         }
-    });
+    }
+});
 
-    fluid.defaults("example.enactors.cursor", {
-        gradeNames: ["fluid.prefs.enactor"],
-        preferenceMap: {
-            "example.cursorSize": {
-                "model.cursorMult": "value"
-            }
-        },
-        modelListeners: {
-            "cursorMult": {
-                funcName: "example.logModelValue",
-                args: ["cursor", "{change}.value"],
-                namespace: "log"
-            }
+fluid.defaults("example.enactors.vol", {
+    gradeNames: ["fluid.prefs.enactor"],
+    preferenceMap: {
+        "example.volume": {
+            "model.volume": "value"
         }
-    });
-
-    fluid.defaults("example.enactors.magFactor", {
-        gradeNames: ["fluid.prefs.enactor"],
-        preferenceMap: {
-            "example.magnification": {
-                "model.mag": "value"
-            }
-        },
-        modelListeners: {
-            "mag": {
-                funcName: "example.logModelValue",
-                args: ["magFactor", "{change}.value"],
-                namespace: "log"
-            }
+    },
+    modelListeners: {
+        "volume": {
+            funcName: "example.logModelValue",
+            args: ["vol", "{change}.value"],
+            namespace: "log"
         }
-    });
+    }
+});
 
-    fluid.defaults("example.enactors.magPos", {
-        gradeNames: ["fluid.prefs.enactor"],
-        preferenceMap: {
-            "example.magnifierPosition": {
-                "model.magPos": "value"
-            }
-        },
-        modelListeners: {
-            "magPos": {
-                funcName: "example.logModelValue",
-                args: ["magPos", "{change}.value"],
-                namespace: "log"
-            }
+fluid.defaults("example.enactors.wpm", {
+    gradeNames: ["fluid.prefs.enactor"],
+    preferenceMap: {
+        "example.wordsPerMinute": {
+            "model.wordsPerMin": "value"
         }
-    });
+    },
+    modelListeners: {
+        "wordsPerMin": {
+            funcName: "example.logModelValue",
+            args: ["wpm", "{change}.value"],
+            namespace: "log"
+        }
+    }
+});
 
-})(jQuery, fluid);
+fluid.defaults("example.enactors.cursor", {
+    gradeNames: ["fluid.prefs.enactor"],
+    preferenceMap: {
+        "example.cursorSize": {
+            "model.cursorMult": "value"
+        }
+    },
+    modelListeners: {
+        "cursorMult": {
+            funcName: "example.logModelValue",
+            args: ["cursor", "{change}.value"],
+            namespace: "log"
+        }
+    }
+});
+
+fluid.defaults("example.enactors.magFactor", {
+    gradeNames: ["fluid.prefs.enactor"],
+    preferenceMap: {
+        "example.magnification": {
+            "model.mag": "value"
+        }
+    },
+    modelListeners: {
+        "mag": {
+            funcName: "example.logModelValue",
+            args: ["magFactor", "{change}.value"],
+            namespace: "log"
+        }
+    }
+});
+
+fluid.defaults("example.enactors.magPos", {
+    gradeNames: ["fluid.prefs.enactor"],
+    preferenceMap: {
+        "example.magnifierPosition": {
+            "model.magPos": "value"
+        }
+    },
+    modelListeners: {
+        "magPos": {
+            funcName: "example.logModelValue",
+            args: ["magPos", "{change}.value"],
+            namespace: "log"
+        }
+    }
+});

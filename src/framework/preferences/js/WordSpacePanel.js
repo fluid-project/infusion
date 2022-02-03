@@ -11,29 +11,26 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /*************************************
-     * Preferences Editor Word Spacing *
-     *************************************/
+/*************************************
+ * Preferences Editor Word Spacing *
+ *************************************/
 
-    /**
-     * A sub-component of fluid.prefs that renders the "word spacing" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.prefs.panel.wordSpace", {
-        gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
-        preferenceMap: {
-            "fluid.prefs.wordSpace": {
-                "model.value": "value",
-                "range.min": "minimum",
-                "range.max": "maximum",
-                "step": "multipleOf"
-            }
-        },
-        panelOptions: {
-            labelIdTemplate: "wordSpace-label-%guid"
+/**
+ * A sub-component of fluid.prefs that renders the "word spacing" panel of the user preferences interface.
+ */
+fluid.defaults("fluid.prefs.panel.wordSpace", {
+    gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
+    preferenceMap: {
+        "fluid.prefs.wordSpace": {
+            "model.value": "value",
+            "range.min": "minimum",
+            "range.max": "maximum",
+            "step": "multipleOf"
         }
-    });
-
-})(jQuery, fluid_4_0_0);
+    },
+    panelOptions: {
+        labelIdTemplate: "wordSpace-label-%guid"
+    }
+});

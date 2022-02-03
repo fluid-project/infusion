@@ -13,48 +13,44 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit */
 
-(function ($) {
-    "use strict";
+"use strict";
 
-    $(function () {
-        fluid.setLogging(true);
+fluid.setLogging(true);
 
-        fluid.registerNamespace("fluid.tests");
+fluid.registerNamespace("fluid.tests");
 
-        jqUnit.module("Aria Labeller Tests");
+jqUnit.module("Aria Labeller Tests");
 
-        var itemIds = ["list1item1", "list1item2", "list1item3", "list1item4", "list1item5"];
+var itemIds = ["list1item1", "list1item2", "list1item3", "list1item4", "list1item5"];
 
-        var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
+var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
 
-        function assertItemsInOrder(message, expectOrder) {
-            return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder,
-                $("li", $("#list1")), "list1item");
+function assertItemsInOrder(message, expectOrder) {
+    return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder,
+        $("li", $("#list1")), "list1item");
+}
+
+fluid.defaults("fluid.tests.labellerTester", {
+    gradeNames: ["fluid.viewComponent"],
+    components: {
+        reorderer: {
+            type: "fluid.reorderList",
+            container: "{labellerTester}.container"
         }
+    }
+});
 
-        fluid.defaults("fluid.tests.labellerTester", {
-            gradeNames: ["fluid.viewComponent"],
-            components: {
-                reorderer: {
-                    type: "fluid.reorderList",
-                    container: "{labellerTester}.container"
-                }
-            }
-        });
+jqUnit.asyncTest("IoC instantiation", async function () {
 
-        jqUnit.asyncTest("IoC instantiation", async function () {
+    var labellerTester = fluid.tests.labellerTester("#list1");
+    jqUnit.assertNotUndefined("reorderer created", labellerTester.reorderer);
 
-            var labellerTester = fluid.tests.labellerTester("#list1");
-            jqUnit.assertNotUndefined("reorderer created", labellerTester.reorderer);
+    await fluid.focus($("#list1item3"));
+    await k.compositeKey(labellerTester.reorderer, fluid.testUtils.reorderer.ctrlKeyEvent("DOWN"), 2);
+    assertItemsInOrder("after ctrl-down, order should be ", [1, 2, 4, 3, 5]);
 
-            await fluid.focus($("#list1item3"));
-            await k.compositeKey(labellerTester.reorderer, fluid.testUtils.reorderer.ctrlKeyEvent("DOWN"), 2);
-            assertItemsInOrder("after ctrl-down, order should be ", [1, 2, 4, 3, 5]);
+    var region = fluid.jById(fluid.defaults("fluid.ariaLabeller").liveRegionId);
+    jqUnit.assertNotUndefined("Live region should exist", region);
 
-            var region = fluid.jById(fluid.defaults("fluid.ariaLabeller").liveRegionId);
-            jqUnit.assertNotUndefined("Live region should exist", region);
-
-            jqUnit.start();
-        });
-    });
-})(jQuery);
+    jqUnit.start();
+});

@@ -11,34 +11,31 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /**************************************
-     * Full No Preview Preferences Editor *
-     **************************************/
+/**************************************
+ * Full No Preview Preferences Editor *
+ **************************************/
 
-    fluid.defaults("fluid.prefs.fullNoPreview", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader"],
-        components: {
-            prefsEditor: {
-                container: "{that}.container",
-                options: {
-                    listeners: {
-                        "afterReset.applyChanges": {
-                            listener: "{that}.applyChanges"
-                        },
-                        "afterReset.save": {
-                            listener: "{that}.save",
-                            priority: "after:applyChanges"
-                        }
+fluid.defaults("fluid.prefs.fullNoPreview", {
+    gradeNames: ["fluid.prefs.prefsEditorLoader"],
+    components: {
+        prefsEditor: {
+            container: "{that}.container",
+            options: {
+                listeners: {
+                    "afterReset.applyChanges": {
+                        listener: "{that}.applyChanges"
+                    },
+                    "afterReset.save": {
+                        listener: "{that}.save",
+                        priority: "after:applyChanges"
                     }
                 }
             }
-        },
-        events: {
-            onReady: null
         }
-    });
-
-})(jQuery, fluid_4_0_0);
+    },
+    events: {
+        onReady: null
+    }
+});

@@ -17,87 +17,84 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * This file must be included before UploaderCompatibility-Infusion1.3.js             *
  **************************************************************************************/
 
-(function (fluid) {
-    "use strict";
+"use strict";
 
-    fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
+fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
 
-    fluid.contextAware.makeChecks({"fluid.uploader.requiredApi": {
-        value: "fluid_1_2"
-    }});
+fluid.contextAware.makeChecks({"fluid.uploader.requiredApi": {
+    value: "fluid_1_2"
+}});
 
-    fluid.compat.fluid_1_2.uploader.optionsRules = {
-        components: {
-            transform: [
-                {
-                    type: "fluid.transforms.value",
-                    inputPath: "components",
-                    outputPath: "",
-                    merge: true
-                },
-                {
-                    type: "fluid.transforms.value",
-                    outputPath: "",
-                    merge: true,
-                    input: {
-                        transform: [{
-                            // TODO: We could recover the old compact form of this with some dedicated form of transform
-                            // TODO: This part of the transform is untested
-                            type: "fluid.transforms.value",
-                            outputPath: "strategy.options.styles",
-                            inputPath: "decorators.0.options.styles"
-                        }, {
-                            type: "fluid.transforms.value",
-                            inputPath: "fileQueueView",
-                            outputPath: "fileQueueView"
-                        }, {
-                            type: "fluid.transforms.value",
-                            inputPath: "totalProgressBar",
-                            outputPath: "totalProgressBar"
-                        }]
-                    }
+fluid.compat.fluid_1_2.uploader.optionsRules = {
+    components: {
+        transform: [
+            {
+                type: "fluid.transforms.value",
+                inputPath: "components",
+                outputPath: "",
+                merge: true
+            },
+            {
+                type: "fluid.transforms.value",
+                outputPath: "",
+                merge: true,
+                input: {
+                    transform: [{
+                        // TODO: We could recover the old compact form of this with some dedicated form of transform
+                        // TODO: This part of the transform is untested
+                        type: "fluid.transforms.value",
+                        outputPath: "strategy.options.styles",
+                        inputPath: "decorators.0.options.styles"
+                    }, {
+                        type: "fluid.transforms.value",
+                        inputPath: "fileQueueView",
+                        outputPath: "fileQueueView"
+                    }, {
+                        type: "fluid.transforms.value",
+                        inputPath: "totalProgressBar",
+                        outputPath: "totalProgressBar"
+                    }]
                 }
-            ]
-        },
-        queueSettings: {
-            transform: {
-                type: "fluid.transforms.firstValue",
-                values: ["queueSettings", "uploadManager.options"]
+            }
+        ]
+    },
+    queueSettings: {
+        transform: {
+            type: "fluid.transforms.firstValue",
+            values: ["queueSettings", "uploadManager.options"]
+        }
+    },
+    invokers: "invokers",
+    demo: "demo",
+    selectors: "selectors",
+    focusWithEvent: "focusWithEvent",
+    styles: "styles",
+    listeners: "listeners",
+    strings: "strings",
+    mergePolicy: "mergePolicy"
+};
+
+fluid.defaults("fluid.uploader.compatibility.1_2", {
+    transformOptions: {
+        transformer: "fluid.model.transformWithRules",
+        config: fluid.compat.fluid_1_2.uploader.optionsRules
+    }
+});
+
+fluid.defaults("fluid.uploader.compatibility.distributor.1_3", {
+    distributeOptions: {
+        record: {
+            "1_2": {
+                contextValue: "{fluid.uploader.requiredApi}.options.value",
+                equals: "fluid_1_2",
+                gradeNames: "fluid.uploader.compatibility.1_2"
             }
         },
-        invokers: "invokers",
-        demo: "demo",
-        selectors: "selectors",
-        focusWithEvent: "focusWithEvent",
-        styles: "styles",
-        listeners: "listeners",
-        strings: "strings",
-        mergePolicy: "mergePolicy"
-    };
+        target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
+    }
+});
 
-    fluid.defaults("fluid.uploader.compatibility.1_2", {
-        transformOptions: {
-            transformer: "fluid.model.transformWithRules",
-            config: fluid.compat.fluid_1_2.uploader.optionsRules
-        }
-    });
-
-    fluid.defaults("fluid.uploader.compatibility.distributor.1_3", {
-        distributeOptions: {
-            record: {
-                "1_2": {
-                    contextValue: "{fluid.uploader.requiredApi}.options.value",
-                    equals: "fluid_1_2",
-                    gradeNames: "fluid.uploader.compatibility.1_2"
-                }
-            },
-            target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
-        }
-    });
-
-    fluid.constructSingle([], {
-        singleRootType: "fluid.uploader.compatibility.distributor",
-        type: "fluid.uploader.compatibility.distributor.1_3"
-    });
-
-})(fluid_4_0_0);
+fluid.constructSingle([], {
+    singleRootType: "fluid.uploader.compatibility.distributor",
+    type: "fluid.uploader.compatibility.distributor.1_3"
+});

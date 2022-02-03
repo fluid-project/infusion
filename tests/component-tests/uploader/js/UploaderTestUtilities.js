@@ -11,56 +11,53 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function () {
-    "use strict";
+"use strict";
 
-    fluid.registerNamespace("fluid.tests.uploader");
+fluid.registerNamespace("fluid.tests.uploader");
 
-    // Enough of an uploader to test local and remote strategies
-    fluid.defaults("fluid.tests.uploader.mockUploader", {
-        gradeNames: ["fluid.component", "fluid.tests.uploader"],
-        queueSettings: fluid.uploader.defaultQueueSettings,
-        events: {
-            onFileStart: null, // for remote strategy
-            onFileProgress: null,
-            onFileSuccess: null,
-            onFileError: null,
-            onFileComplete: null,
-            onUploadStop: null,
-            afterFileComplete: null,
-            afterUploadComplete: null,
+// Enough of an uploader to test local and remote strategies
+fluid.defaults("fluid.tests.uploader.mockUploader", {
+    gradeNames: ["fluid.component", "fluid.tests.uploader"],
+    queueSettings: fluid.uploader.defaultQueueSettings,
+    events: {
+        onFileStart: null, // for remote strategy
+        onFileProgress: null,
+        onFileSuccess: null,
+        onFileError: null,
+        onFileComplete: null,
+        onUploadStop: null,
+        afterFileComplete: null,
+        afterUploadComplete: null,
 
-            onFileDialog: null, // for local strategy
-            onFilesSelected: null,
-            afterFileDialog: null,
-            afterFileQueued: null,
-            onQueueError: null,
+        onFileDialog: null, // for local strategy
+        onFilesSelected: null,
+        afterFileDialog: null,
+        afterFileQueued: null,
+        onQueueError: null,
 
-            afterReady: null,
-            onFileQueued: null
-        },
-        components: {
-            queue: {
-                type: "fluid.uploader.fileQueue"
-            }
+        afterReady: null,
+        onFileQueued: null
+    },
+    components: {
+        queue: {
+            type: "fluid.uploader.fileQueue"
         }
-    });
+    }
+});
 
 
-    fluid.tests.uploader.mockFormData = function () {
-        var that = {
-            data: {}
-        };
-
-        that.resetMock = function () {
-            that.data = {};
-        };
-
-        that.append = function (key, value) {
-            that.data[key] = value;
-        };
-
-        return that;
+fluid.tests.uploader.mockFormData = function () {
+    var that = {
+        data: {}
     };
 
-})();
+    that.resetMock = function () {
+        that.data = {};
+    };
+
+    that.append = function (key, value) {
+        that.data[key] = value;
+    };
+
+    return that;
+};

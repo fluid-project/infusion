@@ -13,17 +13,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit */
 
-(function ($) {
-    "use strict";
+"use strict";
 
-    $(function () {
 
-        jqUnit.module("FullNoPreviewPrefsEditor Tests");
+jqUnit.module("FullNoPreviewPrefsEditor Tests");
 
-        fluid.tests.prefs.integrationTest("fluid.prefs.fullNoPreview", true);
-        fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullNoPreview", "#myPrefsEditor", {
-            gradeNames: ["fluid.tests.prefs.mungingIntegration"]
-        }, 8);
-
-    });
-})(jQuery);
+fluid.tests.prefs.integrationTest("fluid.prefs.fullNoPreview", true);
+fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullNoPreview", "#myPrefsEditor", {
+    gradeNames: ["fluid.tests.prefs.mungingIntegration"]
+}, 8);

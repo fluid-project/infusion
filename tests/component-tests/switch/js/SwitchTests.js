@@ -13,59 +13,54 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* global jqUnit */
 
-(function ($) {
-    "use strict";
+"use strict";
 
-    $(function () {
+jqUnit.module("Switch Tests");
 
-        jqUnit.module("Switch Tests");
+fluid.defaults("fluid.tests.switchUI", {
+    gradeNames: ["fluid.switchUI"],
+    strings: {
+        "label": "Aria label"
+    },
+    attrs: {
+        // typically only one of these will be set, but have both here for the tests
+        "aria-label": "{that}.options.strings.label",
+        "aria-labelledby": "label"
+    }
+});
 
-        fluid.defaults("fluid.tests.switchUI", {
-            gradeNames: ["fluid.switchUI"],
-            strings: {
-                "label": "Aria label"
-            },
-            attrs: {
-                // typically only one of these will be set, but have both here for the tests
-                "aria-label": "{that}.options.strings.label",
-                "aria-labelledby": "label"
-            }
-        });
+fluid.tests.assertState = function (that, state) {
+    jqUnit.assertEquals("The model state is set correctly", state, that.model.enabled);
+    jqUnit.assertEquals("The aria-checked state is specified correctly", state.toString(), that.locate("control").attr("aria-checked"));
+};
 
-        fluid.tests.assertState = function (that, state) {
-            jqUnit.assertEquals("The model state is set correctly", state, that.model.enabled);
-            jqUnit.assertEquals("The aria-checked state is specified correctly", state.toString(), that.locate("control").attr("aria-checked"));
-        };
+fluid.tests.assertInit = function (that) {
+    var control = that.locate("control");
+    jqUnit.assertEquals("The switch role is added", "switch", control.attr("role"));
+    jqUnit.assertEquals("The aria-label is set", that.options.strings.label, control.attr("aria-label"));
+    jqUnit.assertEquals("The aria-labelledby is set", "label", control.attr("aria-labelledby"));
+    jqUnit.assertEquals("The on text is set", that.options.strings.on, that.locate("on").text());
+    jqUnit.assertEquals("The off text is set", that.options.strings.off, that.locate("off").text());
+};
 
-        fluid.tests.assertInit = function (that) {
-            var control = that.locate("control");
-            jqUnit.assertEquals("The switch role is added", "switch", control.attr("role"));
-            jqUnit.assertEquals("The aria-label is set", that.options.strings.label, control.attr("aria-label"));
-            jqUnit.assertEquals("The aria-labelledby is set", "label", control.attr("aria-labelledby"));
-            jqUnit.assertEquals("The on text is set", that.options.strings.on, that.locate("on").text());
-            jqUnit.assertEquals("The off text is set", that.options.strings.off, that.locate("off").text());
-        };
+jqUnit.test("Test Init - enabled", function () {
+    var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: true}});
+    fluid.tests.assertInit(that);
+    fluid.tests.assertState(that, true);
+});
 
-        jqUnit.test("Test Init - enabled", function () {
-            var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: true}});
-            fluid.tests.assertInit(that);
-            fluid.tests.assertState(that, true);
-        });
+jqUnit.test("Test Init - not enabled", function () {
+    var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
+    fluid.tests.assertInit(that);
+    fluid.tests.assertState(that, false);
+});
 
-        jqUnit.test("Test Init - not enabled", function () {
-            var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
-            fluid.tests.assertInit(that);
-            fluid.tests.assertState(that, false);
-        });
+jqUnit.test("Toggle State - Click", function () {
+    var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
 
-        jqUnit.test("Toggle State - Click", function () {
-            var that = fluid.tests.switchUI(".flc-switchUI", {model: {enabled: false}});
+    that.locate("control").trigger("click");
+    fluid.tests.assertState(that, true);
 
-            that.locate("control").trigger("click");
-            fluid.tests.assertState(that, true);
-
-            that.locate("control").trigger("click");
-            fluid.tests.assertState(that, false);
-        });
-    });
-})(jQuery);
+    that.locate("control").trigger("click");
+    fluid.tests.assertState(that, false);
+});

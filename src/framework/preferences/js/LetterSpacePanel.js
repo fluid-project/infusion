@@ -11,29 +11,26 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /*************************************
-     * Preferences Editor Letter Spacing *
-     *************************************/
+/*************************************
+ * Preferences Editor Letter Spacing *
+ *************************************/
 
-    /**
-     * A sub-component of fluid.prefs that renders the "letter spacing" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.prefs.panel.letterSpace", {
-        gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
-        preferenceMap: {
-            "fluid.prefs.letterSpace": {
-                "model.value": "value",
-                "range.min": "minimum",
-                "range.max": "maximum",
-                "step": "multipleOf"
-            }
-        },
-        panelOptions: {
-            labelIdTemplate: "letterSpace-label-%guid"
+/**
+ * A sub-component of fluid.prefs that renders the "letter spacing" panel of the user preferences interface.
+ */
+fluid.defaults("fluid.prefs.panel.letterSpace", {
+    gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
+    preferenceMap: {
+        "fluid.prefs.letterSpace": {
+            "model.value": "value",
+            "range.min": "minimum",
+            "range.max": "maximum",
+            "step": "multipleOf"
         }
-    });
-
-})(jQuery, fluid_4_0_0);
+    },
+    panelOptions: {
+        labelIdTemplate: "letterSpace-label-%guid"
+    }
+});

@@ -11,48 +11,45 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function (fluid) {
-    "use strict";
+"use strict";
 
-    /*******************************************************************************
-    * Auxiliary schema grade
-    *
-    * Contains the settings for captions
-    *******************************************************************************/
+/*******************************************************************************
+* Auxiliary schema grade
+*
+* Contains the settings for captions
+*******************************************************************************/
 
-    fluid.defaults("fluid.prefs.auxSchema.captions", {
-        gradeNames: ["fluid.prefs.auxSchema"],
-        auxiliarySchema: {
-            "fluid.prefs.captions": {
-                enactor: {
-                    type: "fluid.prefs.enactor.captions",
-                    container: "body"
-                },
-                panel: {
-                    type: "fluid.prefs.panel.captions",
-                    container: ".flc-prefsEditor-captions",
-                    template: "%templatePrefix/PrefsEditorTemplate-captions.html",
-                    message: "%messagePrefix/captions.json"
-                }
+fluid.defaults("fluid.prefs.auxSchema.captions", {
+    gradeNames: ["fluid.prefs.auxSchema"],
+    auxiliarySchema: {
+        "fluid.prefs.captions": {
+            enactor: {
+                type: "fluid.prefs.enactor.captions",
+                container: "body"
+            },
+            panel: {
+                type: "fluid.prefs.panel.captions",
+                container: ".flc-prefsEditor-captions",
+                template: "%templatePrefix/PrefsEditorTemplate-captions.html",
+                message: "%messagePrefix/captions.json"
             }
         }
-    });
+    }
+});
 
 
-    /*******************************************************************************
-    * Primary Schema
-    *******************************************************************************/
+/*******************************************************************************
+* Primary Schema
+*******************************************************************************/
 
-    // add extra prefs to the starter primary schemas
+// add extra prefs to the starter primary schemas
 
-    fluid.defaults("fluid.prefs.schemas.captions", {
-        gradeNames: ["fluid.prefs.schemas"],
-        schema: {
-            "fluid.prefs.captions": {
-                "type": "boolean",
-                "default": false
-            }
+fluid.defaults("fluid.prefs.schemas.captions", {
+    gradeNames: ["fluid.prefs.schemas"],
+    schema: {
+        "fluid.prefs.captions": {
+            "type": "boolean",
+            "default": false
         }
-    });
-
-})(fluid_4_0_0);
+    }
+});

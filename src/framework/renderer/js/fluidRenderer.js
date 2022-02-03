@@ -11,10 +11,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-
+(function () {
 
     function debugPosition(component) {
         return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
@@ -1476,7 +1475,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         options = renderer.options;
         // Empty the node first, to head off any potential id collisions when rendering
         node = fluid.unwrap(node);
-        var lastFocusedElement = fluid.getLastFocusedElement ? fluid.getLastFocusedElement() : null;
+        var lastFocusedElement = fluid.lastFocusedElement;
         var lastId;
         if (lastFocusedElement && fluid.dom.isContainer(node, lastFocusedElement)) {
             lastId = lastFocusedElement.id;
@@ -1579,4 +1578,4 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
     };
 
-})(jQuery, fluid_4_0_0);
+})();

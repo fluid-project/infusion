@@ -11,59 +11,56 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function (fluid) {
-    "use strict";
+"use strict";
 
-    /*******************************************************************************
-    * Auxiliary schema grade
-    *
-    * Contains the settings for the letter space preference
-    *******************************************************************************/
+/*******************************************************************************
+* Auxiliary schema grade
+*
+* Contains the settings for the letter space preference
+*******************************************************************************/
 
-    fluid.defaults("fluid.prefs.auxSchema.letterSpace", {
-        gradeNames: ["fluid.prefs.auxSchema"],
-        auxiliarySchema: {
-            "fluid.prefs.letterSpace": {
-                enactor: {
-                    type: "fluid.prefs.enactor.letterSpace",
-                    fontSizeMap: {
-                        "xx-small": "9px",
-                        "x-small": "11px",
-                        "small": "13px",
-                        "medium": "15px",
-                        "large": "18px",
-                        "x-large": "23px",
-                        "xx-large": "30px"
-                    }
-                },
-                panel: {
-                    type: "fluid.prefs.panel.letterSpace",
-                    container: ".flc-prefsEditor-letter-space",
-                    template: "%templatePrefix/PrefsEditorTemplate-letterSpace.html",
-                    message: "%messagePrefix/letterSpace.json"
+fluid.defaults("fluid.prefs.auxSchema.letterSpace", {
+    gradeNames: ["fluid.prefs.auxSchema"],
+    auxiliarySchema: {
+        "fluid.prefs.letterSpace": {
+            enactor: {
+                type: "fluid.prefs.enactor.letterSpace",
+                fontSizeMap: {
+                    "xx-small": "9px",
+                    "x-small": "11px",
+                    "small": "13px",
+                    "medium": "15px",
+                    "large": "18px",
+                    "x-large": "23px",
+                    "xx-large": "30px"
                 }
+            },
+            panel: {
+                type: "fluid.prefs.panel.letterSpace",
+                container: ".flc-prefsEditor-letter-space",
+                template: "%templatePrefix/PrefsEditorTemplate-letterSpace.html",
+                message: "%messagePrefix/letterSpace.json"
             }
         }
-    });
+    }
+});
 
 
-    /*******************************************************************************
-    * Primary Schema
-    *******************************************************************************/
+/*******************************************************************************
+* Primary Schema
+*******************************************************************************/
 
-    // add extra prefs to the starter primary schemas
+// add extra prefs to the starter primary schemas
 
-    fluid.defaults("fluid.prefs.schemas.letterSpace", {
-        gradeNames: ["fluid.prefs.schemas"],
-        schema: {
-            "fluid.prefs.letterSpace": {
-                "type": "number",
-                "default": 1,
-                "minimum": 0.9,
-                "maximum": 2,
-                "multipleOf": 0.1
-            }
+fluid.defaults("fluid.prefs.schemas.letterSpace", {
+    gradeNames: ["fluid.prefs.schemas"],
+    schema: {
+        "fluid.prefs.letterSpace": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0.9,
+            "maximum": 2,
+            "multipleOf": 0.1
         }
-    });
-
-})(fluid_4_0_0);
+    }
+});

@@ -11,49 +11,46 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function (fluid) {
-    "use strict";
+"use strict";
 
-    fluid.defaults("fluid.prefs.localizationPrefsEditorConfig", {
-        gradeNames: ["fluid.contextAware"],
-        contextAwareness: {
-            localeChange: {
-                checks: {
-                    urlPath: {
-                        contextValue: "{localizationPrefsEditorConfig}.options.localizationScheme",
-                        equals: "urlPath",
-                        gradeNames: "fluid.prefs.localizationPrefsEditorConfig.urlPathLocale"
-                    }
+fluid.defaults("fluid.prefs.localizationPrefsEditorConfig", {
+    gradeNames: ["fluid.contextAware"],
+    contextAwareness: {
+        localeChange: {
+            checks: {
+                urlPath: {
+                    contextValue: "{localizationPrefsEditorConfig}.options.localizationScheme",
+                    equals: "urlPath",
+                    gradeNames: "fluid.prefs.localizationPrefsEditorConfig.urlPathLocale"
                 }
             }
+        }
+    },
+    distributeOptions: {
+        "prefsEditor.localization.enactor.localizationScheme": {
+            source: "{that}.options.localizationScheme",
+            target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.localizationScheme"
         },
-        distributeOptions: {
-            "prefsEditor.localization.enactor.localizationScheme": {
-                source: "{that}.options.localizationScheme",
-                target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.localizationScheme"
-            },
-            "prefsEditor.localization.panel.locales": {
-                source: "{that}.options.locales",
-                target: "{that prefsEditor fluid.prefs.panel.localization}.options.controlValues.localization"
-            },
-            "prefsEditor.localization.panel.localeNames": {
-                source: "{that}.options.localeNames",
-                target: "{that prefsEditor fluid.prefs.panel.localization}.options.stringArrayIndex.localization"
-            }
+        "prefsEditor.localization.panel.locales": {
+            source: "{that}.options.locales",
+            target: "{that prefsEditor fluid.prefs.panel.localization}.options.controlValues.localization"
+        },
+        "prefsEditor.localization.panel.localeNames": {
+            source: "{that}.options.localeNames",
+            target: "{that prefsEditor fluid.prefs.panel.localization}.options.stringArrayIndex.localization"
         }
-    });
+    }
+});
 
-    fluid.defaults("fluid.prefs.localizationPrefsEditorConfig.urlPathLocale", {
-        distributeOptions: {
-            "prefsEditor.localization.enactor.langMap": {
-                source: "{that}.options.langMap",
-                target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.langMap"
-            },
-            "prefsEditor.localization.enactor.langSegIndex": {
-                source: "{that}.options.langSegIndex",
-                target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.langSegIndex"
-            }
+fluid.defaults("fluid.prefs.localizationPrefsEditorConfig.urlPathLocale", {
+    distributeOptions: {
+        "prefsEditor.localization.enactor.langMap": {
+            source: "{that}.options.langMap",
+            target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.langMap"
+        },
+        "prefsEditor.localization.enactor.langSegIndex": {
+            source: "{that}.options.langSegIndex",
+            target: "{that uiEnhancer fluid.prefs.enactor.localization}.options.langSegIndex"
         }
-    });
-
-})(fluid_4_0_0);
+    }
+});

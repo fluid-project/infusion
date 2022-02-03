@@ -13,38 +13,36 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 /* eslint-env worker */
 
-(function () {
-    "use strict";
+"use strict";
 
-    importScripts(
-        "../../../../src/framework/core/js/jquery.standalone.js",
-        "../../../../src/framework/core/js/Fluid.js",
-        "../../../../src/framework/core/js/FluidPromises.js",
-        "../../../../src/framework/core/js/FluidDebugging.js",
-        "../../../../src/framework/core/js/FluidIoC.js",
-        "../../../../src/framework/core/js/DataBinding.js"
-    );
+importScripts(
+    "../../../../src/framework/core/js/jquery.standalone.js",
+    "../../../../src/framework/core/js/Fluid.js",
+    "../../../../src/framework/core/js/FluidPromises.js",
+    "../../../../src/framework/core/js/FluidDebugging.js",
+    "../../../../src/framework/core/js/FluidIoC.js",
+    "../../../../src/framework/core/js/DataBinding.js"
+);
 
-    fluid.defaults("fluid.test.workerTestComponent", {
-        gradeNames: "fluid.modelComponent",
+fluid.defaults("fluid.test.workerTestComponent", {
+    gradeNames: "fluid.modelComponent",
 
-        model: {
-            state: "sleepy"
-        },
+    model: {
+        state: "sleepy"
+    },
 
-        invokers: {
-            meow: {
-                funcName: "fluid.test.workerTestComponent.meow"
-            }
+    invokers: {
+        meow: {
+            funcName: "fluid.test.workerTestComponent.meow"
         }
-    });
+    }
+});
 
-    fluid.test.workerTestComponent.meow = function () {
-        return "raow!";
-    };
+fluid.test.workerTestComponent.meow = function () {
+    return "raow!";
+};
 
 
-    // Runs immediately when the worker is evaluated.
-    var cat = fluid.test.workerTestComponent();
-    self.postMessage(cat.meow());
-})();
+// Runs immediately when the worker is evaluated.
+var cat = fluid.test.workerTestComponent();
+self.postMessage(cat.meow());

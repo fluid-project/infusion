@@ -11,45 +11,42 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 var demo = demo || {};
 
-(function ($, fluid) {
-    "use strict";
+fluid.contextAware.makeChecks({
+    "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
+});
 
-    fluid.contextAware.makeChecks({
-        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
-    });
-
-    fluid.defaults("demo.orator", {
-        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
-        contextAwareness: {
-            textToSpeech: {
-                checks: {
-                    supported: {
-                        contextValue: "{fluid.supportsTTS}",
-                        equals: true,
-                        gradeNames: "fluid.orator"
-                    }
-                },
-                defaultGradeNames: "demo.orator.unsupported"
-            }
+fluid.defaults("demo.orator", {
+    gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
+    contextAwareness: {
+        textToSpeech: {
+            checks: {
+                supported: {
+                    contextValue: "{fluid.supportsTTS}",
+                    equals: true,
+                    gradeNames: "fluid.orator"
+                }
+            },
+            defaultGradeNames: "demo.orator.unsupported"
         }
-    });
+    }
+});
 
-    fluid.defaults("demo.orator.unsupported", {
-        strings: {
-            unsupported: "Text-to-Speech is not supported in this browser"
-        },
-        selectors: {
-            content: ".flc-orator-content"
-        },
-        listeners: {
-            "onCreate.unsupported": {
-                "this": "{that}.dom.content",
-                method: "text",
-                args: ["{that}.options.strings.unsupported"]
-            }
+fluid.defaults("demo.orator.unsupported", {
+    strings: {
+        unsupported: "Text-to-Speech is not supported in this browser"
+    },
+    selectors: {
+        content: ".flc-orator-content"
+    },
+    listeners: {
+        "onCreate.unsupported": {
+            "this": "{that}.dom.content",
+            method: "text",
+            args: ["{that}.options.strings.unsupported"]
         }
-    });
-
-})(jQuery, fluid);
+    }
+});
