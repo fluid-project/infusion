@@ -59,8 +59,7 @@
                 "./src/**/lib/**/*",
                 "./src/framework/preferences/css/*.css",
                 "./demos/**/lib/**/*",
-                "./tests/**/lib/**/*",
-                "./tests/**/infusion-1.5.js"
+                "./tests/**/lib/**/*"
             ]
         }
     },
