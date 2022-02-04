@@ -139,9 +139,6 @@ fluid.uploader.fileQueueView.bindDeleteKey = function (that, row) {
 };
 
 fluid.uploader.fileQueueView.bindRowHandlers = function (that, row) {
-    if ($.browser.msie && $.browser.version < 7) {
-        fluid.uploader.fileQueueView.bindHover(row, that.options.styles);
-    }
 
     that.locate("fileIconBtn", row).on("click", function () {
         fluid.uploader.fileQueueView.removeFileForRow(that, row);
@@ -192,10 +189,7 @@ fluid.uploader.fileQueueView.createProgressorFromTemplate = function (that, row)
 
 fluid.uploader.fileQueueView.addFile = function (that, file) {
     var row = fluid.uploader.fileQueueView.renderRowFromTemplate(that, file);
-    /* FLUID-2720 - do not hide the row under IE8 */
-    if (!($.browser.msie && ($.browser.version >= 8))) {
-        row.hide();
-    }
+    row.hide();
     that.container.append(row);
     row.attr("title", that.options.strings.status.remove);
     row.fadeIn("slow");
@@ -500,29 +494,17 @@ fluid.defaults("fluid.scrollable", {
             method: "scrollTo",
             args: "{arguments}.0"
         },
+        /**
+         * Updates the view of the scrollable region. This should be called when the content of the scrollable region is changed.
+         */
         refreshView: {
-            funcName: "fluid.scrollable.refreshView",
-            args: "{that}"
+            funcName: "fluid.identity"
         }
     },
     listeners: {
         onCreate: "{that}.refreshView"
     }
 });
-
-/*
- * Updates the view of the scrollable region. This should be called when the content of the scrollable region is changed.
- */
-fluid.scrollable.refreshView = function (that) {
-    if ($.browser.msie && $.browser.version === "6.0") {
-        that.scrollable.css("height", "");
-
-        // Set height, if max-height is reached, to allow scrolling in IE6.
-        if (that.scrollable.height() >= parseInt(that.maxHeight, 10)) {
-            that.scrollable.css("height", that.maxHeight);
-        }
-    }
-};
 
 /*
  * Wraps a table in order to make it scrollable with the jQuery.scrollTo plugin.

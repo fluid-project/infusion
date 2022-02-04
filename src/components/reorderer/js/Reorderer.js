@@ -507,7 +507,7 @@ fluid.reorderer.initSelectables = function (thatReorderer) {
 
     var handleClick = async function (evt) {
         var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
-        if (fluid.dom.isContainer(handle, evt.target)) {
+        if (handle.contains(evt.target)) {
             await fluid.focus(this);
         }
     };
@@ -945,7 +945,7 @@ fluid.reorderer.labeller.renderLabel = function (that, selectable, recentPositio
         recentStatus = that.resolver.resolve("recentStatus", {position: recentPosition});
     }
     var topModel = {
-        item: typeof(labelSource) === "string" ? labelSource : fluid.dom.getElementText(fluid.unwrap(labelSource)),
+        item: typeof(labelSource) === "string" ? labelSource : fluid.unwrap(labelSource).innerText,
         position: that.positionTemplate.resolveFunc(that.positionTemplate.template, indices),
         movable: that.resolver.resolve(elementClass === "locked" ? "fixed" : "movable"),
         recentStatus: recentStatus || ""

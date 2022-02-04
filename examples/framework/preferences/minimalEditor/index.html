@@ -66,13 +66,17 @@
                 auxiliarySchema: {
                     // the loaderGrade identifies the "base" form of preference editor desired
                     loaderGrades: ["fluid.prefs.fullNoPreview"],
+                    componentGrades: {
+                        messageLoader: "awesomeCars.prefs.messageLoader"
+                    },
 
-                    // Remove the default path as there are no message bundles associated with this minimal editor.
+                    // Remove the default path as there we have not configured core message bundles for this editor.
                     message: null,
 
                     // 'terms' are strings that can be re-used elsewhere in this schema;
                     terms: {
-                        templatePrefix: "html"
+                        templatePrefix: "html",
+                        messagePrefix: "messages"
                     },
 
                     // the main template for the preference editor itself

@@ -598,13 +598,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
             }
             if (renderOptions.autoBind && /input|select|textarea/.test(tagname) && !renderedbindings[finalID]) {
                 var decorators = [{jQuery: ["on", "change", applyFunc]}];
-                // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
-                if ($.browser.msie && tagname === "input" && /radio|checkbox/.test(trc.attrcopy.type)) {
-                    decorators.push({jQuery: ["on", "click", applyFunc]});
-                }
-                if ($.browser.safari && tagname === "input" && trc.attrcopy.type === "radio") {
-                    decorators.push({jQuery: ["on", "keyup", applyFunc]});
-                }
                 outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
             }
         }
@@ -1477,15 +1470,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         node = fluid.unwrap(node);
         var lastFocusedElement = fluid.lastFocusedElement;
         var lastId;
-        if (lastFocusedElement && fluid.dom.isContainer(node, lastFocusedElement)) {
+        if (lastFocusedElement && node.contains(lastFocusedElement)) {
             lastId = lastFocusedElement.id;
         }
-        if ($.browser.msie) {
-            options.jQuery(node).empty(); //- this operation is very slow.
-        }
-        else {
-            node.innerHTML = "";
-        }
+        node.innerHTML = "";
 
         var rendered = renderer.renderTemplates();
         if (options.renderRaw) {
@@ -1495,12 +1483,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         if (options.model) {
             fluid.bindFossils(node, options.model, options.fossils);
         }
-        if ($.browser.msie) {
-            options.jQuery(node).html(rendered);
-        }
-        else {
-            node.innerHTML = rendered;
-        }
+        node.innerHTML = rendered;
+
         renderer.processDecoratorQueue();
         if (lastId) {
             var element = fluid.byId(lastId, options.document);

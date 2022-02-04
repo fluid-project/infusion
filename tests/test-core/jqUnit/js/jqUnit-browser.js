@@ -132,7 +132,7 @@ jqUnit.assertNode = function (message, expected, node) {
             messageExt = " - node name";
         }
         else if (key === "nodeText") {
-            attr = fluid.dom.getElementText(node).trim();
+            attr = node.innerText;
         }
         else if (key === "nodeHTML") {
             attr = $(node).html();

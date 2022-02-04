@@ -81,7 +81,7 @@ fluid.moduleLayout.layoutFromFlat = function (container, columns, portlets) {
                 container: column,
                 elements: fluid.makeArray(portlets.filter(function () {
                     // is this a bug in filter? would have expected "this" to be 1st arg
-                    return fluid.dom.isContainer(column, this);
+                    return column.contains(this);
                 }))
             };
         });

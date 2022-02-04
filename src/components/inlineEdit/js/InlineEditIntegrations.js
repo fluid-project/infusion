@@ -193,7 +193,7 @@ fluid.inlineEdit.tinyMCE.blurHandlerBinder = function (that) {
 };
 
 fluid.inlineEdit.tinyMCE.editModeRenderer = function (that) {
-    var options = that.options.tinyMCE;
+    var options = fluid.copy(that.options.tinyMCE);
     options.elements = fluid.allocateSimpleId(that.editField);
     var oldinit = options.init_instance_callback;
 

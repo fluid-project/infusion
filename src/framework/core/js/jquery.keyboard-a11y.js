@@ -70,11 +70,6 @@ var fluid = fluid || {}; // eslint-disable-line no-redeclare
 
     // -- Private functions --
 
-
-    var normalizeTabindexName = function () {
-        return $.browser.msie ? "tabIndex" : "tabindex";
-    };
-
     var canHaveDefaultTabindex = function (elements) {
         if (elements.length <= 0) {
             return false;
@@ -93,13 +88,13 @@ var fluid = fluid || {}; // eslint-disable-line no-redeclare
         }
 
         // Get the attribute and return it as a number value.
-        var value = elements.attr(normalizeTabindexName());
+        var value = elements.attr("tabindex");
         return Number(value);
     };
 
     var setValue = function (elements, toIndex) {
         return elements.each(function (i, item) {
-            $(item).attr(normalizeTabindexName(), toIndex);
+            $(item).attr("tabindex", toIndex);
         });
     };
 
@@ -128,7 +123,7 @@ var fluid = fluid || {}; // eslint-disable-line no-redeclare
     fluid.tabindex.remove = function (target) {
         target = $(target);
         return target.each(function (i, item) {
-            $(item).removeAttr(normalizeTabindexName());
+            $(item).removeAttr("tabindex");
         });
     };
 
@@ -142,7 +137,7 @@ var fluid = fluid || {}; // eslint-disable-line no-redeclare
         }
         var togo = target.map(
             function () {
-                var attributeNode = this.getAttributeNode(normalizeTabindexName());
+                var attributeNode = this.getAttributeNode("tabindex");
                 return attributeNode ? attributeNode.specified : false;
             }
         );

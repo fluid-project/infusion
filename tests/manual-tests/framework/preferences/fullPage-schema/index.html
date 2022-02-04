@@ -103,7 +103,9 @@
                     "fluid.prefs.tableOfContents": {
                         enactor: {
                             tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
-                            tocMessage: "%messagePrefix/tableOfContents-enactor.json"
+                            // TODO: We can't resolve FLUID-6715 by resolving %messagePrefix here - enactors are in a different area of the component tree
+                            // In the Infusion 5 rewrite this problem will go away since every resourceLoader component will be autonomous
+                            tocMessage: "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
                         }
                     }
                 },
