@@ -132,7 +132,7 @@ jqUnit.assertNode = function (message, expected, node) {
             messageExt = " - node name";
         }
         else if (key === "nodeText") {
-            attr = node.innerText;
+            attr = node.innerText.trim();
         }
         else if (key === "nodeHTML") {
             attr = $(node).html();
