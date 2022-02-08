@@ -291,7 +291,7 @@ fluid.defaults("fluid.inlineEdit.CKEditor.viewAccessor", {
 fluid.inlineEdit.CKEditor.focus = function (editor) {
     setTimeout(function () {
         // CKEditor won't focus itself except in a timeout.
-        editor.trigger("focus");
+        editor.focus();
     }, 0);
 };
 
