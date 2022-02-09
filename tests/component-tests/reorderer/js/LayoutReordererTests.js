@@ -267,8 +267,7 @@ jqUnit.asyncTest("reorderLayout with locked portlets", async function () {
 
     await key(layoutReorderer, k.ctrlKeyEvent("LEFT"), item3);
 
-    jqUnit.assertTrue("Moved to new column",
-        fluid.dom.isContainer($("#c5")[0], item3[0]));
+    jqUnit.assertTrue("Moved to new column", fluid.byId("c5").contains(item3[0]));
 
     jqUnit.start();
 });

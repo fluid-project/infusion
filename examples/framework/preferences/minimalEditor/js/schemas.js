@@ -32,7 +32,10 @@ fluid.defaults("awesomeCars.prefs.auxSchema", {
                 container: ".awec-heatedSeats",
 
                 // the template for this panel
-                template: "%templatePrefix/heatedSeats.html"
+                template: "%templatePrefix/heatedSeats.html",
+
+                // the message bundle for this panel
+                message: "%messagePrefix/heatedSeats.json"
             }
         }
     }

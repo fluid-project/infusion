@@ -193,7 +193,7 @@ fluid.inlineEdit.tinyMCE.blurHandlerBinder = function (that) {
 };
 
 fluid.inlineEdit.tinyMCE.editModeRenderer = function (that) {
-    var options = that.options.tinyMCE;
+    var options = fluid.copy(that.options.tinyMCE);
     options.elements = fluid.allocateSimpleId(that.editField);
     var oldinit = options.init_instance_callback;
 
@@ -291,7 +291,7 @@ fluid.defaults("fluid.inlineEdit.CKEditor.viewAccessor", {
 fluid.inlineEdit.CKEditor.focus = function (editor) {
     setTimeout(function () {
         // CKEditor won't focus itself except in a timeout.
-        editor.trigger("focus");
+        editor.focus();
     }, 0);
 };
 

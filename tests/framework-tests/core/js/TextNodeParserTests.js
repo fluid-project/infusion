@@ -44,31 +44,25 @@ jqUnit.test("Test fluid.textNodeParser.hasGlyph", function () {
  ****************************************************************/
 
 fluid.tests.textNodeParser.assertTextToRead = function (testCases) {
-    // The innerText method called in fluid.textNodeParser.hasTextToRead returns text from some hidden elements
-    // that modern browsers do not.
-    if ($.browser.msie) {
-        jqUnit.assert("Tests were not run because innerText works differently on IE 11 and is used for a feature not supported in IE");
-    } else {
-        var checkAriaHidden = true;
-        var hasTextNoAriaHiddenCheck =  testCases.hasTextToRead.concat(testCases.ariaHidden);
-        var noTextWithAriaHiddenCheck = testCases.noTextToRead.concat(testCases.ariaHidden);
+    var checkAriaHidden = true;
+    var hasTextNoAriaHiddenCheck =  testCases.hasTextToRead.concat(testCases.ariaHidden);
+    var noTextWithAriaHiddenCheck = testCases.noTextToRead.concat(testCases.ariaHidden);
 
-        // test has text to read
-        fluid.each(testCases.hasTextToRead, function (selector) {
-            jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), checkAriaHidden));
-        });
-        fluid.each(hasTextNoAriaHiddenCheck, function (selector) {
-            jqUnit.assertTrue("acceptAriaHidden = true - \"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
-        });
+    // test has text to read
+    fluid.each(testCases.hasTextToRead, function (selector) {
+        jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), checkAriaHidden));
+    });
+    fluid.each(hasTextNoAriaHiddenCheck, function (selector) {
+        jqUnit.assertTrue("acceptAriaHidden = true - \"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
+    });
 
-        // test no text to read
-        fluid.each(noTextWithAriaHiddenCheck, function (selector) {
-            jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector)));
-        });
-        fluid.each(testCases.noTextToRead, function (selector) {
-            jqUnit.assertFalse("acceptAriaHidden = true - \"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
-        });
-    }
+    // test no text to read
+    fluid.each(noTextWithAriaHiddenCheck, function (selector) {
+        jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector)));
+    });
+    fluid.each(testCases.noTextToRead, function (selector) {
+        jqUnit.assertFalse("acceptAriaHidden = true - \"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
+    });
 };
 
 fluid.tests.textNodeParser.hasTextToReadTestCases = {

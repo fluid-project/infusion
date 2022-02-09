@@ -252,7 +252,7 @@ fluid.createLocalContainerDomBinder = function (container, selectors) {
             fluid.fail("DOM binder invoked for selector " + name + " without container");
         }
         if (selector === "") {
-            togo = thisContainer;
+            togo = userJQuery(thisContainer);
         }
         else {
             if (typeof(selector) === "function") {
@@ -598,7 +598,7 @@ fluid.value = function (nodeIn, newValue) {
             if (element.name !== name) {
                 return false;
             }
-            return !scope || fluid.dom.isContainer(scope, element);
+            return !scope || scope.contains(element);
         });
         // TODO: "Code to the test" for old renderer - remove all HTML 1.0 behaviour when old renderer is abolished
         isMultiple = elements.length > 1;

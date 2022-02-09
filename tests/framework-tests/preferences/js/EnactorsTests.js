@@ -287,13 +287,7 @@ fluid.tests.testGetLineHeight = function () {
     var container = $(".flc-lineSpace-getTests");
     var lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
 
-    // In IE8 and IE9 the lineHeight is returned as a mutliplier
-    // Newer versions of IE and other browsers return the calculated pixel value
-    if ($.browser.msie && $.browser.version < 10) {
-        jqUnit.assertEquals("getLineHeight multiplier in IE8 and IE9", 2, lineHeight);
-    } else {
-        jqUnit.assertEquals("getLineHeight in px", "12px", lineHeight);
-    }
+    jqUnit.assertEquals("getLineHeight in px", "12px", lineHeight);
 };
 
 var testGetLineHeightMultiplier = function (lineHeight, expected) {

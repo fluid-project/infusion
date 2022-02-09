@@ -164,12 +164,8 @@ fluid.inlineEdit.showDefaultViewText = function (that) {
 fluid.inlineEdit.showNothing = function (that) {
     that.displayView.value("");
 
-    // workaround for FLUID-938:
-    // IE can not style an empty inline element, so force element to be display: inline-block
-    if ($.browser.msie) {
-        if (that.viewEl.css("display") === "inline") {
-            that.viewEl.css("display", "inline-block");
-        }
+    if (that.viewEl.css("display") === "inline") {
+        that.viewEl.css("display", "inline-block");
     }
 };
 
