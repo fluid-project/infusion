@@ -6,9 +6,15 @@
 
 ## What's New in 4.0.0?
 
-### New Features
+Highlights in Infusion 4 include:
 
-### Deprecated
+* Changes to the Preferences Framework to make it easier to integrate in terms of choosing which preferences are used
+  and working with styling enactors via CSS custom properties
+* Improvements to localization of the Preferences Framework/UI Options, and resource loaders
+* The foundation of the [Potentia II](https://issues.fluidproject.org/browse/FLUID-6148) work and future framework
+  changes/improvements.
+
+See: [CHANGELOG.md](./CHANGELOG.md) for more details.
 
 ## How Do I Get Infusion?
 
@@ -17,7 +23,7 @@
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
 * [Use from a Content Distribution Network(CDN)](https://unpkg.com/browse/infusion)
   * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN:
-    `<script src='https://unpkg.com/browse/infusion@2.0.0/dist/infusion-all.js'></script>`
+    `<script src='https://unpkg.com/browse/infusion@4.0.0/dist/infusion-all.js'></script>`
 
 See [How Do I Create an Infusion Package?](README.md#how-do-i-create-an-infusion-package), for details on creating
 complete or custom packages of Infusion.
@@ -51,7 +57,7 @@ categorized by license:
 ### BSD-3
 
 * [Hypher v0.2.5](https://github.com/bramstein/Hypher)
-* [Sinon v10.0.0](https://sinonjs.org)
+* [Sinon v12.0.1](https://sinonjs.org)
 
 ### CC-BY-4.0
 
@@ -63,7 +69,7 @@ categorized by license:
 
 ### LGPL
 
-* [hyphenation-patterns v0.2.1](https://github.com/bramstein/hyphenation-patterns)
+* [hyphenation-patterns v0.2.2](https://github.com/bramstein/hyphenation-patterns)
 
 ### MIT License
 
@@ -74,7 +80,7 @@ categorized by license:
 * [jQuery scrollTo v2.1.3](https://github.com/flesler/jquery.scrollTo)
 * [jQuery Touch Punch v0.2.3](http://touchpunch.furf.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse,
-  slider, tabs, and tooltip) v1.12.1](https://jqueryui.com/)
+  slider, tabs, and tooltip) v1.13.0](https://jqueryui.com/)
 * [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
 * [jquery.simulate v1.0.2](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
@@ -107,8 +113,7 @@ Infusion 4.0.0 is tested with the latest versions of the following desktop brows
 
 Additional testing is performed with the following mobile browsers:
 
-* [Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) (Android 11)
-* [Safari](https://apple.com/safari/) (iPadOS 14.6)
+* [Safari](https://apple.com/safari/) (iOS 15.3.1)
 
 The Fluid Project also maintains a [shareable configuration](https://github.com/fluid-project/browserslist-config-fluid)
 for [Browserslist](https://github.com/browserslist/browserslist). In the future, this configuration will be used within
@@ -123,3 +128,13 @@ wiki page.
 
 The Fluid Project uses a [JIRA](https://issues.fluidproject.org) website to track bugs. Some of the known issues in this
 release are described here:
+
+* [FLUID-6722](https://issues.fluidproject.org/browse/FLUID-6722) Pager tooltip shows wrong data range after sorting by
+  column
+* [FLUID-6720](https://issues.fluidproject.org/browse/FLUID-6720) The pager tooltips do not display on mobile
+* [FLUID-6708](https://issues.fluidproject.org/browse/FLUID-6708) Sourceless relay rule with non-local target causes
+  failure
+* [FLUID-6700](https://issues.fluidproject.org/browse/FLUID-6700) Materialised binding makes validation workflow
+  impossible due to backwash protection
+* [FLUID-6109](https://issues.fluidproject.org/browse/FLUID-6109) Infusion framework dist doesn't include
+  contextawareness
