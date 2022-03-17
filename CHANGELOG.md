@@ -7,33 +7,101 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ## [Unreleased]
 
-* Framework
-  * [FLUID-6146](https://issues.fluidproject.org/browse/FLUID-6146) Mutual reference between createOnEvent components
-  * [FLUID-6148](https://issues.fluidproject.org/browse/FLUID-6148) "Potentia II" holds aligned, transactional units of intent
-  * [FLUID-6147](https://issues.fluidproject.org/browse/FLUID-6147) Transactional units for component creation
-  * [FLUID-4925](https://issues.fluidproject.org/browse/FLUID-4925) "wave of explosions"
-  * [FLUID-6683](https://issues.fluidproject.org/browse/FLUID-6683) Integral bindings for rendering
-  * [FLUID-6580](https://issues.fluidproject.org/browse/FLUID-6580) "Integration constant lenses"
-  * [FLUID-5519](https://issues.fluidproject.org/browse/FLUID-5519) Problematic timing of model init transaction
-  * [FLUID-5614](https://issues.fluidproject.org/browse/FLUID-5614) "double deep trees"
-  * [FLUID-5790](https://issues.fluidproject.org/browse/FLUID-5790) cancellable promises
-  * [FLUID-6390](https://issues.fluidproject.org/browse/FLUID-6390) "lensed components"
-  * [FLUID-5912](https://issues.fluidproject.org/browse/FLUID-5912) {arguments} in members and models
-  * [FLUID-6418](https://issues.fluidproject.org/browse/FLUID-6418) Failure when referring to dynamic component location
-  during afterDestroy
-  * [FLUID-6413](https://issues.fluidproject.org/browse/FLUID-6413) Model-driven resource localisation
-  * [FLUID-6414](https://issues.fluidproject.org/browse/FLUID-6414) Allow dynamic grades to be contributed via expander
-  * [FLUID-6145](https://issues.fluidproject.org/browse/FLUID-6145) Make all component options immutable
-  * [FLUID-6438](https://issues.fluidproject.org/browse/FLUID-6438) Improved closure of ContextAwareness grades
-  * [FLUID-5702](https://issues.fluidproject.org/browse/FLUID-5702) Correct DOM binder behaviour of returning container
-  on missing selector
-  * [FLUID-4483](https://issues.fluidproject.org/browse/FLUID-4883) Latched events acting as promises
-  * A basic quality implementation of [FLUID-4982](https://issues.fluidproject.org/browse/FLUID-4982) "asynchronous
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+### More Info
+
+## [4.0.0] - 2022-03-17
+
+### Added
+
+* [FLUID-6698](https://issues.fluidproject.org/browse/FLUID-6698) Allow model relay from constant values
+* [FLUID-6605](https://issues.fluidproject.org/browse/FLUID-6605) Allow contrast themes to be applied using custom
+  properties only
+* [FLUID-6580](https://issues.fluidproject.org/browse/FLUID-6580) "Integration constant lenses"
+* [FLUID-6413](https://issues.fluidproject.org/browse/FLUID-6413) Model-driven resource localisation
+* [FLUID-6390](https://issues.fluidproject.org/browse/FLUID-6390) "lensed components"
+* [FLUID-6260](https://issues.fluidproject.org/browse/FLUID-6260) Enactors that modify the styling and presentation of
+  content provide a class and/or CSS custom properties to hook into for custom styling
+* [FLUID-6148](https://issues.fluidproject.org/browse/FLUID-6148) "Potentia II" holds aligned, transactional units of
+  intent
+* [FLUID-6147](https://issues.fluidproject.org/browse/FLUID-6147) Transactional units for component creation
+* [FLUID-5790](https://issues.fluidproject.org/browse/FLUID-5790) cancellable promises
+* [FLUID-4925](https://issues.fluidproject.org/browse/FLUID-4925) "wave of explosions"
+* [FLUID-4483](https://issues.fluidproject.org/browse/FLUID-4883) Latched events acting as promises
+* A basic quality implementation of [FLUID-4982](https://issues.fluidproject.org/browse/FLUID-4982) "asynchronous
   ginger world", sufficient to allow progress on new renderer for FLUID-4260, FLUID-6580
-  * Browser-side implementation of fluid.dataSource.URL
-  * Removal of deprecated utility fluid.pushSoftFailure in favour of manipulation of listeners to fluid.failureEvent
-* Preference framework
-  * [FLUID-6420](https://issues.fluidproject.org/browse/FLUID-6420) Split start schema aux schema into separate schema grades
+* Browser-side implementation of fluid.dataSource.URL
+
+### Changed
+
+* [FLUID-6695](https://issues.fluidproject.org/browse/FLUID-6695) Rationalise exception stripping code
+* [FLUID-6420](https://issues.fluidproject.org/browse/FLUID-6420) Split start schema aux schema into separate schema
+  grades. Consolidate component grades.
+* [FLUID-6145](https://issues.fluidproject.org/browse/FLUID-6145) Make all component options immutable
+
+For more details see: [API Changes from 3.0 to 4.0]
+
+### Deprecated
+
+* Core Framework
+  * `fluid.contains`
+  * `fluid.stableSort`
+  * `fluid.add`
+  * `fluid.accumulate`
+* Preferences Framework / UI Options
+  * In Infusion 5.0, it's planned for the Preferences Framework and UI Options to undergo a re-write and redesign. The
+    API, including Auxiliary Schemas, are likely to change or be removed. This is also the case for any components that
+    are used by/within the Preferences Framework.
+* Components
+  * UI widgets and other components included with Infusion will be evaluated for future releases. A number of these
+    widgets are no longer required as native HTML options and other tools have filled in the gaps that they were meant
+    to address.
+
+For more details see: [Deprecated in 4.0]
+
+### Removed
+
+* [FLUID-6710](https://issues.fluidproject.org/browse/FLUID-6710) Remove versioned globals and file guards from the
+  framework
+
+### Fixed
+
+* [FLUID-6705](https://issues.fluidproject.org/browse/FLUID-6705) Increasing line spacing pushes the sliding panel tab
+  down
+* [FLUID-6696](https://issues.fluidproject.org/browse/FLUID-6696) Table of Contents toggle initially has no effect if
+  TOC container has display: none style
+* [FLUID-6687](https://issues.fluidproject.org/browse/FLUID-6687) Adjusters/inputs are blue in iOS
+* [FLUID-6482](https://issues.fluidproject.org/browse/FLUID-6482) fluid.getCallerInfo throws exception sometimes on
+  Safari (atDepth exceeds stack.length)
+* [FLUID-6438](https://issues.fluidproject.org/browse/FLUID-6438) Improved closure of ContextAwareness grades
+* [FLUID-6418](https://issues.fluidproject.org/browse/FLUID-6418) Failure when referring to dynamic component location
+  during afterDestroy
+* [FLUID-6414](https://issues.fluidproject.org/browse/FLUID-6414) Allow dynamic grades to be contributed via expander
+* [FLUID-6146](https://issues.fluidproject.org/browse/FLUID-6146) Mutual reference between createOnEvent components
+* [FLUID-5912](https://issues.fluidproject.org/browse/FLUID-5912) {arguments} in members and models
+* [FLUID-5614](https://issues.fluidproject.org/browse/FLUID-5614) "double deep trees"
+* [FLUID-5519](https://issues.fluidproject.org/browse/FLUID-5519) Problematic timing of model init transaction
+
+### More Info
+
+* [Issues addressed in 4.0.0](https://issues.fluidproject.org/projects/FLUID/versions/11220)
+* [Changes in 4.0.0](https://github.com/fluid-project/infusion/compare/v3.0.0...v4.0.0)
+* [API Changes from 3.0 to 4.0]
+* [Deprecated in 4.0]
+
+[API Changes from 3.0 to 4.0]: https://docs.fluidproject.org/infusion/development/apichangesfrom3_0to4_0
+[Deprecated in 4.0]: https://docs.fluidproject.org/infusion/development/deprecatedin4_0
 
 ## [3.0.0] - 2021-08-25
 
@@ -845,7 +913,8 @@ A pre-release of [0.3.0].
 * [Issues addressed in 0.1.0](https://issues.fluidproject.org/projects/FLUID/versions/10000)
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
-[Unreleased]: https://github.com/fluid-project/infusion/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/fluid-project/infusion/releases/tag/v4.0.0
 [3.0.0]: https://github.com/fluid-project/infusion/releases/tag/v3.0.0
 [2.0.0]: https://github.com/fluid-project/infusion/releases/tag/v2.0.0
 [1.5.0]: https://github.com/fluid-project/infusion/releases/tag/v1.5.0
