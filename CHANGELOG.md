@@ -59,11 +59,10 @@ For more details see: [API Changes from 3.0 to 4.0]
   * `fluid.stableSort`
   * `fluid.add`
   * `fluid.accumulate`
-  * `fluid.pushSoftFailure`
 * Preferences Framework / UI Options
-  * In a future version of Infusion the preferences framework and UI Options will undergo a re-write and redesign. The
+  * In Infusion 5.0, it's planned for the Preferences Framework and UI Options to undergo a re-write and redesign. The
     API, including Auxiliary Schemas, are likely to change or be removed. This is also the case for any components that
-    are used by/within the preferences framework.
+    are used by/within the Preferences Framework.
 * Components
   * UI widgets and other components included with Infusion will be evaluated for future releases. A number of these
     widgets are no longer required as native HTML options and other tools have filled in the gaps that they were meant
