@@ -1986,6 +1986,67 @@ jqUnit.test("FLUID-6586: {sourcePath} within relay segments", function () {
     jqUnit.assertDeepEq("Values should have been relayed via segments", ["a", "b"], values);
 });
 
+/** TBD: {sourcePath} within relay segments when sources and model structure are arrays. **/
+fluid.defaults("fluid.tests.TBDroot", {
+    gradeNames: "fluid.modelComponent",
+    sources: ["peas", "carrots"],
+    model: {
+        structure: [ "green", "orange, generally" ]
+    },
+    dynamicComponents: {
+        dynamic: {
+            sources: "{that}.options.sources",
+            type: "fluid.modelComponent",
+            options: {
+                modelRelay: {
+                    source: {
+                        context: "TBDroot",
+                        segs: ["structure", "{sourcePath}"]
+                    },
+                    target: "colour"
+                }
+            }
+        }
+    }
+});
+
+jqUnit.test("TBD: {sourcePath} within relay segments, when sources and model structure are arrays", function () {
+    var that = fluid.tests.TBDroot();
+    var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
+    jqUnit.assertEquals("Two children should have been constructed", 2, children.length);
+    var values = fluid.getMembers(children, ["model", "colour"]);
+    jqUnit.assertDeepEq("Values should have been relayed via segments", ["green", "orange, generally"], values);
+});
+
+/** TBD2: Using {sourcePath} in a child component's model **/
+fluid.defaults("fluid.tests.TBD2root", {
+    gradeNames: "fluid.modelComponent",
+    sources: {
+        coffee: false,
+        tea: true
+    },
+    dynamicComponents: {
+        dynamic: {
+            sources: "{that}.options.sources",
+            type: "fluid.modelComponent",
+            options: {
+                model: {
+                    key: "{sourcePath}",
+                    value: "{source}"
+                }
+            }
+        }
+    }
+});
+
+jqUnit.test("TBD2: {sourcePath} in the sub-component's model", function () {
+    var that = fluid.tests.TBD2root();
+    var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
+    jqUnit.assertEquals("Two children should have been constructed", 2, children.length);
+    var values = fluid.getMembers(children, ["model", "key"]);
+    jqUnit.assertDeepEq("Source paths should have been stored in the model", ["coffee", "tea"], values);
+});
+
 /** FLUID-6127: Wildcards in modelListeners, and support for deletion **/
 
 fluid.defaults("fluid.tests.fluid6127root", {
