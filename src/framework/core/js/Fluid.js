@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v4.0.0
+ * Fluid Infusion v4.1.0
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -30,7 +30,7 @@ Underscore may be freely distributed under the MIT license.
 
 var fluid = fluid || {}; // eslint-disable-line no-redeclare
 
-fluid.version = "Infusion 4.0.0";
+fluid.version = "Infusion 4.1.0";
 
 // Export this for use in environments like node.js, where it is useful for
 // configuring stack trace behaviour

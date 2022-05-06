@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "jquery": "3.6.0",
-        "fluid-framework": "4.0.0",
+        "fluid-framework": "^4.0.0",
         "fluid-text-to-speech": "4.0.0"
     }
 }
