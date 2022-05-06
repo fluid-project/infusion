@@ -21,7 +21,7 @@
         "jquery": "3.6.0",
         "jquery-ui": "1.12.1",
         "jquery.scrollto": "2.1.2",
-        "fluid-framework": "4.0.0",
+        "fluid-framework": "^4.0.0",
         "fluid-progress": "4.0.0",
         "fluid-enhancement": "4.0.0"
     }

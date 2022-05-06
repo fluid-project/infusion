@@ -1,7 +1,7 @@
 {
     "name": "fluid-framework",
     "description": "A suite of core Infusion framework features, including support for events, views, data binding, and keyboard accessibility. Required by all Fluid components.",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "license": "(BSD-3-Clause OR ECL-2.0)",
     "infusion": {
         "cssFiles": [

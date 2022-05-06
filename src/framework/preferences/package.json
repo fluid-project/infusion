@@ -50,7 +50,7 @@
         "hypher": "0.2.5",
         "opensans-webkit": "1.1.0",
         "open-dyslexic": "1.0.3",
-        "fluid-framework": "4.0.0",
+        "fluid-framework": "^4.0.0",
         "fluid-enhancement": "4.0.0",
         "fluid-renderer": "4.0.0",
         "fluid-sliding-panel": "4.0.0",

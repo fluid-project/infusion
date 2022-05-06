@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "jquery": "3.6.0",
-        "fluid-framework": "4.0.0",
+        "fluid-framework": "^4.0.0",
         "fast-xml-pull": "4.0.0"
     }
 }
