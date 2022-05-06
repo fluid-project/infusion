@@ -666,10 +666,10 @@ fluid.parseValidModelReference = function (that, name, ref, permitNonModel) {
             rejectNonModel(target);
         }
     }
-    parsed.that = target;
+    parsed.that = target; // Note this might not be a component (see FLUID-6729)
     parsed.applier = target && target.applier;
-    if (!parsed.path) { // ChangeToApplicable amongst others rely on this
-        parsed.path = target && target.applier.composeSegments.apply(null, parsed.modelSegs);
+    if (!parsed.path && parsed.applier) { // ChangeToApplicable amongst others rely on this
+        parsed.path = target && parsed.applier.composeSegments.apply(null, parsed.modelSegs);
     }
     return parsed;
 };

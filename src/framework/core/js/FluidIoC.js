@@ -3459,7 +3459,7 @@ fluid.expander.fetch = function (deliverer, source, options) {
     // if context is destroyed, we are most likely in an afterDestroy listener and so path records have been destroyed
     var fast = contextStatus === "treeConstructed" || contextStatus === "destroyed";
     var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, fast);
-    if (component) {
+    if (component !== undefined) {
         var root = component;
         if (inLocal || component.lifecycleStatus !== "constructing") {
             for (var i = 0; i < segs.length; ++i) { // fast resolution of paths when no ginger process active
