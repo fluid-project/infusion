@@ -53,7 +53,7 @@ fluid.module.register = function (name, baseDir, moduleRequire) {
  */
 fluid.module.pathsToRoot = function (baseDir) {
     var segs = baseDir.split(path.sep);
-    var paths = fluid.accumulate(segs.slice(1), function (seg, total) {
+    var paths = segs.slice(1).reduce(function (total, seg) {
         var top = fluid.peek(total);
         total.push(top + seg + path.sep);
         return total;

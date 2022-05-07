@@ -551,7 +551,7 @@ fluid.prefs.expandSchema = function (requestedPrefs, schemaToExpand, topCommonOp
         if (fluid.isValue(category)) {
             var panelSchemaConfig = category.panel;
             // Ignore the subpanels that are only for composing composite panels
-            if (panelSchemaConfig && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
+            if (panelSchemaConfig && !(auxSchema.panelsToIgnore || []).includes(prefName)) {
                 fluid.prefs.expandSchemaComponents(auxSchema, "panels", prefName, category.alias, panelSchemaConfig,
                     fluid.get(elementCommonOptions, "panel"), fluid.get(elementCommonOptions, "panelModel"), mappedDefaults);
             }

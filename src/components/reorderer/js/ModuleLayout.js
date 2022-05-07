@@ -282,7 +282,7 @@ fluid.moduleLayout.computeLayout = function (that, modulesSelector, dom) {
 };
 
 fluid.moduleLayout.computeModules = function (layout, isLocked, all) {
-    var modules = fluid.accumulate(layout.columns, function (column, list) {
+    var modules = layout.columns.reduce(function (list, column) {
         return list.concat(column.elements); // note that concat will not work on a jQuery
     }, []);
     if (!all) {

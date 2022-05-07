@@ -813,9 +813,9 @@ jqUnit.test("FLUID-6330 test - interception of fluid.log", function () {
     fluid.loggingEvent.removeListener(fluid.tests.doMemoryLog);
     fluid.loggingEvent.removeListener("42");
     var listeners = fluid.getMembers(fluid.loggingEvent.sortedListeners, "listener");
-    jqUnit.assertFalse("Intercepting listener removed", fluid.contains(listeners, fluid.tests.insert42));
-    jqUnit.assertFalse("Memory log listener removed", fluid.contains(listeners, fluid.tests.doMemoryLog));
-    jqUnit.assertTrue("Browser log listener restored", fluid.contains(listeners, fluid.doBrowserLog));
+    jqUnit.assertFalse("Intercepting listener removed", listeners.includes(fluid.tests.insert42));
+    jqUnit.assertFalse("Memory log listener removed", listeners.includes(fluid.tests.doMemoryLog));
+    jqUnit.assertTrue("Browser log listener restored", listeners.includes(fluid.doBrowserLog));
 });
 
 jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {

@@ -811,7 +811,7 @@ fluid.tests.orator.domReaderTester.verifySpeakQueue = function (that, expectedSp
 };
 
 fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected) {
-    var expectedItemsCount = fluid.accumulate(expected, function (queue, count) {return queue.length + count;}, 0);
+    var expectedItemsCount = expected.reduce(function (count, queue) {return queue.length + count;}, 0);
     jqUnit.assertDeepEq("The parseQueueCount model value should have been set correctly", expected.length, that.model.parseQueueCount);
     jqUnit.assertDeepEq("The parseItemCount model value should have been set correctly", expectedItemsCount, that.model.parseItemCount);
     jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);

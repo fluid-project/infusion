@@ -2155,9 +2155,9 @@ fluid.makeHolderChangeApplier = function (holder, options) {
         if (!spec.isRelay) {
             // This acts for listeners registered externally. For relays, the exclusion spec is stored in "cond"
             fluid.parseSourceExclusionSpec(spec, spec);
-            spec.wildcard = fluid.accumulate(fluid.transform(spec.segsArray, function (segs) {
-                return fluid.contains(segs, "*");
-            }), fluid.add, 0);
+            spec.wildcard = spec.segsArray.some(function (segs) {
+                return segs.includes("*");
+            });
             if (spec.wildcard && spec.segsArray.length > 1) {
                 fluid.fail("Error in model listener specification ", spec, " - you may not supply a wildcard pattern as one of a set of multiple paths to be matched");
             }
