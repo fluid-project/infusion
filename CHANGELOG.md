@@ -21,6 +21,13 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.1.0] - 2022-05-09
+
+### Fixed
+
+* [FLUID-6730](https://issues.fluidproject.org/browse/FLUID-6730) Removed some obsoleted utilities - fluid.accumulate,
+  fluid.contains, fluid.add
+
 ## [4.0.0] - 2022-03-17
 
 ### Added
