@@ -35,7 +35,7 @@
   * Added `fluid.dataSource` grade
     * _**NOTE:** The scheme for configuring writable dataSources is not compatible with that seen in some development
       releases of Infusion, e.g. 3.0.0-dev and 4.0.0-dev - see [API Changes documentation](https://docs.fluidproject.org/infusion/development/apichangesfrom2_0to3_0#datasources)
-      for more details
+      for more details_
   * Added `fluid.remoteModelComponent` for keeping remote and local models in sync.
 * Preference framework
   * Switched from Stylus to SASS for CSS pre-processing
