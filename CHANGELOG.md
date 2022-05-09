@@ -103,7 +103,7 @@ For more details see: [Deprecated in 4.0]
 [API Changes from 3.0 to 4.0]: https://docs.fluidproject.org/infusion/development/apichangesfrom3_0to4_0
 [Deprecated in 4.0]: https://docs.fluidproject.org/infusion/development/deprecatedin4_0
 
-## [3.0.1] - 2022-09-05
+## [3.0.1] - 2022-05-10
 
 ### Fixed
 
