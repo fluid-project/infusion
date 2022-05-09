@@ -1,8 +1,13 @@
-# Release Notes for Fluid Infusion 3.0.0
+# Release Notes for Fluid Infusion 3.0.1
 
 [Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
+
+## What's New in 3.0.1
+
+This is a small patch release whose purpose is to clarify the API status of the DataSource component in the
+notes below.
 
 ## What's New in 3.0.0?
 
@@ -158,7 +163,7 @@ https://docs.fluidproject.org/infusion/development/) site.
 
 ## Supported Browsers
 
-Infusion 3.0.0 is tested with the latest versions of the following desktop browsers:
+Infusion 3.0.1 is tested with the latest versions of the following desktop browsers:
 
 * [Chrome](https://google.com/chrome/) (v91)
 * [Edge](https://microsoft.com/edge/) (v91)
