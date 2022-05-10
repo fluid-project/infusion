@@ -1,7 +1,7 @@
 {
     "name": "infusion",
     "description": "Infusion is an application framework for developing flexible stuff with JavaScript",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "author": "Fluid Project",
     "bugs": "http://issues.fluidproject.org/browse/FLUID",
     "homepage": "http://www.fluidproject.org/",

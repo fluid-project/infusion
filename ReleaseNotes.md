@@ -1,8 +1,13 @@
-# Release Notes for Fluid Infusion 3.0.0
+# Release Notes for Fluid Infusion 3.0.1
 
 [Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
+
+## What's New in 3.0.1
+
+This is a small patch release whose purpose is to clarify the API status of the DataSource component in the
+notes below.
 
 ## What's New in 3.0.0?
 
@@ -33,6 +38,9 @@
     * Round tranformation can round to an integer or decimal value
   * `fluid.stringTemplate` updated to support nested objects for interpolating values
   * Added `fluid.dataSource` grade
+    * _**NOTE:** The scheme for configuring writable dataSources is not compatible with that seen in some development
+      releases of Infusion, e.g. 3.0.0-dev and 4.0.0-dev - see [API Changes documentation](https://docs.fluidproject.org/infusion/development/apichangesfrom2_0to3_0#datasources)
+      for more details_
   * Added `fluid.remoteModelComponent` for keeping remote and local models in sync.
 * Preference framework
   * Switched from Stylus to SASS for CSS pre-processing
@@ -155,7 +163,7 @@ https://docs.fluidproject.org/infusion/development/) site.
 
 ## Supported Browsers
 
-Infusion 3.0.0 is tested with the latest versions of the following desktop browsers:
+Infusion 3.0.1 is tested with the latest versions of the following desktop browsers:
 
 * [Chrome](https://google.com/chrome/) (v91)
 * [Edge](https://microsoft.com/edge/) (v91)

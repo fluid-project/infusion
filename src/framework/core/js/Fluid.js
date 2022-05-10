@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v3.0.0
+ * Fluid Infusion v3.0.1
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
