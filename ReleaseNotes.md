@@ -10,7 +10,7 @@
   * [FLUID-6730](https://issues.fluidproject.org/browse/FLUID-6730) Removed some obsoleted utilities - fluid.accumulate,
     fluid.contains, fluid.add, fluid.stableSort
   * [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improve documentation (retrospectively) about changes
-    in DataSource API in the 3.0.0 release 
+    in DataSource API in the 3.0.0 release
 
 ## What's New in 4.0.0?
 
