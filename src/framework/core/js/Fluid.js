@@ -32,7 +32,7 @@ var fluid = fluid || fluid_3_0_0; // eslint-disable-line no-redeclare
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 3.0.1";
+    fluid.version = "Infusion 3.0.0";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
