@@ -103,6 +103,13 @@ For more details see: [Deprecated in 4.0]
 [API Changes from 3.0 to 4.0]: https://docs.fluidproject.org/infusion/development/apichangesfrom3_0to4_0
 [Deprecated in 4.0]: https://docs.fluidproject.org/infusion/development/deprecatedin4_0
 
+## [3.0.1] - 2022-05-10
+
+### Fixed
+
+* [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improved release notes to point to warnings about
+   DataSource API changes
+
 ## [3.0.0] - 2021-08-25
 
 ### Added
@@ -123,8 +130,11 @@ For more details see: [Deprecated in 4.0]
     * Number to String transformation supports specifying decimal precision.
     * Round transformation can round to an integer or decimal value
     * `fluid.stringTemplate` updated to support nested objects for interpolating values
-  Added `fluid.dataSource` grade
-  Added `fluid.remoteModelComponent` for keeping remote and local models in sync.
+  * Added `fluid.dataSource` grade
+    * _**NOTE:** The scheme for configuring writable dataSources is not compatible with that seen in some development
+      releases of Infusion, e.g. 3.0.0-dev and 4.0.0-dev - see [API Changes documentation](https://docs.fluidproject.org/infusion/development/apichangesfrom2_0to3_0#datasources)
+      for more details_
+  * Added `fluid.remoteModelComponent` for keeping remote and local models in sync.
 * Preference framework
   * Responsive design for small screens/mobile devices.
   * Added additional contrast themes based on Windows contrast themes.
@@ -915,6 +925,7 @@ A pre-release of [0.3.0].
 
 [Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
 [4.0.0]: https://github.com/fluid-project/infusion/releases/tag/v4.0.0
+[3.0.1]: https://github.com/fluid-project/infusion/releases/tag/v3.0.1
 [3.0.0]: https://github.com/fluid-project/infusion/releases/tag/v3.0.0
 [2.0.0]: https://github.com/fluid-project/infusion/releases/tag/v2.0.0
 [1.5.0]: https://github.com/fluid-project/infusion/releases/tag/v1.5.0
