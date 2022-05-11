@@ -1441,6 +1441,46 @@ jqUnit.test("FLUID-6390 V: Updating lensed components as an array", function () 
     fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, []);
 });
 
+/** FLUID-6395 - Performance in fan-out of relays **/
+
+fluid.tests.fluid6395generate = function (fanOut) {
+    return fluid.generate(fanOut, function (index) {
+        return {
+            value: index
+        };
+    }, true);
+};
+
+fluid.defaults("fluid.tests.fluid6395root", {
+    gradeNames: "fluid.modelComponent",
+    fanOut: 200,
+    model: {
+        modelSource: "@expand:fluid.tests.fluid6395generate({that}.options.fanOut)"
+    },
+    dynamicComponents: {
+        child: {
+            sources: "{that}.model.modelSource",
+            type: "fluid.modelComponent",
+            options: {
+                model: {
+                    value: "{source}.value"
+                }
+            }
+        }
+    }
+});
+
+jqUnit.test("FLUID-6395: Performance of relay rules with increasing fan-out", function () {
+    var that = fluid.tests.fluid6395root();
+    var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
+    jqUnit.assertEquals("Constructed " + that.options.fanOut + " children: ", that.options.fanOut, children.length);
+    var now = Date.now();
+    children[0].applier.change("value", 999);
+    var elapsed = Date.now() - now;
+    jqUnit.assertEquals("Change relayed to parent model ", 999, that.model.modelSource[0].value);
+    fluid.log("Applied change in " + elapsed + "ms");
+});
+
 /** FLUID-6570: Short-form free transforms **/
 
 fluid.defaults("fluid.tests.fluid6570root", {
