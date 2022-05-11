@@ -21,7 +21,7 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
-## [4.1.0] - 2022-05-09
+## [4.1.0] - 2022-05-11
 
 ### Fixed
 
@@ -110,7 +110,7 @@ For more details see: [Deprecated in 4.0]
 [API Changes from 3.0 to 4.0]: https://docs.fluidproject.org/infusion/development/apichangesfrom3_0to4_0
 [Deprecated in 4.0]: https://docs.fluidproject.org/infusion/development/deprecatedin4_0
 
-## [3.0.1] - 2022-05-10
+## [3.0.1] - 2022-05-11
 
 ### Fixed
 
