@@ -148,7 +148,7 @@ function expectOrder(canonEqual) {
     // TODO: Hack to allow two possible orders for FLUID-5859 in "LEFT" test
     var canonFunc = canonEqual ? function (array) {
         return fluid.transform(array, function (element) {
-            return fluid.contains(canonEqual, element) ? canonEqual[0] : element;
+            return canonEqual.includes(element) ? canonEqual[0] : element;
         });
     } : fluid.identity;
     return function (message, order) {

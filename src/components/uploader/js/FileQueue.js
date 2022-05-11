@@ -135,7 +135,7 @@ fluid.uploader.fileQueue.removeFile = function (files, file) {
 };
 
 fluid.uploader.fileQueue.sizeOfFiles = function (files) {
-    return fluid.accumulate(files, function (file, totalBytes) {
+    return files.reduce(function (totalBytes, file) {
         return totalBytes + file.size;
     }, 0);
 };

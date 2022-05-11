@@ -98,7 +98,8 @@ fluid.debug.highlighter.indexToColour = function (i, isDomBind, isRenderer) {
 
 fluid.debug.isRendererSelector = function (component, selectorName) {
     var isRendererComponent = fluid.componentHasGrade(component, "fluid.rendererComponent");
-    var ignoreContains = fluid.contains(component.options.selectorsToIgnore, selectorName);
+    var selectorsToIgnore = component.options.selectorsToIgnore || [];
+    var ignoreContains = selectorsToIgnore.includes(selectorName);
 
     return isRendererComponent ? (!selectorName || ignoreContains ? false : true) : false;
 };

@@ -305,7 +305,7 @@ fluid.promise.filterNamespaces = function (listeners, namespaces) {
         return listeners;
     }
     return fluid.remove_if(fluid.makeArray(listeners), function (element) {
-        return element.namespace && !element.softNamespace && !fluid.contains(namespaces, element.namespace);
+        return element.namespace && !element.softNamespace && !namespaces.includes(element.namespace);
     });
 };
 

@@ -185,7 +185,7 @@ fluid.tests.assertComponentGradeCreation = function (builder, createdGrades, not
 };
 
 fluid.tests.assembleAuxSchema = function (auxObjs) {
-    return fluid.accumulate(auxObjs, function (auxObj, auxiliarySchema) {
+    return auxObjs.reduce(function (auxiliarySchema, auxObj) {
         return $.extend(true, auxiliarySchema, auxObj);
     }, {});
 };

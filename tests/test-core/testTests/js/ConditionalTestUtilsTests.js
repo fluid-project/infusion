@@ -117,7 +117,7 @@ fluid.tests.conditionalTestUtilsTests.contextDefaultTest = function () {
 };
 
 fluid.tests.conditionalTestUtilsTests.testRunnerContainsExpectedGradeName = function (runner, expectedGradeName) {
-    jqUnit.assertTrue("testRunner grade contains the expected gradeName of " + expectedGradeName, fluid.contains(runner.options.gradeNames, expectedGradeName));
+    jqUnit.assertTrue("testRunner grade contains the expected gradeName of " + expectedGradeName, runner.options.gradeNames.includes(expectedGradeName));
 };
 
 fluid.tests.conditionalTestUtilsTests.testContextAwareTestRunner = function (message, checkValue, expectedGradeName) {

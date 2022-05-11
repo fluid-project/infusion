@@ -694,32 +694,6 @@ fluid.find = fluid.make_find(false);
  */
 fluid.find_if = fluid.make_find(true);
 
-/** Scan through an array of objects, "accumulating" a value over them
- * (may be a straightforward "sum" or some other chained computation). "accumulate" is the name derived
- * from the C++ STL, other names for this algorithm are "reduce" or "fold".
- * @param {Array} list - The list of objects to be accumulated over.
- * @param {Function} fn - An "accumulation function" accepting the signature (object, total, index) where
- * object is the list member, total is the "running total" object (which is the return value from the previous function),
- * and index is the index number.
- * @param {Object} arg - The initial value for the "running total" object.
- * @return {Object} the final running total object as returned from the final invocation of the function on the last list member.
- */
-fluid.accumulate = function (list, fn, arg) {
-    for (var i = 0; i < list.length; ++i) {
-        arg = fn(list[i], arg, i);
-    }
-    return arg;
-};
-
-/** Returns the sum of its two arguments. A useful utility to combine with fluid.accumulate to compute totals
- * @param {Number|Boolean} a - The first operand to be added
- * @param {Number|Boolean} b - The second operand to be added
- * @return {Number} The sum of the two operands
- **/
-fluid.add = function (a, b) {
-    return a + b;
-};
-
 /** Scan through an array or hash of objects, removing those which match a predicate. Similar to
  * jQuery.grep, only acts on the list in-place by removal, rather than by creating
  * a new list by inclusion.
@@ -834,18 +808,6 @@ fluid.values = function (obj) {
     return togo;
 };
 
-/*
- * Searches through the supplied object, and returns <code>true</code> if the supplied value
- * can be found
- */
-fluid.contains = function (obj, value) {
-    return obj ? (fluid.isArrayable(obj) ? obj.indexOf(value) !== -1 : fluid.find(obj, function (thisValue) {
-        if (value === thisValue) {
-            return true;
-        }
-    })) : undefined;
-};
-
 /**
  * Searches through the supplied object for the first value which matches the one supplied.
  * @param {Object} obj - the Object to be searched through
@@ -871,22 +833,6 @@ fluid.arrayToHash = function (array) {
         togo[el] = true;
     });
     return togo;
-};
-
-/** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript was not specified
- * to be stable until ES2019). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
- * on small array sizes.
- * @param {Array} array - The array to be sorted. This input array will be modified in place.
- * @param {Function} func - A comparator returning >0, 0, or <0 on pairs of elements representing their sort order (same contract as Array.sort comparator)
- */
-fluid.stableSort = function (array, func) {
-    for (var i = 0; i < array.length; i++) {
-        var j, k = array[i];
-        for (j = i; j > 0 && func(k, array[j - 1]) < 0; j--) {
-            array[j] = array[j - 1];
-        }
-        array[j] = k;
-    }
 };
 
 /** Converts a hash into an array by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
@@ -1507,7 +1453,8 @@ fluid.honourConstraint = function (array, firstConstraint, c) {
 // unsupported, NON-API function
 // Priorities accepted from users have higher numbers representing high priority (sort first) -
 fluid.sortByPriority = function (array) {
-    fluid.stableSort(array, fluid.compareByPriority);
+    array.sort(fluid.compareByPriority);
+    // fluid.stableSort(array, fluid.compareByPriority);
 
     var firstConstraint = fluid.find(array, function (element, index) {
         return element.priority.constraint && fluid.priorityTypes[element.priority.constraint.type] === 0 ? index : undefined;
@@ -2029,7 +1976,7 @@ fluid.resolveGradeStructure = function (defaultName, gradeNames) {
 };
 
 fluid.hasGrade = function (options, gradeName) {
-    return !options || !options.gradeNames ? false : fluid.contains(options.gradeNames, gradeName);
+    return !options || !options.gradeNames ? false : options.gradeNames.includes(gradeName);
 };
 
 // unsupported, NON-API function

@@ -21,6 +21,13 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.1.0] - 2022-05-11
+
+### Fixed
+
+* [FLUID-6730](https://issues.fluidproject.org/browse/FLUID-6730) Removed some obsoleted utilities - fluid.accumulate,
+  fluid.contains, fluid.add, fluid.stableSort
+
 ## [4.0.0] - 2022-03-17
 
 ### Added
@@ -103,7 +110,7 @@ For more details see: [Deprecated in 4.0]
 [API Changes from 3.0 to 4.0]: https://docs.fluidproject.org/infusion/development/apichangesfrom3_0to4_0
 [Deprecated in 4.0]: https://docs.fluidproject.org/infusion/development/deprecatedin4_0
 
-## [3.0.1] - 2022-05-10
+## [3.0.1] - 2022-05-11
 
 ### Fixed
 
@@ -924,6 +931,7 @@ A pre-release of [0.3.0].
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
 [Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
+[4.1.0]: https://github.com/fluid-project/infusion/releases/tag/v4.1.0
 [4.0.0]: https://github.com/fluid-project/infusion/releases/tag/v4.0.0
 [3.0.1]: https://github.com/fluid-project/infusion/releases/tag/v3.0.1
 [3.0.0]: https://github.com/fluid-project/infusion/releases/tag/v3.0.0

@@ -672,7 +672,7 @@ fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
             if (fluid.isReferenceOrExpander(gradeName)) {
                 rec.rawDynamic.push(gradeName);
                 rec.seenGrades[flatGradeName] = true;
-            } else if (!fluid.contains(rec.oldGradeNames, gradeName)) {
+            } else if (!rec.oldGradeNames.includes(gradeName)) {
                 rec.plainDynamic.push(gradeName);
             }
         }
@@ -681,11 +681,11 @@ fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
 
 fluid.accumulateContextAwareGrades = function (that, rec) {
     var newContextAware = [];
-    if (fluid.contains(rec.gradeNames, "fluid.contextAware")) {
+    if (rec.gradeNames.includes("fluid.contextAware")) {
         var contextAwarenessOptions = fluid.getForComponent(that, ["options", "contextAwareness"]);
         newContextAware = fluid.contextAware.check(that, contextAwarenessOptions);
         var lostGrade = fluid.find_if(rec.contextAware, function (gradeName) {
-            return !fluid.contains(newContextAware, gradeName);
+            return !newContextAware.includes(gradeName);
         });
         if (lostGrade) { // The user really deserves a prize if they achieve this diagnostic
             fluid.fail("Failure operating contextAwareness definition ", contextAwarenessOptions, " for component " + fluid.dumpComponentAndPath(that)
