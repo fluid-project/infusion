@@ -7,6 +7,10 @@
 ## What's New in 4.1.0
 
 * Maintenance release which resolves
+  * [FLUID-6728](https://issues.fluidproject.org/browse/FLUID-6728) A sourcePath into the first element of an array fails
+  to resolve in contexts where expandImmediate is used
+  * [FLUID-6729](https://issues.fluidproject.org/browse/FLUID-6729) References into local record such as {source} and
+  {sourcePath} can't be resolved in interpolated relay segments
   * [FLUID-6730](https://issues.fluidproject.org/browse/FLUID-6730) Removed some obsoleted utilities - fluid.accumulate,
     fluid.contains, fluid.add, fluid.stableSort
   * [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improve documentation (retrospectively) about changes
