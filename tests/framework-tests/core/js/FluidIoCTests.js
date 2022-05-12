@@ -6513,3 +6513,48 @@ jqUnit.test("FLUID-5193 The matching form '*' in IoCSS doesn't match any subcomp
     jqUnit.assertEquals("The distributed options has been passed down to subComponent #1", 1, that.sub1.options.userOption);
     jqUnit.assertEquals("The distributed options has been passed down to subComponent #2", 1, that.sub2.options.userOption);
 });
+
+/** FLUID-6735: Distributing an implicit nested model relay cause a circular reference */
+
+fluid.defaults("fluid.tests.fluid_6735.child", {
+    gradeNames: ["fluid.modelComponent"],
+    model: {
+        val: "A",
+        other: "b",
+        nested: {
+            a: "{that}.model.val"
+        }
+    }
+});
+fluid.defaults("fluid.tests.fluid_6735.parent", {
+    gradeNames: ["fluid.modelComponent"],
+    components: {
+        child: {
+            type: "fluid.tests.fluid_6735.child"
+        }
+    },
+    distributeOptions: {
+        source: "{that}.options.child",
+        target: "{that child}.options"
+    }
+});
+
+jqUnit.test("FLUID-6735: Distributing an implicit nested model relay cause a circular reference", function () {
+    var that = fluid.tests.fluid_6735.parent({
+        child: {
+            model: {
+                nested: {
+                    b: "{that}.model.other"
+                }
+            }
+        }
+    });
+
+    var expected = {
+        a: "A",
+        b: "b"
+    };
+
+    jqUnit.assertNotUndefined("The component should be instantiated", that);
+    jqUnit.assertDeepEq("The nested model relay should have been distributed and properly executed", expected, that.child.model.nested);
+});
