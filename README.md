@@ -188,6 +188,18 @@ npm run build:pkg:custom -- --name=myPackage
 npm run build:pkg:custom -- -n myPackage
 ```
 
+#### Producing builds for a GitHub release
+
+The build commands producing the zip files which accompany a GitHub release (infusion-all-vx.y.z.zip and
+infusion-uio-vx.y.z.zip) can be produced by the following commands:
+
+```bash
+npm run build:pkg
+npm run npm run build:pkg:custom -- -i "fluid-ui-options" -n uio
+```
+
+The zip files will obliterate the contents of the `products` directory and must be copied out after each command.
+
 ### Modules
 
 #### Framework Modules
