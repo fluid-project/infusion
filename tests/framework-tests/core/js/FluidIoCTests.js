@@ -6526,28 +6526,32 @@ fluid.defaults("fluid.tests.fluid_6735.child", {
         }
     }
 });
+
+fluid.defaults("fluid.tests.fluid_6735.withOther", {
+    model: {
+        nested: {
+            b: "{that}.model.other"
+        }
+    }
+});
+
 fluid.defaults("fluid.tests.fluid_6735.parent", {
     gradeNames: ["fluid.modelComponent"],
+    otherGrade: "fluid.modelComponent",
     components: {
         child: {
             type: "fluid.tests.fluid_6735.child"
         }
     },
     distributeOptions: {
-        source: "{that}.options.child",
-        target: "{that child}.options"
+        source: "{that}.options.otherGrade",
+        target: "{that child}.options.gradeNames"
     }
 });
 
 jqUnit.test("FLUID-6735: Distributing an implicit nested model relay cause a circular reference", function () {
     var that = fluid.tests.fluid_6735.parent({
-        child: {
-            model: {
-                nested: {
-                    b: "{that}.model.other"
-                }
-            }
-        }
+        otherGrade: "fluid.tests.fluid_6735.withOther"
     });
 
     var expected = {
