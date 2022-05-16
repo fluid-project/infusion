@@ -1481,6 +1481,39 @@ jqUnit.test("FLUID-6395: Performance of relay rules with increasing fan-out", fu
     fluid.log("Applied change in " + elapsed + "ms");
 });
 
+fluid.defaults("fluid.tests.fluid6395root2", {
+    gradeNames: "fluid.modelComponent",
+    fanOut: 100,
+    source: "@expand:fluid.tests.fluid6395generate({that}.options.fanOut)",
+    model: {
+        someValue: 42
+    },
+    dynamicComponents: {
+        child: {
+            sources: "{that}.options.source",
+            type: "fluid.modelComponent",
+            options: {
+                model: {
+                    parentModel: "{fluid6395root2}.model"
+                }
+            }
+        }
+    }
+});
+
+jqUnit.test("FLUID-6395: Performance of relay rules with increasing fan-out", function () {
+    var that = fluid.tests.fluid6395root2();
+    var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
+    jqUnit.assertEquals("Constructed " + that.options.fanOut + " children: ", that.options.fanOut, children.length);
+    var now = Date.now();
+    // children[0].applier.change("parentModel.someValue", 999);
+    fluid.count = 0;
+    that.applier.change("someValue", 999);
+    var elapsed = Date.now() - now;
+    jqUnit.assertEquals("Change relayed to parent model ", 999, that.model.someValue);
+    fluid.log("Applied change in " + elapsed + "ms");
+});
+
 /** FLUID-6570: Short-form free transforms **/
 
 fluid.defaults("fluid.tests.fluid6570root", {

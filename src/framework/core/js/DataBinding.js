@@ -840,6 +840,8 @@ fluid.relayRecursionBailout = 100;
 // is transactional but it does not require the transaction to conclude in order to fire - it may be reused as many times as
 // required within the "overall" transaction whilst genuine (external) changes continue to arrive.
 
+fluid.count = 0;
+
 // TODO: Vast overcomplication and generation of closure garbage. SURELY we should be able to convert this into an externalised, arg-ist form
 /** Registers a listener operating one leg of a model relay relation, connecting the source and target. Called once or twice from `fluid.connectModelRelay` -
  * see the comment there for the three cases involved. Note that in its case iii)B) the applier to bind to is not the one attached to `target` but is instead
@@ -875,6 +877,8 @@ fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSe
     targetSegs = fluid.makeArray(targetSegs);
     sourceSegs = fluid.makeArray(sourceSegs); // take copies since originals will be trashed
     var sourceListener = function (newValue, oldValue, path, changeRequest, trans, applier) {
+        ++fluid.count;
+        fluid.log("SourceListener " + fluid.count);
         var transId = trans.id;
         var transRec = fluid.getModelTransactionRec(target, transId);
         if (applier && trans && !transRec[applier.applierId]) { // don't trash existing record which may contain "options" (FLUID-5397)
