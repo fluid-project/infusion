@@ -877,8 +877,6 @@ fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSe
     targetSegs = fluid.makeArray(targetSegs);
     sourceSegs = fluid.makeArray(sourceSegs); // take copies since originals will be trashed
     var sourceListener = function (newValue, oldValue, path, changeRequest, trans, applier) {
-        ++fluid.count;
-        fluid.log("SourceListener " + fluid.count);
         var transId = trans.id;
         var transRec = fluid.getModelTransactionRec(target, transId);
         if (applier && trans && !transRec[applier.applierId]) { // don't trash existing record which may contain "options" (FLUID-5397)
@@ -886,6 +884,9 @@ fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSe
         }
         var transEl = transRec[applierId];
         transRec[linkId] = transRec[linkId] || 0;
+        ++fluid.count;
+        //fluid.log("SourceListener " + fluid.count + " firing with value " + JSON.stringify(newValue, null, 2) +  " from source ", source, " to target ", target,
+        //     " sourceSegs ", sourceSegs, " targetSegs ", targetSegs);
         // Crude "oscillation prevention" system limits each link to maximum of 2 operations per cycle (presumably in opposite directions)
         var relay = true; // TODO: See FLUID-5303 - we currently disable this check entirely to solve FLUID-5293 - perhaps we might remove link counts entirely
         if (relay) {

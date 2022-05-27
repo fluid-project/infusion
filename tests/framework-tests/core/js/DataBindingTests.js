@@ -1470,7 +1470,7 @@ fluid.defaults("fluid.tests.fluid6395root", {
     }
 });
 
-jqUnit.test("FLUID-6395: Performance of relay rules with increasing fan-out", function () {
+jqUnit.test("FLUID-6395: Performance of relay rules with increasing fan-out - fine-grained sharing", function () {
     var that = fluid.tests.fluid6395root();
     var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
     jqUnit.assertEquals("Constructed " + that.options.fanOut + " children: ", that.options.fanOut, children.length);
@@ -1486,7 +1486,17 @@ fluid.defaults("fluid.tests.fluid6395root2", {
     fanOut: 100,
     source: "@expand:fluid.tests.fluid6395generate({that}.options.fanOut)",
     model: {
-        someValue: 42
+        focus: {row: 0, col: 0}
+    },
+    components: {
+        midChild: {
+            type: "fluid.modelComponent",
+            options: {
+                model: {
+                    focus: "{fluid6395root2}.model.focus"
+                }
+            }
+        }
     },
     dynamicComponents: {
         child: {
@@ -1494,23 +1504,23 @@ fluid.defaults("fluid.tests.fluid6395root2", {
             type: "fluid.modelComponent",
             options: {
                 model: {
-                    parentModel: "{fluid6395root2}.model"
+                    focus: "{midChild}.model.focus"
                 }
             }
         }
     }
 });
 
-jqUnit.test("FLUID-6395: Performance of relay rules with increasing fan-out", function () {
+jqUnit.test("FLUID-6395 II: Performance of relay rules with increasing fan-out - coarse-grained sharing", function () {
     var that = fluid.tests.fluid6395root2();
     var children = fluid.queryIoCSelector(that, "fluid.modelComponent");
-    jqUnit.assertEquals("Constructed " + that.options.fanOut + " children: ", that.options.fanOut, children.length);
+    jqUnit.assertEquals("Constructed " + that.options.fanOut + " children: ", that.options.fanOut + 1, children.length);
     var now = Date.now();
-    // children[0].applier.change("parentModel.someValue", 999);
+    children[1].applier.change("focus", {row: 7, col: 5});
     fluid.count = 0;
-    that.applier.change("someValue", 999);
+    // that.applier.change("someValue", 999);
     var elapsed = Date.now() - now;
-    jqUnit.assertEquals("Change relayed to parent model ", 999, that.model.someValue);
+    jqUnit.assertEquals("Change relayed to parent model ", 7, that.model.focus.row);
     fluid.log("Applied change in " + elapsed + "ms");
 });
 
