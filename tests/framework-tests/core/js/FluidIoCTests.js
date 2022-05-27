@@ -6513,3 +6513,130 @@ jqUnit.test("FLUID-5193 The matching form '*' in IoCSS doesn't match any subcomp
     jqUnit.assertEquals("The distributed options has been passed down to subComponent #1", 1, that.sub1.options.userOption);
     jqUnit.assertEquals("The distributed options has been passed down to subComponent #2", 1, that.sub2.options.userOption);
 });
+
+/** FLUID-6738: "rootMaker" constructs singleton from dependents **/
+
+// BEGIN DEFINITION ROOTMAKER
+
+fluid.defaults("fluid.rootMaker", {
+    gradeNames: "fluid.component",
+    mergePolicy: {
+        roots: "noexpand"
+    },
+    roots: { // Free hash of root names to {type, options} of the root components to be constructed
+    },
+    workflows: {
+        global: {
+            makeRoots: {
+                funcName: "fluid.rootMaker.makeRoots",
+                priority: "first"
+            }
+        }
+    }
+});
+
+fluid.rootMaker.makeRoots = function (shadows) {
+    var roots = shadows.map(function (shadow) {
+        return fluid.getForComponent(shadow.that, ["options", "roots"]);
+    });
+    var allRoots = fluid.extend.apply(null, [true, {}].concat(roots));
+    fluid.each(allRoots, function (root) {
+        // We assume that the root's type is its singleRootType
+        var memberName = fluid.typeNameToMemberName(root.type);
+        var parent = fluid.rootComponent;
+        if (!parent[memberName]) { // TODO: Might it be necessary to check in-progress potentia, in case the components themselves are lensed?
+            fluid.registerPotentia({
+                type: "create",
+                path: [memberName],
+                records: [{
+                    recordType: "subcomponentRecord",
+                    type: root.type,
+                    options: root.options
+                }, {
+                    recordType: "subcomponentRecord",
+                    options: {
+                        gradeNames: "fluid.resolveRoot"
+                    }
+                }]
+            });
+        }
+    });
+};
+
+// END DEFINITION ROOTMAKER
+
+fluid.defaults("fluid.tests.fluid6738webMidi", {
+    gradeNames: "fluid.component",
+    port: 3000,
+    listeners: {
+        "onCreate.count": "fluid.tests.fluid6738webMidi.doCount"
+    }
+});
+
+fluid.tests.fluid6738webMidi.count = 0;
+
+fluid.tests.fluid6738webMidi.doCount = function () {
+    ++fluid.tests.fluid6738webMidi.count;
+};
+
+fluid.defaults("fluid.tests.fluid6738test", {
+    gradeNames: "fluid.rootMaker",
+    roots: {
+        webMidi: {
+            type: "fluid.tests.fluid6738webMidi",
+            options: {
+                port: 4000
+            }
+        }
+    },
+    webMidiPort: "{fluid.tests.fluid6738webMidi}.options.port"
+});
+
+fluid.tests.get6738root = function () {
+    var path = [fluid.typeNameToMemberName("fluid.tests.fluid6738webMidi")];
+    return fluid.componentForPath(path);
+};
+
+fluid.tests.destroy6738root = function () {
+    var webMidi = fluid.tests.get6738root();
+    webMidi.destroy();
+};
+
+jqUnit.test("FLUID-6738: Simple rootMaker test", function () {
+    var that = fluid.tests.fluid6738test();
+    jqUnit.assertEquals("Resolved option from root with overridden value", 4000, that.options.webMidiPort);
+    fluid.tests.destroy6738root();
+});
+
+jqUnit.test("FLUID-6738: Double rootMaker test", function () {
+    var that = fluid.tests.fluid6738test();
+    var root = fluid.tests.get6738root();
+    jqUnit.assertEquals("Resolved first option from root with overridden value", 4000, that.options.webMidiPort);
+    var that2 = fluid.tests.fluid6738test();
+    var root2 = fluid.tests.get6738root();
+    jqUnit.assertEquals("Resolved second option from root with overridden value", 4000, that2.options.webMidiPort);
+    jqUnit.assertEquals("Only one root constructed", root, root2);
+    fluid.tests.destroy6738root();
+});
+
+fluid.defaults("fluid.tests.fluid6738double", {
+    gradeNames: "fluid.component",
+    components: {
+        maker1: {
+            type: "fluid.tests.fluid6738test"
+        },
+        maker2: {
+            type: "fluid.tests.fluid6738test"
+        }
+    }
+});
+
+jqUnit.test("FLUID-6738: Simultaneous double rootMaker test", function () {
+    var initialCount = fluid.tests.fluid6738webMidi.count;
+    var that = fluid.tests.fluid6738double();
+
+    jqUnit.assertEquals("Resolved first option from root with overridden value", 4000, that.maker1.options.webMidiPort);
+    jqUnit.assertEquals("Resolved second option from root with overridden value", 4000, that.maker2.options.webMidiPort);
+    jqUnit.assertEquals("Only one root constructed", initialCount + 1, fluid.tests.fluid6738webMidi.count);
+    fluid.tests.destroy6738root();
+});
