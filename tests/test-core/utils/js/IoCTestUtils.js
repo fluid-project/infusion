@@ -700,6 +700,15 @@ fluid.defaults("fluid.test.sequence", {
     gradeNames: "fluid.component"
 });
 
+// So: Note that it is the "finisher", kicked off by the sequence end, which fires off noteTest(-1) and
+// invokes QUnit, starting the next sequence running, whereas it is the afterDestroy listener which kicks
+// off the testRunner's "next" which constructs the fresh environment.
+// The fresh environment's "onCreate" starts queueing QUnit tests.
+// Both of these are delayed and may race. We would really want the sequence to start running, at least for an initial
+// passive fixture, *before* onCreate of the environment starts.
+// What we're observing in FLUID-6742, in fluid.tests.fluid5633Tree_2, is that onCreate has long finished before the
+// sequence actually starts - which is invoked later by the finisher.
+
 fluid.test.noteTest = function (root, count) {
     if (root.activeTests === "destroyed") {
         return;

@@ -408,7 +408,7 @@ fluid.tests.fluid5633Tree.assertValue2 = function (that) {
 fluid.defaults("fluid.tests.fluid5633Tree_2", {
     gradeNames: ["fluid.test.testEnvironment", "fluid.test.testCaseHolder"],
     events: {
-        createIt: null
+        createAndBind: null
     },
     components: {
         fluid5633top: {
@@ -440,7 +440,7 @@ fluid.defaults("fluid.tests.fluid5633Tree_2", {
         }
     },
     listeners: {
-        onCreate: "fluid.tests.fluid5633Tree_2.bindLater"
+        createAndBind: "fluid.tests.fluid5633Tree_2.createAndBind"
     },
     modules: [{
         name: "FLUID-5633 strikes back: Deregistration of IoCSS listeners",
@@ -448,6 +448,9 @@ fluid.defaults("fluid.tests.fluid5633Tree_2", {
             name: "FLUID-5633 strikes back sequence",
             expect: 2,
             sequence: [{
+                func: "{fluid5633Tree_2}.events.createAndBind.fire",
+                args: "{fluid5633Tree_2}"
+            }, {
                 event: "{fluid5633Tree_2 fluid5633middle fluid5633bottom}.events.bindIt",
                 listener: "jqUnit.assertEquals",
                 args: 42
@@ -463,11 +466,9 @@ fluid.defaults("fluid.tests.fluid5633Tree_2", {
     }]
 });
 
-fluid.tests.fluid5633Tree_2.bindLater = function (that) {
-    fluid.invokeLater(function () {
-        that.fluid5633top.events.createIt.fire();
-        that.fluid5633top.events.bindIt.fire(42);
-    });
+fluid.tests.fluid5633Tree_2.createAndBind = function (that) {
+    that.fluid5633top.events.createIt.fire();
+    that.fluid5633top.events.bindIt.fire(42);
 };
 
 // FLUID-5575 late firing of onTestCaseStart
