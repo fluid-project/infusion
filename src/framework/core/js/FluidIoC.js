@@ -2226,7 +2226,7 @@ fluid.enqueueWorkflowBlock = function (transRec, shadows, workflowStart, workflo
  * By preference, we enqueue the action on any freshly constructed shells of bringing them to the same state of readiness of the
  * most advanced component. If there are no such, we continue bringing the array of all shadows up to the maximum required
  * level. Only one of these actions will be enqueued per call to this function - the driver in fluid.commitPotentiae will redispatch
- * here repeatedly until no further work is enqueued.
+ * here repeatedly until no further work is enqueued. CI Test.
  * @param {TreeTransaction} transRec - The tree transaction in progress
  * @param {fluid.promise.sequencer} sequencer - The sequencer to accumulate workflow actions generated during this phase
  * @return {Boolean} `true` if any actions were enqueued
