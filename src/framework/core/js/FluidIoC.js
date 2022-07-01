@@ -2200,7 +2200,8 @@ fluid.enqueueWorkflowBlock = function (transRec, shadows, workflowStart, workflo
             if (workflowRecord.workflowType === "global") {
                 var globalWorkflowTask = function () {
                     // Quick fix for FLUID-6741 - a workflow function may end up being triggered by I/O without having waited for it
-                    // In practice transaction marking is pretty opportunistic and will probably leak in cases of concurrent construction
+                    // In practice transaction marking is pretty opportunistic and will probably leak in cases of
+                    // concurrent construction
                     resumeCurrentTransaction();
                     workflowFunc(workflowShadows, transRec);
                 };
