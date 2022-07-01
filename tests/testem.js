@@ -25,7 +25,7 @@ fluid.defaults("fluid.tests.testem", {
         tests:   "%infusion/tests"
     },
     testemOptions: {
-        launch: "Headless Chrome,Headless Firefox",
+        launch: "Headless Firefox",
         ignore_missing_launchers: true,
         disable_watching: true,
         tap_quiet_logs: true
