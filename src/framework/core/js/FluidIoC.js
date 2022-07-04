@@ -2177,6 +2177,10 @@ fluid.waitPendingIOTask = function (transRec) {
 
 fluid.enqueueWorkflowBlock = function (transRec, shadows, workflowStart, workflowEnd, blockStart, blockEnd, sequencer) {
     var workQueued = false;
+    var instantiator = fluid.globalInstantiator;
+    var resumeCurrentTransaction = function () {
+        instantiator.currentTreeTransactionId = transRec.transactionId;
+    };
     transRec.lastWorkflowShadow = Math.max(transRec.lastWorkflowShadow, blockEnd);
     fluid.forEachInRange(fluid.workflowCacheSorted, workflowStart, workflowEnd, function (workflowRecord, workflowIndex) {
         if (workflowIndex === 0) {
@@ -2195,6 +2199,10 @@ fluid.enqueueWorkflowBlock = function (transRec, shadows, workflowStart, workflo
             }
             if (workflowRecord.workflowType === "global") {
                 var globalWorkflowTask = function () {
+                    // Quick fix for FLUID-6741 - a workflow function may end up being triggered by I/O without having waited for it
+                    // In practice transaction marking is pretty opportunistic and will probably leak in cases of
+                    // concurrent construction
+                    resumeCurrentTransaction();
                     workflowFunc(workflowShadows, transRec);
                 };
                 globalWorkflowTask.taskName = workflowRecord.namespace;

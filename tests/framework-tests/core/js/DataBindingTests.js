@@ -1441,6 +1441,44 @@ jqUnit.test("FLUID-6390 V: Updating lensed components as an array", function () 
     fluid.tests.fluid6390assertModelValues("Updated model values are correct", that, []);
 });
 
+fluid.defaults("fluid.tests.fluid6741connector", {
+    gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+    model: {
+        connectionPort: null,
+        ports: "{that}.resources.resourceSource.parsed"
+    },
+    resources: {
+        resourceSource: {
+            promiseFunc: "fluid.tests.resolveLater",
+            promiseArgs: [[1, 2, 3]]
+        }
+    },
+    dynamicComponents: {
+        connection: {
+            type: "fluid.modelComponent",
+            source: "{that}.model.connectionPort"
+        }
+    },
+    modelListeners: {
+        ports: {
+            funcName: "fluid.tests.fluid6741findPort",
+            args: "{that}"
+        }
+    }
+});
+
+fluid.tests.fluid6741findPort = function (that) {
+    that.applier.change("connectionPort", that.model.ports[0]);
+};
+
+jqUnit.asyncTest("FLUID-6741: Lensed components via resource and model listener", function () {
+    var that = fluid.tests.fluid6741connector();
+    that.events.onCreate.then(function () {
+        jqUnit.assertValue("Lensed component should have been constructed", that.connection);
+        jqUnit.start();
+    });
+});
+
 /** FLUID-6570: Short-form free transforms **/
 
 fluid.defaults("fluid.tests.fluid6570root", {
