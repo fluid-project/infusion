@@ -21,6 +21,15 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.2.0] - 2022-07-05
+
+### Fixed
+
+* [FLUID-6741](https://issues.fluidproject.org/browse/FLUID-6741) Workflow failure when constructed lensed component
+  from asynchronous resource
+* [FLUID-6742](https://issues.fluidproject.org/browse/FLUID-6742) Race condition in IoC Testing Framework tests
+  exposed by upgrade to Chrome 103
+
 ## [4.1.0] - 2022-05-12
 
 ### Fixed
@@ -937,6 +946,7 @@ A pre-release of [0.3.0].
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
 [Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
+[4.1.0]: https://github.com/fluid-project/infusion/releases/tag/v4.2.0
 [4.1.0]: https://github.com/fluid-project/infusion/releases/tag/v4.1.0
 [4.0.0]: https://github.com/fluid-project/infusion/releases/tag/v4.0.0
 [3.0.1]: https://github.com/fluid-project/infusion/releases/tag/v3.0.1

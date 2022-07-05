@@ -2158,17 +2158,10 @@ fluid.findWorkflowShadows = function (shadows, blockStart, blockEnd, workflowRec
 };
 
 fluid.waitPendingIOTask = function (transRec) {
-    var instantiator = fluid.globalInstantiator;
-    var resumeCurrentTransaction = function () {
-        instantiator.currentTreeTransactionId = transRec.transactionId;
-    };
-    var bracketIO = function (sequence) {
-        return sequence.concat([resumeCurrentTransaction]);
-    };
     var sequence;
     var waitIOTask = function () {
         // TODO: Think about clearing out old resolved I/O from this list
-        return transRec.pendingIO.length ? (sequence = fluid.promise.sequence(bracketIO(transRec.pendingIO))) : null;
+        return transRec.pendingIO.length ? (sequence = fluid.promise.sequence(transRec.pendingIO)) : null;
     };
     waitIOTask.taskName = "waitIO";
     waitIOTask.sequence = sequence;
@@ -2209,6 +2202,7 @@ fluid.enqueueWorkflowBlock = function (transRec, shadows, workflowStart, workflo
                 sequence.push(globalWorkflowTask);
             } else {
                 var localWorkflowTask = function () {
+                    resumeCurrentTransaction();
                     if (workflowRecord.namespace === "concludeComponentInit") {
                         sequencer.hasStartedConcludeInit = true;
                     }
