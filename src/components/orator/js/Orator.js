@@ -1034,7 +1034,7 @@ fluid.orator.selectionReader.parseElement = function (element, domParser, option
             var lastParsed = parsed[parsed.length - 1];
 
             if (parsed.length && lastParsed.options.lang === lang) {
-                lastParsed.text += node.textContent.slice(startOffset, endOffset);
+                lastParsed.text += " " + node.textContent.slice(startOffset, endOffset);
             } else {
                 parsed.push({
                     text: node.textContent.slice(startOffset, endOffset),

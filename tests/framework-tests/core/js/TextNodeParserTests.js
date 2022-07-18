@@ -44,24 +44,32 @@ jqUnit.test("Test fluid.textNodeParser.hasGlyph", function () {
  ****************************************************************/
 
 fluid.tests.textNodeParser.assertTextToRead = function (testCases) {
-    var checkAriaHidden = true;
-    var hasTextNoAriaHiddenCheck =  testCases.hasTextToRead.concat(testCases.ariaHidden);
-    var noTextWithAriaHiddenCheck = testCases.noTextToRead.concat(testCases.ariaHidden);
+    var q = selector => document.querySelector(selector);
 
     // test has text to read
     fluid.each(testCases.hasTextToRead, function (selector) {
-        jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), checkAriaHidden));
-    });
-    fluid.each(hasTextNoAriaHiddenCheck, function (selector) {
-        jqUnit.assertTrue("acceptAriaHidden = true - \"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
+        jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead(q(selector), {}));
     });
 
+    // Test that we can successfully override the aria-hidden="true" rule through overriding the selector with null
+    var ignoreAriaHiddenOverridden = {
+        ariaHidden: null
+    };
+    var hasTextNoAriaHiddenCheck =  testCases.hasTextToRead.concat(testCases.ariaHidden);
+    fluid.each(hasTextNoAriaHiddenCheck, function (selector) {
+        jqUnit.assertTrue("acceptAriaHidden = true - \"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead(q(selector), ignoreAriaHiddenOverridden));
+    });
+
+    var ignoreAriaHidden = {
+        ariaHidden: "[aria-hidden=\"true\"]"
+    };
     // test no text to read
+    var noTextWithAriaHiddenCheck = testCases.noTextToRead.concat(testCases.ariaHidden);
     fluid.each(noTextWithAriaHiddenCheck, function (selector) {
-        jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector)));
+        jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead(q(selector), ignoreAriaHidden));
     });
     fluid.each(testCases.noTextToRead, function (selector) {
-        jqUnit.assertFalse("acceptAriaHidden = true - \"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead($(selector), true));
+        jqUnit.assertFalse("acceptAriaHidden = true - \"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead(q(selector), {}));
     });
 };
 
@@ -128,10 +136,6 @@ jqUnit.test("Test fluid.textNodeParser.getLang", function () {
 
 fluid.tests.textNodeParser.parsed = [{
     lang: "en-CA",
-    text: "",
-    childIndex: 0
-}, {
-    lang: "en-CA",
     text: "Text to test. Including",
     childIndex: 0
 }, {
@@ -156,6 +160,9 @@ fluid.defaults("fluid.tests.textNodeParser", {
     gradeNames: ["fluid.textNodeParser"],
     members: {
         record: []
+    },
+    ignoredSelectors: {
+        testIgnore: ".flc-testNodeParser-test-ignore"
     },
     listeners: {
         "onParsedTextNode.record": {
