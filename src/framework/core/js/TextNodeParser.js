@@ -25,12 +25,18 @@ fluid.defaults("fluid.textNodeParser", {
         onParsedTextNode: null,
         afterParse: null
     },
+    ignoredSelectors: {
+        ariaHidden: "[aria-hidden=\"true\"]"
+    },
     invokers: {
         parse: {
             funcName: "fluid.textNodeParser.parse",
             args: ["{that}", "{arguments}.0", "{arguments}.1", "{that}.events.afterParse.fire"]
         },
-        hasTextToRead: "fluid.textNodeParser.hasTextToRead",
+        hasTextToRead: {
+            funcName: "fluid.textNodeParser.hasTextToRead",
+            args: ["{arguments}.0", "{that}.options.ignoredSelectors"]
+        },
         getLang: "fluid.textNodeParser.getLang"
     }
 });
@@ -53,26 +59,25 @@ fluid.textNodeParser.hasGlyph = function (str) {
  * - elm is falsey (undefined, null, etc.)
  * - elm's offsetParent is falsey, unless elm is the `body` element
  * - elm has no text or only whitespace
- * - elm or an ancestor has "aria-hidden=true", unless the `acceptAriaHidden` parameter is set
+ * - elm or an ancestor matches any of the selectors appearing as values in the supplied map
  *
  * NOTE: Text added by pseudo elements (e.g. :before, :after) are not considered.
- * NOTE: This method is not supported in IE 11 because innerText returns the text for some hidden elements,
- *       that is inconsistent with modern browsers.
  *
- * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
- * @param {Boolean} acceptAriaHidden - if set, will return `true` even if the `elm` or one of its ancestors has
- *                                    `aria-hidden="true"`.
+ * @param {Dom} elm - a DOM node to be tested
+ * @param {Object<String,String>} ignoredSelectors - A map of selectors
  *
  * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
  *                     (See conditions in description above)
  */
-fluid.textNodeParser.hasTextToRead = function (elm, acceptAriaHidden) {
-    elm = fluid.unwrap(elm);
-
-    return elm &&
+fluid.textNodeParser.hasTextToRead = function (elm, ignoredSelectors) {
+    if (elm &&
            (elm.tagName.toLowerCase() === "body" || elm.offsetParent) &&
-           fluid.textNodeParser.hasGlyph(elm.innerText) &&
-           (acceptAriaHidden || !$(elm).closest("[aria-hidden=\"true\"]").length);
+           fluid.textNodeParser.hasGlyph(elm.innerText)) {
+        var selectors = Object.values(ignoredSelectors).filter(sel => sel);
+        return !selectors.find(selector => elm.closest(selector));
+    } else {
+        return false;
+    }
 };
 
 /**
@@ -121,6 +126,9 @@ fluid.textNodeParser.parse = function (that, elm, lang, afterParseEvent) {
         // This funny iteration is a fix for FLUID-6435 on IE11
         Array.prototype.forEach.call(childNodes, function (childNode, childIndex) {
             if (childNode.nodeType === Node.TEXT_NODE) {
+            // At this point we could avoid reporting nodes whose text consists entirely of whitespace by use of
+            // fluid.textNodeParser.hasGlyph but this causes the demo at /demos/prefsFramework/ with self voicing
+            // to highlight misaligned with the spoken text in Firefox - see https://github.com/fluid-project/infusion/pull/1088
                 var textNodeData = {
                     node: childNode,
                     lang: elementLang,
