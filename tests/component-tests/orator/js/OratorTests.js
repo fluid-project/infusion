@@ -284,11 +284,21 @@ fluid.tests.orator.domReader.parsed = [
         "parentNode": {},
         "startOffset": 0,
         "word": "DOM"
+    }, {
+        // 3
+        "blockIndex": 8,
+        "childIndex": 7,
+        "endOffset": 9,
+        "lang": "en-CA",
+        "node": {},
+        "parentNode": {},
+        "startOffset": 0,
+        "word": "\n        "
     }]
 ];
 
 // fluid.orator.domReader.parsedToString tests
-fluid.tests.orator.domReader.str = ["Reading ", "text", "from DOM"];
+fluid.tests.orator.domReader.str = ["Reading ", "text", "from DOM\n        "];
 
 jqUnit.test("Test fluid.orator.domReader.parsedToString", function () {
     fluid.each(fluid.tests.orator.domReader.parsed, function (parsed, index) {
@@ -357,7 +367,7 @@ fluid.tests.orator.domReader.closestIndexTestCases = [{
     parseIndex: 1,
     parseQueueIndex: 2,
     boundary: 8,
-    expected: 2
+    expected: 3
 }, {
     parseIndex: 2,
     parseQueueIndex: 2,
@@ -999,21 +1009,27 @@ fluid.tests.orator.selectionReader.parseElementTestCases = [{
     selector: ".flc-orator-selectionReader-test",
     options: {},
     expected: [{
-        text: "Selection Test Other Text Change ",
+        text: "\n            Selection Test\n            \n            Other Text\n            Change ",
         options: {lang: "en"}
     }, {
         text: "Language",
         options: {lang: "en-US"}
+    }, {
+        text: "\n        ",
+        options: {lang: "en"}
     }]
 }, {
     name: "Selected parent element - undefined options",
     selector: ".flc-orator-selectionReader-test",
     expected: [{
-        text: "Selection Test Other Text Change ",
+        text: "\n            Selection Test\n            \n            Other Text\n            Change ",
         options: {lang: "en"}
     }, {
         text: "Language",
         options: {lang: "en-US"}
+    }, {
+        text: "\n        ",
+        options: {lang: "en"}
     }]
 }, {
     name: "Selected parent element - with options",

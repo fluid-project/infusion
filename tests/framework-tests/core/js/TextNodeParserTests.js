@@ -136,6 +136,10 @@ jqUnit.test("Test fluid.textNodeParser.getLang", function () {
 
 fluid.tests.textNodeParser.parsed = [{
     lang: "en-CA",
+    text: "",
+    childIndex: 0
+}, {
+    lang: "en-CA",
     text: "Text to test. Including",
     childIndex: 0
 }, {
@@ -154,6 +158,15 @@ fluid.tests.textNodeParser.parsed = [{
     lang: "en",
     text: "to verify proper parsing.",
     childIndex: 0
+}, {// Two extra whitespace nodes left over from selector ignore test - it seems we can't do without these,
+    // see comment in fluid.textNodeParser.parse
+    lang: "en",
+    text: "",
+    childIndex: 0
+}, {
+    lang: "en",
+    text: "",
+    childIndex: 2
 }];
 
 fluid.defaults("fluid.tests.textNodeParser", {

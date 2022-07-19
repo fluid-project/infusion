@@ -126,15 +126,16 @@ fluid.textNodeParser.parse = function (that, elm, lang, afterParseEvent) {
         // This funny iteration is a fix for FLUID-6435 on IE11
         Array.prototype.forEach.call(childNodes, function (childNode, childIndex) {
             if (childNode.nodeType === Node.TEXT_NODE) {
-                if (fluid.textNodeParser.hasGlyph(childNode.nodeValue)) {
-                    var textNodeData = {
-                        node: childNode,
-                        lang: elementLang,
-                        childIndex: childIndex
-                    };
-                    parsed.push(textNodeData);
-                    that.events.onParsedTextNode.fire(textNodeData);
-                }
+            // At this point we could avoid reporting nodes whose text consists entirely of whitespace by use of
+            // fluid.textNodeParser.hasGlyph but this causes the demo at /demos/prefsFramework/ with self voicing
+            // to highlight misaligned with the spoken text in Firefox - see https://github.com/fluid-project/infusion/pull/1088
+                var textNodeData = {
+                    node: childNode,
+                    lang: elementLang,
+                    childIndex: childIndex
+                };
+                parsed.push(textNodeData);
+                that.events.onParsedTextNode.fire(textNodeData);
             } else if (childNode.nodeType === Node.ELEMENT_NODE) {
                 parsed = parsed.concat(fluid.textNodeParser.parse(that, childNode, elementLang));
             }
