@@ -145,7 +145,8 @@ fluid.defaults("fluid.textToSpeech", {
         utteranceOpts: {
             // text: "", // text to synthesize. Avoid using, it will be overwritten by text passed in directly to a queueSpeech
             // lang: "", // the language of the synthesized text
-            // voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
+            // voice: {} // a WebSpeechSynthesis object; it must be set in safari. In other browsers, if not set,
+            //              will use the default one provided by the browser
             // volume: 1, // a Floating point number between 0 and 1
             // rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
             // pitch: 1, // a Floating point number from 0 to 2
@@ -191,6 +192,10 @@ fluid.defaults("fluid.textToSpeech", {
         getVoices: {
             func: "{that}.invokeSpeechSynthesisFunc",
             args: ["getVoices"]
+        },
+        getVoiceByLang: {
+            funcName: "fluid.textToSpeech.getVoiceByLang",
+            args: ["{that}", "{arguments}.0"]
         },
         speak: {
             func: "{that}.invokeSpeechSynthesisFunc",
@@ -241,10 +246,11 @@ fluid.defaults("fluid.textToSpeech", {
  * @param {String} method - a SpeechSynthesis method name
  * @param {Array} args - arguments to call the method with. If args isn't an array, it will be added as the first
  *                       element of one.
+ * @return {Any} - returns whatever is returned by the called SpeechSynthesis method
  */
 fluid.textToSpeech.invokeSpeechSynthesisFunc = function (method, args) {
     args = fluid.makeArray(args);
-    speechSynthesis[method].apply(speechSynthesis, args);
+    return speechSynthesis[method].apply(speechSynthesis, args);
 };
 
 fluid.textToSpeech.toggleSpeak = function (that, speaking) {
@@ -258,6 +264,12 @@ fluid.textToSpeech.requestControl = function (that, control, change) {
         that.applier.change(change.path, false, "ADD", "requestControl");
         that.invokeSpeechSynthesisFunc(control);
     }
+};
+
+fluid.textToSpeech.getVoiceByLang = function (that, lang) {
+    lang = lang || "en-US";
+    var voices = that.getVoices() || [];
+    return voices.find(voice => voice.lang === lang);
 };
 
 /*
@@ -312,6 +324,8 @@ fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
         that.cancel();
     }
 
+    options = options || {};
+    options.voice = that.getVoiceByLang(options.lang);
     var utteranceOpts = $.extend({}, that.model.utteranceOpts, options, {text: text});
 
     // The setTimeout is needed for Safari to fully cancel out the previous speech.
@@ -398,7 +412,8 @@ fluid.defaults("fluid.textToSpeech.utterance", {
     utterance: {
         // text: "", // text to synthesize. avoid as it will override any other text passed in
         // lang: "", // the language of the synthesized text
-        // voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
+        // voice: {} // a WebSpeechSynthesis object; it must be set in safari. In other browsers,
+        //              if not set, will use the default one provided by the browser
         // volume: 1, // a Floating point number between 0 and 1
         // rate: 1, // a Floating point number from 0.1 to 10 although different synthesizers may have a smaller range
         // pitch: 1, // a Floating point number from 0 to 2
