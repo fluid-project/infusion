@@ -136,8 +136,8 @@ fluid.defaults("fluid.tests.textToSpeech.ttsTester", {
             [{
                 task: "{tts}.queueSpeech",
                 args: "Testing queueSpeech promise",
-                resolve: "jqUnit.assert",
-                resolveArgs: ["The queueSpeech promise resolved"]
+                resolve: "jqUnit.assertNotNull",
+                resolveArgs: ["utterance.voice value is assigned", "{arguments}.0.utterance.voice"]
             }]
         }]
     }]
