@@ -62,6 +62,7 @@ fluid.textToSpeech.isSupported = function () {
 fluid.defaults("fluid.textToSpeech", {
     gradeNames: ["fluid.modelComponent", "fluid.resolveRootSingle"],
     singleRootType: "fluid.textToSpeech",
+    defaultLanguage: navigator.language,
     events: {
         onStart: null,
         onStop: null,
@@ -267,7 +268,6 @@ fluid.textToSpeech.requestControl = function (that, control, change) {
 };
 
 fluid.textToSpeech.getVoiceByLang = function (that, lang) {
-    lang = lang || "en-US";
     var voices = that.getVoices() || [];
     return voices.find(voice => voice.lang === lang);
 };
@@ -325,7 +325,7 @@ fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
     }
 
     options = options || {};
-    options.voice = that.getVoiceByLang(options.lang);
+    options.voice = options.voice || that.getVoiceByLang(options.lang || that.options.defaultLanguage);
     var utteranceOpts = $.extend({}, that.model.utteranceOpts, options, {text: text});
 
     // The setTimeout is needed for Safari to fully cancel out the previous speech.
