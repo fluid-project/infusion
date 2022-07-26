@@ -581,3 +581,34 @@ fluid.defaults("fluid.tests.textToSpeech.contextAwareTestRunner.supportsPauseRes
 });
 
 fluid.tests.textToSpeech.contextAwareTestRunner();
+
+/*********************************************************************************************
+ * Unit test
+ *********************************************************************************************/
+
+jqUnit.test("Test fluid.textToSpeech.getVoiceByLang()", function () {
+    var testCases = [{
+        message: "When the language code is not provided, return the voice of the default language",
+        lang: null,
+        expectedLang: navigator.language
+    }, {
+        message: "When a voice for the language code is found, return the voice",
+        lang: "fr-CA",
+        expectedLang: "fr-CA"
+    }, {
+        message: "When a voice for the language code is not found, return the voice that matches the country code",
+        lang: "fr-random",
+        expectedLang: "fr-CA"
+    }, {
+        message: "When a voice for both the language code and the country code is not found, return the voice of the default language",
+        lang: "random",
+        expectedLang: navigator.language
+    }];
+
+    var that = fluid.tests.textToSpeech();
+
+    fluid.each(testCases, function (testCase) {
+        var voice = fluid.textToSpeech.getVoiceByLang(that, testCase.lang);
+        jqUnit.assertEquals(testCase.message, testCase.expectedLang, voice.lang);
+    });
+});

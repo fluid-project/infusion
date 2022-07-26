@@ -89,6 +89,9 @@ fluid.defaults("fluid.mock.textToSpeech", {
             funcName: "fluid.mock.textToSpeech.recordEvent",
             args: ["{that}.eventRecord", "{arguments}.0"]
         },
+        getVoices: {
+            funcName: "fluid.mock.textToSpeech.stubs.getVoices"
+        },
         // override the speak invoker to return the utterance component instead of the SpeechSynthesisUtterance instance
         speak: {
             funcName: "fluid.mock.textToSpeech.speakOverride",
@@ -156,13 +159,8 @@ fluid.mock.textToSpeech.stubs.resume = function (that) {
     }
 };
 
-fluid.mock.textToSpeech.voices =  [
-    {voiceURI: "Alex", name: "Alex", lang: "en-US", localService: true, default: true},
-    {voiceURI: "Alice", name: "Alice", lang: "it-IT", localService: true, default: false}
-];
-
 fluid.mock.textToSpeech.stubs.getVoices = function () {
-    return fluid.mock.textToSpeech.voices;
+    return speechSynthesis.getVoices();
 };
 
 fluid.mock.textToSpeech.recordEvent = function (eventRecord, name) {

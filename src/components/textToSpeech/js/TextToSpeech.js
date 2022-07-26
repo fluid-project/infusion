@@ -77,7 +77,8 @@ fluid.defaults("fluid.textToSpeech", {
         utteranceOnStart: null
     },
     members: {
-        queue: []
+        queue: [],
+        voices: "@expand:{that}.getVoices()"
     },
     components: {
         wndw: {
@@ -267,11 +268,6 @@ fluid.textToSpeech.requestControl = function (that, control, change) {
     }
 };
 
-fluid.textToSpeech.getVoiceByLang = function (that, lang) {
-    var voices = that.getVoices() || [];
-    return voices.find(voice => voice.lang === lang);
-};
-
 /*
  * After an utterance has finished, the utterance is removed from the queue and the model is updated as needed.
  */
@@ -290,6 +286,25 @@ fluid.textToSpeech.handleEnd = function (that) {
         var newModel = $.extend({}, that.model, resetValues);
         that.applier.change("", newModel, "ADD", "handleEnd.reset");
     }
+};
+
+// Find the voice by the language code
+// 1. If the language code is not provided, use the default language;
+// 2. If the voice for the language code is not found, fall back to the first voice that supports the same country
+// code;
+// 3. If the voice is still not found, return the voice of options.defaultLanguage.
+fluid.textToSpeech.getVoiceByLang = function (that, lang) {
+    lang = lang || that.options.defaultLanguage;
+
+    var voiceTogo = that.voices.find(voice => voice.lang === lang);
+
+    if (!voiceTogo) {
+        // find the first voice that matches the country code
+        var indexOfSeparator = lang.indexOf("-");
+        var countryCode = indexOfSeparator > 0 ? lang.substring(0, indexOfSeparator) : lang;
+        voiceTogo = that.voices.find(voice => voice.lang.startsWith(countryCode));
+    }
+    return voiceTogo ? voiceTogo : that.voices.find(voice => voice.lang === that.options.defaultLanguage);
 };
 
 /**
@@ -325,7 +340,7 @@ fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
     }
 
     options = options || {};
-    options.voice = options.voice || that.getVoiceByLang(options.lang || that.options.defaultLanguage);
+    options.voice = options.voice || that.getVoiceByLang(options.lang);
     var utteranceOpts = $.extend({}, that.model.utteranceOpts, options, {text: text});
 
     // The setTimeout is needed for Safari to fully cancel out the previous speech.
