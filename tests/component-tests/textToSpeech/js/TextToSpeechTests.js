@@ -587,28 +587,31 @@ fluid.tests.textToSpeech.contextAwareTestRunner();
  *********************************************************************************************/
 
 jqUnit.test("Test fluid.textToSpeech.getVoiceByLang()", function () {
+    var defaultLanguage = "en-US";
+    var voices = [
+        {voiceURI: "Alice", name: "Alice", lang: "it-IT", localService: true, default: false},
+        {voiceURI: "Alex", name: "Alex", lang: "en-US", localService: true, default: true}
+    ];
     var testCases = [{
         message: "When the language code is not provided, return the voice of the default language",
         lang: null,
-        expectedLang: navigator.language
+        expectedLang: defaultLanguage
     }, {
         message: "When a voice for the language code is found, return the voice",
-        lang: "fr-CA",
-        expectedLang: "fr-CA"
+        lang: "en-US",
+        expectedLang: "en-US"
     }, {
         message: "When a voice for the language code is not found, return the voice that matches the country code",
-        lang: "fr-random",
-        expectedLang: "fr-CA"
+        lang: "en-CA",
+        expectedLang: "en-US"
     }, {
         message: "When a voice for both the language code and the country code is not found, return the voice of the default language",
         lang: "random",
-        expectedLang: navigator.language
+        expectedLang: "it-IT"
     }];
 
-    var that = fluid.tests.textToSpeech();
-
     fluid.each(testCases, function (testCase) {
-        var voice = fluid.textToSpeech.getVoiceByLang(that, testCase.lang);
+        var voice = fluid.textToSpeech.getVoiceByLang(voices, defaultLanguage, testCase.lang);
         jqUnit.assertEquals(testCase.message, testCase.expectedLang, voice.lang);
     });
 });

@@ -159,6 +159,8 @@ fluid.mock.textToSpeech.stubs.resume = function (that) {
     }
 };
 
+// This function returns actual speech synthesis voices instead of mocked voices because fluid.textToSpeech.utterance
+// was not mocked enough to accept non-SpeechSynthesisVoice objects.
 fluid.mock.textToSpeech.stubs.getVoices = function () {
     return speechSynthesis.getVoices();
 };

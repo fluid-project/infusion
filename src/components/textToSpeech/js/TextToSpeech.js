@@ -197,7 +197,7 @@ fluid.defaults("fluid.textToSpeech", {
         },
         getVoiceByLang: {
             funcName: "fluid.textToSpeech.getVoiceByLang",
-            args: ["{that}", "{arguments}.0"]
+            args: ["{that}.voices", "{that}.options.defaultLanguage", "{arguments}.0"]
         },
         speak: {
             func: "{that}.invokeSpeechSynthesisFunc",
@@ -288,23 +288,29 @@ fluid.textToSpeech.handleEnd = function (that) {
     }
 };
 
-// Find the voice by the language code
-// 1. If the language code is not provided, use the default language;
-// 2. If the voice for the language code is not found, fall back to the first voice that supports the same country
-// code;
-// 3. If the voice is still not found, return the voice of options.defaultLanguage.
-fluid.textToSpeech.getVoiceByLang = function (that, lang) {
-    lang = lang || that.options.defaultLanguage;
+/**
+ * Find the voice by the language code.
+ * 1. If the language code is not provided, use the default language;
+ * 2. If the voice for the language code is not found, fall back to the first voice that supports the same country
+ * code;
+ * 3. If the voice is still not found, return the first voice in the voice list.
+ * @param {Array} voices - An array of voices returned by speechSynthesis API getVoices()
+ * @param {String} defaultLanguage - the default language to fall back
+ * @param {String} lang - the language code to find a voice for
+ * @return {SpeechSynthesisVoice} - return a voice for the language code
+ */
+fluid.textToSpeech.getVoiceByLang = function (voices, defaultLanguage, lang) {
+    lang = lang || defaultLanguage;
 
-    var voiceTogo = that.voices.find(voice => voice.lang === lang);
+    var voiceTogo = voices.find(voice => voice.lang === lang);
 
     if (!voiceTogo) {
         // find the first voice that matches the country code
         var indexOfSeparator = lang.indexOf("-");
         var countryCode = indexOfSeparator > 0 ? lang.substring(0, indexOfSeparator) : lang;
-        voiceTogo = that.voices.find(voice => voice.lang.startsWith(countryCode));
+        voiceTogo = voices.find(voice => voice.lang.startsWith(countryCode));
     }
-    return voiceTogo ? voiceTogo : that.voices.find(voice => voice.lang === that.options.defaultLanguage);
+    return voiceTogo ? voiceTogo : voices[0];
 };
 
 /**
