@@ -162,10 +162,8 @@ fluid.tests.prefs.responsive.assertSeparatedPanelState = function (separatedPane
     fluid.tests.prefs.responsive.assertAria(separatedPanel.slidingPanel, state);
 };
 
-fluid.tests.prefs.responsive.assertSeparatedPanelInit = function (separatedPanel, expectedPanelIndex) {
+fluid.tests.prefs.responsive.assertSeparatedPanelInit = function (separatedPanel) {
     var prefsEditor = separatedPanel.prefsEditor;
-    jqUnit.assertEquals("The panelIndex should be " + expectedPanelIndex, expectedPanelIndex, prefsEditor.model.panelIndex);
-    jqUnit.assertEquals("The panelMaxIndex should be 5", 5, prefsEditor.model.panelMaxIndex);
     fluid.tests.prefs.responsive.assertSeparatedPanelState(separatedPanel, false);
     fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
     fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
@@ -214,13 +212,13 @@ fluid.defaults("fluid.tests.prefs.responsive.separatedPanelResponsiveTester", {
     modules: [{
         name: "Separated panel integration tests",
         tests: [{
-            expect: 42,
+            expect: 40,
             name: "Separated panel integration tests",
             sequenceGrade: "fluid.tests.prefs.responsive.iframeSequence",
             sequence: [{
                 listener: "fluid.tests.prefs.responsive.assertSeparatedPanelInit",
                 event: "{separatedPanelResponsive separatedPanel}.events.onReady",
-                args: ["{separatedPanel}", undefined] // initially there is no panelIndex set
+                args: ["{separatedPanel}"] // initially there is no panelIndex set
             }, {
                 func: "{separatedPanel}.slidingPanel.showPanel"
             }, {
@@ -249,8 +247,65 @@ fluid.defaults("fluid.tests.prefs.responsive.separatedPanelResponsiveTester", {
     }]
 });
 
+fluid.defaults("fluid.tests.prefs.responsive.separatedPanel.initialPanelIndex", {
+    gradeNames: ["fluid.tests.prefs.responsive.separatedPanel"],
+    model: {
+        preferences: {}
+    }
+});
+
+fluid.defaults("fluid.tests.prefs.responsive.separatedPanelInitialPanelIndex", {
+    gradeNames: ["fluid.test.testEnvironment"],
+    components: {
+        separatedPanel: {
+            type: "fluid.tests.prefs.responsive.separatedPanel.initialPanelIndex",
+            container: {
+                expander: {
+                    funcName: "fluid.tests.prefs.responsive.separatedPanel.assignSeparatedPanelContainer"
+                }
+            },
+            createOnEvent: "{separatedPanelInitialPanelIndexTester}.events.afterSetup"
+        },
+        separatedPanelInitialPanelIndexTester: {
+            type: "fluid.tests.prefs.responsive.separatedPanelInitialPanelIndexTester"
+        }
+    }
+});
+
+fluid.defaults("fluid.tests.prefs.responsive.separatedPanelInitialPanelIndexTester", {
+    gradeNames: ["fluid.test.testCaseHolder"],
+    events: {
+        afterSetup: null
+    },
+    iframe: ".flc-iframeSetup-panelIndexTests",
+    modules: [{
+        name: "Separated panel initial panelIndex tester",
+        tests: [{
+            expect: 38,
+            name: "Separated panel initial panelIndex tester",
+            sequenceGrade: "fluid.tests.prefs.responsive.iframeSequence",
+            sequence: [{
+                listener: "fluid.tests.prefs.responsive.assertSeparatedPanelInit",
+                event: "{separatedPanelInitialPanelIndex separatedPanel}.events.onReady",
+                args: ["{separatedPanel}"]
+            }, {
+                func: "{separatedPanel}.slidingPanel.showPanel"
+            }, {
+                listener: "fluid.tests.prefs.responsive.assertSeparatedPanelState",
+                event: "{separatedPanel}.slidingPanel.events.afterPanelShow",
+                args: ["{separatedPanel}", true],
+                priority: "last:testing"
+            }, {
+                func: "fluid.tests.prefs.responsive.assertPanelVisibility",
+                args: ["{separatedPanel}.prefsEditor", "Scrolled to panel 0", 0]
+            }]
+        }]
+    }]
+});
+
 $(function () {
     fluid.test.runTests([
-        "fluid.tests.prefs.responsive.separatedPanelResponsive"
+        "fluid.tests.prefs.responsive.separatedPanelResponsive",
+        "fluid.tests.prefs.responsive.separatedPanelInitialPanelIndex"
     ]);
 });
