@@ -137,27 +137,15 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                 gradeNames: ["fluid.prefs.uiEnhancerRelay", "fluid.prefs.arrowScrolling"],
                 // ensure that model and applier are available to users at top level
                 model: {
-                    preferences: "{separatedPanel}.model.preferences",
-                    panelIndex: "{separatedPanel}.model.panelIndex",
-                    panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
+                    preferences: "{separatedPanel}.model.preferences"
                     // The `local` model path is used by the `fluid.remoteModelComponent` grade
                     // for persisting and synchronizing model values with remotely stored data.
-                    // Below, the panelIndex is being tracked for such persistence and synchronization.
-                    local: {
-                        panelIndex: "{that}.model.panelIndex"
-                    }
+                    // local: {}
                 },
                 autoSave: true,
                 events: {
                     onSignificantDOMChange: null,
                     updateEnhancerModel: "{that}.events.modelChanged"
-                },
-                modelListeners: {
-                    "panelIndex": [{
-                        listener: "fluid.prefs.prefsEditor.handleAutoSave",
-                        args: ["{that}"],
-                        namespace: "autoSavePanelIndex"
-                    }]
                 },
                 listeners: {
                     "onCreate.bindReset": {
@@ -165,15 +153,7 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                         method: "on",
                         args: ["click", "{that}.reset"]
                     },
-                    "afterReset.applyChanges": "{that}.applyChanges",
-                    // Scroll to active panel after opening the separate Panel.
-                    // This is when the panels are all rendered and the actual sizes are available.
-                    "{separatedPanel}.slidingPanel.events.afterPanelShow": {
-                        listener: "fluid.prefs.arrowScrolling.scrollToPanel",
-                        args: ["{that}", "{that}.model.panelIndex"],
-                        priority: "after:updateView",
-                        namespace: "scrollToPanel"
-                    }
+                    "afterReset.applyChanges": "{that}.applyChanges"
                 }
             }
         }
