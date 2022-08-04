@@ -2359,9 +2359,7 @@ function regenerateSources(sources, segs, limit, sourceStrategies) {
     var togo = [];
     for (var i = 0; i < sources.length; ++i) {
         var thisSource = regenerateCursor(sources[i], segs, limit, sourceStrategies[i]);
-        if (thisSource !== undefined) {
-            togo.push(thisSource);
-        }
+        togo.push(thisSource);
     }
     return togo;
 }
