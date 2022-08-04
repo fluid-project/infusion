@@ -943,6 +943,50 @@ jqUnit.test("FLUID-6137 distributeOptions with 0 as value", function () {
     jqUnit.assertEquals("Option should be distributed to fromRecord", 0, distributeZero.child.options.fromRecord);
 });
 
+/** FLUID-6744: Corruption of options merging through undefined wholesale options reference **/
+
+fluid.defaults("fluid.tests.fluid6744grade1", {
+    distro: {
+        first: 42
+    }
+});
+
+fluid.defaults("fluid.tests.fluid6744grade2", {
+    distro: {
+        second: 43
+    }
+});
+
+fluid.defaults("fluid.tests.fluid6744root", {
+    gradeNames: "fluid.component",
+    distributeOptions: {
+        distroFirst: {
+            // Interestingly this corruption only seems to occur if distributions are to gradeNames which is driven early
+            target: "{that child}.options.gradeNames",
+            record: "fluid.tests.fluid6744grade1"
+        },
+        distroSecond: {
+            target: "{that child}.options.gradeNames",
+            record: "fluid.tests.fluid6744grade2"
+        }
+    },
+    components: {
+        child: {
+            type: "fluid.component",
+            options: "{fluid6744root}.nothing"
+        }
+    }
+});
+
+jqUnit.test("FLUID-6744 Corruption of options merging through undefined wholesale options reference", function () {
+    var that = fluid.tests.fluid6744root();
+    var expected = {
+        first: 42,
+        second: 43
+    };
+    jqUnit.assertDeepEq("Both distributions strike child", expected, that.child.options.distro);
+});
+
 /** FLUID-4926 Invoker tests **/
 
 fluid.defaults("fluid.tests.invokerFunc", {
