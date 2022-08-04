@@ -212,7 +212,7 @@ fluid.defaults("fluid.tests.prefs.responsive.separatedPanelResponsiveTester", {
     modules: [{
         name: "Separated panel integration tests",
         tests: [{
-            expect: 40,
+            expect: 54,
             name: "Separated panel integration tests",
             sequenceGrade: "fluid.tests.prefs.responsive.iframeSequence",
             sequence: [{
@@ -228,6 +228,18 @@ fluid.defaults("fluid.tests.prefs.responsive.separatedPanelResponsiveTester", {
             }, {
                 func: "fluid.tests.prefs.responsive.assertPanelVisibility",
                 args: ["{separatedPanel}.prefsEditor", "Initial Rendering", 0]
+            }, {
+                func: "fluid.tests.prefs.responsive.clickArrow",
+                args: ["{separatedPanel}.prefsEditor.lineSpace.dom.header", "RIGHT"]
+            }, {
+                func: "fluid.tests.prefs.responsive.assertPanelVisibility",
+                args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Right", 1]
+            }, {
+                func: "fluid.tests.prefs.responsive.clickArrow",
+                args: ["{separatedPanel}.prefsEditor.contrast.dom.header", "LEFT"]
+            }, {
+                func: "fluid.tests.prefs.responsive.assertPanelVisibility",
+                args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Left", 0]
             }, {
                 func: "fluid.tests.prefs.responsive.triggerDOMEvent",
                 args: [window, "resize"]
@@ -254,58 +266,8 @@ fluid.defaults("fluid.tests.prefs.responsive.separatedPanel.initialPanelIndex", 
     }
 });
 
-fluid.defaults("fluid.tests.prefs.responsive.separatedPanelInitialPanelIndex", {
-    gradeNames: ["fluid.test.testEnvironment"],
-    components: {
-        separatedPanel: {
-            type: "fluid.tests.prefs.responsive.separatedPanel.initialPanelIndex",
-            container: {
-                expander: {
-                    funcName: "fluid.tests.prefs.responsive.separatedPanel.assignSeparatedPanelContainer"
-                }
-            },
-            createOnEvent: "{separatedPanelInitialPanelIndexTester}.events.afterSetup"
-        },
-        separatedPanelInitialPanelIndexTester: {
-            type: "fluid.tests.prefs.responsive.separatedPanelInitialPanelIndexTester"
-        }
-    }
-});
-
-fluid.defaults("fluid.tests.prefs.responsive.separatedPanelInitialPanelIndexTester", {
-    gradeNames: ["fluid.test.testCaseHolder"],
-    events: {
-        afterSetup: null
-    },
-    iframe: ".flc-iframeSetup-panelIndexTests",
-    modules: [{
-        name: "Separated panel initial panelIndex tester",
-        tests: [{
-            expect: 38,
-            name: "Separated panel initial panelIndex tester",
-            sequenceGrade: "fluid.tests.prefs.responsive.iframeSequence",
-            sequence: [{
-                listener: "fluid.tests.prefs.responsive.assertSeparatedPanelInit",
-                event: "{separatedPanelInitialPanelIndex separatedPanel}.events.onReady",
-                args: ["{separatedPanel}"]
-            }, {
-                func: "{separatedPanel}.slidingPanel.showPanel"
-            }, {
-                listener: "fluid.tests.prefs.responsive.assertSeparatedPanelState",
-                event: "{separatedPanel}.slidingPanel.events.afterPanelShow",
-                args: ["{separatedPanel}", true],
-                priority: "last:testing"
-            }, {
-                func: "fluid.tests.prefs.responsive.assertPanelVisibility",
-                args: ["{separatedPanel}.prefsEditor", "Scrolled to panel 0", 0]
-            }]
-        }]
-    }]
-});
-
 $(function () {
     fluid.test.runTests([
-        "fluid.tests.prefs.responsive.separatedPanelResponsive",
-        "fluid.tests.prefs.responsive.separatedPanelInitialPanelIndex"
+        "fluid.tests.prefs.responsive.separatedPanelResponsive"
     ]);
 });
