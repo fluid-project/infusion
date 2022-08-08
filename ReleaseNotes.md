@@ -4,6 +4,16 @@
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
+## What's New in 4.3.0
+
+* Maintenance release which resolves
+  * [FLUID-6744](https://issues.fluidproject.org/browse/FLUID-6744) Failure distributing to gradeNames for component
+    which has undefined options
+  * [FLUID-6745](https://issues.fluidproject.org/browse/FLUID-6745) Improve TextNodeParser so that it can be configured
+    with a free hash of selectors to ignore
+  * [FLUID-6748](https://issues.fluidproject.org/browse/FLUID-6748) Remove the auto save of panel index in separated
+    panel UIO
+
 ## What's New in 4.2.0
 
 * Maintenance release which resolves

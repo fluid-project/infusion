@@ -21,6 +21,23 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.3.0] - 2022-08-08
+
+### Added
+
+* [FLUID-6745](https://issues.fluidproject.org/browse/FLUID-6745) Improve TextNodeParser so that it can be configured
+  with a free hash of selectors to ignore
+
+### Fixed
+
+* [FLUID-6744](https://issues.fluidproject.org/browse/FLUID-6744) Failure distributing to gradeNames for component
+  which has undefined options
+
+### Removed
+
+* [FLUID-6748](https://issues.fluidproject.org/browse/FLUID-6748) Remove the auto save of panel index in separated
+    panel UIO
+
 ## [4.2.0] - 2022-07-05
 
 ### Fixed
@@ -946,7 +963,8 @@ A pre-release of [0.3.0].
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
 [Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
-[4.1.0]: https://github.com/fluid-project/infusion/releases/tag/v4.2.0
+[4.3.0]: https://github.com/fluid-project/infusion/releases/tag/v4.3.0
+[4.2.0]: https://github.com/fluid-project/infusion/releases/tag/v4.2.0
 [4.1.0]: https://github.com/fluid-project/infusion/releases/tag/v4.1.0
 [4.0.0]: https://github.com/fluid-project/infusion/releases/tag/v4.0.0
 [3.0.1]: https://github.com/fluid-project/infusion/releases/tag/v3.0.1
