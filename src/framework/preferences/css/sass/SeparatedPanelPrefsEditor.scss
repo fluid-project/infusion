@@ -27,11 +27,10 @@ body {
 
 // Top bar and show/hide button
 .fl-prefsEditor-separatedPanel {
-    border-bottom: 1px solid var(--fl-fgColor, #ccc);
+    border-bottom: 1px solid var(--fl-prefsEditorBgColor, #bcb5ad);
     display: flex;
     flex-direction: column;
     font-size: 1rem;
-    line-height: 0;
 
     .fl-panelBar {
         background-color: var(--fl-bgColor, #fff);
@@ -158,10 +157,197 @@ body {
     }
 }
 
-// IFrame
-.fl-prefsEditor-separatedPanel-iframe {
-    background-color: var(--fl-bgColor, #fff);
-    border: 0;
-    height: 0;
-    width: 100%;
+/* Preferences Editor */
+.fl-slidingPanel-panel {
+    background-color: var(--fl-prefsEditorBgColor, #bcb5ad);
+    background-image: none;
+    line-height: 1.2;
+    margin: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    .fl-prefsEditor {
+        color: var(--fl-prefsEditorFgColor, #5d5652);
+        font-family: var(--fl-font-family, "OpenSans", "Myriad Pro", Helvetica, Arial, sans-serif);
+        min-width: 100%;
+        overflow-x: scroll;
+    }
+
+    // Preference Panels
+    .fl-prefsEditor-panels {
+        display: table;
+        margin: 0;
+        white-space: nowrap;
+
+        .fl-prefsEditor-panel {
+            background-color: var(--fl-bgColor, #fff);
+            border: 1px solid var(--fl-prefsEditorPanelBorderFgColor, #615e59);
+            display: table-cell;
+            // minus 2px because of borders
+            min-width: calc(100vw - 2px);
+            padding: 16px 0.5em;
+            white-space: normal;
+
+            h2 {
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                min-height: 3.6em;
+                pointer-events: none;
+                text-transform: lowercase;
+                white-space: nowrap;
+                width: 100%;
+
+                [class*='fl-icon-'] {
+                    display: none;
+                }
+
+                .fl-heading-text {
+                    font-size: 1.3em;
+                    font-weight: 600;
+                    text-align: center;
+                }
+
+                // for right and left arrows
+                &::before,
+                &::after {
+                    font-family: "Times New Roman", Georgia, Times, serif !important;
+                    font-size: 3em;
+                    -webkit-font-smoothing: antialiased;
+                    font-style: normal;
+                    font-variant: normal;
+                    font-weight: normal;
+                    pointer-events: auto;
+                    text-transform: none;
+                }
+
+                // Single Left-Pointing Angle Quotation Mark
+                &::before {
+                    content: "\2039";
+                    margin-left: 1em;
+                }
+
+                // Single Right-Pointing Angle Quotation Mark
+                &::after {
+                    content: "\203a";
+                    margin-right: 1em;
+                }
+            }
+
+            // hiding arrows from IE 11, as the current method for making them interactive does
+            // not work in IE. The media query used here is a hack to target only IE
+            @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+                h2 {
+                    display: block;
+                    text-align: center;
+
+                    &::before,
+                    &::after {
+                        content: none;
+                    }
+                }
+            }
+
+            // hide left arrow from first panel
+            // hide right arrow from last panel
+            &:first-of-type h2::before,
+            &:last-of-type h2::after {
+                visibility: hidden;
+            }
+
+            // visually hide descriptions in mobile view.
+            // this style declaration is essentially a copy of
+            // .fl-hidden-accessible
+            .fl-prefsEditor-panel-descr {
+                border: 0;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: fixed;
+                width: 1px;
+            }
+
+            label {
+                font-size: 1em;
+            }
+
+            // Stepper
+            .fl-textfieldStepper {
+                [class*='fl-icon-'] {
+                    display: none;
+                }
+
+                .fl-textfieldStepper-focusContainer {
+                    align-items: center;
+                    display: flex;
+                    justify-content: center;
+                }
+            }
+
+            // Swtich
+            .fl-switchUI {
+                font-size: 1em;
+            }
+        }
+    }
+
+    // large screen / desktop view
+    @media screen and (min-width: 40em) {
+        margin: 0;
+        padding: 1px 0;
+
+        // Preference Panels
+        .fl-prefsEditor-panels {
+            border-spacing: 20px 0;
+            margin: 1em auto;
+
+            .fl-prefsEditor-panel {
+                border-radius: 5px;
+                box-shadow: 2px 2px #7a766d;
+                min-width: 25em;
+                padding: 1.5em;
+                padding-top: 1em;
+
+                h2 {
+                    border-bottom: solid var(--fl-prefsEditorPanelBorderBottomFgColor, #ccc) 1px;
+                    box-shadow: 0 6px 7px -6px rgba(0, 0, 0, 0.3);
+                    font-size: 1.2em;
+                    height: 3em;
+                    justify-content: flex-start;
+                    margin: 0 0 1.8em 0;
+                    white-space: normal;
+
+                    [class*='fl-icon-'] {
+                        display: inline;
+                    }
+
+                    &::before,
+                    &::after {
+                        content: none;
+                    }
+                }
+
+                .fl-prefsEditor-panel-descr {
+                    height: auto;
+                    margin: 0;
+                    margin-bottom: 1em;
+                    overflow: visible;
+                    position: inherit;
+                    width: 100%;
+                }
+
+                // Stepper icons
+                .fl-textfieldStepper {
+                    [class*='fl-icon-'] {
+                        display: inline;
+                        font-size: 1.4em;
+                        margin: 0 0.3em;
+                        padding-top: 0.3em;
+                    }
+                }
+            }
+        }
+    }
 }

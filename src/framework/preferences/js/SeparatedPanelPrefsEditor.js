@@ -27,17 +27,15 @@ fluid.dom.getDocumentHeight = function (dokkument) {
 fluid.defaults("fluid.prefs.separatedPanel", {
     gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.contextAware"],
     events: {
-        afterRender: null,
+        // afterRender: null,
         onReady: null,
         onCreateSlidingPanelReady: {
             events: {
-                iframeRendered: "afterRender",
                 onPrefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
             }
         },
-        templatesAndIframeReady: {
+        templatesAndMessagesReady: {
             events: {
-                iframeReady: "afterRender",
                 templatesLoaded: "onPrefsEditorTemplatesLoaded",
                 messagesLoaded: "onPrefsEditorMessagesLoaded"
             }
@@ -56,12 +54,12 @@ fluid.defaults("fluid.prefs.separatedPanel", {
     },
     selectors: {
         reset: ".flc-prefsEditor-reset",
-        iframe: ".flc-prefsEditor-iframe"
+        prefsEditor: ".flc-slidingPanel-panel"
     },
     listeners: {
         "onReady.bindEvents": {
             listener: "fluid.prefs.separatedPanel.bindEvents",
-            args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
+            args: ["{separatedPanel}.prefsEditor", "{separatedPanel}.innerEnhancer", "{separatedPanel}"]
         },
         "onCreate.hideReset": {
             listener: "fluid.prefs.separatedPanel.hideReset",
@@ -82,22 +80,6 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                     hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel",
                     panelLabel: "{that}.msgLookup.slidingPanelPanelLabel"
                 },
-                invokers: {
-                    operateShow: {
-                        funcName: "fluid.prefs.separatedPanel.showPanel",
-                        args: ["{that}.dom.panel", "{that}.events.afterPanelShow.fire"],
-                        // override default implementation
-                        "this": null,
-                        "method": null
-                    },
-                    operateHide: {
-                        funcName: "fluid.prefs.separatedPanel.hidePanel",
-                        args: ["{that}.dom.panel", "{iframeRenderer}.iframe", "{that}.events.afterPanelHide.fire"],
-                        // override default implementation
-                        "this": null,
-                        "method": null
-                    }
-                },
                 components: {
                     msgResolver: {
                         type: "fluid.messageResolver",
@@ -108,31 +90,35 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                 }
             }
         },
-        iframeRenderer: {
-            type: "fluid.prefs.separatedPanel.renderIframe",
-            container: "{separatedPanel}.dom.iframe",
+        innerEnhancer: {
+            type: "fluid.uiEnhancer",
+            container: "{separatedPanel}.dom.prefsEditor",
             options: {
-                events: {
-                    afterRender: "{separatedPanel}.events.afterRender"
-                },
-                components: {
-                    iframeEnhancer: {
-                        type: "fluid.uiEnhancer",
-                        container: "{iframeRenderer}.renderPrefsEditorContainer",
-                        createOnEvent: "afterRender",
-                        options: {
-                            gradeNames: ["{pageEnhancer}.uiEnhancer.options.userGrades"],
-                            jQuery: "{iframeRenderer}.jQuery",
-                            tocTemplate: "{pageEnhancer}.uiEnhancer.options.tocTemplate",
-                            inSeparatedPanel: true
-                        }
+                gradeNames: ["{pageEnhancer}.uiEnhancer.options.userGrades"],
+                tocTemplate: "{pageEnhancer}.uiEnhancer.options.tocTemplate",
+                distributeOptions: {
+                    applyInitValue: {
+                        record: true,
+                        target: "{that enactor}.options.applyInitValue"
+                    },
+                    removeTocEnactor: {
+                        record: "fluid.emptySubcomponent",
+                        target: "{that fluid.prefs.enactor.tableOfContents}.type"
+                    },
+                    removeOrator: {
+                        record: "fluid.emptySubcomponent",
+                        target: "{that fluid.orator}.type"
+                    },
+                    removeSelfVoicingEnactor: {
+                        record: "fluid.emptySubcomponent",
+                        target: "{that fluid.prefs.enactor.selfVoicing}.type"
                     }
                 }
             }
         },
         prefsEditor: {
-            createOnEvent: "templatesAndIframeReady",
-            container: "{iframeRenderer}.renderPrefsEditorContainer",
+            createOnEvent: "templatesAndMessagesReady",
+            container: "{separatedPanel}.dom.prefsEditor",
             options: {
                 gradeNames: ["fluid.prefs.uiEnhancerRelay", "fluid.prefs.arrowScrolling"],
                 // ensure that model and applier are available to users at top level
@@ -144,7 +130,6 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                 },
                 autoSave: true,
                 events: {
-                    onSignificantDOMChange: null,
                     updateEnhancerModel: "{that}.events.modelChanged"
                 },
                 listeners: {
@@ -165,24 +150,10 @@ fluid.defaults("fluid.prefs.separatedPanel", {
             removeSource: true,
             target: "{that > slidingPanel}.options"
         },
-        "separatedPanel.iframeRenderer": {
-            source: "{that}.options.iframeRenderer",
-            removeSource: true,
-            target: "{that > iframeRenderer}.options"
-        },
-        "separatedPanel.iframeRendered.terms": {
-            source: "{that}.options.terms",
-            target: "{that > iframeRenderer}.options.terms"
-        },
-        "separatedPanel.selectors.iframe": {
-            source: "{that}.options.iframe",
-            removeSource: true,
-            target: "{that}.options.selectors.iframe"
-        },
-        "separatedPanel.iframeEnhancer.outerEnhancerOptions": {
+        "separatedPanel.innerEnhancer.outerEnhancerOptions": {
             source: "{that}.options.outerEnhancerOptions",
             removeSource: true,
-            target: "{that iframeEnhancer}.options"
+            target: "{that > innerEnhancer}.options"
         }
     }
 });
@@ -191,64 +162,13 @@ fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
     separatedPanel.locate("reset").hide();
 };
 
-/*****************************************
- * fluid.prefs.separatedPanel.renderIframe *
- *****************************************/
-
-fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-    gradeNames: ["fluid.viewComponent"],
-    events: {
-        afterRender: null
-    },
-    styles: {
-        container: "fl-prefsEditor-separatedPanel-iframe"
-    },
-    terms: {
-        templatePrefix: "."
-    },
-    markupProps: {
-        "class": "flc-iframe",
-        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
-    },
-    listeners: {
-        "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"
-    }
-});
-
-fluid.prefs.separatedPanel.renderIframe.startLoadingIframe = function (that) {
-    var styles = that.options.styles;
-    // TODO: get earlier access to templateLoader,
-    var markupProps = fluid.copy(that.options.markupProps);
-    markupProps.src = fluid.stringTemplate(markupProps.src, that.options.terms);
-    that.iframeSrc = that.options.markupProps.src;
-
-    // Create iframe and append to container
-    that.iframe = $("<iframe/>");
-    that.iframe.on("load", function () {
-        var iframeWindow = that.iframe[0].contentWindow;
-        that.iframeDocument = iframeWindow.document;
-        // The iframe should prefer its own version of jQuery if a separate
-        // one is loaded
-        that.jQuery = iframeWindow.jQuery || $;
-
-        that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
-        that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
-    });
-    that.iframe.attr(markupProps);
-
-    that.iframe.addClass(styles.container);
-    that.iframe.hide();
-
-    that.iframe.appendTo(that.container);
-};
-
 fluid.prefs.separatedPanel.updateView = function (prefsEditor) {
     prefsEditor.events.onPrefsEditorRefresh.fire();
-    prefsEditor.events.onSignificantDOMChange.fire();
 };
 
 
-fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
+// fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
+fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, innerEnhancer, separatedPanel) {
     // FLUID-5740: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
     // which is a child of this component
 
@@ -258,63 +178,23 @@ fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, s
         "role": "button"
     });
 
-    separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
+    separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
         fluid.prefs.separatedPanel.updateView(prefsEditor);
-    }, "updateView", "after:openPanel");
+    }, "updateView");
 
     prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
-        iframeEnhancer.updateModel(prefsEditor.model.preferences);
+        innerEnhancer.updateModel(prefsEditor.model.preferences);
     }, "updateModel");
     prefsEditor.events.afterReset.addListener(function (prefsEditor) {
         fluid.prefs.separatedPanel.updateView(prefsEditor);
     }, "updateView");
-    prefsEditor.events.onSignificantDOMChange.addListener(function () {
-        // ensure that the panel is open before trying to adjust its height
-        if ( fluid.get(separatedPanel, "slidingPanel.model.isShowing") ) {
-            var dokkument = prefsEditor.container[0].ownerDocument;
-            var height = fluid.dom.getDocumentHeight(dokkument);
-            var iframe = separatedPanel.iframeRenderer.iframe;
-            var attrs = {height: height};
-            var panel = separatedPanel.slidingPanel.locate("panel");
-            panel.css({height: ""});
-            iframe.clearQueue();
-            iframe.animate(attrs, 400);
-        }
-    }, "adjustHeight");
-
-    separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
-        separatedPanel.iframeRenderer.iframe.height(0);
-
-        // Prevent the hidden Preferences Editorpanel from being keyboard and screen reader accessible
-        separatedPanel.iframeRenderer.iframe.hide();
-    }, "collapseFrame");
     separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
-        separatedPanel.iframeRenderer.iframe.show();
-
-        // FLUID-6183: Required for bug in MS EDGE that clips off the bottom of adjusters
-        // The height needs to be recalculated in order for the panel to show up completely
-        separatedPanel.iframeRenderer.iframe.height();
+        separatedPanel.prefsEditor.container.slideDown(separatedPanel.slidingPanel.options.animationDurations.show);
         separatedPanel.locate("reset").show();
     }, "openPanel");
     separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
         separatedPanel.locate("reset").hide();
     }, "hideReset");
-};
-
-// Replace the standard animator since we don't want the panel to become hidden
-// (potential cause of jumping)
-fluid.prefs.separatedPanel.hidePanel = function (panel, iframe, callback) {
-    iframe.clearQueue(); // FLUID-5334: clear the animation queue
-    $(panel).animate({height: 0}, {duration: 400, complete: callback});
-};
-
-// no activity - the kickback to the updateView listener will automatically trigger the
-// DOMChangeListener above. This ordering is preferable to avoid causing the animation to
-// jump by refreshing the view inside the iframe
-fluid.prefs.separatedPanel.showPanel = function (panel, callback) {
-    // A bizarre race condition has emerged under FF where the iframe held within the panel does not
-    // react synchronously to being shown
-    fluid.invokeLater(callback);
 };
 
 /**
@@ -351,7 +231,7 @@ fluid.defaults("fluid.prefs.separatedPanel.lazyLoad", {
                 onPrefsEditorMessagesLoaded: "onPrefsEditorMessagesPreloaded"
             }
         },
-        templatesAndIframeReady: {
+        templatesAndMessagesReady: {
             events: {
                 onLazyLoad: "onLazyLoad"
             }

@@ -1,5 +1,23 @@
 // Contains colour variables for contrast themes
 
+// The "blocking" definition used to insulate a part of the interface, e.g. the prefs editor itself, from styling changes
+// Do not begin this name with fl-theme because of fl-theme* matching rule in Contrast.scss
+
+.fl-blocking-theme {
+    --fl-fgColor: #000;
+    --fl-bgColor: #fff;
+    --fl-linkColor: #0000ee;
+    --fl-selectedFgColor: #fff;
+    --fl-selectedBgColor: #3297FD;
+    --fl-buttonFgColor: #000;
+    --fl-buttonBgColor: #fff;
+    --fl-prefsEditorBgColor: #bcb5ad;
+    --fl-prefsEditorFgColor: #5d5652;
+    --fl-selectBorderFgColor: #ebebeb;
+    --fl-prefsEditorPanelBorderFgColor: #615e59;
+    --fl-prefsEditorPanelBorderBottomFgColor: #ccc;
+}
+
 .fl-theme-bw {
     --fl-fgColor: #000;
     --fl-bgColor: #fff;

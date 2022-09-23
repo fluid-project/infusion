@@ -14,7 +14,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 "use strict";
 
 fluid.defaults("fluid.prefs.enactor", {
-    gradeNames: ["fluid.modelComponent"]
+    gradeNames: ["fluid.modelComponent"],
+    // A flag to indicate when the preference value is the default value, whether or not
+    // to apply this initial default value
+    applyInitValue: false
 });
 
 /**********************************************************************************
@@ -331,24 +334,45 @@ fluid.defaults("fluid.prefs.enactor.textSize", {
     },
     scale: 1,
     members: {
-        root: {
-            expander: {
-                "this": "{that}.container",
-                "method": "closest", // ensure that the correct document is being used. i.e. in an iframe
-                "args": ["html"]
-            }
-        }
+        root: "@expand:fluid.prefs.enactor.textSize.computeRoot({that}.container)"
     },
+    // members: {
+    //     root: {
+    //         expander: {
+    //             "this": "{that}.container",
+    //             "method": "closest", // ensure that the correct document is being used. i.e. in an iframe
+    //             "args": ["html"]
+    //         }
+    //     }
+    // },
     invokers: {
         set: {
             funcName: "fluid.prefs.enactor.textSize.set",
-            args: ["{that}", "{arguments}.0", "{that}.getTextSizeInPx"]
+            args: ["{that}", "{arguments}.0"]
         },
         getTextSizeInPx: {
             args: ["{that}.root", "{that}.options.fontSizeMap"]
         }
+    },
+    listeners: {
+        "onCreate.applyInitValue": {
+            listener: "fluid.prefs.enactor.textSize.applyInitValue",
+            args: ["{that}"]
+        }
     }
 });
+
+// See tech checkin notes from 2022-07-07 at https://docs.google.com/document/d/1_W89CeZZh69T8NtKzdHQblvuD344Cr3hYlcw1oBNwLc/edit#heading=h.umodf4oiza8d
+// Note that a size in rems is taken from the document's html element, not body - https://stackoverflow.com/a/48451850
+// Other properties may not be legal to appear on the html element (check this) - in the case the enhancer has targeted
+// us at the body element, hop up one element to the body.
+/** Given a container element, determine whether text size CSS properties should be set on it or its parent <html> element
+ * @param {jQuery} container - The container element
+ * @return {jQuery} Either the supplied container element, or its parent <html> element if it is a <body> element
+ */
+fluid.prefs.enactor.textSize.computeRoot = function (container) {
+    return container[0].tagName.toLowerCase() === "body" ? container.closest("html") : container;
+};
 
 /**
  * Sets the text size related classes and CSS custom properties of the element specified at `that.root`.
@@ -366,7 +390,7 @@ fluid.prefs.enactor.textSize.set = function (that, factor) {
         that.initialSize = that.getTextSizeInPx();
     }
 
-    if (that.initialSize && factor !== 1) {
+    if ((that.initialSize && factor !== 1) || (that.options.applyInitValue && that.initialSize && factor)) {
         var targetSize = fluid.roundToDecimal(factor * that.initialSize);
         that.root.addClass(that.options.styles.enabled);
         that.root.css(that.options.cssCustomProp.size, `${targetSize}px`);
@@ -375,6 +399,12 @@ fluid.prefs.enactor.textSize.set = function (that, factor) {
         that.root.removeClass(that.options.styles.enabled);
         that.root.css(that.options.cssCustomProp.size, "");
         that.root.css(that.options.cssCustomProp.factor, "");
+    }
+};
+
+fluid.prefs.enactor.textSize.applyInitValue = function (that) {
+    if (that.options.applyInitValue) {
+        that.set();
     }
 };
 
@@ -413,6 +443,12 @@ fluid.defaults("fluid.prefs.enactor.lineSpace", {
             funcName: "fluid.prefs.enactor.lineSpace.getLineHeightMultiplier",
             args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}]
         }
+    },
+    listeners: {
+        "onCreate.applyInitValue": {
+            listener: "fluid.prefs.enactor.lineSpace.applyInitValue",
+            args: ["{that}"]
+        }
     }
 });
 
@@ -427,9 +463,12 @@ fluid.prefs.enactor.lineSpace.getLineHeight = function (container) {
 // into a numeric value in em.
 // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
 fluid.prefs.enactor.lineSpace.getLineHeightMultiplier = function (lineHeight, fontSize) {
-    // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
-    // according to https://developer.mozilla.org/en/CSS/line-height
-    if (lineHeight === "normal") {
+    // Needs a better solution. For now,
+    // 1. "line-height" value "normal" is defaulted to 1.2em according to
+    // https://developer.mozilla.org/en/CSS/line-height
+    // 2. lineHeight === "0px" is detected when the UIO panel is closed/hidden. In this case,
+    // "line-height" is defaulted to the UIO panel default value 1.2em
+    if (lineHeight === "normal" || lineHeight === "0px") {
         return 1.2;
     }
 
@@ -452,7 +491,7 @@ fluid.prefs.enactor.lineSpace.set = function (that, factor) {
         that.lineHeightMultiplier = that.getLineHeightMultiplier();
     }
 
-    if (that.lineHeightMultiplier && factor !== 1) {
+    if ((that.lineHeightMultiplier && factor !== 1) || (that.options.applyInitValue && that.lineHeightMultiplier && factor)) {
         var targetLineSpace = fluid.roundToDecimal(factor * that.lineHeightMultiplier, 2);
         that.container.addClass(that.options.styles.enabled);
         that.container.css(that.options.cssCustomProp.size, targetLineSpace);
@@ -461,6 +500,12 @@ fluid.prefs.enactor.lineSpace.set = function (that, factor) {
         that.container.removeClass(that.options.styles.enabled);
         that.container.css(that.options.cssCustomProp.size, "");
         that.container.css(that.options.cssCustomProp.factor, "");
+    }
+};
+
+fluid.prefs.enactor.lineSpace.applyInitValue = function (that) {
+    if (that.options.applyInitValue) {
+        that.set();
     }
 };
 
