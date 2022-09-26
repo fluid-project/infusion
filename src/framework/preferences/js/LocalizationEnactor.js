@@ -37,6 +37,7 @@ fluid.defaults("fluid.prefs.enactor.localization", {
                 // At the moment, all enactors are copied into the iframe to apply settings to the panel as well.
                 // However, the strings for the panel will be localized through the prefsEditorLoader and do not
                 // require the iframe URL to change. When in the panel, we do not run the urlPathLocale changes.
+                // TODO: This grade is undefined and this check should be removed, especially as we remove the iframe renderer
                 inPanel: {
                     contextValue: "{iframeRenderer}.id",
                     // The following undefined grade is needed to prevent the `urlPath` check from supplying its

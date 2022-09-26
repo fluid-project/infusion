@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * This is similar to the algorithm specified for localised resources in Java, e.g. documented at
  * https://docs.oracle.com/javase/6/docs/api/java/util/ResourceBundle.html#getBundle%28java.lang.String,%20java.util.Locale,%20java.lang.ClassLoader%29
  * @param {String} fileName - The base filename or URL to be exploded
- * @param {String} locale - A locale name with respect to which to perform the explosion
+ * @param {String} [locale] - A locale name with respect to which to perform the explosion
  * @param {String} [defaultLocale] - An optional default locale to fall back on in the case none of the localised
  * variants could be located.
  * @return {String[]} An array of localised filenames to be fetched, in increasing order of specificity. In
@@ -36,7 +36,7 @@ fluid.explodeLocalisedName = function (fileName, locale, defaultLocale) {
     var baseName = fileName.substring(0, lastDot);
     var extension = fileName.substring(lastDot);
 
-    var segs = locale.split("_");
+    var segs = locale ? locale.split("_") : [];
 
     var exploded = fluid.transform(segs, function (seg, index) {
         var shortSegs = segs.slice(0, index + 1);
@@ -127,33 +127,28 @@ fluid.fetchResources = function (resourceSpecs, callback, options) {
  */
 fluid.fetchResources.explodeForLocales = function (resourceFetcher) {
     fluid.each(resourceFetcher.resourceSpecs, function (resourceSpec) {
-        if (!resourceSpec.launched) {
-            // If options.defaultLocale is set, it will replace any
-            // defaultLocale set on an individual resourceSpec
-            if (resourceFetcher.options.defaultLocale && resourceSpec.defaultLocale === undefined) {
-                resourceSpec.defaultLocale = resourceFetcher.options.defaultLocale;
-            }
-            if (resourceSpec.locale === undefined) {
-                resourceSpec.locale = resourceFetcher.options.locale || resourceSpec.defaultLocale;
-            }
-            resourceSpec.dataType = resourceSpec.dataType || resourceFetcher.options.dataType;
+        // If options.defaultLocale is set, it will be a default for defaultLocale set on an individual resourceSpec
+        resourceSpec.resolvedDefaultLocale = resourceSpec.defaultLocale || resourceFetcher.options.defaultLocale;
+        // A locale from the model takes priority over any locally set locale - should review this
+        resourceSpec.resolvedLocale = resourceFetcher.options.locale || resourceSpec.locale || resourceSpec.resolvedDefaultLocale;
 
-            resourceSpec.loader = fluid.resourceLoader.resolveResourceLoader(resourceSpec);
-            if (!resourceSpec.loader.loader.noPath) {
-                var pathKey = resourceSpec.loader.pathKey;
-                var path = resourceSpec[pathKey];
-                var resolvedPath = resourceSpec[pathKey] = resourceFetcher.transformResourceURL(path);
-                if (resourceSpec.locale) {
-                    resourceSpec.localeExploded = fluid.explodeLocalisedName(resolvedPath, resourceSpec.locale, resourceSpec.defaultLocale);
-                    resourceSpec.localeExplodedSpecs = fluid.transform(resourceSpec.localeExploded, function (oneExploded) {
-                        var togo = {
-                            loader: resourceSpec.loader
-                        };
-                        togo[pathKey] = oneExploded;
-                        return togo;
-                    }, fluid.fetchResources.prepareRequestOptions);
-                }
-            }
+        // Note: An important change from Infusion 4.3 - EVERY resourceSpec with a path now gets upgraded to localeExplodedSpecs,
+        // since we could never be sure that they wouldn't get localised as a result of a change to model.resourceLoader.locale
+        // and the "loader" gets established as part of the very first pass in resolveLoaderTask
+        // Fix for FLUID-6750
+        if (!resourceSpec.loader.loader.noPath) {
+            var pathKey = resourceSpec.loader.pathKey;
+            var path = resourceSpec[pathKey];
+            var resolvedPath = resourceSpec[pathKey] = resourceFetcher.transformResourceURL(path);
+            resourceSpec.localeExploded = fluid.explodeLocalisedName(resolvedPath, resourceSpec.resolvedLocale, resourceSpec.resolvedDefaultLocale);
+            resourceSpec.localeExplodedSpecs = fluid.transform(resourceSpec.localeExploded, function (oneExploded) {
+                var togo = {
+                    loader: resourceSpec.loader,
+                    options: resourceSpec.options
+                };
+                togo[pathKey] = oneExploded;
+                return togo;
+            }, fluid.fetchResources.prepareRequestOptions);
         }
     });
 };
@@ -413,6 +408,7 @@ fluid.initResourceFetcher = function (resourceFetcher) {
      */
     resourceFetcher.completionPromise = fluid.promise();
     fluid.fetchResources.explodeForLocales(resourceFetcher);
+
     resourceFetcher.onInit.fire(resourceFetcher.completionPromise);
 };
 
@@ -500,6 +496,11 @@ fluid.makeResourceFetcher = function (sourceResourceSpecs, callback, options, tr
         that.onInit.addListener.apply(null, args);
     });
 
+    fluid.each(that.resourceSpecs, function (resourceSpec) {
+        resourceSpec.dataType = resourceSpec.dataType || that.options.dataType;
+        resourceSpec.loader = fluid.resourceLoader.resolveResourceLoader(resourceSpec);
+    });
+
     fluid.initResourceFetcher(that);
 
     fluid.each(that.resourceSpecs, function (resourceSpec, key) {
@@ -559,7 +560,7 @@ fluid.fetchResources.refetchOneResource = function (resourceSpec, resourceFetche
 fluid.fetchResources.initiateRefetch = function (resourceFetcher) {
     resourceFetcher.completionPromise.cancel();
     delete resourceFetcher.completionPromise;
-    fluid.initResourceFetcher(resourceFetcher);
+    fluid.initResourceFetcher(resourceFetcher, true);
     fluid.fetchResources.fetchAll(resourceFetcher);
     resourceFetcher.fetchAll();
 };
@@ -567,14 +568,13 @@ fluid.fetchResources.initiateRefetch = function (resourceFetcher) {
 /** Trigger the refetching of all resources managed by this `resourceFetcher`. By default, this will only fetch resources
  * which are localisable (that is, they have resource entries with a path field which can be interpolated for a locale)
  * @param {resourceFetcher} resourceFetcher - The fetcher for which all resources will be loaded
- * @param {Boolean} [withoutLocales] - (Optional) Set to `true` if this should also fetch resources which are not localisable
  * @return {Promise} The `completionPromise` for the fetcher which will yield the full state of fetched `resourceSpecs`
  * in either success or failure
  */
-fluid.fetchResources.refetchAll = function (resourceFetcher, withoutLocales) {
+fluid.fetchResources.refetchAll = function (resourceFetcher) {
     var anyLaunched = false;
     fluid.each(resourceFetcher.resourceSpecs, function (resourceSpec) {
-        if (resourceSpec.locale || withoutLocales) {
+        if (resourceSpec.resolvedLocale) {
             anyLaunched = true;
             fluid.fetchResources.refetchOneResource(resourceSpec, resourceFetcher, true);
         }
@@ -650,6 +650,7 @@ fluid.registerNamespace("fluid.resourceLoader.loaders");
 fluid.resourceLoader.modelUpdated = function (resourceFetcher, modelOptions, early) {
     resourceFetcher.options = $.extend(true, {}, resourceFetcher.options, modelOptions);
     if (early) {
+        fluid.fetchResources.explodeForLocales(resourceFetcher);
         resourceFetcher.optionsReady.resolve();
     } else {
         resourceFetcher.refetchAll();
