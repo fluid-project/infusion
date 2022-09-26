@@ -127,7 +127,7 @@ fluid.fetchResources = function (resourceSpecs, callback, options) {
  */
 fluid.fetchResources.explodeForLocales = function (resourceFetcher) {
     fluid.each(resourceFetcher.resourceSpecs, function (resourceSpec) {
-        // If options.defaultLocale is set, it will replace any defaultLocale set on an individual resourceSpec
+        // If options.defaultLocale is set, it will be a default for defaultLocale set on an individual resourceSpec
         resourceSpec.resolvedDefaultLocale = resourceSpec.defaultLocale || resourceFetcher.options.defaultLocale;
         // A locale from the model takes priority over any locally set locale - should review this
         resourceSpec.resolvedLocale = resourceFetcher.options.locale || resourceSpec.locale || resourceSpec.resolvedDefaultLocale;
