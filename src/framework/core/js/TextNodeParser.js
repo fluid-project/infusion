@@ -104,7 +104,7 @@ fluid.textNodeParser.getLang = function (elm) {
 /**
  * Recursively parses a DOM element and it's sub elements and fires the `onParsedTextNode` event for each text node
  * found. The event is fired with the text node, language and index of the text node in the list of its parent's
- * child nodes..
+ * child nodes.
  *
  * Note: elements that return `false` from `that.hasTextToRead` are ignored.
  *
