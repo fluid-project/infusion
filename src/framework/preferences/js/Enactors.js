@@ -20,6 +20,13 @@ fluid.defaults("fluid.prefs.enactor", {
     applyInitValue: false
 });
 
+// A tag grade used to hold selectors which should be ignored by the action of an enactor scanning the DOM for material
+// to act on - currently consumed by the SyllabificationEnactor and the TableOfContentsEnactor
+fluid.defaults("fluid.prefs.enactor.ignorableSelectorHolder", {
+    gradeNames: "fluid.component"
+    // ignoreSelectorForEnactor - an enactor receives a selector in this field which marks material in the document to be ignored
+});
+
 /**********************************************************************************
  * styleElements
  *
@@ -517,7 +524,7 @@ fluid.prefs.enactor.lineSpace.applyInitValue = function (that) {
 
 // Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.tableOfContents", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent", "fluid.prefs.enactor.ignorableSelectorHolder"],
     preferenceMap: {
         "fluid.prefs.tableOfContents": {
             "model.toc": "value"
@@ -545,6 +552,9 @@ fluid.defaults("fluid.prefs.enactor.tableOfContents", {
             container: "{fluid.prefs.enactor.tableOfContents}.container",
             createOnEvent: "onCreateTOCReady",
             options: {
+                ignoreForToC: {
+                    forEnactor: "{fluid.prefs.enactor.tableOfContents}.options.ignoreSelectorForEnactor.forEnactor"
+                },
                 listeners: {
                     "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender",
                     // An integrator may wish to style the ToC container but not have it displayed when not

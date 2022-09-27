@@ -51,6 +51,9 @@ fluid.defaults("fluid.prefs.builder", {
             func: fluid.deferredMergePolicy
         }
     },
+    selectors: {
+        containerMarker: ".flc-prefsEditor-main"
+    },
     invokers: {
         applyAssemblerGrades: {
             funcName: "fluid.get",
@@ -103,9 +106,14 @@ fluid.defaults("fluid.prefs.builder", {
         }
     },
     distributeOptions: {
-        source: "{that}.options.auxiliarySchema.generatePanelContainers",
-        target: "{that prefsEditorLoader prefsEditor}.options.generatePanelContainers",
-        namespace: "generatePanelContainers"
+        generatePanelContainers: {
+            source: "{that}.options.auxiliarySchema.generatePanelContainers",
+            target: "{that prefsEditorLoader prefsEditor}.options.generatePanelContainers"
+        },
+        containerMarker: {
+            source: "{that}.options.selectors.containerMarker",
+            target: "{that fluid.prefs.enactor}.options.ignoreSelectorForEnactor.forEnactor"
+        }
     }
 });
 

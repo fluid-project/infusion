@@ -111,6 +111,12 @@ fluid.defaults("fluid.prefs.enactor.syllabification", {
             }
         }
     },
+    distributeOptions: {
+        ignoreSelectorForEnactor: {
+            source: "{that}.options.ignoreSelectorForEnactor.forEnactor",
+            target: "{that > parser}.options.ignoredSelectors.forEnactor"
+        }
+    },
     members: {
         // `hyphenators` is a mapping of strings, representing the source paths of pattern files, to Promises
         // linked to the resolutions of loading and initially applying those syllabification patterns.
