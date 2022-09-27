@@ -21,6 +21,13 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.4.0] - 2022-09-27
+
+### Fixed
+
+* [FLUID-6750](https://issues.fluidproject.org/browse/FLUID-6750) Model-driven relocalisation does not take account
+  of initial model values
+
 ## [4.3.0] - 2022-08-08
 
 ### Added
@@ -963,6 +970,7 @@ A pre-release of [0.3.0].
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
 [Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
+[4.4.0]: https://github.com/fluid-project/infusion/releases/tag/v4.4.0
 [4.3.0]: https://github.com/fluid-project/infusion/releases/tag/v4.3.0
 [4.2.0]: https://github.com/fluid-project/infusion/releases/tag/v4.2.0
 [4.1.0]: https://github.com/fluid-project/infusion/releases/tag/v4.1.0

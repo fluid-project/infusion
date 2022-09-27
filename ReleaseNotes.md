@@ -1,8 +1,14 @@
-# Release Notes for Fluid Infusion 4.2.0
+# Release Notes for Fluid Infusion 4.4.0
 
 [Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
+
+## What's New in 4.4.0
+
+* Maintenance release which resolves
+  * [FLUID-6750](https://issues.fluidproject.org/browse/FLUID-6750) Model-driven relocalisation does not take account
+    of initial model values
 
 ## What's New in 4.3.0
 

@@ -6,7 +6,7 @@ This is the list of Infusion copyright holders. It does not list all individual 
 copyright to an institution, only made minor changes, or their contributions no longer appear in the codebase.
 Please see the version control system's revision history for details on contributions.
 
-Copyright 2007-2021
+Copyright 2007-2022
 
 * Dinuka De Silva
 * Lucendo Development Ltd.
