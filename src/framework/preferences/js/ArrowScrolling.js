@@ -73,16 +73,6 @@ fluid.defaults("fluid.prefs.arrowScrolling", {
                 }
             ]
         },
-        // "onReady.windowResize": {
-        //     "this": "window",
-        //     method: "addEventListener",
-        //     args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
-        // },
-        // "onDestroy.removeWindowResize": {
-        //     "this": "window",
-        //     method: "removeEventListener",
-        //     args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
-        // },
         // Need to set panelMaxIndex after onPrefsEditorMarkupReady to ensure that the template has been
         // rendered before we try to get the number of panels.
         "onPrefsEditorMarkupReady.setPanelMaxIndex": {

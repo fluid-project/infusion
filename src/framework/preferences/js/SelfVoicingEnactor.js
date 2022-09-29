@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 
 fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.ignorableSelectorHolder", "fluid.viewComponent"],
     preferenceMap: {
         "fluid.prefs.speak": {
             "model.enabled": "value"

@@ -128,22 +128,6 @@ fluid.defaults("fluid.prefs.subPanel", {
     renderOnInit: false
 });
 
-// fluid.defaults("fluid.prefs.subPanel.domBind", {
-//     gradeNames: ["fluid.component"],
-//     listeners: {
-//         "onDomBind.domChange": {
-//             listener: "{prefsEditor}.events.onSignificantDOMChange"
-//         }
-//     }
-// });
-
-// fluid.prefs.subPanel.getDomBindGrade = function (prefsEditor) {
-//     var hasListener = fluid.get(prefsEditor, "options.events.onSignificantDOMChange") !== undefined;
-//     if (hasListener) {
-//         return "fluid.prefs.subPanel.domBind";
-//     }
-// };
-
 /*
  * Since the composite panel manages the rendering of the subpanels
  * the markup used by subpanels needs to be completely replaced.

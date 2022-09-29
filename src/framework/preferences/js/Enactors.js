@@ -313,9 +313,9 @@ fluid.prefs.enactor.spacingSetter.set = function (that, units) {
     units = units || "";
     var targetSize = units ? `${fluid.roundToDecimal(that.originalSpacing + units, 2)}em` : "";
 
-    that.container.toggleClass(that.options.styles.enabled, !!units);
-    that.container.css(that.options.cssCustomProp.size, targetSize);
-    that.container.css(that.options.cssCustomProp.factor, units);
+    that.container.toggleClass(that.options.styles.enabled, that.options.applyInitValue || !!units);
+    that.container.css(that.options.cssCustomProp.size, that.options.applyInitValue && targetSize === "" ? 0 : targetSize);
+    that.container.css(that.options.cssCustomProp.factor, that.options.applyInitValue && units === "" ? 0 : units);
 };
 
 /*******************************************************************************
@@ -343,15 +343,6 @@ fluid.defaults("fluid.prefs.enactor.textSize", {
     members: {
         root: "@expand:fluid.prefs.enactor.textSize.computeRoot({that}.container)"
     },
-    // members: {
-    //     root: {
-    //         expander: {
-    //             "this": "{that}.container",
-    //             "method": "closest", // ensure that the correct document is being used. i.e. in an iframe
-    //             "args": ["html"]
-    //         }
-    //     }
-    // },
     invokers: {
         set: {
             funcName: "fluid.prefs.enactor.textSize.set",
@@ -473,8 +464,8 @@ fluid.prefs.enactor.lineSpace.getLineHeightMultiplier = function (lineHeight, fo
     // Needs a better solution. For now,
     // 1. "line-height" value "normal" is defaulted to 1.2em according to
     // https://developer.mozilla.org/en/CSS/line-height
-    // 2. lineHeight === "0px" is detected when the UIO panel is closed/hidden. In this case,
-    // "line-height" is defaulted to the UIO panel default value 1.2em
+    // 2. "line-height" value is defaulted to the UIO panel default value 1.2em when
+    // lineHeight === "0px" is detected when the UIO panel is closed/hidden
     if (lineHeight === "normal" || lineHeight === "0px") {
         return 1.2;
     }
@@ -524,7 +515,7 @@ fluid.prefs.enactor.lineSpace.applyInitValue = function (that) {
 
 // Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.tableOfContents", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent", "fluid.prefs.enactor.ignorableSelectorHolder"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.ignorableSelectorHolder", "fluid.viewComponent"],
     preferenceMap: {
         "fluid.prefs.tableOfContents": {
             "model.toc": "value"

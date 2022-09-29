@@ -27,7 +27,6 @@ fluid.dom.getDocumentHeight = function (dokkument) {
 fluid.defaults("fluid.prefs.separatedPanel", {
     gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.contextAware"],
     events: {
-        // afterRender: null,
         onReady: null,
         onCreateSlidingPanelReady: {
             events: {
@@ -54,7 +53,8 @@ fluid.defaults("fluid.prefs.separatedPanel", {
     },
     selectors: {
         reset: ".flc-prefsEditor-reset",
-        prefsEditor: ".flc-slidingPanel-panel"
+        prefsEditor: ".flc-slidingPanel-panel",
+        containerMarker: ".flc-prefsEditor-main"
     },
     listeners: {
         "onReady.bindEvents": {
@@ -90,6 +90,7 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                 }
             }
         },
+        // innerEnhancer handles preferences applied to the UIO container
         innerEnhancer: {
             type: "fluid.uiEnhancer",
             container: "{separatedPanel}.dom.prefsEditor",
@@ -101,6 +102,11 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                         record: true,
                         target: "{that enactor}.options.applyInitValue"
                     },
+                    syllabifyHiddenContents: {
+                        record: true,
+                        target: "{that fluid.prefs.enactor.syllabification > parser}.options.parseHidden"
+                    },
+                    // Disable TOC and self voicing enactors in the UIO container
                     removeTocEnactor: {
                         record: "fluid.emptySubcomponent",
                         target: "{that fluid.prefs.enactor.tableOfContents}.type"
@@ -154,6 +160,18 @@ fluid.defaults("fluid.prefs.separatedPanel", {
             source: "{that}.options.outerEnhancerOptions",
             removeSource: true,
             target: "{that > innerEnhancer}.options"
+        },
+        "separatedPanel.ignoreSelectorForToc": {
+            source: "{that}.options.selectors.containerMarker",
+            target: "{enhancer fluid.prefs.enactor.tableOfContents}.options.ignoreSelectorForEnactor.forEnactor"
+        },
+        "separatedPanel.ignoreSelectorForSelfVoicing": {
+            source: "{that}.options.selectors.containerMarker",
+            target: "{enhancer fluid.prefs.enactor.selfVoicing}.options.ignoreSelectorForEnactor.forEnactor"
+        },
+        "separatedPanel.ignoreSelectorForSyllabification": {
+            source: "{that}.options.selectors.prefsEditor",
+            target: "{enhancer fluid.prefs.enactor.syllabification}.options.ignoreSelectorForEnactor.forEnactor"
         }
     }
 });
