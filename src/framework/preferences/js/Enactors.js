@@ -17,14 +17,11 @@ fluid.defaults("fluid.prefs.enactor", {
     gradeNames: ["fluid.modelComponent"],
     // A flag to indicate when the preference value is the default value, whether or not
     // to apply this initial default value
-    applyInitValue: false
-});
-
-// A tag grade used to hold selectors which should be ignored by the action of an enactor scanning the DOM for material
-// to act on - currently consumed by the SyllabificationEnactor and the TableOfContentsEnactor
-fluid.defaults("fluid.prefs.enactor.ignorableSelectorHolder", {
-    gradeNames: "fluid.component"
-    // ignoreSelectorForEnactor - an enactor receives a selector in this field which marks material in the document to be ignored
+    applyInitValue: false,
+    // Receives selectors in this field which marks material in the document to be ignored by the action of an enactor
+    // scanning the DOM for material. Currently consumed by the SyllabificationEnactor, the TableOfContentsEnactor
+    // and the SelfVoicingEnactor.
+    ignoreSelectorForEnactor: null
 });
 
 /**********************************************************************************

@@ -56,6 +56,9 @@ fluid.defaults("fluid.prefs.separatedPanel", {
         prefsEditor: ".flc-slidingPanel-panel",
         containerMarker: ".flc-prefsEditor-main"
     },
+    styles: {
+        blockingClasses: ["fl-blocking-theme", "fl-blocking-font", "fl-blocking-input-enhanced"]
+    },
     listeners: {
         "onReady.bindEvents": {
             listener: "fluid.prefs.separatedPanel.bindEvents",
@@ -63,6 +66,10 @@ fluid.defaults("fluid.prefs.separatedPanel", {
         },
         "onCreate.hideReset": {
             listener: "fluid.prefs.separatedPanel.hideReset",
+            args: ["{separatedPanel}"]
+        },
+        "onCreate.applyInitialClasses": {
+            listener: "fluid.prefs.separatedPanel.applyInitialClasses",
             args: ["{separatedPanel}"]
         }
     },
@@ -178,6 +185,11 @@ fluid.defaults("fluid.prefs.separatedPanel", {
 
 fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
     separatedPanel.locate("reset").hide();
+};
+
+fluid.prefs.separatedPanel.applyInitialClasses = function (separatedPanel) {
+    separatedPanel.container[0].classList.add(separatedPanel.options.selectors.containerMarker.substring(1));
+    separatedPanel.locate("prefsEditor")[0].classList.add(...separatedPanel.options.styles.blockingClasses);
 };
 
 fluid.prefs.separatedPanel.updateView = function (prefsEditor) {
