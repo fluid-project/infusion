@@ -406,7 +406,7 @@ jqUnit.asyncTest("FLUID-4982: Overlapping creation of asynchronous components", 
         jqUnit.assertEquals("First component model resolved", "second", first.model);
         jqUnit.assertEquals("Second component model resolved", "first", second.model);
         jqUnit.assertTrue("Failed component has been destroyed", fluid.isDestroyed(failed));
-        jqUnit.assertEquals("Status code recoverable from failed component", 404, failed.creationPromise.value.status);
+        jqUnit.assertTrue("Status code recoverable from failed component", 404, failed.creationPromise.value.message.includes("/notfound"));
         jqUnit.assertTrue("onDestroy called for failed component", true, failed.onDestroyCalled);
         jqUnit.assertTrue("afterDestroy called for failed component", true, failed.onDestroyCalled);
         mocks.destroy();
@@ -430,7 +430,8 @@ fluid.defaults("fluid.tests.FLUID6460", {
 
 jqUnit.test("FLUID-6460: Transfer options to XHR", function () {
     var that = fluid.tests.FLUID6460();
-    jqUnit.assertEquals("Should have transferred responseType option to XHR property", "arraybuffer", that.resourceFetcher.resourceSpecs.someResource.xhr.responseType);
+    var spec = that.resourceFetcher.resourceSpecs.someResource;
+    jqUnit.assertEquals("Should have transferred responseType option to XHR property", "arraybuffer", spec.localeExplodedSpecs[0].xhr.responseType);
 });
 
 /** FLUID-4982: Partially filled out resource blocks **/

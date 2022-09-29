@@ -22,6 +22,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 fluid.defaults("fluid.orator", {
     gradeNames: ["fluid.viewComponent"],
     selectors: {
+        // TODO: AMB 14/9/22 This selector appears unused. The controller instead needs a "parentContainer" literal element supplied -
+        // The enactor then reaches in and overrides this
         controller: ".flc-orator-controller",
         content: ".flc-orator-content"
     },
@@ -851,6 +853,8 @@ fluid.defaults("fluid.orator.selectionReader", {
         onToggleControl: null
     },
     components: {
+        // This parser is only used within fluid.orator.selectionReader.parseElement by direct use of its "parse" function
+        // and it does not need configuration
         parser: {
             type: "fluid.textNodeParser"
         }

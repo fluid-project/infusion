@@ -903,21 +903,49 @@ fluid.tests.fluid6442.checkIt = function (component) {
     }
 };
 
+fluid.defaults("fluid.tests.fluid6442options", {
+    listeners: {
+        "onResourcesLoaded.checkIt": {
+            func: "fluid.tests.fluid6442.checkIt",
+            args: "{that}"
+        },
+        "onResourceError.failTest": function (err) {
+            jqUnit.fail("Failure fetching resource: " + err);
+        }
+    }
+});
+
 jqUnit.asyncTest("FLUID-6442: Modelised relocalisation should be accessible via resources", function () {
     jqUnit.expect(2);
     var component = fluid.tests.fluid6442({
-        listeners: {
-            "onResourcesLoaded.checkIt": {
-                func: "fluid.tests.fluid6442.checkIt",
-                args: "{that}"
-            },
-            "onResourceError.failTest": function (err) {
-                jqUnit.fail("Failure fetching resource: " + err);
-            }
-        }
+        gradeNames: "fluid.tests.fluid6442options"
     });
     // Change the locale before the queued I/O can resolve. In addition this tests promise cancellation propagation.
     component.applier.change("resourceLoader.locale", "en_ZA");
+});
+
+/** FLUID-6750: Modelised relocalisation should work on startup **/
+
+fluid.defaults("fluid.tests.fluid6750", {
+    gradeNames: ["fluid.modelComponent", "fluid.resourceLoader"],
+    resources: {
+        messages: {
+            url: "../data/messages1.json",
+            dataType: "json"
+        }
+    },
+    model: {
+        resourceLoader: {
+            locale: "en_ZA"
+        }
+    }
+});
+
+jqUnit.asyncTest("FLUID-6750: Modelised relocalisation should work on startup", function () {
+    jqUnit.expect(2);
+    fluid.tests.fluid6750({
+        gradeNames: "fluid.tests.fluid6442options"
+    });
 });
 
 /** FLUID-6503: Two side-by-side modelised resources **/
