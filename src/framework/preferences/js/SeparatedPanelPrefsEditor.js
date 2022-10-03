@@ -113,7 +113,7 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                         record: true,
                         target: "{that fluid.prefs.enactor.syllabification > parser}.options.parseHidden"
                     },
-                    // Disable TOC and self voicing enactors in the UIO container
+                    // Disable TOC and self voicing enactors from the innerEnhancer
                     removeTocEnactor: {
                         record: "fluid.emptySubcomponent",
                         target: "{that fluid.prefs.enactor.tableOfContents}.type"
@@ -151,6 +151,8 @@ fluid.defaults("fluid.prefs.separatedPanel", {
                         method: "on",
                         args: ["click", "{that}.reset"]
                     },
+                    // Refresh the prefs editor with initial preferences
+                    "{separatedPanel}.events.onReady": "{that}.events.onPrefsEditorRefresh.fire",
                     "afterReset.applyChanges": "{that}.applyChanges"
                 }
             }
@@ -192,11 +194,6 @@ fluid.prefs.separatedPanel.applyInitialClasses = function (separatedPanel) {
     separatedPanel.locate("prefsEditor")[0].classList.add(...separatedPanel.options.styles.blockingClasses);
 };
 
-fluid.prefs.separatedPanel.updateView = function (prefsEditor) {
-    prefsEditor.events.onPrefsEditorRefresh.fire();
-};
-
-
 // fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
 fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, innerEnhancer, separatedPanel) {
     // FLUID-5740: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
@@ -209,15 +206,14 @@ fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, innerEnhancer, se
     });
 
     separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
-        fluid.prefs.separatedPanel.updateView(prefsEditor);
+        prefsEditor.events.onPrefsEditorRefresh.fire();
     }, "updateView");
-
+    prefsEditor.events.afterReset.addListener(function (prefsEditor) {
+        prefsEditor.events.onPrefsEditorRefresh.fire();
+    }, "updateView");
     prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
         innerEnhancer.updateModel(prefsEditor.model.preferences);
     }, "updateModel");
-    prefsEditor.events.afterReset.addListener(function (prefsEditor) {
-        fluid.prefs.separatedPanel.updateView(prefsEditor);
-    }, "updateView");
     separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
         separatedPanel.prefsEditor.container.slideDown(separatedPanel.slidingPanel.options.animationDurations.show);
         separatedPanel.locate("reset").show();

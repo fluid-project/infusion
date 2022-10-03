@@ -55,7 +55,7 @@ fluid.tests.textNodeParser.assertTextToRead = function (testCases) {
     var ignoreAriaHiddenOverridden = {
         ariaHidden: null
     };
-    var hasTextNoAriaHiddenCheck =  testCases.hasTextToRead.concat(testCases.ariaHidden);
+    var hasTextNoAriaHiddenCheck = testCases.hasTextToRead.concat(testCases.ariaHidden);
     fluid.each(hasTextNoAriaHiddenCheck, function (selector) {
         jqUnit.assertTrue("acceptAriaHidden = true - \"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead(q(selector), ignoreAriaHiddenOverridden));
     });
@@ -70,6 +70,11 @@ fluid.tests.textNodeParser.assertTextToRead = function (testCases) {
     });
     fluid.each(testCases.noTextToRead, function (selector) {
         jqUnit.assertFalse("acceptAriaHidden = true - \"" + selector + "\" shouldn't have text to read.", fluid.textNodeParser.hasTextToRead(q(selector), {}));
+    });
+
+    // test hidden elements have text to read when parseHidden === true
+    fluid.each(testCases.parseHidden, function (selector) {
+        jqUnit.assertTrue("parseHidden = true - the hidden element \"" + selector + "\" should have text to read.", fluid.textNodeParser.hasTextToRead(q(selector), {}, true));
     });
 };
 
@@ -102,6 +107,12 @@ fluid.tests.textNodeParser.hasTextToReadTestCases = {
     "ariaHidden": [
         ".flc-textNodeParser-test-checkDOMText-ariaHiddenTrue",
         ".flc-textNodeParser-test-checkDOMText-ariaHiddenTrue-nested"
+    ],
+    "parseHidden": [
+        ".flc-textNodeParser-test-checkDOMText-none",
+        ".flc-textNodeParser-test-checkDOMText-none-nested",
+        ".flc-textNodeParser-test-checkDOMText-hidden",
+        ".flc-textNodeParser-test-checkDOMText-hidden-nested"
     ]
 };
 
