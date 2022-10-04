@@ -172,15 +172,15 @@ fluid.defaults("fluid.prefs.separatedPanel", {
         },
         "separatedPanel.ignoreSelectorForToc": {
             source: "{that}.options.selectors.containerMarker",
-            target: "{enhancer fluid.prefs.enactor.tableOfContents}.options.ignoreSelectorForEnactor.forEnactor"
+            target: "{fluid.prefs.builder > enhancer fluid.prefs.enactor.tableOfContents}.options.ignoreSelectorForEnactor.forEnactor"
         },
         "separatedPanel.ignoreSelectorForSelfVoicing": {
             source: "{that}.options.selectors.containerMarker",
-            target: "{enhancer fluid.prefs.enactor.selfVoicing}.options.ignoreSelectorForEnactor.forEnactor"
+            target: "{fluid.prefs.builder > enhancer fluid.prefs.enactor.selfVoicing}.options.ignoreSelectorForEnactor.forEnactor"
         },
         "separatedPanel.ignoreSelectorForSyllabification": {
             source: "{that}.options.selectors.prefsEditor",
-            target: "{enhancer fluid.prefs.enactor.syllabification}.options.ignoreSelectorForEnactor.forEnactor"
+            target: "{fluid.prefs.builder > enhancer fluid.prefs.enactor.syllabification}.options.ignoreSelectorForEnactor.forEnactor"
         }
     }
 });

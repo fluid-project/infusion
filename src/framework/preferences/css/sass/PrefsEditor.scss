@@ -255,6 +255,7 @@ $icon-font: 'PrefsFramework-Icons';
             font-family: $icon-font !important;
             font-size: 1.25em;
             height: 1em;
+            line-height: 1;
             margin-top: -1.5em;
             text-align: center;
             width: calc(100% - 5px); // deduct the right margin from the calculation
