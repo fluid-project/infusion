@@ -17,41 +17,21 @@ var assortedContent = assortedContent || {};
 
 /* Our demo script */
 assortedContent.slidingPrefsEditor = function () {
-    // First, start up Settings Store and Page Enhancer
-    fluid.prefs.globalSettingsStore();
-    fluid.pageEnhancer({
-        uiEnhancer: {
-            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-            classnameMap: {
-                theme: {
-                    "default": "assortedContent-theme-basic"
-                }
+    fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
+        auxiliarySchema: {
+            terms: {
+                "templatePrefix": "../../../../../src/framework/preferences/html",
+                "messagePrefix": "../../../../../src/framework/preferences/messages"
             },
-            tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html",
-            tocMessage: "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
-        }
-    });
-
-    // Next, start up Preferences Editor
-    fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
-        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
-        terms: {
-            templatePrefix: "../../../../../src/framework/preferences/html/",
-            messagePrefix: "../../../../../src/framework/preferences/messages/"
-        },
-        iframeRenderer: {
-            markupProps: {
-                src: "html/SeparatedPanelPrefsEditorFrame.html"
+            "fluid.prefs.tableOfContents": {
+                enactor: {
+                    "tocTemplate": "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+                    "tocMessage": "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json"
+                }
             }
         },
-        messageLoader: {
-            gradeNames: ["fluid.prefs.starterMessageLoader"]
-        },
-        templateLoader: {
-            gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
-        },
-        prefsEditor: {
-            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
+        prefsEditorLoader: {
+            lazyLoad: true
         }
     });
 };
