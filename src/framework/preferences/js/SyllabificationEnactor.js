@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * populated by the `fluid.prefs.enactor.syllabification.patterns` grade.
  */
 fluid.defaults("fluid.prefs.enactor.syllabification", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.syllabification.patterns", "fluid.prefs.enactor.ignorableSelectorHolder", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.syllabification.patterns", "fluid.viewComponent"],
     preferenceMap: {
         "fluid.prefs.syllabification": {
             "model.enabled": "value"
@@ -421,12 +421,15 @@ fluid.prefs.enactor.syllabification.removeSyllabification = function (that, igno
     // remove separators
     that.locate("separator").each(function (index, elm) {
         // skip elements whose parent selector should be ignored
-        var selectors = Object.values(ignoreSelectorForEnactor).filter(sel => sel);
-        if (!selectors.find(selector => elm.closest(selector))) {
-            var parent = elm.parentNode;
-            $(elm).remove();
-            parent.normalize();
+        if (ignoreSelectorForEnactor) {
+            var selectors = Object.values(ignoreSelectorForEnactor).filter(sel => sel);
+            if (selectors.find(selector => elm.closest(selector))) {
+                return;
+            }
         }
+        var parent = elm.parentNode;
+        $(elm).remove();
+        parent.normalize();
     });
 
     // restore soft hyphens

@@ -169,20 +169,11 @@ fluid.defaults("fluid.tests.cmpPanel.lineSpace", {
     }
 });
 
-fluid.defaults("fluid.tests.prefs.composite.separatedPanel", {
-    gradeNames: ["fluid.prefs.separatedPanel"],
-    iframeRenderer: {
-        markupProps: {
-            src: "./SeparatedPanelPrefsEditorFrame.html"
-        }
-    }
-});
-
 fluid.defaults("fluid.tests.composite.separatedPanel.prefsEditor", {
     gradeNames: ["fluid.prefs.builder", "fluid.tests.composite.auxSchema", "fluid.viewComponent"],
     schema: fluid.tests.composite.primarySchema,
     auxiliarySchema: {
-        "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"],
+        "loaderGrades": ["fluid.prefs.separatedPanel"],
         "generatePanelContainers": false
     }
 });

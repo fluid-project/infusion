@@ -194,7 +194,6 @@ fluid.prefs.separatedPanel.applyInitialClasses = function (separatedPanel) {
     separatedPanel.locate("prefsEditor")[0].classList.add(...separatedPanel.options.styles.blockingClasses);
 };
 
-// fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
 fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, innerEnhancer, separatedPanel) {
     // FLUID-5740: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
     // which is a child of this component

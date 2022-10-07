@@ -39,3 +39,20 @@ fluid.tests.mergeMembers = function (memberDef) {
     }
     return togo;
 };
+
+// An add-on grade to override distributeOptions in fluid.prefs.separatedPanel component whose targets are
+// outside of the separatedPanel component
+fluid.defaults("fluid.tests.prefs.overrideUnOutreach", {
+    gradeNames: ["fluid.component"],
+    distributeOptions: {
+        "separatedPanel.ignoreSelectorForToc": {
+            target: "{that nonexistent}.options"
+        },
+        "separatedPanel.ignoreSelectorForSelfVoicing": {
+            target: "{that nonexistent}.options"
+        },
+        "separatedPanel.ignoreSelectorForSyllabification": {
+            target: "{that nonexistent}.options"
+        }
+    }
+});

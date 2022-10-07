@@ -92,7 +92,6 @@ fluid.defaults("fluid.prefs.panel", {
 
 fluid.defaults("fluid.prefs.subPanel", {
     gradeNames: ["fluid.prefs.panel"],
-    // gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade"],
     listeners: {
         "{compositePanel}.events.afterRender": {
             listener: "{that}.events.afterRender",
@@ -117,10 +116,6 @@ fluid.defaults("fluid.prefs.subPanel", {
         resetDomBinder: {
             funcName: "fluid.prefs.subPanel.resetDomBinder",
             args: ["{that}"]
-        // },
-        // getDomBindGrade: {
-        //     funcName: "fluid.prefs.subPanel.getDomBindGrade",
-        //     args: ["{prefsEditor}"]
         }
     },
     strings: {},
@@ -138,7 +133,6 @@ fluid.defaults("fluid.prefs.subPanel", {
 fluid.prefs.subPanel.resetDomBinder = function (that) {
     // TODO: The line below to find the container jQuery instance was copied from the framework code -
     // https://github.com/fluid-project/infusion/blob/main/src/framework/core/js/FluidView.js#L145
-    // in order to reset the dom binder when panels are in an iframe.
     // It can be be eliminated once we have the new renderer.
     var userJQuery = that.container.constructor;
     var context = that.container[0].ownerDocument;

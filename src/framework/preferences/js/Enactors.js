@@ -380,7 +380,7 @@ fluid.prefs.enactor.textSize.computeRoot = function (container) {
 fluid.prefs.enactor.textSize.set = function (that, factor) {
     factor = fluid.roundToDecimal(factor, that.options.scale) || 1;
     // Calculating the initial size here rather than using a members expand because the "font-size"
-    // cannot be detected on hidden containers such as separated paenl iframe.
+    // cannot be detected on hidden containers such as when the separated paenl is closed.
     if (!that.initialSize) {
         that.initialSize = that.getTextSizeInPx();
     }
@@ -481,7 +481,7 @@ fluid.prefs.enactor.lineSpace.getLineHeightMultiplier = function (lineHeight, fo
 fluid.prefs.enactor.lineSpace.set = function (that, factor) {
     factor = fluid.roundToDecimal(factor, that.options.scale) || 1;
     // Calculating the lineHeightMultiplier here rather than using a members expand because the "line-height"
-    // cannot be detected on hidden containers such as separated panel iframe.
+    // cannot be detected on hidden containers such as when the separated panel is closed.
     if (!that.lineHeightMultiplier) {
         that.lineHeightMultiplier = that.getLineHeightMultiplier();
     }
@@ -512,7 +512,7 @@ fluid.prefs.enactor.lineSpace.applyInitValue = function (that) {
 
 // Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.tableOfContents", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.ignorableSelectorHolder", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
     preferenceMap: {
         "fluid.prefs.tableOfContents": {
             "model.toc": "value"

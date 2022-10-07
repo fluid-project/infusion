@@ -30,8 +30,7 @@ fluid.tests.prefs.expectedSeparatedPanel = [
     "templateLoader",
     "messageLoader",
     "slidingPanel",
-    "iframeRenderer",
-    "iframeRenderer.iframeEnhancer"
+    "innerEnhancer"
 ];
 
 fluid.defaults("fluid.tests.prefs.separatedPanelIntegration", {
@@ -46,15 +45,10 @@ fluid.defaults("fluid.tests.prefs.separatedPanelIntegration", {
             container: ".flc-prefsEditor-separatedPanel",
             createOnEvent: "{separatedPanelIntegrationTester}.events.onTestCaseStart",
             options: {
-                gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
+                gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.tests.prefs.overrideUnOutreach"],
                 terms: {
                     templatePrefix: "../../../../src/framework/preferences/html/",
                     messagePrefix: "../../../../src/framework/preferences/messages/"
-                },
-                iframeRenderer: {
-                    markupProps: {
-                        src: "./SeparatedPanelPrefsEditorFrame.html"
-                    }
                 },
                 templateLoader: {
                     gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
@@ -120,7 +114,6 @@ fluid.tests.prefs.assertAria = function (that, state) {
 };
 
 fluid.tests.prefs.testSeparatedPanel = function (separatedPanel) {
-    jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, separatedPanel.iframeRenderer.iframe.is(":visible"));
     fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
 
     var prefsEditor = separatedPanel.prefsEditor;
@@ -152,10 +145,10 @@ fluid.tests.prefs.assertStoredSettings = function (storedSettings) {
 
 fluid.tests.prefs.assertSecondShow = function (separatedPanel) {
     var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
-    var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
+    var innerEnhancerModel = separatedPanel.innerEnhancer.model;
 
-    fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, iframeEnhancerModel);
-    fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from enhancerModel", enhancerModel, iframeEnhancerModel);
+    fluid.tests.prefs.checkModelSelections("innerEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, innerEnhancerModel);
+    fluid.tests.prefs.checkModelSelections("innerEnhancerModel from enhancerModel", enhancerModel, innerEnhancerModel);
 };
 
 fluid.tests.prefs.assertThirdShow = function (separatedPanel) {
@@ -163,12 +156,12 @@ fluid.tests.prefs.assertThirdShow = function (separatedPanel) {
 
     var initialModel = separatedPanel.initialModel;
     var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
-    var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
+    var innerEnhancerModel = separatedPanel.innerEnhancer.model;
 
     fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel.preferences, enhancerModel);
     separatedPanel.slidingPanel.hidePanel();
-    fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel.preferences, iframeEnhancerModel);
-    fluid.tests.prefs.checkModelSelections("enhancerModel from iframeEnhancerModel", enhancerModel, iframeEnhancerModel);
+    fluid.tests.prefs.checkModelSelections("innerEnhancerModel from defaults", initialModel.preferences, innerEnhancerModel);
+    fluid.tests.prefs.checkModelSelections("enhancerModel from innerEnhancerModel", enhancerModel, innerEnhancerModel);
 };
 
 fluid.defaults("fluid.tests.prefs.separatedPanelIntegrationTester", {
@@ -176,7 +169,7 @@ fluid.defaults("fluid.tests.prefs.separatedPanelIntegrationTester", {
     modules: [{
         name: "Separated panel integration tests",
         tests: [{
-            expect: 37,
+            expect: 35,
             name: "Separated panel integration tests",
             sequence: [{
                 listener: "fluid.tests.prefs.testSeparatedPanel",
@@ -221,7 +214,6 @@ fluid.defaults("fluid.tests.prefs.separatedPanelIntegrationTester", {
  * PrefsEditor separatedPanel options munging integration tests
  *******************************************************************************/
 
-var expectedIframeSelector = ".prefsEditor-munging";
 var isSlidingPanelShown = false;
 
 fluid.defaults("fluid.tests.prefs.separatedPanelMungingIntegration", {
@@ -233,12 +225,7 @@ fluid.defaults("fluid.tests.prefs.separatedPanelMungingIntegration", {
             container: ".flc-prefsEditor-separatedPanel",
             createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
             options: {
-                gradeNames: ["fluid.tests.prefs.mungingIntegrationBase"],
-                iframeRenderer: {
-                    markupProps: {
-                        src: "./SeparatedPanelPrefsEditorFrame.html"
-                    }
-                },
+                gradeNames: ["fluid.tests.prefs.mungingIntegrationBase", "fluid.tests.prefs.overrideUnOutreach"],
                 slidingPanel: {
                     listeners: {
                         "onPanelShow.setFlag": function () {
@@ -246,7 +233,6 @@ fluid.defaults("fluid.tests.prefs.separatedPanelMungingIntegration", {
                         }
                     }
                 },
-                iframe: expectedIframeSelector,
                 prefsEditor: {
                     members: {
                         initialModel: {
@@ -264,7 +250,7 @@ fluid.defaults("fluid.tests.prefs.separatedPanelMungingIntegration", {
     }
 });
 
-fluid.tests.prefs.testEnhancerTransit = function testEnhancerTransit(separatedPanel, expectedIframeSelector) {
+fluid.tests.prefs.testEnhancerTransit = function testEnhancerTransit(separatedPanel) {
     var cMap = fluid.tests.prefs.enhancerOptions.uiEnhancer.classnameMap;
     var pageEnhancer = fluid.tests.prefs.getPageEnhancer(separatedPanel);
 
@@ -272,31 +258,27 @@ fluid.tests.prefs.testEnhancerTransit = function testEnhancerTransit(separatedPa
     jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
         pageEnhancer.options.classnameMap.textFont["default"]);
     jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
-        separatedPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
+        separatedPanel.innerEnhancer.options.classnameMap.textFont["default"]);
 
     // "slidingPanel" option mapping
     jqUnit.assertFalse("Preferences EditorPanel is hidden", isSlidingPanelShown);
     separatedPanel.slidingPanel.locate("toggleButton").trigger("click");
     jqUnit.assertTrue("Preferences EditorPanel is shown", isSlidingPanelShown);
-
-    // "iframe" option mapping
-    jqUnit.assertEquals("Iframe selector is transferred in", expectedIframeSelector, separatedPanel.options.selectors.iframe);
 };
 
 fluid.defaults("fluid.tests.prefs.mungingIntegrationTester", {
     gradeNames: ["fluid.test.testCaseHolder"],
-    expectedIframeSelector: expectedIframeSelector,
     modules: [{
         name: "Separated panel munging integration tests",
         tests: [{
-            expect: 13,
+            expect: 12,
             name: "Separated panel munging integration tests",
             sequence: [{
                 listener: "fluid.tests.prefs.testComponentIntegration",
                 event: "{separatedPanelMungingIntegration separatedPanel prefsEditor}.events.onReady"
             }, {
                 func: "fluid.tests.prefs.testEnhancerTransit",
-                args: ["{separatedPanel}", "{that}.options.expectedIframeSelector"]
+                args: ["{separatedPanel}"]
             }]
         }]
     }]
