@@ -115,6 +115,7 @@ fluid.tests.prefs.assertAria = function (that, state) {
 
 fluid.tests.prefs.testSeparatedPanel = function (separatedPanel) {
     fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
+    jqUnit.assertTrue("The container marker selector has been applied to the separated panel container", separatedPanel.container[0].classList.contains("flc-prefsEditor-main"));
 
     var prefsEditor = separatedPanel.prefsEditor;
     jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
@@ -122,6 +123,15 @@ fluid.tests.prefs.testSeparatedPanel = function (separatedPanel) {
 
     fluid.tests.prefs.assertAria(separatedPanel.slidingPanel, "false");
     fluid.tests.prefs.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId);
+
+    var innerEnhancer = separatedPanel.innerEnhancer;
+    var existingEnactors = ["textSize", "lineSpace", "textFont", "contrast", "enhanceInputs"];
+    var nonExistingEnactors = ["tableOfContents", "selfVoicing"];
+    existingEnactors.forEach(enactorName => {
+        jqUnit.assertNotNull(enactorName + " exists", innerEnhancer[enactorName]);
+        jqUnit.assertTrue(enactorName + " has \"applyInitValue\" set to true", innerEnhancer[enactorName].options.applyInitValue);
+    });
+    nonExistingEnactors.forEach(enactorName => jqUnit.assertNull(enactorName + " exists", innerEnhancer[enactorName]));
 };
 
 fluid.tests.prefs.assertInitialShow = function (separatedPanel) {
@@ -134,8 +144,9 @@ fluid.tests.prefs.assertInitialShow = function (separatedPanel) {
     fluid.tests.prefs.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId, "true");
 };
 
-fluid.tests.prefs.assertHide = function () {
+fluid.tests.prefs.assertHide = function (separatedPanel) {
     jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
+    jqUnit.assertDeepEq("The model change should be applied to the inner enhancer", fluid.tests.prefs.getPageEnhancer(separatedPanel).model, separatedPanel.innerEnhancer.model);
 };
 
 fluid.tests.prefs.assertStoredSettings = function (storedSettings) {
@@ -169,7 +180,7 @@ fluid.defaults("fluid.tests.prefs.separatedPanelIntegrationTester", {
     modules: [{
         name: "Separated panel integration tests",
         tests: [{
-            expect: 35,
+            expect: 49,
             name: "Separated panel integration tests",
             sequence: [{
                 listener: "fluid.tests.prefs.testSeparatedPanel",

@@ -243,6 +243,7 @@ fluid.defaults("fluid.prefs.enactor.spacingSetter", {
             }
         }
     },
+    applyInitValue: false,
     styles: {
         enabled: ""
     },
@@ -300,7 +301,7 @@ fluid.prefs.enactor.spacingSetter.getSpacing = function (that, cssProp, getTextS
 /**
  * Sets the spacing related classes and CSS custom properties on the component's container.
  * If the application will set the space to its initial value, the "enabled" class and CSS custom properties are
- * removed.
+ * removed. When `applyInitValue === true`, set the default size `0`.
  *
  * @param {fluid.prefs.enactor.spacingSetter} that - An instance of a `fluid.prefs.enactor.spacingSetter` component
  * @param {Number} [units] - (optional) The amount to increase the intial line height by.

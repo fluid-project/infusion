@@ -198,6 +198,19 @@ fluid.each(fluid.tests.textSizeTestCases, function (currentCase, message) {
     });
 });
 
+jqUnit.test("Test textSize enactor - when applyInitValue === true", function () {
+    jqUnit.expect(4);
+    const that = fluid.tests.enactor.textSize(".flc-textSize", {
+        applyInitValue: true
+    });
+
+    fluid.tests.enactor.verifySpacingComputedCSS(that, "With applyInitValue set to true", "font-size", {
+        computed: "24px",
+        size: "24px",
+        factor: "1"
+    });
+});
+
 /*******************************************************************************
  * Unit tests for getLineHeight & getLineHeightMultiplier
  *******************************************************************************/
@@ -244,8 +257,9 @@ fluid.tests.verifyInitValues = function (that, multiplier) {
 };
 
 jqUnit.test("Test lineSpace enactor", function () {
-    jqUnit.expect(37);
+    jqUnit.expect(41);
 
+    // Test cases when applyInitValue === false
     let that = fluid.tests.enactor.lineSpace(".flc-lineSpace");
     fluid.tests.verifyInitValues(that, 1.2);
 
@@ -290,6 +304,17 @@ jqUnit.test("Test lineSpace enactor", function () {
         fluid.tests.enactor.verifySpacingComputedCSS(that, "Model Changed", "line-height", currentCase.expected);
         that.applier.change("value", 1);
         fluid.tests.enactor.verifySpacingSettings(that, "Reset");
+    });
+
+    // Test the initial case when applyInitValue === true
+    that = fluid.tests.enactor.lineSpace(".flc-lineSpace", {
+        applyInitValue: true
+    });
+
+    fluid.tests.enactor.verifySpacingComputedCSS(that, "Test lineSpace enactor - when applyInitValue === true", "line-height", {
+        computed: "28.8px",
+        size: "1.2",
+        factor: "1"
     });
 });
 
