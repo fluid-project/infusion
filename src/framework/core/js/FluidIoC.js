@@ -1636,7 +1636,7 @@ fluid.instantiateEvents = function (shadow) {
     var errors = fluid.validateListenersImplemented(that);
     if (errors.length > 0) {
         fluid.fail(fluid.transform(errors, function (error) {
-            return ["Error constructing component ", that, " - the listener for event " + error.name + " with namespace " + error.namespace + (
+            return ["Error constructing component " + fluid.dumpComponentAndPath(that) + " - the listener for event " + error.name + " with namespace " + error.namespace + (
                 (error.componentSource ? " which was defined in grade " + error.componentSource : "") + " needs to be overridden with a concrete implementation")];
         })).join("\n");
     }
