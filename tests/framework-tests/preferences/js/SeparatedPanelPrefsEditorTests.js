@@ -45,7 +45,7 @@ fluid.defaults("fluid.tests.prefs.separatedPanelIntegration", {
             container: ".flc-prefsEditor-separatedPanel",
             createOnEvent: "{separatedPanelIntegrationTester}.events.onTestCaseStart",
             options: {
-                gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.tests.prefs.overrideUnOutreach"],
+                gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.tests.prefs.overrideBuilderDependencies"],
                 terms: {
                     templatePrefix: "../../../../src/framework/preferences/html/",
                     messagePrefix: "../../../../src/framework/preferences/messages/"
@@ -236,7 +236,7 @@ fluid.defaults("fluid.tests.prefs.separatedPanelMungingIntegration", {
             container: ".flc-prefsEditor-separatedPanel",
             createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
             options: {
-                gradeNames: ["fluid.tests.prefs.mungingIntegrationBase", "fluid.tests.prefs.overrideUnOutreach"],
+                gradeNames: ["fluid.tests.prefs.mungingIntegrationBase", "fluid.tests.prefs.overrideBuilderDependencies"],
                 slidingPanel: {
                     listeners: {
                         "onPanelShow.setFlag": function () {

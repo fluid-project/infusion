@@ -76,7 +76,7 @@ fluid.defaults("fluid.tests.prefs.responsive.iframeSequence", {
  *******************************************************************************/
 
 fluid.defaults("fluid.tests.prefs.responsive.separatedPanel", {
-    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.prefs.separatedPanel", "fluid.tests.prefs.overrideUnOutreach"],
+    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.prefs.separatedPanel", "fluid.tests.prefs.overrideBuilderDependencies"],
     terms: {
         templatePrefix: "../../../../src/framework/preferences/html/",
         messagePrefix: "../../../../src/framework/preferences/messages/"
