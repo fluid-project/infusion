@@ -1,3 +1,10 @@
+.fl-blocking-input-enhanced {
+    --fl-enhance-font-size-factor: 1;
+    --fl-enhance-font-size: 100%;
+    --fl-enhance-font-weight: normal;
+    --fl-enhance-text-decoration: none;
+}
+
 .fl-input-enhanced {
     --fl-enhance-font-size-factor: 1.25;
     --fl-enhance-font-size: calc(100% * var(--fl-enhance-font-size-factor, 1));

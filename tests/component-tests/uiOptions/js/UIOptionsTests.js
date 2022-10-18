@@ -70,7 +70,7 @@ fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTester", {
         name: "UI Options Tests",
         tests: [{
             name: "Pass in customized toc template",
-            expect: 4,
+            expect: 3,
             sequence: [{
                 "event": "{prefsEditorCustomTocTest testPrefsEditorBase}.events.onReady",
                 "listener": "fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates",
@@ -84,14 +84,10 @@ fluid.tests.uiOptions.prefsEditorCustomTocTester.verifyCustomizedTocTemplates = 
     // template
     jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer",
         expectedTocTemplate, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
-    jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", expectedTocTemplate,
-        prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
-
-    // message bundle
     jqUnit.assertEquals("The toc message is applied properly to the pageEnhancer",
         expectedTocMessage, prefsEditorComponent.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
-    jqUnit.assertEquals("The toc message is applied properly to iframeEnhancer", expectedTocMessage,
-        prefsEditorComponent.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocMessage);
+    jqUnit.assertNull("FLUID-5474: The toc enactor is removed from innerEnhancer",
+        prefsEditorComponent.prefsEditorLoader.innerEnhancer.fluid_prefs_enactor_tableOfContents);
 };
 
 fluid.defaults("fluid.tests.uiOptions.prefsEditorCustomTocTest", {

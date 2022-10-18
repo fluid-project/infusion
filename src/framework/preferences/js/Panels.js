@@ -91,7 +91,7 @@ fluid.defaults("fluid.prefs.panel", {
  ***************************/
 
 fluid.defaults("fluid.prefs.subPanel", {
-    gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade"],
+    gradeNames: ["fluid.prefs.panel"],
     listeners: {
         "{compositePanel}.events.afterRender": {
             listener: "{that}.events.afterRender",
@@ -116,32 +116,12 @@ fluid.defaults("fluid.prefs.subPanel", {
         resetDomBinder: {
             funcName: "fluid.prefs.subPanel.resetDomBinder",
             args: ["{that}"]
-        },
-        getDomBindGrade: {
-            funcName: "fluid.prefs.subPanel.getDomBindGrade",
-            args: ["{prefsEditor}"]
         }
     },
     strings: {},
     parentBundle: "{compositePanel}.messageResolver",
     renderOnInit: false
 });
-
-fluid.defaults("fluid.prefs.subPanel.domBind", {
-    gradeNames: ["fluid.component"],
-    listeners: {
-        "onDomBind.domChange": {
-            listener: "{prefsEditor}.events.onSignificantDOMChange"
-        }
-    }
-});
-
-fluid.prefs.subPanel.getDomBindGrade = function (prefsEditor) {
-    var hasListener = fluid.get(prefsEditor, "options.events.onSignificantDOMChange") !== undefined;
-    if (hasListener) {
-        return "fluid.prefs.subPanel.domBind";
-    }
-};
 
 /*
  * Since the composite panel manages the rendering of the subpanels
@@ -153,7 +133,6 @@ fluid.prefs.subPanel.getDomBindGrade = function (prefsEditor) {
 fluid.prefs.subPanel.resetDomBinder = function (that) {
     // TODO: The line below to find the container jQuery instance was copied from the framework code -
     // https://github.com/fluid-project/infusion/blob/main/src/framework/core/js/FluidView.js#L145
-    // in order to reset the dom binder when panels are in an iframe.
     // It can be be eliminated once we have the new renderer.
     var userJQuery = that.container.constructor;
     var context = that.container[0].ownerDocument;

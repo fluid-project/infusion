@@ -103,9 +103,10 @@ fluid.defaults("fluid.prefs.builder", {
         }
     },
     distributeOptions: {
-        source: "{that}.options.auxiliarySchema.generatePanelContainers",
-        target: "{that prefsEditorLoader prefsEditor}.options.generatePanelContainers",
-        namespace: "generatePanelContainers"
+        generatePanelContainers: {
+            source: "{that}.options.auxiliarySchema.generatePanelContainers",
+            target: "{that prefsEditorLoader prefsEditor}.options.generatePanelContainers"
+        }
     }
 });
 

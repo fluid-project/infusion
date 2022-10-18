@@ -16,8 +16,8 @@ For more information about this convention see [Sass's documentation on partials
 Enactors modify a website to meet the preferences specified in a Preferences Editor. However, not all enactors modify
 the styling of a website. For those that do, stylesheets are provided to facilitate this application. Each stlying
 related enactor will provide its own stylesheet(s), so that an integrator can import only the styles for the enactors
-they are using in their particular configuration. Althernatively the `Enactors` or `Enactors_base` stylesheets can be
-used to quickly access all of the available styling enactors styles.
+they are using in their particular configuration. Althernatively the `Enactors` stylesheets can be used to quickly
+access all of the available styling enactors styles.
 
 ### Base Styleheets
 

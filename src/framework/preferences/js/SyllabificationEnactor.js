@@ -76,13 +76,6 @@ fluid.defaults("fluid.prefs.enactor.syllabification", {
                 listeners: {
                     "afterParse.boil": "{syllabification}.events.afterParse",
                     "onParsedTextNode.boil": "{syllabification}.events.onParsedTextNode"
-                },
-                invokers: {
-                    hasTextToRead: {
-                        // apply to text nodes even if they have the ariaHidden attribute set
-                        funcName: "fluid.textNodeParser.hasTextToRead",
-                        args: ["{arguments}.0", true]
-                    }
                 }
             }
         },
@@ -111,6 +104,12 @@ fluid.defaults("fluid.prefs.enactor.syllabification", {
             }
         }
     },
+    distributeOptions: {
+        ignoreSelectorForEnactor: {
+            source: "{that}.options.ignoreSelectorForEnactor.forEnactor",
+            target: "{that > parser}.options.ignoredSelectors.forEnactor"
+        }
+    },
     members: {
         // `hyphenators` is a mapping of strings, representing the source paths of pattern files, to Promises
         // linked to the resolutions of loading and initially applying those syllabification patterns.
@@ -130,7 +129,7 @@ fluid.defaults("fluid.prefs.enactor.syllabification", {
         },
         remove: {
             funcName: "fluid.prefs.enactor.syllabification.removeSyllabification",
-            args: ["{that}"]
+            args: ["{that}", "{that}.options.ignoreSelectorForEnactor"]
         },
         setPresentation: {
             funcName: "fluid.prefs.enactor.syllabification.setPresentation",
@@ -418,9 +417,16 @@ fluid.prefs.enactor.syllabification.hyphenateNode = function (hyphenator, node, 
     }
 };
 
-fluid.prefs.enactor.syllabification.removeSyllabification = function (that) {
+fluid.prefs.enactor.syllabification.removeSyllabification = function (that, ignoreSelectorForEnactor) {
     // remove separators
     that.locate("separator").each(function (index, elm) {
+        // skip elements whose parent selector should be ignored
+        if (ignoreSelectorForEnactor) {
+            var selectors = Object.values(ignoreSelectorForEnactor).filter(sel => sel);
+            if (selectors.find(selector => elm.closest(selector))) {
+                return;
+            }
+        }
         var parent = elm.parentNode;
         $(elm).remove();
         parent.normalize();

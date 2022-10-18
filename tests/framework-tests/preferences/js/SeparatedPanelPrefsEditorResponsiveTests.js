@@ -76,15 +76,10 @@ fluid.defaults("fluid.tests.prefs.responsive.iframeSequence", {
  *******************************************************************************/
 
 fluid.defaults("fluid.tests.prefs.responsive.separatedPanel", {
-    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.prefs.separatedPanel"],
+    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.prefs.separatedPanel", "fluid.tests.prefs.overrideBuilderDependencies"],
     terms: {
         templatePrefix: "../../../../src/framework/preferences/html/",
         messagePrefix: "../../../../src/framework/preferences/messages/"
-    },
-    iframeRenderer: {
-        markupProps: {
-            src: "./SeparatedPanelPrefsEditorFrame.html"
-        }
     },
     templateLoader: {
         gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
@@ -157,7 +152,7 @@ fluid.tests.prefs.responsive.assertResetButton = function (separatedPanel, state
 };
 
 fluid.tests.prefs.responsive.assertSeparatedPanelState = function (separatedPanel, state) {
-    jqUnit.assertEquals("The iframe visibility should be " + state, state, separatedPanel.iframeRenderer.iframe.is(":visible"));
+    jqUnit.assertNotNull("The innerEnhancer should be instatiated", state, separatedPanel.innerEnhancer);
     fluid.tests.prefs.responsive.assertResetButton(separatedPanel, state);
     fluid.tests.prefs.responsive.assertAria(separatedPanel.slidingPanel, state);
 };
@@ -174,6 +169,7 @@ fluid.tests.prefs.responsive.assertPanelVisibility = function (prefsEditor, test
 
     panels.each(function (idx, elm) {
         var panelOffset = $(elm).offset().left;
+        // var panelOffset = Math.floor($(elm).offset().left);
         if (idx === panelIndex) {
             jqUnit.assertEquals(testName + ": The panel at index " + idx + " should be scrolled into view with offset = 0", 0, panelOffset);
         } else {
@@ -212,13 +208,13 @@ fluid.defaults("fluid.tests.prefs.responsive.separatedPanelResponsiveTester", {
     modules: [{
         name: "Separated panel integration tests",
         tests: [{
-            expect: 54,
+            expect: 53,
             name: "Separated panel integration tests",
             sequenceGrade: "fluid.tests.prefs.responsive.iframeSequence",
             sequence: [{
                 listener: "fluid.tests.prefs.responsive.assertSeparatedPanelInit",
                 event: "{separatedPanelResponsive separatedPanel}.events.onReady",
-                args: ["{separatedPanel}"] // initially there is no panelIndex set
+                args: ["{separatedPanel}"]
             }, {
                 func: "{separatedPanel}.slidingPanel.showPanel"
             }, {
@@ -240,13 +236,6 @@ fluid.defaults("fluid.tests.prefs.responsive.separatedPanelResponsiveTester", {
             }, {
                 func: "fluid.tests.prefs.responsive.assertPanelVisibility",
                 args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Left", 0]
-            }, {
-                func: "fluid.tests.prefs.responsive.triggerDOMEvent",
-                args: [window, "resize"]
-            }, {
-                listener: "jqUnit.assert",
-                event: "{separatedPanel}.prefsEditor.events.onSignificantDOMChange",
-                args: ["A window resize event triggered the onSignificantDOMChange event"]
             }, {
                 jQueryTrigger: "scroll",
                 element: "{separatedPanel}.prefsEditor.dom.scrollContainer"

@@ -26,6 +26,8 @@ fluid.defaults("fluid.prefs.enactor.selfVoicing", {
             "model.enabled": "value"
         }
     },
+    // from ignorableSelectorHolder:
+    // ignoreSelectorForEnactor - an enactor receives a selector in this field which marks material in the document to be ignored
     selectors: {
         controller: ".flc-prefs-selfVoicingWidget"
     },
@@ -54,12 +56,16 @@ fluid.defaults("fluid.prefs.enactor.selfVoicing", {
             }
         }
     },
-    distributeOptions: [{
-        source: "{that}.options.orator",
-        target: "{that > orator}.options",
-        removeSource: true,
-        namespace: "oratorOpts"
-    }]
+    distributeOptions: {
+        oratorOpts: {
+            source: "{that}.options.orator",
+            target: "{that > orator}.options"
+        },
+        ignoreSelectorForEnactor: {
+            source: "{that}.options.ignoreSelectorForEnactor.forEnactor",
+            target: "{that > orator > domReader > parser}.options.ignoredSelectors.forEnactor"
+        }
+    }
 });
 
 fluid.prefs.enactor.selfVoicing.initOrator = function (that, enabled) {

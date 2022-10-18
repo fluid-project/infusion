@@ -1,5 +1,9 @@
 @use "utils/fonts";
 
+.fl-blocking-font {
+    --fl-font-family: "OpenSans";
+}
+
 // Font face definitions
 @include fonts.build-font-face-def(fonts.$fontFaces);
 

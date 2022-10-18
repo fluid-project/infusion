@@ -42,13 +42,6 @@
         color: var(--fl-selectedFgColor, highlighttext) !important;
     }
 
-    iframe {
-        border-bottom-color: var(--fl-fgColor) !important;
-        border-left-color: var(--fl-fgColor) !important;
-        border-right-color: var(--fl-fgColor) !important;
-        border-top-color: var(--fl-fgColor) !important;
-    }
-
     a,
     a * {
         background-color: var(--fl-bgColor) !important;

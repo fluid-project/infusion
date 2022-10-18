@@ -28,6 +28,7 @@ fluid.defaults("fluid.textNodeParser", {
     ignoredSelectors: {
         ariaHidden: "[aria-hidden=\"true\"]"
     },
+    parseHidden: false,
     invokers: {
         parse: {
             funcName: "fluid.textNodeParser.parse",
@@ -35,7 +36,7 @@ fluid.defaults("fluid.textNodeParser", {
         },
         hasTextToRead: {
             funcName: "fluid.textNodeParser.hasTextToRead",
-            args: ["{arguments}.0", "{that}.options.ignoredSelectors"]
+            args: ["{arguments}.0", "{that}.options.ignoredSelectors", "{that}.options.parseHidden"]
         },
         getLang: "fluid.textNodeParser.getLang"
     }
@@ -61,17 +62,23 @@ fluid.textNodeParser.hasGlyph = function (str) {
  * - elm has no text or only whitespace
  * - elm or an ancestor matches any of the selectors appearing as values in the supplied map
  *
- * NOTE: Text added by pseudo elements (e.g. :before, :after) are not considered.
+ * NOTE:
+ * 1. Text added by pseudo elements (e.g. :before, :after) are not considered.
+ * 2. When an element's parent container is hidden, elm.offsetParent returns is falsey.
+ * If `parseHidden` is `true`, ignore the value of elm.offsetParent so texts in hidden elements
+ * will be read.
+ * See https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
  *
  * @param {Dom} elm - a DOM node to be tested
  * @param {Object<String,String>} ignoredSelectors - A map of selectors
+ * @param {Boolean} parseHidden - A flag to indicate if texts in hidden elements should be read
  *
  * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
  *                     (See conditions in description above)
  */
-fluid.textNodeParser.hasTextToRead = function (elm, ignoredSelectors) {
+fluid.textNodeParser.hasTextToRead = function (elm, ignoredSelectors, parseHidden) {
     if (elm &&
-           (elm.tagName.toLowerCase() === "body" || elm.offsetParent) &&
+           (elm.tagName.toLowerCase() === "body" || parseHidden || elm.offsetParent) &&
            fluid.textNodeParser.hasGlyph(elm.innerText)) {
         var selectors = Object.values(ignoredSelectors).filter(sel => sel);
         return !selectors.find(selector => elm.closest(selector));

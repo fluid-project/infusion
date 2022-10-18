@@ -128,6 +128,9 @@ fluid.defaults("fluid.tests.prefs.enactor.syllabification", {
     // may cause a global failure if the server returns a 404 html page when we are expecting a JS file.
     patterns: {
         es: null
+    },
+    ignoreSelectorForEnactor: {
+        forEnactor: ".flc-syllabification-shouldIgnore"
     }
 });
 
@@ -252,6 +255,11 @@ fluid.defaults("fluid.tests.syllabificationTester", {
             text: "{that}.options.testOpts.text.es",
             syllabified: "{that}.options.testOpts.syllabified.es",
             separatorCount: 0
+        }, {
+            selector: ".flc-syllabification-ignoreSelectorForEnactor-parent",
+            text: "{that}.options.testOpts.text.en",
+            syllabified: "{that}.options.testOpts.syllabified.en-US",
+            separatorCount: 4
         }],
         injected: {
             disabled: {
@@ -280,7 +288,7 @@ fluid.defaults("fluid.tests.syllabificationTester", {
     modules: [{
         name: "fluid.prefs.enactor.syllabification",
         tests: [{
-            expect: 11,
+            expect: 13,
             name: "Initial State",
             sequence: [{
                 // init, before syllabification
@@ -288,7 +296,7 @@ fluid.defaults("fluid.tests.syllabificationTester", {
                 args: ["Init", "{syllabification}", "{that}.options.testOpts.existing"]
             }]
         }, {
-            expect: 107,
+            expect: 132,
             name: "Add/Remove syllabification",
             sequence: [{
                 // enabled syllabification
@@ -323,7 +331,7 @@ fluid.defaults("fluid.tests.syllabificationTester", {
                 event: "{syllabification}.events.afterSyllabification",
                 listener: "fluid.tests.syllabificationTester.verifySyllabified",
                 priority: "last:testing",
-                args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.disabled", 16]
+                args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.disabled", 20]
             }, {
                 // inject content when enabled
                 func: "fluid.tests.syllabificationTester.injectContent",
@@ -332,7 +340,7 @@ fluid.defaults("fluid.tests.syllabificationTester", {
                 event: "{syllabification}.events.afterSyllabification",
                 listener: "fluid.tests.syllabificationTester.verifySyllabified",
                 priority: "last:testing",
-                args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.enabled", 20]
+                args: ["Injected when disabled", "{syllabification}", "{that}.options.testOpts.injected.enabled", 24]
             }, {
                 // disable syllabification
                 func: "{syllabification}.applier.change",
