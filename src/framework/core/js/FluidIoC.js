@@ -949,7 +949,7 @@ fluid.resolveContext = function (context, that, fast) {
         var expanded = fluid.expandOptions(rawValue, that);
         if (!fluid.isComponent(expanded)) {
             fluid.fail("Unable to resolve recursive context expression " + fluid.renderContextReference(context) + ": the directly resolved value of " + rawValue +
-                 " did not resolve to a component in the scope of component ", that, ": got ", expanded);
+                 " did not resolve to a component in the scope of " + fluid.dumpComponentAndPath(that) + ": got ", expanded);
         }
         return expanded;
     } else {
@@ -984,7 +984,8 @@ fluid.triggerMismatchedPathError = function (parsed, parentThat) {
 fluid.makeStackFetcher = function (parentThat, localRecord, fast) {
     var fetcher = function (parsed) {
         if (parentThat && parentThat.lifecycleStatus === "destroyed") {
-            fluid.fail("Cannot resolve reference " + fluid.renderContextReference(parsed) + " from component " + fluid.dumpThat(parentThat) + " which has been destroyed");
+            fluid.fail("Cannot resolve reference " + fluid.renderContextReference(parsed) + " from component " +
+                fluid.dumpComponentAndPath(parentThat) + " which has been destroyed");
         }
         var context = parsed.context;
         if (localRecord && context in localRecord) {
@@ -1437,8 +1438,8 @@ fluid.bindDeferredComponent = function (that, componentName, lightMerge, dynamic
     var eventName = lightMerge.createOnEvent;
     var event = fluid.isIoCReference(eventName) ? fluid.expandOptions(eventName, that) : that.events[eventName];
     if (!event || !event.addListener) {
-        fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent ", that, " since event specification " +
-            eventName + " could not be expanded to an event - got ", event);
+        fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent " + fluid.dumpComponentAndPath(that) +
+            " since event specification " + eventName + " could not be expanded to an event - got ", event);
     }
     var shadow = fluid.shadowForComponent(that);
     if (dynamicComponent) {
@@ -2762,7 +2763,8 @@ fluid.makeInvoker = function (that, invokerec, name, localRecord) {
     if (!func || !func.apply) {
         fluid.fail("Error in invoker record: could not resolve members func, funcName or method to a function implementation - got " + func + " from ", invokerec);
     } else if (func === fluid.notImplemented) {
-        fluid.fail("Error constructing component ", that, " - the invoker named " + name + " which was defined in grade " + invokerec.componentSource + " needs to be overridden with a concrete implementation");
+        fluid.fail("Error constructing component " + fluid.dumpComponentAndPath(that) + " - the invoker named " + name +
+            " which was defined in grade " + invokerec.componentSource + " needs to be overridden with a concrete implementation");
     }
     return function invokeInvoker() {
         if (fluid.defeatLogging === false) {
@@ -2771,7 +2773,7 @@ fluid.makeInvoker = function (that, invokerec, name, localRecord) {
         }
         var togo, finalArgs;
         if (that.lifecycleStatus === "destroyed") {
-            fluid.log(fluid.logLevel.WARN, "Ignoring call to invoker " + name + " of component ", that, " which has been destroyed");
+            fluid.log(fluid.logLevel.WARN, "Ignoring call to invoker " + name + " of component " + fluid.dumpComponentAndPath(that) + " which has been destroyed");
         } else {
             localRecord.arguments = arguments;
             if (invokerec.args === undefined || invokerec.args === fluid.NO_ARGUMENTS) {
