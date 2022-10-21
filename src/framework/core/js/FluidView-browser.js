@@ -138,8 +138,8 @@ fluid.jById = function (id, dokkument) {
 /**
  * Returns an DOM element quickly, given an id
  *
- * @param {Object} id - the id of the DOM node to find
- * @param {Document} dokkument - the document in which it is to be found (if left empty, use the current document)
+ * @param {Object} id - The id of the DOM node to find
+ * @param {Document} [dokkument] - (optional) The document in which it is to be found (if left empty, use the current document)
  * @return {Object} - The DOM element with this id, or null, if none exists in the document.
  */
 fluid.byId = function (id, dokkument) {
