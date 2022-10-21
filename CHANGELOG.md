@@ -21,6 +21,14 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.5.0] - 2022-10-21
+
+### Fixed
+
+* [FLUID-6749](https://issues.fluidproject.org/browse/FLUID-6749) Stop using iframe to render preferences editor
+* [FLUID-6753](https://issues.fluidproject.org/browse/FLUID-6753) Framework error messages which attempt to dump the
+entire component are unreadable
+
 ## [4.4.0] - 2022-09-27
 
 ### Fixed
@@ -970,6 +978,7 @@ A pre-release of [0.3.0].
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
 [Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
+[4.5.0]: https://github.com/fluid-project/infusion/releases/tag/v4.5.0
 [4.4.0]: https://github.com/fluid-project/infusion/releases/tag/v4.4.0
 [4.3.0]: https://github.com/fluid-project/infusion/releases/tag/v4.3.0
 [4.2.0]: https://github.com/fluid-project/infusion/releases/tag/v4.2.0

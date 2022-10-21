@@ -1,8 +1,15 @@
-# Release Notes for Fluid Infusion 4.4.0
+# Release Notes for Fluid Infusion 4.5.0
 
 [Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
+
+## What's New in 4.5.0
+
+* Maintenance release which resolves
+  * [FLUID-6749](https://issues.fluidproject.org/browse/FLUID-6749) Stop using iframe to render preferences editor
+  * [FLUID-6753](https://issues.fluidproject.org/browse/FLUID-6753) Framework error messages which attempt to dump the
+    entire component are unreadable
 
 ## What's New in 4.4.0
 
