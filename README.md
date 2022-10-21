@@ -195,7 +195,7 @@ infusion-uio-vx.y.z.zip) can be produced by the following commands:
 
 ```bash
 npm run build:pkg
-npm run npm run build:pkg:custom -- -i "fluid-ui-options" -n uio
+npm run build:pkg:custom -- -i "fluid-ui-options" -n uio
 ```
 
 The zip files will obliterate the contents of the `products` directory and must be copied out after each command.
