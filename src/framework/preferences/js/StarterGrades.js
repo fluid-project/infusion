@@ -50,6 +50,7 @@ fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
     classnameMap: {
         "textFont": {
             "default": "",
+            "system": "fl-font-system-ui",
             "times": "fl-font-times",
             "comic": "fl-font-comic-sans",
             "arial": "fl-font-arial",
@@ -245,6 +246,7 @@ fluid.defaults("fluid.prefs.starterPanels", {
                 stringArrayIndex: {
                     textFont: [
                         "textFont-default",
+                        "textFont-system",
                         "textFont-times",
                         "textFont-comic",
                         "textFont-arial",
@@ -253,7 +255,7 @@ fluid.defaults("fluid.prefs.starterPanels", {
                     ]
                 },
                 controlValues: {
-                    textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
+                    textFont: ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic"]
                 }
             }
         },

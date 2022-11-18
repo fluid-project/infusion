@@ -74,6 +74,7 @@ fluid.defaults("fluid.prefs.auxSchema.textFont", {
                 type: "fluid.prefs.enactor.textFont",
                 classes: {
                     "default": "",
+                    "system": "fl-font-system-ui",
                     "times": "fl-font-times",
                     "comic": "fl-font-comic-sans",
                     "arial": "fl-font-arial",
@@ -87,6 +88,7 @@ fluid.defaults("fluid.prefs.auxSchema.textFont", {
                 classnameMap: {
                     "textFont": {
                         "default": "",
+                        "system": "fl-font-system-ui",
                         "times": "fl-font-times",
                         "comic": "fl-font-comic-sans",
                         "arial": "fl-font-arial",
@@ -223,9 +225,10 @@ fluid.defaults("fluid.prefs.schemas.textFont", {
         "fluid.prefs.textFont": {
             "type": "string",
             "default": "default",
-            "enum": ["default", "times", "comic", "arial", "verdana", "open-dyslexic"],
+            "enum": ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic"],
             "enumLabels": [
                 "textFont-default",
+                "textFont-system",
                 "textFont-times",
                 "textFont-comic",
                 "textFont-arial",

@@ -1,5 +1,6 @@
 {
     "textFont-default": "Default",
+    "textFont-system": "System Font",
     "textFont-times": "Times New Roman",
     "textFont-comic": "Comic Sans",
     "textFont-arial": "Arial",
