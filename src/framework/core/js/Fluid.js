@@ -1273,6 +1273,7 @@ fluid.bind = function (obj, fnName, args) {
 
 // Stub for function in FluidIoC.js
 fluid.proxyComponentArgs = fluid.identity;
+/* eslint-disable jsdoc/require-returns-check */
 /**
  * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
  * @param {Object} functionPath - An EL expression
@@ -1280,6 +1281,7 @@ fluid.proxyComponentArgs = fluid.identity;
  * @param {Object} [environment] - (optional) The object to scope the functionPath to  (typically the framework root for version control)
  * @return {Any} - The return value from the invoked function.
  */
+/* eslint-enable jsdoc/require-returns-check */
 fluid.invokeGlobalFunction = function (functionPath, args, environment) {
     var func = fluid.getGlobalValue(functionPath, environment);
     if (!func) {

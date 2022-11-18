@@ -120,7 +120,7 @@ fluid.messageLocator = function (messageBase, resolveFunc) {
  * function.
  *
  * @param {Object} messageSource - See above.
- * @return {Function|String} - A resolve function or a `String` representing the final resolved output.
+ * @return {Function|String|undefined} - A resolve function or a `String` representing the final resolved output.
  */
 fluid.resolveMessageSource = function (messageSource) {
     if (messageSource.type === "data") {
