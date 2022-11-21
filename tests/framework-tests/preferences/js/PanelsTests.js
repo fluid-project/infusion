@@ -1039,8 +1039,8 @@ fluid.tests.prefsPaneltemplatePrefix = "../../../../src/framework/preferences/ht
 fluid.defaults("fluid.tests.prefs.panel.textFont", {
     gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
     messageBase: {
-        "textFont-default": "default",
-        "textFont-system": "System Font",
+        "textFont-default": "No Preference",
+        "textFont-system": "Device Font",
         "textFont-times": "Times New Roman",
         "textFont-comic": "Comic Sans",
         "textFont-arial": "Arial",
@@ -1204,8 +1204,8 @@ fluid.defaults("fluid.tests.textFontOverrideTester", {
 fluid.defaults("fluid.tests.prefs.panel.contrast", {
     gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
     messageBase: {
-        "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black", "Low contrast"],
-        "contrast-default": "Default",
+        "contrast": ["No Preference", "Black on white", "White on black", "Black on yellow", "Yellow on black", "Low contrast"],
+        "contrast-default": "No Preference",
         "contrast-bw": "Black on white",
         "contrast-wb": "White on black",
         "contrast-by": "Black on yellow",
