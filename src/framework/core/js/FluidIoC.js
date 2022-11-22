@@ -404,6 +404,7 @@ fluid.matchIoCSelector = function (selector, thatStack, contextHashes, memberNam
             return false;
         }
     }
+    return false;
 };
 
 // supported, PUBLIC API function
@@ -2251,6 +2252,7 @@ fluid.applyWorkflowPhase = function (transRec, sequencer) {
             }
         }
     }
+    return false;
 };
 
 /** Operate one phase of a tree transaction, consisting of a list of component destructions and a list of

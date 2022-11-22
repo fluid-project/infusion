@@ -574,7 +574,7 @@ fluid.materialiserRegistry["fluid.viewComponent"] = {
  * radio button/checkbox sets, potentially, given a node corresponding to just one element.
  * @param {jQuery} nodeIn - The node whose value is to be read or written
  * @param {Any} newValue - If `undefined`, the value will be read, otherwise, the supplied value will be applied to the node
- * @return {Any} The queried value, if `newValue` was undefined
+ * @return {Any|undefined} The queried value, if `newValue` was undefined, otherwise `undefined`.
  */
 fluid.value = function (nodeIn, newValue) {
     var node = fluid.unwrap(nodeIn);
