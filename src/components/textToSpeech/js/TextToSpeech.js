@@ -369,8 +369,6 @@ fluid.textToSpeech.cancel = function (that) {
     }
 
     that.invokeSpeechSynthesisFunc("cancel");
-    // clear any paused state.
-    that.invokeSpeechSynthesisFunc("resume");
 };
 
 /*********************************************************************************************
