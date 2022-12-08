@@ -178,7 +178,8 @@ fluid.defaults("fluid.orator.controller", {
     modelListeners: {
         "playing": {
             listener: "fluid.orator.controller.setToggleView",
-            args: ["{that}", "{change}.value"]
+            args: ["{that}", "{change}.value"],
+            namespace: "toggleController"
         },
         "enabled": {
             "this": "{that}.container",
@@ -321,8 +322,9 @@ fluid.defaults("fluid.orator.domReader", {
         },
         addToParseQueue: {
             funcName: "fluid.orator.domReader.addToParseQueue",
-            args: ["{that}", "{arguments}.0"]
+            args: ["{that}", "{arguments}.0", "{that}.retrieveActiveQueue"]
         },
+        retrieveActiveQueue: "fluid.orator.domReader.retrieveActiveQueue",
         resetParseQueue: {
             funcName: "fluid.orator.domReader.resetParseQueue",
             args: ["{that}"]
@@ -585,9 +587,11 @@ fluid.orator.domReader.retrieveActiveQueue = function (that, lang) {
  *
  * @param {fluid.orator.domReader} that - an instance of the component
  * @param {TextNodeData} textNodeData - the parsed information of text node. Typically from `fluid.textNodeParser`
+ * @param {Function} retrieveActiveQueue - a function, usually, `fluid.orator.domReader.retrieveActiveQueue`, retrieves
+ *                                         and manages the parseQueue.
  */
-fluid.orator.domReader.addToParseQueue = function (that, textNodeData) {
-    var activeQueue = fluid.orator.domReader.retrieveActiveQueue(that, textNodeData.lang);
+fluid.orator.domReader.addToParseQueue = function (that, textNodeData, retrieveActiveQueue) {
+    var activeQueue = retrieveActiveQueue(that, textNodeData.lang);
     var lastParsed = fluid.peek(activeQueue) || {};
 
     var words = textNodeData.node.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
@@ -887,12 +891,11 @@ fluid.defaults("fluid.orator.selectionReader", {
             namespace: "render"
         }],
         "play": [{
-            func: "fluid.orator.selectionReader.queueSpeech",
+            funcName: "fluid.orator.selectionReader.queueSpeech",
             args: ["{that}", "{change}.value", "{fluid.textToSpeech}.queueSpeechSequence"],
             namespace: "queueSpeech"
         }, {
-            func: "fluid.orator.selectionReader.renderControlState",
-            args: ["{that}", "{that}.control", "{arguments}.0"],
+            func: "{that}.renderControlState",
             excludeSource: ["init"],
             namespace: "renderControlState"
         }],
@@ -920,7 +923,24 @@ fluid.defaults("fluid.orator.selectionReader", {
             funcName: "fluid.orator.selectionReader.togglePlay",
             args: ["{that}", "{arguments}.0"]
         },
-        selectionFilter: "fluid.textNodeParser.hasGlyph"
+        selectionFilter: "fluid.textNodeParser.hasGlyph",
+        calculatePosition: "fluid.orator.selectionReader.calculatePosition",
+        createControl: {
+            funcName: "fluid.orator.selectionReader.createControl",
+            args: ["{that}"]
+        },
+        renderControlState: {
+            funcName: "fluid.orator.selectionReader.renderControlState",
+            args: ["{that}", "{that}.control"]
+        },
+        adjustForVerticalCollision: {
+            funcName: "fluid.orator.selectionReader.adjustForVerticalCollision",
+            args: ["{that}.control", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+        },
+        adjustForHorizontalCollision: {
+            funcName: "fluid.orator.selectionReader.adjustForHorizontalCollision",
+            args: ["{that}.control", "{arguments}.0"]
+        }
     }
 });
 
@@ -1154,9 +1174,9 @@ fluid.orator.selectionReader.renderControl = function (that, state) {
     if (state) {
         var selectionRange = window.getSelection().getRangeAt(0);
         var controlContainer = selectionRange.startContainer.parentNode.offsetParent || selectionRange.startContainer.parentNode;
-        var position = fluid.orator.selectionReader.calculatePosition(selectionRange);
+        var position = that.calculatePosition(selectionRange);
 
-        that.control = that.control || fluid.orator.selectionReader.createControl(that);
+        that.control = that.control || that.createControl();
 
         // set the intial position
         that.control.css({
@@ -1164,19 +1184,18 @@ fluid.orator.selectionReader.renderControl = function (that, state) {
             left: position.offset.left
         });
 
-        fluid.orator.selectionReader.renderControlState(that, that.control);
+        that.renderControlState();
         that.control.appendTo(controlContainer);
 
         // check if there is space to display above, if not move to below selection
-        fluid.orator.selectionReader.adjustForVerticalCollision(
-            that.control,
+        that.adjustForVerticalCollision(
             position,
             that.options.styles.below,
             that.options.styles.above
         );
 
         // adjust horizontal position for collisions with the viewport edge.
-        fluid.orator.selectionReader.adjustForHorizontalCollision(that.control, position);
+        that.adjustForHorizontalCollision(position);
 
         // cleanup range
         selectionRange.detach();
