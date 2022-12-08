@@ -21,13 +21,24 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.6.0] - 2022-12-08
+
+### Fixed
+
+* [FLUID-6758](https://issues.fluidproject.org/browse/FLUID-6758) Selection reading continues from where page reading
+  stopped
+* [FLUID-6757](https://issues.fluidproject.org/browse/FLUID-6757) Rendering and other methods for the selection reader
+  are not invokers
+* [FLUID-6756](https://issues.fluidproject.org/browse/FLUID-6756) regenerateCursor function defined in the global scope
+  in both Fluid.js and FluidIoC.js
+
 ## [4.5.0] - 2022-10-21
 
 ### Fixed
 
-* [FLUID-6749](https://issues.fluidproject.org/browse/FLUID-6749) Stop using iframe to render preferences editor
 * [FLUID-6753](https://issues.fluidproject.org/browse/FLUID-6753) Framework error messages which attempt to dump the
-entire component are unreadable
+  entire component are unreadable
+* [FLUID-6749](https://issues.fluidproject.org/browse/FLUID-6749) Stop using iframe to render preferences editor
 
 ## [4.4.0] - 2022-09-27
 
@@ -57,23 +68,23 @@ entire component are unreadable
 
 ### Fixed
 
-* [FLUID-6741](https://issues.fluidproject.org/browse/FLUID-6741) Workflow failure when constructed lensed component
-  from asynchronous resource
 * [FLUID-6742](https://issues.fluidproject.org/browse/FLUID-6742) Race condition in IoC Testing Framework tests
   exposed by upgrade to Chrome 103
+* [FLUID-6741](https://issues.fluidproject.org/browse/FLUID-6741) Workflow failure when constructed lensed component
+  from asynchronous resource
 
 ## [4.1.0] - 2022-05-12
 
 ### Fixed
 
-* [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improve documentation (retrospectively) about changes
-  in DataSource API in the 3.0.0 release
-* [FLUID-6728](https://issues.fluidproject.org/browse/FLUID-6728) A sourcePath into the first element of an array fails
-to resolve in contexts where expandImmediate is used
-* [FLUID-6729](https://issues.fluidproject.org/browse/FLUID-6729) References into local record such as {source} and
-{sourcePath} can't be resolved in interpolated relay segments
 * [FLUID-6730](https://issues.fluidproject.org/browse/FLUID-6730) Removed some obsoleted utilities - fluid.accumulate,
   fluid.contains, fluid.add, fluid.stableSort
+* [FLUID-6729](https://issues.fluidproject.org/browse/FLUID-6729) References into local record such as {source} and
+{sourcePath} can't be resolved in interpolated relay segments
+* [FLUID-6728](https://issues.fluidproject.org/browse/FLUID-6728) A sourcePath into the first element of an array fails
+to resolve in contexts where expandImmediate is used
+* [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improve documentation (retrospectively) about changes
+  in DataSource API in the 3.0.0 release
 
 ## [4.0.0] - 2022-03-17
 
@@ -977,7 +988,8 @@ A pre-release of [0.3.0].
 * [Issues addressed in 0.1.0](https://issues.fluidproject.org/projects/FLUID/versions/10000)
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
-[Unreleased]: https://github.com/fluid-project/infusion/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/fluid-project/infusion/compare/v4.6.0...HEAD
+[4.6.0]: https://github.com/fluid-project/infusion/releases/tag/v4.6.0
 [4.5.0]: https://github.com/fluid-project/infusion/releases/tag/v4.5.0
 [4.4.0]: https://github.com/fluid-project/infusion/releases/tag/v4.4.0
 [4.3.0]: https://github.com/fluid-project/infusion/releases/tag/v4.3.0
