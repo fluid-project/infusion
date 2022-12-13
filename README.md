@@ -139,7 +139,7 @@ below.
 
 ##### -i, --include
 
-__value__: "module(s)" (String)
+**value**: "module(s)" (String)
 _only available to custom builds_
 
 The `--include` option takes a comma-separated string of the [Modules](#modules) to be included in a custom package.
@@ -155,7 +155,7 @@ npm run build:pkg:custom -- -i "fluid-inline-edit, fluid-ui-options"
 
 ##### -e, --exclude
 
-__value__: "module(s)" (String)
+**value**: "module(s)" (String)
 _only available to custom builds_
 
 The `--exclude` option takes a comma-separated string of the [Modules](#modules) to be excluded from a custom package.
@@ -170,7 +170,7 @@ npm run build:pkg:custom -- -e jquery
 
 ##### -n, --name
 
-__value__: "custom suffix" (String)
+**value**: "custom suffix" (String)
 _only available to custom packages which have specified an include and/or exclude option_
 
 By default, custom packages are given a name in the form _infusion-custom-{version}.zip_ and the concatenated JavaScript

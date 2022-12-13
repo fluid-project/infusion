@@ -124,6 +124,7 @@ fluid.prefs.primaryBuilder.defaultSchemaIndexer = function (defaults) {
     if (defaults.schema) {
         return fluid.keys(defaults.schema.properties);
     }
+    return [];
 };
 
 /*******************************************************************************

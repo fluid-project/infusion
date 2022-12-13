@@ -129,7 +129,7 @@ fluid.defaults("fluid.prefs.cookieStore.writable", {
  * Retrieve and return the value of the cookie
  *
  * @param {CookieOpts} options - the cookie attributes; used to get the cookie name.
- * @return {String} - the serialized cookie
+ * @return {String|undefined} - the serialized cookie, or `undefined` if no cookie is found.
  */
 fluid.prefs.cookieStore.getCookie = function (options) {
     var cookieName = fluid.get(options, ["directModel", "cookieName"]) || options.name;

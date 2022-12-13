@@ -404,6 +404,7 @@ fluid.matchIoCSelector = function (selector, thatStack, contextHashes, memberNam
             return false;
         }
     }
+    return false;
 };
 
 // supported, PUBLIC API function
@@ -2251,6 +2252,7 @@ fluid.applyWorkflowPhase = function (transRec, sequencer) {
             }
         }
     }
+    return false;
 };
 
 /** Operate one phase of a tree transaction, consisting of a list of component destructions and a list of
@@ -3233,17 +3235,6 @@ fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, opti
     return target;
 };
 
-// TODO: This method is unnecessary and will quadratic inefficiency if RHS block is not concrete.
-// The driver should detect "homogeneous uni-strategy trundling" and agree to preserve the extra
-// "cursor arguments" which should be advertised somehow (at least their number)
-function regenerateCursor(source, segs, limit, sourceStrategy) {
-    for (var i = 0; i < limit; ++i) {
-        // copy segs to avoid aliasing with FLUID-5243
-        source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs));
-    }
-    return source;
-}
-
 fluid.isUnexpandable = function (source) { // slightly more efficient compound of fluid.isCopyable and fluid.isComponent - review performance
     return fluid.isPrimitive(source) || !fluid.isPlainObject(source);
 };
@@ -3298,8 +3289,8 @@ fluid.makeExpandStrategy = function (options) {
             return target[name];
         }
         if (source === undefined) { // recover our state in case this is an external entry point
-            source = regenerateCursor(options.source, segs, i - 1, options.sourceStrategy);
-            policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
+            source = fluid.regenerateCursor(options.source, segs, i - 1, options.sourceStrategy);
+            policy = fluid.regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
         }
         var thisSource = options.sourceStrategy(source, name, i, segs);
         var thisPolicy = fluid.concreteTrundler(policy, name);

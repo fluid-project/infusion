@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v4.5.0
+ * Fluid Infusion v4.6.0
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -30,7 +30,7 @@ Underscore may be freely distributed under the MIT license.
 
 var fluid = fluid || {}; // eslint-disable-line no-redeclare
 
-fluid.version = "Infusion 4.5.0";
+fluid.version = "Infusion 4.6.0";
 
 // Export this for use in environments like node.js, where it is useful for
 // configuring stack trace behaviour
@@ -1273,6 +1273,7 @@ fluid.bind = function (obj, fnName, args) {
 
 // Stub for function in FluidIoC.js
 fluid.proxyComponentArgs = fluid.identity;
+/* eslint-disable jsdoc/require-returns-check */
 /**
  * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
  * @param {Object} functionPath - An EL expression
@@ -1280,6 +1281,7 @@ fluid.proxyComponentArgs = fluid.identity;
  * @param {Object} [environment] - (optional) The object to scope the functionPath to  (typically the framework root for version control)
  * @return {Any} - The return value from the invoked function.
  */
+/* eslint-enable jsdoc/require-returns-check */
 fluid.invokeGlobalFunction = function (functionPath, args, environment) {
     var func = fluid.getGlobalValue(functionPath, environment);
     if (!func) {
@@ -2344,25 +2346,33 @@ fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, ne
     }
     return togo;
 };
+
 // NB - same quadratic worry about these as in FluidIoC in the case the RHS trundler is live -
 // since at each regeneration step driving the RHS we are discarding the "cursor arguments" these
 // would have to be regenerated at each step - although in practice this can only happen once for
 // each object for all time, since after first resolution it will be concrete.
-function regenerateCursor(source, segs, limit, sourceStrategy) {
+//
+// TODO: This method is unnecessary and will quadratic inefficiency if RHS block is not concrete.
+// The driver should detect "homogeneous uni-strategy trundling" and agree to preserve the extra
+// "cursor arguments" which should be advertised somehow (at least their number)
+//
+// unsupported, NON-API function
+fluid.regenerateCursor = function (source, segs, limit, sourceStrategy) {
     for (var i = 0; i < limit; ++i) {
         source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs)); // copy for FLUID-5243
     }
     return source;
-}
+};
 
-function regenerateSources(sources, segs, limit, sourceStrategies) {
+// unsupported, NON-API function
+fluid.regenerateSources = function (sources, segs, limit, sourceStrategies) {
     var togo = [];
     for (var i = 0; i < sources.length; ++i) {
-        var thisSource = regenerateCursor(sources[i], segs, limit, sourceStrategies[i]);
+        var thisSource = fluid.regenerateCursor(sources[i], segs, limit, sourceStrategies[i]);
         togo.push(thisSource);
     }
     return togo;
-}
+};
 
 // unsupported, NON-API function
 fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) {
@@ -2429,8 +2439,8 @@ fluid.makeMergeStrategy = function (options) {
         }
         if (sources === undefined) { // recover our state in case this is an external entry point
             segs = fluid.makeArray(segs); // avoid trashing caller's segs
-            sources = regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
-            policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
+            sources = fluid.regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
+            policy = fluid.regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
         }
         var newPolicyHolder = fluid.concreteTrundler(policy, name);
         var newPolicy = fluid.derefMergePolicy(newPolicyHolder);

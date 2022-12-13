@@ -1,15 +1,25 @@
-# Release Notes for Fluid Infusion 4.5.0
+# Release Notes for Fluid Infusion 4.6.0
 
 [Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
+## What's New in 4.6.0
+
+* Maintenance release which resolves
+  * [FLUID-6758](https://issues.fluidproject.org/browse/FLUID-6758) Selection reading continues from where page reading
+    stopped
+  * [FLUID-6757](https://issues.fluidproject.org/browse/FLUID-6757) Rendering and other methods for the selection reader
+    are not invokers
+  * [FLUID-6756](https://issues.fluidproject.org/browse/FLUID-6756) regenerateCursor function defined in the global scope
+    in both Fluid.js and FluidIoC.js
+
 ## What's New in 4.5.0
 
 * Maintenance release which resolves
-  * [FLUID-6749](https://issues.fluidproject.org/browse/FLUID-6749) Stop using iframe to render preferences editor
   * [FLUID-6753](https://issues.fluidproject.org/browse/FLUID-6753) Framework error messages which attempt to dump the
     entire component are unreadable
+  * [FLUID-6749](https://issues.fluidproject.org/browse/FLUID-6749) Stop using iframe to render preferences editor
 
 ## What's New in 4.4.0
 
@@ -20,32 +30,32 @@
 ## What's New in 4.3.0
 
 * Maintenance release which resolves
-  * [FLUID-6744](https://issues.fluidproject.org/browse/FLUID-6744) Failure distributing to gradeNames for component
-    which has undefined options
-  * [FLUID-6745](https://issues.fluidproject.org/browse/FLUID-6745) Improve TextNodeParser so that it can be configured
-    with a free hash of selectors to ignore
   * [FLUID-6748](https://issues.fluidproject.org/browse/FLUID-6748) Remove the auto save of panel index in separated
     panel UIO
+  * [FLUID-6745](https://issues.fluidproject.org/browse/FLUID-6745) Improve TextNodeParser so that it can be configured
+    with a free hash of selectors to ignore
+  * [FLUID-6744](https://issues.fluidproject.org/browse/FLUID-6744) Failure distributing to gradeNames for component
+    which has undefined options
 
 ## What's New in 4.2.0
 
 * Maintenance release which resolves
-  * [FLUID-6741](https://issues.fluidproject.org/browse/FLUID-6741) Workflow failure when constructed lensed component
-    from asynchronous resource
   * [FLUID-6742](https://issues.fluidproject.org/browse/FLUID-6742) Race condition in IoC Testing Framework tests
     exposed by upgrade to Chrome 103
+  * [FLUID-6741](https://issues.fluidproject.org/browse/FLUID-6741) Workflow failure when constructed lensed component
+    from asynchronous resource
 
 ## What's New in 4.1.0
 
 * Maintenance release which resolves
-  * [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improve documentation (retrospectively) about changes
-    in DataSource API in the 3.0.0 release
-  * [FLUID-6728](https://issues.fluidproject.org/browse/FLUID-6728) A sourcePath into the first element of an array fails
-  to resolve in contexts where expandImmediate is used
-  * [FLUID-6729](https://issues.fluidproject.org/browse/FLUID-6729) References into local record such as {source} and
-  {sourcePath} can't be resolved in interpolated relay segments
   * [FLUID-6730](https://issues.fluidproject.org/browse/FLUID-6730) Removed some obsoleted utilities - fluid.accumulate,
     fluid.contains, fluid.add, fluid.stableSort
+  * [FLUID-6729](https://issues.fluidproject.org/browse/FLUID-6729) References into local record such as {source} and
+    {sourcePath} can't be resolved in interpolated relay segments
+  * [FLUID-6728](https://issues.fluidproject.org/browse/FLUID-6728) A sourcePath into the first element of an array fails
+    to resolve in contexts where expandImmediate is used
+  * [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improve documentation (retrospectively) about changes
+    in DataSource API in the 3.0.0 release
 
 ## What's New in 4.0.0?
 
@@ -153,10 +163,6 @@ Infusion 4.0.0 is tested with the latest versions of the following desktop brows
 * [Edge](https://microsoft.com/edge/)
 * [Firefox](https://mozilla.org/firefox/)
 * [Safari](https://apple.com/safari/)
-
-Additional testing is performed with the following mobile browsers:
-
-* [Safari](https://apple.com/safari/) (iOS 15.3.1)
 
 The Fluid Project also maintains a [shareable configuration](https://github.com/fluid-project/browserslist-config-fluid)
 for [Browserslist](https://github.com/browserslist/browserslist). In the future, this configuration will be used within
