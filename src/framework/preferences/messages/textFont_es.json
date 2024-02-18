@@ -1,5 +1,6 @@
 {
-    "textFont-default": "Defecto",
+    "textFont-default": "Sin cambios",
+    "textFont-system": "Letras del dispositivo",
     "textFont-times": "Times New Roman",
     "textFont-comic": "Comic Sans",
     "textFont-arial": "Arial",

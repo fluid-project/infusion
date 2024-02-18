@@ -185,8 +185,10 @@ fluid.tests.prefs.enhancerOptions = {
     }
 };
 
-fluid.tests.prefs.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6"];
-fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e", "f"];
+// TODO: The number of values in these arrays is dependent on the starter grades stringArrayIndex
+//       This should be refactored so that it isn't so tightly coupled.
+fluid.tests.prefs.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7"];
+fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e", "f", "g"];
 
 fluid.tests.prefs.testComponentIntegration = function (prefsEditor) {
     var body = $("body");
@@ -199,11 +201,11 @@ fluid.tests.prefs.testComponentIntegration = function (prefsEditor) {
     var actualTextFontStrings = prefsEditor.textFont.options.strings.textFont;
     var actualTextFontControlValues = prefsEditor.textFont.options.controlValues.textFont;
 
-    jqUnit.assertEquals("There are 6 elements in the text font string list", 6, actualTextFontStrings.length);
+    jqUnit.assertEquals("There are 7 elements in the text font string list", 7, actualTextFontStrings.length);
     jqUnit.assertEquals("The first text font string value matches", testStrings[0], actualTextFontStrings[0]);
     jqUnit.assertEquals("The sixth text font string value matches", testStrings[5], actualTextFontStrings[5]);
 
-    jqUnit.assertEquals("There are 6 elements in the text font control value list", 6, actualTextFontControlValues.length);
+    jqUnit.assertEquals("There are 7 elements in the text font control value list", 7, actualTextFontControlValues.length);
     jqUnit.assertEquals("The first text font control value matches", testControlValues[0], actualTextFontControlValues[0]);
     jqUnit.assertEquals("The sixth text font control value matches", testControlValues[5], actualTextFontControlValues[5]);
 };
