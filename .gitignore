@@ -4,11 +4,12 @@
 /src/framework/preferences/css/*.css
 /src/framework/preferences/css/*.css.map
 /.bundle/
+/src/lib/atkinson-hyperlegible/
 /src/lib/hypher/
 /src/lib/jquery/
-/src/lib/open-dyslexic/
+/src/lib/opendyslexic/
 /src/lib/opensans/
-/src/lib/roboto/
+/src/lib/roboto-slab/
 /tests/lib/jquery-simulate/
 /tests/lib/sinon/
 /tests/lib/xhr-mock/

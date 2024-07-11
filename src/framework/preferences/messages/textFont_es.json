@@ -5,6 +5,7 @@
     "textFont-arial": "Arial",
     "textFont-verdana": "Verdana",
     "textFont-open-dyslexic": "Open Dyslexic",
+    "textFont-atkinson-hyperlegible": "Atkinson Hyperlegible",
     "textFontLabel": "estilo de texto",
     "textFontDescr": "Cambiar la fuente utilizada"
 }

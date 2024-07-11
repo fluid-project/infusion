@@ -13,8 +13,8 @@
     },
     "dependencies": {
         "jquery": "3.6.0",
-        "opensans-webkit": "1.1.0",
-        "roboto-fontface": "0.10.0",
+        "opensans": "5.0.29",
+        "roboto-slab": "5.0.20",
         "fluid-framework": "^4.0.0",
         "fluid-renderer": "4.0.0"
     }
