@@ -1121,14 +1121,14 @@ fluid.setLogging(true);
 fluid.defaults("fluid.tests.textFontTester", {
     gradeNames: ["fluid.test.testCaseHolder"],
     testOptions: {
-        expectedNumOfOptions: 7,
+        expectedNumOfOptions: 8,
         defaultValue: "default",
         newValue: "comic"
     },
     modules: [{
         name: "Test the text font settings panel",
         tests: [{
-            expect: 11,
+            expect: 12,
             name: "Test the rendering of the text font panel",
             sequence: [{
                 listener: "fluid.tests.textFontPanel.testDefault",
