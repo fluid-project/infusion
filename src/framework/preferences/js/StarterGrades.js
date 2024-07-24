@@ -55,7 +55,8 @@ fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
             "comic": "fl-font-comic-sans",
             "arial": "fl-font-arial",
             "verdana": "fl-font-verdana",
-            "open-dyslexic": "fl-font-open-dyslexic"
+            "open-dyslexic": "fl-font-open-dyslexic",
+            "atkinson-hyperlegible": "fl-font-atkinson-hyperlegible"
         },
         "theme": {
             "default": "fl-theme-prefsEditor-default",
@@ -251,11 +252,12 @@ fluid.defaults("fluid.prefs.starterPanels", {
                         "textFont-comic",
                         "textFont-arial",
                         "textFont-verdana",
-                        "textFont-open-dyslexic"
+                        "textFont-open-dyslexic",
+                        "textFont-atkinson-hyperlegible"
                     ]
                 },
                 controlValues: {
-                    textFont: ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic"]
+                    textFont: ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic", "atkinson-hyperlegible"]
                 }
             }
         },

@@ -79,7 +79,8 @@ fluid.defaults("fluid.prefs.auxSchema.textFont", {
                     "comic": "fl-font-comic-sans",
                     "arial": "fl-font-arial",
                     "verdana": "fl-font-verdana",
-                    "open-dyslexic": "fl-font-open-dyslexic"
+                    "open-dyslexic": "fl-font-open-dyslexic",
+                    "atkinson-hyperlegible": "fl-font-atkinson-hyperlegible"
                 }
             },
             panel: {
@@ -93,7 +94,8 @@ fluid.defaults("fluid.prefs.auxSchema.textFont", {
                         "comic": "fl-font-comic-sans",
                         "arial": "fl-font-arial",
                         "verdana": "fl-font-verdana",
-                        "open-dyslexic": "fl-font-open-dyslexic"
+                        "open-dyslexic": "fl-font-open-dyslexic",
+                        "atkinson-hyperlegible": "fl-font-atkinson-hyperlegible"
                     }
                 },
                 template: "%templatePrefix/PrefsEditorTemplate-textFont.html",
@@ -225,7 +227,7 @@ fluid.defaults("fluid.prefs.schemas.textFont", {
         "fluid.prefs.textFont": {
             "type": "string",
             "default": "default",
-            "enum": ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic"],
+            "enum": ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic", "atkinson-hyperlegible"],
             "enumLabels": [
                 "textFont-default",
                 "textFont-system",
@@ -233,7 +235,8 @@ fluid.defaults("fluid.prefs.schemas.textFont", {
                 "textFont-comic",
                 "textFont-arial",
                 "textFont-verdana",
-                "textFont-open-dyslexic"
+                "textFont-open-dyslexic",
+                "textFont-atkinson-hyperlegible"
             ]
         }
     }

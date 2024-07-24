@@ -32,7 +32,8 @@ var fluid = fluid || {}; // eslint-disable-line no-redeclare
     var toString = Object.prototype.toString;
     var hasOwn = Object.prototype.hasOwnProperty;
     var globalScope = typeof window !== "undefined" ? window :
-        typeof self !== "undefined" ? self : global;
+        typeof self !== "undefined" ? self :
+            typeof global !== "undefined" ? global : {};
     // Map over jQuery in case of overwrite
     var _jQuery = globalScope.jQuery;
     // Map over the $ in case of overwrite

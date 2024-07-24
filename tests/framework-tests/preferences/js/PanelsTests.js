@@ -1046,6 +1046,7 @@ fluid.defaults("fluid.tests.prefs.panel.textFont", {
         "textFont-arial": "Arial",
         "textFont-verdana": "Verdana",
         "textFont-open-dyslexic": "Open Dyslexic",
+        "textFont-atkinson-hyperlegible": "Atkinson Hyperlegible",
         "textFontLabel": "text style",
         "textFontDescr": "Change the font used"
     },
@@ -1065,7 +1066,8 @@ fluid.defaults("fluid.tests.prefs.panel.textFont", {
             "comic": "fl-font-comic-sans",
             "arial": "fl-font-arial",
             "verdana": "fl-font-verdana",
-            "open-dyslexic": "fl-font-open-dyslexic"
+            "open-dyslexic": "fl-font-open-dyslexic",
+            "atkinson-hyperlegible": "fl-font-atkinson-hyperlegible"
         }
     },
     stringArrayIndex: {
@@ -1076,11 +1078,12 @@ fluid.defaults("fluid.tests.prefs.panel.textFont", {
             "textFont-comic",
             "textFont-arial",
             "textFont-verdana",
-            "textFont-open-dyslexic"
+            "textFont-open-dyslexic",
+            "textFont-atkinson-hyperlegible"
         ]
     },
     controlValues: {
-        textFont: ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic"]
+        textFont: ["default", "system", "times", "comic", "arial", "verdana", "open-dyslexic", "atkinson-hyperlegible"]
     }
 });
 
