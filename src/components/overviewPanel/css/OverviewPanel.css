@@ -4,26 +4,20 @@
     src: url('../fonts/OverviewPanel-Icons.woff');
 }
 
+/* open-sans-latin-wght-normal */
 @font-face {
-    font-family: 'OpenSans';
-    src: url('../../../lib/opensans/fonts/OpenSans-Regular.woff');
+    font-family: 'Open Sans Variable';
+    font-style: normal;
+    font-weight: 300 800;
+    src: url('../../../lib/opensans/fonts/open-sans-latin-wght-normal.woff2') format('woff2-variations');
 }
 
+/* roboto-slab-latin-wght-normal */
 @font-face {
-    font-family: 'OpenSans';
-    font-weight: bold;
-    src: url('../../../lib/opensans/fonts/OpenSans-Bold.woff');
-}
-
-@font-face {
-    font-family: 'RobotoSlab';
-    src: url('../../../lib/roboto/fonts/Roboto-Slab-Regular.woff');
-}
-
-@font-face {
-    font-family: 'RobotoSlab';
-    font-weight: bold;
-    src: url('../../../lib/roboto/fonts/Roboto-Slab-Bold.woff');
+    font-family: 'Roboto Slab Variable';
+    font-style: normal;
+    font-weight: 100 900;
+    src: url('../../../lib/roboto-slab/fonts/roboto-slab-latin-wght-normal.woff2') format('woff2-variations');
 }
 
 .fl-overviewPanel-container {
@@ -36,7 +30,7 @@
      * direction.
      */
 
-    font-family: "OpenSans", "Helvetica Neue", "Helvetica", Arial, sans-serif;
+    font-family: "Open Sans Variable", "Helvetica Neue", "Helvetica", Arial, sans-serif;
     font-size: 1em;
     height: 100%;
     left: 0;
@@ -57,7 +51,7 @@
 .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #333;
     color: #ccc;
-    font-family: 'RobotoSlab', serif;
+    font-family: 'Roboto Slab Variable', serif;
     height: 5.5em;
     left: 0;
     line-height: 2em;

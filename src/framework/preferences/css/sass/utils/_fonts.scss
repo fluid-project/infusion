@@ -5,33 +5,60 @@ $fonts: (
     ".fl-font-verdana": "Verdana",
     ".fl-font-times": "Georgia, Times, Times New Roman, serif",
     ".fl-font-comic-sans": "Comic Sans MS, sans-serif",
-    ".fl-font-open-dyslexic": "OpenDyslexic, sans-serif"
+    ".fl-font-open-dyslexic": "OpenDyslexic, sans-serif",
+    ".fl-font-atkinson-hyperlegible": "Atkinson Hyperlegible, sans-serif",
 );
 
 // Defines any @font-face definitions needed by the enactors
 $fontFaces: (
     open-dyslexic: (
-        font-directory: "../../../lib/open-dyslexic/fonts/",
+        font-directory: "../../../lib/opendyslexic/fonts/",
         font-family: "OpenDyslexic",
         definitions: (
             normal: (
-                filename:"OpenDyslexic-Regular.woff",
+                filename:"opendyslexic-latin-400-normal.woff2",
                 font-weight: normal,
                 font-style: normal
             ),
             bold: (
-                filename:"OpenDyslexic-Bold.woff",
-                font-weight: 600,
+                filename:"opendyslexic-latin-700-normal.woff2",
+                font-weight: 700,
                 font-style: normal
             ),
             italic: (
-                filename:"OpenDyslexic-Italic.woff",
+                filename:"opendyslexic-latin-400-italic.woff2",
                 font-weight: normal,
                 font-style: italic
             ),
             bold-italic: (
-                filename:"OpenDyslexic-BoldItalic.woff",
-                font-weight: 600,
+                filename:"opendyslexic-latin-700-italic.woff2",
+                font-weight: 700,
+                font-style: italic
+            )
+        )
+    ),
+    atkinson-hyperlegible: (
+        font-directory: "../../../lib/atkinson-hyperlegible/fonts/",
+        font-family: "Atkinson Hyperlegible",
+        definitions: (
+            normal: (
+                filename:"atkinson-hyperlegible-latin-400-normal.woff2",
+                font-weight: normal,
+                font-style: normal
+            ),
+            bold: (
+                filename:"atkinson-hyperlegible-latin-700-normal.woff2",
+                font-weight: 700,
+                font-style: normal
+            ),
+            italic: (
+                filename:"atkinson-hyperlegible-latin-400-italic.woff2",
+                font-weight: normal,
+                font-style: italic
+            ),
+            bold-italic: (
+                filename:"atkinson-hyperlegible-latin-700-italic.woff2",
+                font-weight: 700,
                 font-style: italic
             )
         )

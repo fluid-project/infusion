@@ -104,8 +104,8 @@ categorized by license:
 
 * [`fluid.load.scripts` is based on Jake Archibald's script loading example](
   https://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
-* [Open Sans font](https://www.google.com/fonts/specimen/Open+Sans)
-* [Roboto font](https://fonts.google.com/specimen/Roboto)
+* [Roboto Slab](https://github.com/googlefonts/robotoslab)
+  * via [Fontsource](https://fontsource.org/fonts/roboto-slab)
 
 ### BSD-3
 
@@ -140,10 +140,14 @@ categorized by license:
 
 ### Open Font License
 
+* [Atkinson Hyperlegible](https://brailleinstitute.org/freefont)
+  * via [Fontsource](https://fontsource.org/fonts/atkinson-hyperlegible)
 * [Lato font v2.015](http://www.latofonts.com)
 * [Love Ya Like A Sister font](https://fonts.google.com/specimen/Love+Ya+Like+A+Sister)
-* [OpenDyslexic 3](https://opendyslexic.org/)
-  * via [NPM Package](https://github.com/ssbc/open-dyslexic) distributed under Bitstream license.
+* [OpenDyslexic](https://opendyslexic.org/)
+  * via [Fontsource](https://fontsource.org/fonts/opendyslexic)
+* [Open Sans font](https://github.com/googlefonts/opensans)
+  * via [Fontsource](https://fontsource.org/fonts/open-sans)
 
 ### zlib/libpng License
 

@@ -1045,6 +1045,7 @@ fluid.defaults("fluid.tests.prefs.panel.textFont", {
         "textFont-arial": "Arial",
         "textFont-verdana": "Verdana",
         "textFont-open-dyslexic": "Open Dyslexic",
+        "textFont-atkinson-hyperlegible": "Atkinson Hyperlegible",
         "textFontLabel": "text style",
         "textFontDescr": "Change the font used"
     },
@@ -1063,7 +1064,8 @@ fluid.defaults("fluid.tests.prefs.panel.textFont", {
             "comic": "fl-font-comic-sans",
             "arial": "fl-font-arial",
             "verdana": "fl-font-verdana",
-            "open-dyslexic": "fl-font-open-dyslexic"
+            "open-dyslexic": "fl-font-open-dyslexic",
+            "atkinson-hyperlegible": "fl-font-atkinson-hyperlegible"
         }
     },
     stringArrayIndex: {
@@ -1073,11 +1075,12 @@ fluid.defaults("fluid.tests.prefs.panel.textFont", {
             "textFont-comic",
             "textFont-arial",
             "textFont-verdana",
-            "textFont-open-dyslexic"
+            "textFont-open-dyslexic",
+            "textFont-atkinson-hyperlegible"
         ]
     },
     controlValues: {
-        textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"]
+        textFont: ["default", "times", "comic", "arial", "verdana", "open-dyslexic", "atkinson-hyperlegible"]
     }
 });
 
@@ -1115,14 +1118,14 @@ fluid.setLogging(true);
 fluid.defaults("fluid.tests.textFontTester", {
     gradeNames: ["fluid.test.testCaseHolder"],
     testOptions: {
-        expectedNumOfOptions: 6,
+        expectedNumOfOptions: 7,
         defaultValue: "default",
         newValue: "comic"
     },
     modules: [{
         name: "Test the text font settings panel",
         tests: [{
-            expect: 10,
+            expect: 11,
             name: "Test the rendering of the text font panel",
             sequence: [{
                 listener: "fluid.tests.textFontPanel.testDefault",

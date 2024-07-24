@@ -229,15 +229,16 @@ The zip files will obliterate the contents of the `products` directory and must 
 
 #### External Libraries
 
+* atkinson-hyperlegible
 * fast-xml-pull
 * hypher
 * jquery
 * jquery-ui
 * jquery-scrollto
 * jquery-ui-touch-punch
-* open-dyslexic
-* opensans-webkit
-* roboto-fontface
+* opendyslexic
+* opensans
+* roboto-slab
 
 ## How Do I Run Tests?
 

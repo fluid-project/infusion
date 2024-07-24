@@ -79,20 +79,26 @@
             "jquery-ui": "1.12.1"
         }
     }, {
-        "name": "open-dyslexic",
-        "description": "Open Dyslexic web font.",
+        "name": "atkinson-hyperlegible",
+        "description": "Atkinson Hyperlegible web font.",
         "infusion": {
-            "dir": "./open-dyslexic"
+            "dir": "./atkinson-hyperlegible"
         }
     }, {
-        "name": "opensans-webkit",
+        "name": "opendyslexic",
+        "description": "Open Dyslexic web font.",
+        "infusion": {
+            "dir": "./opendyslexic"
+        }
+    }, {
+        "name": "opensans",
         "description": "Open Sans web font.",
         "infusion": {
             "dir": "./opensans"
         }
     }, {
-        "name": "roboto-fontface",
-        "description": "Roboto web font.",
+        "name": "roboto-slab",
+        "description": "Roboto Slab web font.",
         "infusion": {
             "dir": "./roboto"
         }
