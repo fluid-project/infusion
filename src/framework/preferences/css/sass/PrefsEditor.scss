@@ -66,28 +66,6 @@ $icon-font: 'PrefsFramework-Icons';
             display: block;
             font-weight: bold;
             margin: 0 auto;
-
-            option {
-                &.fl-font-times {
-                    font-family: var(--fl-font-family, "Times New Roman", serif);
-                }
-
-                &.fl-font-comic-sans {
-                    font-family: var(--fl-font-family, "Comic Sans MS", cursive, sans-serif);
-                }
-
-                &.fl-font-arial {
-                    font-family: var(--fl-font-family, Arial, sans-serif);
-                }
-
-                &.fl-font-verdana {
-                    font-family: var(--fl-font-family, Verdana, sans-serif);
-                }
-
-                &.fl-font-open-dyslexic {
-                    font-family: var(--fl-font-family, OpenDyslexic, sans-serif);
-                }
-            }
         }
 
         &:focus {

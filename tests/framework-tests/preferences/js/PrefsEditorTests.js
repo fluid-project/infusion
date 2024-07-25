@@ -152,7 +152,7 @@ fluid.tests.prefs.assertInit = function (prefsEditor) {
     jqUnit.assertEquals("Initialization: The first theme is default", "default", themeValues[0]);
 
     var fontValues = prefsEditor.textFont.options.controlValues.textFont;
-    jqUnit.assertEquals("Initialization: There are 7 font values in font style adjuster", 7, fontValues.length);
+    jqUnit.assertEquals("Initialization: There are 8 font values in font style adjuster", 8, fontValues.length);
     jqUnit.assertTrue("Initialization: There is a default font value", fontValues.indexOf("default") !== -1);
 
     jqUnit.assertEquals("Initialization: The onPrefsEditorRefresh event has been called once", 1, prefsEditor.refreshCount);

@@ -185,8 +185,10 @@ fluid.tests.prefs.enhancerOptions = {
     }
 };
 
-fluid.tests.prefs.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7"];
-fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e", "f", "g"];
+// TODO: The number of values in these arrays is dependent on the starter grades stringArrayIndex
+//       This should be refactored so that it isn't so tightly coupled.
+fluid.tests.prefs.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test 8"];
+fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 fluid.tests.prefs.testComponentIntegration = function (prefsEditor) {
     var body = $("body");
@@ -199,13 +201,13 @@ fluid.tests.prefs.testComponentIntegration = function (prefsEditor) {
     var actualTextFontStrings = prefsEditor.textFont.options.strings.textFont;
     var actualTextFontControlValues = prefsEditor.textFont.options.controlValues.textFont;
 
-    jqUnit.assertEquals("There are 7 elements in the text font string list", 7, actualTextFontStrings.length);
+    jqUnit.assertEquals("There are 8 elements in the text font string list", 8, actualTextFontStrings.length);
     jqUnit.assertEquals("The first text font string value matches", testStrings[0], actualTextFontStrings[0]);
-    jqUnit.assertEquals("The seventh text font string value matches", testStrings[6], actualTextFontStrings[6]);
+    jqUnit.assertEquals("The eighth text font string value matches", testStrings[7], actualTextFontStrings[7]);
 
-    jqUnit.assertEquals("There are 7 elements in the text font control value list", 7, actualTextFontControlValues.length);
+    jqUnit.assertEquals("There are 8 elements in the text font control value list", 8, actualTextFontControlValues.length);
     jqUnit.assertEquals("The first text font control value matches", testControlValues[0], actualTextFontControlValues[0]);
-    jqUnit.assertEquals("The seventh text font control value matches", testControlValues[6], actualTextFontControlValues[6]);
+    jqUnit.assertEquals("The eighth text font control value matches", testControlValues[7], actualTextFontControlValues[7]);
 };
 
 fluid.defaults("fluid.tests.prefs.mungingIntegrationBase", {
