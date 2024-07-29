@@ -21,6 +21,22 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.7.0] - 2024-07-29
+
+### Added
+
+* [FLUID-6763](https://issues.fluidproject.org/browse/FLUID-6763) UI Options: Add Atkinson Hyperlegible font
+* [FLUID-6754](https://issues.fluidproject.org/browse/FLUID-6754) Add a text style option for system-ui
+
+### Fixed
+
+* [FLUID-6764](https://issues.fluidproject.org/browse/FLUID-6764) Infusion's jquery.standalone file throws an error
+  when loaded in an AudioWorkletGlobalScope
+
+### More Info
+
+* [Changes in 4.7.0](https://github.com/fluid-project/infusion/compare/v4.6.0...v4.7.0)
+
 ## [4.6.0] - 2022-12-08
 
 ### Fixed
@@ -32,6 +48,10 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 * [FLUID-6756](https://issues.fluidproject.org/browse/FLUID-6756) regenerateCursor function defined in the global scope
   in both Fluid.js and FluidIoC.js
 
+### More Info
+
+* [Changes in 4.6.0](https://github.com/fluid-project/infusion/compare/v4.5.0...v4.6.0)
+
 ## [4.5.0] - 2022-10-21
 
 ### Fixed
@@ -40,12 +60,20 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
   entire component are unreadable
 * [FLUID-6749](https://issues.fluidproject.org/browse/FLUID-6749) Stop using iframe to render preferences editor
 
+### More Info
+
+* [Changes in 4.5.0](https://github.com/fluid-project/infusion/compare/v4.4.0...v4.5.0)
+
 ## [4.4.0] - 2022-09-27
 
 ### Fixed
 
 * [FLUID-6750](https://issues.fluidproject.org/browse/FLUID-6750) Model-driven relocalisation does not take account
   of initial model values
+
+### More Info
+
+* [Changes in 4.4.0](https://github.com/fluid-project/infusion/compare/v4.3.0...v4.4.0)
 
 ## [4.3.0] - 2022-08-08
 
@@ -64,6 +92,10 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 * [FLUID-6748](https://issues.fluidproject.org/browse/FLUID-6748) Remove the auto save of panel index in separated
     panel UIO
 
+### More Info
+
+* [Changes in 4.3.0](https://github.com/fluid-project/infusion/compare/v4.2.0...v4.3.0)
+
 ## [4.2.0] - 2022-07-05
 
 ### Fixed
@@ -72,6 +104,10 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
   exposed by upgrade to Chrome 103
 * [FLUID-6741](https://issues.fluidproject.org/browse/FLUID-6741) Workflow failure when constructed lensed component
   from asynchronous resource
+
+### More Info
+
+* [Changes in 4.2.0](https://github.com/fluid-project/infusion/compare/v4.1.0...v4.2.0)
 
 ## [4.1.0] - 2022-05-12
 
@@ -85,6 +121,10 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 to resolve in contexts where expandImmediate is used
 * [FLUID-6727](https://issues.fluidproject.org/browse/FLUID-6727) Improve documentation (retrospectively) about changes
   in DataSource API in the 3.0.0 release
+
+### More Info
+
+* [Changes in 4.1.0](https://github.com/fluid-project/infusion/compare/v4.0.0...v4.1.0)
 
 ## [4.0.0] - 2022-03-17
 
@@ -988,7 +1028,8 @@ A pre-release of [0.3.0].
 * [Issues addressed in 0.1.0](https://issues.fluidproject.org/projects/FLUID/versions/10000)
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
-[Unreleased]: https://github.com/fluid-project/infusion/compare/v4.6.0...HEAD
+[Unreleased]: https://github.com/fluid-project/infusion/compare/v4.7.0...HEAD
+[4.7.0]: https://github.com/fluid-project/infusion/releases/tag/v4.7.0
 [4.6.0]: https://github.com/fluid-project/infusion/releases/tag/v4.6.0
 [4.5.0]: https://github.com/fluid-project/infusion/releases/tag/v4.5.0
 [4.4.0]: https://github.com/fluid-project/infusion/releases/tag/v4.4.0

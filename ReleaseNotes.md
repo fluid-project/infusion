@@ -4,6 +4,25 @@
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
+## What's New in 4.7.0
+
+* New features
+  * [FLUID-6763](https://issues.fluidproject.org/browse/FLUID-6763) UI Options: Add Atkinson Hyperlegible font
+  * [FLUID-6754](https://issues.fluidproject.org/browse/FLUID-6754) Add a text style option for system-ui
+* Resolves
+  * [FLUID-6764](https://issues.fluidproject.org/browse/FLUID-6764) Infusion's jquery.standalone file throws an error
+    when loaded in an AudioWorkletGlobalScope
+
+## What's New in 4.6.0
+
+* Maintenance release which resolves
+  * [FLUID-6758](https://issues.fluidproject.org/browse/FLUID-6758) Selection reading continues from where page reading
+    stopped
+  * [FLUID-6757](https://issues.fluidproject.org/browse/FLUID-6757) Rendering and other methods for the selection reader
+    are not invokers
+  * [FLUID-6756](https://issues.fluidproject.org/browse/FLUID-6756) regenerateCursor function defined in the global scope
+    in both Fluid.js and FluidIoC.js
+
 ## What's New in 4.6.0
 
 * Maintenance release which resolves
@@ -182,6 +201,8 @@ wiki page.
 The Fluid Project uses a [JIRA](https://issues.fluidproject.org) website to track bugs. Some of the known issues in this
 release are described here:
 
+* [FLUID-6772](https://issues.fluidproject.org/browse/FLUID-6772) Removal of UIO iframe in Infusion 4.5.0 causes
+  overflow issue on Webkit/Chromium browsers
 * [FLUID-6722](https://issues.fluidproject.org/browse/FLUID-6722) Pager tooltip shows wrong data range after sorting by
   column
 * [FLUID-6720](https://issues.fluidproject.org/browse/FLUID-6720) The pager tooltips do not display on mobile
