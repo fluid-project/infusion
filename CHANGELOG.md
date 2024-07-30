@@ -21,6 +21,17 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 ### More Info
 
+## [4.7.1] - 2024-07-30
+
+### Fixed
+
+* [FLUID-6781](https://issues.fluidproject.org/browse/FLUID-6781) 404 error for sourcing open-sans font in
+  SeparatedPanelPrefsEditor styles.
+
+### More Info
+
+* [Changes in 4.7.1](https://github.com/fluid-project/infusion/compare/v4.7.0...v4.7.1)
+
 ## [4.7.0] - 2024-07-29
 
 ### Added
@@ -1028,7 +1039,8 @@ A pre-release of [0.3.0].
 * [Issues addressed in 0.1.0](https://issues.fluidproject.org/projects/FLUID/versions/10000)
 * [Changes in 0.1.0](https://github.com/fluid-project/infusion/commits/v0.1.0)
 
-[Unreleased]: https://github.com/fluid-project/infusion/compare/v4.7.0...HEAD
+[Unreleased]: https://github.com/fluid-project/infusion/compare/v4.7.1...HEAD
+[4.7.1]: https://github.com/fluid-project/infusion/releases/tag/v4.7.1
 [4.7.0]: https://github.com/fluid-project/infusion/releases/tag/v4.7.0
 [4.6.0]: https://github.com/fluid-project/infusion/releases/tag/v4.6.0
 [4.5.0]: https://github.com/fluid-project/infusion/releases/tag/v4.5.0

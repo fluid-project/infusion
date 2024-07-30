@@ -1,8 +1,14 @@
-# Release Notes for Fluid Infusion 4.6.0
+# Release Notes for Fluid Infusion 4
 
 [Fluid Project](https://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
+
+## What's New in 4.7.1
+
+* Maintenance release which resolves
+  * [FLUID-6781](https://issues.fluidproject.org/browse/FLUID-6781) 404 error for sourcing open-sans font in
+    SeparatedPanelPrefsEditor styles.
 
 ## What's New in 4.7.0
 

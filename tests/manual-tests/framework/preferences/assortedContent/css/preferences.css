@@ -89,7 +89,7 @@ input.submit {
 }
 
 .text-area button {
-    background-image: url("http://wiki.fluidproject.org/download/attachments/24939866/INFUSION_orange_graphic.png");
+    background-image: url("../images/INFUSION_orange_graphic.png");
     background-repeat: no-repeat;
     background-size: contain;
     height: 2rem;
