@@ -32,7 +32,6 @@ Infusion from v2.0.0 onwards adheres to [Semantic Versioning](https://semver.org
 
 * [Changes in 4.7.1](https://github.com/fluid-project/infusion/compare/v4.7.0...v4.7.1)
 
-
 ## [4.7.0] - 2024-07-29
 
 ### Added
