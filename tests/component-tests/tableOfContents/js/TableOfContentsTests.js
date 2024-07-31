@@ -610,3 +610,21 @@ jqUnit.asyncTest("FLUID-5697: Header exclusion", function () {
         }
     });
 });
+
+
+jqUnit.asyncTest("Table of Contents nav label", function () {
+    fluid.tableOfContents("#flc-toc-nav-label", {
+        strings: {
+            tocHeader: "Test ToC label"
+        },
+        listeners: {
+            onReady: {
+                listener: function (that) {
+                    jqUnit.assertEquals("The toc container should have an aria-label", that.options.strings.tocHeader, that.locate("tocContainer").attr("aria-label"));
+                    jqUnit.start();
+                },
+                args: ["{that}"]
+            }
+        }
+    });
+});
