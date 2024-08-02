@@ -135,7 +135,7 @@ $icon-font: 'PrefsFramework-Icons';
 
             .fl-preview-A {
                 font-size: 1.7em;
-                letter-spacing: normal // prevents the preview content from shifting when letter-spacing is set
+                letter-spacing: normal; // prevents the preview content from shifting when letter-spacing is set
             }
 
             // Pseudo content to prevent AT from reading display 'a'
@@ -237,6 +237,12 @@ $icon-font: 'PrefsFramework-Icons';
             margin-top: -1.5em;
             text-align: center;
             width: calc(100% - 5px); // deduct the right margin from the calculation
+        }
+
+        label .fl-hidden-accessible {
+            display: inline-block;
+            position: relative;
+            width: 0;
         }
 
         &:last-child .fl-indicator {
