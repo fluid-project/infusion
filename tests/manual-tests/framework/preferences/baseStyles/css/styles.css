@@ -1,11 +1,12 @@
 body {
-    color: var(--fl-fgColor, #131C2A);
-    background-color: var(--fl-bgColor, #F3F6F7);
+    background-color: var(--fl-bgColor, #f3f6f7);
+    color: var(--fl-fgColor, #131c2a);
     font-family: var(--fl-font-family);
     line-height: var(--fl-lineSpace);
 }
 
-aside, main {
+aside,
+main {
     font-size: var(--fl-textSize);
 }
 

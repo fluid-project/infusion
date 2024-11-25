@@ -23,8 +23,8 @@
     input:disabled *,
     input:disabled::file-selector-button,
     input[type]:disabled {
-        color: var(--fl-disabledFgColor) !important;
         background-color: var(--fl-disabledBgColor) !important;
+        color: var(--fl-disabledFgColor) !important;
     }
 
     &::selection,
