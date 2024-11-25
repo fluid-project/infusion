@@ -136,7 +136,7 @@
     --fl-buttonBgColor: var(--_fl-buttonBgColor);
 
     &.fl-inverted-color,
-    .fl-inverted-color *,
+    .fl-inverted-color,
     .fl-preview-theme &.fl-inverted-color {
         --fl-fgColor: var(--_fl-bgColor);
         --fl-bgColor: var(--_fl-fgColor);

@@ -6,7 +6,7 @@
     background-image: none !important;
 
     &,
-    :where(*:not(.fl-blocking-theme, .fl-blocking-theme *)),
+    :where(:not(.fl-blocking-theme, .fl-blocking-theme *)),
     .fl-preview-theme & {
         background-color: var(--fl-bgColor) !important;
         border-bottom-color: var(--fl-fgColor) !important;
@@ -94,7 +94,8 @@
     }
 
     // Focus
-    &.fl-focus :focus,
+    &.fl-focus :focus:not(.fl-blocking-theme :focus),
+    &.fl-focus :where([class*="fl-theme"]:not(.fl-theme-prefsEditor-default)) :focus,
     .fl-focus:focus,
     .fl-focus :focus,
     .selectable {
@@ -136,16 +137,18 @@
     }
 
     // Textfield Stepper
-    .fl-textfieldStepper .fl-textfieldStepper-textField {
-        border: solid 1px var(--fl-fgColor);
-    }
+    .fl-textfieldStepper:where(:not(.fl-blocking-theme, .fl-blocking-theme .fl-textfieldStepper)) {
+        .fl-textfieldStepper-textField {
+            border: solid 1px var(--fl-fgColor);
+        }
 
-    .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
-        visibility: hidden;
-    }
+        .fl-textfieldStepper-button:disabled {
+            visibility: hidden;
+        }
 
-    .fl-textfieldStepper .fl-textfieldStepper-focus {
-        outline-color: var(--fl-fgColor);
+        .fl-textfieldStepper-focus {
+            outline-color: var(--fl-fgColor);
+        }
     }
 
     // Orator
