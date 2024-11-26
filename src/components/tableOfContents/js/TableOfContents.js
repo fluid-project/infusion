@@ -121,6 +121,12 @@ fluid.defaults("fluid.tableOfContents", {
         }
     },
     listeners: {
+        "onCreate.setLabel": {
+            "this": "{that}.dom.tocContainer",
+            "method": "attr",
+            "args": ["aria-label", "{that}.options.strings.tocHeader"],
+            "priority": "before:refreshView"
+        },
         "onCreate.refreshView": {
             func: "{that}.refreshView",
             // New for FLUID-6148: Make sure we do not try to refresh view until after "levels" subcomponent is constructed
