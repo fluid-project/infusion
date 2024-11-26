@@ -2,101 +2,153 @@
 
 // The "blocking" definition used to insulate a part of the interface, e.g. the prefs editor itself, from styling changes
 // Do not begin this name with fl-theme because of fl-theme* matching rule in Contrast.scss
-
 .fl-blocking-theme {
-    --fl-fgColor: #000;
-    --fl-bgColor: #fff;
-    --fl-linkColor: #00e;
-    --fl-selectedFgColor: #fff;
-    --fl-selectedBgColor: #3297fd;
-    --fl-buttonFgColor: #000;
-    --fl-buttonBgColor: #fff;
-    --fl-prefsEditorBgColor: #bcb5ad;
-    --fl-prefsEditorFgColor: #5d5652;
-    --fl-selectBorderFgColor: #ebebeb;
-    --fl-prefsEditorPanelBorderFgColor: #615e59;
-    --fl-prefsEditorPanelBorderBottomFgColor: #ccc;
+    --fl-fgColor: initial;
+    --fl-bgColor: initial;
+    --fl-linkColor: initial;
+    --fl-linkFgColor: initial;
+    --fl-linkBgColor: initial;
+    --fl-disabledColor: initial;
+    --fl-disabledFgColor: initial;
+    --fl-disabledBgColor: initial;
+    --fl-selectedFgColor: initial;
+    --fl-selectedBgColor: initial;
+    --fl-buttonFgColor: initial;
+    --fl-buttonBgColor: initial;
 }
 
 .fl-theme-bw {
-    --fl-fgColor: #000;
-    --fl-bgColor: #fff;
-    --fl-linkColor: #000;
-    --fl-selectedFgColor: revert;
-    --fl-selectedBgColor: revert;
-    --fl-buttonFgColor: #000;
-    --fl-buttonBgColor: #fff;
+    --_fl-fgColor: #000;
+    --_fl-bgColor: #fff;
+    --_fl-linkFgColor: #000;
+    --_fl-linkBgColor: #fff;
+    --_fl-disabledFgColor: #000;
+    --_fl-disabledBgColor: #fff;
+    --_fl-selectedFgColor: revert;
+    --_fl-selectedBgColor: revert;
+    --_fl-buttonFgColor: #000;
+    --_fl-buttonBgColor: #fff;
 }
 
 .fl-theme-wb {
-    --fl-fgColor: #fff;
-    --fl-bgColor: #000;
-    --fl-linkColor: #fff;
-    --fl-selectedFgColor: revert;
-    --fl-selectedBgColor: revert;
-    --fl-buttonFgColor: #fff;
-    --fl-buttonBgColor: #000;
+    --_fl-fgColor: #fff;
+    --_fl-bgColor: #000;
+    --_fl-linkFgColor: #fff;
+    --_fl-linkBgColor: #000;
+    --_fl-disabledFgColor: #fff;
+    --_fl-disabledBgColor: #000;
+    --_fl-selectedFgColor: revert;
+    --_fl-selectedBgColor: revert;
+    --_fl-buttonFgColor: #fff;
+    --_fl-buttonBgColor: #000;
 }
 
 .fl-theme-yb {
-    --fl-fgColor: #ff0;
-    --fl-bgColor: #000;
-    --fl-linkColor: #ff0;
-    --fl-selectedFgColor: revert;
-    --fl-selectedBgColor: revert;
-    --fl-buttonFgColor: #ff0;
-    --fl-buttonBgColor: #000;
+    --_fl-fgColor: #ff0;
+    --_fl-bgColor: #000;
+    --_fl-linkFgColor: #ff0;
+    --_fl-linkBgColor: #000;
+    --_fl-disabledFgColor: #ff0;
+    --_fl-disabledBgColor: #000;
+    --_fl-selectedFgColor: revert;
+    --_fl-selectedBgColor: revert;
+    --_fl-buttonFgColor: #ff0;
+    --_fl-buttonBgColor: #000;
 }
 
 .fl-theme-by {
-    --fl-fgColor: #000;
-    --fl-bgColor: #ff0;
-    --fl-linkColor: #000;
-    --fl-selectedFgColor: revert;
-    --fl-selectedBgColor: revert;
-    --fl-buttonFgColor: #000;
-    --fl-buttonBgColor: #ff0;
+    --_fl-fgColor: #000;
+    --_fl-bgColor: #ff0;
+    --_fl-linkFgColor: #000;
+    --_fl-linkBgColor: #ff0;
+    --_fl-disabledFgColor: #000;
+    --_fl-disabledBgColor: #ff0;
+    --_fl-selectedFgColor: revert;
+    --_fl-selectedBgColor: revert;
+    --_fl-buttonFgColor: #000;
+    --_fl-buttonBgColor: #ff0;
 }
 
 .fl-theme-lgdg {
-    --fl-fgColor: #bdbdbb;
-    --fl-bgColor: #555;
-    --fl-linkColor: #bdbdbb;
-    --fl-selectedFgColor: revert;
-    --fl-selectedBgColor: revert;
-    --fl-buttonFgColor: #bdbdbb;
-    --fl-buttonBgColor: #555;
+    --_fl-fgColor: #bdbdbb;
+    --_fl-bgColor: #555;
+    --_fl-linkFgColor: #bdbdbb;
+    --_fl-linkBgColor: #555;
+    --_fl-disabledFgColor: #bdbdbb;
+    --_fl-disabledBgColor: #555;
+    --_fl-selectedFgColor: revert;
+    --_fl-selectedBgColor: revert;
+    --_fl-buttonFgColor: #bdbdbb;
+    --_fl-buttonBgColor: #555;
 }
 
 .fl-theme-gd {
-    --fl-fgColor: #888;
-    --fl-bgColor: #222;
-    --fl-linkColor: #8080ff;
-    --fl-disabledColor: #c00;
-    --fl-selectedFgColor: #fff;
-    --fl-selectedBgColor: #008000;
-    --fl-buttonFgColor: #fff;
-    --fl-buttonBgColor: #000;
+    --_fl-fgColor: #888;
+    --_fl-bgColor: #222;
+    --_fl-linkFgColor: #8080ff;
+    --_fl-linkBgColor: #222;
+    --_fl-disabledFgColor: #c00;
+    --_fl-disabledBgColor: #000;
+    --_fl-selectedFgColor: #fff;
+    --_fl-selectedBgColor: #008000;
+    --_fl-buttonFgColor: #fff;
+    --_fl-buttonBgColor: #000;
 }
 
 .fl-theme-gw {
-    --fl-fgColor: #6c6c6c;
-    --fl-bgColor: #fff;
-    --fl-linkColor: #66c;
-    --fl-disabledColor: #933;
-    --fl-selectedFgColor: #fff;
-    --fl-selectedBgColor: #404080;
-    --fl-buttonFgColor: #000;
-    --fl-buttonBgColor: #fff;
+    --_fl-fgColor: #6c6c6c;
+    --_fl-bgColor: #fff;
+    --_fl-linkFgColor: #66c;
+    --_fl-linkBgColor: #fff;
+    --_fl-disabledFgColor: #933;
+    --_fl-disabledBgColor: #fff;
+    --_fl-selectedFgColor: #fff;
+    --_fl-selectedBgColor: #404080;
+    --_fl-buttonFgColor: #000;
+    --_fl-buttonBgColor: #fff;
 }
 
 .fl-theme-bbr {
-    --fl-fgColor: #000;
-    --fl-bgColor: #b96;
-    --fl-linkColor: #009;
-    --fl-disabledColor: #600000;
-    --fl-selectedFgColor: #fff;
-    --fl-selectedBgColor: #000070;
-    --fl-buttonFgColor: #000;
-    --fl-buttonBgColor: #ffd18a;
+    --_fl-fgColor: #000;
+    --_fl-bgColor: #b96;
+    --_fl-linkFgColor: #009;
+    --_fl-linkBgColor: #b96;
+    --_fl-disabledFgColor: #600000;
+    --_fl-disabledBgColor: #ffd18a;
+    --_fl-selectedFgColor: #fff;
+    --_fl-selectedBgColor: #000070;
+    --_fl-buttonFgColor: #000;
+    --_fl-buttonBgColor: #ffd18a;
+}
+
+[class*="fl-theme"]:not(.fl-theme-prefsEditor-default) {
+    --fl-fgColor: var(--_fl-fgColor);
+    --fl-bgColor: var(--_fl-bgColor);
+    --fl-linkColor: var(--_fl-linkFgColor); // deprecated use --fl-linkFgColor instead
+    --fl-linkFgColor: var(--_fl-linkFgColor);
+    --fl-linkBgColor: var(--_fl-linkBgColor);
+    --fl-disabledColor: var(--_fl-disabledFgColor); // deprecated use --fl-disabledFgColor instead
+    --fl-disabledFgColor: var(--_fl-disabledFgColor);
+    --fl-disabledBgColor: var(--_fl-disabledBgColor);
+    --fl-selectedFgColor: var(--_fl-selectedFgColor);
+    --fl-selectedBgColor: var(--_fl-selectedBgColor);
+    --fl-buttonFgColor: var(--_fl-buttonFgColor);
+    --fl-buttonBgColor: var(--_fl-buttonBgColor);
+
+    &.fl-inverted-color,
+    .fl-inverted-color,
+    .fl-preview-theme &.fl-inverted-color {
+        --fl-fgColor: var(--_fl-bgColor);
+        --fl-bgColor: var(--_fl-fgColor);
+        --fl-linkColor: var(--_fl-linkBgColor); // deprecated use --fl-linkFgColor instead
+        --fl-linkFgColor: var(--_fl-linkBgColor);
+        --fl-linkBgColor: var(--_fl-linkFgColor);
+        --fl-disabledColor: var(--_fl-disabledBgColor); // deprecated use --fl-disabledFgColor instead
+        --fl-disabledFgColor: var(--_fl-disabledBgColor);
+        --fl-disabledBgColor: var(--_fl-disabledFgColor);
+        --fl-selectedFgColor: var(--_fl-selectedBgColor);
+        --fl-selectedBgColor: var(--_fl-selectedFgColor);
+        --fl-buttonFgColor: var(--_fl-buttonBgColor);
+        --fl-buttonBgColor: var(--_fl-buttonFgColor);
+    }
 }

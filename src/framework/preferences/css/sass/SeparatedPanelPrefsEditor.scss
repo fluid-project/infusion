@@ -14,13 +14,16 @@ body {
 
 // Top bar and show/hide button
 .fl-prefsEditor-separatedPanel {
-    background-color: var(--fl-prefsEditorBgColor, #bcb5ad);
+    background-color: var(--fl-bgColor, #bcb5ad);
     background-image: none;
-    border-bottom: 1px solid var(--fl-prefsEditorBgColor, #bcb5ad);
+    border-bottom: 1px solid var(--fl-bgColor, #bcb5ad);
     display: flex;
     flex-direction: column;
-    font-size: 1rem;
-    line-height: 1.2;
+
+    .flc-slidingPanel-panel {
+        font-size: calc(var(--fl-textSize-factor, 1) * 1rem);
+        line-height: calc(var(--fl-lineSpace-factor, 1) * 1.2);
+    }
 
     .fl-panelBar {
         background-color: var(--fl-bgColor, #fff);
@@ -90,7 +93,7 @@ body {
     }
 
     .fl-prefsEditor {
-        color: var(--fl-prefsEditorFgColor, #5d5652);
+        color: var(--fl-fgColor, #5d5652);
         font-family: var(--fl-font-family, "Open Sans Variable", "Myriad Pro", Helvetica, Arial, sans-serif);
         min-width: 100%;
         overflow-x: scroll;
@@ -104,7 +107,7 @@ body {
 
         .fl-prefsEditor-panel {
             background-color: var(--fl-bgColor, #fff);
-            border: 1px solid var(--fl-prefsEditorPanelBorderFgColor, #615e59);
+            border: 1px solid var(--fl-fgColor, #615e59);
             display: table-cell;
             // minus 2px because of borders
             min-width: calc(100vw - 2px);
@@ -285,7 +288,7 @@ body {
                 padding-top: 1em;
 
                 h2 {
-                    border-bottom: solid var(--fl-prefsEditorPanelBorderBottomFgColor, #ccc) 1px;
+                    border-bottom: solid var(--fl-fgColor, #ccc) 1px;
                     box-shadow: 0 6px 7px -6px rgba(0, 0, 0, 0.3);
                     font-size: 1.2em;
                     height: 3em;

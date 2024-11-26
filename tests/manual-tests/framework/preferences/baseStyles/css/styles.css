@@ -1,0 +1,24 @@
+body {
+    background-color: var(--fl-bgColor, #f3f6f7);
+    color: var(--fl-fgColor, #131c2a);
+    font-family: var(--fl-font-family);
+    line-height: var(--fl-lineSpace);
+}
+
+aside,
+main {
+    font-size: var(--fl-textSize);
+}
+
+a {
+    background-color: var(--fl-linkBgColor);
+    color: var(--fl-linkFgColor, #166088);
+    font-size: calc(var(--fl-enhance-font-size-factor, 1) * 1rem);
+    font-weight: var(--fl-enhance-font-weight);
+    text-decoration: var(--fl-enhance-text-decoration);
+}
+
+nav {
+    background-color: var(--fl-bgColor);
+    color: var(--fl-fgColor);
+}

@@ -9,7 +9,7 @@
 $icon-font: 'PrefsFramework-Icons';
 
 .fl-prefsEditor {
-    background-color: var(--fl-prefsEditorBgColor, #bcb5ad);
+    background-color: var(--fl-bgColor, #bcb5ad);
     color: var(--fl-fgColor);
     font-family: var(--fl-font-family, "Myriad Pro", Helvetica, Arial, sans-serif);
 
@@ -56,8 +56,8 @@ $icon-font: 'PrefsFramework-Icons';
 
     // Drop downs
     select {
-        background-color: var(--fl-bgColor);
-        border: 2px solid var(--fl-selectBorderFgColor, #ebebeb);
+        background-color: var(--fl-bgColor, initial);
+        border: 2px solid var(--fl-fgColor, #ebebeb);
         color: var(--fl-fgColor, #000);
         font-family: inherit;
         font-size: var(--fl-enhance-font-size, 100%);
