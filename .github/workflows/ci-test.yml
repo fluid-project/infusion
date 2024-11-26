@@ -66,7 +66,8 @@ jobs:
       run: npm run posttest
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v5
       with:
         files: ./reports/coverage-final.json
         flags: unit-tests
+        token: ${{ secrets.CODECOV_TOKEN }}
