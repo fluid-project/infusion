@@ -18,30 +18,30 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - name: Prepare git
-      run: git config --global core.autocrlf false
+      - name: Prepare git
+        run: git config --global core.autocrlf false
 
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Get npm cache directory		
-      id: npm-cache		
-      run: |		
-        echo "::set-output name=dir::$(npm config get cache)"		
-		
-    - uses: actions/cache@v4	
-      with:		
-        path: ${{ steps.npm-cache.outputs.dir }}		
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}		
-        restore-keys: |		
-          ${{ runner.os }}-node-
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
 
-    - name: Install Node.js dependencies
-      run: npm install
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Run browser bundle tests
-      run: npm run test:bundles
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Run browser bundle tests
+        run: npm run test:bundles

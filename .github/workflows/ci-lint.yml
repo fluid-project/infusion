@@ -8,30 +8,30 @@ jobs:
     timeout-minutes: 20
 
     steps:
-    - name: Prepare git
-      run: git config --global core.autocrlf false
+      - name: Prepare git
+        run: git config --global core.autocrlf false
 
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js 20
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
 
-    - name: Get npm cache directory		
-      id: npm-cache		
-      run: |		
-        echo "::set-output name=dir::$(npm config get cache)"		
-		
-    - uses: actions/cache@v4	
-      with:		
-        path: ${{ steps.npm-cache.outputs.dir }}		
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}		
-        restore-keys: |		
-          ${{ runner.os }}-node-
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
 
-    - name: Install Node.js dependencies
-      run: npm install
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Run code linter
-      run: npm run lint
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Run code linter
+        run: npm run lint

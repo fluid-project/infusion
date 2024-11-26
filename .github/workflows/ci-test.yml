@@ -3,26 +3,26 @@ name: Automated tests
 on:
   push:
     paths:
-        - '.nycrc'
-        - 'package.json'
-        - 'buildModules.js'
-        - 'src/**/*.html'
-        - 'src/**/*.js'
-        - 'src/**/*.json'
-        - 'tests/**/*.html'
-        - 'tests/**/*.js'
-        - 'tests/**/*.json'
+      - ".nycrc"
+      - "package.json"
+      - "buildModules.js"
+      - "src/**/*.html"
+      - "src/**/*.js"
+      - "src/**/*.json"
+      - "tests/**/*.html"
+      - "tests/**/*.js"
+      - "tests/**/*.json"
   pull_request:
     paths:
-        - '.nycrc'
-        - 'package.json'
-        - 'buildModules.js'
-        - 'src/**/*.html'
-        - 'src/**/*.js'
-        - 'src/**/*.json'
-        - 'tests/**/*.html'
-        - 'tests/**/*.js'
-        - 'tests/**/*.json'
+      - ".nycrc"
+      - "package.json"
+      - "buildModules.js"
+      - "src/**/*.html"
+      - "src/**/*.js"
+      - "src/**/*.json"
+      - "tests/**/*.html"
+      - "tests/**/*.js"
+      - "tests/**/*.json"
 
 defaults:
   run:
@@ -42,43 +42,43 @@ jobs:
       HEADLESS: true
 
     steps:
-    - name: Prepare git
-      run: git config --global core.autocrlf false
+      - name: Prepare git
+        run: git config --global core.autocrlf false
 
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-       
-    - name: Get npm cache directory		
-      id: npm-cache		
-      run: |		
-        echo "::set-output name=dir::$(npm config get cache)"		
-		
-    - uses: actions/cache@v4	
-      with:		
-        path: ${{ steps.npm-cache.outputs.dir }}		
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}		
-        restore-keys: |		
-          ${{ runner.os }}-node-
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install Node.js dependencies
-      run: npm install
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
 
-    - name: Run browser tests
-      run: npm run test:browser
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Run Node.js tests
-      run: npm run test:node
+      - name: Install Node.js dependencies
+        run: npm install
 
-    - name: Update code coverage
-      run: npm run posttest
+      - name: Run browser tests
+        run: npm run test:browser
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        files: ./reports/coverage-final.json
-        flags: unit-tests
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Run Node.js tests
+        run: npm run test:node
+
+      - name: Update code coverage
+        run: npm run posttest
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./reports/coverage-final.json
+          flags: unit-tests
+          token: ${{ secrets.CODECOV_TOKEN }}
