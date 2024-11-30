@@ -1,3 +1,8 @@
+::selection {
+    background-color: var(--fl-selectedBgColor, highlight);
+    color: var(--fl-selectedFgColor, highlighttext);
+}
+
 body {
     background-color: var(--fl-bgColor, #f3f6f7);
     color: var(--fl-fgColor, #131c2a);
