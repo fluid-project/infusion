@@ -5,6 +5,8 @@ are used to style the Preference Editors as well provide the means for applying 
 files may be used directly within an integrators own build tools, or the pre-built CSS equivalents can be used directly
 on a web page.
 
+_**Note:** The sass files are deprecated. In the future only css may be provided._
+
 ## How to prevent compiling utility Sass files
 
 Some Sass files may only contain mixins or functions for other Sass files to import. Those files should not be
@@ -47,8 +49,12 @@ every class sets all of the properties.
 
 * `--fl-fgColor`: foreground colour, often text colour
 * `--fl-bgColor`: background colour
-* `--fl-linkColor`: text colour for links
-* `--fl-disabledColor`: text colour for disabled inputs
+* `--fl-linkColor`: text colour for links (deprecated: use `--fl-linkFgColor`)
+* `--fl-linkFgColor`: text colour for links
+* `--fl-linkBgColor`: background colour for links
+* `--fl-disabledColor`: text colour for disabled inputs (deprecated: use `--fl-disabledFgColor`)
+* `--fl-disabledFgColor`: text colour for disabled inputs
+* `--fl-disabledBgColor`: background colour for disabled inputs
 * `--fl-selectedFgColor`: colour for selected text
 * `--fl-selectedBgColor`: selection background colour
 * `--fl-buttonFgColor`: text colour for buttons

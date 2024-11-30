@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+        <link rel="stylesheet" type="text/css" href="../../../../../src/framework/core/css/fluid.css" />
+
+        <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/Contrast_base.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/EnhanceInputs_base.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/Font_base.css" />
+
+        <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/PrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+
+        <!-- styling for manual tests -->
+        <link rel="stylesheet" type="text/css" href="../../../shared/css/manualTests.css" />
+
+        <link rel="stylesheet" type="text/css" href="css/styles.css" />
+
+        <title>Preferences Editor - Custom Properties (Base styles)</title>
+        <script src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../../src/lib/jquery/ui/js/version.js"></script>
+        <script src="../../../../../src/lib/jquery/ui/js/keycode.js"></script>
+
+        <script src="../../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script src="../../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script src="../../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidPromises.js"></script>
+        <script src="../../../../../src/framework/core/js/DataSource.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script src="../../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../../src/framework/core/js/RemoteModel.js"></script>
+        <script src="../../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script src="../../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script src="../../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidView.js"></script>
+        <script src="../../../../../src/framework/core/js/FluidView-browser.js"></script>
+        <script src="../../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script src="../../../../../src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script src="../../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script src="../../../../../src/framework/core/js/MessageResolver.js"></script>
+        <script src="../../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script src="../../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script src="../../../../../src/framework/preferences/js/Store.js"></script>
+        <script src="../../../../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script src="../../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script src="../../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script src="../../../../../src/framework/preferences/js/ArrowScrolling.js"></script>
+        <script src="../../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script src="../../../../../src/framework/preferences/js/Panels.js"></script>
+        <script src="../../../../../src/framework/preferences/js/Enactors.js"></script>
+        <script src="../../../../../src/framework/preferences/js/StarterGrades.js"></script>
+        <script src="../../../../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
+        <script src="../../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script src="../../../../../src/components/switch/js/Switch.js"></script>
+        <script src="../../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script src="../../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script src="../../../../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script src="../../../../../src/framework/preferences/js/Builder.js"></script>
+        <script src="../../../../../src/components/uiOptions/js/UIOptions.js"></script>
+    </head>
+
+    <body class="fl-focus">
+        <!-- BEGIN markup for Preference Editor -->
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the mobile view.
+                A separate panel bar for mobile displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-smallScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel"></div>
+
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the desktop view.
+                A separate panel bar for desktop displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-wideScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+        </div>
+        <!-- END markup for Preference Editor -->
+
+        <aside class="instructions-container fl-inverted-color">
+            <div class="instructions-content">
+                <h2>Description</h2>
+                <p>
+                    This is an example of using UIO with only the CSS custom properties (Base styles) and making use of the css custom properties to integrate the adjustments.
+                </p>
+                <h2>Instructions</h2>
+                <ol>
+                    <li>activate the "Show Display Preferences" button in the top left corner of the screen</li>
+                    <li>experiment with the various Preferences Editor settings and verify that the window contents are styled correctly.</li>
+                </ol>
+            </div>
+        </aside>
+
+        <main>
+            <nav class="flc-toc-tocContainer toc"></nav>
+
+            <header>
+                <h1>UIO using only CSS custom properties (Base styles)</h1>
+            </header>
+
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt dignissim nisi vel dapibus. Nam massa dolor,
+                efficitur in nisl ut, pharetra sagittis lacus. Mauris lorem felis, consequat vel vehicula non, accumsan non tellus.
+                Phasellus sed elit eget nibh hendrerit vulputate. Nulla faucibus eros sed vestibulum efficitur. Nunc et interdum ligula,
+                eu blandit tellus. Integer diam risus, lobortis accumsan erat id, euismod iaculis nisi. In sed viverra diam. Mauris
+                faucibus odio a elementum rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque placerat mollis
+                varius. Integer mollis rutrum magna, eget elementum odio. Cras pharetra consectetur libero quis suscipit.
+
+                <strong>Generated with <a href="https://www.lipsum.com">Lorem Ipsum</a></strong>
+            </p>
+
+        </main>
+
+        <script>
+            fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
+                    auxiliarySchema: {
+                        terms: {
+                            "templatePrefix": "../../../../../src/framework/preferences/html",
+                            "messagePrefix": "../../../../../src/framework/preferences/messages"
+                        },
+                        "fluid.prefs.tableOfContents": {
+                            enactor: {
+                                "tocTemplate": "../../../../../src/components/tableOfContents/html/TableOfContents.html",
+                                "tocMessage": "../../../../../src/framework/preferences/messages/tableOfContents-enactor.json",
+                                ignoreForToC: {
+                                    aside: "aside"
+                                }
+                            }
+                        }
+                    },
+                    prefsEditorLoader: {
+                        lazyLoad: true
+                    }
+                });
+        </script>
+
+    </body>
+</html>

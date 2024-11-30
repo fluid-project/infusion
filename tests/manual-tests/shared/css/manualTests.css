@@ -1,6 +1,7 @@
 .instructions-container {
-    background: #fefabc;
-    box-shadow: 1px 1px 5px 1px #707070;
+    background: var(--fl-bgColor, #fefabc);
+    box-shadow: 1px 1px 5px 1px var(--fl-fgColor, #707070);
+    color: var(--fl-fgColor, #000);
     margin: 1rem auto;
     max-width: 50rem;
 }
