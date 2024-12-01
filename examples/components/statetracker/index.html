@@ -1,0 +1,37 @@
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>State Tracker</title>
+
+        <!--  These are the required javascript modules for the Tooltip -->
+        <script type="text/javascript" src="../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../src/components/stateTracker/js/StateTracker.js"></script>
+
+        <script type="text/javascript" src="js/statetracker-example.js"></script>
+</head>
+<body>
+    <p><button onclick="example.start()" aria-describedby="startDesc">Start Tracking</button></br>
+    <span id="startDesc">Press above to start tracking the state of the checkbox below.</span></p>
+
+    <p><button onclick="example.stop()" aria-describedby="stopDesc">Stop Tracking</button></br>
+    <span id="stopDesc">Press above to stop tracking the state of the checkbox below.</span></p>
+
+    <p><button onclick="example.delayStateChange()" aria-describedby="programmaticChange">Wait then change</button><br>
+    <span id="programmaticChange">Press above to change the state of the checkbox below, after one second.</span></p>
+
+    <p>
+        <input id="testCheckBox" type="checkbox" checked>
+        <label for="testCheckBox">Test check box</label>
+    </p>
+    <p id="status">Checkbox status: </p>
+
+</body>
+</html>
