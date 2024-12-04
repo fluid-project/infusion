@@ -66,6 +66,10 @@
 
     <body class="assortedContent-theme-basic fl-focus">
         <!-- BEGIN markup for Preference Editor -->
+        <!--
+            NOTE: When using the Table of Contents preference a container for the table of contents  will also need to
+                  be added to the page. An example of this is included within the `<main>` element below.
+        -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
             <!--
                 This div is for the sliding panel bar that shows and hides the Preference Editor controls in the mobile view.
@@ -113,7 +117,10 @@
                 <h1>HTML 5 Cheat Sheet</h1>
             </header>
 
-            <nav class="flc-toc-tocContainer toc"></nav>
+            <!-- BEGIN markup for Table of Contents container -->
+            <nav class="flc-toc-tocContainer toc"> </nav>
+            <!-- END markup for Table of Contents container -->
+
             <article>
                 <h2>HTML 5</h2>
                 <p class="intro fl-centered">
