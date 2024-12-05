@@ -11,7 +11,7 @@
         ]
     },
     "dependencies": {
-        "jquery": "3.6.0",
+        "jquery": "3.7.1",
         "fluid-framework": "^4.0.0",
         "fast-xml-pull": "4.0.0"
     }

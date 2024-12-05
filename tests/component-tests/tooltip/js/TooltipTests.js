@@ -356,16 +356,19 @@ fluid.tests.tooltip.runTests = function () {
 
     jqUnit.test("Styling added", function () {
         var style = "styleClass";
+        var styleContent = "styleContentClass";
         var tt = fluid.tooltip(".testTooltip", {
             content: "Tooltip",
             styles: {
-                tooltip: style
+                tooltip: style,
+                tooltipContent: styleContent
             }
         });
         tt.open();
         var tooltip = $(".ui-tooltip");
 
         jqUnit.assertTrue("The css class is applied to the tooltip element", tooltip.hasClass(style));
+        jqUnit.assertTrue("The css class is applied to the tooltip content element", $(".ui-tooltip-content", tooltip).hasClass(styleContent));
         tt.destroy();
     });
 

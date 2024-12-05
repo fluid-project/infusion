@@ -18,7 +18,7 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0"
+            "jquery": "3.7.1"
         }
     }, {
         "name": "jquery",
@@ -39,7 +39,7 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0"
+            "jquery": "3.7.1"
         }
     }, {
         "name": "jquery-ui",
@@ -50,8 +50,6 @@
                 "./js/version.js",
                 "./js/widget.js",
                 "./js/plugin.js",
-                "./js/safe-active-element.js",
-                "./js/safe-blur.js",
                 "./js/scroll-parent.js",
                 "./js/position.js",
                 "./js/data.js",
@@ -63,7 +61,7 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0"
+            "jquery": "3.7.1"
         }
     }, {
         "name": "jquery-ui-touch-punch",
@@ -75,8 +73,8 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0",
-            "jquery-ui": "1.12.1"
+            "jquery": "3.7.1",
+            "jquery-ui": "1.14.1"
         }
     }, {
         "name": "atkinson-hyperlegible",

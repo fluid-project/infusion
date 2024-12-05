@@ -18,8 +18,8 @@
         ]
     },
     "dependencies": {
-        "jquery": "3.6.0",
-        "jquery-ui": "1.12.1",
+        "jquery": "3.7.1",
+        "jquery-ui": "1.14.1",
         "jquery-ui-touch-punch": "0.2.3",
         "fluid-framework": "^4.0.0"
     }
