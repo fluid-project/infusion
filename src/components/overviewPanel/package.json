@@ -12,7 +12,7 @@
         ]
     },
     "dependencies": {
-        "jquery": "3.6.0",
+        "jquery": "3.7.1",
         "opensans": "5.0.29",
         "roboto-slab": "5.0.20",
         "fluid-framework": "^4.0.0",

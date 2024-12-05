@@ -18,7 +18,7 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0"
+            "jquery": "3.7.1"
         }
     }, {
         "name": "jquery",
@@ -39,7 +39,7 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0"
+            "jquery": "3.7.1"
         }
     }, {
         "name": "jquery-ui",
@@ -63,7 +63,7 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0"
+            "jquery": "3.7.1"
         }
     }, {
         "name": "jquery-ui-touch-punch",
@@ -75,8 +75,8 @@
             ]
         },
         "dependencies": {
-            "jquery": "3.6.0",
-            "jquery-ui": "1.12.1"
+            "jquery": "3.7.1",
+            "jquery-ui": "1.14.1"
         }
     }, {
         "name": "atkinson-hyperlegible",
