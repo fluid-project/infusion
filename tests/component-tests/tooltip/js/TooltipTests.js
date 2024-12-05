@@ -368,7 +368,7 @@ fluid.tests.tooltip.runTests = function () {
         var tooltip = $(".ui-tooltip");
 
         jqUnit.assertTrue("The css class is applied to the tooltip element", tooltip.hasClass(style));
-        jqUnit.assertTrue("The css class is applied to the tooltip element", $(".ui-tooltip-content", tooltip).hasClass(styleContent));
+        jqUnit.assertTrue("The css class is applied to the tooltip content element", $(".ui-tooltip-content", tooltip).hasClass(styleContent));
         tt.destroy();
     });
 
