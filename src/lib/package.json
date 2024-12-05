@@ -50,8 +50,6 @@
                 "./js/version.js",
                 "./js/widget.js",
                 "./js/plugin.js",
-                "./js/safe-active-element.js",
-                "./js/safe-blur.js",
                 "./js/scroll-parent.js",
                 "./js/position.js",
                 "./js/data.js",
