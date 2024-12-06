@@ -13,7 +13,6 @@
 /tests/lib/jquery-simulate/
 /tests/lib/sinon/
 /tests/lib/xhr-mock/
-package-lock.json
 .project
 report.tap
 coverage

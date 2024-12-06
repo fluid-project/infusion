@@ -85,7 +85,7 @@
         "watch:sass:min": "npm run build:sass:min -- --watch"
     },
     "engines": {
-        "node": ">=12"
+        "node": ">=18"
     },
     "browserslist": [
         "extends browserslist-config-fluid"
