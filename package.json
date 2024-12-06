@@ -106,7 +106,7 @@
         "eslint-config-fluid": "2.1.1",
         "eslint-plugin-jsdoc": "39.6.2",
         "fast-glob": "3.2.11",
-        "fluid-lint-all": "1.2.3",
+        "fluid-lint-all": "1.2.13",
         "fluid-testem": "2.1.15",
         "hypher": "0.2.5",
         "jquery": "3.6.0",
