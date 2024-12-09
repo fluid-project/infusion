@@ -45,8 +45,8 @@
         ]
     },
     "dependencies": {
-        "jquery": "3.6.0",
-        "jquery-ui": "1.12.1",
+        "jquery": "3.7.1",
+        "jquery-ui": "1.14.1",
         "hypher": "0.2.5",
         "opensans": "5.0.29",
         "opendyslexic": "5.0.11",

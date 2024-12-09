@@ -137,6 +137,10 @@ fluid.defaults("fluid.tooltip", {
     gradeNames: ["fluid.viewComponent"],
     widgetOptions: {
         tooltipClass: "{that}.options.styles.tooltip",
+        classes: {
+            "ui-tooltip": "{that}.options.styles.tooltip",
+            "ui-tooltip-content": "{that}.options.styles.tooltipContent"
+        },
         position: "{that}.options.position",
         items: "{that}.options.items",
         show: {
