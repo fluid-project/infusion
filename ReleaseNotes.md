@@ -127,8 +127,7 @@ categorized by license:
 
 ### Apache 2.0
 
-* [`fluid.load.scripts` is based on Jake Archibald's script loading example](
-  https://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
+* [`fluid.load.scripts` is based on Jake Archibald's script loading example](https://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
 * [Roboto Slab](https://github.com/googlefonts/robotoslab)
   * via [Fontsource](https://fontsource.org/fonts/roboto-slab)
 
@@ -176,13 +175,12 @@ categorized by license:
 
 ### zlib/libpng License
 
-* [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](
-  https://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
+* [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](https://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
 
 ## Documentation
 
-Documentation and tutorials can found on the [Infusion Documentation](
-https://docs.fluidproject.org/infusion/development/) site.
+Documentation and tutorials can found on the [Infusion Documentation](https://docs.fluidproject.org/infusion/development/)
+site.
 
 ## Supported Browsers
 
