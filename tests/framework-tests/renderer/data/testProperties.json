@@ -1,12 +1,12 @@
 {
-"cancel": "\u30ad\u30e3\u30f3\u30bb\u30eb",
-"cancel_message": "\u9806\u5e8f\u5909\u66f4\u3092\u30ad\u30e3\u30f3\u30bb\u30eb",
-"show_add": "Adicionar p\u00e1gina(s) ao seu site",
-"save": "\u4fdd\u5b58",
-"multiline_name": "This extends over multiple lines",
-"Truth1": "Beauty",
-"Truth2": "Beauty",
-"Truth3": "Beauty",
-"fruits": "apple, banana, pear, cantaloupe, watermelon, kiwi, mango",
-"The Truth": "None"
+    "cancel": "\u30ad\u30e3\u30f3\u30bb\u30eb",
+    "cancel_message": "\u9806\u5e8f\u5909\u66f4\u3092\u30ad\u30e3\u30f3\u30bb\u30eb",
+    "show_add": "Adicionar p\u00e1gina(s) ao seu site",
+    "save": "\u4fdd\u5b58",
+    "multiline_name": "This extends over multiple lines",
+    "Truth1": "Beauty",
+    "Truth2": "Beauty",
+    "Truth3": "Beauty",
+    "fruits": "apple, banana, pear, cantaloupe, watermelon, kiwi, mango",
+    "The Truth": "None"
 }
