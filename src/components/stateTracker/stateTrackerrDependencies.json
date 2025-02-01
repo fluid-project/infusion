@@ -1,0 +1,13 @@
+{
+    "stateTracker": {
+        "name": "State Tracker",
+        "description": "A component for tracking the state of another object.",
+        "files": [
+            "./js/StateTracker.js"
+        ],
+        "dependencies": [
+            "normalize",
+            "framework"
+        ]
+    }
+}
